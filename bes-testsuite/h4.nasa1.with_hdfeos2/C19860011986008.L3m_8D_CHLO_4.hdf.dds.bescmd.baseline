@@ -1,0 +1,5 @@
+Dataset {
+    UInt16 l3m_data[Number_of_Lines = 4320][Number_of_Columns = 8640];
+    Float32 Number_of_Lines[Number_of_Lines = 4320];
+    Float32 Number_of_Columns[Number_of_Columns = 8640];
+} C19860011986008.L3m_8D_CHLO_4.hdf;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_ES8_TRMM-PFM_Edition2_025021.20000229.hdf" space="catalog">/data/CER_ES8_TRMM-PFM_Edition2_025021.20000229.hdf</setContainer>
+    <define name="d">
+	<container name="CER_ES8_TRMM-PFM_Edition2_025021.20000229.hdf" />
+        <!-- The following will not work because of the HFRHANDLER-60 issue. -->
+        <constraint>SatTrack[0:12728:12728],GeoTrack[0:12728:12728],Colatitude_of_CERES_FOV_at_TOA[0:12728:12728][0:659:659],Longitude_of_CERES_FOV_at_TOA[0:12728:12728][0:659:659]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

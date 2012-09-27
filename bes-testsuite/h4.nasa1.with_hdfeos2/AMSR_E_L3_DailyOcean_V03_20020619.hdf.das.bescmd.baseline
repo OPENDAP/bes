@@ -1,0 +1,238 @@
+Attributes {
+    Very_low_res_sst {
+        String coordinates "Latitude Longitude";
+        String long_name "Very_low_res_sst";
+        Float32 Scale 0.009999999776;
+        String Unit "deg C";
+    }
+    Low_res_sst {
+        String coordinates "Latitude Longitude";
+        String long_name "Low_res_sst";
+        Float32 Scale 0.009999999776;
+        String Unit "deg C";
+    }
+    Low_res_wind {
+        String coordinates "Latitude Longitude";
+        String long_name "Low_res_wind";
+        Float32 Scale 0.009999999776;
+        String Unit "m/s";
+    }
+    Med_res_wind {
+        String coordinates "Latitude Longitude";
+        String long_name "Med_res_wind";
+        Float32 Scale 0.009999999776;
+        String Unit "m/s";
+    }
+    Med_res_vapor {
+        String coordinates "Latitude Longitude";
+        String long_name "Med_res_vapor";
+        Float32 Scale 0.009999999776;
+        String Unit "mm";
+    }
+    High_res_cloud {
+        String coordinates "Latitude Longitude";
+        String long_name "High_res_cloud";
+        Float32 Scale 9.999999747e-05;
+        String Unit "mm";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AMSR_E_L3_DailyOcean_V03_20020619.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-05-22T19:57:26Z";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed once";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        Int32 NUM_VAL 1;
+                        String CLASS "1";
+                        String VALUE "Ocean Parameters";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Program Execution Completed";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Currently not used";
+                        }
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Currently not used";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AE_DyOcn";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 27;
+                    String VALUE "AMSR_E_L2_Ocean_V06_200206190029_D.hdf", "AMSR_E_L2_Ocean_V06_200206190119_A.hdf", "AMSR_E_L2_Ocean_V06_200206190208_D.hdf", "AMSR_E_L2_Ocean_V06_200206190258_A.hdf", "AMSR_E_L2_Ocean_V06_200206190347_D.hdf", "AMSR_E_L2_Ocean_V06_200206190436_A.hdf", "AMSR_E_L2_Ocean_V06_200206190526_D.hdf", "AMSR_E_L2_Ocean_V06_200206190615_A.hdf", "AMSR_E_L2_Ocean_V06_200206190705_D.hdf", "AMSR_E_L2_Ocean_V06_200206190754_A.hdf", "AMSR_E_L2_Ocean_V06_200206190844_D.hdf", "AMSR_E_L2_Ocean_V06_200206190933_A.hdf", "AMSR_E_L2_Ocean_V06_200206191023_D.hdf", "AMSR_E_L2_Ocean_V06_200206191112_A.hdf", "AMSR_E_L2_Ocean_V06_200206191201_D.hdf", "AMSR_E_L2_Ocean_V06_200206191251_A.hdf", "AMSR_E_L2_Ocean_V06_200206191340_D.hdf", "AMSR_E_L2_Ocean_V06_200206191430_A.hdf", "AMSR_E_L2_Ocean_V06_200206191519_D.hdf", "AMSR_E_L2_Ocean_V06_200206191609_A.hdf", "AMSR_E_L2_Ocean_V06_200206191658_D.hdf", "AMSR_E_L2_Ocean_V06_200206191748_A.hdf", "AMSR_E_L2_Ocean_V06_200206191837_D.hdf", "AMSR_E_L2_Ocean_V06_200206191926_A.hdf", "AMSR_E_L2_Ocean_V06_200206192155_D.hdf", "AMSR_E_L2_Ocean_V06_200206192244_A.hdf", "AMSR_E_L2_Ocean_V06_200206192334_D.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-06-19";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:29:47.11Z";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-06-20";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:24:01.76Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "03";
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "GlobalGrid";
+                Int32 XDim 1440;
+                Int32 YDim 720;
+                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Very_low_res_sst";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Low_res_sst";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Low_res_wind";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Med_res_wind";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Med_res_vapor";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "High_res_cloud";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+    }
+}

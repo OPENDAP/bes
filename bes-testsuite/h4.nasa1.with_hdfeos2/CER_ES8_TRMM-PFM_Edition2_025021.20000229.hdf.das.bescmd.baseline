@@ -1,0 +1,752 @@
+Attributes {
+    Time_of_observation {
+        String units "level";
+        String long_name "Time of observation";
+    }
+    Colatitude_of_CERES_FOV_at_TOA {
+        String coordinates "GeoTrack GeoXtrack";
+        String long_name "Colatitude of CERES FOV at TOA";
+    }
+    Longitude_of_CERES_FOV_at_TOA {
+        String coordinates "GeoTrack GeoXtrack";
+        String long_name "Longitude of CERES FOV at TOA";
+    }
+    GeoTrack {
+        String units "level";
+        String long_name "GeoTrack(fake)";
+    }
+    SatXtrack {
+        String units "level";
+        String long_name "SatXtrack(fake)";
+    }
+    GeoXtrack {
+        String units "level";
+        String long_name "GeoXtrack(fake)";
+    }
+    ScanOp {
+        String units "level";
+        String long_name "ScanOp(fake)";
+    }
+    ScanRad {
+        String units "level";
+        String long_name "ScanRad(fake)";
+    }
+    Earth_Sun_distance_at_record_start {
+        String coordinates "Time_of_observation";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "Earth-Sun distance at record start";
+    }
+    X_component_of_satellite_position_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "X component of satellite position at record start";
+    }
+    X_component_of_satellite_position_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "X component of satellite position at record end";
+    }
+    Y_component_of_satellite_position_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Y component of satellite position at record start";
+    }
+    Y_component_of_satellite_position_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Y component of satellite position at record end";
+    }
+    Z_component_of_satellite_position_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Z component of satellite position at record start";
+    }
+    Z_component_of_satellite_position_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Z component of satellite position at record end";
+    }
+    X_component_of_satellite_velocity_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "X component of satellite velocity at record start";
+    }
+    X_component_of_satellite_velocity_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "X component of satellite velocity at record end";
+    }
+    Y_component_of_satellite_velocity_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Y component of satellite velocity at record start";
+    }
+    Y_component_of_satellite_velocity_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Y component of satellite velocity at record end";
+    }
+    Z_component_of_satellite_velocity_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Z component of satellite velocity at record start";
+    }
+    Z_component_of_satellite_velocity_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Z component of satellite velocity at record end";
+    }
+    Colatitude_of_satellite_nadir_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Colatitude of satellite nadir at record start";
+    }
+    Colatitude_of_satellite_nadir_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Colatitude of satellite nadir at record end";
+    }
+    Longitude_of_satellite_nadir_at_record_start {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Longitude of satellite nadir at record start";
+    }
+    Longitude_of_satellite_nadir_at_record_end {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Longitude of satellite nadir at record end";
+    }
+    Colatitude_of_Sun_at_observation {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Colatitude of Sun at observation";
+    }
+    Longitude_of_Sun_at_observation {
+        String coordinates "Time_of_observation";
+        Float32 _FillValue -9999.000000;
+        String long_name "Longitude of Sun at observation";
+    }
+    CERES_TOT_filtered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian";
+        Float32 valid_range 0.000000000, 700.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_SW_filtered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian";
+        Float32 valid_range -10.00000000, 510.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_WN_filtered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian per micron";
+        Float32 valid_range 0.000000000, 15.00000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_viewing_zenith_at_TOA {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "degrees";
+        Float32 valid_range 0.000000000, 90.00000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_solar_zenith_at_TOA {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "degrees";
+        Float32 valid_range 0.000000000, 180.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_relative_azimuth_at_TOA {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "degrees";
+        Float32 valid_range 0.000000000, 360.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_SW_unfiltered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian";
+        Float32 valid_range -10.00000000, 510.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_LW_unfiltered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian";
+        Float32 valid_range 0.000000000, 200.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_WN_unfiltered_radiance {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter per steradian per micron";
+        Float32 valid_range 0.000000000, 15.00000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_SW_flux_at_TOA {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter";
+        Float32 valid_range 0.000000000, 1400.000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    CERES_LW_flux_at_TOA {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "Watts per square meter";
+        Float32 valid_range 0.000000000, 500.0000000;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    ERBE_scene_identification_at_observation {
+        String coordinates "Time_of_observation SatXtrack";
+        String long_name "Measurement-level Data";
+        String units "1 = clear ocean, 2 = clear land, 3 = clear snow, 4 = clear desert, 5 = clear coastal, 6 = partly cloudy ocean, 7 = partly cloudy land-desert, 8 = partly cloudy coastal, 9 = mostly cloudy ocean, 10 = mostly cloudy land-desert, 11 = mostly cloudy coastal, 12 = overcast";
+        Float32 valid_range 0.000000000, 12.39999962;
+        Float32 _FillValue 3.402823466e+38;
+    }
+    TOT_channel_flag_words {
+        String coordinates "Time_of_observation ScanRad";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    SW_channel_flag_words {
+        String coordinates "Time_of_observation ScanRad";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    WN_channel_flag_words {
+        String coordinates "Time_of_observation ScanRad";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    Scanner_FOV_flag_words {
+        String coordinates "Time_of_observation ScanRad";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    Rapid_retrace_flag_words {
+        String coordinates "Time_of_observation ScanRad";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    Scanner_operations_flag_word {
+        String coordinates "Time_of_observation ScanOp";
+        String long_name "Measurement-level Flag Word";
+        String units "n/a";
+        String valid_range "n/a";
+        Int32 _FillValue 2147483647;
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "CER_ES8_TRMM-PFM_Edition2_025021.20000229";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Clib-20030529 TK5.2.7 HDF-4.1r3 HDFEOS- 2.4v1 SW442 ANC442";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2003-06-06T19:52:41.000Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "GranuleParameters";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Refer to Log Files";
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "CCES8_AB";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 1;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 800;
+                    String VALUE "/CERES/erbelike/data/out_comp/data/inv/CER_ES8B_TRMM-PFM_Edition2_025021.20000229", "/CERES/erbelike/rcf/mcf/CCES8_AB.mcf", "/CERES/instrument/data/out_comp/CER_PRES8_TRMM-PFM_Edition1_021016.20000229", "/CERES/erbelike/data/ancillary/static/NIISCOLD.19980904", "
+          /CERES/erbelike/data/ancillary/static/NIPSC.19991123", "/CERES/erbelike/data/ancillary/dynamic/CER_SNOW_CERES_NSIDC_022019.200002", "/CERES/erbelike/data/ancillary/static/BIISW02.19980130", "/CERES/erbelike/data/ancillary/static/BIILWWN.19980130", "
+          /CERES/lib/data/ceres_SI_PFM_day.20020328", "/CERES/lib/data/ceres_SI_PFM_night.20020328";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.000000;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.000000;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.000000;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.000000;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:55.537574";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:56.983171";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-02-29";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-02-29";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "025021";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "CERPGEName", "SamplingStrategy", "ProductionStrategy", "CERDataDateYear", "CERDataDateMonth", "CERDataDateDay", "ES8_ProductionDate", "NumOfCrosstrackRecords", "NumOfRAPSRecords", "NumOfAlongtrackRecords", "NumOfTransitionalRecords", "Software_SCCR_Number", "Data_SCCR_Number", "NumberInputFiles";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                            String VALUE "CER2.2P1", "TRMM-PFM", "Edition2", "2000", "02", "29", "2003-06-06T19:49:46.759000Z", "12729", "0", "0", "0", "442", "442", "10";
+                        }
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2", "3";
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "TRMM", "TRMM", "TRMM";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "PFM", "PFM", "PFM";
+                    }
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "Total Detector", "Shortwave Detector", "Window Detector";
+                    }
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "CERES_ES8";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "SatTrack";
+                        Int32 Size 0;
+                    }
+                    Dimension_2 {
+                        String DimensionName "GeoTrack";
+                        Int32 Size 0;
+                    }
+                    Dimension_3 {
+                        String DimensionName "SatXtrack";
+                        Int32 Size 660;
+                    }
+                    Dimension_4 {
+                        String DimensionName "GeoXtrack";
+                        Int32 Size 660;
+                    }
+                    Dimension_5 {
+                        String DimensionName "ScanOp";
+                        Int32 Size 3;
+                    }
+                    Dimension_6 {
+                        String DimensionName "ScanRad";
+                        Int32 Size 22;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Time of observation";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "SatTrack";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Colatitude of CERES FOV at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "GeoTrack", "GeoXtrack";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "Longitude of CERES FOV at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "GeoTrack", "GeoXtrack";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Earth-Sun distance at record start";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "SatTrack";
+                    }
+                    DataField_2 {
+                        String DataFieldName "X component of satellite position at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_3 {
+                        String DataFieldName "X component of satellite position at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Y component of satellite position at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Y component of satellite position at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Z component of satellite position at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Z component of satellite position at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_8 {
+                        String DataFieldName "X component of satellite velocity at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_9 {
+                        String DataFieldName "X component of satellite velocity at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Y component of satellite velocity at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Y component of satellite velocity at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Z component of satellite velocity at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Z component of satellite velocity at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Colatitude of satellite nadir at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Colatitude of satellite nadir at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Longitude of satellite nadir at record start";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Longitude of satellite nadir at record end";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_18 {
+                        String DataFieldName "Colatitude of Sun at observation";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_19 {
+                        String DataFieldName "Longitude of Sun at observation";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack";
+                    }
+                    DataField_20 {
+                        String DataFieldName "CERES TOT filtered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_21 {
+                        String DataFieldName "CERES SW filtered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_22 {
+                        String DataFieldName "CERES WN filtered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_23 {
+                        String DataFieldName "CERES viewing zenith at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_24 {
+                        String DataFieldName "CERES solar zenith at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_25 {
+                        String DataFieldName "CERES relative azimuth at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_26 {
+                        String DataFieldName "CERES SW unfiltered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_27 {
+                        String DataFieldName "CERES LW unfiltered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_28 {
+                        String DataFieldName "CERES WN unfiltered radiance";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_29 {
+                        String DataFieldName "CERES SW flux at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_30 {
+                        String DataFieldName "CERES LW flux at TOA";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_31 {
+                        String DataFieldName "ERBE scene identification at observation";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SatTrack", "SatXtrack";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_32 {
+                        String DataFieldName "TOT channel flag words";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanRad";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_33 {
+                        String DataFieldName "SW channel flag words";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanRad";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_34 {
+                        String DataFieldName "WN channel flag words";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanRad";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_35 {
+                        String DataFieldName "Scanner FOV flag words";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanRad";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_36 {
+                        String DataFieldName "Rapid retrace flag words";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanRad";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                    DataField_37 {
+                        String DataFieldName "Scanner operations flag word";
+                        String DataType "DFNT_INT32";
+                        String DimList "SatTrack", "ScanOp";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 1;
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.7";
+        String archivemetadata "
+GROUP                  = ARCHIVEDMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  OBJECT                 = CEREASTBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 360.000000
+  END_OBJECT             = CEREASTBOUNDINGCOORDINATE
+
+  OBJECT                 = CERNORTHBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 0.000000
+  END_OBJECT             = CERNORTHBOUNDINGCOORDINATE
+
+  OBJECT                 = CERSOUTHBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 180.000000
+  END_OBJECT             = CERSOUTHBOUNDINGCOORDINATE
+
+  OBJECT                 = CERWESTBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 0.000000
+  END_OBJECT             = CERWESTBOUNDINGCOORDINATE
+
+  OBJECT                 = CERPRODUCTIONDATETIME
+    NUM_VAL              = 1
+    VALUE                = "2003-06-06T15:52:41"
+  END_OBJECT             = CERPRODUCTIONDATETIME
+
+  OBJECT                 = NUMBEROFRECORDS
+    NUM_VAL              = 1
+    VALUE                = 12729
+  END_OBJECT             = NUMBEROFRECORDS
+
+  OBJECT                 = PRODUCTGENERATIONLOC
+    NUM_VAL              = 1
+    VALUE                = "NASA Langley Research Center, HOST - samantha2 OS - IRIX64"
+  END_OBJECT             = PRODUCTGENERATIONLOC
+
+END_GROUP              = ARCHIVEDMETADATA
+
+END
+";
+    }
+    Spectral_Response_Functions {
+        Float32 Vdata_field_SW_channel_wavelengths 0.2000000030, 0.2099999934, 0.2199999988, 0.2300000042, 0.2399999946, 0.2500000000, 0.2599999905, 0.2700000107, 0.2800000012, 0.2899999917, 0.3000000119, 0.3100000024, 0.3199999928, 0.3300000131, 0.3400000036, 0.3499999940, 0.3600000143, 0.3700000048, 0.3799999952, 0.3899999857, 0.4000000060, 0.4099999964, 0.4199999869, 0.4300000072, 0.4399999976, 0.4499999881, 0.4600000083, 0.4699999988, 0.4799999893, 0.4900000095, 0.5000000000, 0.5099999905, 0.5199999809, 0.5299999714, 0.5400000215, 0.5500000119, 0.5600000024, 0.5699999928, 0.5799999833, 0.5899999738, 0.6000000238, 0.6100000143, 0.6200000048, 0.6299999952, 0.6399999857, 0.6499999762, 0.6600000262, 0.6700000167, 0.6800000072, 0.6899999976, 0.6999999881, 0.7099999785, 0.7200000286, 0.7300000191, 0.7400000095, 0.7500000000, 0.7599999905, 0.7699999809, 0.7799999714, 0.7900000215, 0.8000000119, 0.8100000024, 0.8199999928, 0.8299999833, 0.8399999738, 0.8500000238, 0.8600000143, 0.8700000048, 0.8799999952, 0.8899999857, 0.8999999762, 0.9100000262, 0.9200000167, 0.9300000072, 0.9399999976, 0.9499999881, 0.9599999785, 0.9700000286, 0.9800000191, 0.9900000095, 1.000000000, 1.009999990, 1.019999981, 1.029999971, 1.039999962, 1.049999952, 1.059999943, 1.070000052, 1.080000043, 1.090000033, 1.100000024, 1.110000014, 1.120000005, 1.129999995, 1.139999986, 1.149999976, 1.159999967, 1.169999957, 1.179999948, 1.190000057, 1.200000048, 1.210000038, 1.220000029, 1.230000019, 1.240000010, 1.250000000, 1.259999990, 1.269999981, 1.279999971, 1.289999962, 1.299999952, 1.309999943, 1.320000052, 1.330000043, 1.340000033, 1.350000024, 1.360000014, 1.370000005, 1.379999995, 1.389999986, 1.399999976, 1.409999967, 1.419999957, 1.429999948, 1.440000057, 1.450000048, 1.460000038, 1.470000029, 1.480000019, 1.490000010, 1.500000000, 1.509999990, 1.519999981, 1.529999971, 1.539999962, 1.549999952, 1.559999943, 1.570000052, 1.580000043, 1.590000033, 1.600000024, 1.610000014, 1.620000005, 1.629999995, 1.639999986, 1.649999976, 1.659999967, 1.669999957, 1.679999948, 1.690000057, 1.700000048, 1.710000038, 1.720000029, 1.730000019, 1.740000010, 1.750000000, 1.759999990, 1.769999981, 1.779999971, 1.789999962, 1.799999952, 1.809999943, 1.820000052, 1.830000043, 1.840000033, 1.850000024, 1.860000014, 1.870000005, 1.879999995, 1.889999986, 1.899999976, 1.909999967, 1.919999957, 1.929999948, 1.940000057, 1.950000048, 1.960000038, 1.970000029, 1.980000019, 1.990000010, 2.000000000, 2.009999990, 2.019999981, 2.029999971, 2.039999962, 2.049999952, 2.059999943, 2.069999933, 2.079999924, 2.089999914, 2.099999905, 2.109999895, 2.119999886, 2.130000114, 2.140000105, 2.150000095, 2.160000086, 2.170000076, 2.180000067, 2.190000057, 2.200000048, 2.210000038, 2.220000029, 2.230000019, 2.240000010, 2.250000000, 2.259999990, 2.269999981, 2.279999971, 2.289999962, 2.299999952, 2.309999943, 2.319999933, 2.329999924, 2.339999914, 2.349999905, 2.359999895, 2.369999886, 2.380000114, 2.390000105, 2.400000095, 2.410000086, 2.420000076, 2.430000067, 2.440000057, 2.450000048, 2.460000038, 2.470000029, 2.480000019, 2.490000010, 2.500000000, 2.509999990, 2.519999981, 2.529999971, 2.539999962, 2.549999952, 2.559999943, 2.569999933, 2.579999924, 2.589999914, 2.599999905, 2.609999895, 2.619999886, 2.630000114, 2.640000105, 2.650000095, 2.660000086, 2.670000076, 2.680000067, 2.690000057, 2.700000048, 2.710000038, 2.720000029, 2.730000019, 2.740000010, 2.750000000, 2.759999990, 2.769999981, 2.779999971, 2.789999962, 2.799999952, 2.809999943, 2.819999933, 2.829999924, 2.839999914, 2.849999905, 2.859999895, 2.869999886, 2.880000114, 2.890000105, 2.900000095, 2.910000086, 2.920000076, 2.930000067, 2.940000057, 2.950000048, 2.960000038, 2.970000029, 2.980000019, 2.990000010, 3.000000000, 3.009999990, 3.019999981, 3.029999971, 3.039999962, 3.049999952, 3.059999943, 3.069999933, 3.079999924, 3.089999914, 3.099999905, 3.109999895, 3.119999886, 3.130000114, 3.140000105, 3.150000095, 3.160000086, 3.170000076, 3.180000067, 3.190000057, 3.200000048, 3.210000038, 3.220000029, 3.230000019, 3.240000010, 3.250000000, 3.259999990, 3.269999981, 3.279999971, 3.289999962, 3.299999952, 3.309999943, 3.319999933, 3.329999924, 3.339999914, 3.349999905, 3.359999895, 3.369999886, 3.380000114, 3.390000105, 3.400000095, 3.410000086, 3.420000076, 3.430000067, 3.440000057, 3.450000048, 3.460000038, 3.470000029, 3.480000019, 3.490000010, 3.500000000, 3.509999990, 3.519999981, 3.529999971, 3.539999962, 3.549999952, 3.559999943, 3.569999933, 3.579999924, 3.589999914, 3.599999905, 3.609999895, 3.619999886, 3.630000114, 3.640000105, 3.650000095, 3.660000086, 3.670000076, 3.680000067, 3.690000057, 3.700000048, 3.710000038, 3.720000029, 3.730000019, 3.740000010, 3.750000000, 3.759999990, 3.769999981, 3.779999971, 3.789999962, 3.799999952, 3.809999943, 3.819999933, 3.829999924, 3.839999914, 3.849999905, 3.859999895, 3.869999886, 3.880000114, 3.890000105, 3.900000095, 3.910000086, 3.920000076, 3.930000067, 3.940000057, 3.950000048, 3.960000038, 3.970000029, 3.980000019, 3.990000010, 4.000000000, 4.010000229, 4.019999981, 4.030000210, 4.039999962, 4.050000191, 4.059999943, 4.070000172, 4.079999924, 4.090000153, 4.099999905, 4.110000134, 4.119999886, 4.130000114, 4.139999866, 4.150000095, 4.159999847, 4.170000076, 4.179999828, 4.190000057, 4.199999809, 4.210000038, 4.219999790, 4.230000019, 4.239999771, 4.250000000, 4.260000229, 4.269999981, 4.280000210, 4.289999962, 4.300000191, 4.309999943, 4.320000172, 4.329999924, 4.340000153, 4.349999905, 4.360000134, 4.369999886, 4.380000114, 4.389999866, 4.400000095, 4.409999847, 4.420000076, 4.429999828, 4.440000057, 4.449999809, 4.460000038, 4.469999790, 4.480000019, 4.489999771, 4.500000000, 4.510000229, 4.519999981, 4.530000210, 4.539999962, 4.550000191, 4.559999943, 4.570000172, 4.579999924, 4.590000153, 4.599999905, 4.610000134, 4.619999886, 4.630000114, 4.639999866, 4.650000095, 4.659999847, 4.670000076, 4.679999828, 4.690000057, 4.699999809, 4.710000038, 4.719999790, 4.730000019, 4.739999771, 4.750000000, 4.760000229, 4.769999981, 4.780000210, 4.789999962, 4.800000191, 4.809999943, 4.820000172, 4.829999924, 4.840000153, 4.849999905, 4.860000134, 4.869999886, 4.880000114, 4.889999866, 4.900000095, 4.909999847, 4.920000076, 4.929999828, 4.940000057, 4.949999809, 4.960000038, 4.969999790, 4.980000019, 4.989999771, 5.000000000, 50.00000000, 51.00000000, 52.00000000, 53.00000000, 54.00000000, 55.00000000, 56.00000000, 57.00000000, 58.00000000, 59.00000000, 60.00000000, 61.00000000, 62.00000000, 63.00000000, 64.00000000, 65.00000000, 66.00000000, 67.00000000, 68.00000000, 69.00000000, 70.00000000, 71.00000000, 72.00000000, 73.00000000, 74.00000000, 75.00000000, 76.00000000, 77.00000000, 78.00000000, 79.00000000, 80.00000000, 81.00000000, 82.00000000, 83.00000000, 84.00000000, 85.00000000, 86.00000000, 87.00000000, 88.00000000, 89.00000000, 90.00000000, 91.00000000, 92.00000000, 93.00000000, 94.00000000, 95.00000000, 96.00000000, 97.00000000, 98.00000000, 99.00000000, 100.0000000, 101.0000000, 102.0000000, 103.0000000, 104.0000000, 105.0000000, 106.0000000, 107.0000000, 108.0000000, 109.0000000, 110.0000000, 111.0000000, 112.0000000, 113.0000000, 114.0000000, 115.0000000, 116.0000000, 117.0000000, 118.0000000, 119.0000000, 120.0000000, 121.0000000, 122.0000000, 123.0000000, 124.0000000, 125.0000000, 126.0000000, 127.0000000, 128.0000000, 129.0000000, 130.0000000, 131.0000000, 132.0000000, 133.0000000, 134.0000000, 135.0000000, 136.0000000, 137.0000000, 138.0000000, 139.0000000, 140.0000000, 141.0000000, 142.0000000, 143.0000000, 144.0000000, 145.0000000, 146.0000000, 147.0000000, 148.0000000, 149.0000000, 150.0000000, 151.0000000, 152.0000000, 153.0000000, 154.0000000, 155.0000000, 156.0000000, 157.0000000, 158.0000000, 159.0000000, 160.0000000, 161.0000000, 162.0000000, 163.0000000, 164.0000000, 165.0000000, 166.0000000, 167.0000000, 168.0000000, 169.0000000, 170.0000000, 171.0000000, 172.0000000, 173.0000000, 174.0000000, 175.0000000, 176.0000000, 177.0000000, 178.0000000, 179.0000000, 180.0000000, 181.0000000, 182.0000000, 183.0000000, 184.0000000, 185.0000000, 186.0000000, 187.0000000, 188.0000000, 189.0000000, 190.0000000, 191.0000000, 192.0000000, 193.0000000, 194.0000000, 195.0000000, 196.0000000, 197.0000000, 198.0000000, 199.0000000, 200.0000000;
+        Float32 Vdata_field_SW_spectral_response_values 0.000000000, 0.006000000052, 0.009999999776, 0.03999999911, 0.08799999952, 0.1260000020, 0.1420000046, 0.1340000033, 0.1070000008, 0.07100000232, 0.03799999878, 0.02099999972, 0.1350000054, 0.4399999976, 0.5270000100, 0.4939999878, 0.3899999857, 0.3039999902, 0.3600000143, 0.5400000215, 0.6439999938, 0.7129999995, 0.7500000000, 0.7720000148, 0.7860000134, 0.7929999828, 0.8019999862, 0.8059999943, 0.8109999895, 0.8119999766, 0.8159999847, 0.8149999976, 0.8180000186, 0.8169999719, 0.8180000186, 0.8190000057, 0.8199999928, 0.8180000186, 0.8180000186, 0.8190000057, 0.8190000057, 0.8199999928, 0.8190000057, 0.8199999928, 0.8180000186, 0.8190000057, 0.8180000186, 0.8199999928, 0.8169999719, 0.8190000057, 0.8180000186, 0.8180000186, 0.8169999719, 0.8169999719, 0.8159999847, 0.8130000234, 0.8109999895, 0.8109999895, 0.8080000281, 0.8069999814, 0.8069999814, 0.8069999814, 0.8040000200, 0.8009999990, 0.8000000119, 0.7979999781, 0.8019999862, 0.7960000038, 0.8029999733, 0.7979999781, 0.7969999909, 0.7960000038, 0.7960000038, 0.7940000296, 0.7950000167, 0.7919999957, 0.7919999957, 0.7910000086, 0.7910000086, 0.7889999747, 0.7870000005, 0.7889999747, 0.7889999747, 0.7900000215, 0.7879999876, 0.7889999747, 0.7900000215, 0.7879999876, 0.7889999747, 0.7889999747, 0.7900000215, 0.7889999747, 0.7889999747, 0.7900000215, 0.7900000215, 0.7910000086, 0.7910000086, 0.7910000086, 0.7919999957, 0.7919999957, 0.7919999957, 0.7929999828, 0.7929999828, 0.7919999957, 0.7940000296, 0.7929999828, 0.7940000296, 0.7950000167, 0.7950000167, 0.7960000038, 0.7969999909, 0.7979999781, 0.7979999781, 0.7990000248, 0.8000000119, 0.7990000248, 0.8009999990, 0.8029999733, 0.8029999733, 0.8009999990, 0.8000000119, 0.8029999733, 0.8050000072, 0.8040000200, 0.8059999943, 0.8069999814, 0.8080000281, 0.8080000281, 0.8080000281, 0.8090000153, 0.8100000024, 0.8109999895, 0.8119999766, 0.8130000234, 0.8130000234, 0.8130000234, 0.8149999976, 0.8169999719, 0.8169999719, 0.8159999847, 0.8190000057, 0.8180000186, 0.8180000186, 0.8199999928, 0.8199999928, 0.8199999928, 0.8190000057, 0.8180000186, 0.8190000057, 0.8190000057, 0.8180000186, 0.8180000186, 0.8180000186, 0.8190000057, 0.8199999928, 0.8169999719, 0.8190000057, 0.8190000057, 0.8190000057, 0.8190000057, 0.8190000057, 0.8180000186, 0.8149999976, 0.8169999719, 0.8180000186, 0.8140000105, 0.8140000105, 0.8149999976, 0.8169999719, 0.8140000105, 0.8130000234, 0.8159999847, 0.8109999895, 0.8130000234, 0.8140000105, 0.8140000105, 0.8140000105, 0.8140000105, 0.8140000105, 0.8130000234, 0.8130000234, 0.8130000234, 0.8119999766, 0.8140000105, 0.8119999766, 0.8130000234, 0.8130000234, 0.8130000234, 0.8130000234, 0.8130000234, 0.8130000234, 0.8140000105, 0.8140000105, 0.8109999895, 0.8119999766, 0.8119999766, 0.8130000234, 0.8130000234, 0.8130000234, 0.8140000105, 0.8130000234, 0.8140000105, 0.8140000105, 0.8140000105, 0.8140000105, 0.8140000105, 0.8130000234, 0.8149999976, 0.8130000234, 0.8140000105, 0.8140000105, 0.8149999976, 0.8159999847, 0.8159999847, 0.8169999719, 0.8149999976, 0.8180000186, 0.8169999719, 0.8149999976, 0.8169999719, 0.8180000186, 0.8169999719, 0.8180000186, 0.8169999719, 0.8159999847, 0.8169999719, 0.8159999847, 0.8159999847, 0.8180000186, 0.8169999719, 0.8149999976, 0.8149999976, 0.8149999976, 0.8140000105, 0.8140000105, 0.8140000105, 0.8149999976, 0.8149999976, 0.8130000234, 0.8159999847, 0.8159999847, 0.8169999719, 0.8130000234, 0.8149999976, 0.8140000105, 0.8119999766, 0.8100000024, 0.8119999766, 0.8069999814, 0.7979999781, 0.7810000181, 0.7680000067, 0.7599999905, 0.7590000033, 0.7590000033, 0.7609999776, 0.7609999776, 0.7620000243, 0.7639999986, 0.7659999728, 0.7670000196, 0.7689999938, 0.7710000277, 0.7710000277, 0.7699999809, 0.7680000067, 0.7689999938, 0.7689999938, 0.7689999938, 0.7680000067, 0.7689999938, 0.7699999809, 0.7710000277, 0.7710000277, 0.7710000277, 0.7689999938, 0.7689999938, 0.7670000196, 0.7659999728, 0.7670000196, 0.7680000067, 0.7699999809, 0.7699999809, 0.7699999809, 0.7689999938, 0.7699999809, 0.7710000277, 0.7710000277, 0.7699999809, 0.7699999809, 0.7689999938, 0.7689999938, 0.7699999809, 0.7699999809, 0.7699999809, 0.7699999809, 0.7730000019, 0.7720000148, 0.7710000277, 0.7720000148, 0.7710000277, 0.7739999890, 0.7770000100, 0.7749999762, 0.7799999714, 0.7799999714, 0.7760000229, 0.7820000052, 0.7820000052, 0.7829999924, 0.7839999795, 0.7850000262, 0.7860000134, 0.7870000005, 0.7879999876, 0.7889999747, 0.7879999876, 0.7879999876, 0.7870000005, 0.7870000005, 0.7850000262, 0.7810000181, 0.7770000100, 0.7760000229, 0.7760000229, 0.7739999890, 0.7710000277, 0.7670000196, 0.7620000243, 0.7570000291, 0.7500000000, 0.7429999709, 0.7379999757, 0.7319999933, 0.7269999981, 0.7220000029, 0.7170000076, 0.7129999995, 0.7080000043, 0.7039999962, 0.6990000010, 0.6940000057, 0.6869999766, 0.6800000072, 0.6710000038, 0.6620000005, 0.6520000100, 0.6399999857, 0.6280000210, 0.6200000048, 0.6100000143, 0.6000000238, 0.5899999738, 0.5830000043, 0.5770000219, 0.5740000010, 0.5730000138, 0.5730000138, 0.5740000010, 0.5770000219, 0.5789999962, 0.5809999704, 0.5830000043, 0.5839999914, 0.5860000253, 0.5870000124, 0.5870000124, 0.5879999995, 0.5870000124, 0.5870000124, 0.5860000253, 0.5849999785, 0.5830000043, 0.5820000172, 0.5799999833, 0.5759999752, 0.5740000010, 0.5690000057, 0.5659999847, 0.5600000024, 0.5519999862, 0.5460000038, 0.5370000005, 0.5260000229, 0.5180000067, 0.5070000291, 0.4939999878, 0.4819999933, 0.4740000069, 0.4600000083, 0.4480000138, 0.4410000145, 0.4309999943, 0.4239999950, 0.4149999917, 0.4090000093, 0.4009999931, 0.3959999979, 0.3899999857, 0.3860000074, 0.3790000081, 0.3750000000, 0.3700000048, 0.3650000095, 0.3549999893, 0.3429999948, 0.3280000091, 0.3120000064, 0.2939999998, 0.2820000052, 0.2689999938, 0.2440000027, 0.2259999961, 0.2080000043, 0.1979999989, 0.1840000004, 0.1710000038, 0.1640000045, 0.1560000032, 0.1490000039, 0.1439999938, 0.1410000026, 0.1400000006, 0.1410000026, 0.1430000067, 0.1449999958, 0.1490000039, 0.1550000012, 0.1620000005, 0.1679999977, 0.1759999990, 0.1850000024, 0.1899999976, 0.1949999928, 0.2010000050, 0.2060000002, 0.2080000043, 0.2090000063, 0.2080000043, 0.2049999982, 0.2010000050, 0.1969999969, 0.1889999956, 0.1790000051, 0.1720000058, 0.1640000045, 0.1560000032, 0.1420000046, 0.1289999932, 0.1190000027, 0.1080000028, 0.09700000286, 0.08500000089, 0.06800000370, 0.05000000075, 0.03900000080, 0.02899999917, 0.02099999972, 0.01400000043, 0.008999999613, 0.004000000190, 0.002000000095, 0.001000000047, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.001000000047, 0.002000000095, 0.002000000095, 0.002000000095, 0.002000000095, 0.002000000095, 0.003000000026, 0.003000000026, 0.004999999888, 0.007000000216, 0.009999999776, 0.01200000010, 0.01200000010, 0.01499999966, 0.01600000076, 0.01700000092, 0.02300000004, 0.02600000054, 0.02999999933, 0.03299999982, 0.03599999845, 0.03900000080, 0.04100000113, 0.04500000179, 0.04899999872, 0.05299999937, 0.05799999833, 0.06199999899, 0.06599999964, 0.06800000370, 0.07299999893, 0.07699999958, 0.08900000155, 0.08299999684, 0.09499999881, 0.09099999815, 0.1030000001, 0.1140000001, 0.1129999980, 0.1150000021, 0.1150000021, 0.1209999993, 0.1289999932, 0.1350000054, 0.1490000039, 0.1420000046, 0.1299999952, 0.1609999985, 0.1599999964, 0.1689999998, 0.1589999944, 0.1609999985, 0.1850000024, 0.1909999996, 0.1969999969, 0.1930000037, 0.2010000050, 0.2189999968, 0.2010000050, 0.2020000070, 0.2310000062, 0.2280000001, 0.2370000035, 0.2370000035, 0.2290000021, 0.2389999926, 0.2610000074, 0.2709999979, 0.2630000114, 0.2730000019, 0.2890000045, 0.2770000100, 0.2890000045, 0.2980000079, 0.2680000067, 0.2899999917, 0.2890000045, 0.2829999924, 0.2800000012, 0.2989999950, 0.3070000112, 0.3070000112, 0.3009999990, 0.3140000105, 0.3300000131, 0.3269999921, 0.3470000029, 0.3199999928, 0.3409999907, 0.3519999981, 0.3429999948, 0.3269999921, 0.3639999926, 0.3659999967, 0.3829999864, 0.3729999959, 0.3549999893, 0.3569999933, 0.3770000041, 0.3989999890, 0.3930000067, 0.3790000081, 0.3759999871, 0.3860000074, 0.3959999979, 0.3959999979, 0.4239999950, 0.4029999971, 0.3880000114, 0.4029999971, 0.4189999998, 0.4350000024, 0.4350000024, 0.4259999990, 0.4079999924, 0.4140000045, 0.4189999998, 0.4499999881, 0.4589999914, 0.4679999948, 0.4790000021, 0.4519999921, 0.4239999950, 0.4309999943, 0.4670000076, 0.4790000021, 0.4920000136, 0.4760000110, 0.4810000062, 0.4860000014, 0.4399999976, 0.4560000002, 0.4720000029, 0.4930000007, 0.4860000014, 0.4790000021, 0.4740000069, 0.4690000117, 0.4930000007, 0.5170000196, 0.4909999967, 0.5099999905, 0.5289999843, 0.5310000181, 0.5170000196, 0.5019999743, 0.4909999967, 0.4799999893, 0.5000000000, 0.5210000277, 0.5419999957;
+        Float32 Vdata_field_TOT_channel_wavelengths 0.2000000030, 0.2099999934, 0.2199999988, 0.2300000042, 0.2399999946, 0.2500000000, 0.2599999905, 0.2700000107, 0.2800000012, 0.2899999917, 0.3000000119, 0.3100000024, 0.3199999928, 0.3300000131, 0.3400000036, 0.3499999940, 0.3600000143, 0.3700000048, 0.3799999952, 0.3899999857, 0.4000000060, 0.4099999964, 0.4199999869, 0.4300000072, 0.4399999976, 0.4499999881, 0.4600000083, 0.4699999988, 0.4799999893, 0.4900000095, 0.5000000000, 0.5099999905, 0.5199999809, 0.5299999714, 0.5400000215, 0.5500000119, 0.5600000024, 0.5699999928, 0.5799999833, 0.5899999738, 0.6000000238, 0.6100000143, 0.6200000048, 0.6299999952, 0.6399999857, 0.6499999762, 0.6600000262, 0.6700000167, 0.6800000072, 0.6899999976, 0.6999999881, 0.7099999785, 0.7200000286, 0.7300000191, 0.7400000095, 0.7500000000, 0.7599999905, 0.7699999809, 0.7799999714, 0.7900000215, 0.8000000119, 0.8100000024, 0.8199999928, 0.8299999833, 0.8399999738, 0.8500000238, 0.8600000143, 0.8700000048, 0.8799999952, 0.8899999857, 0.8999999762, 0.9100000262, 0.9200000167, 0.9300000072, 0.9399999976, 0.9499999881, 0.9599999785, 0.9700000286, 0.9800000191, 0.9900000095, 1.000000000, 1.009999990, 1.019999981, 1.029999971, 1.039999962, 1.049999952, 1.059999943, 1.070000052, 1.080000043, 1.090000033, 1.100000024, 1.110000014, 1.120000005, 1.129999995, 1.139999986, 1.149999976, 1.159999967, 1.169999957, 1.179999948, 1.190000057, 1.200000048, 1.210000038, 1.220000029, 1.230000019, 1.240000010, 1.250000000, 1.259999990, 1.269999981, 1.279999971, 1.289999962, 1.299999952, 1.309999943, 1.320000052, 1.330000043, 1.340000033, 1.350000024, 1.360000014, 1.370000005, 1.379999995, 1.389999986, 1.399999976, 1.409999967, 1.419999957, 1.429999948, 1.440000057, 1.450000048, 1.460000038, 1.470000029, 1.480000019, 1.490000010, 1.500000000, 1.509999990, 1.519999981, 1.529999971, 1.539999962, 1.549999952, 1.559999943, 1.570000052, 1.580000043, 1.590000033, 1.600000024, 1.610000014, 1.620000005, 1.629999995, 1.639999986, 1.649999976, 1.659999967, 1.669999957, 1.679999948, 1.690000057, 1.700000048, 1.710000038, 1.720000029, 1.730000019, 1.740000010, 1.750000000, 1.759999990, 1.769999981, 1.779999971, 1.789999962, 1.799999952, 1.809999943, 1.820000052, 1.830000043, 1.840000033, 1.850000024, 1.860000014, 1.870000005, 1.879999995, 1.889999986, 1.899999976, 1.909999967, 1.919999957, 1.929999948, 1.940000057, 1.950000048, 1.960000038, 1.970000029, 1.980000019, 1.990000010, 2.000000000, 2.009999990, 2.019999981, 2.029999971, 2.039999962, 2.049999952, 2.059999943, 2.069999933, 2.079999924, 2.089999914, 2.099999905, 2.109999895, 2.119999886, 2.130000114, 2.140000105, 2.150000095, 2.160000086, 2.170000076, 2.180000067, 2.190000057, 2.200000048, 2.210000038, 2.220000029, 2.230000019, 2.240000010, 2.250000000, 2.259999990, 2.269999981, 2.279999971, 2.289999962, 2.299999952, 2.309999943, 2.319999933, 2.329999924, 2.339999914, 2.349999905, 2.359999895, 2.369999886, 2.380000114, 2.390000105, 2.400000095, 2.410000086, 2.420000076, 2.430000067, 2.440000057, 2.450000048, 2.460000038, 2.470000029, 2.480000019, 2.490000010, 2.500000000, 2.509999990, 2.519999981, 2.529999971, 2.539999962, 2.549999952, 2.559999943, 2.569999933, 2.579999924, 2.589999914, 2.599999905, 2.609999895, 2.619999886, 2.630000114, 2.640000105, 2.650000095, 2.660000086, 2.670000076, 2.680000067, 2.690000057, 2.700000048, 2.710000038, 2.720000029, 2.730000019, 2.740000010, 2.750000000, 2.759999990, 2.769999981, 2.779999971, 2.789999962, 2.799999952, 2.809999943, 2.819999933, 2.829999924, 2.839999914, 2.849999905, 2.859999895, 2.869999886, 2.880000114, 2.890000105, 2.900000095, 2.910000086, 2.920000076, 2.930000067, 2.940000057, 2.950000048, 2.960000038, 2.970000029, 2.980000019, 2.990000010, 3.000000000, 3.009999990, 3.019999981, 3.029999971, 3.039999962, 3.049999952, 3.059999943, 3.069999933, 3.079999924, 3.089999914, 3.099999905, 3.109999895, 3.119999886, 3.130000114, 3.140000105, 3.150000095, 3.160000086, 3.170000076, 3.180000067, 3.190000057, 3.200000048, 3.210000038, 3.220000029, 3.230000019, 3.240000010, 3.250000000, 3.259999990, 3.269999981, 3.279999971, 3.289999962, 3.299999952, 3.309999943, 3.319999933, 3.329999924, 3.339999914, 3.349999905, 3.359999895, 3.369999886, 3.380000114, 3.390000105, 3.400000095, 3.410000086, 3.420000076, 3.430000067, 3.440000057, 3.450000048, 3.460000038, 3.470000029, 3.480000019, 3.490000010, 3.500000000, 3.509999990, 3.519999981, 3.529999971, 3.539999962, 3.549999952, 3.559999943, 3.569999933, 3.579999924, 3.589999914, 3.599999905, 3.609999895, 3.619999886, 3.630000114, 3.640000105, 3.650000095, 3.660000086, 3.670000076, 3.680000067, 3.690000057, 3.700000048, 3.710000038, 3.720000029, 3.730000019, 3.740000010, 3.750000000, 3.759999990, 3.769999981, 3.779999971, 3.789999962, 3.799999952, 3.809999943, 3.819999933, 3.829999924, 3.839999914, 3.849999905, 3.859999895, 3.869999886, 3.880000114, 3.890000105, 3.900000095, 3.910000086, 3.920000076, 3.930000067, 3.940000057, 3.950000048, 3.960000038, 3.970000029, 3.980000019, 3.990000010, 4.000000000, 4.010000229, 4.019999981, 4.030000210, 4.039999962, 4.050000191, 4.059999943, 4.070000172, 4.079999924, 4.090000153, 4.099999905, 4.110000134, 4.119999886, 4.130000114, 4.139999866, 4.150000095, 4.159999847, 4.170000076, 4.179999828, 4.190000057, 4.199999809, 4.210000038, 4.219999790, 4.230000019, 4.239999771, 4.250000000, 4.260000229, 4.269999981, 4.280000210, 4.289999962, 4.300000191, 4.309999943, 4.320000172, 4.329999924, 4.340000153, 4.349999905, 4.360000134, 4.369999886, 4.380000114, 4.389999866, 4.400000095, 4.409999847, 4.420000076, 4.429999828, 4.440000057, 4.449999809, 4.460000038, 4.469999790, 4.480000019, 4.489999771, 4.500000000, 4.510000229, 4.519999981, 4.530000210, 4.539999962, 4.550000191, 4.559999943, 4.570000172, 4.579999924, 4.590000153, 4.599999905, 4.610000134, 4.619999886, 4.630000114, 4.639999866, 4.650000095, 4.659999847, 4.670000076, 4.679999828, 4.690000057, 4.699999809, 4.710000038, 4.719999790, 4.730000019, 4.739999771, 4.750000000, 4.760000229, 4.769999981, 4.780000210, 4.789999962, 4.800000191, 4.809999943, 4.820000172, 4.829999924, 4.840000153, 4.849999905, 4.860000134, 4.869999886, 4.880000114, 4.889999866, 4.900000095, 4.909999847, 4.920000076, 4.929999828, 4.940000057, 4.949999809, 4.960000038, 4.969999790, 4.980000019, 4.989999771, 5.000000000, 5.050000191, 5.099999905, 5.150000095, 5.199999809, 5.250000000, 5.300000191, 5.349999905, 5.400000095, 5.449999809, 5.500000000, 5.550000191, 5.599999905, 5.650000095, 5.699999809, 5.750000000, 5.800000191, 5.849999905, 5.900000095, 5.949999809, 6.000000000, 6.050000191, 6.099999905, 6.150000095, 6.199999809, 6.250000000, 6.300000191, 6.349999905, 6.400000095, 6.449999809, 6.500000000, 6.550000191, 6.599999905, 6.650000095, 6.699999809, 6.750000000, 6.800000191, 6.849999905, 6.900000095, 6.949999809, 7.000000000, 7.050000191, 7.099999905, 7.150000095, 7.199999809, 7.250000000, 7.300000191, 7.349999905, 7.400000095, 7.449999809, 7.500000000, 7.550000191, 7.599999905, 7.650000095, 7.699999809, 7.750000000, 7.800000191, 7.849999905, 7.900000095, 7.949999809, 8.000000000, 8.050000191, 8.100000381, 8.149999619, 8.199999809, 8.250000000, 8.300000191, 8.350000381, 8.399999619, 8.449999809, 8.500000000, 8.550000191, 8.600000381, 8.649999619, 8.699999809, 8.750000000, 8.800000191, 8.850000381, 8.899999619, 8.949999809, 9.000000000, 9.050000191, 9.100000381, 9.149999619, 9.199999809, 9.250000000, 9.300000191, 9.350000381, 9.399999619, 9.449999809, 9.500000000, 9.550000191, 9.600000381, 9.649999619, 9.699999809, 9.750000000, 9.800000191, 9.850000381, 9.899999619, 9.949999809, 10.00000000, 10.05000019, 10.10000038, 10.14999962, 10.19999981, 10.25000000, 10.30000019, 10.35000038, 10.39999962, 10.44999981, 10.50000000, 10.55000019, 10.60000038, 10.64999962, 10.69999981, 10.75000000, 10.80000019, 10.85000038, 10.89999962, 10.94999981, 11.00000000, 11.05000019, 11.10000038, 11.14999962, 11.19999981, 11.25000000, 11.30000019, 11.35000038, 11.39999962, 11.44999981, 11.50000000, 11.55000019, 11.60000038, 11.64999962, 11.69999981, 11.75000000, 11.80000019, 11.85000038, 11.89999962, 11.94999981, 12.00000000, 12.05000019, 12.10000038, 12.14999962, 12.19999981, 12.25000000, 12.30000019, 12.35000038, 12.39999962, 12.44999981, 12.50000000, 12.55000019, 12.60000038, 12.64999962, 12.69999981, 12.75000000, 12.80000019, 12.85000038, 12.89999962, 12.94999981, 13.00000000, 13.05000019, 13.10000038, 13.14999962, 13.19999981, 13.25000000, 13.30000019, 13.35000038, 13.39999962, 13.44999981, 13.50000000, 13.55000019, 13.60000038, 13.64999962, 13.69999981, 13.75000000, 13.80000019, 13.85000038, 13.89999962, 13.94999981, 14.00000000, 14.05000019, 14.10000038, 14.14999962, 14.19999981, 14.25000000, 14.30000019, 14.35000038, 14.39999962, 14.44999981, 14.50000000, 14.55000019, 14.60000038, 14.64999962, 14.69999981, 14.75000000, 14.80000019, 14.85000038, 14.89999962, 14.94999981, 15.00000000, 15.05000019, 15.10000038, 15.14999962, 15.19999981, 15.25000000, 15.30000019, 15.35000038, 15.39999962, 15.44999981, 15.50000000, 15.55000019, 15.60000038, 15.64999962, 15.69999981, 15.75000000, 15.80000019, 15.85000038, 15.89999962, 15.94999981, 16.00000000, 16.04999924, 16.10000038, 16.14999962, 16.20000076, 16.25000000, 16.29999924, 16.35000038, 16.39999962, 16.45000076, 16.50000000, 16.54999924, 16.60000038, 16.64999962, 16.70000076, 16.75000000, 16.79999924, 16.85000038, 16.89999962, 16.95000076, 17.00000000, 17.04999924, 17.10000038, 17.14999962, 17.20000076, 17.25000000, 17.29999924, 17.35000038, 17.39999962, 17.45000076, 17.50000000, 17.54999924, 17.60000038, 17.64999962, 17.70000076, 17.75000000, 17.79999924, 17.85000038, 17.89999962, 17.95000076, 18.00000000, 18.04999924, 18.10000038, 18.14999962, 18.20000076, 18.25000000, 18.29999924, 18.35000038, 18.39999962, 18.45000076, 18.50000000, 18.54999924, 18.60000038, 18.64999962, 18.70000076, 18.75000000, 18.79999924, 18.85000038, 18.89999962, 18.95000076, 19.00000000, 19.04999924, 19.10000038, 19.14999962, 19.20000076, 19.25000000, 19.29999924, 19.35000038, 19.39999962, 19.45000076, 19.50000000, 19.54999924, 19.60000038, 19.64999962, 19.70000076, 19.75000000, 19.79999924, 19.85000038, 19.89999962, 19.95000076, 20.00000000, 20.10000038, 20.20000076, 20.29999924, 20.39999962, 20.50000000, 20.60000038, 20.70000076, 20.79999924, 20.89999962, 21.00000000, 21.10000038, 21.20000076, 21.29999924, 21.39999962, 21.50000000, 21.60000038, 21.70000076, 21.79999924, 21.89999962, 22.00000000, 22.10000038, 22.20000076, 22.29999924, 22.39999962, 22.50000000, 22.60000038, 22.70000076, 22.79999924, 22.89999962, 23.00000000, 23.10000038, 23.20000076, 23.29999924, 23.39999962, 23.50000000, 23.60000038, 23.70000076, 23.79999924, 23.89999962, 24.00000000, 24.10000038, 24.20000076, 24.29999924, 24.39999962, 24.50000000, 24.60000038, 24.70000076, 24.79999924, 24.89999962, 25.00000000, 25.10000038, 25.20000076, 25.29999924, 25.39999962, 25.50000000, 25.60000038, 25.70000076, 25.79999924, 25.89999962, 26.00000000, 26.10000038, 26.20000076, 26.29999924, 26.39999962, 26.50000000, 26.60000038, 26.70000076, 26.79999924, 26.89999962, 27.00000000, 27.10000038, 27.20000076, 27.29999924, 27.39999962, 27.50000000, 27.60000038, 27.70000076, 27.79999924, 27.89999962, 28.00000000, 28.10000038, 28.20000076, 28.29999924, 28.39999962, 28.50000000, 28.60000038, 28.70000076, 28.79999924, 28.89999962, 29.00000000, 29.10000038, 29.20000076, 29.29999924, 29.39999962, 29.50000000, 29.60000038, 29.70000076, 29.79999924, 29.89999962, 30.00000000, 31.00000000, 32.00000000, 33.00000000, 34.00000000, 35.00000000, 36.00000000, 37.00000000, 38.00000000, 39.00000000, 40.00000000, 41.00000000, 42.00000000, 43.00000000, 44.00000000, 45.00000000, 46.00000000, 47.00000000, 48.00000000, 49.00000000, 50.00000000, 51.00000000, 52.00000000, 53.00000000, 54.00000000, 55.00000000, 56.00000000, 57.00000000, 58.00000000, 59.00000000, 60.00000000, 61.00000000, 62.00000000, 63.00000000, 64.00000000, 65.00000000, 66.00000000, 67.00000000, 68.00000000, 69.00000000, 70.00000000, 71.00000000, 72.00000000, 73.00000000, 74.00000000, 75.00000000, 76.00000000, 77.00000000, 78.00000000, 79.00000000, 80.00000000, 81.00000000, 82.00000000, 83.00000000, 84.00000000, 85.00000000, 86.00000000, 87.00000000, 88.00000000, 89.00000000, 90.00000000, 91.00000000, 92.00000000, 93.00000000, 94.00000000, 95.00000000, 96.00000000, 97.00000000, 98.00000000, 99.00000000, 100.0000000, 101.0000000, 102.0000000, 103.0000000, 104.0000000, 105.0000000, 106.0000000, 107.0000000, 108.0000000, 109.0000000, 110.0000000, 111.0000000, 112.0000000, 113.0000000, 114.0000000, 115.0000000, 116.0000000, 117.0000000, 118.0000000, 119.0000000, 120.0000000, 121.0000000, 122.0000000, 123.0000000, 124.0000000, 125.0000000, 126.0000000, 127.0000000, 128.0000000, 129.0000000, 130.0000000, 131.0000000, 132.0000000, 133.0000000, 134.0000000, 135.0000000, 136.0000000, 137.0000000, 138.0000000, 139.0000000, 140.0000000, 141.0000000, 142.0000000, 143.0000000, 144.0000000, 145.0000000, 146.0000000, 147.0000000, 148.0000000, 149.0000000, 150.0000000, 151.0000000, 152.0000000, 153.0000000, 154.0000000, 155.0000000, 156.0000000, 157.0000000, 158.0000000, 159.0000000, 160.0000000, 161.0000000, 162.0000000, 163.0000000, 164.0000000, 165.0000000, 166.0000000, 167.0000000, 168.0000000, 169.0000000, 170.0000000, 171.0000000, 172.0000000, 173.0000000, 174.0000000, 175.0000000, 176.0000000, 177.0000000, 178.0000000, 179.0000000, 180.0000000, 181.0000000, 182.0000000, 183.0000000, 184.0000000, 185.0000000, 186.0000000, 187.0000000, 188.0000000, 189.0000000, 190.0000000, 191.0000000, 192.0000000, 193.0000000, 194.0000000, 195.0000000, 196.0000000, 197.0000000, 198.0000000, 199.0000000, 200.0000000;
+        Float32 Vdata_field_TOT_spectral_response_values 0.01300000027, 0.007000000216, 0.01300000027, 0.04800000042, 0.1049999967, 0.1490000039, 0.1679999977, 0.1570000052, 0.1250000000, 0.08299999684, 0.04399999976, 0.02400000021, 0.1560000032, 0.5080000162, 0.6060000062, 0.5680000186, 0.4469999969, 0.3479999900, 0.4120000005, 0.6179999709, 0.7360000014, 0.8130000234, 0.8539999723, 0.8780000210, 0.8920000196, 0.8999999762, 0.9070000052, 0.9110000134, 0.9150000215, 0.9179999828, 0.9190000296, 0.9200000167, 0.9219999909, 0.9229999781, 0.9229999781, 0.9240000248, 0.9250000119, 0.9259999990, 0.9259999990, 0.9269999862, 0.9269999862, 0.9269999862, 0.9259999990, 0.9259999990, 0.9259999990, 0.9259999990, 0.9250000119, 0.9250000119, 0.9240000248, 0.9240000248, 0.9229999781, 0.9229999781, 0.9229999781, 0.9210000038, 0.9200000167, 0.9190000296, 0.9179999828, 0.9160000086, 0.9129999876, 0.9129999876, 0.9120000005, 0.9120000005, 0.9100000262, 0.9070000052, 0.9070000052, 0.9060000181, 0.9070000052, 0.9029999971, 0.9100000262, 0.9029999971, 0.8989999890, 0.8980000019, 0.8989999890, 0.8980000019, 0.8970000148, 0.8970000148, 0.8960000277, 0.8949999809, 0.8939999938, 0.8939999938, 0.8920000196, 0.8920000196, 0.8920000196, 0.8920000196, 0.8930000067, 0.8930000067, 0.8930000067, 0.8930000067, 0.8939999938, 0.8939999938, 0.8949999809, 0.8949999809, 0.8949999809, 0.8960000277, 0.8960000277, 0.8980000019, 0.8980000019, 0.8989999890, 0.8999999762, 0.9010000229, 0.9020000100, 0.9029999971, 0.9049999714, 0.9049999714, 0.9070000052, 0.9070000052, 0.9079999924, 0.9089999795, 0.9089999795, 0.9100000262, 0.9110000134, 0.9110000134, 0.9129999876, 0.9129999876, 0.9139999747, 0.9150000215, 0.9150000215, 0.9160000086, 0.9169999957, 0.9160000086, 0.9169999957, 0.9179999828, 0.9190000296, 0.9190000296, 0.9200000167, 0.9210000038, 0.9210000038, 0.9219999909, 0.9210000038, 0.9229999781, 0.9229999781, 0.9240000248, 0.9240000248, 0.9250000119, 0.9250000119, 0.9250000119, 0.9259999990, 0.9269999862, 0.9269999862, 0.9269999862, 0.9279999733, 0.9279999733, 0.9290000200, 0.9279999733, 0.9290000200, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9290000200, 0.9279999733, 0.9290000200, 0.9290000200, 0.9279999733, 0.9290000200, 0.9290000200, 0.9290000200, 0.9290000200, 0.9290000200, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9259999990, 0.9269999862, 0.9279999733, 0.9269999862, 0.9259999990, 0.9259999990, 0.9259999990, 0.9259999990, 0.9250000119, 0.9259999990, 0.9259999990, 0.9250000119, 0.9250000119, 0.9259999990, 0.9250000119, 0.9240000248, 0.9250000119, 0.9240000248, 0.9240000248, 0.9250000119, 0.9240000248, 0.9240000248, 0.9240000248, 0.9240000248, 0.9240000248, 0.9250000119, 0.9240000248, 0.9229999781, 0.9229999781, 0.9240000248, 0.9229999781, 0.9229999781, 0.9240000248, 0.9240000248, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9259999990, 0.9250000119, 0.9240000248, 0.9229999781, 0.9240000248, 0.9240000248, 0.9240000248, 0.9240000248, 0.9240000248, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9259999990, 0.9259999990, 0.9300000072, 0.9300000072, 0.9290000200, 0.9300000072, 0.9290000200, 0.9300000072, 0.9279999733, 0.9290000200, 0.9269999862, 0.9269999862, 0.9269999862, 0.9279999733, 0.9279999733, 0.9279999733, 0.9269999862, 0.9269999862, 0.9300000072, 0.9300000072, 0.9269999862, 0.9290000200, 0.9290000200, 0.9279999733, 0.9269999862, 0.9269999862, 0.9269999862, 0.9250000119, 0.9269999862, 0.9240000248, 0.9190000296, 0.9169999957, 0.9150000215, 0.9110000134, 0.9089999795, 0.9100000262, 0.9060000181, 0.9060000181, 0.9039999843, 0.8970000148, 0.8999999762, 0.8980000019, 0.8989999890, 0.8970000148, 0.8960000277, 0.8939999938, 0.8939999938, 0.8949999809, 0.8970000148, 0.8980000019, 0.8980000019, 0.8980000019, 0.8999999762, 0.9020000100, 0.9010000229, 0.8989999890, 0.8999999762, 0.8989999890, 0.8989999890, 0.8980000019, 0.8989999890, 0.9020000100, 0.9029999971, 0.9029999971, 0.9020000100, 0.9010000229, 0.9020000100, 0.9039999843, 0.9029999971, 0.9020000100, 0.9020000100, 0.9020000100, 0.9010000229, 0.9020000100, 0.9029999971, 0.9029999971, 0.9039999843, 0.9039999843, 0.9039999843, 0.9029999971, 0.9029999971, 0.9049999714, 0.9049999714, 0.9060000181, 0.9070000052, 0.9070000052, 0.9070000052, 0.9070000052, 0.9039999843, 0.9029999971, 0.9049999714, 0.9060000181, 0.9070000052, 0.9100000262, 0.9110000134, 0.9120000005, 0.9160000086, 0.9169999957, 0.9179999828, 0.9200000167, 0.9190000296, 0.9179999828, 0.9179999828, 0.9160000086, 0.9150000215, 0.9160000086, 0.9160000086, 0.9139999747, 0.9120000005, 0.9110000134, 0.9110000134, 0.9110000134, 0.9110000134, 0.9110000134, 0.9100000262, 0.9110000134, 0.9120000005, 0.9139999747, 0.9160000086, 0.9160000086, 0.9160000086, 0.9139999747, 0.9129999876, 0.9120000005, 0.9089999795, 0.9049999714, 0.9029999971, 0.9020000100, 0.8999999762, 0.8989999890, 0.8989999890, 0.8970000148, 0.8949999809, 0.8949999809, 0.8960000277, 0.8970000148, 0.8989999890, 0.9020000100, 0.9060000181, 0.9079999924, 0.9110000134, 0.9120000005, 0.9139999747, 0.9150000215, 0.9160000086, 0.9169999957, 0.9200000167, 0.9210000038, 0.9229999781, 0.9250000119, 0.9269999862, 0.9279999733, 0.9290000200, 0.9279999733, 0.9279999733, 0.9259999990, 0.9240000248, 0.9210000038, 0.9179999828, 0.9150000215, 0.9129999876, 0.9110000134, 0.9089999795, 0.9070000052, 0.9049999714, 0.9029999971, 0.9020000100, 0.9029999971, 0.9029999971, 0.9020000100, 0.9039999843, 0.9060000181, 0.9079999924, 0.9110000134, 0.9150000215, 0.9169999957, 0.9200000167, 0.9200000167, 0.9210000038, 0.9219999909, 0.9229999781, 0.9259999990, 0.9300000072, 0.9359999895, 0.9409999847, 0.9419999719, 0.9390000105, 0.9369999766, 0.9350000024, 0.9369999766, 0.9369999766, 0.9350000024, 0.9319999814, 0.9300000072, 0.9290000200, 0.9279999733, 0.9259999990, 0.9250000119, 0.9240000248, 0.9229999781, 0.9229999781, 0.9229999781, 0.9240000248, 0.9250000119, 0.9259999990, 0.9259999990, 0.9269999862, 0.9269999862, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9259999990, 0.9269999862, 0.9259999990, 0.9269999862, 0.9259999990, 0.9259999990, 0.9269999862, 0.9269999862, 0.9279999733, 0.9269999862, 0.9269999862, 0.9259999990, 0.9269999862, 0.9269999862, 0.9269999862, 0.9259999990, 0.9259999990, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9250000119, 0.9259999990, 0.9259999990, 0.9269999862, 0.9269999862, 0.9269999862, 0.9279999733, 0.9269999862, 0.9269999862, 0.9259999990, 0.9259999990, 0.9250000119, 0.9250000119, 0.9259999990, 0.9269999862, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9279999733, 0.9269999862, 0.9269999862, 0.9259999990, 0.9269999862, 0.9269999862, 0.9259999990, 0.9290000200, 0.9300000072, 0.9290000200, 0.9300000072, 0.9259999990, 0.9300000072, 0.9259999990, 0.9269999862, 0.9250000119, 0.9190000296, 0.9259999990, 0.9279999733, 0.9290000200, 0.9319999814, 0.9259999990, 0.9210000038, 0.9190000296, 0.9160000086, 0.9089999795, 0.9089999795, 0.9110000134, 0.9139999747, 0.9150000215, 0.9100000262, 0.9060000181, 0.9049999714, 0.9070000052, 0.9070000052, 0.9029999971, 0.8980000019, 0.8970000148, 0.8989999890, 0.8970000148, 0.8970000148, 0.8989999890, 0.9020000100, 0.9020000100, 0.8980000019, 0.8960000277, 0.8939999938, 0.8949999809, 0.8930000067, 0.8889999986, 0.8880000114, 0.8880000114, 0.8899999857, 0.8899999857, 0.8889999986, 0.8899999857, 0.8949999809, 0.8949999809, 0.8920000196, 0.8909999728, 0.8880000114, 0.8859999776, 0.8840000033, 0.8830000162, 0.8859999776, 0.8889999986, 0.8799999952, 0.8790000081, 0.8780000210, 0.8759999871, 0.8750000000, 0.8730000257, 0.8709999919, 0.8700000048, 0.8679999709, 0.8659999967, 0.8650000095, 0.8640000224, 0.8640000224, 0.8640000224, 0.8640000224, 0.8640000224, 0.8640000224, 0.8640000224, 0.8650000095, 0.8650000095, 0.8659999967, 0.8669999838, 0.8679999709, 0.8690000176, 0.8700000048, 0.8709999919, 0.8730000257, 0.8740000129, 0.8750000000, 0.8759999871, 0.8780000210, 0.8790000081, 0.8799999952, 0.8809999824, 0.8830000162, 0.8840000033, 0.8849999905, 0.8859999776, 0.8870000243, 0.8880000114, 0.8889999986, 0.8899999857, 0.8909999728, 0.8920000196, 0.8930000067, 0.8939999938, 0.8949999809, 0.8949999809, 0.8960000277, 0.8970000148, 0.8980000019, 0.8980000019, 0.8989999890, 0.8989999890, 0.8989999890, 0.8989999890, 0.8989999890, 0.8980000019, 0.8980000019, 0.8970000148, 0.8960000277, 0.8949999809, 0.8939999938, 0.8930000067, 0.8920000196, 0.8909999728, 0.8899999857, 0.8880000114, 0.8870000243, 0.8859999776, 0.8859999776, 0.8849999905, 0.8840000033, 0.8830000162, 0.8830000162, 0.8820000291, 0.8809999824, 0.8799999952, 0.8790000081, 0.8790000081, 0.8780000210, 0.8769999743, 0.8759999871, 0.8750000000, 0.8750000000, 0.8750000000, 0.8740000129, 0.8740000129, 0.8730000257, 0.8730000257, 0.8730000257, 0.8730000257, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8719999790, 0.8730000257, 0.8730000257, 0.8730000257, 0.8740000129, 0.8740000129, 0.8750000000, 0.8750000000, 0.8759999871, 0.8759999871, 0.8769999743, 0.8769999743, 0.8730000257, 0.8730000257, 0.8750000000, 0.8750000000, 0.8759999871, 0.8759999871, 0.8769999743, 0.8769999743, 0.8780000210, 0.8780000210, 0.8780000210, 0.8790000081, 0.8790000081, 0.8790000081, 0.8799999952, 0.8799999952, 0.8799999952, 0.8799999952, 0.8799999952, 0.8809999824, 0.8809999824, 0.8830000162, 0.8830000162, 0.8820000291, 0.8809999824, 0.8809999824, 0.8799999952, 0.8790000081, 0.8780000210, 0.8790000081, 0.8799999952, 0.8799999952, 0.8799999952, 0.8809999824, 0.8799999952, 0.8799999952, 0.8780000210, 0.8780000210, 0.8780000210, 0.8780000210, 0.8790000081, 0.8799999952, 0.8790000081, 0.8809999824, 0.8809999824, 0.8820000291, 0.8809999824, 0.8830000162, 0.8840000033, 0.8849999905, 0.8859999776, 0.8899999857, 0.8920000196, 0.8939999938, 0.8989999890, 0.9010000229, 0.9020000100, 0.9029999971, 0.9060000181, 0.9070000052, 0.9060000181, 0.9039999843, 0.8999999762, 0.8960000277, 0.8930000067, 0.8889999986, 0.8870000243, 0.8840000033, 0.8799999952, 0.8790000081, 0.8790000081, 0.8769999743, 0.8769999743, 0.8769999743, 0.8759999871, 0.8740000129, 0.8740000129, 0.8750000000, 0.8740000129, 0.8730000257, 0.8730000257, 0.8719999790, 0.8730000257, 0.8750000000, 0.8759999871, 0.8769999743, 0.8769999743, 0.8769999743, 0.8769999743, 0.8780000210, 0.8799999952, 0.8799999952, 0.8799999952, 0.8799999952, 0.8809999824, 0.8809999824, 0.8809999824, 0.8799999952, 0.8809999824, 0.8809999824, 0.8790000081, 0.8799999952, 0.8799999952, 0.8790000081, 0.8780000210, 0.8780000210, 0.8790000081, 0.8780000210, 0.8769999743, 0.8769999743, 0.8769999743, 0.8780000210, 0.8780000210, 0.8769999743, 0.8769999743, 0.8769999743, 0.8750000000, 0.8750000000, 0.8750000000, 0.8740000129, 0.8730000257, 0.8709999919, 0.8679999709, 0.8659999967, 0.8640000224, 0.8590000272, 0.8579999804, 0.8579999804, 0.8550000191, 0.8539999723, 0.8519999981, 0.8519999981, 0.8510000110, 0.8489999771, 0.8500000238, 0.8519999981, 0.8529999852, 0.8569999933, 0.8579999804, 0.8629999757, 0.8629999757, 0.8669999838, 0.8700000048, 0.8740000129, 0.8780000210, 0.8820000291, 0.8820000291, 0.8830000162, 0.8840000033, 0.8830000162, 0.8820000291, 0.8809999824, 0.8820000291, 0.8840000033, 0.8849999905, 0.8859999776, 0.8870000243, 0.8870000243, 0.8880000114, 0.8899999857, 0.8899999857, 0.8909999728, 0.8920000196, 0.8909999728, 0.8930000067, 0.8920000196, 0.8920000196, 0.8909999728, 0.8909999728, 0.8899999857, 0.8899999857, 0.8899999857, 0.8899999857, 0.8889999986, 0.8889999986, 0.8880000114, 0.8880000114, 0.8880000114, 0.8899999857, 0.8889999986, 0.8909999728, 0.8920000196, 0.8909999728, 0.8899999857, 0.8939999938, 0.8939999938, 0.8980000019, 0.8989999890, 0.8939999938, 0.8949999809, 0.8949999809, 0.8939999938, 0.8970000148, 0.8970000148, 0.8970000148, 0.8960000277, 0.8980000019, 0.8949999809, 0.8980000019, 0.9010000229, 0.9020000100, 0.8980000019, 0.8989999890, 0.8999999762, 0.8970000148, 0.9010000229, 0.8989999890, 0.8999999762, 0.8980000019, 0.8970000148, 0.8960000277, 0.8970000148, 0.8989999890, 0.9020000100, 0.9020000100, 0.9039999843, 0.9060000181, 0.9070000052, 0.9060000181, 0.9070000052, 0.9079999924, 0.9100000262, 0.9160000086, 0.9160000086, 0.9079999924, 0.8569999933, 0.8389999866, 0.8529999852, 0.8500000238, 0.8209999800, 0.8109999895, 0.8209999800, 0.7990000248, 0.7810000181, 0.7779999971, 0.7919999957, 0.7900000215, 0.8029999733, 0.8240000010, 0.8050000072, 0.7850000262, 0.7549999952, 0.7839999795, 0.7940000296, 0.7990000248, 0.7990000248, 0.7850000262, 0.7530000210, 0.7519999743, 0.7749999762, 0.7649999857, 0.7699999809, 0.7710000277, 0.7639999986, 0.7500000000, 0.7279999852, 0.7250000238, 0.7810000181, 0.7699999809, 0.7329999804, 0.7670000196, 0.7639999986, 0.8130000234, 0.8119999766, 0.7369999886, 0.7110000253, 0.7620000243, 0.7770000100, 0.7519999743, 0.7680000067, 0.7379999757, 0.7279999852, 0.7200000286, 0.7310000062, 0.7310000062, 0.7149999738, 0.7070000172, 0.7070000172, 0.6919999719, 0.7059999704, 0.6999999881, 0.6949999928, 0.6859999895, 0.6740000248, 0.6380000114, 0.6570000052, 0.6700000167, 0.6949999928, 0.6930000186, 0.6869999766, 0.6949999928, 0.6719999909, 0.6150000095, 0.6209999919, 0.6449999809, 0.6800000072, 0.6940000057, 0.6669999957, 0.7020000219, 0.7020000219, 0.7139999866, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134, 0.6610000134;
+        Float32 Vdata_field_WN_channel_wavelengths 2.000000000, 2.009999990, 2.019999981, 2.029999971, 2.039999962, 2.049999952, 2.059999943, 2.069999933, 2.079999924, 2.089999914, 2.099999905, 2.109999895, 2.119999886, 2.130000114, 2.140000105, 2.150000095, 2.160000086, 2.170000076, 2.180000067, 2.190000057, 2.200000048, 2.210000038, 2.220000029, 2.230000019, 2.240000010, 2.250000000, 2.259999990, 2.269999981, 2.279999971, 2.289999962, 2.299999952, 2.309999943, 2.319999933, 2.329999924, 2.339999914, 2.349999905, 2.359999895, 2.369999886, 2.380000114, 2.390000105, 2.400000095, 2.410000086, 2.420000076, 2.430000067, 2.440000057, 2.450000048, 2.460000038, 2.470000029, 2.480000019, 2.490000010, 2.500000000, 2.509999990, 2.519999981, 2.529999971, 2.539999962, 2.549999952, 2.559999943, 2.569999933, 2.579999924, 2.589999914, 2.599999905, 2.609999895, 2.619999886, 2.630000114, 2.640000105, 2.650000095, 2.660000086, 2.670000076, 2.680000067, 2.690000057, 2.700000048, 2.710000038, 2.720000029, 2.730000019, 2.740000010, 2.750000000, 2.759999990, 2.769999981, 2.779999971, 2.789999962, 2.799999952, 2.809999943, 2.819999933, 2.829999924, 2.839999914, 2.849999905, 2.859999895, 2.869999886, 2.880000114, 2.890000105, 2.900000095, 2.910000086, 2.920000076, 2.930000067, 2.940000057, 2.950000048, 2.960000038, 2.970000029, 2.980000019, 2.990000010, 3.000000000, 3.009999990, 3.019999981, 3.029999971, 3.039999962, 3.049999952, 3.059999943, 3.069999933, 3.079999924, 3.089999914, 3.099999905, 3.109999895, 3.119999886, 3.130000114, 3.140000105, 3.150000095, 3.160000086, 3.170000076, 3.180000067, 3.190000057, 3.200000048, 3.210000038, 3.220000029, 3.230000019, 3.240000010, 3.250000000, 3.259999990, 3.269999981, 3.279999971, 3.289999962, 3.299999952, 3.309999943, 3.319999933, 3.329999924, 3.339999914, 3.349999905, 3.359999895, 3.369999886, 3.380000114, 3.390000105, 3.400000095, 3.410000086, 3.420000076, 3.430000067, 3.440000057, 3.450000048, 3.460000038, 3.470000029, 3.480000019, 3.490000010, 3.500000000, 3.509999990, 3.519999981, 3.529999971, 3.539999962, 3.549999952, 3.559999943, 3.569999933, 3.579999924, 3.589999914, 3.599999905, 3.609999895, 3.619999886, 3.630000114, 3.640000105, 3.650000095, 3.660000086, 3.670000076, 3.680000067, 3.690000057, 3.700000048, 3.710000038, 3.720000029, 3.730000019, 3.740000010, 3.750000000, 3.759999990, 3.769999981, 3.779999971, 3.789999962, 3.799999952, 3.809999943, 3.819999933, 3.829999924, 3.839999914, 3.849999905, 3.859999895, 3.869999886, 3.880000114, 3.890000105, 3.900000095, 3.910000086, 3.920000076, 3.930000067, 3.940000057, 3.950000048, 3.960000038, 3.970000029, 3.980000019, 3.990000010, 4.000000000, 4.010000229, 4.019999981, 4.030000210, 4.039999962, 4.050000191, 4.059999943, 4.070000172, 4.079999924, 4.090000153, 4.099999905, 4.110000134, 4.119999886, 4.130000114, 4.139999866, 4.150000095, 4.159999847, 4.170000076, 4.179999828, 4.190000057, 4.199999809, 4.210000038, 4.219999790, 4.230000019, 4.239999771, 4.250000000, 4.260000229, 4.269999981, 4.280000210, 4.289999962, 4.300000191, 4.309999943, 4.320000172, 4.329999924, 4.340000153, 4.349999905, 4.360000134, 4.369999886, 4.380000114, 4.389999866, 4.400000095, 4.409999847, 4.420000076, 4.429999828, 4.440000057, 4.449999809, 4.460000038, 4.469999790, 4.480000019, 4.489999771, 4.500000000, 4.510000229, 4.519999981, 4.530000210, 4.539999962, 4.550000191, 4.559999943, 4.570000172, 4.579999924, 4.590000153, 4.599999905, 4.610000134, 4.619999886, 4.630000114, 4.639999866, 4.650000095, 4.659999847, 4.670000076, 4.679999828, 4.690000057, 4.699999809, 4.710000038, 4.719999790, 4.730000019, 4.739999771, 4.750000000, 4.760000229, 4.769999981, 4.780000210, 4.789999962, 4.800000191, 4.809999943, 4.820000172, 4.829999924, 4.840000153, 4.849999905, 4.860000134, 4.869999886, 4.880000114, 4.889999866, 4.900000095, 4.909999847, 4.920000076, 4.929999828, 4.940000057, 4.949999809, 4.960000038, 4.969999790, 4.980000019, 4.989999771, 5.000000000, 5.039999962, 5.090000153, 5.139999866, 5.190000057, 5.239999771, 5.289999962, 5.340000153, 5.389999866, 5.440000057, 5.489999771, 5.539999962, 5.590000153, 5.639999866, 5.690000057, 5.739999771, 5.789999962, 5.840000153, 5.889999866, 5.940000057, 5.989999771, 6.039999962, 6.090000153, 6.139999866, 6.190000057, 6.239999771, 6.289999962, 6.340000153, 6.389999866, 6.440000057, 6.489999771, 6.539999962, 6.590000153, 6.639999866, 6.690000057, 6.739999771, 6.789999962, 6.840000153, 6.889999866, 6.940000057, 6.989999771, 7.039999962, 7.090000153, 7.139999866, 7.190000057, 7.239999771, 7.289999962, 7.340000153, 7.389999866, 7.440000057, 7.489999771, 7.539999962, 7.590000153, 7.639999866, 7.690000057, 7.739999771, 7.789999962, 7.840000153, 7.889999866, 7.940000057, 7.989999771, 8.039999962, 8.090000153, 8.140000343, 8.189999580, 8.239999771, 8.289999962, 8.340000153, 8.390000343, 8.439999580, 8.489999771, 8.539999962, 8.590000153, 8.640000343, 8.689999580, 8.739999771, 8.789999962, 8.840000153, 8.890000343, 8.939999580, 8.989999771, 9.039999962, 9.090000153, 9.140000343, 9.189999580, 9.239999771, 9.289999962, 9.340000153, 9.390000343, 9.439999580, 9.489999771, 9.539999962, 9.590000153, 9.640000343, 9.689999580, 9.739999771, 9.789999962, 9.840000153, 9.890000343, 9.939999580, 9.989999771, 10.05000019, 10.10000038, 10.14999962, 10.19999981, 10.25000000, 10.30000019, 10.35000038, 10.39999962, 10.44999981, 10.50000000, 10.55000019, 10.60000038, 10.64999962, 10.69999981, 10.75000000, 10.80000019, 10.85000038, 10.89999962, 10.94999981, 11.00000000, 11.05000019, 11.10000038, 11.14999962, 11.19999981, 11.25000000, 11.30000019, 11.35000038, 11.39999962, 11.44999981, 11.50000000, 11.55000019, 11.60000038, 11.64999962, 11.69999981, 11.75000000, 11.80000019, 11.85000038, 11.89999962, 11.94999981, 12.00000000, 12.05000019, 12.10000038, 12.14999962, 12.19999981, 12.25000000, 12.30000019, 12.35000038, 12.39999962, 12.44999981, 12.50000000, 12.55000019, 12.60000038, 12.64999962, 12.69999981, 12.75000000, 12.80000019, 12.85000038, 12.89999962, 12.94999981, 13.00000000, 13.05000019, 13.10000038, 13.14999962, 13.19999981, 13.25000000, 13.30000019, 13.35000038, 13.39999962, 13.44999981, 13.50000000, 13.55000019, 13.60000038, 13.64999962, 13.69999981, 13.75000000, 13.80000019, 13.85000038, 13.89999962, 13.94999981, 14.00000000, 14.05000019, 14.10000038, 14.14999962, 14.19999981, 14.25000000, 14.30000019, 14.35000038, 14.39999962, 14.44999981, 14.50000000, 14.55000019, 14.60000038, 14.64999962, 14.69999981, 14.75000000, 14.80000019, 14.85000038, 14.89999962, 14.94999981, 15.00000000, 15.05000019, 15.10000038, 15.14999962, 15.19999981, 15.25000000, 15.30000019, 15.35000038, 15.39999962, 15.44999981, 15.50000000, 15.55000019, 15.60000038, 15.64999962, 15.69999981, 15.75000000, 15.80000019, 15.85000038, 15.89999962, 15.94999981, 16.00000000, 16.04999924, 16.10000038, 16.14999962, 16.20000076, 16.25000000, 16.29999924, 16.35000038, 16.39999962, 16.45000076, 16.50000000, 16.54999924, 16.60000038, 16.64999962, 16.70000076, 16.75000000, 16.79999924, 16.85000038, 16.89999962, 16.95000076, 17.00000000, 17.04999924, 17.10000038, 17.14999962, 17.20000076, 17.25000000, 17.29999924, 17.35000038, 17.39999962, 17.45000076, 17.50000000, 17.54999924, 17.60000038, 17.64999962, 17.70000076, 17.75000000, 17.79999924, 17.85000038, 17.89999962, 17.95000076, 18.00000000, 18.04999924, 18.10000038, 18.14999962, 18.20000076, 18.25000000, 18.29999924, 18.35000038, 18.39999962, 18.45000076, 18.50000000, 18.54999924, 18.60000038, 18.64999962, 18.70000076, 18.75000000, 18.79999924, 18.85000038, 18.89999962, 18.95000076, 19.00000000, 19.04999924, 19.10000038, 19.14999962, 19.20000076, 19.25000000, 19.29999924, 19.35000038, 19.39999962, 19.45000076, 19.50000000, 19.54999924, 19.60000038, 19.64999962, 19.70000076, 19.75000000, 19.79999924, 19.85000038, 19.89999962, 19.95000076, 20.00000000, 20.10000038, 20.20000076, 20.29999924, 20.39999962, 20.50000000, 20.60000038, 20.70000076, 20.79999924, 20.89999962, 21.00000000, 21.10000038, 21.20000076, 21.29999924, 21.39999962, 21.50000000, 21.60000038, 21.70000076, 21.79999924, 21.89999962, 22.00000000, 22.10000038, 22.20000076, 22.29999924, 22.39999962, 22.50000000, 22.60000038, 22.70000076, 22.79999924, 22.89999962, 23.00000000, 23.10000038, 23.20000076, 23.29999924, 23.39999962, 23.50000000, 23.60000038, 23.70000076, 23.79999924, 23.89999962, 24.00000000, 24.10000038, 24.20000076, 24.29999924, 24.39999962, 24.50000000, 24.60000038, 24.70000076, 24.79999924, 24.89999962, 25.00000000, 25.10000038, 25.20000076, 25.29999924, 25.39999962, 25.50000000, 25.60000038, 25.70000076, 25.79999924, 25.89999962, 26.00000000, 26.10000038, 26.20000076, 26.29999924, 26.39999962, 26.50000000, 26.60000038, 26.70000076, 26.79999924, 26.89999962, 27.00000000, 27.10000038, 27.20000076, 27.29999924, 27.39999962, 27.50000000, 27.60000038, 27.70000076, 27.79999924, 27.89999962, 28.00000000, 28.10000038, 28.20000076, 28.29999924, 28.39999962, 28.50000000, 28.60000038, 28.70000076, 28.79999924, 28.89999962, 29.00000000, 29.10000038, 29.20000076, 29.29999924, 29.39999962, 29.50000000, 29.60000038, 29.70000076, 29.79999924, 29.89999962, 30.00000000, 31.00000000, 32.00000000, 33.00000000, 34.00000000, 35.00000000, 36.00000000, 37.00000000, 38.00000000, 39.00000000, 40.00000000, 41.00000000, 42.00000000, 43.00000000, 44.00000000, 45.00000000, 46.00000000, 47.00000000, 48.00000000, 49.00000000, 50.00000000, 51.00000000, 52.00000000, 53.00000000, 54.00000000, 55.00000000, 56.00000000, 57.00000000, 58.00000000, 59.00000000, 60.00000000, 61.00000000, 62.00000000, 63.00000000, 64.00000000, 65.00000000, 66.00000000, 67.00000000, 68.00000000, 69.00000000, 70.00000000, 71.00000000, 72.00000000, 73.00000000, 74.00000000, 75.00000000, 76.00000000, 77.00000000, 78.00000000, 79.00000000, 80.00000000, 81.00000000, 82.00000000, 83.00000000, 84.00000000, 85.00000000, 86.00000000, 87.00000000, 88.00000000, 89.00000000, 90.00000000, 91.00000000, 92.00000000, 93.00000000, 94.00000000, 95.00000000, 96.00000000, 97.00000000, 98.00000000, 99.00000000, 100.0000000, 101.0000000, 102.0000000, 103.0000000, 104.0000000, 105.0000000, 106.0000000, 107.0000000, 108.0000000, 109.0000000, 110.0000000, 111.0000000, 112.0000000, 113.0000000, 114.0000000, 115.0000000, 116.0000000, 117.0000000, 118.0000000, 119.0000000, 120.0000000, 121.0000000, 122.0000000, 123.0000000, 124.0000000, 125.0000000, 126.0000000, 127.0000000, 128.0000000, 129.0000000, 130.0000000, 131.0000000, 132.0000000, 133.0000000, 134.0000000, 135.0000000, 136.0000000, 137.0000000, 138.0000000, 139.0000000, 140.0000000, 141.0000000, 142.0000000, 143.0000000, 144.0000000, 145.0000000, 146.0000000, 147.0000000, 148.0000000, 149.0000000, 150.0000000, 151.0000000, 152.0000000, 153.0000000, 154.0000000, 155.0000000, 156.0000000, 157.0000000, 158.0000000, 159.0000000, 160.0000000, 161.0000000, 162.0000000, 163.0000000, 164.0000000, 165.0000000, 166.0000000, 167.0000000, 168.0000000, 169.0000000, 170.0000000, 171.0000000, 172.0000000, 173.0000000, 174.0000000, 175.0000000, 176.0000000, 177.0000000, 178.0000000, 179.0000000, 180.0000000, 181.0000000, 182.0000000, 183.0000000, 184.0000000, 185.0000000, 186.0000000, 187.0000000, 188.0000000, 189.0000000, 190.0000000, 191.0000000, 192.0000000, 193.0000000, 194.0000000, 195.0000000, 196.0000000, 197.0000000, 198.0000000, 199.0000000, 200.0000000;
+        Float32 Vdata_field_WN_spectral_response_values 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.001000000047, 0.000000000, 0.001000000047, 0.001000000047, 0.000000000, 0.001000000047, 0.001000000047, 0.000000000, 0.001000000047, 0.001000000047, 0.001000000047, 0.001000000047, 0.001000000047, 0.003000000026, 0.002000000095, 0.004000000190, 0.006000000052, 0.007000000216, 0.01700000092, 0.05000000075, 0.1400000006, 0.2939999998, 0.5519999862, 0.6819999814, 0.6840000153, 0.6729999781, 0.6539999843, 0.6539999843, 0.6809999943, 0.7080000043, 0.7200000286, 0.7260000110, 0.7170000076, 0.7070000172, 0.7039999962, 0.7020000219, 0.7009999752, 0.7089999914, 0.7089999914, 0.7070000172, 0.6899999976, 0.6980000138, 0.7030000091, 0.7149999738, 0.7099999785, 0.7129999995, 0.7120000124, 0.7229999900, 0.7260000110, 0.7149999738, 0.7049999833, 0.7020000219, 0.6959999800, 0.7110000253, 0.7179999948, 0.7319999933, 0.7239999771, 0.7179999948, 0.7129999995, 0.7049999833, 0.7070000172, 0.7080000043, 0.7170000076, 0.7229999900, 0.7369999886, 0.7350000143, 0.7329999804, 0.7289999723, 0.7350000143, 0.7160000205, 0.7070000172, 0.7129999995, 0.7129999995, 0.7189999819, 0.7200000286, 0.7179999948, 0.7110000253, 0.7149999738, 0.7110000253, 0.7260000110, 0.7269999981, 0.7129999995, 0.6899999976, 0.6869999766, 0.6790000200, 0.6790000200, 0.6990000010, 0.7089999914, 0.7080000043, 0.7179999948, 0.7120000124, 0.6740000248, 0.6399999857, 0.6150000095, 0.5180000067, 0.3379999995, 0.1710000038, 0.08200000226, 0.04100000113, 0.03099999949, 0.01899999939, 0.01099999994, 0.008999999613, 0.006000000052, 0.008000000380, 0.006000000052, 0.004999999888, 0.006000000052, 0.006000000052, 0.001000000047, -0.001000000047, 0.007000000216, 0.003000000026, 0.002000000095, 0.003000000026, 0.004000000190, 0.001000000047, 0.001000000047, 0.000000000, 0.002000000095, 0.002000000095, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.003000000026, 0.004999999888, 0.008000000380, 0.004999999888, 0.002000000095, 0.001000000047, 0.001000000047, 0.001000000047, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.001000000047, 0.001000000047, 0.002000000095, 0.002000000095, 0.003000000026, 0.003000000026, 0.004000000190, 0.003000000026, 0.002000000095, 0.001000000047, 0.007000000216, 0.01200000010, 0.01099999994, 0.009999999776, 0.008000000380, 0.006000000052, 0.004999999888, 0.004000000190, 0.003000000026, 0.002000000095, 0.003000000026, 0.004000000190, 0.006000000052, 0.008000000380, 0.008999999613, 0.009999999776, 0.008999999613, 0.008000000380, 0.008000000380, 0.008000000380, 0.008000000380, 0.008000000380, 0.004999999888, 0.003000000026, 0.001000000047, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.002000000095, 0.004000000190, 0.008000000380, 0.008000000380, 0.008000000380, 0.008000000380, 0.008000000380, 0.004000000190, 0.002000000095, 0.000000000, 0.001000000047, 0.001000000047, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.001000000047, 0.001000000047, 0.002000000095, 0.002000000095, 0.003000000026, 0.003000000026, 0.003000000026, 0.004000000190, 0.004000000190, 0.004000000190, 0.006000000052, 0.007000000216, 0.007000000216, 0.008000000380, 0.008000000380, 0.008999999613, 0.008999999613, 0.01099999994, 0.01200000010, 0.01300000027, 0.01300000027, 0.01400000043, 0.01499999966, 0.01499999966, 0.01600000076, 0.01700000092, 0.01700000092, 0.01799999923, 0.01700000092, 0.01700000092, 0.01799999923, 0.01899999939, 0.01899999939, 0.01899999939, 0.02099999972, 0.02099999972, 0.02099999972, 0.02500000037, 0.02600000054, 0.02700000070, 0.02600000054, 0.02500000037, 0.02600000054, 0.02700000070, 0.02700000070, 0.02600000054, 0.02600000054, 0.02800000086, 0.02899999917, 0.02899999917, 0.02899999917, 0.02899999917, 0.02800000086, 0.02899999917, 0.03099999949;
+    }
+    CERES_metadata {
+        String Vdata_field_SHORTNAME "CCES8_AB                        ";
+        String Vdata_field_RANGEBEGINNINGDATE "2000-02-29                      ";
+        String Vdata_field_RANGEBEGINNINGTIME "00:00:55.537574                 ";
+        String Vdata_field_RANGEENDINGDATE "2000-02-29                      ";
+        String Vdata_field_RANGEENDINGTIME "23:59:56.983171                 ";
+        String Vdata_field_AUTOMATICQUALITYFLAG "Passed                                                          ";
+        String Vdata_field_AUTOMATICQUALITYFLAGEXPLANATION "Refer to Log Files                                                                                                                                                                                                                                              ";
+        String Vdata_field_ASSOCIATEDPLATFORMSHORTNAME "TRMM                            ";
+        String Vdata_field_ASSOCIATEDINSTRUMENTSHORTNAME "PFM                             ";
+        String Vdata_field_LOCALGRANULEID "CER_ES8_TRMM-PFM_Edition2_025021.20000229                                                       ";
+        String Vdata_field_LOCALVERSIONID "Clib-20030529 TK5.2.7 HDF-4.1r3 HDFEOS- 2.4v1 SW442 ANC442      ";
+        String Vdata_field_CERPRODUCTIONDATETIME "2003-06-06T15:52:41             ";
+        Int32 Vdata_field_NUMBEROFRECORDS 12729;
+        String Vdata_field_PRODUCTGENERATIONLOC "NASA Langley Research Center, HOST - samantha2 OS - IRIX64                                                                                                                                                                                                      ";
+    }
+}

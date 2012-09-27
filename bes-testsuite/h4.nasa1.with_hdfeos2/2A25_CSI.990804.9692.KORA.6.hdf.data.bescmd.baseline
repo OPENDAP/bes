@@ -1,0 +1,8 @@
+The data:
+Int16 DATA_GRANULE_SwathData_rainAve[scan = 3][ray = 3][latlon = 2] = {{{0, 0},{0, 0},{0, 0}},{{0, 0},{0, 0},{41, 20}},{{0, 0},{0, 0},{0, 0}}};
+Float32 latitudeLE_SwathData_geolocation[scan = 2][ray = 2] = {{30.6196, 32.4748},{32.6327, 34.5274}};
+Float32 longitudeLE_SwathData_geolocation[scan = 2][ray = 2] = {{123.749, 123.163},{132.992, 132.6}};
+Int32 fakeDim23[fakeDim23 = 3] = {0, 2, 4};
+Int32 latlon[latlon = 2] = {0, 1};
+Float32 vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_greenHourAng[VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_greenHourAng = 11] = {131.706, 131.756, 131.806, 131.856, 131.907, 131.957, 132.007, 132.057, 132.107, 132.157, 132.207};
+

@@ -1,0 +1,959 @@
+Attributes {
+    num_observations_1km {
+        String coordinates "Latitude Longitude";
+        String long_name "Number of Observations";
+        String units "none";
+        Int16 valid_range 0, 127;
+        Int16 _FillValue 255;
+    }
+    state_1km_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Reflectance Data State QA - first layer";
+        String units "bit field";
+        UInt16 valid_range 0, 57335;
+        UInt16 _FillValue 65535;
+        String Nadir_Data_Resolution "1km";
+        String QA_index "\\012\\011Bits are listed from the MSB (bit 15) to the LSB (bit 0):\\012\\011Bit    Description\\012\\01115     internal snow algorithm flag; \\012\\011       1 -- yes, 0.01%\\012\\011       0 -- no, 99.99%\\012\\01114     BRDF correction performed;\\012\\011       1 -- yes, 0.00%\\012\\011       0 -- no, 100.00%\\012\\01113     Pixel is adjacent to cloud;\\012\\011       1 -- yes, 3.22%\\012\\011       0 -- no, 96.78%\\012\\01112     MOD35 snow/ice flag;\\012\\011       1 -- yes, 0.00%\\012\\011       0 -- no, 100.00%\\012\\01111     internal fire algorithm flag;\\012\\011       1 -- fire, 0.00%\\012\\011       0 -- no fire, 100.00%\\012\\01110     internal cloud algorithm flag;\\012\\011       1 -- cloud, 92.73%\\012\\011       0 -- no cloud, 7.27%\\012\\0118-9    cirrus detected;\\012\\011       00 -- none, 80.40%\\012\\011       01 -- small, 1.49%\\012\\011       10 -- average, 2.00%\\012\\011       11 -- high, 16.10%\\012\\0116-7    aerosol quantity;\\012\\011       00 -- climatology, 95.95%\\012\\011       01 -- low, 0.11%\\012\\011       10 -- average, 3.13%\\012\\011       11 -- high, 0.82%\\012\\0113-5    land/water flag;\\012\\011       000 -- shallow ocean, 3.90%\\012\\011       001 -- land, 83.12%\\012\\011       010 -- ocean coastlines and lake shorelines, 0.41%\\012\\011       011 -- shallow inland water, 0.12%\\012\\011       100 -- ephemeral water, 0.00%\\012\\011       101 -- deep inland water, 0.00%\\012\\011       110 -- continental/moderate ocean, 1.24%\\012\\011       111 -- deep ocean, 11.21%\\012\\0112      cloud shadow;\\012\\011       1 -- yes, 4.27%\\012\\011       0 -- no, 95.73%\\012\\0110-1    cloud state;\\012\\011       00 -- clear, 3.19%\\012\\011       01 -- cloudy, 94.90%\\012\\011       10 -- mixed, 1.92%\\012\\011       11 -- not set, assumed clear, 0.00%\\012";
+    }
+    SensorZenith_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Sensor zenith - first layer";
+        String units "degree";
+        Float64 orig_scale_factor 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    SensorAzimuth_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Sensor azimuth - first layer";
+        String units "degree";
+        Float64 orig_scale_factor 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    Range_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Range (pixel to sensor) - first layer";
+        String units "meters";
+        Float64 orig_scale_factor 25.000000000000000;
+        Float32 _FillValue 0;
+    }
+    SolarZenith_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Solar zenith - first layer";
+        String units "degree";
+        Float64 orig_scale_factor 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    SolarAzimuth_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Solar azimuth - first layer";
+        String units "degree";
+        Float64 orig_scale_factor 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    gflags_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Geolocation flags - first layer";
+        String units "bit field";
+        Byte valid_range 0, 248;
+        Byte _FillValue 255;
+    }
+    orbit_pnt_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Orbit pointer - first layer";
+        String units "none";
+        Int16 valid_range 0, 15;
+        Int16 _FillValue 255;
+    }
+    Latitude {
+        String long_name "MODIS_Grid_1km_2D:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "MODIS_Grid_1km_2D:Longitude";
+        String units "degrees_east";
+    }
+    num_observations_500m {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "Number of Observations";
+        String units "none";
+        Int16 valid_range 0, 127;
+        Int16 _FillValue 255;
+    }
+    sur_refl_b01_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 1 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b02_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 2 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b03_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 3 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b04_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 4 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b05_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 5 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b06_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 6 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    sur_refl_b07_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 7 - first layer";
+        String units "reflectance";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        String Nadir_Data_Resolution "500m";
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -28672;
+    }
+    QC_500m_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Reflectance Band Quality - first layer";
+        String units "bit field";
+        UInt32 valid_range 0, 4294966019;
+        UInt32 _FillValue 787410671;
+        String Nadir_Data_Resolution "500m";
+        String QA_index "\\012\\011Bits are listed from the MSB (bit 31) to the LSB (bit 0):\\012\\011Bit    Description\\012\\01131     adjacency correction performed; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\01130     atmospheric correction performed; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\01126-29  band 7 data quality four bit range;\\012\\011       0000 -- highest quality\\012\\011       0111 -- noisy detector\\012\\011       1000 -- dead detector; data interpolated in L1B\\012\\011       1001 -- solar zenith >= 86 degrees\\012\\011       1010 -- solar zenith >= 85 and < 86 degrees\\012\\011       1011 -- missing input\\012\\011       1100 -- internal constant used in place of climatological data \\012\\011               for at least one atmospheric constant\\012\\011       1101 -- correction out of bounds pixel constrained to extreme \\012\\011               allowable value\\012\\011       1110 -- L1B data faulty\\012\\011       1111 -- not processed due to deep ocean or clouds\\012\\01122-25  band 6 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\01118-21  band 5 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\01114-17  band 4 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\01110-13  band 3 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\0116-9    band 2 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\0112-5    band 1 data quality four bit range;\\012\\011       SAME AS ABOVE\\012\\0110-1    MODLAND QA bits; \\012\\011       corrected product produced at\\012\\011       00 -- ideal quality all bands \\012\\011       01 -- less than ideal quality some or all bands\\012\\011       corrected product not produced due to\\012\\011       10 -- cloud effects all bands \\012\\011       11 -- other reasons some or all bands may be fill value\\012\\011       [Note that a value of (11) overrides a value of (01)].\\012";
+    }
+    obscov_500m_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "Observation coverage - first layer";
+        String units "percent";
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 orig_scale_factor 0.0099999997764825821;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue 255;
+    }
+    iobs_res_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "observation number in coarser grid - first layer";
+        String units "none";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+    }
+    q_scan_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "250m scan value information - first layer";
+        String units "none";
+        Byte valid_range 0, 255;
+        Byte _FillValue 255;
+        String QA_index "\\012\\011Bits are numbered from left (MSB) to right (LSB):\\012\\011Bit    Description\\012\\0110      missing observation in quadrent 4 [+0.5 row, +0.5 column]; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\0111      missing observation in quadrent 3 [+0.5 row, -0.5 column]; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\0112      missing observation in quadrent 2 [-0.5 row, +0.5 column]; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\0113      missing observation in quadrent 1 [-0.5 row, -0.5 column]; \\012\\011       1 -- yes\\012\\011       0 -- no\\012\\0114      scan of observation in quadrent 4 [+0.5 row, +0.5 column]; \\012\\011       1 -- same\\012\\011       0 -- different\\012\\0115      scan of observation in quadrent 3 [+0.5 row, -0.5 column]; \\012\\011       1 -- same\\012\\011       0 -- different\\012\\0116      scan of observation in quadrent 2 [-0.5 row, +0.5 column]; \\012\\011       1 -- same\\012\\011       0 -- different\\012\\0117      scan of observation in quadrent 1 [-0.5 row, -0.5 column]; \\012\\011       1 -- same\\012\\011       0 -- different\\012";
+    }
+    Latitude_1 {
+        String long_name "MODIS_Grid_500m_2D:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "MODIS_Grid_500m_2D:Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD09GA.A2007268.h10v08.005.2007272184810.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-09-29T18:48:10.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.7";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "No automatic quality assessment is performed in the PGE";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 32;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MOD09G";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1", "2";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "2007-09-25", "2007-09-25";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "14:54:28.298520", "16:33:21.427124";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        Int32 VALUE 41332, 41333;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        Float64 VALUE -66.2152888133003, -90.9369901932336;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD09GA";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 100;
+                    String VALUE "MOD09GST.A2007268.h10v08.005.2007272183307.hdf", "MOD09GHK.A2007268.h10v08.005.2007272183959.hdf", "MOD09GQK.A2007268.h10v08.005.2007272183647.hdf", "MODPT1KD.A2007268.h10v08.005.2007272183148.hdf", "MODPTHKM.A2007268.h10v08.005.2007272183148.hdf", "
+          MODPTQKM.A2007268.h10v08.005.2007272183149.hdf", "MODMGGAD.A2007268.h10v08.005.2007272183212.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -80.0083669632159, -81.23412894334, -70.7989347427144, -69.7297930204318;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -0.00723747477616699, 9.99999999910197, 10.0062645366672, 0.000196394636780362;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                    ZONEIDENTIFIERCLASS {
+                        ZONEIDENTIFIER {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Universal Transverse Mercator (UTM)";
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-09-25";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "16:35:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-09-25";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "14:50:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.15";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14", "15", "16", "17", "18";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14", "15", "16", "17", "18";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "HORIZONTALTILENUMBER", "VERTICALTILENUMBER", "TileID", "PROCESSVERSION", "QAPERCENTPOOROUTPUT500MBAND1", "QAPERCENTPOOROUTPUT500MBAND2", "QAPERCENTPOOROUTPUT500MBAND3", "QAPERCENTPOOROUTPUT500MBAND4", "QAPERCENTPOOROUTPUT500MBAND5", "QAPERCENTPOOROUTPUT500MBAND6", "QAPERCENTPOOROUTPUT500MBAND7", "RESOLUTIONBANDS1AND2";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14", "15", "16", "17", "18";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14", "15", "16", "17", "18";
+                            String VALUE "67", "0", "0", "32", "10", "8", "51010008", "5.0.7", "0", "0", "0", "0", "0", "0", "0", "500";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            BOUNDINGRECTANGLE {
+                NORTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 9.99999999910197;
+                }
+                SOUTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -2.12661101602446e-15;
+                }
+                EASTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -69.9916666603812;
+                }
+                WESTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -81.23412894334;
+                }
+            }
+            GEOANYABNORMAL {
+                Int32 NUM_VAL 1;
+                String VALUE "False";
+            }
+            GEOESTMAXRMSERROR {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 50.0;
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra Surface Reflectance Daily L2G Global 1km and 500m SIN Grid";
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "2015";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            NUMBEROFGRANULES {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1;
+            }
+            NUMBEROFORBITS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2;
+            }
+            GRANULEBEGINNINGDATETIME {
+                Int32 NUM_VAL 32;
+                String VALUE "2007-09-25T14:50:00.000000Z";
+            }
+            GRANULEENDINGDATETIME {
+                Int32 NUM_VAL 32;
+                String VALUE "2007-09-25T16:35:00.000000Z";
+            }
+            GRANULEDAYNIGHTFLAG {
+                Int32 NUM_VAL 32;
+                String VALUE "Day";
+            }
+            GRANULEDAYOFYEAR {
+                Int32 NUM_VAL 32;
+                String VALUE "268";
+            }
+            NADIRDATARESOLUTION1KM {
+                Int32 NUM_VAL 1;
+                String VALUE "1km";
+            }
+            CHARACTERISTICBINANGULARSIZE1KM {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 30.0;
+            }
+            CHARACTERISTICBINSIZE1KM {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 926.625433055556;
+            }
+            DATACOLUMNS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1200;
+            }
+            DATAROWS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1200;
+            }
+            GLOBALGRIDCOLUMNS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 43200;
+            }
+            GLOBALGRIDROWS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 21600;
+            }
+            MAXIMUMOBSERVATIONS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 3;
+            }
+            ADDITIONALLAYERS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2;
+            }
+            TOTALOBSERVATIONS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1529290;
+            }
+            TOTALADDITIONALOBSERVATIONS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 553771;
+            }
+            COVERAGECALCULATIONMETHOD {
+                Int32 NUM_VAL 1;
+                String VALUE "volume";
+            }
+            FIRSTLAYERSELECTIONCRITERIA {
+                Int32 NUM_VAL 1;
+                String VALUE "order of input pointer";
+            }
+            L2GSTORAGEFORMAT1KM {
+                Int32 NUM_VAL 1;
+                String VALUE "compact";
+            }
+            QUALITYCLASSPERCENTAGE500MBAND3 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND4 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND5 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 65, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND6 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND7 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5103 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Pentium(R) III CPU family      1133MHz unknown GNU/Linux";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.1";
+            }
+            SYSTEMFILENAME {
+                Int32 NUM_VAL 100;
+                String VALUE "MOD09GST.A2007268.h10v08.005.2007272183307.hdf", "MOD09GHK.A2007268.h10v08.005.2007272183959.hdf", "MOD09GQK.A2007268.h10v08.005.2007272183647.hdf", "MODPT1KD.A2007268.h10v08.005.2007272183148.hdf", "MODPTHKM.A2007268.h10v08.005.2007272183148.hdf", "
+        MODPTQKM.A2007268.h10v08.005.2007272183149.hdf", "MODMGGAD.A2007268.h10v08.005.2007272183212.hdf";
+            }
+            CHARACTERISTICBINANGULARSIZE500M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 15.0;
+            }
+            CHARACTERISTICBINSIZE500M {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 463.312716527778;
+            }
+            DATACOLUMNS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2400;
+            }
+            DATAROWS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2400;
+            }
+            GLOBALGRIDCOLUMNS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 86400;
+            }
+            GLOBALGRIDROWS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 43200;
+            }
+            NADIRDATARESOLUTION500M {
+                Int32 NUM_VAL 1;
+                String VALUE "500m";
+            }
+            PERCENTPROCESSED {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 100;
+            }
+            PERCENTLAND {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 56;
+            }
+            PERCENTLANDSEAMASKCLASS {
+                Int32 NUM_VAL 8;
+                Float64 VALUE 3, 56, 0, 0, 0, 0, 1, 40;
+            }
+            PERCENTCLOUDY {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 63;
+            }
+            PERCENTSHADOW {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2;
+            }
+            PERCENTLOWSUN {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            RANKING {
+                Int32 NUM_VAL 1;
+                String VALUE "No";
+            }
+            KEEPALL {
+                Int32 NUM_VAL 1;
+                String VALUE "No";
+            }
+            COVERAGEMINIMUM {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 0.00999999977648258;
+            }
+            MAXOUTPUTRES {
+                Int32 NUM_VAL 1;
+                String VALUE "QKM";
+            }
+            DEEPOCEANFLAG {
+                Int32 NUM_VAL 1;
+                String VALUE "Yes";
+            }
+            MAXIMUMOBSERVATIONS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1;
+            }
+            ADDITIONALLAYERS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            TOTALOBSERVATIONS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 3898935;
+            }
+            TOTALADDITIONALOBSERVATIONS500M {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            L2GSTORAGEFORMAT500M {
+                Int32 NUM_VAL 1;
+                String VALUE "one layer only";
+            }
+            QUALITYCLASSPERCENTAGE500MBAND1 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND2 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 32;
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "MODIS_Grid_1km_2D";
+                Int32 XDim 1200;
+                Int32 YDim 1200;
+                Float64 UpperLeftPointMtrs -8895604.157333, 1111950.519667;
+                Float64 LowerRightMtrs -7783653.637667, -0.000000;
+                String Projection "GCTP_SNSOID";
+                Float64 ProjParams 6371007.181000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                Int32 SphereCode -1;
+                String GridOrigin "HDFE_GD_UL";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "num_observations_1km";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "state_1km_1";
+                        String DataType "DFNT_UINT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "SensorZenith_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "SensorAzimuth_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Range_1";
+                        String DataType "DFNT_UINT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "SolarZenith_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "SolarAzimuth_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "gflags_1";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "orbit_pnt_1";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "MODIS_Grid_500m_2D";
+                Int32 XDim 2400;
+                Int32 YDim 2400;
+                Float64 UpperLeftPointMtrs -8895604.157333, 1111950.519667;
+                Float64 LowerRightMtrs -7783653.637667, -0.000000;
+                String Projection "GCTP_SNSOID";
+                Float64 ProjParams 6371007.181000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                Int32 SphereCode -1;
+                String GridOrigin "HDFE_GD_UL";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "num_observations_500m";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "sur_refl_b01_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "sur_refl_b02_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "sur_refl_b03_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "sur_refl_b04_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "sur_refl_b05_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "sur_refl_b06_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "sur_refl_b07_1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "QC_500m_1";
+                        String DataType "DFNT_UINT32";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_10 {
+                        String DataFieldName "obscov_500m_1";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_11 {
+                        String DataFieldName "iobs_res_1";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_12 {
+                        String DataFieldName "q_scan_1";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        Int16 maximum_observations_1km 3;
+        Int32 total_additional_observations_1km 524331;
+        String l2g_storage_format_1km "compact";
+        Int16 maximum_observations_500m 1;
+        Int32 total_additional_observations_500m 0;
+        String l2g_storage_format_500m "one layer only";
+        Int32 NumberLandWater1km 57840, 1090059, 6, 1321, 0, 0, 35047, 247791, 0;
+        Int32 NumberLandWater500m 115680, 2180118, 12, 2642, 0, 0, 70094, 495582, 0;
+    }
+    state_1km_c_NONEOS {
+        String long_name "1km Reflectance Data State QA - additional layers, compact";
+        String units "bit field";
+        UInt16 valid_range 0, 57335;
+        UInt16 _FillValue 65535;
+        String Nadir_Data_Resolution "1km";
+        String QA_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     internal snow algorithm flag; 
+	       1 -- yes, 0.01%
+	       0 -- no, 99.99%
+	14     BRDF correction performed;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	13     Pixel is adjacent to cloud;
+	       1 -- yes, 3.22%
+	       0 -- no, 96.78%
+	12     MOD35 snow/ice flag;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	11     internal fire algorithm flag;
+	       1 -- fire, 0.00%
+	       0 -- no fire, 100.00%
+	10     internal cloud algorithm flag;
+	       1 -- cloud, 92.73%
+	       0 -- no cloud, 7.27%
+	8-9    cirrus detected;
+	       00 -- none, 80.40%
+	       01 -- small, 1.49%
+	       10 -- average, 2.00%
+	       11 -- high, 16.10%
+	6-7    aerosol quantity;
+	       00 -- climatology, 95.95%
+	       01 -- low, 0.11%
+	       10 -- average, 3.13%
+	       11 -- high, 0.82%
+	3-5    land/water flag;
+	       000 -- shallow ocean, 3.90%
+	       001 -- land, 83.12%
+	       010 -- ocean coastlines and lake shorelines, 0.41%
+	       011 -- shallow inland water, 0.12%
+	       100 -- ephemeral water, 0.00%
+	       101 -- deep inland water, 0.00%
+	       110 -- continental/moderate ocean, 1.24%
+	       111 -- deep ocean, 11.21%
+	2      cloud shadow;
+	       1 -- yes, 4.27%
+	       0 -- no, 95.73%
+	0-1    cloud state;
+	       00 -- clear, 3.19%
+	       01 -- cloudy, 94.90%
+	       10 -- mixed, 1.92%
+	       11 -- not set, assumed clear, 0.00%
+";
+    }
+    SensorZenith_c_NONEOS {
+        String long_name "Sensor zenith - additional layers, compact";
+        String units "degree";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -32767;
+        Float64 scale_factor 0.010000000000000000;
+    }
+    SensorAzimuth_c_NONEOS {
+        String long_name "Sensor azimuth - additional layers, compact";
+        String units "degree";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -32767;
+        Float64 scale_factor 0.010000000000000000;
+    }
+    Range_c_NONEOS {
+        String long_name "Range (pixel to sensor) - additional layers, compact";
+        String units "meters";
+        UInt16 valid_range 27000, 65535;
+        UInt16 _FillValue 0;
+        Float64 scale_factor 25.000000000000000;
+    }
+    SolarZenith_c_NONEOS {
+        String long_name "Solar zenith - additional layers, compact";
+        String units "degree";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -32767;
+        Float64 scale_factor 0.010000000000000000;
+    }
+    SolarAzimuth_c_NONEOS {
+        String long_name "Solar azimuth - additional layers, compact";
+        String units "degree";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -32767;
+        Float64 scale_factor 0.010000000000000000;
+    }
+    gflags_c_NONEOS {
+        String long_name "Geolocation flags - additional layers, compact";
+        String units "bit field";
+        Byte valid_range 0, 248;
+        Byte _FillValue 255;
+    }
+    orbit_pnt_c_NONEOS {
+        String long_name "Orbit pointer - additional layers, compact";
+        String units "none";
+        Int16 valid_range 0, 15;
+        Int16 _FillValue 255;
+    }
+    nadd_obs_row_1km_NONEOS {
+        String long_name "Number of additional observations per row";
+        String units "none";
+        Int32 valid_range 0, 2147483647;
+        Int32 _FillValue -1;
+    }
+}

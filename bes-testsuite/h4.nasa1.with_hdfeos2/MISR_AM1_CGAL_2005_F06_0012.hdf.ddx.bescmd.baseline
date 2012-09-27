@@ -1,0 +1,2847 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MISR_AM1_CGAL_2005_F06_0012.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="coremetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MISR_AM1_CGAL_2005_F06_0012.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2006-02-01T20:31:55.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MISR_EXEC_VERSION: V3.3_i1_PGE12BP MISR_EXEC_NAME:pge12bp.cc&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;3.3&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Automatic quality determination software not yet implemented&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Granule&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>6</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MIL3YAL&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>55</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:21:SC:MICNFG.002:9652926&quot;</value>
+                        <value>&quot;UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:23:SC:MIL3YAL.005:13869913&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.00000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.00000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2005-12-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2004-12-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;SP_AM_MISR_ProductVersion&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;12&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;AlbedoAverage_1_degree&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>360</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>180</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Average fill flag - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Swath count - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo average - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo first moment - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo standard deviation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo solar insolation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo swath count - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo average - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo first moment - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo standard deviation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo solar insolation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo swath count - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo average - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo first moment - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo standard deviation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo solar insolation - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo swath count - 1 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+            <Attribute name="GRID_2" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;AlbedoAverage_5_degree&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>72</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>36</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Average fill flag - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Swath count - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo average - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo first moment - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo standard deviation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo solar insolation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Expansive albedo swath count - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo average - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo first moment - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo standard deviation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo solar insolation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Restrictive albedo swath count - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo average - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo first moment - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo standard deviation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo solar insolation - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Local albedo swath count - 5 deg&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;Band&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.10</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Source_file" type="Container"/>
+    <Attribute name="Band_Enumeration" type="Container">
+        <Attribute name="Vdata_field_Value" type="String">
+            <value>'Blue (443 nm)'</value>
+            <value>'Green (555 nm)'</value>
+            <value>'Red (670 nm)'</value>
+            <value>'Infrared (865 nm)'</value>
+            <value>'Broadband'</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="CosineSolarZenithAngle_Enumeration" type="Container">
+        <Attribute name="Vdata_field_Value" type="String">
+            <value>'0.0 - 0.1'</value>
+            <value>'0.1 - 0.2'</value>
+            <value>'0.2 - 0.3'</value>
+            <value>'0.3 - 0.4'</value>
+            <value>'0.4 - 0.5'</value>
+            <value>'0.5 - 0.6'</value>
+            <value>'0.6 - 0.7'</value>
+            <value>'0.7 - 0.8'</value>
+            <value>'0.8 - 0.9'</value>
+            <value>'0.9 - 1.0'</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="LandOcean_Enumeration" type="Container">
+        <Attribute name="Vdata_field_Value" type="String">
+            <value>'All'</value>
+            <value>'Land'</value>
+            <value>'Ocean'</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Latitude_Enumeration" type="Container"/>
+    <Attribute name="SurfaceType_Enumeration" type="Container">
+        <Attribute name="Vdata_field_Value" type="String">
+            <value>'Land'</value>
+            <value>'Ocean'</value>
+            <value>'Snow/ice'</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="TextureType_Enumeration" type="Container">
+        <Attribute name="Vdata_field_Value" type="String">
+            <value>'Smooth'</value>
+            <value>'Medium'</value>
+            <value>'Rough'</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HistogramBin_Enumeration" type="Container"/>
+    <Attribute name="Flux_data" type="Container"/>
+    <Attribute name="Swath_count___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>82.00000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1017.000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>197.4178162</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>181.7728882</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>61200</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_standard_deviation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.01684257016</value>
+            <value>0.01330780238</value>
+            <value>0.01195508242</value>
+            <value>0.01225077547</value>
+            <value>0.009412402287</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>8946.236328</value>
+            <value>8946.236328</value>
+            <value>8946.236328</value>
+            <value>8946.236328</value>
+            <value>8946.236328</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>598.1268921</value>
+            <value>598.1212769</value>
+            <value>598.1348267</value>
+            <value>598.1359253</value>
+            <value>598.0820312</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1805.797729</value>
+            <value>1805.799438</value>
+            <value>1805.794922</value>
+            <value>1805.794922</value>
+            <value>1805.812988</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_solar_insolation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>409.6597900</value>
+            <value>405.2830505</value>
+            <value>333.8402710</value>
+            <value>212.2716522</value>
+            <value>299.4796753</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1667.031006</value>
+            <value>1649.220581</value>
+            <value>1358.498291</value>
+            <value>863.7983398</value>
+            <value>1218.674438</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1156.151489</value>
+            <value>1143.797974</value>
+            <value>942.1730347</value>
+            <value>599.0787964</value>
+            <value>845.1979980</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>398.0182190</value>
+            <value>393.7657776</value>
+            <value>324.3533020</value>
+            <value>206.2393799</value>
+            <value>290.9691467</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_first_moment___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1739872545</value>
+            <value>0.1012325659</value>
+            <value>0.07758102566</value>
+            <value>0.06252348423</value>
+            <value>0.08299180865</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.038408160</value>
+            <value>0.8977030516</value>
+            <value>0.9519310594</value>
+            <value>0.9563176632</value>
+            <value>0.6864003539</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5124154091</value>
+            <value>0.4186007082</value>
+            <value>0.4330850542</value>
+            <value>0.4530003369</value>
+            <value>0.3318882287</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2241770476</value>
+            <value>0.1938634962</value>
+            <value>0.2148473263</value>
+            <value>0.2154265791</value>
+            <value>0.1496043205</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_swath_count___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>38.00000000</value>
+            <value>38.00000000</value>
+            <value>38.00000000</value>
+            <value>38.00000000</value>
+            <value>38.00000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>699.0000000</value>
+            <value>699.0000000</value>
+            <value>699.0000000</value>
+            <value>699.0000000</value>
+            <value>699.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>124.2737732</value>
+            <value>124.2739105</value>
+            <value>124.2752838</value>
+            <value>124.2752609</value>
+            <value>124.2733612</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>102.2149048</value>
+            <value>102.2148972</value>
+            <value>102.2145538</value>
+            <value>102.2145081</value>
+            <value>102.2149506</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_average___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1736028790</value>
+            <value>0.1009718999</value>
+            <value>0.07733490318</value>
+            <value>0.06149576232</value>
+            <value>0.08279465139</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.030119777</value>
+            <value>0.9030399919</value>
+            <value>0.9500448704</value>
+            <value>0.9537332654</value>
+            <value>0.6784182787</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.4926666617</value>
+            <value>0.4109318852</value>
+            <value>0.4202023149</value>
+            <value>0.4379751384</value>
+            <value>0.3192914128</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2163853049</value>
+            <value>0.1970914155</value>
+            <value>0.2129865736</value>
+            <value>0.2098599076</value>
+            <value>0.1440382451</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_standard_deviation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.01186514553</value>
+            <value>0.006281167734</value>
+            <value>0.01424803026</value>
+            <value>0.01373982802</value>
+            <value>0.01086207293</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>9819.362305</value>
+            <value>9819.362305</value>
+            <value>9819.362305</value>
+            <value>9819.362305</value>
+            <value>9819.362305</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>516.9602051</value>
+            <value>516.5945435</value>
+            <value>516.6088867</value>
+            <value>516.6104736</value>
+            <value>516.6366577</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1797.078735</value>
+            <value>1797.129272</value>
+            <value>1797.125122</value>
+            <value>1797.124634</value>
+            <value>1797.120117</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_solar_insolation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>384.9462280</value>
+            <value>380.8335571</value>
+            <value>313.7006836</value>
+            <value>199.4659424</value>
+            <value>281.4129639</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1666.649414</value>
+            <value>1648.843140</value>
+            <value>1358.187256</value>
+            <value>863.6005859</value>
+            <value>1218.395508</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1158.806519</value>
+            <value>1146.425903</value>
+            <value>944.3355103</value>
+            <value>600.4537964</value>
+            <value>847.1395264</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>393.2735596</value>
+            <value>389.0718689</value>
+            <value>320.4868164</value>
+            <value>203.7808838</value>
+            <value>287.5006104</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_first_moment___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1899067909</value>
+            <value>0.1057294756</value>
+            <value>0.08000946790</value>
+            <value>0.06300786138</value>
+            <value>0.08741238713</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>164.6884613</value>
+            <value>0.9499098063</value>
+            <value>1.018760920</value>
+            <value>1.029744983</value>
+            <value>38.55981445</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5791854858</value>
+            <value>0.4473278522</value>
+            <value>0.4627092183</value>
+            <value>0.4825007915</value>
+            <value>0.3599456251</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1.357591987</value>
+            <value>0.2038260698</value>
+            <value>0.2247532010</value>
+            <value>0.2242642939</value>
+            <value>0.3489488065</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_swath_count___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>2.000000000</value>
+            <value>2.000000000</value>
+            <value>2.000000000</value>
+            <value>2.000000000</value>
+            <value>2.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>713.0000000</value>
+            <value>713.0000000</value>
+            <value>713.0000000</value>
+            <value>713.0000000</value>
+            <value>713.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>114.0932846</value>
+            <value>114.0932846</value>
+            <value>114.0932846</value>
+            <value>114.0932846</value>
+            <value>114.0932846</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>92.49743652</value>
+            <value>92.49743652</value>
+            <value>92.49743652</value>
+            <value>92.49743652</value>
+            <value>92.49743652</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_average___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1853975803</value>
+            <value>0.1039622650</value>
+            <value>0.07871864736</value>
+            <value>0.06200947985</value>
+            <value>0.08598361164</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>219.4223175</value>
+            <value>0.9514294863</value>
+            <value>1.014989614</value>
+            <value>1.022382140</value>
+            <value>51.27612305</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5633001328</value>
+            <value>0.4398207366</value>
+            <value>0.4502671659</value>
+            <value>0.4682080150</value>
+            <value>0.3485886157</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1.626030087</value>
+            <value>0.2064388841</value>
+            <value>0.2223932594</value>
+            <value>0.2184674293</value>
+            <value>0.4042621553</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_standard_deviation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.01593130454</value>
+            <value>0.01164671872</value>
+            <value>0.01060010493</value>
+            <value>0.01006551739</value>
+            <value>0.008143788204</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>8263.456055</value>
+            <value>8263.456055</value>
+            <value>8263.456055</value>
+            <value>8263.456055</value>
+            <value>8263.456055</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>586.4590454</value>
+            <value>586.4523926</value>
+            <value>586.4668579</value>
+            <value>586.4677734</value>
+            <value>586.4146118</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1721.833374</value>
+            <value>1721.835571</value>
+            <value>1721.830688</value>
+            <value>1721.830322</value>
+            <value>1721.848755</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_solar_insolation___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>450.2603149</value>
+            <value>445.4497681</value>
+            <value>366.9264832</value>
+            <value>233.3094482</value>
+            <value>329.1604919</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1667.098022</value>
+            <value>1649.286987</value>
+            <value>1358.552856</value>
+            <value>863.8330688</value>
+            <value>1218.723511</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1153.856201</value>
+            <value>1141.528564</value>
+            <value>940.3014526</value>
+            <value>597.8887329</value>
+            <value>843.5208130</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>401.2124939</value>
+            <value>396.9259949</value>
+            <value>326.9563904</value>
+            <value>207.8945618</value>
+            <value>293.3041077</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_first_moment___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1812045723</value>
+            <value>0.1039712280</value>
+            <value>0.08092482388</value>
+            <value>0.06718633324</value>
+            <value>0.08493736386</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.201497436</value>
+            <value>1.057627678</value>
+            <value>1.150627136</value>
+            <value>1.150951982</value>
+            <value>0.8037531376</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5284358859</value>
+            <value>0.4315113723</value>
+            <value>0.4474670589</value>
+            <value>0.4682343006</value>
+            <value>0.3422678709</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2423672527</value>
+            <value>0.2092895359</value>
+            <value>0.2327211499</value>
+            <value>0.2335492224</value>
+            <value>0.1617813259</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_swath_count___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>41.00000000</value>
+            <value>41.00000000</value>
+            <value>41.00000000</value>
+            <value>41.00000000</value>
+            <value>41.00000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>744.0000000</value>
+            <value>744.0000000</value>
+            <value>744.0000000</value>
+            <value>744.0000000</value>
+            <value>744.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>130.6677551</value>
+            <value>130.6677551</value>
+            <value>130.6677551</value>
+            <value>130.6677551</value>
+            <value>130.6676636</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>114.0334778</value>
+            <value>114.0334778</value>
+            <value>114.0334778</value>
+            <value>114.0334778</value>
+            <value>114.0333939</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_average___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1800076813</value>
+            <value>0.1037845239</value>
+            <value>0.08075646311</value>
+            <value>0.06703119725</value>
+            <value>0.08479319513</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.146575451</value>
+            <value>0.9982426763</value>
+            <value>1.065129757</value>
+            <value>1.085648656</value>
+            <value>0.7565363646</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5049985051</value>
+            <value>0.4206760228</value>
+            <value>0.4304110110</value>
+            <value>0.4487437010</value>
+            <value>0.3269855380</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2288022637</value>
+            <value>0.2073889822</value>
+            <value>0.2244255841</value>
+            <value>0.2214223742</value>
+            <value>0.1520833224</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+            <value>60480</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Average_fill_flag___1_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>61200</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_count___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>148.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1242.000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>322.4816284</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>266.9738770</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_standard_deviation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.02258026600</value>
+            <value>0.02286939695</value>
+            <value>0.02039642073</value>
+            <value>0.02100597695</value>
+            <value>0.01548700314</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>6756.570801</value>
+            <value>6756.570801</value>
+            <value>6756.570801</value>
+            <value>6756.570801</value>
+            <value>6756.570801</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>842.0166626</value>
+            <value>842.0093994</value>
+            <value>842.0200195</value>
+            <value>842.0206909</value>
+            <value>841.9806519</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1826.336060</value>
+            <value>1826.335449</value>
+            <value>1826.330566</value>
+            <value>1826.330200</value>
+            <value>1826.352783</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_solar_insolation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>457.8386536</value>
+            <value>452.9471436</value>
+            <value>373.1022339</value>
+            <value>237.2362976</value>
+            <value>334.7005920</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1661.425415</value>
+            <value>1643.674927</value>
+            <value>1353.930054</value>
+            <value>860.8936768</value>
+            <value>1214.576538</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1139.625366</value>
+            <value>1127.450073</value>
+            <value>928.7048340</value>
+            <value>590.5150757</value>
+            <value>833.1172485</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>411.6515198</value>
+            <value>407.2538147</value>
+            <value>335.4636536</value>
+            <value>213.3038940</value>
+            <value>300.9357300</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_first_moment___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1873515546</value>
+            <value>0.1127770320</value>
+            <value>0.09199032187</value>
+            <value>0.07947055995</value>
+            <value>0.09129817039</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>0.9966163635</value>
+            <value>0.8550031185</value>
+            <value>0.9058952332</value>
+            <value>0.9111327529</value>
+            <value>0.6559012532</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5137777328</value>
+            <value>0.4180201292</value>
+            <value>0.4333430231</value>
+            <value>0.4529981911</value>
+            <value>0.3327954412</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2220820785</value>
+            <value>0.1892045438</value>
+            <value>0.2105557472</value>
+            <value>0.2099895775</value>
+            <value>0.1477627903</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_swath_count___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>856.0000000</value>
+            <value>856.0000000</value>
+            <value>856.0000000</value>
+            <value>856.0000000</value>
+            <value>856.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>248.5228729</value>
+            <value>248.5232849</value>
+            <value>248.5232849</value>
+            <value>248.5232849</value>
+            <value>248.5228729</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>190.2963867</value>
+            <value>190.2973785</value>
+            <value>190.2973785</value>
+            <value>190.2973785</value>
+            <value>190.2963867</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Restrictive_albedo_average___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1868248284</value>
+            <value>0.1123994887</value>
+            <value>0.09164629132</value>
+            <value>0.07915170491</value>
+            <value>0.09100624919</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>0.9866794348</value>
+            <value>0.8636385798</value>
+            <value>0.9070755243</value>
+            <value>0.9060503244</value>
+            <value>0.6478462219</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.4928275645</value>
+            <value>0.4107742906</value>
+            <value>0.4203905165</value>
+            <value>0.4376857877</value>
+            <value>0.3193666637</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2130878419</value>
+            <value>0.1928479373</value>
+            <value>0.2086835206</value>
+            <value>0.2042235732</value>
+            <value>0.1413264871</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_standard_deviation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.02393592149</value>
+            <value>0.02841824666</value>
+            <value>0.03208492696</value>
+            <value>0.03041968495</value>
+            <value>0.02302827686</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>8894.402344</value>
+            <value>8894.402344</value>
+            <value>8894.402344</value>
+            <value>8894.402344</value>
+            <value>8894.402344</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1007.945618</value>
+            <value>1007.650208</value>
+            <value>1007.661560</value>
+            <value>1007.662415</value>
+            <value>1007.682495</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>2252.610107</value>
+            <value>2252.729980</value>
+            <value>2252.724854</value>
+            <value>2252.724365</value>
+            <value>2252.716064</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_solar_insolation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>455.9226074</value>
+            <value>451.0515747</value>
+            <value>371.5408020</value>
+            <value>236.2434692</value>
+            <value>333.2998657</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1659.288452</value>
+            <value>1641.560913</value>
+            <value>1352.188721</value>
+            <value>859.7864380</value>
+            <value>1213.014282</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1140.944458</value>
+            <value>1128.754761</value>
+            <value>929.7793579</value>
+            <value>591.1983032</value>
+            <value>834.0815430</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>407.5200195</value>
+            <value>403.1661072</value>
+            <value>332.0965271</value>
+            <value>211.1629028</value>
+            <value>297.9154053</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_first_moment___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1994260401</value>
+            <value>0.1275397986</value>
+            <value>0.1061395481</value>
+            <value>0.09320840240</value>
+            <value>0.1020971462</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>17.40013504</value>
+            <value>0.9118577838</value>
+            <value>0.9595948458</value>
+            <value>0.9637990594</value>
+            <value>4.268094540</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5836662054</value>
+            <value>0.4533012509</value>
+            <value>0.4700470865</value>
+            <value>0.4899553955</value>
+            <value>0.3648243248</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.5823707581</value>
+            <value>0.2030105442</value>
+            <value>0.2246968597</value>
+            <value>0.2230921984</value>
+            <value>0.2009962499</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_swath_count___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>747.0000000</value>
+            <value>747.0000000</value>
+            <value>747.0000000</value>
+            <value>747.0000000</value>
+            <value>747.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>231.8590698</value>
+            <value>231.8590698</value>
+            <value>231.8590698</value>
+            <value>231.8590698</value>
+            <value>231.8590698</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>160.1530762</value>
+            <value>160.1530762</value>
+            <value>160.1530762</value>
+            <value>160.1530762</value>
+            <value>160.1530762</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Local_albedo_average___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1942553073</value>
+            <value>0.1269787401</value>
+            <value>0.1055873036</value>
+            <value>0.09266845882</value>
+            <value>0.1016794890</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>20.46829033</value>
+            <value>0.9228076339</value>
+            <value>0.9585058689</value>
+            <value>0.9573930502</value>
+            <value>4.965941429</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5667621493</value>
+            <value>0.4460386038</value>
+            <value>0.4573534727</value>
+            <value>0.4752559662</value>
+            <value>0.3526157439</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.6669806838</value>
+            <value>0.2053945959</value>
+            <value>0.2214808911</value>
+            <value>0.2162485868</value>
+            <value>0.2098144442</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_standard_deviation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.02316934057</value>
+            <value>0.02373080514</value>
+            <value>0.01806339435</value>
+            <value>0.01654069312</value>
+            <value>0.01568518579</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>5040.312988</value>
+            <value>5040.312988</value>
+            <value>5040.312988</value>
+            <value>5040.312988</value>
+            <value>5040.312988</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>705.9277344</value>
+            <value>705.9207153</value>
+            <value>705.9328613</value>
+            <value>705.9338989</value>
+            <value>705.8933105</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>1512.342773</value>
+            <value>1512.346069</value>
+            <value>1512.340332</value>
+            <value>1512.339844</value>
+            <value>1512.366943</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_solar_insolation___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>456.0158691</value>
+            <value>451.1438599</value>
+            <value>371.6168213</value>
+            <value>236.2917938</value>
+            <value>333.3680725</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1661.490234</value>
+            <value>1643.739136</value>
+            <value>1353.982910</value>
+            <value>860.9273071</value>
+            <value>1214.623901</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1137.799561</value>
+            <value>1125.643433</value>
+            <value>927.2165527</value>
+            <value>589.5687256</value>
+            <value>831.7828369</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>414.3503418</value>
+            <value>409.9234619</value>
+            <value>337.6626892</value>
+            <value>214.7021332</value>
+            <value>302.9082031</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_first_moment___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1928305626</value>
+            <value>0.1156174615</value>
+            <value>0.09395528585</value>
+            <value>0.08101879805</value>
+            <value>0.09356503934</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.156498432</value>
+            <value>0.9810805917</value>
+            <value>1.040750265</value>
+            <value>1.054070234</value>
+            <value>0.7556757331</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5370754600</value>
+            <value>0.4371036291</value>
+            <value>0.4549319148</value>
+            <value>0.4758468866</value>
+            <value>0.3480325043</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2485394925</value>
+            <value>0.2119076252</value>
+            <value>0.2369890362</value>
+            <value>0.2370955050</value>
+            <value>0.1656064987</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_swath_count___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+            <value>125.0000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1061.000000</value>
+            <value>1061.000000</value>
+            <value>1061.000000</value>
+            <value>1061.000000</value>
+            <value>1061.000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>259.1388855</value>
+            <value>259.1388855</value>
+            <value>259.1388855</value>
+            <value>259.1388855</value>
+            <value>259.1380615</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>216.4728851</value>
+            <value>216.4728851</value>
+            <value>216.4728851</value>
+            <value>216.4728851</value>
+            <value>216.4710388</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Expansive_albedo_average___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>0.1923296452</value>
+            <value>0.1152371466</value>
+            <value>0.09359765053</value>
+            <value>0.08068113774</value>
+            <value>0.09327390045</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.093745232</value>
+            <value>0.9394493699</value>
+            <value>0.9934959412</value>
+            <value>0.9986428022</value>
+            <value>0.7108189464</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>0.5097602606</value>
+            <value>0.4243768752</value>
+            <value>0.4347854257</value>
+            <value>0.4529392421</value>
+            <value>0.3300729692</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.2301773727</value>
+            <value>0.2073592693</value>
+            <value>0.2247549444</value>
+            <value>0.2207840085</value>
+            <value>0.1525864452</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Average_fill_flag___5_deg_Statistic" type="Container">
+        <Attribute name="Vdata_field_Minimum" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Maximum" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Mean" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Standard_Deviation" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Count" type="Int32">
+            <value>2448</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Time_of_Observations_AlbedoAverage_5_degree" type="Container"/>
+    <Attribute name="Time_of_Observations_AlbedoAverage_1_degree" type="Container"/>
+    <Array name="Average_fill_flag___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Average fill flag - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+    </Array>
+    <Array name="Swath_count___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Swath count - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+    </Array>
+    <Array name="Expansive_albedo_average___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Expansive albedo average - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_first_moment___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Expansive albedo first moment - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_standard_deviation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Expansive albedo standard deviation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_solar_insolation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Expansive albedo solar insolation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_swath_count___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Expansive albedo swath count - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_average___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Restrictive albedo average - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_first_moment___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Restrictive albedo first moment - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_standard_deviation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Restrictive albedo standard deviation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_solar_insolation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Restrictive albedo solar insolation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_swath_count___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Restrictive albedo swath count - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Local_albedo_average___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Local albedo average - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Local_albedo_first_moment___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Local albedo first moment - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Local_albedo_standard_deviation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Local albedo standard deviation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Local_albedo_solar_insolation___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Local albedo solar insolation - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Local_albedo_swath_count___1_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Band</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Local albedo swath count - 1 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude" size="180"/>
+        <dimension name="Longitude" size="360"/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Band">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Band(fake)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band" size="5"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="180"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_1_degree:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Longitude" size="360"/>
+    </Array>
+    <Array name="Average_fill_flag___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Average fill flag - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+    </Array>
+    <Array name="Swath_count___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Swath count - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+    </Array>
+    <Array name="Expansive_albedo_average___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Expansive albedo average - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_first_moment___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Expansive albedo first moment - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_standard_deviation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Expansive albedo standard deviation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_solar_insolation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Expansive albedo solar insolation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Expansive_albedo_swath_count___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Expansive albedo swath count - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_average___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Restrictive albedo average - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_first_moment___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Restrictive albedo first moment - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_standard_deviation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Restrictive albedo standard deviation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_solar_insolation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Restrictive albedo solar insolation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Restrictive_albedo_swath_count___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Restrictive albedo swath count - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Local_albedo_average___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Local albedo average - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Local_albedo_first_moment___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Local albedo first moment - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Local_albedo_standard_deviation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Local albedo standard deviation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Local_albedo_solar_insolation___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Local albedo solar insolation - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Local_albedo_swath_count___5_deg">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1 Band_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Local albedo swath count - 5 deg</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Latitude_1" size="36"/>
+        <dimension name="Longitude_1" size="72"/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Band_1">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Band(fake)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band_1" size="5"/>
+    </Array>
+    <Array name="Latitude_1">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude_1" size="36"/>
+    </Array>
+    <Array name="Longitude_1">
+        <Attribute name="long_name" type="String">
+            <value>AlbedoAverage_5_degree:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Longitude_1" size="72"/>
+    </Array>
+    <Array name="Local_albedo_histogram_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Local albedo histogram</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="fakeDim6" size="10"/>
+        <dimension name="fakeDim7" size="5"/>
+        <dimension name="fakeDim8" size="3"/>
+        <dimension name="fakeDim9" size="3"/>
+        <dimension name="fakeDim10" size="220"/>
+    </Array>
+    <Array name="Zonal_expansive_albedo_average_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal expansive albedo average</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim11" size="180"/>
+        <dimension name="fakeDim12" size="5"/>
+        <dimension name="fakeDim13" size="3"/>
+    </Array>
+    <Array name="Zonal_expansive_albedo_first_momement_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal expansive albedo first momement</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim14" size="180"/>
+        <dimension name="fakeDim15" size="5"/>
+        <dimension name="fakeDim16" size="3"/>
+    </Array>
+    <Array name="Zonal_expansive_albedo_standard_deviation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal expansive albedo standard deviation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim17" size="180"/>
+        <dimension name="fakeDim18" size="5"/>
+        <dimension name="fakeDim19" size="3"/>
+    </Array>
+    <Array name="Zonal_expansive_albedo_solar_insolation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal expansive albedo solar insolation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim20" size="180"/>
+        <dimension name="fakeDim21" size="5"/>
+        <dimension name="fakeDim22" size="3"/>
+    </Array>
+    <Array name="Zonal_expansive_albedo_swath_count_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal expansive albedo swath count</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="fakeDim23" size="180"/>
+        <dimension name="fakeDim24" size="5"/>
+        <dimension name="fakeDim25" size="3"/>
+    </Array>
+    <Array name="Zonal_restrictive_albedo_average_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal restrictive albedo average</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim26" size="180"/>
+        <dimension name="fakeDim27" size="5"/>
+        <dimension name="fakeDim28" size="3"/>
+    </Array>
+    <Array name="Zonal_restrictive_albedo_first_momement_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal restrictive albedo first momement</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim29" size="180"/>
+        <dimension name="fakeDim30" size="5"/>
+        <dimension name="fakeDim31" size="3"/>
+    </Array>
+    <Array name="Zonal_restrictive_albedo_standard_deviation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal restrictive albedo standard deviation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim32" size="180"/>
+        <dimension name="fakeDim33" size="5"/>
+        <dimension name="fakeDim34" size="3"/>
+    </Array>
+    <Array name="Zonal_restrictive_albedo_solar_insolation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal restrictive albedo solar insolation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim35" size="180"/>
+        <dimension name="fakeDim36" size="5"/>
+        <dimension name="fakeDim37" size="3"/>
+    </Array>
+    <Array name="Zonal_restrictive_albedo_swath_count_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal restrictive albedo swath count</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="fakeDim38" size="180"/>
+        <dimension name="fakeDim39" size="5"/>
+        <dimension name="fakeDim40" size="3"/>
+    </Array>
+    <Array name="Zonal_local_albedo_average_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal local albedo average</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim41" size="180"/>
+        <dimension name="fakeDim42" size="5"/>
+        <dimension name="fakeDim43" size="3"/>
+    </Array>
+    <Array name="Zonal_local_albedo_first_momement_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal local albedo first momement</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim44" size="180"/>
+        <dimension name="fakeDim45" size="5"/>
+        <dimension name="fakeDim46" size="3"/>
+    </Array>
+    <Array name="Zonal_local_albedo_standard_deviation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal local albedo standard deviation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim47" size="180"/>
+        <dimension name="fakeDim48" size="5"/>
+        <dimension name="fakeDim49" size="3"/>
+    </Array>
+    <Array name="Zonal_local_albedo_solar_insolation_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal local albedo solar insolation</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="fakeDim50" size="180"/>
+        <dimension name="fakeDim51" size="5"/>
+        <dimension name="fakeDim52" size="3"/>
+    </Array>
+    <Array name="Zonal_local_albedo_swath_count_NONEOS">
+        <Attribute name="long_name" type="String">
+            <value>Zonal local albedo swath count</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="fakeDim53" size="180"/>
+        <dimension name="fakeDim54" size="5"/>
+        <dimension name="fakeDim55" size="3"/>
+    </Array>
+    <Array name="vdata_Source_file_vdf_Orbit_number">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_Source_file_vdf_Orbit_number" size="5192"/>
+    </Array>
+    <Array name="vdata_Source_file_vdf_Path_number">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Source_file_vdf_Path_number" size="5192"/>
+    </Array>
+    <Array name="vdata_Source_file_vdf_Local_Granule_Id">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Source_file_vdf_Local_Granule_Id" size="5192"/>
+        <dimension name="VDFDim1_vdata_Source_file_vdf_Local_Granule_Id" size="80"/>
+    </Array>
+    <Array name="vdata_Source_file_vdf_Local_Version_Id">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Source_file_vdf_Local_Version_Id" size="5192"/>
+        <dimension name="VDFDim1_vdata_Source_file_vdf_Local_Version_Id" size="100"/>
+    </Array>
+    <Array name="vdata_Latitude_Enumeration_vdf_Value">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Latitude_Enumeration_vdf_Value" size="180"/>
+        <dimension name="VDFDim1_vdata_Latitude_Enumeration_vdf_Value" size="60"/>
+    </Array>
+    <Array name="vdata_HistogramBin_Enumeration_vdf_Value">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_HistogramBin_Enumeration_vdf_Value" size="220"/>
+        <dimension name="VDFDim1_vdata_HistogramBin_Enumeration_vdf_Value" size="60"/>
+    </Array>
+    <Array name="vdata_Flux_data_vdf_Orbit_number">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_Flux_data_vdf_Orbit_number" size="5192"/>
+    </Array>
+    <Array name="vdata_Flux_data_vdf_Earth___sun_distance">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_Flux_data_vdf_Earth___sun_distance" size="5192"/>
+    </Array>
+    <Array name="vdata_Flux_data_vdf_Flux_scale_factor">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_Flux_data_vdf_Flux_scale_factor" size="5192"/>
+        <dimension name="VDFDim1_vdata_Flux_data_vdf_Flux_scale_factor" size="5"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Latitude_Index">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Latitude_Index" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Longitude_Index">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Longitude_Index" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Orbit">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Orbit" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Path">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Path" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Year">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Year" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Month">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Month" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Day">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Day" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Hour">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Hour" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Minute">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_5_degree_vdf_Minute" size="384601"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Latitude_Index">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Latitude_Index" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Longitude_Index">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Longitude_Index" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Orbit">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Orbit" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Path">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Path" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Year">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Year" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Month">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Month" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Day">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Day" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Hour">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Hour" size="2318605"/>
+    </Array>
+    <Array name="vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Minute">
+        <Byte/>
+        <dimension name="VDFDim0_vdata_Time_of_Observations_AlbedoAverage_1_degree_vdf_Minute" size="2318605"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,18 @@
+Dataset {
+    Float32 SLP[TIME = 4][YDim = 361][XDim = 540];
+    Float32 PS[TIME = 4][YDim = 361][XDim = 540];
+    Float32 H[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float32 T[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float32 U[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float32 V[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float32 QV[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float32 O3[TIME = 4][Height = 42][YDim = 361][XDim = 540];
+    Float64 XDim[XDim = 540];
+    Float64 YDim[YDim = 361];
+    Float64 Height[Height = 42];
+    Float64 TIME[TIME = 4];
+    Float64 XDim_EOS[XDim = 540];
+    Float64 YDim_EOS[YDim = 361];
+    Float64 Height_EOS[Height = 42];
+    Float64 Time[TIME = 4];
+} MERRA100.prod.assim.inst6_3d_ana_Np.19800401.hdf;

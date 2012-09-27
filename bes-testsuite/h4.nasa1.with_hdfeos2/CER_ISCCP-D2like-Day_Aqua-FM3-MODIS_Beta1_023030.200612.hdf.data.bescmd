@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_ISCCP-D2like-Day_Aqua-FM3-MODIS_Beta1_023030.200612.hdf" space="catalog">/data/CER_ISCCP-D2like-Day_Aqua-FM3-MODIS_Beta1_023030.200612.hdf</setContainer>
+    <define name="d">
+	<container name="CER_ISCCP-D2like-Day_Aqua-FM3-MODIS_Beta1_023030.200612.hdf" />
+        <constraint>latitude[0:179:179][0:359:359],longitude[0:179:179][0:359:359],Monthly_Total_Number_Of_Observations___Deep_Convection[0:1:0][0:179:179][0:359:359]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

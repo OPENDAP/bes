@@ -1,0 +1,17 @@
+Dataset {
+    Float32 CMG_0_05_Deg_Monthly_NDVI[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_EVI[Latitude = 3600][Longitude = 7200];
+    UInt16 CMG_0_05_Deg_Monthly_VI_Quality[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_red_reflectance[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_NIR_reflectance[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_blue_reflectance[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_MIR_reflectance[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_Avg_sun_zen_angle[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_NDVI_std_dev[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_Monthly_EVI_std_dev[Latitude = 3600][Longitude = 7200];
+    Byte CMG_0_05_Deg_Monthly__1km_pix_used[Latitude = 3600][Longitude = 7200];
+    Byte CMG_0_05_Deg_Monthly__1km_pix___30deg_VZ[Latitude = 3600][Longitude = 7200];
+    Int32 CMG_0_05_Deg_Monthly_pixel_reliability[Latitude = 3600][Longitude = 7200];
+    Float64 Latitude[Latitude = 3600];
+    Float64 Longitude[Longitude = 7200];
+} MOD13C2.A2007001.005.2007108072029.hdf;

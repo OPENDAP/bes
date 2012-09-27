@@ -1,0 +1,4 @@
+The data:
+UInt16 Blue_Radiance_RDQI[SOMBlockDim = 2][XDim = 2][YDim = 2] = {{{65515, 65515},{65515, 65515}},{{65515, 65515},{65515, 65515}}};
+Float64 SolarAzimuth[SOMBlockDim_5 = 2][XDim_5 = 2][YDim_5 = 2] = {{{-555, -555},{-555, -555}},{{-555, -555},{-555, -555}}};
+

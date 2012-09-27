@@ -1,0 +1,7 @@
+The data:
+UInt16 SPS_Temperature_Count[DataTrack_lo = 3][sps = 3] = {{33490, 49855, 2112},{33484, 49855, 18497},{49863, 49855, 18483}};
+Float64 Time[DataTrack_lo = 3] = {0, 0, 0};
+Float32 Latitude[DataTrack_lo = 3][DataXTrack_lo = 3] = {{83.5204, 81.7315, 73.1613},{6.56021, 0.0282295, 4.57497},{-73.6857, -81.8839, -85.147}};
+Float32 Longitude[DataTrack_lo = 3][DataXTrack_lo = 3] = {{-170.753, 112.346, 129.454},{3.73062, 10.1921, 18.1495},{-69.0566, -93.2209, -2.5285}};
+Float64 Time_1[DataTrack_lo_1 = 3] = {0, 0, 0};
+

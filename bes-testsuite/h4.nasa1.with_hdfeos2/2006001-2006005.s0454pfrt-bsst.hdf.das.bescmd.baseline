@@ -1,0 +1,180 @@
+Attributes {
+    HDF_GLOBAL {
+        UInt16 dsp_SubImageId 0;
+        String dsp_SubImageName "BSST";
+        Int32 dsp_ModificationDate 20070409;
+        Int32 dsp_ModificationTime 120728;
+        Int32 dsp_SubImageFlag 64;
+        String dsp_SubImageTitle "\\NLC Postage Stamp";
+        Int32 dsp_StartDate 20060105;
+        Float32 dsp_StartTime 132305.1562;
+        Int32 dsp_SizeX 8192;
+        Int32 dsp_SizeY 4096;
+        Int32 dsp_OffsetX 0;
+        Int32 dsp_RecordLength 16384;
+        Byte dsp_DataOrganization 64;
+        Byte dsp_NumberOfBands 1;
+        String dsp_ing_tiros_ourid "NO17GAC Cèã¬";
+        UInt16 dsp_ing_tiros_numscn 56583;
+        UInt16 dsp_ing_tiros_idsat 3328;
+        UInt16 dsp_ing_tiros_iddata 512;
+        UInt16 dsp_ing_tiros_year 54791;
+        UInt16 dsp_ing_tiros_daysmp 1280;
+        Int32 dsp_ing_tiros_milsec 1027596034;
+        Int32 dsp_ing_tiros_slope -531657469, -1264158461, 2098909951, -251995660, -2145086989;
+        Int32 dsp_ing_tiros_intcpt -34180609, -1356498689, 1877586176, 1086929451, 1713712;
+        UInt16 dsp_ing_tiros_tabadr 256, 512, 768;
+        UInt16 dsp_ing_tiros_cnlins 256;
+        UInt16 dsp_ing_tiros_cncols 256;
+        UInt16 dsp_ing_tiros_czncs 39169;
+        UInt16 dsp_ing_tiros_line 256;
+        UInt16 dsp_ing_tiros_icol 0;
+        String dsp_ing_tiros_date0 "23-MAY-06 15:05:53ÿ";
+        String dsp_ing_tiros_time0 "15:05:53ÿ";
+        UInt16 dsp_ing_tiros_label 12592, 13616, 13872;
+        UInt16 dsp_ing_tiros_nxtblk 1280;
+        UInt16 dsp_ing_tiros_datblk 1280;
+        UInt16 dsp_ing_tiros_itape 256;
+        UInt16 dsp_ing_tiros_cbias 0;
+        UInt16 dsp_ing_tiros_ccoeff 0;
+        Int32 dsp_ing_tiros_pastim 1027596034;
+        UInt16 dsp_ing_tiros_passcn 256;
+        UInt16 dsp_ing_tiros_lostct 0;
+        UInt16 dsp_ing_tiros_lost 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        UInt16 dsp_ing_tiros_ndrll 2560;
+        UInt16 dsp_ing_tiros_ndrrec 256, 512, 768, 1024, 1280, 1536, 1792, 2048, 2304, 2560;
+        UInt16 dsp_ing_tiros_ndrlat 47374, 48142, 49166, 50190, 51214, 51982, 53006, 54030, 54798, 55822;
+        UInt16 dsp_ing_tiros_ndrlon 4673, 4417, 4161, 3905, 3649, 3393, 3137, 2881, 2625, 2369;
+        UInt16 dsp_ing_tiros_chncnt 1280;
+        UInt16 dsp_ing_tiros_chndsq 39169, 39169, 39169, 39169, 39169;
+        UInt16 dsp_ing_tiros_czncs2 52480;
+        UInt16 dsp_ing_tiros_wrdsiz 512;
+        UInt16 dsp_ing_tiros_nchbas 0;
+        UInt16 dsp_ing_tiros_nchlst 0;
+        Float32 dsp_ing_tiros_rpmclc 0.000000000;
+        UInt16 dsp_ing_tiros_numpix 39169;
+        UInt16 dsp_ing_tiros_scnden 768;
+        UInt16 dsp_ing_tiros_eltden 1280;
+        UInt16 dsp_ing_tiros_orbtno 0;
+        Int32 dsp_ing_tiros_slope2 0, 0, 0, 0, 0;
+        Int32 dsp_ing_tiros_intcp2 0, 0, 0, 0, 0;
+        Float32 dsp_ing_tiros_prtemp -69.77980804;
+        Float32 dsp_ing_tiros_timerr 0.000000000;
+        UInt16 dsp_ing_tiros_timstn 0;
+        String dsp_nav_xsatid "BIN ";
+        Byte dsp_nav_xsatty 5;
+        Byte dsp_nav_xproty 8;
+        Byte dsp_nav_xmapsl 0;
+        Byte dsp_nav_xtmpch 4;
+        Float32 dsp_nav_ximgdy 6005.000000;
+        Float32 dsp_nav_ximgtm 132305.1562;
+        Float32 dsp_nav_xorbit 18363.00000;
+        Float32 dsp_nav_ximgcv 89.98000336, 0.000000000, -89.98000336, 0.000000000, -179.9819794, 0.000000000, 179.9819794, 0.000000000;
+        Float32 dsp_nav_earth_linoff 0.000000000;
+        Float32 dsp_nav_earth_pixoff 0.000000000;
+        Float32 dsp_nav_earth_scnstr 1.000000000;
+        Float32 dsp_nav_earth_scnstp 4096.000000;
+        Float32 dsp_nav_earth_pixstr 1.000000000;
+        Float32 dsp_nav_earth_pixstp 8192.000000;
+        Float32 dsp_nav_earth_latorg 0.000000000;
+        Float32 dsp_nav_earth_lonorg 0.000000000;
+        Float32 dsp_nav_earth_orgrot 0.000000000;
+        Float32 dsp_nav_earth_lattop 0.000000000;
+        Float32 dsp_nav_earth_latbot 0.000000000;
+        Float32 dsp_nav_earth_latcen 0.000000000;
+        Float32 dsp_nav_earth_loncen 0.000000000;
+        Float32 dsp_nav_earth_height 179.9600067;
+        Float32 dsp_nav_earth_width 0.000000000;
+        Float32 dsp_nav_earth_level 1.000000000;
+        Float32 dsp_nav_earth_xspace 3.000000000;
+        Float32 dsp_nav_earth_yspace 3.000000000;
+        String dsp_nav_earth_rev "1.0 ";
+        Float32 dsp_nav_earth_dflag 0.000000000;
+        Float32 dsp_nav_earth_numpix 8192.000000;
+        Float32 dsp_nav_earth_numras 4096.000000;
+        Float32 dsp_nav_earth_magxx 1.000000000;
+        Float32 dsp_nav_earth_magyy 1.000000000;
+        Int32 dsp_hgt_llnval 23;
+        Int32 dsp_hgt_lltime 48135149;
+        Float32 dsp_hgt_llvect 823.7459717, 0.4658626318, 824.0027466, 0.5170301795, 824.2997437, 0.5687208772, 824.6268921, 0.6204183102, 824.9763794, 0.6721222401, 825.3398438, 0.7238329649, 825.7090454, 0.7755504847, 826.0755005, 0.8272744417, 826.4307861, 0.8790054321, 826.7666626, 0.9307429790, 827.0751953, 0.9824873805, 827.3486938, 1.034238100, 827.5798950, 1.085995555, 827.7620850, 1.137759089, 827.8890991, 1.189528704, 827.9553833, 1.241303682, 827.9562378, 1.293083549, 827.8876343, 1.344866276, 827.7462769, 1.396648765, 827.5299683, 1.448421836, 827.2370605, 1.500150323, 826.8671265, 1.551417947, 826.4204102, 1.537160039, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        String history "PATHNLC May 23 15:06:54 2006 PATHNLC t,3,270.16,0.05,0.,0.01,271.16,308.16,,,,1,,,2,,,3,,,,,,4,,,,,,,1.,,35.,0.1,5,,,,,,,0.7,,35.,0.15,45.,80.,0.005,20,0.,3.6,0.,8.,t,,,,,,,, ,,,,1.2,,,,1.2,,55.,1,270.16,0.05 pixsiz=16 allb=4 nlsst=1 vernum=4 version=V4.2 pathfinder flagtree 3bitqual 14oct97 newtest=1 tree=0 in=/i1/gacsst/orbit/06005115441/sector//06005132305.N17@ingest in1=/i1/gacsst/gacmask//3wk-200601.m1dw0oisstv2-sst out=/i1/gacsst/gacsst//06005132305.sst@ingest
+PATHNLC  NLSST Temp calculation date: April 10, 1996
+oisstv2mia Apr  4 11:01:08 2006 oisstv2mia  IN=global_blnk.m1d-sst IN1=oisst.20060104 OUT=200601.m1dw0oisstv2-sst dtype=1 bias=-3 slope=0.15
+STATS Apr  4 11:21:54 2006 STATS minpix=1 maxpix=255 in=/f5/data/oiv2/m1dw/06//200601.m1dw0oisstv2-sst 	  audit=t, callim=f, cal=f, cloud=f 	  outm=/f5/data/oiv2/m1dw/06/3wk-200601.m1dw0oisstv2-sst
+oisstv2mia Apr  4 11:01:03 2006 oisstv2mia  IN=global_blnk.m1d-sst IN1=oisst.20051228 OUT=200552.m1dw0oisstv2-sst dtype=1 bias=-3 slope=0.15
+STATS /f5/data/oiv2/m1dw/06//200552.m1dw0oisstv2-sst
+oisstv2mia Apr  4 11:01:08 2006 oisstv2mia  IN=global_blnk.m1d-sst IN1=oisst.20060104 OUT=200601.m1dw0oisstv2-sst dtype=1 bias=-3 slope=0.15
+STATS /f5/data/oiv2/m1dw/06//200601.m1dw0oisstv2-sst
+oisstv2mia Apr  4 11:01:13 2006 oisstv2mia  IN=global_blnk.m1d-sst IN1=oisst.20060111 OUT=200602.m1dw0oisstv2-sst dtype=1 bias=-3 slope=0.15
+STATS /f5/data/oiv2/m1dw/06//200602.m1dw0oisstv2-sst
+PATHNLC /i1/gacsst/gacmask//3wk-200601.m1dw0oisstv2-sst
+PATHNLC  45d coeffs used (1) =    1.184   0.949   0.123   1.638   0.000
+PATHNLC  45d coeffs used (2) =    1.481   0.968   0.073   1.200   0.000
+PATHNLC  45d coeffs used (3) =    0.000   0.000   0.000   0.000   0.000
+PATHNLC  GETOZONE I     0.0900    0.0000
+PATHBIN May 23 15:08:36 2006 PATHBIN RESOLVE=4 BINMODEL=1     ASC=A GRID=(16, 16) IN=/i1/gacsst/gacsst//06005132305.sst@ingest@sst NLC=1      DATADAY=2006006 DAYSTR=06005100127 DAYEND=06006105736     OUT=/i1/gacsst/gacpst//06005132305.b04p3pfrt@pst\NLC Postage Stamp     ALLB=4 SEAMLON=-180.0     LAND=/i1/gacsst/gacmask//pfv50-land.b04bit-180
+PATHTIME May 23 15:08:55 2006 PATHTIME WQ=B ASC=A IN=/tmp/06005115441-2006005-3.filespfrt OUT=/i1/gacsst/gaclpst//06005115441-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacpst//06005124937-2006005.b04p3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacpst//06005132305-2006005.b04p3pfrt@pst@bin_number
+PATHTIME May 30 10:29:50 2006 PATHTIME WQ=B ASC=A IN=/i1/gacsst/gacopst/2006005.fileapfrt OUT=/i1/gacsst/pfrt/b04d/06/01/2006005.b04d4pfrt-p@pst@bin_number 	satzen=f audit=1
+PATHTIME /i1/gacsst/gacopst//06004065812-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004084003-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004102856-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004121812-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004140652-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004154531-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004173535-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004190122-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004204136-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06004222142-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005001057-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005012631-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005030549-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005045447-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005063512-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005081619-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005100527-2006005.b04o3pfrt@pst@bin_number
+PATHTIME /i1/gacsst/gacopst//06005115441-2006005.b04o3pfrt@pst@bin_number
+PATHCLMAP Jun 11 13:27:06 2006 PATHCLMAP thresh=2. thr2 =12. WQ=F in=/i1/gacsst/pfrt/b04d/06/01//2006005.b04d4pfrt-p@pst  ref=/i1/gacsst/pfrt/ref/06//3wk-200601.b09w4pfrt-f7-7@pst map=/i1/gacsst/gacmask//bin2bin.u04to09
+PATHCLMAP Nov 19 22:49:21 2006 PATHCLMAP thresh=2. thr2 =12. WQ=F in=/f5/avhrr/gacsst/pfrt/b04d/06/01//2006005.b04d4pfrt-p@pst  ref=/f5/avhrr/gacsst/pfrt/ref/06//3wk-200601.b09w4pfrt-f7-7@pst map=/i1/gacsst/gacmask//bin2bin.u04to09
+PATHTIME Apr  2 14:26:05 2007 PATHTIME WQ=D ASC=A IN=/f12/avhrr/gacsst/pfrt/topa/b045.file3pfrt OUT=/my5/avhrr/gacsst/pfrt/b045/06/2006001-2006005.b0454pfrt@pst@sst@pst@bin_number 	satzen=f audit=1
+PATHTIME /f12/avhrr/gacsst/pfrt/topa//2006001.b04d4pfrt@pst@bin_number
+PATHTIME /f12/avhrr/gacsst/pfrt/topa//2006002.b04d4pfrt@pst@bin_number
+PATHTIME /f12/avhrr/gacsst/pfrt/topa//2006003.b04d4pfrt@pst@bin_number
+PATHTIME /f12/avhrr/gacsst/pfrt/topa//2006004.b04d4pfrt@pst@bin_number
+PATHTIME /f12/avhrr/gacsst/pfrt/topa//2006005.b04d4pfrt@pst@bin_number
+PATHMAP Apr  9 12:07:28 2007 PATHMAP STAT=M QUAL=A WQ=D PIXSIZ=16 		    IN=/h/my5/avhrr/gacsst/pfrt/tomp//2006001-2006005.b0454pfrt@pst@bsst OUT=(IMG=/f5/avhrr/gacsst/pfrt/m045/06/2006001-2006005.s0454pfrt-bsst-16b@bsst SLO= 0.075       INT=  -3.0      )
+PATHMAP Output image pixel, line size =    8192,    4096
+PATHMAP Grid spacing (X,Y) = (        3.00,        3.00), Projection Code=     7
+PATHMAP Projection Origin Lon,Lat,Rotation =         0.00        0.00        0.00
+PATHMAP center lon,lat,width, or height =        0.00       0.00       0.00     179.96
+
+Q!d¿";
+    }
+    bsst {
+        String long_name "bsst";
+        Byte dsp_PixelType 1;
+        Byte dsp_PixelSize 2;
+        UInt16 dsp_Flag 0;
+        UInt16 dsp_nBits 16;
+        Int32 dsp_LineSize 0;
+        String dsp_cal_name "Temperature";
+        String units "Temp";
+        UInt16 dsp_cal_eqnNumber 2;
+        UInt16 dsp_cal_CoeffsLength 8;
+        Float32 dsp_cal_coeffs 0.07500000298, -3.000000000;
+        Float32 scale_factor 0.07500000298;
+        Float32 add_off -3.000000000;
+        String coordinates "lat lon";
+    }
+    lat {
+        String unit "degrees_north";
+        String long_name "latitude";
+        String units "degrees_north";
+    }
+    lon {
+        String unit "degrees_east";
+        String long_name "longitude";
+        String units "degrees_east";
+    }
+}

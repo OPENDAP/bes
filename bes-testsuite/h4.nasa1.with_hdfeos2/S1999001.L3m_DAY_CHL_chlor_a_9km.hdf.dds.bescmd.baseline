@@ -1,0 +1,5 @@
+Dataset {
+    Float32 l3m_data[Number_of_Lines = 2160][Number_of_Columns = 4320];
+    Float32 Number_of_Lines[Number_of_Lines = 2160];
+    Float32 Number_of_Columns[Number_of_Columns = 4320];
+} S1999001.L3m_DAY_CHL_chlor_a_9km.hdf;

@@ -1,0 +1,3937 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MOD06_L2.A2010001.0000.005.2010005213214.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD06_L2.A2010001.0000.005.2010005213214.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2010-01-05T21:32:14.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Both&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;processed once&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;005&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;further update is anticipated&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed: &gt;10% useable; Failed: &lt;10% useable&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>40</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Cloud_Top_Pressure&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2009-12-31&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;23:33:33.861779&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>53395</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>164.121672912109</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>5</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD06_L2&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>50</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD021KM.A2010001.0000.005.2010004001127.hdf&quot;</value>
+                        <value>&quot;MOD03.A2010001.0000.005.2010003235220.hdf&quot;</value>
+                        <value>&quot;MOD35_L2.A2010001.0000.005.2010004001451.hdf&quot;</value>
+                        <value>&quot;gdas1.PGrbF00.100101.00z&quot;</value>
+                        <value>&quot;oisst.20091230&quot;</value>
+                        <value>&quot;goge1_2_img.v1&quot;</value>
+                        <value>&quot;modisdet.dry.101.v2&quot;</value>
+                        <value>&quot;modisdet.ozo.101.v2&quot;</value>
+                        <value>&quot;
+          modisdet.wts.101.v2&quot;</value>
+                        <value>&quot;modisdet.wtl.101.v2&quot;</value>
+                        <value>&quot;modisdet.wco.101.v2&quot;</value>
+                        <value>&quot;MODCSR_B.A2009358.005.2010005205328.hdf&quot;</value>
+                        <value>&quot;Library_water.hdf.v1&quot;</value>
+                        <value>&quot;Library_ice.hdf.v2&quot;</value>
+                        <value>&quot;Transmittance.hdf.v2&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.0.659.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.0.858.hdf&quot;</value>
+                        <value>&quot;
+          AlbMap.WS.c004.v2.0.00-04.001.1.24.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.1.64.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.2.13.hdf&quot;</value>
+                        <value>&quot;AlbSnwStst.ByNISE.W90.D90.WS.Hemi.2000-2004.YrAvg.hdf&quot;</value>
+                        <value>&quot;IGBP.EcoMap.NtoS.2004.149.v004.hdf&quot;</value>
+                        <value>&quot;TOAST_100101.GRB&quot;</value>
+                        <value>&quot;eng.100101&quot;</value>
+                        <value>&quot;
+          NISE_SSMISF17_20100102.HDFEOS&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>49.7721853442657</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-47.0583888098271</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-83.9477317129688</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-59.3240852125626</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2010-01-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:05:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2010-01-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.12.4&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ANCILLARYINPUTGRANULE" type="Container">
+                <Attribute name="ANCILLARYINPUTGRANULECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MOD03.A2010001.0000.005.2010003235220.hdf&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTTYPE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Geolocation&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Terra&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;SuccessCloudTopPropRtrPct_IR&quot;</value>
+                            <value>&quot;SuccessCloudPhaseRtrPct_IR&quot;</value>
+                            <value>&quot;LowCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;MidCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;HighCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;ThinCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;ThickCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;OpaqueCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;CirrusCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;IceCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;WaterCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;MixedCloudDetectedPct_IR&quot;</value>
+                            <value>&quot;CloudPhaseUncertainPct_IR&quot;</value>
+                            <value>&quot;OceanCoverFractionPct&quot;</value>
+                            <value>&quot;LandCoverFractionPct&quot;</value>
+                            <value>&quot;SnowCoverFractionPct&quot;</value>
+                            <value>&quot;SuccessCloudOptPropRtrPct_VIS&quot;</value>
+                            <value>&quot;CloudCoverFractionPct_VIS&quot;</value>
+                            <value>&quot;WaterCloudDetectedPct_VIS&quot;</value>
+                            <value>&quot;IceCloudDetectedPct_VIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;18&quot;</value>
+                                <value>&quot;19&quot;</value>
+                                <value>&quot;20&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;   60.11&quot;</value>
+                                <value>&quot;   59.37&quot;</value>
+                                <value>&quot;   27.43&quot;</value>
+                                <value>&quot;   29.83&quot;</value>
+                                <value>&quot;    2.85&quot;</value>
+                                <value>&quot;    6.71&quot;</value>
+                                <value>&quot;   26.48&quot;</value>
+                                <value>&quot;   26.92&quot;</value>
+                                <value>&quot;   33.19&quot;</value>
+                                <value>&quot;   24.12&quot;</value>
+                                <value>&quot;   13.71&quot;</value>
+                                <value>&quot;    9.75&quot;</value>
+                                <value>&quot;   11.79&quot;</value>
+                                <value>&quot;   46.39&quot;</value>
+                                <value>&quot;   53.61&quot;</value>
+                                <value>&quot;   68.19&quot;</value>
+                                <value>&quot;    2.93&quot;</value>
+                                <value>&quot;    3.67&quot;</value>
+                                <value>&quot;    1.72&quot;</value>
+                                <value>&quot;    1.84&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="PROCESSINGENVIRONMENT" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;Linux minion5049 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Xeon(TM) CPU 2.80GHz unknown GNU/Linux&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGE" type="Container">
+                <Attribute name="ALGORITHMPACKAGEACCEPTANCEDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;June 1997&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGEMATURITYCODE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;at-launch&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGENAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;ATBD-MOD-04 and ATBD-MOD-05&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="INSTRUMENTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Moderate Resolution Imaging Spectroradiometer&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LONGNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MODIS/Terra Clouds 5-Min L2 Swath 1km and 5km&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALINPUTGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>20</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD021KM.A2010001.0000.005.2010004001127.hdf&quot;</value>
+                        <value>&quot;MOD03.A2010001.0000.005.2010003235220.hdf&quot;</value>
+                        <value>&quot;MOD35_L2.A2010001.0000.005.2010004001451.hdf&quot;</value>
+                        <value>&quot;MODCSR_B.A2009358.005.2010005205328.hdf&quot;</value>
+                        <value>&quot;Library_water.hdf.v1&quot;</value>
+                        <value>&quot;Library_ice.hdf.v2&quot;</value>
+                        <value>&quot;Transmittance.hdf.v2&quot;</value>
+                        <value>&quot;
+          AlbMap.WS.c004.v2.0.00-04.001.0.659.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.0.858.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.1.24.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.1.64.hdf&quot;</value>
+                        <value>&quot;AlbMap.WS.c004.v2.0.00-04.001.2.13.hdf&quot;</value>
+                        <value>&quot;AlbSnwStst.ByNISE.W90.D90.WS.Hemi.2000-2004.YrAvg.hdf&quot;</value>
+                        <value>&quot;
+          IGBP.EcoMap.NtoS.2004.149.v004.hdf&quot;</value>
+                        <value>&quot;gdas1.PGrbF00.100101.00z&quot;</value>
+                        <value>&quot;TOAST_100101.GRB&quot;</value>
+                        <value>&quot;oisst.20091230&quot;</value>
+                        <value>&quot;eng.100101&quot;</value>
+                        <value>&quot;NISE_SSMISF17_20100102.HDFEOS&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GPOLYGON" type="Container">
+                <Attribute name="GPOLYGONCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="GRING" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="EXCLUSIONGRINGFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;N&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GRINGPOINT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTLONGITUDE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>49.7741825777481</value>
+                                <value>-49.6346865116933</value>
+                                <value>-31.8875607008629</value>
+                                <value>14.7581374580967</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTLATITUDE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-70.0619907141548</value>
+                                <value>-83.2821690669814</value>
+                                <value>-65.5399200163829</value>
+                                <value>-59.0903113966012</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTSEQUENCENO" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>1</value>
+                                <value>2</value>
+                                <value>3</value>
+                                <value>4</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHM_VERSION_CLOUD_TOP_PROPERTY_IR" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;1&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHM_VERSION_CLOUD_PHASE_IR" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;1&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHM_VERSION_CLOUD_PROPERTY_VIS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;1&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DESCRREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;5.0&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PRODUCTIONHISTORY" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;PGE06:5.12.4&quot;</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;mod06&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>270</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>406</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1354</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2030</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_5" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band_Number&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>7</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_6" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band_Ratio&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_7" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band_Forcing&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_8" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Band_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_9" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Radius_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_10" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;QA_Parameter_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>10</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_11" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;QA_Parameter_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_12" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cloud_Mask_1km_Num_Bytes&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_13" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Statistic_Parameter_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>20</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container">
+                    <Attribute name="DimensionMap_1" type="Container">
+                        <Attribute name="GeoDimension" type="String">
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataDimension" type="String">
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                        <Attribute name="Increment" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DimensionMap_2" type="Container">
+                        <Attribute name="GeoDimension" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataDimension" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                        <Attribute name="Increment" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Band_Number&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Number&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Statistics_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Statistic_Parameter_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Scan_Start_Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT64</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Solar_Zenith&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Solar_Azimuth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Sensor_Zenith&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Sensor_Azimuth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Brightness_Temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Number&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Surface_Temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Surface_Pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Processing_Flag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Height_Method&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure_Night&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure_Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Temperature_Night&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Temperature_Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Tropopause_Height&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Fraction&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Fraction_Night&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Fraction_Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Emissivity&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_24" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Emissivity_Night&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_25" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Emissivity_Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_26" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure_Infrared&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_27" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Spectral_Cloud_Forcing&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Forcing&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_28" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure_From_Ratios&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Ratio&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_29" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Surface_Type&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_30" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Radiance_Variance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Number&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_31" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Brightness_Temperature_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Band_Difference&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_32" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Infrared&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_33" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Infrared_Night&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_34" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Infrared_Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_35" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_36" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_37" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_38" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_39" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Effective_Radius_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Radius_Difference&quot;</value>
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_40" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_41" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_42" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_43" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_44" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_45" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_46" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_47" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_48" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Optical_Properties&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_49" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Multi_Layer_Flag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_50" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cirrus_Reflectance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_51" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cirrus_Reflectance_Flag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_52" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Mask_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_53" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Quality_Assurance_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                            <value>&quot;QA_Parameter_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_54" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Mask_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                            <value>&quot;Cloud_Mask_1km_Num_Bytes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_55" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Quality_Assurance_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_1km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_1km&quot;</value>
+                            <value>&quot;QA_Parameter_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.9</value>
+        </Attribute>
+        <Attribute name="Number_of_Instrument_Scans" type="Int32">
+            <value>238</value>
+        </Attribute>
+        <Attribute name="Maximum_Number_of_1km_Frames" type="Int32">
+            <value>74</value>
+        </Attribute>
+        <Attribute name="history" type="String">
+            <value>$Id: MOD06_L2.CDL.fs,v 1.8 2005/06/17 15:49:42 wind Exp $                           
+</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>MODIS Level 2 Cloud Properties                                                      
+</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Band_Number">
+        <Attribute name="units" type="String">
+            <value>level</value>
+            <value>none</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS Band Number</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Geolocation data not applicable</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band_Number" size="7"/>
+    </Array>
+    <Array name="Statistics_1km">
+        <Attribute name="units" type="String">
+            <value>level</value>
+            <value>see description attribute</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Granule Statistics for parameters at 1x1 resolution</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Geolocation data not applicable</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>\\012                                                                                   \\012Statistics_1km:                                                                     \\012  1. Successful Retrieval Rate (%)                                                  \\012  2. Land Cover Fraction (%)                                                        \\012  3. Water Cover Fraction (%)                                                       \\012  4. Snow Cover Fraction (%)                                                        \\012  5. Cloud Cover Fraction (%)                                                       \\012  6. Water Cloud Detected (%)                                                       \\012  7. Ice Cloud Detected (%)                                                         \\012  8. Mean of Water Cloud Optical Thickness                                          \\012  9. Standard Deviation of Water Cloud Optical Thickness                            \\012  10.Mean of Ice Cloud Optical Thickness                                            \\012  11.Standard Deviation of Ice Cloud Optical Thickness                              \\012  12.Mean of Water Cloud Effective Particle Radius (microns)                        \\012  13.Standard Deviation of Water Cloud Effective Particle Radius  (microns)         \\012  14.Mean of Ice Cloud Effective Diameter (microns)                                 \\012  15.Standard Deviation of Ice Cloud Effective Diameter (microns)                   \\012</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Statistic_Parameter_1km" size="20"/>
+    </Array>
+    <Array name="Scan_Start_Time">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>3155800064.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.90002441406250</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>TAI time at start of scan replicated across the swath</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>seconds since 1993-1-1 00:00:00.0 0</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Geolocation data not applicable</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Solar_Zenith">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Solar Zenith Angle, Cell to Sun</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Solar_Azimuth">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Solar Azimuth Angle, Cell to Sun</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Sensor_Zenith">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Sensor Zenith Angle, Cell to Sensor</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Sensor_Azimuth">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Sensor Azimuth Angle, Cell to Sensor</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Brightness_Temperature">
+        <Attribute name="coordinates" type="String">
+            <value>Band_Number Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Brightness Temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Band_Number" size="7"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Surface_Temperature">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Surface Temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Non MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Surface_Pressure">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Surface Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Non MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Processing_Flag">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>3</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Retrieval Method Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Height_Method">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>1</value>
+            <value>6</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Height Method</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure_Night">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure Night</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure_Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure Day</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Temperature">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Temperature_Night">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Temperature Night</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Temperature_Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Temperature Day</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Tropopause_Height">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Tropopause Height</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Fraction">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Fraction_Night">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction Night</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Fraction_Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction Day</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Emissivity">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Emissivity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Emissivity_Night">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Emissivity Night</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Emissivity_Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Emissivity Day</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure_Infrared">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure from IR Window</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Spectral_Cloud_Forcing">
+        <Attribute name="coordinates" type="String">
+            <value>Band_Forcing Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Spectral Cloud Forcing</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Watts/meter2/steradian/micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Band_Forcing" size="5"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure_From_Ratios">
+        <Attribute name="coordinates" type="String">
+            <value>Band_Ratio Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure from Ratios (36/35, 35/34, 35/33, 34/33, 33/31)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Band_Ratio" size="5"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Surface_Type">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>200</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32768</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Surface Type Based on Emissivity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Non MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Radiance_Variance">
+        <Attribute name="coordinates" type="String">
+            <value>Band_Number Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Radiance Variance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Watts/meter2/steradian/micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Band_Number" size="7"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Brightness_Temperature_Difference">
+        <Attribute name="coordinates" type="String">
+            <value>Band_Difference Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Brightness Temperature Difference (29-31, 31-32)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Band_Difference" size="2"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Phase_Infrared">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Infrared</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Phase_Infrared_Night">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Infrared Night</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Phase_Infrared_Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Infrared Day</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 7 and either band 1, 2, or 5 (specified in Quality_Assurance_1km)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness two-channel retrieval using band 7 and either band 1, 2, or 5 (specified in Quality_Assurance_1km)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness two-channel retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Effective_Radius_Difference">
+        <Attribute name="coordinates" type="String">
+            <value>Radius_Difference Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 6 and band 20 differenced from band 7 retrieval and either band 1, 2, or 5 (specified in Quality_Assurance_1km). Plane 1 of SDS is band 6 - band 7 retrieval, Plane 2 is band 20 - band 7 retrieval.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Radius_Difference" size="2"/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Water_Path">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Column Water Path two-band retrieval using band 7 and either band 1, 2, or 5 (specified in Quality_Assurance_1km)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/m^2</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Water_Path_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Column Water Path two-band retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/m^2</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Particle Radius Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Water_Path_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Water Path Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Particle Radius Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Water_Path_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Water Path Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Phase_Optical_Properties">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>4</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Determination Used in Optical Thickness/Effective Radius Retrieval</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Multi_Layer_Flag">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>9</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Multi Layer Identification From MODIS Shortwave Observations</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>\\012                                                                                   \\012                                                                                    \\012 Flag for multi-layer multi-phase cloud situations. Values 2 through 8              \\012 indicate the success of various multi-layer cloud tests. Value of 0                \\012 indicates no retrieval, value of 1 indicates single layer cloud. The               \\012 other values are of increasing confidence level. The value of 2 is                 \\012 of absolute lowest confidence and often can be ignored as it  is a result          \\012 of cloud phase comparison test, which is not always trustworthy.                   \\012</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cirrus_Reflectance">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cirrus Reflectance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.00019999999494757503</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cirrus_Reflectance_Flag">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>3</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>157</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cirrus Reflectance Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>0: bad data, 1: non-cirrus pixel, 2: cirrus pixel, 3: contrail pixel                \\012</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Cloud_Mask_5km">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS Cloud Mask, First Byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>\\012                                                                                   \\012                                                                                    \\012 Bit fields within each byte are numbered from the left:                            \\012 7, 6, 5, 4, 3, 2, 1, 0.                                                            \\012 The left-most bit (bit 7) is the most significant bit.                             \\012 The right-most bit (bit 0) is the least significant bit.                           \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 0               Cloud Mask Flag                      0 = Not  determined           \\012                                                      1 = Determined                \\012                                                                                    \\012 2, 1            Unobstructed FOV Quality Flag        00 = Cloudy                   \\012                                                      01 = Uncertain                \\012                                                      10 = Probably  Clear          \\012                                                      11 = Confident  Clear         \\012                 PROCESSING PATH                                                    \\012                 ---------------                                                    \\012 3               Day or Night Path                    0 = Night  / 1 = Day          \\012 4               Sunglint Path                        0 = Yes    / 1 = No           \\012 5               Snow/Ice Background Path             0 = Yes    / 1 = No           \\012 7, 6            Land or Water Path                   00 = Water                    \\012                                                      01 = Coastal                  \\012                                                      10 = Desert                   \\012                                                      11 = Land                     \\012</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Quality_Assurance_5km">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude QA_Parameter_5km</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Quality Assurance at 5x5 Resolution</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>See MODIS atmosphere QA plan for details                                            \\012</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+        <dimension name="QA_Parameter_5km" size="10"/>
+    </Array>
+    <Array name="Cloud_Mask_1km">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude Cloud_Mask_1km_Num_Bytes</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS Cloud Mask, L2 MOD06 QA Plan</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>MODIS Input</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>See MODIS atmosphere QA plan for details                                            \\012</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+        <dimension name="Cloud_Mask_1km_Num_Bytes" size="2"/>
+    </Array>
+    <Array name="Quality_Assurance_1km">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude QA_Parameter_1km</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Quality Assurance at 1x1 Resolution</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>2030</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>1</value>
+            <value>1354</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>\\012                                                                                   \\012                                                                                    \\012Quality Assurance 1km reports on Cloud Optical Properties                           \\012algorithm performance.  Refer to MOD_PR06OD User Documentation and the              \\012MODIS atmosphere QA plan for complete descriptions and coding examples.             \\012                                                                                    \\012 Bit fields within each byte are numbered from the left:                            \\012 7, 6, 5, 4, 3, 2, 1, 0.                                                            \\012 The left-most bit (bit 7) is the most significant bit.                             \\012 The right-most bit (bit 0) is the least significant bit.                           \\012                                                                                    \\012                                                                                    \\012 Byte 0                                                                             \\012 ------                                                                             \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 Byte 0 -----------------------------------------------------------------           \\012  0              Optical Thickness General QA       0 = Not Useful                  \\012                                                    1 = Useful                      \\012  2,1            Optical Thickness Confidence QA    00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012  4,3            Optical Thickness out-of-bounds    00 = OT &lt; 100                   \\012                                                    01 = 100 &lt; OT &lt; 150             \\012                                                    10 = OT &gt; 150                   \\012                                                    11 = Albedo  too high           \\012  5              Effective Radius General QA        0 = Not Useful                  \\012                                                    1 = Useful                      \\012  7,6            Effective Radius Confidence QA     00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012 Byte 1 -----------------------------------------------------------------           \\012  0              Liquid Water Path General QA       0 = Not Useful                  \\012                                                    1 = Useful                      \\012  2,1            Liquid Water Path Confidence QA    00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012  5,4,3          1621 Retrieval processing path     000 = No Cloud Mask             \\012                                                    001 = No Cloud                  \\012                                                    010 = Water Cloud               \\012                                                    011 = Ice Cloud                 \\012                                                    100 = Unknown Cloud             \\012  6              1621 Retrieval Outcome             0 = Failed/No  attempt          \\012                                                    1 = Successful                  \\012 Byte 2 -----------------------------------------------------------------           \\012  2,1,0          Primary retrieval processing path  000 = No Cloud Mask             \\012                                                    001 = No Cloud                  \\012                                                    010 = Water Cloud               \\012                                                    011 = Ice Cloud                 \\012                                                    100 = Unknown Cloud             \\012  3              Retrieval Outcome                  0 = Failed/No  attempt          \\012                                                    1 = Successful                  \\012  4              Rayleigh Correction                0 = No Correction               \\012                                                    1 = Correction                  \\012  5              Water Vapor Correction             0 = No Correction               \\012                                                    1 = Correction                  \\012  7,6            Band Used for Optical Thickness Retrieval                          \\012                                                    00 = No attempt                 \\012                                                    01 = .645 micron                \\012                                                    10 = .858 micron                \\012                                                    11 = 1.24 micron                \\012 Byte 3 -----------------------------------------------------------------           \\012  0              Optical Thickness 1621 General QA  0 = Not Useful                  \\012                                                    1 = Useful                      \\012  2,1            Optical Thickness 1621 Condifence QA                               \\012                                                    00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012  3              Effective Radius 1621 General QA   0 = Not Useful                  \\012                                                    1 = Useful                      \\012  5,4            Effective Radius 1621 Confidence QA                                \\012                                                    00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012  6,7            Clear Sky Restoral Type QA                                         \\012                                       00 = Not Restored                            \\012                                       01 = Restored Via Edge detection             \\012                                       10 = Restored Via Spatial  Variance          \\012                                       11 = Restored Via 250m Tests                 \\012 Byte 4 -----------------------------------------------------------------           \\012  0              Water Path 1621 General QA         0 = Not Useful                  \\012                                                    1 = Useful                      \\012  2,1            Water Path 1621 Confidence QA      00 = No confidence              \\012                                                    01 = Marginal                   \\012                                                    10 = Good                       \\012                                                    11 = Very Good                  \\012  5,4,3          Multi Layer Cloud Flag      000 = Cloud Mask Undet                 \\012                                             001 = Decision tree stop               \\012                                             010 = single layer: water              \\012                                             011 = multi layer: water               \\012                                             100 = single layer: ice                \\012                                             101 = multi layer: ice                 \\012                                             110 = single layer:  unknown           \\012                                             111 = multi layer: unknown             \\012</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+        <dimension name="QA_Parameter_1km" size="5"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_1km" size="2030"/>
+        <dimension name="Cell_Across_Swath_1km" size="1354"/>
+    </Array>
+    <Array name="Band_Ratio">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Band_Ratio(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band_Ratio" size="5"/>
+    </Array>
+    <Array name="Band_Forcing">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Band_Forcing(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band_Forcing" size="5"/>
+    </Array>
+    <Array name="Band_Difference">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Band_Difference(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Band_Difference" size="2"/>
+    </Array>
+    <Array name="Radius_Difference">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Radius_Difference(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Radius_Difference" size="2"/>
+    </Array>
+    <Array name="QA_Parameter_5km">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>QA_Parameter_5km(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="QA_Parameter_5km" size="10"/>
+    </Array>
+    <Array name="QA_Parameter_1km">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>QA_Parameter_1km(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="QA_Parameter_1km" size="5"/>
+    </Array>
+    <Array name="Cloud_Mask_1km_Num_Bytes">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud_Mask_1km_Num_Bytes(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cloud_Mask_1km_Num_Bytes" size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

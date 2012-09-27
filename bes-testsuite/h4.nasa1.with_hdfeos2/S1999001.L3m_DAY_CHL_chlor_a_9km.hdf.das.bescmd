@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="S1999001.L3m_DAY_CHL_chlor_a_9km.hdf" space="catalog">/data/S1999001.L3m_DAY_CHL_chlor_a_9km.hdf</setContainer>
+    <define name="d">
+	<container name="S1999001.L3m_DAY_CHL_chlor_a_9km.hdf" />
+    </define>
+    <get type="das" definition="d" />
+</request>

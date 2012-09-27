@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MOD13C2.A2007001.005.2007108072029.hdf" space="catalog">/data/MOD13C2.A2007001.005.2007108072029.hdf</setContainer>
+    <define name="d">
+	<container name="MOD13C2.A2007001.005.2007108072029.hdf" />
+        <constraint>CMG_0_05_Deg_Monthly_NDVI[671:1:671][5637:1:5637],Latitude[0:1799:3599],Longitude[0:3599:7199]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

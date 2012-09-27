@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="LISOTD_HRAC_V2.2.hdf" space="catalog">/data/LISOTD_HRAC_V2.2.hdf</setContainer>
+    <define name="d">
+	<container name="LISOTD_HRAC_V2.2.hdf" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

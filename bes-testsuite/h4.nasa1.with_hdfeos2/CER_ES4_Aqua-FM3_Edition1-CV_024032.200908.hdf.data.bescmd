@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf" space="catalog">/data/CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf</setContainer>
+    <define name="d">
+	<container name="CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf" />
+        <constraint>Albedo[0:71:71][0:143:143],_2_5_deg__regional_long__zones[0:143:143],_2_5_deg__regional_colat__zones[0:1:71],_10_0_deg__global_zone[0:1:0],_10_0_deg__zonal_colat__zones[0:17:17],Albedo_71[0:23:23][0:1:0]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

@@ -1,0 +1,319 @@
+Attributes {
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "CER_ISCCP-D2like-GEO_Composite_Beta1_023031.200510";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Clib-20071227 TK5.2.12 HDF-4.2r0 HDFEOS- 2.15v SW675 ANC675";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2009-01-05T15:49:56.000Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "GranuleParameters";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Suspect";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "QA flag explanation";
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "CNISCCAB";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 1;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 800;
+                    String VALUE "/CERES/ggeo/ancillary/CER11.7P1/static/SS5_GFDLAerClim_200006", "/CERES/ggeo/ancillary/CER11.7P1/static/erbetoa_csalb_clim.20010419", "/CERES/ggeo/ancillary/CER11.7P1/static/igbp_map_id.20011106", "
+          /CERES/ggeo/data/out_comp/data/CER_GGEOW_Composite_Edition2A_022030.200510", "/CERES/ggeo/ancillary/CER11.7P1/static/BDRF_snow_trmm", "/CERES/ggeo/ancillary/CER11.7P1/static/adm_trmm.bin";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-10-01";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-10-31";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "023031";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1;
+                        String VALUE "SamplingStrategy", "ProductionStrategy", "CERDataDateYear", "CERDataDateMonth", "NumberInputFiles";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5";
+                            String VALUE "Composite", "Beta1", "2005", "10", "6";
+                        }
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Composite";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "";
+                    }
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "NOT SET";
+                    }
+                }
+            }
+        }
+    }
+    ArhiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            CEREASTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 0.0;
+            }
+            CERNORTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 0.0;
+            }
+            CERSOUTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 180.0;
+            }
+            CERWESTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 360.0;
+            }
+            CERPRODUCTIONDATETIME {
+                Int32 NUM_VAL 1;
+                String VALUE "2009-01-05T10:49:56";
+            }
+            NUMBEROFRECORDS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 64800;
+            }
+            PRODUCTGENERATIONLOC {
+                Int32 NUM_VAL 1;
+                String VALUE "NASA Langley Research Center, HOST - mag107 OS - mklinux";
+            }
+        }
+    }
+    _1_0_deg__regional_colat__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "Regional Identification Parameters";
+        String units "degrees_north";
+        String fullpath "/Monthly 3-Hourly Averages/Regional Identification Parameters/Colatitude - MH";
+    }
+    _1_0_deg__regional_long__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "Regional Identification Parameters";
+        String units "degrees_east";
+        String fullpath "/Monthly 3-Hourly Averages/Regional Identification Parameters/Longitude - MH";
+    }
+    Number_Of_Observations___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Number";
+        String coordinates "Monthly_Hourly_Avgs _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Number Of Observations - MH";
+    }
+    Total_Cloud_Area_Fraction___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Percent";
+        String coordinates "Monthly_Hourly_Avgs _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Total Cloud Area Fraction - MH";
+    }
+    Cloud_Area_Fraction___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Percent";
+        String coordinates "Monthly_Hourly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Cloud Area Fraction - MH";
+    }
+    Effective_Pressure___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "HectoPascals";
+        String coordinates "Monthly_Hourly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Effective Pressure - MH";
+    }
+    Effective_Temperature___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Kelvin";
+        String coordinates "Monthly_Hourly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Effective Temperature - MH";
+    }
+    Log__Visible__Optical_Depth___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Unitless";
+        String coordinates "Monthly_Hourly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Log (Visible) Optical Depth - MH";
+    }
+    Liquid_Ice_Water_Path___MH {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Unitless";
+        String coordinates "Monthly_Hourly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly 3-Hourly Averages/D2-like-GEO Cloud Types/Liquid/Ice Water Path - MH";
+    }
+    Monthly_Total_Number_Of_Observations___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Number";
+        String coordinates "Monthly_Avgs _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Monthly Total Number Of Observations - M";
+    }
+    Total_Cloud_Area_Fraction___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Percent";
+        String coordinates "Monthly_Avgs _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Total Cloud Area Fraction - M";
+    }
+    Cloud_Area_Fraction___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Percent";
+        String coordinates "Monthly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Cloud Area Fraction - M";
+    }
+    Effective_Pressure___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "HectoPascals";
+        String coordinates "Monthly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Effective Pressure - M";
+    }
+    Effective_Temperature___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Kelvin";
+        String coordinates "Monthly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Effective Temperature - M";
+    }
+    Log__Visible__Optical_Depth___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Unitless";
+        String coordinates "Monthly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Log (Visible) Optical Depth - M";
+    }
+    Liquid_Ice_Water_Path___M {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "D2-like-GEO Cloud Types";
+        String units "Unitless";
+        String coordinates "Monthly_Avgs _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc _1_0_deg__regional_colat__zones _1_0_deg__regional_long__zones";
+        String fullpath "/Monthly Averages/D2-like-GEO Cloud Types/Liquid/Ice Water Path - M";
+    }
+    _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc {
+        String long_name "(thin->thick and low->high):Cu,Sc,St,Ac,As,Ns,Ci,Cs,Dc";
+        String units "level";
+        String fullpath "(thin->thick and low->high):Cu,Sc,St,Ac,As,Ns,Ci,Cs,Dc";
+    }
+    Monthly_Avgs {
+        String long_name "Monthly Avgs";
+        String units "level";
+        String fullpath "Monthly Avgs";
+    }
+    Monthly_Hourly_Avgs {
+        String long_name "Monthly Hourly Avgs";
+        String units "level";
+        String fullpath "Monthly Hourly Avgs";
+    }
+    CERES_metadata {
+        String Vdata_field_SHORTNAME "CNISCCAB                        ";
+        String Vdata_field_RANGEBEGINNINGDATE "2005-10-01                      ";
+        String Vdata_field_RANGEBEGINNINGTIME "00:00:00.000000                 ";
+        String Vdata_field_RANGEENDINGDATE "2005-10-31                      ";
+        String Vdata_field_RANGEENDINGTIME "23:59:59.000000                 ";
+        String Vdata_field_AUTOMATICQUALITYFLAG "Suspect                                                         ";
+        String Vdata_field_AUTOMATICQUALITYFLAGEXPLANATION "QA flag explanation                                                                                                                                                                                                                                             ";
+        String Vdata_field_ASSOCIATEDPLATFORMSHORTNAME "Composite                       ";
+        String Vdata_field_ASSOCIATEDINSTRUMENTSHORTNAME "                                ";
+        String Vdata_field_LOCALGRANULEID "CER_ISCCP-D2like-GEO_Composite_Beta1_023031.200510                                              ";
+        String Vdata_field_LOCALVERSIONID "Clib-20071227 TK5.2.12 HDF-4.2r0 HDFEOS- 2.15v SW675 ANC675     ";
+        String Vdata_field_CERPRODUCTIONDATETIME "2009-01-05T10:49:56             ";
+        Int32 Vdata_field_NUMBEROFRECORDS 64800;
+        String Vdata_field_PRODUCTGENERATIONLOC "NASA Langley Research Center, HOST - mag107 OS - mklinux                                                                                                                                                                                                        ";
+    }
+}

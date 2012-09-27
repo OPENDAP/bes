@@ -1,0 +1,1695 @@
+Attributes {
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+    }
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Solution_4_Land {
+        String units "level";
+        String long_name "Solution_4_Land(fake)";
+    }
+    QA_Byte_Land {
+        String units "level";
+        String long_name "QA_Byte_Land(fake)";
+    }
+    Num_By_Products {
+        String units "level";
+        String long_name "Num_By_Products(fake)";
+    }
+    QA_Byte_Ocean {
+        String units "level";
+        String long_name "QA_Byte_Ocean(fake)";
+    }
+    MODIS_Band_Land {
+        String units "level", "Nanometers";
+        String long_name "Center Wavelengths of MODIS Bands Used in Land Retrieval Algorithms";
+    }
+    MODIS_Band_Ocean {
+        String units "level", "Nanometers";
+        String long_name "Center Wavelengths of MODIS Bands Used in Ocean Retrieval Algorithms";
+    }
+    Solution_1_Land {
+        String units "level", "Nanometers";
+        String long_name "Central Wavelength of MODIS Bands Used in Continental Model Retrieval";
+    }
+    Solution_2_Land {
+        String units "level", "Nanometers";
+        String long_name "Central Wavelength of MODIS Bands Used in Corrected Model Retrieval";
+    }
+    Solution_3_Land {
+        String units "level", "Nanometers";
+        String long_name "Central Wavelength of MODIS Bands Used in Scatter Plot Solution";
+    }
+    Solution_Ocean {
+        String units "level", "None";
+        String long_name "Index of Ocean Solution Types  1 - Best 2 - Average";
+    }
+    Solution_Index {
+        String units "level", "None";
+        String long_name "Solution Index for Ocean Best Small (1-4) and Large (5-9) Modes";
+    }
+    Num_DeepBlue_Wavelengths {
+        String units "level", "Nanometers";
+        String long_name "Center Wavelengths of MODIS Bands Used in Deep Blue Algorithm";
+    }
+    Scan_Start_Time {
+        String coordinates "Latitude Longitude";
+        Float64 valid_range 0.0000000000000000, 3155800000.0000000;
+        Float64 _FillValue -999.00000000000000;
+        String long_name "TAI Time at Start of Scan replicated across the swath";
+        String units "Seconds since 1993-1-1 00:00:00.0 0";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solar_Zenith {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Solar Zenith Angle, Cell to Sun";
+        String units "Degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solar_Azimuth {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Solar_Azimuth Angle, Cell to Sun";
+        String units "Degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Sensor_Zenith {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Sensor_Zenith Angle, Cell to Sensor";
+        String units "Degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Sensor_Azimuth {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Sensor_Azimuth Angle, Cell to Sun";
+        String units "Degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Cloud_Mask_QA {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "Cloud Mask info on 10x10 km resolution";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String description "\\012                                                                                   \\012Cloud_mask_QA flags:                                                                \\012                                                                                    \\012                                                                                    \\012QA Flag Name     Number of    Bit Value   Description                               \\012                 Bits                                                               \\012--------------------------------------------------------------                      \\012Cloud Mask           1            0       Undetermined                              \\012                                  1       Determined                                \\012                                                                                    \\012Cloud Mask           2            0       0-25% Cloudy pixels                       \\012Quality Flag                      1       25-50% cloudy pixels                      \\012                                  2       50-75% cloudy pixels                      \\012                                  3       75-100%cloudy pixels                      \\012                                                                                    \\012Day/Night            1            0       Night                                     \\012flag                              1       Day                                       \\012                                                                                    \\012Sun glint            1            0       Yes                                       \\012flag                              1       No                                        \\012                                                                                    \\012Snow/Ice flag        1            0       Yes                                       \\012                                  1       No                                        \\012                                                                                    \\012Land/Water           2            0       Water (ocean)                             \\012flag                              1       Coastal                                   \\012                                  2       Desert                                    \\012                                  3       Land                                      \\012---------------------- 1 byte total --------------------------                      \\012                                                                                    \\012";
+    }
+    Scattering_Angle {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Scattering Angle";
+        String units "Degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Land_And_Ocean {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 0.55 micron for both ocean (best) and land (corrected)  with best quality data(Quality flag=3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Image_Optical_Depth_Land_And_Ocean {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 0.55 micron for both ocean (best) and land (corrected)  with all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Ratio_Small_Land_And_Ocean {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Ratio of small mode optical depth at 0.55 micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Mean_Reflectance_Land_All {
+        String coordinates "Solution_3_Land Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Average of Ref at 0.47, 0.66,  and 2.1 micron  after cloud screening";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Standard_Deviation_Reflectance_Land_All {
+        String coordinates "Solution_3_Land Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Std Dev  of Ref at 0.47, 0.66,  and 2.1 micron  after cloud screening";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Path_Radiance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Path Radiance at 0.47, and 0.66 micron";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Error_Path_Radiance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Uncertainty  of the  Path Radiance at 0.47, and 0.66 micron";
+        String units "None";
+        Float64 scale_factor 0.0000000000000000;
+        Float64 add_offset 9.9999997473787516e-05;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Critical_Reflectance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Critical_Reflectances at 0.47   and  0.66 micron";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Error_Critical_Reflectance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Uncertainty Critical_Reflectance of 0.47  and  0.66  micron";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    QualityWeight_Path_Radiance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range -20, 20;
+        Int16 _FillValue -9999;
+        String long_name "Quality Flag for Path Radiance based on the Test for fits";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    QualityWeight_Critical_Reflectance_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range -20, 20;
+        Int16 _FillValue -9999;
+        String long_name "Quality Flag forCritical_Reflectance based on the Test for fits";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Aerosol_Type_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 4;
+        Int16 _FillValue -9999;
+        String long_name "Aerosol Type";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Fitting_Error_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Fitting error for Land";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Surface_Reflectance_Land {
+        String coordinates "Solution_2_Land Latitude Longitude";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Surface Reflectance at 0.47,0.66 and 2.13micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Corrected_Optical_Depth_Land {
+        String coordinates "Solution_3_Land Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Corrected optical thickness at 0.47, 0.55,0.66   micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Corrected_Optical_Depth_Land_wav2p1 {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Corrected optical thickness at 2.13   micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Small_Land {
+        String coordinates "Solution_4_Land Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name " optical thickness for small Mode at 0.47, 0.55,0.66 & 2.13  micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Ratio_Small_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Small mode aerosol fraction";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Number_Pixels_Used_Land {
+        String coordinates "Solution_1_Land Latitude Longitude";
+        Int16 valid_range 1, 400;
+        Int16 _FillValue -9999;
+        String long_name "Number of good pixels used for retrieval at 470 ,659 nm";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Mean_Reflectance_Land {
+        String coordinates "MODIS_Band_Land Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Mean reflectance at 0.47,0.55,0.66,0.87,1.24 ,1.64 and 2.13 Microns";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    STD_Reflectance_Land {
+        String coordinates "MODIS_Band_Land Latitude Longitude";
+        Int16 valid_range 0, 20000;
+        Int16 _FillValue -9999;
+        String long_name "Standard deviation of reflectance at 0.47,0.55,0.66,0.87,1.64 and 2.13 Microns";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Mass_Concentration_Land {
+        String coordinates "Latitude Longitude";
+        Float32 valid_range 0.000000000, 1000.000000;
+        Float32 _FillValue -999.0000000;
+        String long_name "Mass concentration";
+        String units "1.0e-6g/cm^2";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Angstrom_Exponent_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -1000, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Angstrom exponent for 0.47 and 0.67 micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Cloud_Fraction_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Cloud fraction from Land aerosol cloud mask from retrieved and  overcast pixels not including cirrus mask";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Quality_Assurance_Land {
+        String coordinates "Latitude Longitude QA_Byte_Land";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "Runtime QA flags";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String description "see MODIS atmosphere QA plan for details                                            \\012";
+    }
+    Quality_Assurance_Crit_Ref_Land {
+        String coordinates "Latitude Longitude QA_Byte_Land";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "Runtime QA flags";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Aerosol_Cldmask_Byproducts_Land {
+        String coordinates "Num_By_Products Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "3X3 pixels Standard deviation  at 470,1380 nm,  reflectance at  555,1380,2130 nm, radiance at 11000 nm, Cirrus fraction";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solution_Index_Ocean_Small {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range 1, 4;
+        Int16 _FillValue -9999;
+        String long_name "Solution Number index small particles";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solution_Index_Ocean_Large {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range 5, 9;
+        Int16 _FillValue -9999;
+        String long_name "Solution Number index large particles";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Effective_Optical_Depth_Best_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 7 bands for best solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Effective_Optical_Depth_Average_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT  at 7 bands for Average solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Small_Best_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 7 bands for small mode of best solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Small_Average_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 7 bands for small mode of average solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13  um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Large_Best_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 7 bands for large mode of best solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Large_Average_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 7 bands for large mode of average solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13  um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Mass_Concentration_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Float32 valid_range 0.000000000, 1000.000000;
+        Float32 _FillValue -999.0000000;
+        String long_name "Mass_Concentration for best and average solutions";
+        String units "1.0e-6g/cm^2";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Effective_Radius_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Effective_Radius at 0.55 micron of both solutions";
+        String units "micron";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Cloud_Condensation_Nuclei_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Float32 valid_range 0.000000000, 9.999999795e+10;
+        Float32 _FillValue -999.0000000;
+        String long_name "Column number of CCN at 0.55 micron of both solutions";
+        String units "CCN/cm^2";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Asymmetry_Factor_Best_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 3000;
+        Int16 _FillValue -9999;
+        String long_name "Asymmetry_Factor at 7 bands for best solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Asymmetry_Factor_Average_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 3000;
+        Int16 _FillValue -9999;
+        String long_name "Asymmetry_Factor at 7 bands for average solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13  um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Backscattering_Ratio_Best_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 3000;
+        Int16 _FillValue -9999;
+        String long_name "Backscattering ratio at 7 bands for best solution for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13  um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Backscattering_Ratio_Average_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 3000;
+        Int16 _FillValue -9999;
+        String long_name "Backscattering ratio at 7 bands for average solution for 0.47,  0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Angstrom_Exponent_1_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range -1000, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Angstrom Exponent for 0.55 and 0.86 micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Angstrom_Exponent_2_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range -1000, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Angstrom exponent for 0.865 and 2.130 micron";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Least_Squares_Error_Ocean {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Least square error estimated";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_Ratio_Small_Ocean_0_55micron {
+        String coordinates "Solution_Ocean Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Ratio of small mode optical depth at 0.55 microns for best (1) and average (2) solutions";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Optical_Depth_by_models_ocean {
+        String coordinates "Solution_Index Latitude Longitude";
+        Int16 valid_range -100, 5000;
+        Int16 _FillValue -9999;
+        String long_name "optical depth for small and large modes placed in model index";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Cloud_Fraction_Ocean {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Cloud fraction from Ocean  aerosol cloud mask from retrieved  and overcast pixels not including cirrus mask";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Number_Pixels_Used_Ocean {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 1, 400;
+        Int16 _FillValue -9999;
+        String long_name "Number of good pixels used for retrieval at at 865 nm";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Mean_Reflectance_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        String long_name "Mean reflectances at 7 bands for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 micron";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    STD_Reflectance_Ocean {
+        String coordinates "MODIS_Band_Ocean Latitude Longitude";
+        Int16 valid_range 0, 20000;
+        Int16 _FillValue -9999;
+        String long_name "Standard devaition of reflectances at 7 bands for 0.47, 0.55,0.66,0.86,1.24,1.63,2.13 um";
+        String units "None";
+        Float64 scale_factor 9.9999997473787516e-05;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Quality_Assurance_Ocean {
+        String coordinates "Latitude Longitude QA_Byte_Ocean";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "Run time QA flags";
+        String units "None";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String description "(see MODIS atmosphere QA plan for details)                                          \\012";
+    }
+    Aerosol_Cldmask_Byproducts_Ocean {
+        String coordinates "Num_By_Products Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "3X3 pixels Standard deviation  at 550,1380 nm,  reflectance at  550,1380,2130 nm, radiance at 11000 nm,Cirrus fraction";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Deep_Blue_Aerosol_Optical_Depth_550_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 0.55 micron for land (corrected) with all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Deep_Blue_Aerosol_Optical_Depth_Land {
+        String coordinates "Num_DeepBlue_Wavelengths Latitude Longitude";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue -9999;
+        String long_name "AOT at 0.412, 0.47, and 0.66 micron for land (corrected) with  all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Deep_Blue_Angstrom_Exponent_Land {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -500, 5000;
+        Int16 _FillValue -9999;
+        String long_name "Deep Blue Angstrom Exponent for land (0.412- 0.47 micron) with all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Deep_Blue_Single_Scattering_Albedo_Land {
+        String coordinates "Num_DeepBlue_Wavelengths Latitude Longitude";
+        Int16 valid_range 700, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Deep Blue Single Scattering Albedo at 0.412, 0.47, and 0.66 micron  for land with all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Deep_Blue_Surface_Reflectance_Land {
+        String coordinates "Num_DeepBlue_Wavelengths Latitude Longitude";
+        Int16 valid_range 0, 1000;
+        Int16 _FillValue -9999;
+        String long_name "Deep Blue Surface Reflectance at 0.412, 0.47, and 0.66 micron  for land with all quality data (Quality flag=1,2,3)";
+        String units "None";
+        Float64 scale_factor 0.0010000000474974513;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 5, 2025, 10;
+        Int32 Cell_Across_Swath_Sampling 5, 1345, 10;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD04_L2.A2010001.0000.005.2010005211741.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-01-05T21:17:41.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Both";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "005";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2";
+                    QAFLAGS {
+                        String CLASS "1", "2";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String VALUE "Not Investigated", "Not Investigated";
+                            String CLASS "1", "2";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "FurtherInvestigationNeeded", "FurtherInvestigationNeeded";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "Suspect", "Suspect";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1;
+                            String VALUE "See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.", "See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.";
+                            String CLASS "1", "2";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 100, 100;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "Corrected_Optical_Depth_Land", "Effective_Optical_Depth_Average_Ocean";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2009-12-31";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "23:33:33.861779";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 53395;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 164.121672912109;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD04_L2";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 30;
+                    String VALUE "MOD03.A2010001.0000.005.2010003235220.hdf", "MOD02QKM.A2010001.0000.005.2010004001127.hdf", "MOD02HKM.A2010001.0000.005.2010004001127.hdf", "MOD021KM.A2010001.0000.005.2010004001127.hdf", "MOD35_L2.A2010001.0000.005.2010004001451.hdf", "small_v2c1.dat.v3", "
+          small_v1c1.dat.v2", "small_v3c1.dat.v2", "big_v2c1.dat.v5", "big_v1c1.dat.v2", "big_v3c1.dat.v2", "lookup_land_w0466.v1", "lookup_land_w0553.v1", "lookup_land_w0644.v1", "lookup_land_w2119.v1", "aerosol_land_map.v2", "gdas1.PGrbF00.100101.00z", "TOAST_100101.GRB";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 49.7721853442657;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -47.0583888098271;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -83.9477317129688;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -59.3240852125626;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-01-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:05:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-01-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.3.8";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "SuccessfulRetrievalPct_Land", "SuccessfulRetrievalPct_Ocean", "LowConfidentClearPct", "DayProcessedPct", "NightProcessedPct", "SunglintProcessedPct", "Snow_IceSurfaceProcessedPct", "LandProcessedPct", "WaterProcessedPct", "ShadowFoundPct", "ThinCirrusSolarFoundPct", "ThinCirrusIR_FoundPct", "NonCloudObstructionFoundPct", "MaxSolarZenithAngle", "MinSolarZenithAngle";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                            String VALUE "    0.00", "    0.00", "   44.40", "   55.44", "   44.56", "    0.00", "   68.19", "   53.61", "   46.39", "    0.00", "    3.21", "    1.87", "    0.00", "   96.78", "   71.47";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5049 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Xeon(TM) CPU 2.80GHz unknown GNU/Linux";
+            }
+            ALGORITHMPACKAGE {
+                ALGORITHMPACKAGEACCEPTANCEDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "June 1997";
+                }
+                ALGORITHMPACKAGEMATURITYCODE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "at-launch";
+                }
+                ALGORITHMPACKAGENAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "ATBD-MOD-02";
+                }
+                ALGORITHMPACKAGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2";
+                }
+                LOCALINPUTGRANULEID {
+                    Int32 NUM_VAL 10;
+                    String VALUE "MOD03.A2010001.0000.005.2010003235220.hdf", "MOD02QKM.A2010001.0000.005.2010004001127.hdf", "MOD02HKM.A2010001.0000.005.2010004001127.hdf", "MOD021KM.A2010001.0000.005.2010004001127.hdf", "MOD35_L2.A2010001.0000.005.2010004001451.hdf";
+                }
+                INSTRUMENTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Moderate Resolution Imaging Spectroradiometer";
+                }
+            }
+            GPOLYGON {
+                GPOLYGONCONTAINER {
+                    String CLASS "1";
+                    GRING {
+                        String CLASS "1";
+                        EXCLUSIONGRINGFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "N";
+                        }
+                    }
+                    GRINGPOINT {
+                        String CLASS "1";
+                        GRINGPOINTLONGITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 49.7741825777481, -49.6346865116933, -31.8875607008629, 14.7581374580967;
+                        }
+                        GRINGPOINTLATITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE -70.0619907141548, -83.2821690669814, -65.5399200163829, -59.0903113966012;
+                        }
+                        GRINGPOINTSEQUENCENO {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 1, 2, 3, 4;
+                        }
+                    }
+                }
+            }
+            VERYGOODQUALITYDATAPCT_LAND {
+                Int32 NUM_VAL 1;
+                String VALUE "    0.00";
+            }
+            GOODQUALITYDATAPCT_LAND {
+                Int32 NUM_VAL 1;
+                String VALUE "  100.00";
+            }
+            MARGINALQUALITYDATAPCT_LAND {
+                Int32 NUM_VAL 1;
+                String VALUE "    0.00";
+            }
+            BADQUALITYDATAPCT_LAND {
+                Int32 NUM_VAL 1;
+                String VALUE "    0.00";
+            }
+            VERYGOODQUALITYDATAPCT_OCEAN {
+                Int32 NUM_VAL 1;
+                String VALUE "   64.65";
+            }
+            GOODQUALITYDATAPCT_OCEAN {
+                Int32 NUM_VAL 1;
+                String VALUE "    3.80";
+            }
+            MARGINALQUALITYDATAPCT_OCEAN {
+                Int32 NUM_VAL 1;
+                String VALUE "   15.96";
+            }
+            BADQUALITYDATAPCT_OCEAN {
+                Int32 NUM_VAL 1;
+                String VALUE "   17.00";
+            }
+            ALGORITHMSOFTWAREVERSIONLAND {
+                Int32 NUM_VAL 1;
+                String VALUE "2";
+            }
+            ALGORITHMSOFTWAREVERSIONOCEAN {
+                Int32 NUM_VAL 1;
+                String VALUE "2";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.0";
+            }
+            PRODUCTIONHISTORY {
+                Int32 NUM_VAL 1;
+                String VALUE "PGE04:5.3.8";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra Aerosol 5-Min L2 Swath 10km";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "mod04";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Cell_Along_Swath";
+                        Int32 Size 203;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Cell_Across_Swath";
+                        Int32 Size 135;
+                    }
+                    Dimension_3 {
+                        String DimensionName "Solution_3_Land";
+                        Int32 Size 3;
+                    }
+                    Dimension_4 {
+                        String DimensionName "Solution_1_Land";
+                        Int32 Size 2;
+                    }
+                    Dimension_5 {
+                        String DimensionName "Solution_2_Land";
+                        Int32 Size 3;
+                    }
+                    Dimension_6 {
+                        String DimensionName "Solution_4_Land";
+                        Int32 Size 4;
+                    }
+                    Dimension_7 {
+                        String DimensionName "MODIS_Band_Land";
+                        Int32 Size 7;
+                    }
+                    Dimension_8 {
+                        String DimensionName "QA_Byte_Land";
+                        Int32 Size 5;
+                    }
+                    Dimension_9 {
+                        String DimensionName "Num_By_Products";
+                        Int32 Size 7;
+                    }
+                    Dimension_10 {
+                        String DimensionName "Solution_Ocean";
+                        Int32 Size 2;
+                    }
+                    Dimension_11 {
+                        String DimensionName "MODIS_Band_Ocean";
+                        Int32 Size 7;
+                    }
+                    Dimension_12 {
+                        String DimensionName "Solution_Index";
+                        Int32 Size 9;
+                    }
+                    Dimension_13 {
+                        String DimensionName "QA_Byte_Ocean";
+                        Int32 Size 5;
+                    }
+                    Dimension_14 {
+                        String DimensionName "Num_DeepBlue_Wavelengths";
+                        Int32 Size 3;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "MODIS_Band_Land";
+                        String DataType "DFNT_INT32";
+                        String DimList "MODIS_Band_Land";
+                    }
+                    DataField_2 {
+                        String DataFieldName "MODIS_Band_Ocean";
+                        String DataType "DFNT_INT32";
+                        String DimList "MODIS_Band_Ocean";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Solution_1_Land";
+                        String DataType "DFNT_INT32";
+                        String DimList "Solution_1_Land";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Solution_2_Land";
+                        String DataType "DFNT_INT32";
+                        String DimList "Solution_2_Land";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Solution_3_Land";
+                        String DataType "DFNT_INT32";
+                        String DimList "Solution_3_Land";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Solution_Ocean";
+                        String DataType "DFNT_INT32";
+                        String DimList "Solution_Ocean";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Solution_Index";
+                        String DataType "DFNT_INT32";
+                        String DimList "Solution_Index";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Num_DeepBlue_Wavelengths";
+                        String DataType "DFNT_INT32";
+                        String DimList "Num_DeepBlue_Wavelengths";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Scan_Start_Time";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Solar_Zenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Solar_Azimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Sensor_Zenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Sensor_Azimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Cloud_Mask_QA";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Scattering_Angle";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Optical_Depth_Land_And_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Image_Optical_Depth_Land_And_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_18 {
+                        String DataFieldName "Optical_Depth_Ratio_Small_Land_And_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_19 {
+                        String DataFieldName "Mean_Reflectance_Land_All";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_3_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_20 {
+                        String DataFieldName "Standard_Deviation_Reflectance_Land_All";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_3_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_21 {
+                        String DataFieldName "Path_Radiance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_22 {
+                        String DataFieldName "Error_Path_Radiance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_23 {
+                        String DataFieldName "Critical_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_24 {
+                        String DataFieldName "Error_Critical_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_25 {
+                        String DataFieldName "QualityWeight_Path_Radiance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_26 {
+                        String DataFieldName "QualityWeight_Critical_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_27 {
+                        String DataFieldName "Aerosol_Type_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_28 {
+                        String DataFieldName "Fitting_Error_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_29 {
+                        String DataFieldName "Surface_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_2_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_30 {
+                        String DataFieldName "Corrected_Optical_Depth_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_3_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_31 {
+                        String DataFieldName "Corrected_Optical_Depth_Land_wav2p1";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_32 {
+                        String DataFieldName "Optical_Depth_Small_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_4_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_33 {
+                        String DataFieldName "Optical_Depth_Ratio_Small_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_34 {
+                        String DataFieldName "Number_Pixels_Used_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_1_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_35 {
+                        String DataFieldName "Mean_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_36 {
+                        String DataFieldName "STD_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Land", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_37 {
+                        String DataFieldName "Mass_Concentration_Land";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_38 {
+                        String DataFieldName "Angstrom_Exponent_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_39 {
+                        String DataFieldName "Cloud_Fraction_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_40 {
+                        String DataFieldName "Quality_Assurance_Land";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath", "QA_Byte_Land";
+                    }
+                    DataField_41 {
+                        String DataFieldName "Quality_Assurance_Crit_Ref_Land";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath", "QA_Byte_Land";
+                    }
+                    DataField_42 {
+                        String DataFieldName "Aerosol_Cldmask_Byproducts_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Num_By_Products", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_43 {
+                        String DataFieldName "Solution_Index_Ocean_Small";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_44 {
+                        String DataFieldName "Solution_Index_Ocean_Large";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_45 {
+                        String DataFieldName "Effective_Optical_Depth_Best_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_46 {
+                        String DataFieldName "Effective_Optical_Depth_Average_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_47 {
+                        String DataFieldName "Optical_Depth_Small_Best_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_48 {
+                        String DataFieldName "Optical_Depth_Small_Average_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_49 {
+                        String DataFieldName "Optical_Depth_Large_Best_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_50 {
+                        String DataFieldName "Optical_Depth_Large_Average_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_51 {
+                        String DataFieldName "Mass_Concentration_Ocean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_52 {
+                        String DataFieldName "Effective_Radius_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_53 {
+                        String DataFieldName "Cloud_Condensation_Nuclei_Ocean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_54 {
+                        String DataFieldName "Asymmetry_Factor_Best_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_55 {
+                        String DataFieldName "Asymmetry_Factor_Average_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_56 {
+                        String DataFieldName "Backscattering_Ratio_Best_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_57 {
+                        String DataFieldName "Backscattering_Ratio_Average_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_58 {
+                        String DataFieldName "Angstrom_Exponent_1_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_59 {
+                        String DataFieldName "Angstrom_Exponent_2_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_60 {
+                        String DataFieldName "Least_Squares_Error_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_61 {
+                        String DataFieldName "Optical_Depth_Ratio_Small_Ocean_0.55micron";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_62 {
+                        String DataFieldName "Optical_Depth_by_models_ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Solution_Index", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_63 {
+                        String DataFieldName "Cloud_Fraction_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_64 {
+                        String DataFieldName "Number_Pixels_Used_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_65 {
+                        String DataFieldName "Mean_Reflectance_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_66 {
+                        String DataFieldName "STD_Reflectance_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "MODIS_Band_Ocean", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_67 {
+                        String DataFieldName "Quality_Assurance_Ocean";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath", "QA_Byte_Ocean";
+                    }
+                    DataField_68 {
+                        String DataFieldName "Aerosol_Cldmask_Byproducts_Ocean";
+                        String DataType "DFNT_INT16";
+                        String DimList "Num_By_Products", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_69 {
+                        String DataFieldName "Deep_Blue_Aerosol_Optical_Depth_550_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_70 {
+                        String DataFieldName "Deep_Blue_Aerosol_Optical_Depth_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Num_DeepBlue_Wavelengths", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_71 {
+                        String DataFieldName "Deep_Blue_Angstrom_Exponent_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_72 {
+                        String DataFieldName "Deep_Blue_Single_Scattering_Albedo_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Num_DeepBlue_Wavelengths", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                    DataField_73 {
+                        String DataFieldName "Deep_Blue_Surface_Reflectance_Land";
+                        String DataType "DFNT_INT16";
+                        String DimList "Num_DeepBlue_Wavelengths", "Cell_Along_Swath", "Cell_Across_Swath";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        Int32 Number_of_Instrument_Scans 203;
+        Int32 Maximum_Number_of_1km_Frames 135;
+        String title "
+ MODIS HDF File Specification MOD04_L2: MODIS Level 2 Aerosol 
+ Land and Ocean Product                                       
+";
+        String Slope_and_Offset_Usage "
+ The local SDS scale_factor and add_offset attributes are used for the      
+ conversion of stored integer data to geophysical floating point numbers.   
+ The implementation follows conventional HDF usage (See HDF Users Guide):   
+                                                                            
+       float value = scale_factor*(stored integer - add_offset)             
+                                                                            
+ The unit of the derived floating point value is indicated in the 'units' 
+ local attribute which is also provided.                                    
+";
+    }
+}

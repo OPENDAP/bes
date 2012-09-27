@@ -1,0 +1,6 @@
+The data:
+Float64 Scan_Start_Time[Cell_Along_Swath = 2][Cell_Across_Swath = 2] = {{536457608.749939, 536457608.749939},{-999, -999}};
+Int16 Solar_Zenith[Cell_Along_Swath = 2][Cell_Across_Swath = 2] = {{8068, 7169},{-9999, -9999}};
+Float32 Longitude[Cell_Along_Swath = 2][Cell_Across_Swath = 2] = {{49.3524, -43.7252},{-999, -999}};
+Float32 Latitude[Cell_Along_Swath = 2][Cell_Across_Swath = 2] = {{-70.228, -83.4732},{-999, -999}};
+

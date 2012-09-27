@@ -1,0 +1,559 @@
+Attributes {
+    CMG_0_05_Deg_Monthly_NDVI {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly NDVI";
+        String units "NDVI";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -3000;
+    }
+    CMG_0_05_Deg_Monthly_EVI {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly EVI";
+        String units "EVI";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -3000;
+    }
+    CMG_0_05_Deg_Monthly_VI_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly VI Quality";
+        String units "bit field";
+        UInt16 valid_range 0, 65534;
+        UInt16 _FillValue 65535;
+        String Legend "\\012\\011 Bit Fields Description (Right to Left): \\012\\011[0-1] : MODLAND_QA [2 bit range]\\012\\011\\011 00: VI produced, good quality \\012\\011\\011 01: VI produced, but check QA \\012\\011\\011 10: Pixel produced, but most probably cloudy \\012\\011\\011 11: Pixel not produced due to other reasons than clouds \\012\\011[2-5] : VI usefulness [4 bit range]  \\012\\011\\011 0000: Highest quality  \\012\\011\\011 0001: Lower quality  \\012\\011\\011 0010...1011: Decreasing quality  \\012\\011\\011 1100: Interpolated-Not real data  \\012\\011\\011 1101: Quality so low that it is not useful \\012\\011\\011 1110: L1B data faulty \\012\\011\\011 1111: Not useful for any other reason/not processed \\012\\011[6-7] : Aerosol quantity [2 bit range] \\012\\011\\011 00: Climatology \\012\\011\\011 01: Low \\012\\011\\011 10: Average \\012\\011\\011 11: High \\012\\011[8] : Adjacent cloud detected; [1 bit range] \\012\\011\\011 1: Yes \\012\\011\\011 0: No \\012\\011[9] : Atmosphere BRDF correction performed [1 bit range] \\012\\011\\011 1: Yes  \\012\\011\\011 0: No  \\012\\011[10] : Mixed clouds  [1 bit range] \\012\\011\\011 1: Yes  \\012\\011\\011 0: No  \\012\\011[11-13] : Land/Water Flag [3 bit range] \\012\\011\\011 000: Shallow ocean \\012\\011\\011 001: Land (Nothing else but land) \\012\\011\\011 010: Ocean coastlines and lake shorelines \\012\\011\\011 011: Shallow inland water \\012\\011\\011 100: Ephemeral water \\012\\011\\011 101: Deep inland water \\012\\011\\011 110: Moderate or continental ocean \\012\\011\\011 111: Deep ocean \\012\\011[14-15] : Geospatial quality [2 bit range] \\012\\011\\011 00: <=25% of the finer 1km resolution contributed to this CMG pixel \\012\\011\\011 01: 25% to 50% of the finer 1km resolution contributed to this CMG pixel  \\012\\011\\011 10: 50% to 75% of the finer 1km resolution contributed to this CMG pixel  \\012\\011\\011 11: 75% to 100% of the finer 1km resolution contributed to this CMG pixel \\012";
+    }
+    CMG_0_05_Deg_Monthly_red_reflectance {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly red reflectance";
+        String units "reflectance";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -1000;
+    }
+    CMG_0_05_Deg_Monthly_NIR_reflectance {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly NIR reflectance";
+        String units "reflectance";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -1000;
+    }
+    CMG_0_05_Deg_Monthly_blue_reflectance {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly blue reflectance";
+        String units "reflectance";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -1000;
+    }
+    CMG_0_05_Deg_Monthly_MIR_reflectance {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly MIR reflectance";
+        String units "reflectance";
+        String Legend "\\011 The MIR band saved in the VI product is MODIS band 7 \\012\\011\\011 Bandwidth : 2105-2155 nm \\012\\011\\011 Band center: 2130 nm \\012";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -1000;
+    }
+    CMG_0_05_Deg_Monthly_Avg_sun_zen_angle {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly Avg sun zen angle";
+        String units "degrees";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 100.00000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -10000;
+    }
+    CMG_0_05_Deg_Monthly_NDVI_std_dev {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly NDVI std dev";
+        String units "NDVI";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -3000;
+    }
+    CMG_0_05_Deg_Monthly_EVI_std_dev {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly EVI std dev";
+        String units "EVI";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 10000.000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue -3000;
+    }
+    CMG_0_05_Deg_Monthly__1km_pix_used {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly #1km pix used";
+        String units "Pixels";
+        Byte valid_range 0, 36;
+        Byte _FillValue 255;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    CMG_0_05_Deg_Monthly__1km_pix___30deg_VZ {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly #1km pix +-30deg VZ";
+        String units "Pixels";
+        Byte valid_range 0, 36;
+        Byte _FillValue 255;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    CMG_0_05_Deg_Monthly_pixel_reliability {
+        String coordinates "Latitude Longitude";
+        String long_name "CMG 0.05 Deg Monthly pixel reliability";
+        String units "rank";
+        Int16 valid_range 0, 4;
+        Int16 _FillValue 255;
+        String Legend "\\012\\011 Rank Keys: \\012\\011[-1]:  Fill/No Data-Not Processed. \\012\\011 [0]:  Good data     - Use with confidence \\012\\011 [1]:  Marginal data - Useful, but look at other QA information \\012\\011 [2]:  Snow/Ice      - Target covered with snow/ice\\012\\011 [3]:  Cloudy        - Target not visible, covered with cloud \\012\\011 [4]:  Estimated     - From MODIS historic time series \\012";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD13C2.A2007001.005.2007108072029.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-04-18T11:20:29.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Both";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.2.1";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                    QAFLAGS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String VALUE "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated", "Not Investigated";
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            String VALUE "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE", "No automatic quality assessment is performed in the PGE";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            Int32 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            Int32 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                        }
+                        QAPERCENTCLOUDCOVER {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            Int32 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            Int32 VALUE 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 100;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "CMG 0.05 Deg Monthly NDVI", "CMG 0.05 Deg Monthly EVI", "CMG 0.05 Deg Monthly VI Quality", "CMG 0.05 Deg Monthly red reflectance", "CMG 0.05 Deg Monthly NIR reflectance", "CMG 0.05 Deg Monthly blue reflectance", "CMG 0.05 Deg Monthly MIR reflectance", "CMG 0.05 Deg Monthly Avg sun zen angle", "CMG 0.05 Deg Monthly NDVI std dev", "CMG 0.05 Deg Monthly EVI std dev", "CMG 0.05 Deg Monthly #1km pix used", "CMG 0.05 Deg Monthly #1km pix +-30deg VZ", "CMG 0.05 Deg Monthly pixel reliability";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD13C2";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 3;
+                    String VALUE "MOD13C1.A2007001.005.2007026170643.hdf", "MOD13C1.A2007017.005.2007098154200.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                    }
+                    ZONEIDENTIFIERCLASS {
+                        ZONEIDENTIFIER {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Other Grid System";
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Global";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-01-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-01-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.2.3";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "NDVICMGMONTHQCLASSPERCENTAGE", "EVICMGMONTHQCLASSPERCENTAGE";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6";
+                            String VALUE "41", "59", "0", "0", "21", "21";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 4;
+                String VALUE "2749", "4334", "2749a", "4334a";
+            }
+            ALGORITHMPACKAGEACCEPTANCEDATE {
+                Int32 NUM_VAL 1;
+                String VALUE "102004";
+            }
+            ALGORITHMPACKAGEMATURITYCODE {
+                Int32 NUM_VAL 1;
+                String VALUE "Normal";
+            }
+            ALGORITHMPACKAGENAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MOD_PR13C2";
+            }
+            ALGORITHMPACKAGEVERSION {
+                Int32 NUM_VAL 1;
+                String VALUE "5";
+            }
+            INSTRUMENTNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "Moderate-Resolution Imaging SpectroRadiometer";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra Vegetation Indices Monthly L3 Global 0.05Deg CMG";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            INPUTFILENAME {
+                Int32 NUM_VAL 3;
+                String VALUE "MOD13C1.A2007001.005.2007026170643.hdf", "MOD13C1.A2007017.005.2007098154200.hdf";
+            }
+            SEAPROCESSED {
+                Int32 NUM_VAL 1;
+                String VALUE "Yes";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "IRIX64 mtvs1 6.5 10070055 IP35";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.2";
+            }
+            CHARACTERISTICBINANGULARSIZE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -1.0;
+            }
+            CHARACTERISTICBINSIZE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -1.0;
+            }
+            GLOBALGRIDCOLUMNS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE -1;
+            }
+            GLOBALGRIDROWS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE -1;
+            }
+            NUMBEROFDAYS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 31;
+            }
+            DAYSOFYEAR {
+                Int32 NUM_VAL 48;
+                Float64 VALUE 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
+            }
+            DAYSPROCESSED {
+                Int32 NUM_VAL 48;
+                String VALUE "2007001", "2007002", "2007003", "2007004", "2007005", "2007006", "2007007", "2007008", "2007009", "2007010", "2007011", "2007012", "2007013", "2007014", "2007015", "2007016", "2007017", "2007018", "2007019", "2007020", "2007021", "2007022", "
+        2007023", "2007024", "2007025", "2007026", "2007027", "2007028", "2007029", "2007030", "2007031", "2007032";
+            }
+            NUMBEROF16DAYPERIODS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 2;
+            }
+            GEOANYABNORMAL {
+                Int32 NUM_VAL 1;
+                String VALUE "False";
+            }
+            GEOESTMAXRMSERROR {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -1.0;
+            }
+            COMPOSITEMONTHNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "January";
+            }
+            QAPERCENTPOORQCMGMONTHNDVI {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 21, 17, 18, 15, 13, 8, 3, 2, 0, 0, 0, 0, 3, 0, 0, 0;
+            }
+            QAPERCENTPOORQCMGMONTHEVI {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 21, 17, 18, 15, 13, 8, 3, 2, 0, 0, 0, 0, 3, 0, 0, 0;
+            }
+            PERCENTLAND {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 21;
+            }
+            SNOWICEFLAGGED {
+                Int32 NUM_VAL 1;
+                String VALUE "YES";
+            }
+            QA_STRUCTURE_STYLE {
+                Int32 NUM_VAL 1;
+                String VALUE "C5 or later";
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        String StructMetadata_0 "GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName="MOD_Grid_monthly_CMG_VI"
+		XDim=7200
+		YDim=3600
+		UpperLeftPointMtrs=(-1.000000,-1.000000)
+		LowerRightMtrs=(-1.000000,-1.000000)
+		Projection=
+		ProjParams=(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1)
+		SphereCode=-1
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName="CMG 0.05 Deg Monthly NDVI"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName="CMG 0.05 Deg Monthly EVI"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName="CMG 0.05 Deg Monthly VI Quality"
+				DataType=DFNT_UINT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName="CMG 0.05 Deg Monthly red reflectance"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_4
+			OBJECT=DataField_5
+				DataFieldName="CMG 0.05 Deg Monthly NIR reflectance"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_5
+			OBJECT=DataField_6
+				DataFieldName="CMG 0.05 Deg Monthly blue reflectance"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_6
+			OBJECT=DataField_7
+				DataFieldName="CMG 0.05 Deg Monthly MIR reflectance"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_7
+			OBJECT=DataField_8
+				DataFieldName="CMG 0.05 Deg Monthly Avg sun zen angle"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_8
+			OBJECT=DataField_9
+				DataFieldName="CMG 0.05 Deg Monthly NDVI std dev"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_9
+			OBJECT=DataField_10
+				DataFieldName="CMG 0.05 Deg Monthly EVI std dev"
+				DataType=DFNT_INT16
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_10
+			OBJECT=DataField_11
+				DataFieldName="CMG 0.05 Deg Monthly #1km pix used"
+				DataType=DFNT_UINT8
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_11
+			OBJECT=DataField_12
+				DataFieldName="CMG 0.05 Deg Monthly #1km pix +-30deg VZ"
+				DataType=DFNT_UINT8
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_12
+			OBJECT=DataField_13
+				DataFieldName="CMG 0.05 Deg Monthly pixel reliability"
+				DataType=DFNT_INT8
+				DimList=("YDim","XDim")
+			END_OBJECT=DataField_13
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+";
+    }
+}

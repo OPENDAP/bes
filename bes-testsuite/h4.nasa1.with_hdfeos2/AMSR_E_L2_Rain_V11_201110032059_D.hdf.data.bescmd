@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AMSR_E_L2_Rain_V11_201110032059_D.hdf" space="catalog">/data/AMSR_E_L2_Rain_V11_201110032059_D.hdf</setContainer>
+    <define name="d">
+	<container name="AMSR_E_L2_Rain_V11_201110032059_D.hdf" />
+                <constraint>Rain_Rate[0:996:1993][0:195:391],Time[0:996:1993],Latitude[0:996:1993][0:180:391],Longitude[0:996:1993][0:180:391]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

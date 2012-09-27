@@ -1,0 +1,451 @@
+Attributes {
+    Sample {
+        String units "level";
+        String long_name "L1B1_Blue_Product:Sample(fake)";
+    }
+    L1B1_Scaled_Rad_Blue {
+        String coordinates "L1B1_Line_TAI_Time_Blue Sample";
+        String long_name "L1B1_Blue_Product:L1B1_Scaled_Rad_Blue";
+        Int16 _FillValue -9999;
+    }
+    L1B1_DQI_Blue {
+        String coordinates "L1B1_Line_TAI_Time_Blue Sample";
+        String long_name "L1B1_Blue_Product:L1B1_DQI_Blue";
+        Byte _FillValue 253;
+    }
+    L1B1_Line_TAI_Time_Blue {
+        String units "level";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "L1B1_Blue_Product:L1B1_Line_TAI_Time_Blue";
+    }
+    L1B1_Line_Scene_Average_Blue {
+        String coordinates "L1B1_Line_TAI_Time_Blue";
+        Float32 _FillValue -9999.000000;
+        String long_name "L1B1_Blue_Product:L1B1_Line_Scene_Average_Blue";
+    }
+    Sample_1 {
+        String units "level";
+        String long_name "L1B1_Green_Product:Sample(fake)";
+    }
+    L1B1_Scaled_Rad_Green {
+        String coordinates "L1B1_Line_TAI_Time_Green Sample_1";
+        String long_name "L1B1_Green_Product:L1B1_Scaled_Rad_Green";
+        Int16 _FillValue -9999;
+    }
+    L1B1_DQI_Green {
+        String coordinates "L1B1_Line_TAI_Time_Green Sample_1";
+        String long_name "L1B1_Green_Product:L1B1_DQI_Green";
+        Byte _FillValue 253;
+    }
+    L1B1_Line_TAI_Time_Green {
+        String units "level";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "L1B1_Green_Product:L1B1_Line_TAI_Time_Green";
+    }
+    L1B1_Line_Scene_Average_Green {
+        String coordinates "L1B1_Line_TAI_Time_Green";
+        Float32 _FillValue -9999.000000;
+        String long_name "L1B1_Green_Product:L1B1_Line_Scene_Average_Green";
+    }
+    Sample_2 {
+        String units "level";
+        String long_name "L1B1_Red_Product:Sample(fake)";
+    }
+    L1B1_Scaled_Rad_Red {
+        String coordinates "L1B1_Line_TAI_Time_Red Sample_2";
+        String long_name "L1B1_Red_Product:L1B1_Scaled_Rad_Red";
+        Int16 _FillValue -9999;
+    }
+    L1B1_DQI_Red {
+        String coordinates "L1B1_Line_TAI_Time_Red Sample_2";
+        String long_name "L1B1_Red_Product:L1B1_DQI_Red";
+        Byte _FillValue 253;
+    }
+    L1B1_Line_TAI_Time_Red {
+        String units "level";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "L1B1_Red_Product:L1B1_Line_TAI_Time_Red";
+    }
+    L1B1_Line_Scene_Average_Red {
+        String coordinates "L1B1_Line_TAI_Time_Red";
+        Float32 _FillValue -9999.000000;
+        String long_name "L1B1_Red_Product:L1B1_Line_Scene_Average_Red";
+    }
+    Sample_3 {
+        String units "level";
+        String long_name "L1B1_Nir_Product:Sample(fake)";
+    }
+    L1B1_Scaled_Rad_Nir {
+        String coordinates "L1B1_Line_TAI_Time_Nir Sample_3";
+        String long_name "L1B1_Nir_Product:L1B1_Scaled_Rad_Nir";
+        Int16 _FillValue -9999;
+    }
+    L1B1_DQI_Nir {
+        String coordinates "L1B1_Line_TAI_Time_Nir Sample_3";
+        String long_name "L1B1_Nir_Product:L1B1_DQI_Nir";
+        Byte _FillValue 253;
+    }
+    L1B1_Line_TAI_Time_Nir {
+        String units "level";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "L1B1_Nir_Product:L1B1_Line_TAI_Time_Nir";
+    }
+    L1B1_Line_Scene_Average_Nir {
+        String coordinates "L1B1_Line_TAI_Time_Nir";
+        Float32 _FillValue -9999.000000;
+        String long_name "L1B1_Nir_Product:L1B1_Line_Scene_Average_Nir";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_AM1_RP_GM_P095_O067128_CF_F03_0024.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-08-01T09:43:50.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_EXEC_VERSION: V5.0 MISR_EXEC_NAME:lev1.cc";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V5.0";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Automatic quality determination software not yet implemented";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Granule";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2012-08-01";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:28:49.713350Z";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 67128;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 150.233791507921;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MI1B1";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 10;
+                    String VALUE "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:23:SC:MISL0CF.001:39917494", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:23:SC:MISL0CF.001:39917494", "MISR_AM1_ARP_PRFLTCHAR_F02_0002.hdf", "MISR_AM1_ARP_PRFLTCAL_F02_0005.hdf", "
+          MISR_AM1_ARP_INFLTCAL_T077_F02_0010.hdf", "MISR_AM1_ARP_CONFIG_F03_0003.hdf", "MISR_AM1_PGE1_PCS_CONFIG_CF_F02_0005.ascii", "MISR_AM1_RP_CONFIG_CF_F02_04.ascii", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:24:SC:ActSched.001:39911320";
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-08-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:45:00.600000Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-07-31";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:55:04.440000Z";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "SP_AM_PATH_NO", "SP_AM_MISR_ProductVersion";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "095", "24";
+                        }
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "CF";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "AM-1";
+                    }
+                    OPERATIONMODE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Normal";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MISR";
+                    }
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "L1B1_Blue_Product";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Line";
+                        Int32 Size 18179;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Sample";
+                        Int32 Size 376;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "L1B1_Scaled_Rad_Blue";
+                        String DataType "DFNT_INT16";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_2 {
+                        String DataFieldName "L1B1_DQI_Blue";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_3 {
+                        String DataFieldName "L1B1_Line_TAI_Time_Blue";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Line";
+                    }
+                    DataField_4 {
+                        String DataFieldName "L1B1_Line_Scene_Average_Blue";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Line";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            SWATH_2 {
+                String SwathName "L1B1_Green_Product";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Line";
+                        Int32 Size 18179;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Sample";
+                        Int32 Size 376;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "L1B1_Scaled_Rad_Green";
+                        String DataType "DFNT_INT16";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_2 {
+                        String DataFieldName "L1B1_DQI_Green";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_3 {
+                        String DataFieldName "L1B1_Line_TAI_Time_Green";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Line";
+                    }
+                    DataField_4 {
+                        String DataFieldName "L1B1_Line_Scene_Average_Green";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Line";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            SWATH_3 {
+                String SwathName "L1B1_Red_Product";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Line";
+                        Int32 Size 72716;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Sample";
+                        Int32 Size 1504;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "L1B1_Scaled_Rad_Red";
+                        String DataType "DFNT_INT16";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_2 {
+                        String DataFieldName "L1B1_DQI_Red";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_3 {
+                        String DataFieldName "L1B1_Line_TAI_Time_Red";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Line";
+                    }
+                    DataField_4 {
+                        String DataFieldName "L1B1_Line_Scene_Average_Red";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Line";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            SWATH_4 {
+                String SwathName "L1B1_Nir_Product";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Line";
+                        Int32 Size 18179;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Sample";
+                        Int32 Size 376;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "L1B1_Scaled_Rad_Nir";
+                        String DataType "DFNT_INT16";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_2 {
+                        String DataFieldName "L1B1_DQI_Nir";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Line", "Sample";
+                    }
+                    DataField_3 {
+                        String DataFieldName "L1B1_Line_TAI_Time_Nir";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Line";
+                    }
+                    DataField_4 {
+                        String DataFieldName "L1B1_Line_Scene_Average_Nir";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Line";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+        Int32 PathNumber 95;
+        Int32 OrbitNumber 65592;
+        Int16 Camera 2;
+        String StartTime "2012-07-31T23:55:04.440000Z";
+        String StopTime "2012-08-01T00:45:00.600000Z";
+        Int16 CameraMode 1;
+        Int16 NumLMEvents 0;
+        String LMSiteName "N/A";
+        Float64 PGEStartOffset 0.0000000000000000;
+        Float64 PGEStopOffset 2967.0000000000000;
+        Float64 PGEStartTAI 617932512.43752813;
+    }
+}

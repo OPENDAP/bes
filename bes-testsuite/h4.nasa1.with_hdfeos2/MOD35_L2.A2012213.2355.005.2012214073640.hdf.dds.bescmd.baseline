@@ -1,0 +1,13 @@
+Dataset {
+    Int32 Byte_Segment[Byte_Segment = 6];
+    Float64 Scan_Start_Time[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int16 Solar_Zenith[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int16 Solar_Azimuth[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int16 Sensor_Zenith[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int16 Sensor_Azimuth[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 Cloud_Mask[Byte_Segment = 6][Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 Quality_Assurance[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354][QA_Dimension = 10];
+    Float32 Latitude[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Longitude[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 QA_Dimension[QA_Dimension = 10];
+} MOD35_L2.A2012213.2355.005.2012214073640.hdf;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="O19970011997031.L3m_MO_A520_9.hdf" space="catalog">/data/O19970011997031.L3m_MO_A520_9.hdf</setContainer>
+    <define name="d">
+	<container name="O19970011997031.L3m_MO_A520_9.hdf" />
+        <constraint>l3m_data[0:2159:2159][0:4319:4319],Number_of_Lines[0:2159:2159],Number_of_Columns[0:4319:4319]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

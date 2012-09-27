@@ -1,0 +1,6 @@
+Dataset {
+    Float32 TbOceanRain[Latitude = 28][Longitude = 72];
+    Float32 RrLandRain[Latitude = 28][Longitude = 72];
+    Float64 Latitude[Latitude = 28];
+    Float64 Longitude[Longitude = 72];
+} AMSR_E_L3_RainGrid_V06_200206.hdf;

@@ -1,0 +1,3143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MISR_AM1_AGP_P001_F01_24.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="coremetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MISR_AM1_AGP_P001_F01_24.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;1999-11-07T07:42:44.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MISR_EXEC_VERSION: V2.1.1 MISR_EXEC_NAME:GC_AGPGEN_agp_generate.cc&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;V2.1.1&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MIANCAGP&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="GPOLYGON" type="Container">
+                        <Attribute name="GPOLYGONCONTAINER" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="GRINGPOINT" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <value>&quot;1&quot;</value>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLONGITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>720</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>110.466940</value>
+                                        <value>109.708681</value>
+                                        <value>97.721070</value>
+                                        <value>98.962634</value>
+                                        <value>109.708681</value>
+                                        <value>108.871622</value>
+                                        <value>96.361736</value>
+                                        <value>97.721070</value>
+                                        <value>108.453643</value>
+                                        <value>107.501449</value>
+                                        <value>94.496785</value>
+                                        <value>96.003083</value>
+                                        <value>107.501449</value>
+                                        <value>106.436520</value>
+                                        <value>92.836013</value>
+                                        <value>94.496785</value>
+                                        <value>105.973544</value>
+                                        <value>104.746402</value>
+                                        <value>90.604254</value>
+                                        <value>92.454882</value>
+                                        <value>104.746402</value>
+                                        <value>103.352719</value>
+                                        <value>88.549672</value>
+                                        <value>90.604254</value>
+                                        <value>103.352719</value>
+                                        <value>101.755554</value>
+                                        <value>86.260282</value>
+                                        <value>88.549672</value>
+                                        <value>101.755554</value>
+                                        <value>99.906867</value>
+                                        <value>83.700476</value>
+                                        <value>86.260282</value>
+                                        <value>99.320423</value>
+                                        <value>97.116982</value>
+                                        <value>80.400909</value>
+                                        <value>83.278297</value>
+                                        <value>97.116982</value>
+                                        <value>94.511219</value>
+                                        <value>77.171498</value>
+                                        <value>80.400909</value>
+                                        <value>94.511219</value>
+                                        <value>91.390916</value>
+                                        <value>73.543611</value>
+                                        <value>77.171498</value>
+                                        <value>91.390916</value>
+                                        <value>87.605674</value>
+                                        <value>69.471006</value>
+                                        <value>73.543611</value>
+                                        <value>87.605674</value>
+                                        <value>82.955603</value>
+                                        <value>64.912933</value>
+                                        <value>69.471006</value>
+                                        <value>82.175245</value>
+                                        <value>76.388489</value>
+                                        <value>59.492508</value>
+                                        <value>64.526655</value>
+                                        <value>76.388489</value>
+                                        <value>69.214594</value>
+                                        <value>53.959499</value>
+                                        <value>59.492508</value>
+                                        <value>69.214594</value>
+                                        <value>60.392350</value>
+                                        <value>47.963805</value>
+                                        <value>53.959499</value>
+                                        <value>60.392350</value>
+                                        <value>49.837052</value>
+                                        <value>41.586839</value>
+                                        <value>47.963805</value>
+                                        <value>49.837052</value>
+                                        <value>37.872407</value>
+                                        <value>34.956634</value>
+                                        <value>41.586839</value>
+                                        <value>37.872407</value>
+                                        <value>25.349338</value>
+                                        <value>28.237176</value>
+                                        <value>34.956634</value>
+                                        <value>25.349338</value>
+                                        <value>13.379504</value>
+                                        <value>21.606115</value>
+                                        <value>28.237176</value>
+                                        <value>13.379504</value>
+                                        <value>2.816112</value>
+                                        <value>15.227565</value>
+                                        <value>21.606115</value>
+                                        <value>2.816112</value>
+                                        <value>-6.014622</value>
+                                        <value>9.229773</value>
+                                        <value>15.227565</value>
+                                        <value>-6.014622</value>
+                                        <value>-13.195995</value>
+                                        <value>3.694383</value>
+                                        <value>9.229773</value>
+                                        <value>-13.195995</value>
+                                        <value>-18.988816</value>
+                                        <value>-1.342225</value>
+                                        <value>3.694383</value>
+                                        <value>-18.988816</value>
+                                        <value>-23.677617</value>
+                                        <value>-5.879800</value>
+                                        <value>-1.342225</value>
+                                        <value>-23.677617</value>
+                                        <value>-27.508154</value>
+                                        <value>-9.942539</value>
+                                        <value>-5.879800</value>
+                                        <value>-27.508154</value>
+                                        <value>-30.674369</value>
+                                        <value>-13.568494</value>
+                                        <value>-9.942539</value>
+                                        <value>-31.336266</value>
+                                        <value>-33.944243</value>
+                                        <value>-17.224961</value>
+                                        <value>-13.993718</value>
+                                        <value>-33.944243</value>
+                                        <value>-36.149424</value>
+                                        <value>-20.103959</value>
+                                        <value>-17.224961</value>
+                                        <value>-36.149424</value>
+                                        <value>-38.035888</value>
+                                        <value>-22.674414</value>
+                                        <value>-20.103959</value>
+                                        <value>-38.035888</value>
+                                        <value>-39.667057</value>
+                                        <value>-24.975857</value>
+                                        <value>-22.674414</value>
+                                        <value>-40.184377</value>
+                                        <value>-41.578956</value>
+                                        <value>-27.433669</value>
+                                        <value>-25.378019</value>
+                                        <value>-41.578956</value>
+                                        <value>-42.806836</value>
+                                        <value>-29.285225</value>
+                                        <value>-27.433669</value>
+                                        <value>-42.806836</value>
+                                        <value>-43.896811</value>
+                                        <value>-30.959227</value>
+                                        <value>-29.285225</value>
+                                        <value>-44.335467</value>
+                                        <value>-45.288165</value>
+                                        <value>-32.834998</value>
+                                        <value>-31.327997</value>
+                                        <value>-45.288165</value>
+                                        <value>-46.145814</value>
+                                        <value>-34.206968</value>
+                                        <value>-32.834998</value>
+                                        <value>-46.145814</value>
+                                        <value>-46.922705</value>
+                                        <value>-35.460573</value>
+                                        <value>-34.206968</value>
+                                        <value>-47.302338</value>
+                                        <value>-47.993466</value>
+                                        <value>-36.934291</value>
+                                        <value>-35.795762</value>
+                                        <value>-47.993466</value>
+                                        <value>-48.626422</value>
+                                        <value>-37.981443</value>
+                                        <value>-36.934291</value>
+                                        <value>-48.975087</value>
+                                        <value>-49.543619</value>
+                                        <value>-39.252859</value>
+                                        <value>-38.296576</value>
+                                        <value>-49.543619</value>
+                                        <value>-50.069244</value>
+                                        <value>-40.137785</value>
+                                        <value>-39.252859</value>
+                                        <value>-50.391782</value>
+                                        <value>-50.867941</value>
+                                        <value>-41.246961</value>
+                                        <value>-40.434588</value>
+                                        <value>-50.867941</value>
+                                        <value>-51.311799</value>
+                                        <value>-42.002939</value>
+                                        <value>-41.246961</value>
+                                        <value>-51.612125</value>
+                                        <value>-52.017275</value>
+                                        <value>-42.980600</value>
+                                        <value>-42.283204</value>
+                                        <value>-52.307920</value>
+                                        <value>-52.678975</value>
+                                        <value>-43.898342</value>
+                                        <value>-43.253595</value>
+                                        <value>-52.678975</value>
+                                        <value>-53.028585</value>
+                                        <value>-44.502825</value>
+                                        <value>-43.898342</value>
+                                        <value>-53.301534</value>
+                                        <value>-53.623831</value>
+                                        <value>-45.323037</value>
+                                        <value>-44.761736</value>
+                                        <value>-53.623831</value>
+                                        <value>-53.929339</value>
+                                        <value>-45.851620</value>
+                                        <value>-45.323037</value>
+                                        <value>-54.186987</value>
+                                        <value>-54.470322</value>
+                                        <value>-46.590772</value>
+                                        <value>-46.097964</value>
+                                        <value>-54.721191</value>
+                                        <value>-54.984688</value>
+                                        <value>-47.291853</value>
+                                        <value>-46.831560</value>
+                                        <value>-54.984688</value>
+                                        <value>-55.236504</value>
+                                        <value>-47.727885</value>
+                                        <value>-47.291853</value>
+                                        <value>-55.474918</value>
+                                        <value>-55.710361</value>
+                                        <value>-48.366783</value>
+                                        <value>-47.958051</value>
+                                        <value>-55.943217</value>
+                                        <value>-56.163910</value>
+                                        <value>-48.976008</value>
+                                        <value>-48.592234</value>
+                                        <value>-56.391547</value>
+                                        <value>-56.598932</value>
+                                        <value>-49.557905</value>
+                                        <value>-49.196986</value>
+                                        <value>-56.598932</value>
+                                        <value>-56.798997</value>
+                                        <value>-49.902119</value>
+                                        <value>-49.557905</value>
+                                        <value>-57.017022</value>
+                                        <value>-57.205916</value>
+                                        <value>-50.439325</value>
+                                        <value>-50.114598</value>
+                                        <value>-57.419619</value>
+                                        <value>-57.598384</value>
+                                        <value>-50.954805</value>
+                                        <value>-50.648013</value>
+                                        <value>-57.808019</value>
+                                        <value>-57.977590</value>
+                                        <value>-51.450163</value>
+                                        <value>-51.159900</value>
+                                        <value>-58.183396</value>
+                                        <value>-58.344615</value>
+                                        <value>-51.926864</value>
+                                        <value>-51.651855</value>
+                                        <value>-58.344615</value>
+                                        <value>-58.501697</value>
+                                        <value>-52.190989</value>
+                                        <value>-51.926864</value>
+                                        <value>-58.700443</value>
+                                        <value>-58.850416</value>
+                                        <value>-52.637156</value>
+                                        <value>-52.386246</value>
+                                        <value>-59.045972</value>
+                                        <value>-59.189472</value>
+                                        <value>-53.068201</value>
+                                        <value>-52.829534</value>
+                                        <value>-59.382021</value>
+                                        <value>-59.519629</value>
+                                        <value>-53.485166</value>
+                                        <value>-53.257855</value>
+                                        <value>-59.709346</value>
+                                        <value>-59.841588</value>
+                                        <value>-53.889010</value>
+                                        <value>-53.672243</value>
+                                        <value>-60.028638</value>
+                                        <value>-60.155998</value>
+                                        <value>-54.280622</value>
+                                        <value>-54.073653</value>
+                                        <value>-60.340539</value>
+                                        <value>-60.463459</value>
+                                        <value>-54.660819</value>
+                                        <value>-54.462964</value>
+                                        <value>-60.645638</value>
+                                        <value>-60.764526</value>
+                                        <value>-55.030362</value>
+                                        <value>-54.840990</value>
+                                        <value>-60.944486</value>
+                                        <value>-61.059716</value>
+                                        <value>-55.389955</value>
+                                        <value>-55.208485</value>
+                                        <value>-61.237590</value>
+                                        <value>-61.349510</value>
+                                        <value>-55.740253</value>
+                                        <value>-55.566151</value>
+                                        <value>-61.525427</value>
+                                        <value>-61.634359</value>
+                                        <value>-56.081869</value>
+                                        <value>-55.914636</value>
+                                        <value>-61.808441</value>
+                                        <value>-61.914684</value>
+                                        <value>-56.415371</value>
+                                        <value>-56.254548</value>
+                                        <value>-62.087049</value>
+                                        <value>-62.190883</value>
+                                        <value>-56.741292</value>
+                                        <value>-56.586453</value>
+                                        <value>-62.361642</value>
+                                        <value>-62.463328</value>
+                                        <value>-57.060133</value>
+                                        <value>-56.910881</value>
+                                        <value>-62.632590</value>
+                                        <value>-62.732373</value>
+                                        <value>-57.372363</value>
+                                        <value>-57.228327</value>
+                                        <value>-62.900243</value>
+                                        <value>-62.998355</value>
+                                        <value>-57.678422</value>
+                                        <value>-57.539257</value>
+                                        <value>-63.164931</value>
+                                        <value>-63.261591</value>
+                                        <value>-57.978727</value>
+                                        <value>-57.844111</value>
+                                        <value>-63.426972</value>
+                                        <value>-63.522386</value>
+                                        <value>-58.273671</value>
+                                        <value>-58.143301</value>
+                                        <value>-63.686665</value>
+                                        <value>-63.781032</value>
+                                        <value>-58.563627</value>
+                                        <value>-58.437218</value>
+                                        <value>-63.944300</value>
+                                        <value>-64.037810</value>
+                                        <value>-58.848948</value>
+                                        <value>-58.726232</value>
+                                        <value>-64.200155</value>
+                                        <value>-64.292989</value>
+                                        <value>-59.129970</value>
+                                        <value>-59.010695</value>
+                                        <value>-64.454498</value>
+                                        <value>-64.546831</value>
+                                        <value>-59.407014</value>
+                                        <value>-59.290942</value>
+                                        <value>-64.707588</value>
+                                        <value>-64.799592</value>
+                                        <value>-59.680387</value>
+                                        <value>-59.567292</value>
+                                        <value>-64.959678</value>
+                                        <value>-65.051517</value>
+                                        <value>-59.950384</value>
+                                        <value>-59.840049</value>
+                                        <value>-65.211014</value>
+                                        <value>-65.302851</value>
+                                        <value>-60.217287</value>
+                                        <value>-60.109508</value>
+                                        <value>-65.461837</value>
+                                        <value>-65.553832</value>
+                                        <value>-60.481369</value>
+                                        <value>-60.375950</value>
+                                        <value>-65.870928</value>
+                                        <value>-65.962893</value>
+                                        <value>-60.900864</value>
+                                        <value>-60.797954</value>
+                                        <value>-66.121078</value>
+                                        <value>-66.213591</value>
+                                        <value>-61.159854</value>
+                                        <value>-61.058858</value>
+                                        <value>-66.371495</value>
+                                        <value>-66.464711</value>
+                                        <value>-61.416869</value>
+                                        <value>-61.317612</value>
+                                        <value>-66.622409</value>
+                                        <value>-66.716484</value>
+                                        <value>-61.672150</value>
+                                        <value>-61.574464</value>
+                                        <value>-66.874051</value>
+                                        <value>-66.969141</value>
+                                        <value>-61.925937</value>
+                                        <value>-61.829656</value>
+                                        <value>-67.126651</value>
+                                        <value>-67.222916</value>
+                                        <value>-62.178467</value>
+                                        <value>-62.083429</value>
+                                        <value>-67.380442</value>
+                                        <value>-67.478043</value>
+                                        <value>-62.429970</value>
+                                        <value>-62.336018</value>
+                                        <value>-67.635661</value>
+                                        <value>-67.734762</value>
+                                        <value>-62.680677</value>
+                                        <value>-62.587655</value>
+                                        <value>-67.892545</value>
+                                        <value>-67.993316</value>
+                                        <value>-62.930820</value>
+                                        <value>-62.838571</value>
+                                        <value>-68.151338</value>
+                                        <value>-68.253953</value>
+                                        <value>-63.180626</value>
+                                        <value>-63.088996</value>
+                                        <value>-68.412289</value>
+                                        <value>-68.516928</value>
+                                        <value>-63.430326</value>
+                                        <value>-63.339161</value>
+                                        <value>-68.834350</value>
+                                        <value>-68.941693</value>
+                                        <value>-63.839639</value>
+                                        <value>-63.748281</value>
+                                        <value>-69.100854</value>
+                                        <value>-69.210681</value>
+                                        <value>-64.090421</value>
+                                        <value>-63.999135</value>
+                                        <value>-69.370383</value>
+                                        <value>-69.482898</value>
+                                        <value>-64.341883</value>
+                                        <value>-64.250509</value>
+                                        <value>-69.643218</value>
+                                        <value>-69.758634</value>
+                                        <value>-64.594271</value>
+                                        <value>-64.502643</value>
+                                        <value>-69.919652</value>
+                                        <value>-70.038196</value>
+                                        <value>-64.847834</value>
+                                        <value>-64.755786</value>
+                                        <value>-70.199993</value>
+                                        <value>-70.321900</value>
+                                        <value>-65.102832</value>
+                                        <value>-65.010188</value>
+                                        <value>-70.484558</value>
+                                        <value>-70.610081</value>
+                                        <value>-65.359529</value>
+                                        <value>-65.266111</value>
+                                        <value>-70.773683</value>
+                                        <value>-70.903086</value>
+                                        <value>-65.618201</value>
+                                        <value>-65.523822</value>
+                                        <value>-71.067720</value>
+                                        <value>-71.201286</value>
+                                        <value>-65.879136</value>
+                                        <value>-65.783599</value>
+                                        <value>-71.367039</value>
+                                        <value>-71.505068</value>
+                                        <value>-66.142630</value>
+                                        <value>-66.045732</value>
+                                        <value>-71.672032</value>
+                                        <value>-71.814844</value>
+                                        <value>-66.408997</value>
+                                        <value>-66.310522</value>
+                                        <value>-71.983112</value>
+                                        <value>-72.131051</value>
+                                        <value>-66.678566</value>
+                                        <value>-66.578286</value>
+                                        <value>-72.300718</value>
+                                        <value>-72.454150</value>
+                                        <value>-66.951681</value>
+                                        <value>-66.849355</value>
+                                        <value>-72.625318</value>
+                                        <value>-72.784636</value>
+                                        <value>-67.228709</value>
+                                        <value>-67.124079</value>
+                                        <value>-72.957407</value>
+                                        <value>-73.123035</value>
+                                        <value>-67.510037</value>
+                                        <value>-67.402828</value>
+                                        <value>-73.297516</value>
+                                        <value>-73.469910</value>
+                                        <value>-67.796076</value>
+                                        <value>-67.685995</value>
+                                        <value>-73.646211</value>
+                                        <value>-73.825864</value>
+                                        <value>-68.087268</value>
+                                        <value>-67.973997</value>
+                                        <value>-74.004101</value>
+                                        <value>-74.191544</value>
+                                        <value>-68.384080</value>
+                                        <value>-68.267278</value>
+                                        <value>-74.371836</value>
+                                        <value>-74.567645</value>
+                                        <value>-68.687017</value>
+                                        <value>-68.566316</value>
+                                        <value>-74.750117</value>
+                                        <value>-74.954918</value>
+                                        <value>-68.996621</value>
+                                        <value>-68.871620</value>
+                                        <value>-75.139700</value>
+                                        <value>-75.354172</value>
+                                        <value>-69.313477</value>
+                                        <value>-69.183740</value>
+                                        <value>-75.541400</value>
+                                        <value>-75.766282</value>
+                                        <value>-69.638215</value>
+                                        <value>-69.503269</value>
+                                        <value>-75.956099</value>
+                                        <value>-76.192197</value>
+                                        <value>-69.971521</value>
+                                        <value>-69.830846</value>
+                                        <value>-76.384750</value>
+                                        <value>-76.632946</value>
+                                        <value>-70.314140</value>
+                                        <value>-70.167167</value>
+                                        <value>-76.632946</value>
+                                        <value>-76.890982</value>
+                                        <value>-70.464576</value>
+                                        <value>-70.314140</value>
+                                        <value>-77.089650</value>
+                                        <value>-77.361617</value>
+                                        <value>-70.824712</value>
+                                        <value>-70.666882</value>
+                                        <value>-77.563527</value>
+                                        <value>-77.850578</value>
+                                        <value>-71.196606</value>
+                                        <value>-71.030635</value>
+                                        <value>-78.055910</value>
+                                        <value>-78.359312</value>
+                                        <value>-71.581311</value>
+                                        <value>-71.406370</value>
+                                        <value>-78.568257</value>
+                                        <value>-78.889406</value>
+                                        <value>-71.979984</value>
+                                        <value>-71.795155</value>
+                                        <value>-79.102164</value>
+                                        <value>-79.442603</value>
+                                        <value>-72.393909</value>
+                                        <value>-72.198166</value>
+                                        <value>-79.442603</value>
+                                        <value>-79.799516</value>
+                                        <value>-72.596682</value>
+                                        <value>-72.393909</value>
+                                        <value>-80.020822</value>
+                                        <value>-80.400371</value>
+                                        <value>-73.040289</value>
+                                        <value>-72.824506</value>
+                                        <value>-80.626180</value>
+                                        <value>-81.030455</value>
+                                        <value>-73.503563</value>
+                                        <value>-73.273352</value>
+                                        <value>-81.261013</value>
+                                        <value>-81.692347</value>
+                                        <value>-73.988446</value>
+                                        <value>-73.742209</value>
+                                        <value>-81.692347</value>
+                                        <value>-82.147651</value>
+                                        <value>-74.245967</value>
+                                        <value>-73.988446</value>
+                                        <value>-82.388906</value>
+                                        <value>-82.876457</value>
+                                        <value>-74.774067</value>
+                                        <value>-74.497117</value>
+                                        <value>-83.123315</value>
+                                        <value>-83.646360</value>
+                                        <value>-75.330710</value>
+                                        <value>-75.032029</value>
+                                        <value>-83.646360</value>
+                                        <value>-84.201779</value>
+                                        <value>-75.645663</value>
+                                        <value>-75.330710</value>
+                                        <value>-84.461312</value>
+                                        <value>-85.059607</value>
+                                        <value>-76.260737</value>
+                                        <value>-75.919000</value>
+                                        <value>-85.059607</value>
+                                        <value>-85.697780</value>
+                                        <value>-76.623296</value>
+                                        <value>-76.260737</value>
+                                        <value>-85.971536</value>
+                                        <value>-86.662030</value>
+                                        <value>-77.310444</value>
+                                        <value>-76.914426</value>
+                                        <value>-86.943141</value>
+                                        <value>-87.691889</value>
+                                        <value>-78.045349</value>
+                                        <value>-77.611320</value>
+                                        <value>-87.691889</value>
+                                        <value>-88.496602</value>
+                                        <value>-78.510841</value>
+                                        <value>-78.045349</value>
+                                        <value>-88.794454</value>
+                                        <value>-89.671395</value>
+                                        <value>-79.348196</value>
+                                        <value>-78.834085</value>
+                                        <value>-89.671395</value>
+                                        <value>-90.619253</value>
+                                        <value>-79.904180</value>
+                                        <value>-79.348196</value>
+                                        <value>-90.935703</value>
+                                        <value>-91.974149</value>
+                                        <value>-80.873139</value>
+                                        <value>-80.253766</value>
+                                        <value>-91.974149</value>
+                                        <value>-93.103567</value>
+                                        <value>-81.549396</value>
+                                        <value>-80.873139</value>
+                                        <value>-93.103567</value>
+                                        <value>-94.336186</value>
+                                        <value>-82.291687</value>
+                                        <value>-81.549396</value>
+                                        <value>-94.684764</value>
+                                        <value>-96.047192</value>
+                                        <value>-83.530929</value>
+                                        <value>-82.691016</value>
+                                        <value>-96.047192</value>
+                                        <value>-97.544485</value>
+                                        <value>-84.464085</value>
+                                        <value>-83.530929</value>
+                                        <value>-97.915687</value>
+                                        <value>-99.580317</value>
+                                        <value>-85.973466</value>
+                                        <value>-84.904711</value>
+                                        <value>-99.580317</value>
+                                        <value>-101.422804</value>
+                                        <value>-87.177928</value>
+                                        <value>-85.973466</value>
+                                        <value>-101.422804</value>
+                                        <value>-103.470059</value>
+                                        <value>-88.546658</value>
+                                        <value>-87.177928</value>
+                                        <value>-103.875817</value>
+                                        <value>-106.170577</value>
+                                        <value>-90.670822</value>
+                                        <value>-89.067386</value>
+                                        <value>-106.170577</value>
+                                        <value>-108.736362</value>
+                                        <value>-92.527026</value>
+                                        <value>-90.670822</value>
+                                        <value>-108.736362</value>
+                                        <value>-111.613726</value>
+                                        <value>-94.699592</value>
+                                        <value>-92.527026</value>
+                                        <value>-111.613726</value>
+                                        <value>-114.847740</value>
+                                        <value>-97.273226</value>
+                                        <value>-94.699592</value>
+                                        <value>-114.847740</value>
+                                        <value>-118.486635</value>
+                                        <value>-100.361849</value>
+                                        <value>-97.273226</value>
+                                        <value>-118.914289</value>
+                                        <value>-122.994809</value>
+                                        <value>-104.879114</value>
+                                        <value>-101.077128</value>
+                                        <value>-122.994809</value>
+                                        <value>-127.560771</value>
+                                        <value>-109.549708</value>
+                                        <value>-104.879114</value>
+                                        <value>-127.560771</value>
+                                        <value>-132.638679</value>
+                                        <value>-115.346587</value>
+                                        <value>-109.549708</value>
+                                        <value>-132.638679</value>
+                                        <value>-138.229960</value>
+                                        <value>-122.574060</value>
+                                        <value>-115.346587</value>
+                                        <value>-138.229960</value>
+                                        <value>-144.298452</value>
+                                        <value>-131.520437</value>
+                                        <value>-122.574060</value>
+                                        <value>-144.298452</value>
+                                        <value>-150.760439</value>
+                                        <value>-142.293592</value>
+                                        <value>-131.520437</value>
+                                        <value>-150.760439</value>
+                                        <value>-157.482939</value>
+                                        <value>-154.560978</value>
+                                        <value>-142.293592</value>
+                                        <value>-157.482939</value>
+                                        <value>-164.295008</value>
+                                        <value>-167.408570</value>
+                                        <value>-154.560978</value>
+                                        <value>-164.295008</value>
+                                        <value>-171.011627</value>
+                                        <value>-179.639154</value>
+                                        <value>-167.408570</value>
+                                        <value>-171.011627</value>
+                                        <value>-177.462757</value>
+                                        <value>169.644435</value>
+                                        <value>-179.639154</value>
+                                        <value>-177.462757</value>
+                                        <value>176.483096</value>
+                                        <value>160.756733</value>
+                                        <value>169.644435</value>
+                                        <value>176.483096</value>
+                                        <value>170.908028</value>
+                                        <value>153.580243</value>
+                                        <value>160.756733</value>
+                                        <value>170.908028</value>
+                                        <value>165.846808</value>
+                                        <value>147.824238</value>
+                                        <value>153.580243</value>
+                                        <value>165.846808</value>
+                                        <value>161.297005</value>
+                                        <value>143.185343</value>
+                                        <value>147.824238</value>
+                                        <value>161.297005</value>
+                                        <value>157.231505</value>
+                                        <value>139.407719</value>
+                                        <value>143.185343</value>
+                                        <value>157.231505</value>
+                                        <value>153.609603</value>
+                                        <value>136.292606</value>
+                                        <value>139.407719</value>
+                                        <value>153.609603</value>
+                                        <value>150.385169</value>
+                                        <value>133.690381</value>
+                                        <value>136.292606</value>
+                                        <value>150.385169</value>
+                                        <value>147.511887</value>
+                                        <value>131.489352</value>
+                                        <value>133.690381</value>
+                                        <value>147.090121</value>
+                                        <value>144.533677</value>
+                                        <value>129.056574</value>
+                                        <value>130.903737</value>
+                                        <value>144.533677</value>
+                                        <value>142.247032</value>
+                                        <value>127.460412</value>
+                                        <value>129.056574</value>
+                                        <value>142.247032</value>
+                                        <value>140.194690</value>
+                                        <value>126.067367</value>
+                                        <value>127.460412</value>
+                                        <value>139.801463</value>
+                                        <value>137.965105</value>
+                                        <value>124.378114</value>
+                                        <value>125.577795</value>
+                                        <value>137.965105</value>
+                                        <value>136.305804</value>
+                                        <value>123.313331</value>
+                                        <value>124.378114</value>
+                                        <value>136.305804</value>
+                                        <value>134.800707</value>
+                                        <value>122.361162</value>
+                                        <value>123.313331</value>
+                                        <value>134.442353</value>
+                                        <value>133.083977</value>
+                                        <value>121.106404</value>
+                                        <value>121.943564</value>
+                                        <value>133.083977</value>
+                                        <value>131.843195</value>
+                                        <value>120.347994</value>
+                                        <value>121.106404</value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLATITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>720</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>66.222666</value>
+                                        <value>67.448181</value>
+                                        <value>65.752701</value>
+                                        <value>64.604018</value>
+                                        <value>67.448181</value>
+                                        <value>68.669819</value>
+                                        <value>66.889715</value>
+                                        <value>65.752701</value>
+                                        <value>68.629199</value>
+                                        <value>69.844138</value>
+                                        <value>67.939468</value>
+                                        <value>66.819414</value>
+                                        <value>69.844138</value>
+                                        <value>71.053463</value>
+                                        <value>69.043627</value>
+                                        <value>67.939468</value>
+                                        <value>71.007047</value>
+                                        <value>72.206807</value>
+                                        <value>70.046570</value>
+                                        <value>68.965127</value>
+                                        <value>72.206807</value>
+                                        <value>73.398061</value>
+                                        <value>71.105955</value>
+                                        <value>70.046570</value>
+                                        <value>73.398061</value>
+                                        <value>74.578904</value>
+                                        <value>72.139395</value>
+                                        <value>71.105955</value>
+                                        <value>74.578904</value>
+                                        <value>75.746812</value>
+                                        <value>73.142155</value>
+                                        <value>72.139395</value>
+                                        <value>75.684687</value>
+                                        <value>76.831100</value>
+                                        <value>74.003923</value>
+                                        <value>73.043515</value>
+                                        <value>76.831100</value>
+                                        <value>77.955651</value>
+                                        <value>74.920417</value>
+                                        <value>74.003923</value>
+                                        <value>77.955651</value>
+                                        <value>79.051666</value>
+                                        <value>75.784535</value>
+                                        <value>74.920417</value>
+                                        <value>79.051666</value>
+                                        <value>80.109721</value>
+                                        <value>76.586186</value>
+                                        <value>75.784535</value>
+                                        <value>80.109721</value>
+                                        <value>81.116305</value>
+                                        <value>77.313554</value>
+                                        <value>76.586186</value>
+                                        <value>81.015783</value>
+                                        <value>81.939920</value>
+                                        <value>77.813898</value>
+                                        <value>77.181160</value>
+                                        <value>81.939920</value>
+                                        <value>82.763749</value>
+                                        <value>78.344830</value>
+                                        <value>77.813898</value>
+                                        <value>82.763749</value>
+                                        <value>83.449365</value>
+                                        <value>78.759542</value>
+                                        <value>78.344830</value>
+                                        <value>83.449365</value>
+                                        <value>83.949640</value>
+                                        <value>79.044843</value>
+                                        <value>78.759542</value>
+                                        <value>83.949640</value>
+                                        <value>84.216306</value>
+                                        <value>79.190493</value>
+                                        <value>79.044843</value>
+                                        <value>84.216306</value>
+                                        <value>84.216970</value>
+                                        <value>79.190851</value>
+                                        <value>79.190493</value>
+                                        <value>84.216970</value>
+                                        <value>83.951545</value>
+                                        <value>79.045901</value>
+                                        <value>79.190851</value>
+                                        <value>83.951545</value>
+                                        <value>83.452299</value>
+                                        <value>78.761259</value>
+                                        <value>79.045901</value>
+                                        <value>83.452299</value>
+                                        <value>82.767468</value>
+                                        <value>78.347149</value>
+                                        <value>78.761259</value>
+                                        <value>82.767468</value>
+                                        <value>81.944213</value>
+                                        <value>77.816750</value>
+                                        <value>78.347149</value>
+                                        <value>81.944213</value>
+                                        <value>81.020491</value>
+                                        <value>77.184474</value>
+                                        <value>77.816750</value>
+                                        <value>81.020491</value>
+                                        <value>80.024131</value>
+                                        <value>76.464571</value>
+                                        <value>77.184474</value>
+                                        <value>80.024131</value>
+                                        <value>78.974764</value>
+                                        <value>75.670216</value>
+                                        <value>76.464571</value>
+                                        <value>78.974764</value>
+                                        <value>77.886110</value>
+                                        <value>74.813063</value>
+                                        <value>75.670216</value>
+                                        <value>77.961078</value>
+                                        <value>76.836649</value>
+                                        <value>74.008511</value>
+                                        <value>74.924771</value>
+                                        <value>76.836649</value>
+                                        <value>75.690330</value>
+                                        <value>73.048300</value>
+                                        <value>74.008511</value>
+                                        <value>75.690330</value>
+                                        <value>74.526936</value>
+                                        <value>72.051158</value>
+                                        <value>73.048300</value>
+                                        <value>74.526936</value>
+                                        <value>73.349993</value>
+                                        <value>71.022876</value>
+                                        <value>72.051158</value>
+                                        <value>73.403854</value>
+                                        <value>72.212646</value>
+                                        <value>70.051800</value>
+                                        <value>71.111068</value>
+                                        <value>72.212646</value>
+                                        <value>71.012924</value>
+                                        <value>68.970456</value>
+                                        <value>70.051800</value>
+                                        <value>71.012924</value>
+                                        <value>69.806155</value>
+                                        <value>67.870241</value>
+                                        <value>68.970456</value>
+                                        <value>69.850058</value>
+                                        <value>68.635144</value>
+                                        <value>66.824918</value>
+                                        <value>67.944900</value>
+                                        <value>68.635144</value>
+                                        <value>67.415465</value>
+                                        <value>65.691196</value>
+                                        <value>66.824918</value>
+                                        <value>67.415465</value>
+                                        <value>66.191702</value>
+                                        <value>64.545537</value>
+                                        <value>65.691196</value>
+                                        <value>66.228659</value>
+                                        <value>64.999802</value>
+                                        <value>63.450828</value>
+                                        <value>64.609653</value>
+                                        <value>64.999802</value>
+                                        <value>63.768008</value>
+                                        <value>62.283056</value>
+                                        <value>63.450828</value>
+                                        <value>63.801156</value>
+                                        <value>62.565536</value>
+                                        <value>61.163214</value>
+                                        <value>62.341197</value>
+                                        <value>62.565536</value>
+                                        <value>61.327722</value>
+                                        <value>59.978402</value>
+                                        <value>61.163214</value>
+                                        <value>61.357747</value>
+                                        <value>60.116976</value>
+                                        <value>58.838548</value>
+                                        <value>60.031417</value>
+                                        <value>60.116976</value>
+                                        <value>58.874509</value>
+                                        <value>57.640375</value>
+                                        <value>58.838548</value>
+                                        <value>58.901942</value>
+                                        <value>57.657131</value>
+                                        <value>56.484328</value>
+                                        <value>57.688960</value>
+                                        <value>57.683097</value>
+                                        <value>56.436226</value>
+                                        <value>55.320243</value>
+                                        <value>56.530625</value>
+                                        <value>56.436226</value>
+                                        <value>55.188156</value>
+                                        <value>54.106168</value>
+                                        <value>55.320243</value>
+                                        <value>55.212157</value>
+                                        <value>53.962397</value>
+                                        <value>52.930098</value>
+                                        <value>54.148884</value>
+                                        <value>53.962397</value>
+                                        <value>52.711635</value>
+                                        <value>51.708333</value>
+                                        <value>52.930098</value>
+                                        <value>52.733968</value>
+                                        <value>51.481791</value>
+                                        <value>50.522227</value>
+                                        <value>51.747904</value>
+                                        <value>51.503117</value>
+                                        <value>50.249662</value>
+                                        <value>49.330906</value>
+                                        <value>50.560120</value>
+                                        <value>50.249662</value>
+                                        <value>48.995417</value>
+                                        <value>48.099508</value>
+                                        <value>49.330906</value>
+                                        <value>49.015448</value>
+                                        <value>47.760105</value>
+                                        <value>46.900412</value>
+                                        <value>48.134799</value>
+                                        <value>47.779322</value>
+                                        <value>46.522976</value>
+                                        <value>45.697178</value>
+                                        <value>46.934291</value>
+                                        <value>46.541440</value>
+                                        <value>45.284173</value>
+                                        <value>44.490122</value>
+                                        <value>45.729727</value>
+                                        <value>45.284173</value>
+                                        <value>44.026286</value>
+                                        <value>43.249029</value>
+                                        <value>44.490122</value>
+                                        <value>44.043825</value>
+                                        <value>42.785123</value>
+                                        <value>42.036288</value>
+                                        <value>43.279528</value>
+                                        <value>42.802049</value>
+                                        <value>41.542591</value>
+                                        <value>40.820437</value>
+                                        <value>42.065653</value>
+                                        <value>41.558949</value>
+                                        <value>40.298788</value>
+                                        <value>39.601691</value>
+                                        <value>40.848729</value>
+                                        <value>40.314621</value>
+                                        <value>39.053803</value>
+                                        <value>38.380247</value>
+                                        <value>39.628967</value>
+                                        <value>39.053803</value>
+                                        <value>37.792487</value>
+                                        <value>37.130562</value>
+                                        <value>38.380247</value>
+                                        <value>37.807720</value>
+                                        <value>36.545808</value>
+                                        <value>35.905122</value>
+                                        <value>37.156284</value>
+                                        <value>36.560612</value>
+                                        <value>35.298142</value>
+                                        <value>34.677434</value>
+                                        <value>35.929967</value>
+                                        <value>35.312550</value>
+                                        <value>34.049555</value>
+                                        <value>33.447640</value>
+                                        <value>34.701446</value>
+                                        <value>34.063599</value>
+                                        <value>32.800110</value>
+                                        <value>32.215869</value>
+                                        <value>33.470861</value>
+                                        <value>32.813818</value>
+                                        <value>31.549864</value>
+                                        <value>30.982243</value>
+                                        <value>32.238339</value>
+                                        <value>31.563265</value>
+                                        <value>30.298872</value>
+                                        <value>29.746875</value>
+                                        <value>31.004000</value>
+                                        <value>30.311991</value>
+                                        <value>29.047184</value>
+                                        <value>28.509869</value>
+                                        <value>29.767953</value>
+                                        <value>29.060047</value>
+                                        <value>27.794851</value>
+                                        <value>27.271322</value>
+                                        <value>28.530302</value>
+                                        <value>27.807481</value>
+                                        <value>26.541917</value>
+                                        <value>26.031326</value>
+                                        <value>27.291142</value>
+                                        <value>26.554336</value>
+                                        <value>25.288427</value>
+                                        <value>24.789965</value>
+                                        <value>26.050562</value>
+                                        <value>25.300658</value>
+                                        <value>24.034424</value>
+                                        <value>23.547321</value>
+                                        <value>24.808647</value>
+                                        <value>24.046487</value>
+                                        <value>22.779949</value>
+                                        <value>22.303470</value>
+                                        <value>23.565475</value>
+                                        <value>22.791863</value>
+                                        <value>21.525040</value>
+                                        <value>21.058481</value>
+                                        <value>22.321122</value>
+                                        <value>21.536824</value>
+                                        <value>20.269736</value>
+                                        <value>19.812424</value>
+                                        <value>21.075656</value>
+                                        <value>20.281409</value>
+                                        <value>19.014076</value>
+                                        <value>18.565362</value>
+                                        <value>19.829145</value>
+                                        <value>19.025655</value>
+                                        <value>17.758094</value>
+                                        <value>17.317358</value>
+                                        <value>18.581652</value>
+                                        <value>17.769597</value>
+                                        <value>16.501828</value>
+                                        <value>16.068468</value>
+                                        <value>17.333237</value>
+                                        <value>16.513271</value>
+                                        <value>15.245312</value>
+                                        <value>14.818749</value>
+                                        <value>16.083958</value>
+                                        <value>15.256711</value>
+                                        <value>13.988582</value>
+                                        <value>13.568254</value>
+                                        <value>14.833869</value>
+                                        <value>13.999953</value>
+                                        <value>12.731672</value>
+                                        <value>12.317035</value>
+                                        <value>13.583025</value>
+                                        <value>12.743030</value>
+                                        <value>11.474616</value>
+                                        <value>11.065141</value>
+                                        <value>12.331474</value>
+                                        <value>11.485977</value>
+                                        <value>10.217449</value>
+                                        <value>9.812620</value>
+                                        <value>11.079266</value>
+                                        <value>10.228826</value>
+                                        <value>8.960204</value>
+                                        <value>8.559517</value>
+                                        <value>9.826447</value>
+                                        <value>8.971613</value>
+                                        <value>7.702916</value>
+                                        <value>7.305877</value>
+                                        <value>8.573064</value>
+                                        <value>7.714371</value>
+                                        <value>6.445619</value>
+                                        <value>6.051743</value>
+                                        <value>7.319161</value>
+                                        <value>6.468601</value>
+                                        <value>5.199937</value>
+                                        <value>4.809961</value>
+                                        <value>6.077769</value>
+                                        <value>5.211488</value>
+                                        <value>3.942814</value>
+                                        <value>3.554747</value>
+                                        <value>4.822728</value>
+                                        <value>3.954463</value>
+                                        <value>2.685799</value>
+                                        <value>2.299177</value>
+                                        <value>3.567307</value>
+                                        <value>2.697560</value>
+                                        <value>1.428928</value>
+                                        <value>1.043288</value>
+                                        <value>2.311543</value>
+                                        <value>1.440816</value>
+                                        <value>0.172237</value>
+                                        <value>-0.212880</value>
+                                        <value>1.055477</value>
+                                        <value>0.184265</value>
+                                        <value>-1.084239</value>
+                                        <value>-1.469291</value>
+                                        <value>-0.200855</value>
+                                        <value>-1.072056</value>
+                                        <value>-2.340462</value>
+                                        <value>-2.725909</value>
+                                        <value>-1.457416</value>
+                                        <value>-2.328110</value>
+                                        <value>-3.596396</value>
+                                        <value>-3.982698</value>
+                                        <value>-2.714169</value>
+                                        <value>-3.583859</value>
+                                        <value>-4.852002</value>
+                                        <value>-5.239623</value>
+                                        <value>-3.971079</value>
+                                        <value>-4.839266</value>
+                                        <value>-6.107240</value>
+                                        <value>-6.496648</value>
+                                        <value>-5.228111</value>
+                                        <value>-6.094291</value>
+                                        <value>-7.362072</value>
+                                        <value>-7.753740</value>
+                                        <value>-6.485229</value>
+                                        <value>-7.335659</value>
+                                        <value>-8.603032</value>
+                                        <value>-8.999589</value>
+                                        <value>-7.731001</value>
+                                        <value>-8.589543</value>
+                                        <value>-9.856665</value>
+                                        <value>-10.256763</value>
+                                        <value>-8.988246</value>
+                                        <value>-9.842905</value>
+                                        <value>-11.109749</value>
+                                        <value>-11.513887</value>
+                                        <value>-10.245460</value>
+                                        <value>-11.095701</value>
+                                        <value>-12.362239</value>
+                                        <value>-12.770927</value>
+                                        <value>-11.502610</value>
+                                        <value>-12.347885</value>
+                                        <value>-13.614087</value>
+                                        <value>-14.027851</value>
+                                        <value>-12.759662</value>
+                                        <value>-13.599411</value>
+                                        <value>-14.865246</value>
+                                        <value>-15.284625</value>
+                                        <value>-14.016583</value>
+                                        <value>-14.850229</value>
+                                        <value>-16.115666</value>
+                                        <value>-16.541214</value>
+                                        <value>-15.273338</value>
+                                        <value>-16.100289</value>
+                                        <value>-17.365295</value>
+                                        <value>-17.797584</value>
+                                        <value>-16.529892</value>
+                                        <value>-17.349538</value>
+                                        <value>-18.614078</value>
+                                        <value>-19.053701</value>
+                                        <value>-17.786212</value>
+                                        <value>-18.597920</value>
+                                        <value>-19.861959</value>
+                                        <value>-20.309531</value>
+                                        <value>-19.042263</value>
+                                        <value>-19.845380</value>
+                                        <value>-21.108879</value>
+                                        <value>-21.565037</value>
+                                        <value>-20.298009</value>
+                                        <value>-21.091855</value>
+                                        <value>-22.354774</value>
+                                        <value>-22.820183</value>
+                                        <value>-21.553413</value>
+                                        <value>-22.337283</value>
+                                        <value>-23.599580</value>
+                                        <value>-24.074932</value>
+                                        <value>-22.808440</value>
+                                        <value>-23.581597</value>
+                                        <value>-24.843228</value>
+                                        <value>-25.329246</value>
+                                        <value>-24.063051</value>
+                                        <value>-24.824726</value>
+                                        <value>-26.085643</value>
+                                        <value>-26.583087</value>
+                                        <value>-25.317208</value>
+                                        <value>-26.066597</value>
+                                        <value>-27.326748</value>
+                                        <value>-27.836413</value>
+                                        <value>-26.570871</value>
+                                        <value>-27.307130</value>
+                                        <value>-28.566462</value>
+                                        <value>-29.089181</value>
+                                        <value>-27.823997</value>
+                                        <value>-28.546240</value>
+                                        <value>-29.804695</value>
+                                        <value>-30.341349</value>
+                                        <value>-29.076544</value>
+                                        <value>-29.783839</value>
+                                        <value>-31.041353</value>
+                                        <value>-31.592870</value>
+                                        <value>-30.328467</value>
+                                        <value>-31.019830</value>
+                                        <value>-32.276336</value>
+                                        <value>-32.843694</value>
+                                        <value>-31.579718</value>
+                                        <value>-32.254110</value>
+                                        <value>-33.509535</value>
+                                        <value>-34.093770</value>
+                                        <value>-32.830246</value>
+                                        <value>-33.486570</value>
+                                        <value>-34.740834</value>
+                                        <value>-35.343044</value>
+                                        <value>-34.080000</value>
+                                        <value>-34.717090</value>
+                                        <value>-35.970106</value>
+                                        <value>-36.591457</value>
+                                        <value>-35.328922</value>
+                                        <value>-35.945541</value>
+                                        <value>-37.197215</value>
+                                        <value>-37.838946</value>
+                                        <value>-36.576952</value>
+                                        <value>-37.197215</value>
+                                        <value>-38.448023</value>
+                                        <value>-39.100463</value>
+                                        <value>-37.838946</value>
+                                        <value>-38.422013</value>
+                                        <value>-39.671297</value>
+                                        <value>-40.346366</value>
+                                        <value>-39.085443</value>
+                                        <value>-39.644337</value>
+                                        <value>-40.891974</value>
+                                        <value>-41.591164</value>
+                                        <value>-40.330875</value>
+                                        <value>-40.864011</value>
+                                        <value>-42.109865</value>
+                                        <value>-42.834772</value>
+                                        <value>-41.575162</value>
+                                        <value>-42.080843</value>
+                                        <value>-43.324763</value>
+                                        <value>-44.077097</value>
+                                        <value>-42.818217</value>
+                                        <value>-43.294620</value>
+                                        <value>-44.536439</value>
+                                        <value>-45.318038</value>
+                                        <value>-44.059945</value>
+                                        <value>-44.536439</value>
+                                        <value>-45.776803</value>
+                                        <value>-46.575526</value>
+                                        <value>-45.318038</value>
+                                        <value>-45.744640</value>
+                                        <value>-46.982566</value>
+                                        <value>-47.814083</value>
+                                        <value>-46.557483</value>
+                                        <value>-46.949087</value>
+                                        <value>-48.184345</value>
+                                        <value>-49.050940</value>
+                                        <value>-47.795306</value>
+                                        <value>-48.149468</value>
+                                        <value>-49.381800</value>
+                                        <value>-50.285945</value>
+                                        <value>-49.031367</value>
+                                        <value>-49.381800</value>
+                                        <value>-50.612000</value>
+                                        <value>-51.539757</value>
+                                        <value>-50.285945</value>
+                                        <value>-50.574554</value>
+                                        <value>-51.801290</value>
+                                        <value>-52.771515</value>
+                                        <value>-51.518930</value>
+                                        <value>-51.762183</value>
+                                        <value>-52.985089</value>
+                                        <value>-54.000926</value>
+                                        <value>-52.749701</value>
+                                        <value>-52.985089</value>
+                                        <value>-54.205086</value>
+                                        <value>-55.251187</value>
+                                        <value>-54.000926</value>
+                                        <value>-54.162869</value>
+                                        <value>-55.378252</value>
+                                        <value>-56.476391</value>
+                                        <value>-55.227753</value>
+                                        <value>-55.378252</value>
+                                        <value>-56.590028</value>
+                                        <value>-57.723880</value>
+                                        <value>-56.476391</value>
+                                        <value>-56.544268</value>
+                                        <value>-57.750409</value>
+                                        <value>-58.944044</value>
+                                        <value>-57.698531</value>
+                                        <value>-57.702378</value>
+                                        <value>-58.902187</value>
+                                        <value>-60.160519</value>
+                                        <value>-58.917256</value>
+                                        <value>-58.902187</value>
+                                        <value>-60.096811</value>
+                                        <value>-61.402161</value>
+                                        <value>-60.160519</value>
+                                        <value>-60.044389</value>
+                                        <value>-61.231109</value>
+                                        <value>-62.611647</value>
+                                        <value>-61.372842</value>
+                                        <value>-61.231109</value>
+                                        <value>-62.411145</value>
+                                        <value>-63.848357</value>
+                                        <value>-62.611647</value>
+                                        <value>-62.353635</value>
+                                        <value>-63.523644</value>
+                                        <value>-65.049022</value>
+                                        <value>-63.815984</value>
+                                        <value>-63.523644</value>
+                                        <value>-64.684886</value>
+                                        <value>-66.279256</value>
+                                        <value>-65.049022</value>
+                                        <value>-64.684886</value>
+                                        <value>-65.836133</value>
+                                        <value>-67.506285</value>
+                                        <value>-66.279256</value>
+                                        <value>-65.769736</value>
+                                        <value>-66.906317</value>
+                                        <value>-68.689934</value>
+                                        <value>-67.468494</value>
+                                        <value>-66.906317</value>
+                                        <value>-68.029400</value>
+                                        <value>-69.906825</value>
+                                        <value>-68.689934</value>
+                                        <value>-67.955462</value>
+                                        <value>-69.059062</value>
+                                        <value>-71.072971</value>
+                                        <value>-69.863917</value>
+                                        <value>-69.059062</value>
+                                        <value>-70.144081</value>
+                                        <value>-72.275281</value>
+                                        <value>-71.072971</value>
+                                        <value>-70.144081</value>
+                                        <value>-71.207338</value>
+                                        <value>-73.469439</value>
+                                        <value>-72.275281</value>
+                                        <value>-71.119888</value>
+                                        <value>-72.152491</value>
+                                        <value>-74.597130</value>
+                                        <value>-73.416741</value>
+                                        <value>-72.152491</value>
+                                        <value>-73.154290</value>
+                                        <value>-75.764494</value>
+                                        <value>-74.597130</value>
+                                        <value>-73.154290</value>
+                                        <value>-74.119491</value>
+                                        <value>-76.915411</value>
+                                        <value>-75.764494</value>
+                                        <value>-74.119491</value>
+                                        <value>-75.041047</value>
+                                        <value>-78.045196</value>
+                                        <value>-76.915411</value>
+                                        <value>-75.041047</value>
+                                        <value>-75.910427</value>
+                                        <value>-79.147314</value>
+                                        <value>-78.045196</value>
+                                        <value>-75.792628</value>
+                                        <value>-76.592576</value>
+                                        <value>-80.123292</value>
+                                        <value>-79.066584</value>
+                                        <value>-76.592576</value>
+                                        <value>-77.317998</value>
+                                        <value>-81.128136</value>
+                                        <value>-80.123292</value>
+                                        <value>-77.317998</value>
+                                        <value>-77.955449</value>
+                                        <value>-82.061459</value>
+                                        <value>-81.128136</value>
+                                        <value>-77.955449</value>
+                                        <value>-78.490329</value>
+                                        <value>-82.895077</value>
+                                        <value>-82.061459</value>
+                                        <value>-78.490329</value>
+                                        <value>-78.907812</value>
+                                        <value>-83.590022</value>
+                                        <value>-82.895077</value>
+                                        <value>-78.907812</value>
+                                        <value>-79.194296</value>
+                                        <value>-84.097155</value>
+                                        <value>-83.590022</value>
+                                        <value>-79.194296</value>
+                                        <value>-79.339227</value>
+                                        <value>-84.365561</value>
+                                        <value>-84.097155</value>
+                                        <value>-79.339227</value>
+                                        <value>-79.336838</value>
+                                        <value>-84.361063</value>
+                                        <value>-84.365561</value>
+                                        <value>-79.336838</value>
+                                        <value>-79.187225</value>
+                                        <value>-84.084282</value>
+                                        <value>-84.361063</value>
+                                        <value>-79.187225</value>
+                                        <value>-78.896334</value>
+                                        <value>-83.570273</value>
+                                        <value>-84.084282</value>
+                                        <value>-78.896334</value>
+                                        <value>-78.474845</value>
+                                        <value>-82.870136</value>
+                                        <value>-83.570273</value>
+                                        <value>-78.474845</value>
+                                        <value>-77.936426</value>
+                                        <value>-82.032759</value>
+                                        <value>-82.870136</value>
+                                        <value>-77.936426</value>
+                                        <value>-77.295916</value>
+                                        <value>-81.096745</value>
+                                        <value>-82.032759</value>
+                                        <value>-77.295916</value>
+                                        <value>-76.567891</value>
+                                        <value>-80.089961</value>
+                                        <value>-81.096745</value>
+                                        <value>-76.567891</value>
+                                        <value>-75.765748</value>
+                                        <value>-79.031834</value>
+                                        <value>-80.089961</value>
+                                        <value>-75.765748</value>
+                                        <value>-74.901268</value>
+                                        <value>-77.935820</value>
+                                        <value>-79.031834</value>
+                                        <value>-74.901268</value>
+                                        <value>-73.984515</value>
+                                        <value>-76.811310</value>
+                                        <value>-77.935820</value>
+                                        <value>-73.984515</value>
+                                        <value>-73.023927</value>
+                                        <value>-75.664961</value>
+                                        <value>-76.811310</value>
+                                        <value>-73.122543</value>
+                                        <value>-72.119667</value>
+                                        <value>-74.559279</value>
+                                        <value>-75.727110</value>
+                                        <value>-72.119667</value>
+                                        <value>-71.086156</value>
+                                        <value>-73.378516</value>
+                                        <value>-74.559279</value>
+                                        <value>-71.086156</value>
+                                        <value>-70.026732</value>
+                                        <value>-72.187340</value>
+                                        <value>-73.378516</value>
+                                        <value>-70.109436</value>
+                                        <value>-69.023772</value>
+                                        <value>-71.034107</value>
+                                        <value>-72.236655</value>
+                                        <value>-69.023772</value>
+                                        <value>-67.919619</value>
+                                        <value>-69.824855</value>
+                                        <value>-71.034107</value>
+                                        <value>-67.919619</value>
+                                        <value>-66.799584</value>
+                                        <value>-68.609983</value>
+                                        <value>-69.824855</value>
+                                        <value>-66.869890</value>
+                                        <value>-65.732906</value>
+                                        <value>-67.429064</value>
+                                        <value>-68.650640</value>
+                                        <value>-65.732906</value>
+                                        <value>-64.584258</value>
+                                        <value>-66.203607</value>
+                                        <value>-67.429064</value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTSEQUENCENO" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>720</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>720</value>
+                                        <value>719</value>
+                                        <value>2</value>
+                                        <value>1</value>
+                                        <value>718</value>
+                                        <value>717</value>
+                                        <value>4</value>
+                                        <value>3</value>
+                                        <value>716</value>
+                                        <value>715</value>
+                                        <value>6</value>
+                                        <value>5</value>
+                                        <value>714</value>
+                                        <value>713</value>
+                                        <value>8</value>
+                                        <value>7</value>
+                                        <value>712</value>
+                                        <value>711</value>
+                                        <value>10</value>
+                                        <value>9</value>
+                                        <value>710</value>
+                                        <value>709</value>
+                                        <value>12</value>
+                                        <value>11</value>
+                                        <value>708</value>
+                                        <value>707</value>
+                                        <value>14</value>
+                                        <value>13</value>
+                                        <value>706</value>
+                                        <value>705</value>
+                                        <value>16</value>
+                                        <value>15</value>
+                                        <value>704</value>
+                                        <value>703</value>
+                                        <value>18</value>
+                                        <value>17</value>
+                                        <value>702</value>
+                                        <value>701</value>
+                                        <value>20</value>
+                                        <value>19</value>
+                                        <value>700</value>
+                                        <value>699</value>
+                                        <value>22</value>
+                                        <value>21</value>
+                                        <value>698</value>
+                                        <value>697</value>
+                                        <value>24</value>
+                                        <value>23</value>
+                                        <value>696</value>
+                                        <value>695</value>
+                                        <value>26</value>
+                                        <value>25</value>
+                                        <value>694</value>
+                                        <value>693</value>
+                                        <value>28</value>
+                                        <value>27</value>
+                                        <value>692</value>
+                                        <value>691</value>
+                                        <value>30</value>
+                                        <value>29</value>
+                                        <value>690</value>
+                                        <value>689</value>
+                                        <value>32</value>
+                                        <value>31</value>
+                                        <value>688</value>
+                                        <value>687</value>
+                                        <value>34</value>
+                                        <value>33</value>
+                                        <value>686</value>
+                                        <value>685</value>
+                                        <value>36</value>
+                                        <value>35</value>
+                                        <value>684</value>
+                                        <value>683</value>
+                                        <value>38</value>
+                                        <value>37</value>
+                                        <value>682</value>
+                                        <value>681</value>
+                                        <value>40</value>
+                                        <value>39</value>
+                                        <value>680</value>
+                                        <value>679</value>
+                                        <value>42</value>
+                                        <value>41</value>
+                                        <value>678</value>
+                                        <value>677</value>
+                                        <value>44</value>
+                                        <value>43</value>
+                                        <value>676</value>
+                                        <value>675</value>
+                                        <value>46</value>
+                                        <value>45</value>
+                                        <value>674</value>
+                                        <value>673</value>
+                                        <value>48</value>
+                                        <value>47</value>
+                                        <value>672</value>
+                                        <value>671</value>
+                                        <value>50</value>
+                                        <value>49</value>
+                                        <value>670</value>
+                                        <value>669</value>
+                                        <value>52</value>
+                                        <value>51</value>
+                                        <value>668</value>
+                                        <value>667</value>
+                                        <value>54</value>
+                                        <value>53</value>
+                                        <value>666</value>
+                                        <value>665</value>
+                                        <value>56</value>
+                                        <value>55</value>
+                                        <value>664</value>
+                                        <value>663</value>
+                                        <value>58</value>
+                                        <value>57</value>
+                                        <value>662</value>
+                                        <value>661</value>
+                                        <value>60</value>
+                                        <value>59</value>
+                                        <value>660</value>
+                                        <value>659</value>
+                                        <value>62</value>
+                                        <value>61</value>
+                                        <value>658</value>
+                                        <value>657</value>
+                                        <value>64</value>
+                                        <value>63</value>
+                                        <value>656</value>
+                                        <value>655</value>
+                                        <value>66</value>
+                                        <value>65</value>
+                                        <value>654</value>
+                                        <value>653</value>
+                                        <value>68</value>
+                                        <value>67</value>
+                                        <value>652</value>
+                                        <value>651</value>
+                                        <value>70</value>
+                                        <value>69</value>
+                                        <value>650</value>
+                                        <value>649</value>
+                                        <value>72</value>
+                                        <value>71</value>
+                                        <value>648</value>
+                                        <value>647</value>
+                                        <value>74</value>
+                                        <value>73</value>
+                                        <value>646</value>
+                                        <value>645</value>
+                                        <value>76</value>
+                                        <value>75</value>
+                                        <value>644</value>
+                                        <value>643</value>
+                                        <value>78</value>
+                                        <value>77</value>
+                                        <value>642</value>
+                                        <value>641</value>
+                                        <value>80</value>
+                                        <value>79</value>
+                                        <value>640</value>
+                                        <value>639</value>
+                                        <value>82</value>
+                                        <value>81</value>
+                                        <value>638</value>
+                                        <value>637</value>
+                                        <value>84</value>
+                                        <value>83</value>
+                                        <value>636</value>
+                                        <value>635</value>
+                                        <value>86</value>
+                                        <value>85</value>
+                                        <value>634</value>
+                                        <value>633</value>
+                                        <value>88</value>
+                                        <value>87</value>
+                                        <value>632</value>
+                                        <value>631</value>
+                                        <value>90</value>
+                                        <value>89</value>
+                                        <value>630</value>
+                                        <value>629</value>
+                                        <value>92</value>
+                                        <value>91</value>
+                                        <value>628</value>
+                                        <value>627</value>
+                                        <value>94</value>
+                                        <value>93</value>
+                                        <value>626</value>
+                                        <value>625</value>
+                                        <value>96</value>
+                                        <value>95</value>
+                                        <value>624</value>
+                                        <value>623</value>
+                                        <value>98</value>
+                                        <value>97</value>
+                                        <value>622</value>
+                                        <value>621</value>
+                                        <value>100</value>
+                                        <value>99</value>
+                                        <value>620</value>
+                                        <value>619</value>
+                                        <value>102</value>
+                                        <value>101</value>
+                                        <value>618</value>
+                                        <value>617</value>
+                                        <value>104</value>
+                                        <value>103</value>
+                                        <value>616</value>
+                                        <value>615</value>
+                                        <value>106</value>
+                                        <value>105</value>
+                                        <value>614</value>
+                                        <value>613</value>
+                                        <value>108</value>
+                                        <value>107</value>
+                                        <value>612</value>
+                                        <value>611</value>
+                                        <value>110</value>
+                                        <value>109</value>
+                                        <value>610</value>
+                                        <value>609</value>
+                                        <value>112</value>
+                                        <value>111</value>
+                                        <value>608</value>
+                                        <value>607</value>
+                                        <value>114</value>
+                                        <value>113</value>
+                                        <value>606</value>
+                                        <value>605</value>
+                                        <value>116</value>
+                                        <value>115</value>
+                                        <value>604</value>
+                                        <value>603</value>
+                                        <value>118</value>
+                                        <value>117</value>
+                                        <value>602</value>
+                                        <value>601</value>
+                                        <value>120</value>
+                                        <value>119</value>
+                                        <value>600</value>
+                                        <value>599</value>
+                                        <value>122</value>
+                                        <value>121</value>
+                                        <value>598</value>
+                                        <value>597</value>
+                                        <value>124</value>
+                                        <value>123</value>
+                                        <value>596</value>
+                                        <value>595</value>
+                                        <value>126</value>
+                                        <value>125</value>
+                                        <value>594</value>
+                                        <value>593</value>
+                                        <value>128</value>
+                                        <value>127</value>
+                                        <value>592</value>
+                                        <value>591</value>
+                                        <value>130</value>
+                                        <value>129</value>
+                                        <value>590</value>
+                                        <value>589</value>
+                                        <value>132</value>
+                                        <value>131</value>
+                                        <value>588</value>
+                                        <value>587</value>
+                                        <value>134</value>
+                                        <value>133</value>
+                                        <value>586</value>
+                                        <value>585</value>
+                                        <value>136</value>
+                                        <value>135</value>
+                                        <value>584</value>
+                                        <value>583</value>
+                                        <value>138</value>
+                                        <value>137</value>
+                                        <value>582</value>
+                                        <value>581</value>
+                                        <value>140</value>
+                                        <value>139</value>
+                                        <value>580</value>
+                                        <value>579</value>
+                                        <value>142</value>
+                                        <value>141</value>
+                                        <value>578</value>
+                                        <value>577</value>
+                                        <value>144</value>
+                                        <value>143</value>
+                                        <value>576</value>
+                                        <value>575</value>
+                                        <value>146</value>
+                                        <value>145</value>
+                                        <value>574</value>
+                                        <value>573</value>
+                                        <value>148</value>
+                                        <value>147</value>
+                                        <value>572</value>
+                                        <value>571</value>
+                                        <value>150</value>
+                                        <value>149</value>
+                                        <value>570</value>
+                                        <value>569</value>
+                                        <value>152</value>
+                                        <value>151</value>
+                                        <value>568</value>
+                                        <value>567</value>
+                                        <value>154</value>
+                                        <value>153</value>
+                                        <value>566</value>
+                                        <value>565</value>
+                                        <value>156</value>
+                                        <value>155</value>
+                                        <value>564</value>
+                                        <value>563</value>
+                                        <value>158</value>
+                                        <value>157</value>
+                                        <value>562</value>
+                                        <value>561</value>
+                                        <value>160</value>
+                                        <value>159</value>
+                                        <value>560</value>
+                                        <value>559</value>
+                                        <value>162</value>
+                                        <value>161</value>
+                                        <value>558</value>
+                                        <value>557</value>
+                                        <value>164</value>
+                                        <value>163</value>
+                                        <value>556</value>
+                                        <value>555</value>
+                                        <value>166</value>
+                                        <value>165</value>
+                                        <value>554</value>
+                                        <value>553</value>
+                                        <value>168</value>
+                                        <value>167</value>
+                                        <value>552</value>
+                                        <value>551</value>
+                                        <value>170</value>
+                                        <value>169</value>
+                                        <value>550</value>
+                                        <value>549</value>
+                                        <value>172</value>
+                                        <value>171</value>
+                                        <value>548</value>
+                                        <value>547</value>
+                                        <value>174</value>
+                                        <value>173</value>
+                                        <value>546</value>
+                                        <value>545</value>
+                                        <value>176</value>
+                                        <value>175</value>
+                                        <value>544</value>
+                                        <value>543</value>
+                                        <value>178</value>
+                                        <value>177</value>
+                                        <value>542</value>
+                                        <value>541</value>
+                                        <value>180</value>
+                                        <value>179</value>
+                                        <value>540</value>
+                                        <value>539</value>
+                                        <value>182</value>
+                                        <value>181</value>
+                                        <value>538</value>
+                                        <value>537</value>
+                                        <value>184</value>
+                                        <value>183</value>
+                                        <value>536</value>
+                                        <value>535</value>
+                                        <value>186</value>
+                                        <value>185</value>
+                                        <value>534</value>
+                                        <value>533</value>
+                                        <value>188</value>
+                                        <value>187</value>
+                                        <value>532</value>
+                                        <value>531</value>
+                                        <value>190</value>
+                                        <value>189</value>
+                                        <value>530</value>
+                                        <value>529</value>
+                                        <value>192</value>
+                                        <value>191</value>
+                                        <value>528</value>
+                                        <value>527</value>
+                                        <value>194</value>
+                                        <value>193</value>
+                                        <value>526</value>
+                                        <value>525</value>
+                                        <value>196</value>
+                                        <value>195</value>
+                                        <value>524</value>
+                                        <value>523</value>
+                                        <value>198</value>
+                                        <value>197</value>
+                                        <value>522</value>
+                                        <value>521</value>
+                                        <value>200</value>
+                                        <value>199</value>
+                                        <value>520</value>
+                                        <value>519</value>
+                                        <value>202</value>
+                                        <value>201</value>
+                                        <value>518</value>
+                                        <value>517</value>
+                                        <value>204</value>
+                                        <value>203</value>
+                                        <value>516</value>
+                                        <value>515</value>
+                                        <value>206</value>
+                                        <value>205</value>
+                                        <value>514</value>
+                                        <value>513</value>
+                                        <value>208</value>
+                                        <value>207</value>
+                                        <value>512</value>
+                                        <value>511</value>
+                                        <value>210</value>
+                                        <value>209</value>
+                                        <value>510</value>
+                                        <value>509</value>
+                                        <value>212</value>
+                                        <value>211</value>
+                                        <value>508</value>
+                                        <value>507</value>
+                                        <value>214</value>
+                                        <value>213</value>
+                                        <value>506</value>
+                                        <value>505</value>
+                                        <value>216</value>
+                                        <value>215</value>
+                                        <value>504</value>
+                                        <value>503</value>
+                                        <value>218</value>
+                                        <value>217</value>
+                                        <value>502</value>
+                                        <value>501</value>
+                                        <value>220</value>
+                                        <value>219</value>
+                                        <value>500</value>
+                                        <value>499</value>
+                                        <value>222</value>
+                                        <value>221</value>
+                                        <value>498</value>
+                                        <value>497</value>
+                                        <value>224</value>
+                                        <value>223</value>
+                                        <value>496</value>
+                                        <value>495</value>
+                                        <value>226</value>
+                                        <value>225</value>
+                                        <value>494</value>
+                                        <value>493</value>
+                                        <value>228</value>
+                                        <value>227</value>
+                                        <value>492</value>
+                                        <value>491</value>
+                                        <value>230</value>
+                                        <value>229</value>
+                                        <value>490</value>
+                                        <value>489</value>
+                                        <value>232</value>
+                                        <value>231</value>
+                                        <value>488</value>
+                                        <value>487</value>
+                                        <value>234</value>
+                                        <value>233</value>
+                                        <value>486</value>
+                                        <value>485</value>
+                                        <value>236</value>
+                                        <value>235</value>
+                                        <value>484</value>
+                                        <value>483</value>
+                                        <value>238</value>
+                                        <value>237</value>
+                                        <value>482</value>
+                                        <value>481</value>
+                                        <value>240</value>
+                                        <value>239</value>
+                                        <value>480</value>
+                                        <value>479</value>
+                                        <value>242</value>
+                                        <value>241</value>
+                                        <value>478</value>
+                                        <value>477</value>
+                                        <value>244</value>
+                                        <value>243</value>
+                                        <value>476</value>
+                                        <value>475</value>
+                                        <value>246</value>
+                                        <value>245</value>
+                                        <value>474</value>
+                                        <value>473</value>
+                                        <value>248</value>
+                                        <value>247</value>
+                                        <value>472</value>
+                                        <value>471</value>
+                                        <value>250</value>
+                                        <value>249</value>
+                                        <value>470</value>
+                                        <value>469</value>
+                                        <value>252</value>
+                                        <value>251</value>
+                                        <value>468</value>
+                                        <value>467</value>
+                                        <value>254</value>
+                                        <value>253</value>
+                                        <value>466</value>
+                                        <value>465</value>
+                                        <value>256</value>
+                                        <value>255</value>
+                                        <value>464</value>
+                                        <value>463</value>
+                                        <value>258</value>
+                                        <value>257</value>
+                                        <value>462</value>
+                                        <value>461</value>
+                                        <value>260</value>
+                                        <value>259</value>
+                                        <value>460</value>
+                                        <value>459</value>
+                                        <value>262</value>
+                                        <value>261</value>
+                                        <value>458</value>
+                                        <value>457</value>
+                                        <value>264</value>
+                                        <value>263</value>
+                                        <value>456</value>
+                                        <value>455</value>
+                                        <value>266</value>
+                                        <value>265</value>
+                                        <value>454</value>
+                                        <value>453</value>
+                                        <value>268</value>
+                                        <value>267</value>
+                                        <value>452</value>
+                                        <value>451</value>
+                                        <value>270</value>
+                                        <value>269</value>
+                                        <value>450</value>
+                                        <value>449</value>
+                                        <value>272</value>
+                                        <value>271</value>
+                                        <value>448</value>
+                                        <value>447</value>
+                                        <value>274</value>
+                                        <value>273</value>
+                                        <value>446</value>
+                                        <value>445</value>
+                                        <value>276</value>
+                                        <value>275</value>
+                                        <value>444</value>
+                                        <value>443</value>
+                                        <value>278</value>
+                                        <value>277</value>
+                                        <value>442</value>
+                                        <value>441</value>
+                                        <value>280</value>
+                                        <value>279</value>
+                                        <value>440</value>
+                                        <value>439</value>
+                                        <value>282</value>
+                                        <value>281</value>
+                                        <value>438</value>
+                                        <value>437</value>
+                                        <value>284</value>
+                                        <value>283</value>
+                                        <value>436</value>
+                                        <value>435</value>
+                                        <value>286</value>
+                                        <value>285</value>
+                                        <value>434</value>
+                                        <value>433</value>
+                                        <value>288</value>
+                                        <value>287</value>
+                                        <value>432</value>
+                                        <value>431</value>
+                                        <value>290</value>
+                                        <value>289</value>
+                                        <value>430</value>
+                                        <value>429</value>
+                                        <value>292</value>
+                                        <value>291</value>
+                                        <value>428</value>
+                                        <value>427</value>
+                                        <value>294</value>
+                                        <value>293</value>
+                                        <value>426</value>
+                                        <value>425</value>
+                                        <value>296</value>
+                                        <value>295</value>
+                                        <value>424</value>
+                                        <value>423</value>
+                                        <value>298</value>
+                                        <value>297</value>
+                                        <value>422</value>
+                                        <value>421</value>
+                                        <value>300</value>
+                                        <value>299</value>
+                                        <value>420</value>
+                                        <value>419</value>
+                                        <value>302</value>
+                                        <value>301</value>
+                                        <value>418</value>
+                                        <value>417</value>
+                                        <value>304</value>
+                                        <value>303</value>
+                                        <value>416</value>
+                                        <value>415</value>
+                                        <value>306</value>
+                                        <value>305</value>
+                                        <value>414</value>
+                                        <value>413</value>
+                                        <value>308</value>
+                                        <value>307</value>
+                                        <value>412</value>
+                                        <value>411</value>
+                                        <value>310</value>
+                                        <value>309</value>
+                                        <value>410</value>
+                                        <value>409</value>
+                                        <value>312</value>
+                                        <value>311</value>
+                                        <value>408</value>
+                                        <value>407</value>
+                                        <value>314</value>
+                                        <value>313</value>
+                                        <value>406</value>
+                                        <value>405</value>
+                                        <value>316</value>
+                                        <value>315</value>
+                                        <value>404</value>
+                                        <value>403</value>
+                                        <value>318</value>
+                                        <value>317</value>
+                                        <value>402</value>
+                                        <value>401</value>
+                                        <value>320</value>
+                                        <value>319</value>
+                                        <value>400</value>
+                                        <value>399</value>
+                                        <value>322</value>
+                                        <value>321</value>
+                                        <value>398</value>
+                                        <value>397</value>
+                                        <value>324</value>
+                                        <value>323</value>
+                                        <value>396</value>
+                                        <value>395</value>
+                                        <value>326</value>
+                                        <value>325</value>
+                                        <value>394</value>
+                                        <value>393</value>
+                                        <value>328</value>
+                                        <value>327</value>
+                                        <value>392</value>
+                                        <value>391</value>
+                                        <value>330</value>
+                                        <value>329</value>
+                                        <value>390</value>
+                                        <value>389</value>
+                                        <value>332</value>
+                                        <value>331</value>
+                                        <value>388</value>
+                                        <value>387</value>
+                                        <value>334</value>
+                                        <value>333</value>
+                                        <value>386</value>
+                                        <value>385</value>
+                                        <value>336</value>
+                                        <value>335</value>
+                                        <value>384</value>
+                                        <value>383</value>
+                                        <value>338</value>
+                                        <value>337</value>
+                                        <value>382</value>
+                                        <value>381</value>
+                                        <value>340</value>
+                                        <value>339</value>
+                                        <value>380</value>
+                                        <value>379</value>
+                                        <value>342</value>
+                                        <value>341</value>
+                                        <value>378</value>
+                                        <value>377</value>
+                                        <value>344</value>
+                                        <value>343</value>
+                                        <value>376</value>
+                                        <value>375</value>
+                                        <value>346</value>
+                                        <value>345</value>
+                                        <value>374</value>
+                                        <value>373</value>
+                                        <value>348</value>
+                                        <value>347</value>
+                                        <value>372</value>
+                                        <value>371</value>
+                                        <value>350</value>
+                                        <value>349</value>
+                                        <value>370</value>
+                                        <value>369</value>
+                                        <value>352</value>
+                                        <value>351</value>
+                                        <value>368</value>
+                                        <value>367</value>
+                                        <value>354</value>
+                                        <value>353</value>
+                                        <value>366</value>
+                                        <value>365</value>
+                                        <value>356</value>
+                                        <value>355</value>
+                                        <value>364</value>
+                                        <value>363</value>
+                                        <value>358</value>
+                                        <value>357</value>
+                                        <value>362</value>
+                                        <value>361</value>
+                                        <value>360</value>
+                                        <value>359</value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                            <Attribute name="GRING" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <value>&quot;1&quot;</value>
+                                </Attribute>
+                                <Attribute name="EXCLUSIONGRINGFLAG" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>1</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="String">
+                                        <value>&quot;N&quot;</value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2005-06-30T&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00.000000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;1999-11-07T&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;07:41:00.000000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;SP_AM_PATH_NO&quot;</value>
+                            <value>&quot;SP_AM_MISR_StartBlock&quot;</value>
+                            <value>&quot;SP_AM_MISR_EndBlock&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;001&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;180&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;Standard&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>128</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>512</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>7460750.000000</value>
+                    <value>1090650.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>7601550.000000</value>
+                    <value>527450.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_SOM</value>
+                </Attribute>
+                <Attribute name="ProjParams" type="Float64">
+                    <value>6378137</value>
+                    <value>-0.006694</value>
+                    <value>0</value>
+                    <value>98018013.750000</value>
+                    <value>127045037.920000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>98.880000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>180</value>
+                    <value>0</value>
+                </Attribute>
+                <Attribute name="SphereCode" type="Int32">
+                    <value>12</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AveSceneElev&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;StdDevSceneElev&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;StdDevSceneElevRelSlp&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;PtElev&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;GeoLatitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;GeoLongitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceFeatureID&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AveSurfNormAzAng&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AveSurfNormZenAng&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+            <Attribute name="GRID_2" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;Regional&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>8</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>32</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>7460750.000000</value>
+                    <value>1090650.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>7601550.000000</value>
+                    <value>527450.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_SOM</value>
+                </Attribute>
+                <Attribute name="ProjParams" type="Float64">
+                    <value>6378137</value>
+                    <value>-0.006694</value>
+                    <value>0</value>
+                    <value>98018013.750000</value>
+                    <value>127045037.920000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>98.880000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>180</value>
+                    <value>0</value>
+                </Attribute>
+                <Attribute name="SphereCode" type="Int32">
+                    <value>12</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RegAveSceneElev&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;StdDevRegSceneElev&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;SOMBlockDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="Translation_number_id" type="Int32">
+            <value>7</value>
+        </Attribute>
+        <Attribute name="Translation_land_water_id" type="Byte">
+            <value>0</value>
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>3</value>
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Translation_dark_water_mask" type="Byte">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>1</value>
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Path_number" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="AGP_version_id" type="Int32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="DID_version_id" type="Int32">
+            <value>4</value>
+        </Attribute>
+        <Attribute name="Number_blocks" type="Int32">
+            <value>180</value>
+        </Attribute>
+        <Attribute name="Ocean_blocks_size" type="Int32">
+            <value>180</value>
+        </Attribute>
+        <Attribute name="Ocean_blocks_count" type="Int32">
+            <value>48</value>
+        </Attribute>
+        <Attribute name="Ocean_blocks_numbers" type="Int32">
+            <value>12</value>
+            <value>23</value>
+            <value>43</value>
+            <value>44</value>
+            <value>45</value>
+            <value>46</value>
+            <value>47</value>
+            <value>48</value>
+            <value>49</value>
+            <value>50</value>
+            <value>54</value>
+            <value>55</value>
+            <value>56</value>
+            <value>57</value>
+            <value>58</value>
+            <value>59</value>
+            <value>60</value>
+            <value>61</value>
+            <value>62</value>
+            <value>63</value>
+            <value>64</value>
+            <value>65</value>
+            <value>66</value>
+            <value>67</value>
+            <value>68</value>
+            <value>69</value>
+            <value>70</value>
+            <value>71</value>
+            <value>72</value>
+            <value>73</value>
+            <value>74</value>
+            <value>75</value>
+            <value>133</value>
+            <value>134</value>
+            <value>135</value>
+            <value>136</value>
+            <value>137</value>
+            <value>138</value>
+            <value>139</value>
+            <value>140</value>
+            <value>141</value>
+            <value>142</value>
+            <value>143</value>
+            <value>144</value>
+            <value>145</value>
+            <value>0</value>
+            <value>147</value>
+            <value>148</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_ellipsoid_a" type="Float64">
+            <value>6378137.0000000000</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_ellipsoid_e2" type="Float64">
+            <value>0.0066943479999964474</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_aprime" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_eprime" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_gama" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_nrev" type="Int32">
+            <value>233</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_ro" type="Float64">
+            <value>7078040.7999878405</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_i" type="Float64">
+            <value>1.7157253262848964</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_P2P1" type="Float64">
+            <value>0.068666666666105339</value>
+        </Attribute>
+        <Attribute name="SOM_parameters_som_orbit_lambda0" type="Float64">
+            <value>2.2298420006992306</value>
+        </Attribute>
+        <Attribute name="Origin_block_ulc_x" type="Float64">
+            <value>7460750.0000000000</value>
+        </Attribute>
+        <Attribute name="Origin_block_ulc_y" type="Float64">
+            <value>527450.00000000000</value>
+        </Attribute>
+        <Attribute name="Origin_block_lrc_x" type="Float64">
+            <value>7601550.0000000000</value>
+        </Attribute>
+        <Attribute name="Origin_block_lrc_y" type="Float64">
+            <value>1090650.0000000000</value>
+        </Attribute>
+        <Attribute name="Start_block" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="End_block" type="Int32">
+            <value>180</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="PerBlockMetadataCommon" type="Container"/>
+    <Attribute name="PerBlockMetadataAGP" type="Container"/>
+    <Array name="AveSceneElev">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:AveSceneElev</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="StdDevSceneElev">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:StdDevSceneElev</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="StdDevSceneElevRelSlp">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:StdDevSceneElevRelSlp</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="PtElev">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:PtElev</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="GeoLatitude">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:GeoLatitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="GeoLongitude">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:GeoLongitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="SurfaceFeatureID">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:SurfaceFeatureID</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="AveSurfNormAzAng">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:AveSurfNormAzAng</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="AveSurfNormZenAng">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Standard:AveSurfNormZenAng</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="long_name" type="String">
+            <value>Standard:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Standard:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="SOMBlockDim" size="180"/>
+        <dimension name="XDim" size="128"/>
+        <dimension name="YDim" size="512"/>
+    </Array>
+    <Array name="RegAveSceneElev">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude_1 Latitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Regional:RegAveSceneElev</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="SOMBlockDim_1" size="180"/>
+        <dimension name="XDim_1" size="8"/>
+        <dimension name="YDim_1" size="32"/>
+    </Array>
+    <Array name="StdDevRegSceneElev">
+        <Attribute name="coordinates" type="String">
+            <value>Longitude_1 Latitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Regional:StdDevRegSceneElev</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="SOMBlockDim_1" size="180"/>
+        <dimension name="XDim_1" size="8"/>
+        <dimension name="YDim_1" size="32"/>
+    </Array>
+    <Array name="Latitude_1">
+        <Attribute name="long_name" type="String">
+            <value>Regional:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="SOMBlockDim_1" size="180"/>
+        <dimension name="XDim_1" size="8"/>
+        <dimension name="YDim_1" size="32"/>
+    </Array>
+    <Array name="Longitude_1">
+        <Attribute name="long_name" type="String">
+            <value>Regional:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="SOMBlockDim_1" size="180"/>
+        <dimension name="XDim_1" size="8"/>
+        <dimension name="YDim_1" size="32"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Block_number">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_number" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Ocean_flag">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Ocean_flag" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Block_coor_ulc_som_meter_x">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_coor_ulc_som_meter_x" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Block_coor_ulc_som_meter_y">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_coor_ulc_som_meter_y" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_x">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_x" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_y">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_y" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataCommon_vdf_Data_flag">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataCommon_vdf_Data_flag" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_Point_elev_offset_x">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_Point_elev_offset_x" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_Point_elev_offset_y">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_Point_elev_offset_y" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_latitude">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_latitude" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_longitude">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_longitude" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_som_meter_x">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_som_meter_x" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_som_meter_y">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_som_meter_y" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_som_pixel_x">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_som_pixel_x" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_ULC_som_pixel_y">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_ULC_som_pixel_y" size="180"/>
+    </Array>
+    <Array name="vdata_PerBlockMetadataAGP_vdf_Ave_block_elev">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_PerBlockMetadataAGP_vdf_Ave_block_elev" size="180"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

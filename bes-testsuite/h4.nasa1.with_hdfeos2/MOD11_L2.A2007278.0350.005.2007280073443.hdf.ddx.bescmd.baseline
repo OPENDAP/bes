@@ -1,0 +1,1324 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MOD11_L2.A2007278.0350.005.2007280073443.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD11_L2.A2007278.0350.005.2007280073443.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2007-10-07T07:34:43.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;reprocessed&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.5.0A&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;further update is anticipated&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;No automatic quality assessment is performed in the PGE.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;See http://landweb.nascom/nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra the product Science Quality status.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTCLOUDCOVER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>71</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTINTERPOLATEDDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS LST&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2007-10-05&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;03:59:17.646425&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>41471</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>97.563325728166</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>5</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD11_L2&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>2000</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD03.A2007278.0350.005.2007278233513.hdf&quot;</value>
+                        <value>&quot;MOD021KM.A2007278.0350.005.2007279083438.hdf&quot;</value>
+                        <value>&quot;MOD35_L2.A2007278.0350.005.2007279090401.hdf&quot;</value>
+                        <value>&quot;MOD10_L2.A2007278.0350.005.2007279092449.hdf&quot;</value>
+                        <value>&quot;MOD07_L2.A2007278.0350.005.2007279090910.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="GPOLYGON" type="Container">
+                        <Attribute name="GPOLYGONCONTAINER" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="GRINGPOINT" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <value>&quot;1&quot;</value>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLONGITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>4</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>92.5388534893544</value>
+                                        <value>117.386900857529</value>
+                                        <value>111.741415034866</value>
+                                        <value>90.0936834034109</value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLATITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>4</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>34.868191988428</value>
+                                        <value>31.2798188723795</value>
+                                        <value>13.6790125465217</value>
+                                        <value>16.6775801186428</value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTSEQUENCENO" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>4</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <value>1</value>
+                                        <value>2</value>
+                                        <value>3</value>
+                                        <value>4</value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                            <Attribute name="GRING" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <value>&quot;1&quot;</value>
+                                </Attribute>
+                                <Attribute name="EXCLUSIONGRINGFLAG" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <value>1</value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <value>&quot;1&quot;</value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="String">
+                                        <value>&quot;N&quot;</value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2007-10-05&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;03:55:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2007-10-05&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;03:50:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.5.1&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ANCILLARYINPUTGRANULE" type="Container">
+                <Attribute name="ANCILLARYINPUTGRANULECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MOD03.A2007278.0350.005.2007278233513.hdf&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTTYPE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Geolocation&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Terra&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;QAPERCENTGOODQUALITY&quot;</value>
+                            <value>&quot;QAPERCENTOTHERQUALITY&quot;</value>
+                            <value>&quot;QAPERCENTNOTPRODUCEDCLOUD&quot;</value>
+                            <value>&quot;QAPERCENTNOTPRODUCEDOTHER&quot;</value>
+                            <value>&quot;GRANULENUMBER&quot;</value>
+                            <value>&quot;QAFRACTIONGOODQUALITY&quot;</value>
+                            <value>&quot;QAFRACTIONOTHERQUALITY&quot;</value>
+                            <value>&quot;QAFRACTIONNOTPRODUCEDCLOUD&quot;</value>
+                            <value>&quot;QAFRACTIONNOTPRODUCEDOTHER&quot;</value>
+                            <value>&quot;CLOUD_CONTAMINATED_LST_SCREENED&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;64&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;48&quot;</value>
+                                <value>&quot;0.1543851&quot;</value>
+                                <value>&quot;0.1301817&quot;</value>
+                                <value>&quot;0.6383029&quot;</value>
+                                <value>&quot;0.0771303&quot;</value>
+                                <value>&quot;NO&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGE" type="Container">
+                <Attribute name="ALGORITHMPACKAGEACCEPTANCEDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;102004&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGEMATURITYCODE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Normal&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGENAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD_PR11A&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ALGORITHMPACKAGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROJECT" type="Container">
+                <Attribute name="LONGNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MODIS/Terra Land Surface Temperature/Emissivity 5-Min L2 Swath 1km&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="INSTRUMENTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Moderate-Resolution Imaging SpectroRadiometer&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULETILE" type="Container">
+                <Attribute name="INPUTGRANULETILECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                    </Attribute>
+                    <Attribute name="INPUTTILEPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MOD12Q1.A2001001.h25v05.004.2004358134539.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h25v05.005.2007267183923.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h26v05.004.2004358134545.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h26v05.005.2007273172152.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h27v05.004.2004358134558.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h27v05.005.2007267231126.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h28v05.004.2004358134626.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h28v05.005.2007268032137.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h28v06.004.2004358134628.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h28v06.005.2007267134432.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h27v06.004.2004358134558.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h27v06.005.2007273095637.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h26v06.004.2004358134546.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h26v06.005.2007273164301.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h25v06.004.2004358134539.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h25v06.005.2007273021516.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h28v07.004.2004358134626.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h28v07.005.2007273012714.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h27v07.004.2004358134558.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h27v07.005.2007268001552.hdf&quot;</value>
+                            <value>&quot;MOD12Q1.A2001001.h26v07.004.2004358134552.hdf&quot;</value>
+                            <value>&quot;MCD43B1.A2007249.h26v07.005.2007268175508.hdf&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTGRANULECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                    </Attribute>
+                    <Attribute name="INPUTGRANULEPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MOD03.A2007278.0350.005.2007278233513.hdf&quot;</value>
+                            <value>&quot;MOD021KM.A2007278.0350.005.2007279083438.hdf&quot;</value>
+                            <value>&quot;MOD35_L2.A2007278.0350.005.2007279090401.hdf&quot;</value>
+                            <value>&quot;MOD10_L2.A2007278.0350.005.2007279092449.hdf&quot;</value>
+                            <value>&quot;MOD07_L2.A2007278.0350.005.2007279090910.hdf&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULEID" type="Container">
+                <Attribute name="LOCALINPUTGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD021KM.A2007278.0350.005.2007279083438.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="LOOKUPTABLE" type="Container">
+                <Attribute name="LOOKUPTABLECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                    </Attribute>
+                    <Attribute name="LOOKUPTABLETYPE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Land-cover based band emissivity database&quot;</value>
+                            <value>&quot;the generalized split-window LST coefficients&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="LOOKUPTABLEPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;band_emis.h&quot;</value>
+                            <value>&quot;lst_coef.h&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROCESSINGCENTER" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;MODAPS&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROCESSINGDATETIME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;2007-10-07T07:34:43.000Z&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>34.8451441845377</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>13.7241120721976</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>117.381594985455</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>90.1169435085519</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPSOPARAMETERS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;2484 and 3323&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROCESSINGENVIRONMENT" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;Linux minion5082 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Xeon(TM) CPU 2.80GHz unknown GNU/Linux&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DESCRREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;5.0&quot;</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;MOD_Swath_LST&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2030</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1354</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Coarse_swath_lines_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>406</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Coarse_swath_pixels_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>271</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container">
+                    <Attribute name="DimensionMap_1" type="Container">
+                        <Attribute name="GeoDimension" type="String">
+                            <value>&quot;Coarse_swath_lines_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataDimension" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                        <Attribute name="Increment" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DimensionMap_2" type="Container">
+                        <Attribute name="GeoDimension" type="String">
+                            <value>&quot;Coarse_swath_pixels_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataDimension" type="String">
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Offset" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                        <Attribute name="Increment" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Coarse_swath_lines_5km&quot;</value>
+                            <value>&quot;Coarse_swath_pixels_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Coarse_swath_lines_5km&quot;</value>
+                            <value>&quot;Coarse_swath_pixels_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;LST&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;QC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Error_LST&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Emis_31&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Emis_32&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;View_angle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;View_time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_UINT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Along_swath_lines_1km&quot;</value>
+                            <value>&quot;Cross_swath_pixels_1km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.9</value>
+        </Attribute>
+    </Attribute>
+    <Array name="LST">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Land-surface Temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="LST" type="String">
+            <value>LST data * scale_factor</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.020000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint16</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="QC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Quality control for daytime LST and emissivity</value>
+        </Attribute>
+        <Attribute name="Number_Type" type="String">
+            <value>uint16</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>65535</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="Error_LST">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Land-surface Temperature Error</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Error_LST" type="String">
+            <value>Error_LST data * scale_factor</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.040000000000000001</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="Emis_31">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Band 31 emissivity</value>
+        </Attribute>
+        <Attribute name="Emis_31" type="String">
+            <value>Emis_31 data * scale_factor + add_offset</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0020000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.48999999999999999</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="Emis_32">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Band 32 emissivity</value>
+        </Attribute>
+        <Attribute name="Emis_32" type="String">
+            <value>Emis_32 data * scale_factor + add_offset</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0020000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.48999999999999999</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="View_angle">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>zenith angle of MODIS viewing at the pixel</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="View_angle" type="String">
+            <value>View_angle data * scale_factor</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.50000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="View_time">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Time of Land-surface Temperature observation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hrs</value>
+        </Attribute>
+        <Attribute name="View_time" type="String">
+            <value>View_time data * scale_factor</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000000000001</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="Number_Type_Orig" type="String">
+            <value>uint8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Along_swath_lines_1km" size="2030"/>
+        <dimension name="Cross_swath_pixels_1km" size="1354"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

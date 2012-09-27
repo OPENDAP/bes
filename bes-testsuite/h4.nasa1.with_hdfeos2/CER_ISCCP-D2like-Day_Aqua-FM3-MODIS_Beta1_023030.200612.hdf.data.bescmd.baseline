@@ -1,0 +1,5 @@
+The data:
+Float32 Monthly_Total_Number_Of_Observations___Deep_Convection[Monthly_Avgs = 1][_1_0_deg__regional_colat__zones = 2][_1_0_deg__regional_long__zones = 2] = {{{0, 0},{40, 47}}};
+Float32 latitude[_1_0_deg__regional_colat__zones = 2][_1_0_deg__regional_long__zones = 2] = {{89.5, 89.5},{-89.5, -89.5}};
+Float32 longitude[_1_0_deg__regional_colat__zones = 2][_1_0_deg__regional_long__zones = 2] = {{-179.5, -179.5},{-179.5, -179.5}};
+

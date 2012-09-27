@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AMSR_E_L2_Ocean_V06_200206190029_D.hdf" space="catalog">/data/AMSR_E_L2_Ocean_V06_200206190029_D.hdf</setContainer>
+    <define name="d">
+	<container name="AMSR_E_L2_Ocean_V06_200206190029_D.hdf" />
+                <constraint>Position_in_Orbit[0:998:1996],High_res_cloud[0:998:1996][0:121:242],Longitude[0:998:1996][0:121:242],Latitude[0:998:1996][0:121:242],Qual_dim[0:1:5],Ocean_dim[0:2:5]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

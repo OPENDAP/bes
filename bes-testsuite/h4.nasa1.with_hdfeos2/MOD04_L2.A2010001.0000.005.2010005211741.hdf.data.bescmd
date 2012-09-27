@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MOD04_L2.A2010001.0000.005.2010005211741.hdf" space="catalog">/data/MOD04_L2.A2010001.0000.005.2010005211741.hdf</setContainer>
+    <define name="d">
+	<container name="MOD04_L2.A2010001.0000.005.2010005211741.hdf" />
+        <constraint>Scan_Start_Time[0:202:202][0:134:134],Solar_Zenith[0:202:202][0:134:134],Longitude[0:202:202][0:134:134],Latitude[0:202:202][0:134:134]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

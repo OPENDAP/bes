@@ -1,0 +1,6 @@
+The data:
+Float32 Colatitude[_1_0_deg__colatitude = 3][_1_0_deg__longitude__regions = 3] = {{89.3333, 89.3333, 89.3333},{0.499985, 0.499985, 0.499985},{-88.4445, -88.4445, -88.4445}};
+Float32 Longitude[_1_0_deg__colatitude = 3][_1_0_deg__longitude__regions = 3] = {{-179.5, -179.5, -179.5},{-179.5, -0.5, 178.5},{-179.5, -3.5, 172.5}};
+Float32 Surface_type_percent_coverage[Surface_Type_Percent = 2][Synoptic_Hours__1_4_7_10_13_16_19_22_ = 2][_1_0_deg__colatitude = 2][_1_0_deg__longitude__regions = 2] = {{{{0, 0},{0, 0}},{{0, 0},{0, 0}}},{{{100, 100},{0, 0}},{{100, 100},{0, 0}}}};
+Float32 Top_Pressure_1[Synoptic_Hours__1_4_7_10_13_16_19_22_ = 2][_1_0_deg__colatitude = 2][_1_0_deg__longitude__regions = 2] = {{{3.40282e+38, 3.40282e+38},{357.414, 357.414}},{{3.40282e+38, 3.40282e+38},{356.169, 356.169}}};
+

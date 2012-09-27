@@ -1,0 +1,5 @@
+Dataset {
+    Float32 GeoGrid_Data_Fields_lat[YDim_GeoGrid = 4];
+    Float32 GeoGrid_Data_Fields_lon[XDim_GeoGrid = 8];
+    Float32 GeoGrid_Data_Fields_temperature[YDim_GeoGrid = 4][XDim_GeoGrid = 8];
+} grid_1_2d_xy_no_cf_attr.hdf;

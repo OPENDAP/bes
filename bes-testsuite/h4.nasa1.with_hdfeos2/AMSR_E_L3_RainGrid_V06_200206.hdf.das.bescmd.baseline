@@ -1,0 +1,190 @@
+Attributes {
+    TbOceanRain {
+        String coordinates "Latitude Longitude";
+        String long_name "TbOceanRain";
+    }
+    RrLandRain {
+        String coordinates "Latitude Longitude";
+        String long_name "RrLandRain";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AMSR_E_L3_RainGrid_V06_200206.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-05-23T08:10:13Z";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed once";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        Int32 NUM_VAL 1;
+                        String CLASS "1";
+                        String VALUE "Global Rain";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Program Execution Completed";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Currently not used";
+                        }
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Currently not used";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AE_RnGd";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 309;
+                    String VALUE "AMSR_E_L2A_BrightnessTemperatures_V09_200206190029_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190119_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190208_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190258_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190347_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190436_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190526_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190615_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190705_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190754_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190844_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206190933_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191023_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191112_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191201_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191251_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191340_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191430_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191519_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191609_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191658_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191748_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191837_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206191926_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206192155_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206192244_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206192334_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200023_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200112_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200202_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200251_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200341_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200430_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200520_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200609_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200659_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200748_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200837_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206200927_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201016_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201106_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201155_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201245_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201334_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201424_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201513_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201602_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201652_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201741_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201831_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206201920_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206202010_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206202059_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206202149_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206202238_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206202327_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210017_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210106_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210156_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210245_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210335_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210424_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210514_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210603_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210652_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210742_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210831_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206210921_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211010_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211100_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211149_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211238_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211328_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211417_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211507_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211556_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211646_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211735_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211825_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206211914_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206212003_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206212053_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206212142_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206212232_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206212321_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220011_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220100_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220149_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220239_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220328_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220418_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220507_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220557_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220646_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220736_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220825_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206220915_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221004_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221053_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221143_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221232_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221322_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221411_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221501_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221550_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221639_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221729_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221818_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221908_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206221957_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206222047_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206222136_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206222226_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206222315_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230004_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230054_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230143_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230233_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230322_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230412_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230501_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230550_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230640_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230729_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230819_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230908_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206230958_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231047_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231137_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231226_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231316_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231405_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231454_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231544_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231633_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231723_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231812_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231902_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206231951_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206232040_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206232130_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206232219_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206232309_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206232358_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240048_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240137_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240227_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240316_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240405_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240455_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240544_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240634_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240723_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240813_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240902_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206240952_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241041_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241130_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241220_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241309_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241359_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241448_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241538_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241627_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241717_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241806_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241855_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206241945_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206242034_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206242124_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206242213_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206242302_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206242352_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250041_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250131_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250220_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250310_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250359_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250449_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250538_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250628_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250717_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250806_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250856_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206250945_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251035_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251124_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251214_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251303_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251352_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251442_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251531_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251621_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251710_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251800_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251849_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206251939_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206252028_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206252118_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206252207_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206252256_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206252346_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260035_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260125_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260214_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260304_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260353_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260442_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260532_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260621_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260711_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260800_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260850_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206260939_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261029_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261118_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261207_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261257_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261346_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261436_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261525_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261615_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261704_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261753_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261843_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206261932_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206262022_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206262111_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206262201_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206262250_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206262340_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270029_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270118_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270208_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270257_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270347_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270436_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270526_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270615_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270704_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270754_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270843_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206270933_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271022_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271112_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271201_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271251_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271340_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206271430_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206282302_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206282327_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290016_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290106_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290155_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290245_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290334_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290424_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290513_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290603_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290652_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290742_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290831_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206290921_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291010_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291059_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291149_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291238_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291328_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291417_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291506_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291556_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291645_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291735_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291824_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206291914_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206292003_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206292053_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206292142_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206292231_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206292321_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300010_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300100_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300149_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300239_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300328_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300418_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300507_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300556_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300646_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300735_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300825_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206300914_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301004_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301053_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301143_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301232_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301321_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301411_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301500_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301550_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301639_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301729_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301818_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301907_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206301957_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206302046_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206302136_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206302225_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V09_200206302315_D.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-06-19";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:29:47.11Z";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-07-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:05:05.09Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "06";
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "MonthlyRainTotal_GeoGrid";
+                Int32 XDim 72;
+                Int32 YDim 28;
+                Float64 UpperLeftPointMtrs 0.000000, 70000000.000000;
+                Float64 LowerRightMtrs 360000000.000000, -70000000.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "TbOceanRain";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "RrLandRain";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+    }
+}

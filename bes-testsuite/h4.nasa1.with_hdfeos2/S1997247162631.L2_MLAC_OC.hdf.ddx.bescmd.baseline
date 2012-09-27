@@ -1,0 +1,1490 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="S1997247162631.L2_MLAC_OC.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="Title" type="String">
+            <value>SeaWiFS Level-2 Data</value>
+        </Attribute>
+        <Attribute name="Sensor_Name" type="String">
+            <value>SeaWiFS</value>
+        </Attribute>
+        <Attribute name="Product_Name" type="String">
+            <value>S1997247162631.L2_MLAC_OC</value>
+        </Attribute>
+        <Attribute name="Software_Name" type="String">
+            <value>l2gen</value>
+        </Attribute>
+        <Attribute name="Software_Version" type="String">
+            <value>6.1.6</value>
+        </Attribute>
+        <Attribute name="Processing_Version" type="String">
+            <value>2009.1</value>
+        </Attribute>
+        <Attribute name="Processing_Time" type="String">
+            <value>2009327160654000</value>
+        </Attribute>
+        <Attribute name="Processing_Control" type="String">
+            <value>l2gen par=/data4/sdpsoper/vdc/vpu3/workbuf/S1997247162631.L1A_MLAC.param metafile=S1997247162631.L2_MLAC_OC.meta</value>
+        </Attribute>
+        <Attribute name="Input_Parameters" type="String">
+            <value>
+IFILE1 = /data4/sdpsoper/vdc/vpu3/workbuf/S1997247162631.L1A_MLAC 
+OFILE1 = S1997247162631.L2_MLAC_OC
+CALFILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/seawifs/cal/seawifs_cal_2009.hdf
+XCALFILE = 
+CLDFILE = 
+GEOFILE = 
+PVERSION = 2009.1
+SUITE = OC
+EVAL =     0
+MODE =     0
+SPIXL =     1
+EPIXL =    -1
+DPIXL =     1
+SLINE =     1
+ELINE =    -1
+DLINE =     1
+CTL_PT_INCR =     1
+PROC_OCEAN =   1
+PROC_LAND =   1
+ATMOCOR =   1
+AER_OPT =  -2
+AER_WAVE_SHORT = 765
+AER_WAVE_LONG = 865
+AER_SWIR_SHORT =  -1
+AER_SWIR_LONG =  -1
+AER_RRS_SHORT = -1.00000
+AER_RRS_LONG = -1.00000
+AER_ANGSTROM = -999.00000
+AER_ITER_MAX =  10
+BRDF_OPT =   7
+GAS_OPT =  15
+IOP_OPT =   0
+GSM_OPT =   0
+GSM_FIT =   0
+GSM_ADG_S  =  0.02061
+GSM_BBP_S  =  1.03373
+QAA_OPT =   1
+QAA_ADG_S  =  0.01500
+QAA_WAVE =  412,  443,  490,  555,   -1
+GIOP_MAXITER =  -1
+GIOP_FIT_OPT =  -1
+GIOP_APH_OPT =  -1
+GIOP_ADG_OPT =  -1
+GIOP_BBP_OPT =  -1
+GIOP_CHL_OPT =  -1
+GIOP_RRS_OPT =  -1
+GIOP_APH_FILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/aph_default.txt
+GIOP_APH_S  = -1000.00000
+GIOP_APH_W  = -1.00000
+GIOP_ADG_FILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/adg_default.txt
+GIOP_ADG_S  = -1000.00000
+GIOP_ADG_W  = -1.00000
+GIOP_BBP_FILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/bbp_default.txt
+GIOP_BBP_S  = -1000.00000
+GIOP_BBP_W  = -1.00000
+GIOP_CHL_S  = -1000.00000
+GIOP_CHL_W  = -1.00000
+GIOP_GRD = -1000.00000,  0.00000
+GIOP_WAVE =   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0,   -1.0
+POL_OPT =   0
+RAD_OPT =  -1
+ABSAER_OPT =   0
+SL_PIXL =  -1
+SL_FRAC =   0.2500
+GLINT_OPT =   1
+RESOLUTION =  -1
+OUTBAND_OPT =   2
+OXABAND_OPT =   1
+FILTER_OPT =   1
+FILTER_FILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/seawifs/seawifs_lac_filter.dat
+# FILTER_1 = 5 x 5 (1) mean epsilon smoothing for band  7 
+MET1 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724712_MET_NCEPN_6h.hdf
+MET2 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724718_MET_NCEPN_6h.hdf
+MET3 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724718_MET_NCEPN_6h.hdf
+OZONE1 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724700_O3_TOMSOMI_24h.hdf
+OZONE2 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724800_O3_TOMSOMI_24h.hdf
+OZONE3 = /data4/sdpsoper/vdc/vpu3/workbuf/N199724800_O3_TOMSOMI_24h.hdf
+LAND = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/landmask.dat
+WATER = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/watermask.dat
+DEMFILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/digital_elevation_map.hdf
+ICEFILE = /data4/sdpsoper/vdc/vpu3/workbuf/N199724700_SEAICE_NSIDC_24h.hdf
+SSTFILE = /data4/sdpsoper/vdc/vpu3/workbuf/N1997247_SST_OIV2AV_24h.nc
+NO2FILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/no2_climatology.hdf
+ALPHAFILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/alpha510_climatology.hdf
+TAUAFILE = /sdps/sdpsoper/Science/OCSSW/V8.2/data/common/taua865_climatology.hdf
+GAIN =   1.0041,   0.9952,   0.9873,   0.9903,   1.0022,   0.9777,   0.9700,   1.0000
+OFFSET =  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000
+AERMODELS = r30f95v01, r30f80v01, r30f50v01, r30f30v01, r30f20v01, r30f10v01, r30f05v01, r30f02v01, r30f01v01, r30f00v01, r50f95v01, r50f80v01, r50f50v01, r50f30v01, r50f20v01, r50f10v01, r50f05v01, r50f02v01, r50f01v01, r50f00v01, r70f95v01, r70f80v01, r70f50v01, r70f30v01, r70f20v01, r70f10v01, r70f05v01, r70f02v01, r70f01v01, r70f00v01, r75f95v01, r75f80v01, r75f50v01, r75f30v01, r75f20v01, r75f10v01, r75f05v01, r75f02v01, r75f01v01, r75f00v01, r80f95v01, r80f80v01, r80f50v01, r80f30v01, r80f20v01, r80f10v01, r80f05v01, r80f02v01, r80f01v01, r80f00v01, r85f95v01, r85f80v01, r85f50v01, r85f30v01, r85f20v01, r85f10v01, r85f05v01, r85f02v01, r85f01v01, r85f00v01, r90f95v01, r90f80v01, r90f50v01, r90f30v01, r90f20v01, r90f10v01, r90f05v01, r90f02v01, r90f01v01, r90f00v01, r95f95v01, r95f80v01, r95f50v01, r95f30v01, r95f20v01, r95f10v01, r95f05v01, r95f02v01, r95f01v01, r95f00v01
+TAUA =   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000
+AERMODRAT =  0.00000
+AERMODMIN =  -1
+AERMODMAX =  -1
+CLOUD_THRESH =    0.027
+CLOUD_EPS =   -1.000
+CIRRUS_THRESH = -1.00000, -1.00000
+ABSAER =    0.000
+RHOAMIN  =  0.00200
+NLWMIN  =    0.150
+HIPOL  =    0.500
+WSMAX  =   12.000
+TAUAMAX  =    0.300
+EPSMIN  =    0.800
+EPSMAX  =    1.350
+GLINT_THRESH =    0.005
+WINDSPEED = -1000.000
+WINDANGLE = -1000.000
+PRESSURE = -1000.000
+OZONE = -1000.000
+WATERVAPOR = -1000.000
+RELHUMID = -1000.000
+ICE_THRESHOLD =    0.100
+SUNZEN =   70.000
+SATZEN =   60.000
+MASKLAND =  1
+MASKBATH =  0
+MASKCLOUD =  1
+MASKGLINT =  0
+MASKSUNZEN =  0
+MASKSATZEN =  0
+MASKHILT =  1
+MASKSTLIGHT =  0
+MUMM_ALPHA =    1.720
+MUMM_GAMMA =    1.000
+MUMM_EPSILON =    1.000
+CHLOC2_WAVE =  489,  555
+CHLOC2_COEF =  0.25110, -2.08530,  1.50350, -3.17470,  0.33830
+CHLOC3_WAVE =  443,  489,  555
+CHLOC3_COEF =  0.25150, -2.37980,  1.58230, -0.63720, -0.56920
+CHLOC4_WAVE =  443,  489,  510,  555
+CHLOC4_COEF =  0.32720, -2.99400,  2.72180, -1.22590, -0.56830
+CHLCLARK_WAVE =  443,  490,  555
+CHLCLARK_COEF =  0.81920, -3.29749,  7.68312, -17.61283, 18.69251, -7.30265
+kd2_wave =  490,  555
+kd2_coef =  0.01660, -0.85150, -1.82630,  1.87140, -2.44140, -1.06900
+DEGC =   0
+VCAL_OPT =  -1
+VCAL_NLW =   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000
+VCAL_LW =   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000
+VCAL_CHL =  -1.0000
+VCAL_SOLZ =  -1.0000
+</value>
+        </Attribute>
+        <Attribute name="Input_Files" type="String">
+            <value>S1997247162631.L1A_MLAC,N199724712_MET_NCEPN_6h.hdf,N199724718_MET_NCEPN_6h.hdf,N199724718_MET_NCEPN_6h.hdf,N199724700_O3_TOMSOMI_24h.hdf,N199724800_O3_TOMSOMI_24h.hdf,N199724800_O3_TOMSOMI_24h.hdf,seawifs_cal_2009.hdf,,,landmask.dat,watermask.dat,digital_elevation_map.hdf,N199724700_SEAICE_NSIDC_24h.hdf,N1997247_SST_OIV2AV_24h.nc,no2_climatology.hdf,alpha510_climatology.hdf,taua865_climatology.hdf,,</value>
+        </Attribute>
+        <Attribute name="Calibration_Data" type="String">
+            <value>/sdps/sdpsoper/Science/OCSSW/V8.2/data/seawifs/cal/seawifs_cal_2009.hdf</value>
+        </Attribute>
+        <Attribute name="Mask_Names" type="String">
+            <value>ATMFAIL,LAND,CLDICE,HILT</value>
+        </Attribute>
+        <Attribute name="Number_of_Bands" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="Number_of_Scan_Lines" type="Int32">
+            <value>2207</value>
+        </Attribute>
+        <Attribute name="Pixels_per_Scan_Line" type="Int32">
+            <value>1285</value>
+        </Attribute>
+        <Attribute name="Scene_Center_Scan_Line" type="Int32">
+            <value>1103</value>
+        </Attribute>
+        <Attribute name="Number_of_Scan_Control_Points" type="Int32">
+            <value>2207</value>
+        </Attribute>
+        <Attribute name="Number_of_Pixel_Control_Points" type="Int32">
+            <value>1285</value>
+        </Attribute>
+        <Attribute name="Start_Time" type="String">
+            <value>1997247162630538</value>
+        </Attribute>
+        <Attribute name="Start_Year" type="Int16">
+            <value>1997</value>
+        </Attribute>
+        <Attribute name="Start_Day" type="Int16">
+            <value>247</value>
+        </Attribute>
+        <Attribute name="Start_Millisec" type="Int32">
+            <value>59190538</value>
+        </Attribute>
+        <Attribute name="Upper_Left_Longitude" type="Float32">
+            <value>-77.00743866</value>
+        </Attribute>
+        <Attribute name="Upper_Right_Longitude" type="Float32">
+            <value>-35.36088943</value>
+        </Attribute>
+        <Attribute name="Upper_Left_Latitude" type="Float32">
+            <value>48.28416824</value>
+        </Attribute>
+        <Attribute name="Upper_Right_Latitude" type="Float32">
+            <value>42.55705643</value>
+        </Attribute>
+        <Attribute name="Start_Center_Longitude" type="Float32">
+            <value>-56.45534515</value>
+        </Attribute>
+        <Attribute name="Start_Center_Latitude" type="Float32">
+            <value>46.72781372</value>
+        </Attribute>
+        <Attribute name="Latitude_Units" type="String">
+            <value>degrees North</value>
+        </Attribute>
+        <Attribute name="Longitude_Units" type="String">
+            <value>degrees East</value>
+        </Attribute>
+        <Attribute name="Scene_Center_Time" type="String">
+            <value>1997247162934370</value>
+        </Attribute>
+        <Attribute name="Scene_Center_Longitude" type="Float32">
+            <value>-60.11019135</value>
+        </Attribute>
+        <Attribute name="Scene_Center_Latitude" type="Float32">
+            <value>35.76028442</value>
+        </Attribute>
+        <Attribute name="Scene_Center_Solar_Zenith" type="Float32">
+            <value>29.58795166</value>
+        </Attribute>
+        <Attribute name="End_Time" type="String">
+            <value>1997247163238202</value>
+        </Attribute>
+        <Attribute name="End_Year" type="Int16">
+            <value>1997</value>
+        </Attribute>
+        <Attribute name="End_Day" type="Int16">
+            <value>247</value>
+        </Attribute>
+        <Attribute name="End_Millisec" type="Int32">
+            <value>59558202</value>
+        </Attribute>
+        <Attribute name="Lower_Left_Longitude" type="Float32">
+            <value>-78.57247925</value>
+        </Attribute>
+        <Attribute name="Lower_Right_Longitude" type="Float32">
+            <value>-46.80256653</value>
+        </Attribute>
+        <Attribute name="Lower_Left_Latitude" type="Float32">
+            <value>26.53372192</value>
+        </Attribute>
+        <Attribute name="Lower_Right_Latitude" type="Float32">
+            <value>22.60638428</value>
+        </Attribute>
+        <Attribute name="End_Center_Longitude" type="Float32">
+            <value>-63.04900360</value>
+        </Attribute>
+        <Attribute name="End_Center_Latitude" type="Float32">
+            <value>24.71821213</value>
+        </Attribute>
+        <Attribute name="Northernmost_Latitude" type="Float32">
+            <value>48.28416824</value>
+        </Attribute>
+        <Attribute name="Southernmost_Latitude" type="Float32">
+            <value>22.60638428</value>
+        </Attribute>
+        <Attribute name="Easternmost_Longitude" type="Float32">
+            <value>-35.36088943</value>
+        </Attribute>
+        <Attribute name="Westernmost_Longitude" type="Float32">
+            <value>-78.57247925</value>
+        </Attribute>
+        <Attribute name="Start_Node" type="String">
+            <value>Descending</value>
+        </Attribute>
+        <Attribute name="End_Node" type="String">
+            <value>Descending</value>
+        </Attribute>
+        <Attribute name="Day_or_Night" type="String">
+            <value>Day</value>
+        </Attribute>
+        <Attribute name="Earth_Sun_Distance_Correction" type="Float64">
+            <value>0.98354393243789673</value>
+        </Attribute>
+        <Attribute name="Flag_Percentages" type="Float32">
+            <value>0.1953106374</value>
+            <value>5.271377563</value>
+            <value>0.008638943546</value>
+            <value>0.000000000</value>
+            <value>65.51150513</value>
+            <value>17.54657555</value>
+            <value>1.022639275</value>
+            <value>0.000000000</value>
+            <value>80.13910675</value>
+            <value>74.13334656</value>
+            <value>0.04245423526</value>
+            <value>1.456561089</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+            <value>1.038401008</value>
+            <value>0.1958042979</value>
+            <value>0.000000000</value>
+            <value>1.185756683</value>
+            <value>0.000000000</value>
+            <value>0.4203110337</value>
+            <value>19.94400597</value>
+            <value>0.001692527672</value>
+            <value>0.7327939868</value>
+            <value>0.000000000</value>
+            <value>0.01346969977</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+            <value>80.59390259</value>
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Orbit_Number" type="Int32">
+            <value>519</value>
+        </Attribute>
+        <Attribute name="Data_Center" type="String">
+            <value>NASA/GSFC SeaWiFS Data Processing Center</value>
+        </Attribute>
+        <Attribute name="Station_Name" type="String">
+            <value>Merged LAC Product comprising data from multiple stations</value>
+        </Attribute>
+        <Attribute name="Station_Latitude" type="Float32">
+            <value>38.99580002</value>
+        </Attribute>
+        <Attribute name="Station_Longitude" type="Float32">
+            <value>-76.85109711</value>
+        </Attribute>
+        <Attribute name="Mission" type="String">
+            <value>SeaStar SeaWiFS</value>
+        </Attribute>
+        <Attribute name="Mission_Characteristics" type="String">
+            <value>Nominal orbit: inclination = 98.2 (Sun-synchronous); node = 12 noon local (descending); eccentricity = &lt;0.002; altitude = 705 km; ground speed = 6.75 km/sec</value>
+        </Attribute>
+        <Attribute name="Sensor" type="String">
+            <value>Sea-viewing Wide Field-of-view Sensor (SeaWiFS)</value>
+        </Attribute>
+        <Attribute name="Orbit_Node_Longitude" type="Float32">
+            <value>-68.24027252</value>
+        </Attribute>
+        <Attribute name="Sensor_Characteristics" type="String">
+            <value>Number of bands = 8; number of active bands = 8; wavelengths per band (nm) = 412, 443, 490, 510, 555, 670, 765, 865; bits per pixel = 10; instantaneous field-of-view = 1.5835 mrad; pixels per scan = 1285; scan rate = 6/sec; sample rate = 7710/sec</value>
+        </Attribute>
+        <Attribute name="Data_Type" type="String">
+            <value>HRPT</value>
+        </Attribute>
+        <Attribute name="LAC_Pixel_Start_Number" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="LAC_Pixel_Subsampling" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Node_Crossing_Time" type="String">
+            <value>1997247163850978</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Scan_Line_Attributes_year">
+        <Attribute name="long_name" type="String">
+            <value>Scan year</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1996</value>
+            <value>2038</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>years</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_day">
+        <Attribute name="long_name" type="String">
+            <value>Scan day of year</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>366</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>days</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_msec">
+        <Attribute name="long_name" type="String">
+            <value>Scan-line time, milliseconds of day</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>86399999</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>milliseconds</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Navigation_Data_tilt">
+        <Attribute name="long_name" type="String">
+            <value>Tilt angle for scan line</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-20.10000038</value>
+            <value>20.10000038</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_slon">
+        <Attribute name="long_name" type="String">
+            <value>Scan start-pixel longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_clon">
+        <Attribute name="long_name" type="String">
+            <value>Scan center-pixel longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_elon">
+        <Attribute name="long_name" type="String">
+            <value>Scan end-pixel longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_slat">
+        <Attribute name="long_name" type="String">
+            <value>Scan start-pixel latitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_clat">
+        <Attribute name="long_name" type="String">
+            <value>Scan center-pixel latitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_elat">
+        <Attribute name="long_name" type="String">
+            <value>Scan end-pixel latitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Scan_Line_Attributes_csol_z">
+        <Attribute name="long_name" type="String">
+            <value>Scan center-pixel solar zenith angle</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Navigation_Data_longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitudes at control points</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Navigation_Data_latitude">
+        <Attribute name="long_name" type="String">
+            <value>Latitudes at control points</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_aot_865">
+        <Attribute name="scale_factor" type="Float32">
+            <value>9.999999747e-05</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Aerosol optical thickness at 865 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>9.999999747e-05</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-3.276700020</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_angstrom">
+        <Attribute name="scale_factor" type="Float32">
+            <value>9.999999747e-05</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>2.500000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Angstrom exponent, 443 to 865 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>9.999999747e-05</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>2.500000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.7766999006</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_412">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 412 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>171.1817780</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_443">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 443 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>188.7541199</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_490">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 490 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>193.3798981</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_510">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 510 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>192.5614319</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_555">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 555 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>183.7567596</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Rrs_670">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Remote sensing reflectance at 670 nm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.05000000075</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sr^-1</value>
+        </Attribute>
+        <Attribute name="solar_irradiance" type="Float32">
+            <value>151.2208099</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.01553399954</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_chlor_a">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Chlorophyll Concentration, OC4 Algorithm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mg m^-3</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Float32">
+            <value>-32767.00000</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-32767.00000</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_Kd_490">
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.0001999999949</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Diffuse attenuation coefficient at 490 nm, KD2 algorithm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>0.0001999999949</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m^-1</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-6.553400040</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_pic">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.06499999762</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Calcite Concentration, Balch &amp; Gordon</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.999999995e-06</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.06499999762</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mol m^-3</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.0005340022035</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_poc">
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.2000000030</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>6400.000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>0.2000000030</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>6400.000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mg m^-3</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-153.4001007</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_cdom_index">
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.0001999999949</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>6.400000095</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>CDOM index, Morel 2009 algorithm</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>0.0001999999949</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>6.400000095</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.1533997357</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_par">
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.002000000095</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>65.50000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Photosynthetically Available Radiation, R. Frouin</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>0.002000000095</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>65.50000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Ein m^-2 day^-1</value>
+        </Attribute>
+        <Attribute name="bad_value_scaled" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="bad_value_unscaled" type="Float32">
+            <value>-0.03400311247</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Geophysical_Data_l2_flags">
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Level-2 Processing Flags</value>
+        </Attribute>
+        <Attribute name="slope" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="intercept" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="f01_name" type="String">
+            <value>ATMFAIL</value>
+        </Attribute>
+        <Attribute name="f02_name" type="String">
+            <value>LAND</value>
+        </Attribute>
+        <Attribute name="f03_name" type="String">
+            <value>PRODWARN</value>
+        </Attribute>
+        <Attribute name="f04_name" type="String">
+            <value>HIGLINT</value>
+        </Attribute>
+        <Attribute name="f05_name" type="String">
+            <value>HILT</value>
+        </Attribute>
+        <Attribute name="f06_name" type="String">
+            <value>HISATZEN</value>
+        </Attribute>
+        <Attribute name="f07_name" type="String">
+            <value>COASTZ</value>
+        </Attribute>
+        <Attribute name="f08_name" type="String">
+            <value>SPARE</value>
+        </Attribute>
+        <Attribute name="f09_name" type="String">
+            <value>STRAYLIGHT</value>
+        </Attribute>
+        <Attribute name="f10_name" type="String">
+            <value>CLDICE</value>
+        </Attribute>
+        <Attribute name="f11_name" type="String">
+            <value>COCCOLITH</value>
+        </Attribute>
+        <Attribute name="f12_name" type="String">
+            <value>TURBIDW</value>
+        </Attribute>
+        <Attribute name="f13_name" type="String">
+            <value>HISOLZEN</value>
+        </Attribute>
+        <Attribute name="f14_name" type="String">
+            <value>SPARE</value>
+        </Attribute>
+        <Attribute name="f15_name" type="String">
+            <value>LOWLW</value>
+        </Attribute>
+        <Attribute name="f16_name" type="String">
+            <value>CHLFAIL</value>
+        </Attribute>
+        <Attribute name="f17_name" type="String">
+            <value>NAVWARN</value>
+        </Attribute>
+        <Attribute name="f18_name" type="String">
+            <value>ABSAER</value>
+        </Attribute>
+        <Attribute name="f19_name" type="String">
+            <value>SPARE</value>
+        </Attribute>
+        <Attribute name="f20_name" type="String">
+            <value>MAXAERITER</value>
+        </Attribute>
+        <Attribute name="f21_name" type="String">
+            <value>MODGLINT</value>
+        </Attribute>
+        <Attribute name="f22_name" type="String">
+            <value>CHLWARN</value>
+        </Attribute>
+        <Attribute name="f23_name" type="String">
+            <value>ATMWARN</value>
+        </Attribute>
+        <Attribute name="f24_name" type="String">
+            <value>SPARE</value>
+        </Attribute>
+        <Attribute name="f25_name" type="String">
+            <value>SEAICE</value>
+        </Attribute>
+        <Attribute name="f26_name" type="String">
+            <value>NAVFAIL</value>
+        </Attribute>
+        <Attribute name="f27_name" type="String">
+            <value>FILTER</value>
+        </Attribute>
+        <Attribute name="f28_name" type="String">
+            <value>SSTWARN</value>
+        </Attribute>
+        <Attribute name="f29_name" type="String">
+            <value>SSTFAIL</value>
+        </Attribute>
+        <Attribute name="f30_name" type="String">
+            <value>HIPOL</value>
+        </Attribute>
+        <Attribute name="f31_name" type="String">
+            <value>PRODFAIL</value>
+        </Attribute>
+        <Attribute name="f32_name" type="String">
+            <value>SPARE</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Navigation_Data_longitude Navigation_Data_latitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="Pixels_per_Scan_Line" size="1285"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_wavelength">
+        <Attribute name="long_name" type="String">
+            <value>Wavelengths</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>nm</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>total_band_number</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="total_band_number" size="8"/>
+    </Array>
+    <Array name="Navigation_Data_cntl_pt_cols">
+        <Attribute name="long_name" type="String">
+            <value>Pixel control points</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Number_of_Pixel_Control_Points</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Pixel_Control_Points" size="1285"/>
+    </Array>
+    <Array name="Navigation_Data_cntl_pt_rows">
+        <Attribute name="long_name" type="String">
+            <value>Scan control points</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_vcal_gain">
+        <Attribute name="long_name" type="String">
+            <value>Vicarious Calibration Gain</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>band_number</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_vcal_offset">
+        <Attribute name="long_name" type="String">
+            <value>Vicarious Calibration Offset</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mW cm^-2 um^-1 sr^-1</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>band_number</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_F0">
+        <Attribute name="long_name" type="String">
+            <value>Mean Solar Flux</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mW cm^-2 um^-1</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>band_number</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_k_oz">
+        <Attribute name="long_name" type="String">
+            <value>Ozone Absorption Coefficient</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>cm^-1</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>band_number</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="Sensor_Band_Parameters_Tau_r">
+        <Attribute name="long_name" type="String">
+            <value>Rayleigh Optical Thickness</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dimensionless</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>band_number</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="Navigation_Data_orb_vec">
+        <Attribute name="long_name" type="String">
+            <value>Orbit position vector at scan line time</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-7200.000000</value>
+            <value>7200.000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>kilometers</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="vec" size="3"/>
+    </Array>
+    <Array name="Navigation_Data_sun_ref">
+        <Attribute name="long_name" type="String">
+            <value>Reference Sun vector in ECEF frame</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000000</value>
+            <value>1.000000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="vec" size="3"/>
+    </Array>
+    <Array name="Navigation_Data_att_ang">
+        <Attribute name="long_name" type="String">
+            <value>Computed yaw, roll, pitch</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="vec" size="3"/>
+    </Array>
+    <Array name="Navigation_Data_sen_mat">
+        <Attribute name="long_name" type="String">
+            <value>ECEF-to-sensor-frame matrix</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000000</value>
+            <value>1.000000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="vec" size="3"/>
+        <dimension name="vec" size="3"/>
+    </Array>
+    <Array name="Navigation_Data_scan_ell">
+        <Attribute name="long_name" type="String">
+            <value>Scan-track ellipse coefficients</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="ell" size="6"/>
+    </Array>
+    <Array name="Navigation_Data_nflag">
+        <Attribute name="long_name" type="String">
+            <value>Navigation flags</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Scan_Lines" size="2207"/>
+        <dimension name="nflag" size="8"/>
+    </Array>
+    <Array name="Sensor_Tilt_ntilts">
+        <Attribute name="long_name" type="String">
+            <value>Number of scene tilt states</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>unit</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="unit" size="1"/>
+    </Array>
+    <Array name="Sensor_Tilt_tilt_flags">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Tilt indicators</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-1</value>
+            <value>3</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>mtilt</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="mtilt" size="20"/>
+    </Array>
+    <Array name="Sensor_Tilt_tilt_ranges">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Scan-line number ranges of scene tilt states</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>mtilt ltilt</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="mtilt" size="20"/>
+        <dimension name="ltilt" size="2"/>
+    </Array>
+    <Array name="Number_of_Pixel_Control_Points">
+        <Attribute name="long_name" type="String">
+            <value>Number of Pixel Control Points</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Number_of_Pixel_Control_Points" size="1285"/>
+    </Array>
+    <Array name="band_number">
+        <Attribute name="long_name" type="String">
+            <value>band number</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="band_number" size="8"/>
+    </Array>
+    <Array name="ell">
+        <Attribute name="long_name" type="String">
+            <value>ell</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ell" size="6"/>
+    </Array>
+    <Array name="ltilt">
+        <Attribute name="long_name" type="String">
+            <value>ltilt</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ltilt" size="2"/>
+    </Array>
+    <Array name="mtilt">
+        <Attribute name="long_name" type="String">
+            <value>mtilt</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="mtilt" size="20"/>
+    </Array>
+    <Array name="nflag">
+        <Attribute name="long_name" type="String">
+            <value>nflag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nflag" size="8"/>
+    </Array>
+    <Array name="total_band_number">
+        <Attribute name="long_name" type="String">
+            <value>total band number</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="total_band_number" size="8"/>
+    </Array>
+    <Array name="unit">
+        <Attribute name="long_name" type="String">
+            <value>unit</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="unit" size="1"/>
+    </Array>
+    <Array name="vec">
+        <Attribute name="long_name" type="String">
+            <value>vec</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="vec" size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

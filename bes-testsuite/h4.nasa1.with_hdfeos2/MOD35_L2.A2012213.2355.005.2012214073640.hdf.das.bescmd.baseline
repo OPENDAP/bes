@@ -1,0 +1,528 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+    }
+    QA_Dimension {
+        String units "level";
+        String long_name "QA_Dimension(fake)";
+    }
+    Byte_Segment {
+        String units "level";
+        String long_name "Byte_Segment";
+    }
+    Scan_Start_Time {
+        String coordinates "Latitude Longitude";
+        Float64 valid_range 0.0000000000000000, 3155800064.0000000;
+        Float64 _FillValue -999.90002441406250;
+        String long_name "TAI time at start of scan replicated across the swath";
+        String units "seconds since 1993-1-1 00:00:00.0 0";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solar_Zenith {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Solar Zenith Angle, Cell to Sun";
+        String units "degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Solar_Azimuth {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Solar Azimuth Angle, Cell to Sun";
+        String units "degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Sensor_Zenith {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range 0, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Sensor Zenith Angle, Cell to Sensor";
+        String units "degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Sensor_Azimuth {
+        String coordinates "Latitude Longitude";
+        Int16 valid_range -18000, 18000;
+        Int16 _FillValue -9999;
+        String long_name "Sensor Azimuth Angle, Cell to Sensor";
+        String units "degrees";
+        Float64 scale_factor 0.0099999997764825821;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS Input";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+    }
+    Cloud_Mask {
+        String coordinates "Byte_Segment Latitude Longitude";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "MODIS Cloud Mask and Spectral Test Results";
+        String units "none";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 1, 2030, 1;
+        Int32 Cell_Across_Swath_Sampling 1, 1354, 1;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String description "\\012                                                                                   \\012                                                                                    \\012 Bit fields within each byte are numbered from the left:                            \\012 7, 6, 5, 4, 3, 2, 1, 0.                                                            \\012 The left-most bit (bit 7) is the most significant bit.                             \\012 The right-most bit (bit 0) is the least significant bit.                           \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 0               Cloud Mask Flag                      0 = Not  determined           \\012                                                      1 = Determined                \\012                                                                                    \\012 2, 1            Unobstructed FOV Quality Flag        00 = Cloudy                   \\012                                                      01 = Uncertain                \\012                                                      10 = Probably  Clear          \\012                                                      11 = Confident  Clear         \\012                 PROCESSING PATH                                                    \\012                 ---------------                                                    \\012 3               Day or Night Path                    0 = Night  / 1 = Day          \\012 4               Sunglint Path                        0 = Yes    / 1 = No           \\012 5               Snow/Ice Background Path             0 = Yes    / 1 = No           \\012 7, 6            Land or Water Path                   00 = Water                    \\012                                                      01 = Coastal                  \\012                                                      10 = Desert                   \\012                                                      11 = Land                     \\012 ____ END BYTE 1 ______________ ___________________________________________         \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012                 ADDITIONAL INFORMATION                                             \\012                 ----------------------                                             \\012 0               Non- cloud obstruction Flag              0 = Yes / 1 = No          \\012 1               Thin Cirrus Detected  (Solar)           0 =  Yes / 1 = No          \\012 2               Shadow Found                            0 =  Yes / 1 = No          \\012 3               Thin Cirrus Detected  (Infrared)        0 =  Yes / 1 = No          \\012 4               Adjacent Cloud Detected **              0 =  Yes / 1 = No          \\012                 ** Implemented Post Launch to                                      \\012                    Indicate cloud found within                                     \\012                    surrounding 1 km pixels *                                       \\012                                                                                    \\012                 1-km CLOUD FLAGS                                                   \\012                 ----------------                                                   \\012 5               Cloud Flag -  IR Threshold               0 = Yes / 1 = No          \\012 6               High Cloud Flag -  CO2 Test              0 = Yes / 1 = No          \\012 7               High Cloud Flag -  6.7 micron Test       0 = Yes / 1 = No          \\012 ____ END BYTE 2 ______________ ___________________________________________         \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 0               High Cloud Flag -  1.38 micron Test      0 = Yes / 1 = No          \\012 1               High Cloud Flag - 3.7- 12 micron Test    0 = Yes / 1 = No          \\012 2               Cloud Flag -  IR Temperature             0 = Yes / 1 = No          \\012                              Difference                                            \\012 3               Cloud Flag - 3.7- 11 micron Test         0 = Yes / 1 = No          \\012 4               Cloud Flag -  Visible Reflectance Test   0 = Yes / 1 = No          \\012 5               Cloud Flag -  Visible Reflectance        0 = Yes / 1 = No          \\012                              Ratio Test                                            \\012 6               Cloud Flag -  NDVI Final Confidence      0 = Yes / 1 = No          \\012                              Confirmation Test                                     \\012 7               Cloud Flag - Night 7.3- 11 micron Test   0 = Yes / 1 = No          \\012 ____ END BYTE 3 ______________ ___________________________________________         \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012                 ADDITIONAL TESTS                                                   \\012                 ----------------                                                   \\012 0               Cloud Flag -  Spare                      0 = Yes / 1 = No          \\012 1               Cloud Flag -  Spatial Variability        0 = Yes / 1 = No          \\012 2               Final Confidence Confirmation Test      0 =  Yes / 1 = No          \\012 3               Cloud Flag -  Night Water                0 = Yes / 1 = No          \\012                              Spatial Variability                                   \\012 4               Suspended Dust Flag                     0 =  Yes / 1 = No          \\012                                                                                    \\012 5-7             Spares                                                             \\012 ____ END BYTE 4 ______________ ___________________________________________         \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012                 250-m Cloud Flag - Visible Tests                                   \\012                 --------------------------------                                   \\012 0               Element(1,1)                            0 =  Yes / 1 = No          \\012 1               Element(1,2)                            0 =  Yes / 1 = No          \\012 2               Element(1,3)                            0 =  Yes / 1 = No          \\012 3               Element(1,4)                            0 =  Yes / 1 = No          \\012 4               Element(2,1)                            0 =  Yes / 1 = No          \\012 5               Element(2,2)                            0 =  Yes / 1 = No          \\012 6               Element(2,3)                            0 =  Yes / 1 = No          \\012 7               Element(2,4)                            0 =  Yes / 1 = No          \\012 ____ END BYTE 5 ______________ ___________________________________________         \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ----------      -----------                             ---                        \\012                                                                                    \\012 0               Element(3,1)                            0 =  Yes / 1 = No          \\012 1               Element(3,2)                            0 =  Yes / 1 = No          \\012 2               Element(3,3)                            0 =  Yes / 1 = No          \\012 3               Element(3,4)                            0 =  Yes / 1 = No          \\012 4               Element(4,1)                            0 =  Yes / 1 = No          \\012 5               Element(4,2)                            0 =  Yes / 1 = No          \\012 6               Element(4,3)                            0 =  Yes / 1 = No          \\012 7               Element(4,4)                            0 =  Yes / 1 = No          \\012 ____ END BYTE 6 ______________ ___________________________________________         \\012";
+    }
+    Quality_Assurance {
+        String coordinates "Latitude Longitude QA_Dimension";
+        Int16 valid_range 0, 255;
+        Int16 _FillValue 0;
+        String long_name "Quality Assurance for Cloud Mask";
+        String units "none";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 1, 2030, 1;
+        Int32 Cell_Across_Swath_Sampling 1, 1354, 1;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String description "\\012                                                                                   \\012        Product Run Time QA Flags                                                   \\012 QA Flag Name    Number of Bits  Bit Value   Description                            \\012 -------------------------------------------------------------                      \\012 Cloud Mask QA        1             0       not useful                              \\012   (1km)                            1       useful                                  \\012                                                                                    \\012 Cloud Mask           3            0-7      8 confidence levels                     \\012   Confidence QA                                                                    \\012   (1km)                                                                            \\012                                                                                    \\012 Spares               4                                                             \\012  -------- ( 1 byte total ) --------------------------------                        \\012                                                                                    \\012 Optional run time QA flags - Individual test application                           \\012                                                                                    \\012 QA Flag Name    Number of Bits  Bit Value   Description                            \\012 -------------------------------------------------------------                      \\012 NCO test             1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 Thin Cirrus          1             0       Not Applied                             \\012   test (Solar)                     1       Applied                                 \\012                                                                                    \\012 Shadow Tests         1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 Thin Cirrus          1             0       Not Applied                             \\012   test(IR)                         1       Applied                                 \\012                                                                                    \\012 Cloud Adjancency     1             0       Not Applied                             \\012   test(IR)                         1       Applied                                 \\012                                                                                    \\012 IR Threshold         1             0       Not Applied                             \\012   test                             1       Applied                                 \\012                                                                                    \\012 High Cloud           1             0       Not Applied                             \\012   Test (CO2)                       1       Applied                                 \\012                                                                                    \\012 High Cloud           1             0       Not Applied                             \\012   Test (6.7)                       1       Applied                                 \\012                                                                                    \\012 High Cloud           1             0       Not Applied                             \\012   Test (1.38)                      1       Applied                                 \\012                                                                                    \\012 High Cloud           1             0       Not Applied                             \\012   Test (3.7-12um)                  1       Applied                                 \\012                                                                                    \\012 IR Temperature       1             0       Not Applied                             \\012   Difference Tests                 1       Applied                                 \\012                                                                                    \\012 3.7-11um Test        1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 .68 Reflectance      1             0       Not Applied                             \\012   Test                             1       Applied                                 \\012                                                                                    \\012 Visible Ratio        1             0       Not Applied                             \\012   Test                             1       Applied                                 \\012                                                                                    \\012 NDVI Final           1             0       Not Applied                             \\012   Confidence                       1       Applied                                 \\012   Confirmation                                                                     \\012                                                                                    \\012 Spare                1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 Spare                1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 Spatial              1             0       Not Applied                             \\012   Variability Test                 1       Applied                                 \\012                                                                                    \\012 Final Confidence     1             0       Not Applied                             \\012   Confirmation Test                1       Applied                                 \\012                                                                                    \\012 Night Water          1             0       Not Applied                             \\012   Spatial Variability              1       Applied                                 \\012                                                                                    \\012 Suspended Dust Test  1             0       Not Applied                             \\012                                    1       Applied                                 \\012                                                                                    \\012 Spares               3                                                             \\012                                                                                    \\012 250 m Visible      1(16)           0       Not Applied                             \\012   Tests                            1       Applied                                 \\012   (16 times as (line1,element1),(line1, element2),...                              \\012   (line4,element4))                                                                \\012                                                                                    \\012  -------- ( 5 bytes total ) --------------------------------                       \\012                                                                                    \\012 Optional run time QA flags - data information flags                                \\012                                                                                    \\012 QA Flag Name    Number of Bits  Bit Value   Description                            \\012  -------------------------------------------------------------                     \\012 Number of            2             0       None                                    \\012   bands used to                    1       1-7                                     \\012   generate                         2       8-14                                    \\012   cloud mask                       3       15-21                                   \\012                                                                                    \\012 Number of            2             0       None                                    \\012   spectral                         1       1-3                                     \\012   tests used to                    2       4-6                                     \\012   generate                         3       7-9                                     \\012   cloud mask                                                                       \\012                                                                                    \\012 Spares               4                                                             \\012                                                                                    \\012  -------- ( 1 byte total ) --------------------------------                        \\012                                                                                    \\012 Optional run time QA flags - data resource flags                                   \\012                                                                                    \\012 QA Flag Name    Number of Bits  Bit Value   Description                            \\012 -------------------------------------------------------------                      \\012 Clear                2             0       MOD35                                   \\012   Radiance                         1       Model forward calculation               \\012   Origin                           2       Other                                   \\012                                    3       Not used                                \\012                                                                                    \\012 Surface              2             0       NCEP GDAS                               \\012   Temperature                      1       DAO                                     \\012   Over Land                        2       MOD11                                   \\012                                    3       Other                                   \\012                                                                                    \\012 Surface              2             0       Reynolds blended                        \\012   Temperature                      1       DAO                                     \\012   Over Ocean                       2       MOD28                                   \\012                                    3       Other                                   \\012                                                                                    \\012 Surface Winds        2             0       NCEP GDAS                               \\012                                    1       DAO                                     \\012                                    2       Other                                   \\012                                    3       Not used                                \\012                                                                                    \\012 Ecosystem Map        2             0       Loveland NA 1km                         \\012                                    1       Olson Ecosystem                         \\012                                    2       MOD12                                   \\012                                    3       Other                                   \\012                                                                                    \\012 Snow mask            2             0       MOD33                                   \\012                                    1       SSMI Product                            \\012                                    2       Other                                   \\012                                    3       Not used                                \\012                                                                                    \\012 Ice cover            2             0       MOD42                                   \\012                                    1       SSMI product                            \\012                                    2       Other                                   \\012                                    3       Not used                                \\012                                                                                    \\012 Land/Sea Mask        2             0       USGS 1 km 6 level                       \\012                                    1       USGS 1 km binary                        \\012                                    2       Other                                   \\012                                    3       Not used                                \\012                                                                                    \\012 Digital              1             0       EOS DEM                                 \\012   Elevation                        1       Not used                                \\012   Model                                                                            \\012                                                                                    \\012 Precipitable         2             0       NCEP GDAS                               \\012   Water                            1       DAO                                     \\012                                    2       MOD07                                   \\012                                    3       Other                                   \\012                                                                                    \\012 Spare                5                                                             \\012                                                                                    \\012  -------- ( 3 bytes total ) --------------------------------                       \\012                                                                                    \\012";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD35_L2.A2012213.2355.005.2012214073640.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-08-01T07:36:40.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Both";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "005";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed if useable, Failed if not useable";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Cloud_Mask";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2012-08-01";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:28:49.713350";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 67128;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 150.233791507921;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD35_L2";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 25;
+                    String VALUE "MOD03.A2012213.2355.005.2012214071744.hdf", "MOD021KM.A2012213.2355.005.2012214073446.hdf", "MOD02QKM.A2012213.2355.005.2012214073446.hdf", "goge1_2_img.v1", "ecosystem.img.v1", "thresholds.dat.terra.v13", "gdas1.PGrbF00.120801.00z", "oisst.20120725", "
+          eng.120731", "NISE_SSMISF17_20120731.HDFEOS", "destripe_config_terra.dat.v1";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -12.011463781244;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -73.6827147196942;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 52.0350303316091;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 75.1265429577781;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-08-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-07-31";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:55:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.3.1";
+                }
+            }
+            ANCILLARYINPUTGRANULE {
+                ANCILLARYINPUTGRANULECONTAINER {
+                    String CLASS "1";
+                    ANCILLARYINPUTPOINTER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MOD03.A2012213.2355.005.2012214071744.hdf";
+                    }
+                    ANCILLARYINPUTTYPE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Geolocation";
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "SuccessfulRetrievalPct", "VeryHighConfidentClearPct", "HighConfidentClearPct", "UncertainConfidentClearPct", "LowConfidentClearPct", "CloudCoverPct250m", "ClearPct250m", "DayProcessedPct", "NightProcessedPct", "SunglintProcessedPct", "Snow_IceSurfaceProcessedPct", "LandProcessedPct", "WaterProcessedPct", "ShadowFoundPct", "ThinCirrusSolarFoundPct", "ThinCirrusIR_FoundPct", "NonCloudObstructionFoundPct", "MaxSolarZenithAngle", "MinSolarZenithAngle";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19";
+                            String VALUE "  100.00", "   16.61", "   12.00", "    8.69", "   62.71", "   10.98", "    1.54", "   12.51", "   87.49", "    0.00", "   26.88", "   38.11", "   61.89", "    0.00", "    2.88", "    3.27", "    0.04", "  103.53", "   79.40";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ALGORITHMPACKAGE {
+                ALGORITHMPACKAGEACCEPTANCEDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "June 1997";
+                }
+                ALGORITHMPACKAGEMATURITYCODE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "at-launch";
+                }
+                ALGORITHMPACKAGENAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "ATBD-MOD-06";
+                }
+                ALGORITHMPACKAGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2";
+                }
+                LOCALINPUTGRANULEID {
+                    Int32 NUM_VAL 10;
+                    String VALUE "MOD03.A2012213.2355.005.2012214071744.hdf", "MOD021KM.A2012213.2355.005.2012214073446.hdf", "MOD02QKM.A2012213.2355.005.2012214073446.hdf", "goge1_2_img.v1", "ecosystem.img.v1", "thresholds.dat.terra.v13", "gdas1.PGrbF00.120801.00z", "oisst.20120725", "
+          eng.120731", "NISE_SSMISF17_20120731.HDFEOS";
+                }
+                INSTRUMENTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Moderate Resolution Imaging Spectroradiometer";
+                }
+                LONGNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODIS/Terra Cloud Mask and Spectral Test Results 5-Min L2 Swath 250m and 1km";
+                }
+            }
+            GPOLYGON {
+                GPOLYGONCONTAINER {
+                    String CLASS "1";
+                    GRING {
+                        String CLASS "1";
+                        EXCLUSIONGRINGFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "N";
+                        }
+                    }
+                    GRINGPOINT {
+                        String CLASS "1";
+                        GRINGPOINTLONGITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE -13.79459238532, -50.1531949862809, -74.1070394984337, -11.919617816726;
+                        }
+                        GRINGPOINTLATITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 57.1155816753069, 52.0294630768624, 65.8692290567431, 75.3954111029489;
+                        }
+                        GRINGPOINTSEQUENCENO {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 1, 2, 3, 4;
+                        }
+                    }
+                }
+            }
+            CLOUD_MASK_ALGORITHM_VERSION_NUMBER {
+                Int32 NUM_VAL 1;
+                String VALUE "    1.00";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.0";
+            }
+            PRODUCTIONHISTORY {
+                Int32 NUM_VAL 1;
+                String VALUE "PGE03:5.3.1";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5337 2.6.18-238.9.1.el5PAE #1 SMP Tue Apr 12 18:52:55 EDT 2011 i686 i686 i386 GNU/Linux";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "mod35";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Cell_Across_Swath_1km";
+                        Int32 Size 1354;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Cell_Across_Swath_5km";
+                        Int32 Size 270;
+                    }
+                    Dimension_3 {
+                        String DimensionName "Cell_Along_Swath_1km";
+                        Int32 Size 2030;
+                    }
+                    Dimension_4 {
+                        String DimensionName "Cell_Along_Swath_5km";
+                        Int32 Size 406;
+                    }
+                    Dimension_5 {
+                        String DimensionName "Byte_Segment";
+                        Int32 Size 6;
+                    }
+                    Dimension_6 {
+                        String DimensionName "QA_Dimension";
+                        Int32 Size 10;
+                    }
+                }
+                DimensionMap {
+                    DimensionMap_1 {
+                        String GeoDimension "Cell_Across_Swath_5km";
+                        String DataDimension "Cell_Across_Swath_1km";
+                        Int32 Offset 2;
+                        Int32 Increment 5;
+                    }
+                    DimensionMap_2 {
+                        String GeoDimension "Cell_Along_Swath_5km";
+                        String DataDimension "Cell_Along_Swath_1km";
+                        Int32 Offset 2;
+                        Int32 Increment 5;
+                    }
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Byte_Segment";
+                        String DataType "DFNT_INT32";
+                        String DimList "Byte_Segment";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Scan_Start_Time";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Solar_Zenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Solar_Azimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Sensor_Zenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Sensor_Azimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Cloud_Mask";
+                        String DataType "DFNT_INT8";
+                        String DimList "Byte_Segment", "Cell_Along_Swath_1km", "Cell_Across_Swath_1km";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Quality_Assurance";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath_1km", "Cell_Across_Swath_1km", "QA_Dimension";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        Int32 Number_of_Instrument_Scans 238;
+        Int32 Maximum_Number_of_1km_Frames 74;
+        String history "$Id: MOD35.V2.CDL,v 1.1.2.5 2002/09/16 18:24:50 raf Exp $                           
+";
+        String title "MODIS Level 2 Cloud Mask                                                            
+";
+        String RCS_Id " $Id: thresholds.dat.terra.v13,v 1.1 2005/02/22 22:05:40 gumley Exp $           ";
+        String UW_DESTRIPE_LWIR "$Id: hdf_destripe_new.f90,v 1.8 2004/06/24 14:25:27 gumley Exp $";
+        String UW_DESTRIPE_CONFIG "# Terra MODIS destriping configuration $Id: destripe_config_terra.dat,v 1.3 2004/05/19 20:26:21 gumley Exp $";
+    }
+}

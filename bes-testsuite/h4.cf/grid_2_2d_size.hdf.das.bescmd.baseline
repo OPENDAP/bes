@@ -1,0 +1,71 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "GeoGrid1";
+                Int32 XDim 16;
+                Int32 YDim 8;
+                Float64 UpperLeftPointMtrs 0.000000, 8000000.000000;
+                Float64 LowerRightMtrs 16000000.000000, 0.000000;
+                String Projection "GCTP_GEO";
+                String GridOrigin "HDFE_GD_UR";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "GeoGrid2";
+                Int32 XDim 8;
+                Int32 YDim 4;
+                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
+                Float64 LowerRightMtrs 8000000.000000, 0.000000;
+                String Projection "GCTP_GEO";
+                String GridOrigin "HDFE_GD_UR";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    GeoGrid1_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    GeoGrid1_Data_Fields_temperature_dim_0 {
+        String name "YDim:GeoGrid1";
+    }
+    GeoGrid1_Data_Fields_temperature_dim_1 {
+        String name "XDim:GeoGrid1";
+    }
+    GeoGrid2_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    GeoGrid2_Data_Fields_temperature_dim_0 {
+        String name "YDim:GeoGrid2";
+    }
+    GeoGrid2_Data_Fields_temperature_dim_1 {
+        String name "XDim:GeoGrid2";
+    }
+}

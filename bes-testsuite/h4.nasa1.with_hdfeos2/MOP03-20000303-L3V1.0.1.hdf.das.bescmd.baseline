@@ -1,0 +1,429 @@
+Attributes {
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    Pressure_Grid {
+        String long_name "Pressure Grid";
+        String units "level";
+    }
+    Surface_Indicator {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Indicator";
+    }
+    Surface_Pressure_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Pressure Day";
+    }
+    Surface_Pressure_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Pressure Night";
+    }
+    Surface_Temperature_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Temperature Day";
+    }
+    Surface_Temperature_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Temperature Night";
+    }
+    Surface_Temperature_Std_Dev_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Temperature Std Dev Day";
+    }
+    Surface_Temperature_Std_Dev_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "Surface Temperature Std Dev Night";
+    }
+    Number_of_Pixels_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "Number of Pixels Day";
+    }
+    Number_of_Pixels_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "Number of Pixels Night";
+    }
+    CO_Total_Column_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "CO Total Column Day";
+    }
+    CO_Total_Column_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "CO Total Column Night";
+    }
+    CO_Total_Column_Std_Dev_Day {
+        String coordinates "Latitude Longitude";
+        String long_name "CO Total Column Std Dev Day";
+    }
+    CO_Total_Column_Std_Dev_Night {
+        String coordinates "Latitude Longitude";
+        String long_name "CO Total Column Std Dev Night";
+    }
+    CO_Profiles_Day {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Day";
+    }
+    CO_Profiles_Night {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Night";
+    }
+    CO_Profiles_Std_Dev_Day {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Std Dev Day";
+    }
+    CO_Profiles_Std_Dev_Night {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Std Dev Night";
+    }
+    Averaging_Kernel_Day {
+        String coordinates "Latitude Longitude Pressure_Grid Pressure_Grid";
+        String long_name "Averaging Kernel Day";
+    }
+    Averaging_Kernel_Night {
+        String coordinates "Latitude Longitude Pressure_Grid Pressure_Grid";
+        String long_name "Averaging Kernel Night";
+    }
+    CO_Profiles_Percent_Apriori_Day {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Percent Apriori Day";
+    }
+    CO_Profiles_Percent_Apriori_Night {
+        String coordinates "Latitude Longitude Pressure_Grid";
+        String long_name "CO Profiles Percent Apriori Night";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOP03-20000303-L3V1.0.1.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-04-05T17:32:20.000Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Process Terminated Normally";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Process Terminated Normally";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Unknown";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 100;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTCLOUDCOVER {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 100;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Carbon Monoxide";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 3;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOP03";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 3;
+                    String VALUE "/dufft/OPS/Staging/L3/20000303/M2/MOP02-20000303-L2V5.7.1.val.hdf", "/DUFF/OPS/L3/proc-1.0/cfg-1/covmat_ap_table.dat", "/DUFF/SSIT/L3/proc-1.0/cfg-1/dem_latlon.dat";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0000000000000;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0000000000000;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.00000000000000;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.00000000000000;
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Global";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-03-03";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:10.410";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-03-03";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "02:43:01.546";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "1.0.1";
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "MOP03";
+                Int32 XDim 360;
+                Int32 YDim 180;
+                Float64 UpperLeftPointMtrs -180.000000, 90.000000;
+                Float64 LowerRightMtrs 180.000000, -90.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "nlat";
+                        Int32 Size 180;
+                    }
+                    Dimension_2 {
+                        String DimensionName "nlon";
+                        Int32 Size 360;
+                    }
+                    Dimension_3 {
+                        String DimensionName "nprs";
+                        Int32 Size 7;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlon";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Pressure Grid";
+                        String DataType "DFNT_INT32";
+                        String DimList "nprs";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Surface Indicator";
+                        String DataType "DFNT_INT32";
+                        String DimList "nlat", "nlon";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Surface Pressure Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_6 {
+                        String DataFieldName "Surface Pressure Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_7 {
+                        String DataFieldName "Surface Temperature Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_8 {
+                        String DataFieldName "Surface Temperature Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_9 {
+                        String DataFieldName "Surface Temperature Std Dev Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_10 {
+                        String DataFieldName "Surface Temperature Std Dev Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_11 {
+                        String DataFieldName "Number of Pixels Day";
+                        String DataType "DFNT_INT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_12 {
+                        String DataFieldName "Number of Pixels Night";
+                        String DataType "DFNT_INT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_13 {
+                        String DataFieldName "CO Total Column Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_14 {
+                        String DataFieldName "CO Total Column Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_15 {
+                        String DataFieldName "CO Total Column Std Dev Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_16 {
+                        String DataFieldName "CO Total Column Std Dev Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_17 {
+                        String DataFieldName "CO Profiles Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_18 {
+                        String DataFieldName "CO Profiles Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_19 {
+                        String DataFieldName "CO Profiles Std Dev Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_20 {
+                        String DataFieldName "CO Profiles Std Dev Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_21 {
+                        String DataFieldName "Averaging Kernel Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_22 {
+                        String DataFieldName "Averaging Kernel Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_23 {
+                        String DataFieldName "CO Profiles Percent Apriori Day";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                    DataField_24 {
+                        String DataFieldName "CO Profiles Percent Apriori Night";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "nlat", "nlon", "nprs";
+                        String CompressionType "HDFE_COMP_DEFLATE";
+                        Int32 DeflateLevel 8;
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.8";
+    }
+}

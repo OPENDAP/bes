@@ -1,0 +1,329 @@
+Attributes {
+    HDF_GLOBAL {
+        String Title "MODISA Level-2 Data";
+        String Sensor_Name "MODISA";
+        String Product_Name "A2002185000000.L2_LAC_SST";
+        String Software_Name "MSl12";
+        String Software_Version "5.5.6";
+        String Replacement_Flag "ORIGINAL";
+        Float32 Orbit_Node_Longitude 0.000000000;
+        Int32 Orbit_Number 0;
+        String Node_Crossing_Time "";
+        String Processing_Time "2006318191847000";
+        String Processing_Control "MSl12 par=/data2/vdc/sdpsoper/vpu1/workbuf/A2002185000000.L1B_LAC.param metafile=A2002185000000.L2_LAC.meta";
+        String Input_Parameters "
+IFILE1 = /data2/vdc/sdpsoper/vpu1/workbuf/A2002185000000.L1B_LAC 
+OFILE1 = A2002185000000.L2_LAC_SST
+L2PROD1 = sst,qual_sst,l2_flags
+CALFILE = 
+CLDFILE = 
+GEOFILE = /data2/vdc/sdpsoper/vpu1/workbuf/A2002185000000.GEO
+RFLAG = ORIGINAL
+EVAL =     0
+MODE =     0
+SPIXL =     1
+EPIXL =    -1
+DPIXL =     1
+SLINE =     1
+ELINE =    -1
+DLINE =     1
+CTL_PT_INCR =     8
+PROC_OCEAN =   1
+PROC_LAND =   0
+ATMOCOR =   0
+AER_OPT =  -3
+AER_WAVE_SHORT = 748
+AER_WAVE_LONG = 869
+AER_SWIR_SHORT =  -1
+AER_SWIR_LONG =  -1
+AER_ITER_MAX =  10
+BRDF_OPT =   7
+GAS_OPT =   1
+IOP_OPT =   0
+GSM01_OPT =   0
+QAA_OPT =   0
+QAA_S  =  0.01500
+POL_OPT =   3
+ABSAER_OPT =   0
+SL_PIXL =  -1
+SL_FRAC =   0.2500
+GLINT_OPT =   1
+RESOLUTION =  -1
+OUTBAND_OPT =   2
+OXABAND_OPT =   0
+FILTER_OPT =   1
+FILTER_FILE = /sdps/sdpsoper/data/OCDATA/data/modisa/msl12_filter.dat
+# FILTER_1 = 7 x 5 (1) straylight filter on flag  5 
+# FILTER_2 = 7 x 5 (1) straylight filter on flag  10 
+MET1 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218500_NCEP.MET
+MET2 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218506_NCEP.MET
+MET3 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218506_NCEP.MET
+OZONE1 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218412_EPTOMS.OZONE
+OZONE2 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218512_EPTOMS.OZONE
+OZONE3 = /data2/vdc/sdpsoper/vpu1/workbuf/S200218512_EPTOMS.OZONE
+LAND = /sdps/sdpsoper/data/OCDATA/data/common/landmask.dat
+WATER = /sdps/sdpsoper/data/OCDATA/data/common/watermask.dat
+DEMFILE = /sdps/sdpsoper/data/OCDATA/data/common/digital_elevation_map.hdf
+ICEFILE = /sdps/sdpsoper/data/OCDATA/data/common/ice_mask.hdf
+SSTFILE = /data2/vdc/sdpsoper/vpu1/workbuf/oisst.20020703
+NO2FILE = 
+ALPHAFILE = /sdps/sdpsoper/data/OCDATA/data/common/alpha510_climatology.hdf
+TAUAFILE = /sdps/sdpsoper/data/OCDATA/data/common/taua865_climatology.hdf
+GAIN =   0.9710,   0.9848,   0.9795,   0.9870,   0.9850,   0.9797,   0.9776,   0.9855,   1.0000
+OFFSET =  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000,  0.00000
+AERMODELS = o99, m50, m70, m90, m99, c50, c70, c90, c99, t50, t90, t99
+TAUA =   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000,   0.0000
+AERMODRAT =  0.00000
+AERMODMIN =  -1f
+AERMODMAX =  -1f
+ALBEDO =    0.027
+ABSAER =    0.000
+RHOAMIN  =  0.00010
+NLWMIN  =    0.150
+HIPOL  =    0.500
+WSMAX  =    8.000
+TAUAMAX  =    0.300
+EPSMIN  =    0.850
+EPSMAX  =    1.350
+GLINT_THRESH =    0.005
+WINDSPEED = -1000.000
+WINDANGLE = -1000.000
+PRESSURE = -1000.000
+OZONE = -1000.000
+WATERVAPOR = -1000.000
+RELHUMID = -1000.000
+SUNZEN =   90.000
+SATZEN =   60.000
+MASKLAND =  1
+MASKBATH =  0
+MASKCLOUD =  1
+MASKGLINT =  0
+MASKSUNZEN =  0
+MASKSATZEN =  0
+MASKHILT =  1
+MASKSTLIGHT =  0
+MUMM_ALPHA =    1.720
+MUMM_GAMMA =    1.000
+MUMM_EPSILON =    1.000
+CHLOC2_WAVE =   -1,   -1
+CHLOC2_COEF =  0.00000,  0.00000,  0.00000,  0.00000,  0.00000
+CHLOC3_WAVE =  443,  489,  550
+CHLOC3_COEF =  0.28300, -2.75300,  1.45700,  0.65900, -1.40300
+CHLOC4_WAVE =   -1,   -1,   -1,   -1
+CHLOC4_COEF =  0.00000,  0.00000,  0.00000,  0.00000,  0.00000
+CHLCLARK_WAVE =  443,  488,  551
+CHLCLARK_COEF =  0.78927, -3.92552, 11.63776, -27.15800, 27.93696, -10.39859
+";
+        String Input_Files "A2002185000000.L1B_LAC,S200218500_NCEP.MET,S200218506_NCEP.MET,S200218506_NCEP.MET,S200218412_EPTOMS.OZONE,S200218512_EPTOMS.OZONE,S200218512_EPTOMS.OZONE,,,landmask.dat,watermask.dat,digital_elevation_map.hdf,ice_mask.hdf,oisst.20020703,,alpha510_climatology.hdf,taua865_climatology.hdf,A2002185000000.GEO,";
+        String Mask_Names "ATMFAIL,LAND,CLDICE,HILT";
+        Int32 Number_of_Bands 9;
+        Int32 Number_of_Scan_Lines 2040;
+        Int32 Pixels_per_Scan_Line 1354;
+        Int32 Scene_Center_Scan_Line 1020;
+        Int32 Number_of_Scan_Control_Points 2040;
+        Int32 Number_of_Pixel_Control_Points 170;
+        String Start_Time "2002185000005000";
+        Int16 Start_Year 2002;
+        Int16 Start_Day 185;
+        Int32 Start_Millisec 5000;
+        Float32 Upper_Left_Longitude 16.99081612;
+        Float32 Upper_Right_Longitude 46.66421890;
+        Float32 Upper_Left_Latitude 48.08250427;
+        Float32 Upper_Right_Latitude 43.81280518;
+        Float32 Start_Center_Longitude 32.43212128;
+        Float32 Start_Center_Latitude 46.86656189;
+        String Latitude_Units "degrees North";
+        String Longitude_Units "degrees East";
+        String Scene_Center_Time "2002185000236000";
+        Float32 Scene_Center_Longitude 29.41296768;
+        Float32 Scene_Center_Latitude 37.87225342;
+        Float32 Scene_Center_Solar_Zenith 113.4000015;
+        Float64 Earth_Sun_Distance_Correction 0.96740546429576746;
+        String End_Time "2002185000505000";
+        Int16 End_Year 2002;
+        Int16 End_Day 185;
+        Int32 End_Millisec 305000;
+        Float32 Lower_Left_Longitude 14.99474812;
+        Float32 Lower_Right_Longitude 38.42099380;
+        Float32 Lower_Left_Latitude 29.98145294;
+        Float32 Lower_Right_Latitude 26.60264206;
+        Float32 End_Center_Longitude 26.92421341;
+        Float32 End_Center_Latitude 28.83333969;
+        Float32 Northernmost_Latitude 48.08250427;
+        Float32 Southernmost_Latitude 26.60264206;
+        Float32 Easternmost_Longitude 46.66421890;
+        Float32 Westernmost_Longitude 14.99474812;
+        String Start_Node "Descending";
+        String End_Node "Descending";
+        String Day_or_Night "Night";
+        Float32 Flag_Percentages 0.000000000, 56.85134125, 3.561995029, 0.000000000, 0.000000000, 6.868537903, 3.029476881, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 100.0000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.1897066087, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 24.42809296, 56.85134125, 0.000000000, 0.000000000, 43.14865875;
+    }
+    Scan_Line_Attributes_year {
+        String long_name "Scan year";
+        Int32 valid_range 1996, 2038;
+        String units "years";
+    }
+    Scan_Line_Attributes_day {
+        String long_name "Scan day of year";
+        Int32 valid_range 1, 366;
+        String units "days";
+    }
+    Scan_Line_Attributes_msec {
+        String long_name "Scan-line time, milliseconds of day";
+        Int32 valid_range 0, 86399999;
+        String units "milliseconds";
+    }
+    Navigation_Data_tilt {
+        String long_name "Tilt angle for scan line";
+        Float32 valid_range -20.10000038, 20.10000038;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_slon {
+        String long_name "Scan start-pixel longitude";
+        Float32 valid_range -180.0000000, 180.0000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_clon {
+        String long_name "Scan center-pixel longitude";
+        Float32 valid_range -180.0000000, 180.0000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_elon {
+        String long_name "Scan end-pixel longitude";
+        Float32 valid_range -180.0000000, 180.0000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_slat {
+        String long_name "Scan start-pixel latitude";
+        Float32 valid_range -90.00000000, 90.00000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_clat {
+        String long_name "Scan center-pixel latitude";
+        Float32 valid_range -90.00000000, 90.00000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_elat {
+        String long_name "Scan end-pixel latitude";
+        Float32 valid_range -90.00000000, 90.00000000;
+        String units "degrees";
+    }
+    Scan_Line_Attributes_csol_z {
+        String long_name "Scan center-pixel solar zenith angle";
+        Float32 valid_range 0.000000000, 180.0000000;
+        String units "degrees";
+    }
+    Navigation_Data_longitude {
+        String long_name "Longitudes at control points";
+        Float32 valid_range -180.0000000, 180.0000000;
+        String units "degrees_east";
+    }
+    Navigation_Data_latitude {
+        String long_name "Latitudes at control points";
+        Float32 valid_range -90.00000000, 90.00000000;
+        String units "degrees_north";
+    }
+    Geophysical_Data_sst {
+        Float32 scale_factor 0.004999999888;
+        Float32 add_offset 0.000000000;
+        Int16 _FillValue -32767;
+        String long_name "Sea Surface Temperature";
+        Float32 slope 0.004999999888;
+        Float32 intercept 0.000000000;
+        String units "degrees-C";
+        String coordinates "Navigation_Data_longitude Navigation_Data_latitude";
+    }
+    Geophysical_Data_qual_sst {
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        String long_name "Quality Levels, Sea Surface Temperature";
+        Float32 slope 1.000000000;
+        Float32 intercept 0.000000000;
+        String units "dimensionless";
+        String coordinates "Navigation_Data_longitude Navigation_Data_latitude";
+    }
+    Geophysical_Data_l2_flags {
+        String long_name "Level-2 Processing Flags";
+        String units "dimensionless";
+        String f01_name "ATMFAIL";
+        String f02_name "LAND";
+        String f03_name "BADANC";
+        String f04_name "HIGLINT";
+        String f05_name "HILT";
+        String f06_name "HISATZEN";
+        String f07_name "COASTZ";
+        String f08_name "NEGLW";
+        String f09_name "STRAYLIGHT";
+        String f10_name "CLDICE";
+        String f11_name "COCCOLITH";
+        String f12_name "TURBIDW";
+        String f13_name "HISOLZEN";
+        String f14_name "HITAU";
+        String f15_name "LOWLW";
+        String f16_name "CHLFAIL";
+        String f17_name "NAVWARN";
+        String f18_name "ABSAER";
+        String f19_name "TRICHO";
+        String f20_name "MAXAERITER";
+        String f21_name "MODGLINT";
+        String f22_name "CHLWARN";
+        String f23_name "ATMWARN";
+        String f24_name "DARKPIXEL";
+        String f25_name "SEAICE";
+        String f26_name "NAVFAIL";
+        String f27_name "FILTER";
+        String f28_name "SSTWARN";
+        String f29_name "SSTFAIL";
+        String f30_name "HIPOL";
+        String f31_name "SPARE";
+        String f32_name "OCEAN";
+        String coordinates "Navigation_Data_longitude Navigation_Data_latitude";
+    }
+    Sensor_Band_Parameters_wavelength {
+        String long_name "Wavelengths";
+        String units "nm";
+        String coordinates "band_number";
+    }
+    Navigation_Data_cntl_pt_cols {
+        String long_name "Pixel control points";
+        String units "none";
+        String coordinates "Number_of_Pixel_Control_Points";
+    }
+    Navigation_Data_cntl_pt_rows {
+        String long_name "Scan control points";
+        String units "none";
+    }
+    Sensor_Band_Parameters_vcal_gain {
+        String long_name "Vicarious Calibration Gain";
+        String units "dimensionless";
+        String coordinates "band_number";
+    }
+    Sensor_Band_Parameters_vcal_offset {
+        String long_name "Vicarious Calibration Offset";
+        String units "mW cm^-2 um^-1 sr^-1";
+        String coordinates "band_number";
+    }
+    Sensor_Band_Parameters_F0 {
+        String long_name "Mean Solar Flux";
+        String units "mW cm^-2 um^-1 sr^-1";
+        String coordinates "band_number";
+    }
+    Sensor_Band_Parameters_k_oz {
+        String long_name "Ozone Absorption Coefficient";
+        String units "cm^-1";
+        String coordinates "band_number";
+    }
+    Sensor_Band_Parameters_Tau_r {
+        String long_name "Rayleigh Optical Thickness";
+        String units "dimensionless";
+        String coordinates "band_number";
+    }
+    Number_of_Pixel_Control_Points {
+        String long_name "Number of Pixel Control Points";
+        String units "level";
+    }
+    band_number {
+        String long_name "band number";
+        String units "level";
+    }
+}

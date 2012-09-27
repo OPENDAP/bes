@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="A20021612002192.L3m_R32_NSST_4.hdf" space="catalog">/data/A20021612002192.L3m_R32_NSST_4.hdf</setContainer>
+    <define name="d">
+	<container name="A20021612002192.L3m_R32_NSST_4.hdf" />
+        <constraint>l3m_data[0:4319:4319][0:8639:8639],l3m_qual[2568][6632],Number_of_Lines[0:4319:4319],Number_of_Columns[0:8639:8639]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

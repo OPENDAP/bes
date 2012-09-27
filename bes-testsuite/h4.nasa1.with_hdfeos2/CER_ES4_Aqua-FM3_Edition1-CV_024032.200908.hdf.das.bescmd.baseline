@@ -1,0 +1,3246 @@
+Attributes {
+    Solar_incidence {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_1 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_1 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_1 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_1 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_1 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_2 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_2 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_2 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_2 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_2 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_3 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_3 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_3 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_3 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_3 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_4 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_4 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_4 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_4 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_5 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_1 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_5 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_1 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_5 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_5 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_6 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_6 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_6 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_6 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_7 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_1 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_7 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_1 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_7 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Regional";
+        String units "1 = ocean, 2 = land, 3 = snow, 4 = desert, 5 = coast";
+        String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    _2_5_deg__regional_long__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "2.5 Degree Regional";
+        String units "degrees_east";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Longitude";
+    }
+    _2_5_deg__regional_colat__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "2.5 Degree Regional";
+        String units "degrees_north";
+        String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Colatitude";
+    }
+    Solar_incidence_7 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_4 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_8 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_8 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_8 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_8 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_5 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_9 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_9 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_9 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_9 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_6 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_10 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_10 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_10 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_10 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_7 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_11 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_11 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_11 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_11 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_12 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_2 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_12 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_2 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_12 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_13 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_3 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_13 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_3 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_13 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_12 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_14 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_2 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_14 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_2 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_14 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_13 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_15 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_3 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_15 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_3 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_15 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_1 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Nested Regional";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    _5_0_deg__regional_long__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "5.0 Degree Nested Regional";
+        String units "degrees_east";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longitude";
+    }
+    _5_0_deg__regional_colat__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "5.0 Degree Nested Regional";
+        String units "degrees_north";
+        String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Colatitude";
+    }
+    Solar_incidence_14 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_8 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_16 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_16 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_16 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_15 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_9 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_17 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_17 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_17 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_16 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_10 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_18 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_18 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_18 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_17 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_11 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_19 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_19 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_19 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_18 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_20 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_4 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_20 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_4 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_20 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_21 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_5 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_21 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_5 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_21 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_19 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_22 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_4 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_22 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_4 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_22 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_20 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_23 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_5 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_23 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_5 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_23 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_2 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Nested Regional";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    _10_0_deg__regional_long__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "10.0 Degree Nested Regional";
+        String units "degrees_east";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longitude";
+    }
+    _10_0_deg__regional_colat__zones {
+        Float32 _FillValue 3.402823466e+38;
+        String long_name "10.0 Degree Nested Regional";
+        String units "degrees_north";
+        String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Colatitude";
+    }
+    Solar_incidence_21 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_12 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_24 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_24 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_24 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_22 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_13 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_25 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_25 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_25 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_23 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_14 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_26 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_26 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_26 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_24 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_15 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_27 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_27 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_27 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_25 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_28 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_6 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_28 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_6 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_28 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_29 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_7 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_29 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_7 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_29 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_26 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_30 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_6 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_30 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_6 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_30 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_27 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_31 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_7 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_31 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_7 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_31 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_3 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Zonal";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_2_5_deg__zonal_colat__zones";
+        String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    Solar_incidence_28 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_16 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_32 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_32 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_32 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_29 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_17 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_33 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_33 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_33 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_30 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_18 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_34 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_34 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_34 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_31 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_19 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_35 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_35 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_35 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_32 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_36 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_8 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_36 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_8 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_36 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_37 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_9 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_37 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_9 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_37 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_33 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_38 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_8 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_38 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_8 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_38 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_34 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_39 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_9 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_39 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_9 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_39 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_4 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Zonal";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_5_0_deg__zonal_colat__zones";
+        String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    Solar_incidence_35 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_20 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_40 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_40 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_40 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_36 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_21 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_41 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_41 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_41 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_37 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_22 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_42 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_42 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_42 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_38 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_23 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_43 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_43 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_43 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_39 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_44 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_10 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_44 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_10 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_44 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_45 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_11 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_45 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_11 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_45 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_40 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_46 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_10 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_46 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_10 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_46 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_41 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_47 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_11 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_47 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_11 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_47 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_5 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Zonal";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_10_0_deg__zonal_colat__zones";
+        String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    Solar_incidence_42 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_24 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_48 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_48 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_48 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_43 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_25 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_49 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_49 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_49 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_44 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_26 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_50 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_50 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_50 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_45 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_27 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_51 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_51 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_51 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_46 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_52 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_12 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_52 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_12 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_52 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_53 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_13 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_53 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_13 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_53 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_47 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_54 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_12 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_54 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_12 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_54 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_48 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_55 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_13 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_55 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_13 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_55 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_6 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "2.5 Degree Global";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_2_5_deg__global_zone";
+        String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    Solar_incidence_49 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_28 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_56 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_56 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_56 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_50 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_29 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_57 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_57 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_57 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_51 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_30 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_58 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_58 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_58 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_52 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_31 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_59 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_59 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_59 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_53 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_60 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_14 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_60 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_14 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_60 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_61 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_15 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_61 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_15 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_61 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_54 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_62 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_14 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_62 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_14 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_62 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_55 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_63 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_15 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_63 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_15 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_63 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_7 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "5.0 Degree Global";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_5_0_deg__global_zone";
+        String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    Solar_incidence_56 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_32 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_64 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_64 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_64 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_57 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_33 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_65 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_65 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_65 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly (Day), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Day) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_58 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Solar incidence";
+    }
+    Net_radiant_flux_34 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Net radiant flux";
+    }
+    Longwave_flux_66 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Longwave flux";
+    }
+    Shortwave_flux_66 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Shortwave flux";
+    }
+    Albedo_66 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Total-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_59 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 500000.0000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Solar incidence";
+    }
+    Net_radiant_flux_35 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range -200.0000000, 200.0000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Net radiant flux";
+    }
+    Longwave_flux_67 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Longwave flux";
+    }
+    Shortwave_flux_67 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Shortwave flux";
+    }
+    Albedo_67 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly (Hour), Clear-sky Averages";
+        String units "unitless";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly (Hour) Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_60 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 15000.00000;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_68 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_16 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_68 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_16 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_68 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Daily, Total-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Albedo";
+    }
+    Longwave_flux_69 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_hours_of_longwave_flux_17 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Number of hours of longwave flux";
+    }
+    Shortwave_flux_69 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_hours_of_shortwave_flux_17 {
+        Int16 valid_range 0, 24;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
+        String units "hours";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Number of hours of shortwave flux";
+    }
+    Albedo_69 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "days _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Albedo";
+    }
+    Solar_incidence_61 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Solar incidence";
+    }
+    Longwave_flux_70 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_16 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_70 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_16 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Number of days of shortwave flux";
+    }
+    Albedo_70 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Albedo";
+    }
+    Solar_incidence_62 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 50000.00000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watt hours per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Solar incidence";
+    }
+    Longwave_flux_71 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 50.00000000, 450.0000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
+    }
+    Number_of_days_of_longwave_flux_17 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of longwave flux";
+    }
+    Shortwave_flux_71 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1400.000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "Watts per square meter";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
+    }
+    Number_of_days_of_shortwave_flux_17 {
+        Int16 valid_range 0, 31;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "days";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Number of days of shortwave flux";
+    }
+    Albedo_71 {
+        Float32 _FillValue 3.402823466e+38;
+        Float32 valid_range 0.000000000, 1.000000000;
+        String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
+        String units "unitless";
+        String coordinates "hours _10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
+    }
+    Geographic_scene_type_8 {
+        Int16 valid_range 1, 127;
+        Int16 _FillValue 127;
+        String long_name "10.0 Degree Global";
+        String units "1 = data available, 127 = no data available";
+        String coordinates "_10_0_deg__global_zone";
+        String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Geographic scene type";
+    }
+    _10_0_deg__global_zone {
+        String long_name "10.0 deg. global zone";
+        String units "level";
+        String fullpath "10.0 deg. global zone";
+    }
+    _10_0_deg__zonal_colat__zones {
+        String long_name "10.0 deg. zonal colat. zones";
+        String units "level";
+        String fullpath "10.0 deg. zonal colat. zones";
+    }
+    _2_5_deg__global_zone {
+        String long_name "2.5 deg. global zone";
+        String units "level";
+        String fullpath "2.5 deg. global zone";
+    }
+    _2_5_deg__zonal_colat__zones {
+        String long_name "2.5 deg. zonal colat. zones";
+        String units "level";
+        String fullpath "2.5 deg. zonal colat. zones";
+    }
+    _5_0_deg__global_zone {
+        String long_name "5.0 deg. global zone";
+        String units "level";
+        String fullpath "5.0 deg. global zone";
+    }
+    _5_0_deg__zonal_colat__zones {
+        String long_name "5.0 deg. zonal colat. zones";
+        String units "level";
+        String fullpath "5.0 deg. zonal colat. zones";
+    }
+    days {
+        String long_name "days";
+        String units "level";
+        String fullpath "days";
+    }
+    hours {
+        String long_name "hours";
+        String units "level";
+        String fullpath "hours";
+    }
+}

@@ -1,0 +1,15 @@
+Dataset {
+    Float32 MFXC[TIME = 8][Height = 72][YDim = 361][XDim = 540];
+    Float32 MFYC[TIME = 8][Height = 72][YDim = 361][XDim = 540];
+    Float32 UC[TIME = 8][Height = 72][YDim = 361][XDim = 540];
+    Float32 VC[TIME = 8][Height = 72][YDim = 361][XDim = 540];
+    Float32 DTRAIN[TIME = 8][Height = 72][YDim = 361][XDim = 540];
+    Float64 XDim[XDim = 540];
+    Float64 YDim[YDim = 361];
+    Float64 Height[Height = 72];
+    Float64 TIME[TIME = 8];
+    Float64 XDim_EOS[XDim = 540];
+    Float64 YDim_EOS[YDim = 361];
+    Float64 Height_EOS[Height = 72];
+    Float64 Time[TIME = 8];
+} MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf;
