@@ -1,7 +1,7 @@
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.9.5
+Updated for 3.10.0
 
 ---------------------------------------------------------------------------
 
@@ -98,17 +98,39 @@ your system is not i386 Linux system.
 7. Optional Testing
   
   After you build the handler with 'make' command, you can test the build
-  with 'make check'. If you want to test real NASA sample files with the
-  handler, please follow the steps below.
+  with 'make check'. 
 
-7.1 Make sure that you have 8.5G of disk space and download files using
+7.1 If you want to test generic handler with sample files in the testsuite,
+please follow the steps below.
+
+7.1.1 Clean up any existing build using 'make distclean'. 
+
+7.1.2 Change the bes.conf.in file so that it can have EnableCF=true.
+
+ %cp bes-testsuite/bes.conf.with_hdfeos2.in bes-testsuite/bes.conf.in
+
+7.1.3 Change the autotest script file so that it can compare outputs against
+ a  different set of expected outputs.
+
+  %cp bes-testsuite/hdf4_handlerTest.cf.at \
+      bes-testsuite/hdf4_handlerTest.at
+
+7.1.4 Confgiure, build, and test.
+
+  %./configure --with-hdf4=/hdfdap/local && make && make check
+
+
+7.2 If you want to test real NASA sample files with the hdfeos2 handler, please 
+follow the steps below.
+
+7.2.1 Make sure that you have 8.5G of disk space and download files using
 
    %cd data.nasa1 && ./download.sh
 
    It will download all test data from The HDF Group FTP site and put it
    under data.nasa1/ directory.
 
-7.2 Edit the sample test.nasa1.with_hdfeos2.sh script under the top level 
+7.2.2 Edit the sample test.nasa1.with_hdfeos2.sh script under the top level 
     source directory. You may need to adjust the paths in the shell script.
     
     set path=(/hdfdap/hyrax-1.8.0/bin $path)
@@ -118,7 +140,7 @@ your system is not i386 Linux system.
     The path should point to the Hyrax installation directory so that 
     besstandalone program and OPeNDAP libraries can be found. 
 
-7.3 Run the (t)csh script.
+7.2.3 Run the (t)csh script.
 
    %./test.nasa1_with_hdfeos2.sh
 

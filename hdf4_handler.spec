@@ -1,6 +1,6 @@
 Summary:         HDF4 data handler for the OPeNDAP Data server
 Name:            hdf4_handler
-Version:         3.9.6
+Version:         3.10.0
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 
@@ -8,7 +8,7 @@ Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
 Requires:        libdap >= 3.11.0
 Requires:        bes >= 3.9.0
-# This may have commented out for an RPM build with HDF-EPS2. I'm not sure.
+# This is commented out for an RPM build with HDF-EOS2.
 # Requires:        hdf >= 4.2
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)

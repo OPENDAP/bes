@@ -1,18 +1,12 @@
-Version 3.9.6
+Version 3.10.0
 
-This is a merge of features/fixes from the trunk that were added to support
-the MIIC project at Langely.
-
-Version 3.9.5
-
-Merged to trunk; tagged.
-
-Fixed the bug in uint16/uint32 type attribute handling.
-Correced the handling the scale/offset for MODIS products because the 
-MODIS scale/offset equation is quite different from the CF standard.
-Added the support for LAMAZ projection data.
-Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
-string:string Map.
+Added BESkey for enabling CF option. 
+Fixed many bugs in handling NASA products under CF option.
+Using HDF-EOS2 library is now optional for pure HDF4 products to genereate
+outputs that meet CF-conventions. Configuring with HDF-EOS2 library is
+strongly recommended for all HDF-EOS2 products and HDF4+HDF-EOS2 hybrid 
+products.
+Please read README for new features, bug fixes, limitations and known issues.
 
 Version 3.9.4
 
