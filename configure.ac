@@ -35,9 +35,9 @@ AC_SUBST(host)
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=10
-LIB_DIS_AGE=2
-LIB_DIS_REVISION=4
+LIB_DIS_CURRENT=11
+LIB_DIS_AGE=3
+LIB_DIS_REVISION=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)

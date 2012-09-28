@@ -40,8 +40,8 @@
 #include <cerrno>
 #include <sstream>
 
-using std::stringstream ;
-using std::endl ;
+using std::stringstream;
+using std::endl;
 
 #include "BESCatalogDirectory.h"
 #include "BESCatalogUtils.h"
@@ -56,28 +56,25 @@ using std::endl ;
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
 
-BESCatalogDirectory::BESCatalogDirectory( const string &name )
-    : BESCatalog( name )
+BESCatalogDirectory::BESCatalogDirectory(const string &name) :
+        BESCatalog(name)
 {
-    _utils = BESCatalogUtils::Utils( name ) ;
+    _utils = BESCatalogUtils::Utils(name);
 }
 
-BESCatalogDirectory::~BESCatalogDirectory( )
+BESCatalogDirectory::~BESCatalogDirectory()
 {
 }
 
 BESCatalogEntry *
-BESCatalogDirectory::show_catalog( const string &node,
-				   const string &coi,
-                                   BESCatalogEntry *entry )
+BESCatalogDirectory::show_catalog(const string &node, const string &coi, BESCatalogEntry *entry)
 {
     string use_node = node;
     // use_node should only end in '/' is that's the only character in which
     // case there's no need to call find()
-    if (!node.empty() && node != "/")
-    {
+    if (!node.empty() && node != "/") {
         string::size_type pos = use_node.find_last_not_of("/");
-        use_node = use_node.substr(0, pos+1);
+        use_node = use_node.substr(0, pos + 1);
     }
 
     // This takes care of bizarre cases like "///" where use_node would be
@@ -85,147 +82,120 @@ BESCatalogDirectory::show_catalog( const string &node,
     if (use_node.empty())
         use_node = "/";
 
-    string rootdir = _utils->get_root_dir() ;
-    string fullnode = rootdir ;
-    if( !use_node.empty() )
-    {
-	fullnode = fullnode + "/" + use_node ;
+    string rootdir = _utils->get_root_dir();
+    string fullnode = rootdir;
+    if (!use_node.empty()) {
+        fullnode = fullnode + "/" + use_node;
     }
 
-    string basename ;
-    string::size_type slash = fullnode.rfind( "/" ) ;
-    if( slash != string::npos )
-    {
-	basename = fullnode.substr( slash+1, fullnode.length() - slash ) ;
+    string basename;
+    string::size_type slash = fullnode.rfind("/");
+    if (slash != string::npos) {
+        basename = fullnode.substr(slash + 1, fullnode.length() - slash);
     }
-    else
-    {
-	basename = fullnode ;
+    else {
+        basename = fullnode;
     }
 
     BESDEBUG( "bes", "BESCatalogDirectory::show_catalog: "
-		     << "use_node = " << use_node << endl
-		     << "rootdir = " << rootdir << endl
-		     << "fullnode = " << fullnode << endl
-		     << "basename = " << basename << endl ) ;
+            << "use_node = " << use_node << endl
+            << "rootdir = " << rootdir << endl
+            << "fullnode = " << fullnode << endl
+            << "basename = " << basename << endl );
 
     // This will throw the appropriate exception (Forbidden or Not Found).
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    BESUtil::check_path( use_node, rootdir, _utils->follow_sym_links() ) ;
+    BESUtil::check_path(use_node, rootdir, _utils->follow_sym_links());
 
-    BESCatalogEntry *myentry =
-	new BESCatalogEntry( use_node, get_catalog_name() ) ;
-    if( entry )
-    {
-	// if an entry was passed, then add this one to it
-	entry->add_entry( myentry ) ;
+    BESCatalogEntry *myentry = new BESCatalogEntry(use_node, get_catalog_name());
+    if (entry) {
+        // if an entry was passed, then add this one to it
+        entry->add_entry(myentry);
     }
-    else
-    {
-	// else we want to return the new entry created
-	entry = myentry ;
+    else {
+        // else we want to return the new entry created
+        entry = myentry;
     }
 
     // Is this node a directory?
-    DIR *dip = opendir( fullnode.c_str() ) ;
-    if( dip != NULL )
-    {
-	try
-	{
-	    // The node is a directory
+    DIR *dip = opendir(fullnode.c_str());
+    if (dip != NULL) {
+        try {
+            // The node is a directory
 
-	    // if the directory requested is in the exclude list then we won't
-	    // let the user see it.
-	    if( _utils->exclude( basename ) )
-	    {
-		string error = "You do not have permission to view the node "
-			       + use_node ;
-		throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
-	    }
+            // if the directory requested is in the exclude list then we won't
+            // let the user see it.
+            if (_utils->exclude(basename)) {
+                string error = "You do not have permission to view the node " + use_node;
+                throw BESForbiddenError(error, __FILE__, __LINE__);
+            }
 
-	    bool dirs_only = false ;
-	    _utils->get_entries( dip, fullnode, use_node,
-			         coi, myentry, dirs_only ) ;
-	}
-	catch( ... /*BESError &e */ )
-	{
-	    closedir( dip ) ;
-	    throw /* e */;
-	}
-	closedir( dip ) ;
+            bool dirs_only = false;
+            _utils->get_entries(dip, fullnode, use_node, coi, myentry, dirs_only);
+        } catch (... /*BESError &e */) {
+            closedir(dip);
+            throw /* e */;
+        }
+        closedir(dip);
 
-	BESCatalogUtils::bes_add_stat_info( myentry, fullnode ) ;
+        BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
     }
-    else
-    {
-	// if the node is not in the include list then the requester does
-	// not have access to that node
-	if( _utils->include( basename ) )
-	{
-	    struct stat buf;
-	    int statret = 0 ;
-	    if( _utils->follow_sym_links() == false )
-	    {
-		/*statret =*/(void)lstat( fullnode.c_str(), &buf ) ;
-		if( S_ISLNK( buf.st_mode ) )
-		{
-		    string error = "You do not have permission to access node "
-		                   + use_node ;
-		    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
-		}
-	    }
-	    statret = stat( fullnode.c_str(), &buf ) ;
-	    if ( statret == 0 && S_ISREG( buf.st_mode ) )
-	    {
-		BESCatalogUtils::bes_add_stat_info( myentry, fullnode ) ;
+    else {
+        // if the node is not in the include list then the requester does
+        // not have access to that node
+        if (_utils->include(basename)) {
+            struct stat buf;
+            int statret = 0;
+            if (_utils->follow_sym_links() == false) {
+                /*statret =*/(void) lstat(fullnode.c_str(), &buf);
+                if (S_ISLNK(buf.st_mode)) {
+                    string error = "You do not have permission to access node " + use_node;
+                    throw BESForbiddenError(error, __FILE__, __LINE__);
+                }
+            }
+            statret = stat(fullnode.c_str(), &buf);
+            if (statret == 0 && S_ISREG(buf.st_mode)) {
+                BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
 
-		list<string> services ;
-		BESCatalogUtils::isData( node, get_catalog_name(), services ) ;
-		myentry->set_service_list( services ) ;
-	    }
-	    else if( statret == 0 )
-	    {
-		string error = "You do not have permission to access "
-		               + use_node ;
-		throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
-	    }
-	    else
-	    {
-		// ENOENT means that the path or part of the path does not
-		// exist
-		if( errno == ENOENT )
-		{
-		    string error = "Node " + use_node + " does not exist" ;
-		    char *s_err = strerror( errno ) ;
-		    if( s_err )
-		    {
-			error = s_err ;
-		    }
-		    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
-		}
-		// any other error means that access is denied for some reason
-		else
-		{
-		    string error = "Access denied for node " + use_node ;
-		    char *s_err = strerror( errno ) ;
-		    if( s_err )
-		    {
-			error = error + s_err ;
-		    }
-		    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
-		}
-	    }
-	}
-	else
-	{
-	    string error = "You do not have permission to access " + use_node ;
-	    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
-	}
+                list < string > services;
+                BESCatalogUtils::isData(node, get_catalog_name(), services);
+                myentry->set_service_list(services);
+            }
+            else if (statret == 0) {
+                string error = "You do not have permission to access " + use_node;
+                throw BESForbiddenError(error, __FILE__, __LINE__);
+            }
+            else {
+                // ENOENT means that the path or part of the path does not
+                // exist
+                if (errno == ENOENT) {
+                    string error = "Node " + use_node + " does not exist";
+                    char *s_err = strerror(errno);
+                    if (s_err) {
+                        error = s_err;
+                    }
+                    throw BESNotFoundError(error, __FILE__, __LINE__);
+                }
+                // any other error means that access is denied for some reason
+                else {
+                    string error = "Access denied for node " + use_node;
+                    char *s_err = strerror(errno);
+                    if (s_err) {
+                        error = error + s_err;
+                    }
+                    throw BESNotFoundError(error, __FILE__, __LINE__);
+                }
+            }
+        }
+        else {
+            string error = "You do not have permission to access " + use_node;
+            throw BESForbiddenError(error, __FILE__, __LINE__);
+        }
     }
 
-    return entry ;
+    return entry;
 }
 
 /** @brief dumps information about this object
@@ -235,17 +205,15 @@ BESCatalogDirectory::show_catalog( const string &node,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESCatalogDirectory::dump( ostream &strm ) const
+void BESCatalogDirectory::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESCatalogDirectory::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "BESCatalogDirectory::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
 
-    strm << BESIndent::LMarg << "catalog utilities: " << endl ;
-    BESIndent::Indent() ;
-    _utils->dump( strm ) ;
-    BESIndent::UnIndent() ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "catalog utilities: " << endl;
+    BESIndent::Indent();
+    _utils->dump(strm);
+    BESIndent::UnIndent();
+    BESIndent::UnIndent();
 }
 
