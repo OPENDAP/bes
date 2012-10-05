@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath with dimension map
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 // SOME MODIS products provide the latitude and longitude files for
 // swaths using dimension map. The files are still HDF-EOS2 files.

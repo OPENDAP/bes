@@ -4,7 +4,7 @@
 ///
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 //
-// Copyright (c) 2008-2010 The HDF Group.
+// Copyright (c) 2008-2012 The HDF Group.
 // Author: MuQun Yang <myang6@hdfgroup.org>
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //

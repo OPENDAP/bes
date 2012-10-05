@@ -5,7 +5,7 @@
 // To know more information about these products,check HDFSP.h.
 // Each product stores lat/lon in different way, so we have to retrieve them differently.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDFSPArrayGeoField.h"

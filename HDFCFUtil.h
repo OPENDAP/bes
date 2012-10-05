@@ -2,7 +2,7 @@
 // Helper functions for handling dimension maps,clear memories and separating namelist
 //
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> Eunsoo Seo
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifndef HDFCFUTIL_H
 #define HDFCFUTIL_H

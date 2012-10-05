@@ -2,7 +2,7 @@
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath having dimension maps
 
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 // We will interpolate the latitude and longitude fields based on the dimension map parameters 
 // struct dimmap_entry includes all the entries.

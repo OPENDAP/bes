@@ -2,7 +2,7 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the real field values for some special NASA HDF data.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>  
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDFSPARRAY_REALFIELD_H

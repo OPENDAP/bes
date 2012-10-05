@@ -9,7 +9,7 @@
 // with vertical cross-section. One can check the data level by level.
 
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDFSPARRAY_MISSFIELD_H

@@ -11,7 +11,7 @@
 // 4. Several MODIS files don't have the correct parameters inside StructMetadata.
 // We can obtain the starting point, the step and replace the fill value.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> Choonghwan Lee
-// Copyright (c) 2009 The HDF Group
+// Copyright (c) 2009-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_GRIDGEOFIELD_H

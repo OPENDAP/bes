@@ -5,7 +5,7 @@
 // Each field will be mapped to A DAP variable.
 
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDFSPARRAY_VDFIELD_H

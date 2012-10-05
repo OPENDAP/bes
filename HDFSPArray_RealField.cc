@@ -2,7 +2,7 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the real SDS field values for special HDF4 data products.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>  Eunsoo Seo
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #include "HDFSPArray_RealField.h"
 #include <iostream>
