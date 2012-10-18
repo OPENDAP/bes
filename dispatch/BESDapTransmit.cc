@@ -50,6 +50,7 @@ using std::ostringstream;
 #include "mime_util.h"
 #endif
 #include "BESDASResponse.h"
+#include "BESDMRResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESContextManager.h"
@@ -292,6 +293,36 @@ private:
   }
 };
 
+class SendDMR : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DMR"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDMRResponse *bdmr = dynamic_cast < BESDMRResponse * >(obj);
+    if( !bdmr ) {
+      throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    }
+    // FIXME: Change this to DMR
+    DAS *dmr = bdmr->get_dmr();
+    dhi.first_container();
+    bool print_mime = get_print_mime();
+/*
+#ifdef USE_DODSFILTER
+    DODSFilter df ;
+    df.set_dataset_name( dhi.container->get_real_name() ) ;
+    df.send_das( dhi.get_output_stream(), *das, "", print_mime ) ;
+#else
+    ResponseBuilder rb ;
+    rb.set_dataset_name( dhi.container->get_real_name() ) ;
+    rb.send_das( dhi.get_output_stream(), *das, print_mime ) ;
+#endif
+*/
+    }
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 // Public Interface Impl
 
@@ -303,6 +334,7 @@ BESDapTransmit::BESDapTransmit()
     add_method( DDX_SERVICE, BESDapTransmit::send_basic_ddx ) ;
     add_method( DATA_SERVICE, BESDapTransmit::send_basic_data ) ;
     add_method( DATADDX_SERVICE, BESDapTransmit::send_basic_dataddx ) ;
+    add_method( DMR_SERVICE, BESDapTransmit::send_basic_dmr ) ;
 }
 
 void
@@ -344,3 +376,12 @@ BESDapTransmit::send_basic_dataddx(BESResponseObject * obj,
   SendDataDDX sender;
   sender.send(obj, dhi);
 }
+
+void
+BESDapTransmit::send_basic_dmr(BESResponseObject * obj,
+                               BESDataHandlerInterface & dhi)
+{
+  SendDMR sender;
+  sender.send(obj, dhi);
+}
+

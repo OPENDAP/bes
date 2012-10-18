@@ -1,4 +1,4 @@
-// BESDapTransmit.h
+// BESDMRResponse.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,32 +30,39 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESDapTransmit_h
-#define I_BESDapTransmit_h 1
+#ifndef I_BESDMRResponse
+#define I_BESDMRResponse 1
 
-#include "BESBasicTransmitter.h"
-#include "BESDataHandlerInterface.h"
+// FIXME: Change this to DMR or whatever
+#include <DAS.h>
 
-class BESResponseObject ;
+#include "BESDapResponse.h"
 
-class BESDapTransmit : public BESBasicTransmitter
-{
-public:
-    			BESDapTransmit() ;
-    virtual		~BESDapTransmit() {}
-    static void		send_basic_das( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dds( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_data( BESResponseObject *obj,
-    				         BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_ddx( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dataddx( BESResponseObject *obj,
-    				            BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dmr( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-} ;
+using namespace libdap ;
 
-#endif // I_BESDapTransmit_h
+/** @brief Represents an OPeNDAP DMR DAP4 data object within the BES
+ */
+class BESDMRResponse: public BESDapResponse {
+    private:
+	// FIXME: Change this to DMR, or whatever
+        DAS * _dmr;
+    public:
+				// FIXME: Change this to DMR
+    				BESDMRResponse(DAS *dmr)
+				    : BESDapResponse(), _dmr(dmr) { }
+    virtual			~BESDMRResponse();
+
+    virtual void		set_container( const string &cn ) ;
+    virtual void		clear_container( ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
+    // FIXME: Change this to DMR
+    DAS *			get_dmr()
+				{
+				    return _dmr;
+				}
+};
+
+#endif // I_BESDMRResponse
 

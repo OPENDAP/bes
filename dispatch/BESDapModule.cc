@@ -42,6 +42,7 @@ using std::endl ;
 #include "BESResponseHandlerList.h"
 
 #include "BESDASResponseHandler.h"
+#include "BESDMRResponseHandler.h"
 #include "BESDDSResponseHandler.h"
 #include "BESDataResponseHandler.h"
 #include "BESDDXResponseHandler.h"
@@ -72,6 +73,9 @@ BESDapModule::initialize( const string &modname )
     BESDEBUG( "dap", "    adding " << DAS_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder ) ;
 
+    BESDEBUG( "dap", "    adding " << DMR_RESPONSE << " response handler" << endl ) ;
+    BESResponseHandlerList::TheList()->add_handler( DMR_RESPONSE, BESDMRResponseHandler::DMRResponseBuilder ) ;
+
     BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder ) ;
 
@@ -91,6 +95,8 @@ BESDapModule::initialize( const string &modname )
     BESServiceRegistry *registry = BESServiceRegistry::TheRegistry() ;
     registry->add_service( OPENDAP_SERVICE ) ;
     registry->add_to_service( OPENDAP_SERVICE, DAS_SERVICE,
+			      DAS_DESCRIPT, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DMR_SERVICE,
 			      DAS_DESCRIPT, DAP2_FORMAT ) ;
     registry->add_to_service( OPENDAP_SERVICE, DDS_SERVICE,
 			      DDS_DESCRIPT, DAP2_FORMAT ) ;
@@ -121,6 +127,7 @@ BESDapModule::terminate( const string &modname )
 
     BESDEBUG( "dap", "    removing dap Response handlers " << modname << endl ) ;
     BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( DMR_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;

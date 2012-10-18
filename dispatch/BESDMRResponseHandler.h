@@ -1,4 +1,4 @@
-// BESDapTransmit.h
+// BESDMRResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,32 +30,37 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESDapTransmit_h
-#define I_BESDapTransmit_h 1
+#ifndef I_BESDMRResponseHandler_h
+#define I_BESDMRResponseHandler_h 1
 
-#include "BESBasicTransmitter.h"
-#include "BESDataHandlerInterface.h"
+#include "BESResponseHandler.h"
 
-class BESResponseObject ;
-
-class BESDapTransmit : public BESBasicTransmitter
+/** @brief response handler that builds an OPeNDAP DMR response object
+ *
+ * A request 'get das for &lt;def_name&gt;;' will be handled by this
+ * response handler. Given a definition name it determines what containers
+ * are to be used to build the OPeNDAP DMR response object. It then
+ * transmits the DMR object using the method send_das on the speicifed
+ * transmitter object.
+ *
+ * @see DMR
+ * @see BESContainer
+ * @see BESTransmitter
+ */
+class BESDMRResponseHandler : public BESResponseHandler
 {
 public:
-    			BESDapTransmit() ;
-    virtual		~BESDapTransmit() {}
-    static void		send_basic_das( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dds( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_data( BESResponseObject *obj,
-    				         BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_ddx( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dataddx( BESResponseObject *obj,
-    				            BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dmr( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-} ;
+				BESDMRResponseHandler( const string &name ) ;
+    virtual			~BESDMRResponseHandler( void ) ;
 
-#endif // I_BESDapTransmit_h
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESResponseHandler *DMRResponseBuilder( const string &name ) ;
+};
+
+#endif // I_BESDMRResponseHandler_h
 

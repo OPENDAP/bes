@@ -71,6 +71,10 @@
 #define DATADDX_SERVICE "dataddx"
 #define DATADDX_DESCRIPT "OPeNDAP Data Description and Attributes in DDX format and Data Object"
 #define DATADDX_RESPONSE_STR "getDataDDX"
+#define DMR_RESPONSE "get.dmr"
+#define DMR_SERVICE "dmr"
+#define DMR_DESCRIPT "OPeNDAP Data DMR Structure"
+#define DMR_RESPONSE_STR "getDMR"
 
 #define CATALOG_RESPONSE "show.catalog"
 #define CATALOG_RESPONSE_STR "showCatalog"
