@@ -35,12 +35,12 @@ libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module
-libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS)
+libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
 libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
-libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS)
+libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 besregtest_SOURCES = besregtest.cc
 besregtest_CPPFLAGS = $(AM_CPPFLAGS)

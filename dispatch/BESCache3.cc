@@ -521,7 +521,8 @@ bool BESCache3::get_read_lock(const string &target, int &fd)
  * @param fd Value-result param that holds the file descriptor of the opened
  * file
  * @return True if the operation was successful, false otherwise. This method will
- * return false if the file already existed
+ * return false if the file already existed (the file won't be locked and the
+ * descriptor reference is undefined - but likely -1).
  * @throws BESInternalError if any error except EEXIST is returned by open(2) or
  * if fcntl(2) returns an error. */
 bool BESCache3::create_and_lock(const string &target, int &fd)
