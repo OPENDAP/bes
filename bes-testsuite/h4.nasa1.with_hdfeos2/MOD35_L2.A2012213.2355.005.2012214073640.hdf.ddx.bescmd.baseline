@@ -1211,11 +1211,11 @@
         <Attribute name="coordinates" type="String">
             <value>Byte_Segment Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1258,11 +1258,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude QA_Dimension</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">

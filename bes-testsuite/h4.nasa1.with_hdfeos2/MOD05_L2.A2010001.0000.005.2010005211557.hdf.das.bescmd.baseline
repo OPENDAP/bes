@@ -87,8 +87,8 @@ Attributes {
         Int32 Cell_Across_Swath_Sampling 1, 1354, 1;
         String Geolocation_Pointer "External MODIS geolocation product";
         String description "\\012                                                                 \\012 bit field   Description                     Key                 \\012 ---------   -----------                     ---                 \\012                                                                 \\012 0           Cloud Mask Flag                 0 = not determined  \\012                                             1 = determined      \\012                                                                 \\012 1-2         Unobstructed FOV Quality Flag   00 = cloud          \\012                                             01 = 66% prob.      \\012                                                    clear        \\012                                             10 = 95% prob.      \\012                                                    clear        \\012                                             11 = 99% prob.      \\012                                                    clear        \\012             PROCESSING PATH FLAGS                               \\012             ---------------------                               \\012 3           Day / Night Flag                0 = Night / 1 = Day \\012 4           Sunglint Flag                   0 = Yes / 1 = No    \\012 5           Snow / Ice Background Flag      0 = Yes / 1 = No    \\012 6-7         Land / Water Flag               00=Water/01=Coastal \\012                                             10=Desert/11=Land   \\012";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
     }
     Water_Vapor_Near_Infrared {
         String coordinates "Latitude Longitude";
@@ -137,13 +137,13 @@ Attributes {
         Int32 Cell_Across_Swath_Sampling 1, 1354, 1;
         String Geolocation_Pointer "External MODIS geolocation product";
         String description "See MODIS atmosphere QA plan for details";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
     }
     Quality_Assurance_Infrared {
         String coordinates "Latitude Longitude QA_Bytes_IR";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Run time QA flags";
         String units "none";
         Float64 scale_factor 1.0000000000000000;

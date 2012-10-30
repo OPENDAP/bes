@@ -635,7 +635,7 @@
         <Attribute name="OrbitNumber" type="Int32">
             <value>65592</value>
         </Attribute>
-        <Attribute name="Camera" type="Int16">
+        <Attribute name="Camera" type="Int32">
             <value>2</value>
         </Attribute>
         <Attribute name="StartTime" type="String">
@@ -644,10 +644,10 @@
         <Attribute name="StopTime" type="String">
             <value>2012-08-01T00:45:00.600000Z</value>
         </Attribute>
-        <Attribute name="CameraMode" type="Int16">
+        <Attribute name="CameraMode" type="Int32">
             <value>1</value>
         </Attribute>
-        <Attribute name="NumLMEvents" type="Int16">
+        <Attribute name="NumLMEvents" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="LMSiteName" type="String">

@@ -885,7 +885,7 @@
         <Attribute name="_FillValue" type="Byte">
             <value>255</value>
         </Attribute>
-        <Attribute name="missing_value" type="Int16">
+        <Attribute name="missing_value" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="Key" type="String">
@@ -948,7 +948,7 @@
         <Attribute name="_FillValue" type="Byte">
             <value>255</value>
         </Attribute>
-        <Attribute name="missing_value" type="Int16">
+        <Attribute name="missing_value" type="Int32">
             <value>250</value>
         </Attribute>
         <Attribute name="Key" type="String">

@@ -1245,11 +1245,11 @@ local attribute which is also provided.
         <Attribute name="description" type="String">
             <value>\\012                                                                 \\012 bit field   Description                     Key                 \\012 ---------   -----------                     ---                 \\012                                                                 \\012 0           Cloud Mask Flag                 0 = not determined  \\012                                             1 = determined      \\012                                                                 \\012 1-2         Unobstructed FOV Quality Flag   00 = cloud          \\012                                             01 = 66% prob.      \\012                                                    clear        \\012                                             10 = 95% prob.      \\012                                                    clear        \\012                                             11 = 99% prob.      \\012                                                    clear        \\012             PROCESSING PATH FLAGS                               \\012             ---------------------                               \\012 3           Day / Night Flag                0 = Night / 1 = Day \\012 4           Sunglint Flag                   0 = Yes / 1 = No    \\012 5           Snow / Ice Background Flag      0 = Yes / 1 = No    \\012 6-7         Land / Water Flag               00=Water/01=Coastal \\012                                             10=Desert/11=Land   \\012</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Int32/>
@@ -1408,11 +1408,11 @@ local attribute which is also provided.
         <Attribute name="description" type="String">
             <value>See MODIS atmosphere QA plan for details</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Int32/>
@@ -1424,11 +1424,11 @@ local attribute which is also provided.
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude QA_Bytes_IR</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">

@@ -135,8 +135,8 @@ Attributes {
         String coordinates "Latitude Longitude";
         String long_name "CMG 0.05 Deg Monthly pixel reliability";
         String units "rank";
-        Int16 valid_range 0, 4;
-        Int16 _FillValue 255;
+        Int32 valid_range 0, 4;
+        Int32 _FillValue 255;
         String Legend "\\012\\011 Rank Keys: \\012\\011[-1]:  Fill/No Data-Not Processed. \\012\\011 [0]:  Good data     - Use with confidence \\012\\011 [1]:  Marginal data - Useful, but look at other QA information \\012\\011 [2]:  Snow/Ice      - Target covered with snow/ice\\012\\011 [3]:  Cloudy        - Target not visible, covered with cloud \\012\\011 [4]:  Estimated     - From MODIS historic time series \\012";
     }
     Latitude {

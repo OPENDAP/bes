@@ -146,8 +146,8 @@ Attributes {
     }
     Processing_Flag {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 3;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 3;
+        Int32 _FillValue 127;
         String long_name "Cloud Retrieval Method Flag";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -159,8 +159,8 @@ Attributes {
     }
     Cloud_Height_Method {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 1, 6;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 6;
+        Int32 _FillValue 127;
         String long_name "Cloud Height Method";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -401,8 +401,8 @@ Attributes {
     }
     Cloud_Phase_Infrared {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 6;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 127;
         String long_name "Cloud Phase Infrared";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -414,8 +414,8 @@ Attributes {
     }
     Cloud_Phase_Infrared_Night {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 6;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 127;
         String long_name "Cloud Phase Infrared Night";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -427,8 +427,8 @@ Attributes {
     }
     Cloud_Phase_Infrared_Day {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 6;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 127;
         String long_name "Cloud Phase Infrared Day";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -637,8 +637,8 @@ Attributes {
     }
     Cirrus_Reflectance_Flag {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 3;
-        Int16 _FillValue 157;
+        Int32 valid_range 0, 3;
+        Int32 _FillValue 157;
         String long_name "Cirrus Reflectance Flag";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -651,8 +651,8 @@ Attributes {
     }
     Cloud_Mask_5km {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "MODIS Cloud Mask, First Byte";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -665,8 +665,8 @@ Attributes {
     }
     Quality_Assurance_5km {
         String coordinates "Latitude Longitude QA_Parameter_5km";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Quality Assurance at 5x5 Resolution";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -679,8 +679,8 @@ Attributes {
     }
     Cloud_Mask_1km {
         String coordinates "Latitude Longitude Cloud_Mask_1km_Num_Bytes";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "MODIS Cloud Mask, L2 MOD06 QA Plan";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -693,8 +693,8 @@ Attributes {
     }
     Quality_Assurance_1km {
         String coordinates "Latitude Longitude QA_Parameter_1km";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Quality Assurance at 1x1 Resolution";
         String units "none";
         Float64 scale_factor 1.0000000000000000;

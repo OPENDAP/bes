@@ -222,8 +222,8 @@ Attributes {
         String coordinates "Latitude Longitude";
         String long_name "Cloud Phase Infrared";
         String units "none";
-        Int16 valid_range 0, 6;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 127;
         Float64 scale_factor 1.0000000000000000;
         Float64 add_offset 0.0000000000000000;
         String Parameter_Type "Output";
@@ -236,8 +236,8 @@ Attributes {
         String coordinates "Latitude Longitude QA_Parameter_5km";
         String long_name "Cloud Quality Assurance at 5km Resolution";
         String units "none";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         Float64 scale_factor 1.0000000000000000;
         Float64 add_offset 0.0000000000000000;
         String Parameter_Type "Output";
@@ -331,8 +331,8 @@ Attributes {
         String coordinates "Byte_Segment Latitude Longitude";
         String long_name "MODIS Cloud Mask";
         String units "none";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         Float64 scale_factor 1.0000000000000000;
         Float64 add_offset 0.0000000000000000;
         String Parameter_Type "Output";

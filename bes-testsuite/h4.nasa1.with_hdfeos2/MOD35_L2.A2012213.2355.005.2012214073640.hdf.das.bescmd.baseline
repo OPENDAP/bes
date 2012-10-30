@@ -82,8 +82,8 @@ Attributes {
     }
     Cloud_Mask {
         String coordinates "Byte_Segment Latitude Longitude";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "MODIS Cloud Mask and Spectral Test Results";
         String units "none";
         Float64 scale_factor 1.0000000000000000;
@@ -96,8 +96,8 @@ Attributes {
     }
     Quality_Assurance {
         String coordinates "Latitude Longitude QA_Dimension";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Quality Assurance for Cloud Mask";
         String units "none";
         Float64 scale_factor 1.0000000000000000;

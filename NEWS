@@ -1,3 +1,10 @@
+Version 3.10.1
+  This version changes the _FillValue datatype to be consistent with the 
+variable datatype. This is not required by CF, however, netCDF-3 has this 
+requirement. This change makes fileout_netcdf work smoothly for some NASA 
+products.
+
+
 Version 3.10.0
 
 Added BESkey for enabling CF option. 

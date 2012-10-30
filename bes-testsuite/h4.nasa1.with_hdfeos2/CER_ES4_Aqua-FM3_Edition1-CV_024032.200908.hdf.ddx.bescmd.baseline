@@ -531,11 +531,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -581,11 +581,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -656,11 +656,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_1">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -706,11 +706,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_1">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -806,11 +806,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -856,11 +856,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -956,11 +956,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_1">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1006,11 +1006,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_1">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1056,11 +1056,11 @@
         <dimension name="_2_5_deg__regional_long__zones" size="144"/>
     </Array>
     <Array name="Geographic_scene_type">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1642,11 +1642,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_2">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1692,11 +1692,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_2">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1767,11 +1767,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_3">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1817,11 +1817,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_3">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1917,11 +1917,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_2">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -1967,11 +1967,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_2">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2067,11 +2067,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_3">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2117,11 +2117,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_3">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2167,11 +2167,11 @@
         <dimension name="_5_0_deg__regional_long__zones" size="72"/>
     </Array>
     <Array name="Geographic_scene_type_1">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2753,11 +2753,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_4">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2803,11 +2803,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_4">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2878,11 +2878,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_5">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2928,11 +2928,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_5">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3028,11 +3028,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_4">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3078,11 +3078,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_4">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3178,11 +3178,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_5">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3228,11 +3228,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_5">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3278,11 +3278,11 @@
         <dimension name="_10_0_deg__regional_long__zones" size="36"/>
     </Array>
     <Array name="Geographic_scene_type_2">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3842,11 +3842,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_6">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3890,11 +3890,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_6">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3962,11 +3962,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_7">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4010,11 +4010,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_7">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4106,11 +4106,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_6">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4154,11 +4154,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_6">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4250,11 +4250,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_7">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4298,11 +4298,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_7">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4346,11 +4346,11 @@
         <dimension name="_2_5_deg__zonal_colat__zones" size="72"/>
     </Array>
     <Array name="Geographic_scene_type_3">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4877,11 +4877,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_8">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4925,11 +4925,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_8">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -4997,11 +4997,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_9">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5045,11 +5045,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_9">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5141,11 +5141,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_8">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5189,11 +5189,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_8">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5285,11 +5285,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_9">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5333,11 +5333,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_9">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5381,11 +5381,11 @@
         <dimension name="_5_0_deg__zonal_colat__zones" size="36"/>
     </Array>
     <Array name="Geographic_scene_type_4">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5912,11 +5912,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_10">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -5960,11 +5960,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_10">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6032,11 +6032,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_11">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6080,11 +6080,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_11">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6176,11 +6176,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_10">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6224,11 +6224,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_10">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6320,11 +6320,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_11">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6368,11 +6368,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_11">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6416,11 +6416,11 @@
         <dimension name="_10_0_deg__zonal_colat__zones" size="18"/>
     </Array>
     <Array name="Geographic_scene_type_5">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6947,11 +6947,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_12">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -6995,11 +6995,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_12">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7067,11 +7067,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_13">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7115,11 +7115,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_13">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7211,11 +7211,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_12">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7259,11 +7259,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_12">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7355,11 +7355,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_13">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7403,11 +7403,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_13">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7451,11 +7451,11 @@
         <dimension name="_2_5_deg__global_zone" size="1"/>
     </Array>
     <Array name="Geographic_scene_type_6">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -7982,11 +7982,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_14">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8030,11 +8030,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_14">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8102,11 +8102,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_15">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8150,11 +8150,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_15">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8246,11 +8246,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_14">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8294,11 +8294,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_14">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8390,11 +8390,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_15">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8438,11 +8438,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_15">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -8486,11 +8486,11 @@
         <dimension name="_5_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Geographic_scene_type_7">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9017,11 +9017,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_16">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9065,11 +9065,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_16">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9137,11 +9137,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_longwave_flux_17">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9185,11 +9185,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_hours_of_shortwave_flux_17">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>24</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9281,11 +9281,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_16">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9329,11 +9329,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_16">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9425,11 +9425,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_longwave_flux_17">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9473,11 +9473,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Number_of_days_of_shortwave_flux_17">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>31</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -9521,11 +9521,11 @@
         <dimension name="_10_0_deg__global_zone" size="1"/>
     </Array>
     <Array name="Geographic_scene_type_8">
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">

@@ -176,8 +176,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -192,8 +192,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -216,8 +216,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_1 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -232,8 +232,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_1 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -264,8 +264,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -280,8 +280,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -312,8 +312,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_1 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -328,8 +328,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_1 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -344,8 +344,8 @@ Attributes {
         String fullpath "/2.5 Degree Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Regional";
         String units "1 = ocean, 2 = land, 3 = snow, 4 = desert, 5 = coast";
         String coordinates "_2_5_deg__regional_colat__zones _2_5_deg__regional_long__zones";
@@ -540,8 +540,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_2 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -556,8 +556,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_2 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -580,8 +580,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_3 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -596,8 +596,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_3 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -628,8 +628,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_2 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -644,8 +644,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_2 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -676,8 +676,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_3 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -692,8 +692,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_3 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -708,8 +708,8 @@ Attributes {
         String fullpath "/5.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_1 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Nested Regional";
         String units "1 = data available, 127 = no data available";
         String coordinates "_5_0_deg__regional_colat__zones _5_0_deg__regional_long__zones";
@@ -904,8 +904,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_4 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -920,8 +920,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_4 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -944,8 +944,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_5 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -960,8 +960,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_5 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -992,8 +992,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_4 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -1008,8 +1008,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_4 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -1040,8 +1040,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_5 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -1056,8 +1056,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_5 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -1072,8 +1072,8 @@ Attributes {
         String fullpath "/10.0 Degree Nested Regional/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_2 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Nested Regional";
         String units "1 = data available, 127 = no data available";
         String coordinates "_10_0_deg__regional_colat__zones _10_0_deg__regional_long__zones";
@@ -1268,8 +1268,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_6 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__zonal_colat__zones";
@@ -1284,8 +1284,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_6 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__zonal_colat__zones";
@@ -1308,8 +1308,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_7 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__zonal_colat__zones";
@@ -1324,8 +1324,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_7 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__zonal_colat__zones";
@@ -1356,8 +1356,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_6 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__zonal_colat__zones";
@@ -1372,8 +1372,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_6 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__zonal_colat__zones";
@@ -1404,8 +1404,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_7 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__zonal_colat__zones";
@@ -1420,8 +1420,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_7 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__zonal_colat__zones";
@@ -1436,8 +1436,8 @@ Attributes {
         String fullpath "/2.5 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_3 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Zonal";
         String units "1 = data available, 127 = no data available";
         String coordinates "_2_5_deg__zonal_colat__zones";
@@ -1620,8 +1620,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_8 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__zonal_colat__zones";
@@ -1636,8 +1636,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_8 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__zonal_colat__zones";
@@ -1660,8 +1660,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_9 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__zonal_colat__zones";
@@ -1676,8 +1676,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_9 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__zonal_colat__zones";
@@ -1708,8 +1708,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_8 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__zonal_colat__zones";
@@ -1724,8 +1724,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_8 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__zonal_colat__zones";
@@ -1756,8 +1756,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_9 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__zonal_colat__zones";
@@ -1772,8 +1772,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_9 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__zonal_colat__zones";
@@ -1788,8 +1788,8 @@ Attributes {
         String fullpath "/5.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_4 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Zonal";
         String units "1 = data available, 127 = no data available";
         String coordinates "_5_0_deg__zonal_colat__zones";
@@ -1972,8 +1972,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_10 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__zonal_colat__zones";
@@ -1988,8 +1988,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_10 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__zonal_colat__zones";
@@ -2012,8 +2012,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_11 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__zonal_colat__zones";
@@ -2028,8 +2028,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_11 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__zonal_colat__zones";
@@ -2060,8 +2060,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_10 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__zonal_colat__zones";
@@ -2076,8 +2076,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_10 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__zonal_colat__zones";
@@ -2108,8 +2108,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_11 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__zonal_colat__zones";
@@ -2124,8 +2124,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_11 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__zonal_colat__zones";
@@ -2140,8 +2140,8 @@ Attributes {
         String fullpath "/10.0 Degree Zonal/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_5 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Zonal";
         String units "1 = data available, 127 = no data available";
         String coordinates "_10_0_deg__zonal_colat__zones";
@@ -2324,8 +2324,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_12 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__global_zone";
@@ -2340,8 +2340,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_12 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__global_zone";
@@ -2364,8 +2364,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_13 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__global_zone";
@@ -2380,8 +2380,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_13 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _2_5_deg__global_zone";
@@ -2412,8 +2412,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_12 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__global_zone";
@@ -2428,8 +2428,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_12 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__global_zone";
@@ -2460,8 +2460,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_13 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__global_zone";
@@ -2476,8 +2476,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_13 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _2_5_deg__global_zone";
@@ -2492,8 +2492,8 @@ Attributes {
         String fullpath "/2.5 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_6 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "2.5 Degree Global";
         String units "1 = data available, 127 = no data available";
         String coordinates "_2_5_deg__global_zone";
@@ -2676,8 +2676,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_14 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__global_zone";
@@ -2692,8 +2692,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_14 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__global_zone";
@@ -2716,8 +2716,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_15 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__global_zone";
@@ -2732,8 +2732,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_15 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _5_0_deg__global_zone";
@@ -2764,8 +2764,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_14 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__global_zone";
@@ -2780,8 +2780,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_14 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__global_zone";
@@ -2812,8 +2812,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_15 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__global_zone";
@@ -2828,8 +2828,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_15 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _5_0_deg__global_zone";
@@ -2844,8 +2844,8 @@ Attributes {
         String fullpath "/5.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_7 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "5.0 Degree Global";
         String units "1 = data available, 127 = no data available";
         String coordinates "_5_0_deg__global_zone";
@@ -3028,8 +3028,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_16 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__global_zone";
@@ -3044,8 +3044,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Daily Averages/Total-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_16 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Daily, Total-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__global_zone";
@@ -3068,8 +3068,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Longwave flux";
     }
     Number_of_hours_of_longwave_flux_17 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__global_zone";
@@ -3084,8 +3084,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Daily Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_hours_of_shortwave_flux_17 {
-        Int16 valid_range 0, 24;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 24;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Daily, Clear-sky Averages";
         String units "hours";
         String coordinates "days _10_0_deg__global_zone";
@@ -3116,8 +3116,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_16 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__global_zone";
@@ -3132,8 +3132,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Total-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_16 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Monthly Hourly, Total-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__global_zone";
@@ -3164,8 +3164,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Longwave flux";
     }
     Number_of_days_of_longwave_flux_17 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__global_zone";
@@ -3180,8 +3180,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Shortwave flux";
     }
     Number_of_days_of_shortwave_flux_17 {
-        Int16 valid_range 0, 31;
-        Int16 _FillValue 127;
+        Int32 valid_range 0, 31;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global, Monthly Hourly, Clear-sky Averages";
         String units "days";
         String coordinates "hours _10_0_deg__global_zone";
@@ -3196,8 +3196,8 @@ Attributes {
         String fullpath "/10.0 Degree Global/Monthly Hourly Averages/Clear-Sky/Albedo";
     }
     Geographic_scene_type_8 {
-        Int16 valid_range 1, 127;
-        Int16 _FillValue 127;
+        Int32 valid_range 1, 127;
+        Int32 _FillValue 127;
         String long_name "10.0 Degree Global";
         String units "1 = data available, 127 = no data available";
         String coordinates "_10_0_deg__global_zone";

@@ -188,7 +188,7 @@ Attributes {
     NumUnobscuredTop {
         String coordinates "Longitude_2 Latitude_2 NCamDim_2";
         String long_name "ReflectingLevelParameters_2.2_km:NumUnobscuredTop";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     BRFTop_Mean {
         String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
@@ -258,7 +258,7 @@ Attributes {
     CloudLiquidProbability {
         String coordinates "Longitude_2 Latitude_2";
         String long_name "ReflectingLevelParameters_2.2_km:CloudLiquidProbability";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     CloudTopTemperature {
         String coordinates "Longitude_2 Latitude_2";
@@ -293,27 +293,27 @@ Attributes {
     IndexSolarZenith {
         String coordinates "Longitude_2 Latitude_2";
         String long_name "ReflectingLevelParameters_2.2_km:IndexSolarZenith";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     IndexViewingZenith {
         String coordinates "Longitude_2 Latitude_2 NCamDim_2";
         String long_name "ReflectingLevelParameters_2.2_km:IndexViewingZenith";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     IndexBlueAltitude {
         String coordinates "Longitude_2 Latitude_2";
         String long_name "ReflectingLevelParameters_2.2_km:IndexBlueAltitude";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     IndexGreenAltitude {
         String coordinates "Longitude_2 Latitude_2";
         String long_name "ReflectingLevelParameters_2.2_km:IndexGreenAltitude";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     IndexBrightness {
         String coordinates "Longitude_2 Latitude_2 NCamDim_2";
         String long_name "ReflectingLevelParameters_2.2_km:IndexBrightness";
-        Int16 _FillValue 157;
+        Int32 _FillValue 157;
     }
     IndexIgloo {
         String coordinates "Longitude_2 Latitude_2";

@@ -438,11 +438,11 @@ Attributes {
         String HDFEOSVersion "HDFEOS_V2.14";
         Int32 PathNumber 95;
         Int32 OrbitNumber 65592;
-        Int16 Camera 2;
+        Int32 Camera 2;
         String StartTime "2012-07-31T23:55:04.440000Z";
         String StopTime "2012-08-01T00:45:00.600000Z";
-        Int16 CameraMode 1;
-        Int16 NumLMEvents 0;
+        Int32 CameraMode 1;
+        Int32 NumLMEvents 0;
         String LMSiteName "N/A";
         Float64 PGEStartOffset 0.0000000000000000;
         Float64 PGEStopOffset 2967.0000000000000;

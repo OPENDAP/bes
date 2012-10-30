@@ -7,7 +7,7 @@ Attributes {
         String coordsys "cartesian";
         Byte valid_range 0, 254;
         Byte _FillValue 255;
-        Int16 missing_value 0;
+        Int32 missing_value 0;
         String Key "0=missing data, 1=no decision, 11=night, 25=no snow, 37=lake, 39=ocean, 50=cloud, 100=lake ice, 200=snow, 254=detector saturated, 255=fill";
     }
     Snow_Spatial_QA {
@@ -28,7 +28,7 @@ Attributes {
         String coordsys "cartesian";
         Byte valid_range 0, 100;
         Byte _FillValue 255;
-        Int16 missing_value 250;
+        Int32 missing_value 250;
         String Key "0-100=snow albedo, 101=no_decision, 111=night, 125=land, 137=inland water, 139=ocean, 150=cloud, 250=missing, 251=self_shadowing, 252=landmask mismatch, 253=BRDF_failure, 254=non-production_mask";
     }
     Fractional_Snow_Cover {

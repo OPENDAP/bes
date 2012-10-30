@@ -2004,11 +2004,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>3</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2047,11 +2047,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>1</value>
             <value>6</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2839,11 +2839,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>6</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2882,11 +2882,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>6</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -2925,11 +2925,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>6</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>127</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3612,11 +3612,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>3</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3658,11 +3658,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3704,11 +3704,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude QA_Parameter_5km</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3751,11 +3751,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude Cloud_Mask_1km_Num_Bytes</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">
@@ -3798,11 +3798,11 @@
         <Attribute name="coordinates" type="String">
             <value>Latitude Longitude QA_Parameter_1km</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>255</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Attribute name="long_name" type="String">

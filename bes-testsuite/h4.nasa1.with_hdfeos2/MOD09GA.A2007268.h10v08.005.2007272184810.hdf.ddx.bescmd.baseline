@@ -1563,7 +1563,7 @@
         <Attribute name="HDFEOSVersion" type="String">
             <value>HDFEOS_V2.9</value>
         </Attribute>
-        <Attribute name="maximum_observations_1km" type="Int16">
+        <Attribute name="maximum_observations_1km" type="Int32">
             <value>3</value>
         </Attribute>
         <Attribute name="total_additional_observations_1km" type="Int32">
@@ -1572,7 +1572,7 @@
         <Attribute name="l2g_storage_format_1km" type="String">
             <value>compact</value>
         </Attribute>
-        <Attribute name="maximum_observations_500m" type="Int16">
+        <Attribute name="maximum_observations_500m" type="Int32">
             <value>1</value>
         </Attribute>
         <Attribute name="total_additional_observations_500m" type="Int32">
@@ -1614,11 +1614,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>
@@ -1783,11 +1783,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>15</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>
@@ -1826,11 +1826,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>127</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>
@@ -2403,11 +2403,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>15</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>

@@ -3,8 +3,8 @@ Attributes {
         String coordinates "Latitude Longitude";
         String long_name "Number of Observations";
         String units "none";
-        Int16 valid_range 0, 127;
-        Int16 _FillValue 255;
+        Int32 valid_range 0, 127;
+        Int32 _FillValue 255;
     }
     state_1km_1 {
         String coordinates "Latitude Longitude";
@@ -61,8 +61,8 @@ Attributes {
         String coordinates "Latitude Longitude";
         String long_name "Orbit pointer - first layer";
         String units "none";
-        Int16 valid_range 0, 15;
-        Int16 _FillValue 255;
+        Int32 valid_range 0, 15;
+        Int32 _FillValue 255;
     }
     Latitude {
         String long_name "MODIS_Grid_1km_2D:Latitude";
@@ -76,8 +76,8 @@ Attributes {
         String coordinates "Latitude_1 Longitude_1";
         String long_name "Number of Observations";
         String units "none";
-        Int16 valid_range 0, 127;
-        Int16 _FillValue 255;
+        Int32 valid_range 0, 127;
+        Int32 _FillValue 255;
     }
     sur_refl_b01_1 {
         String coordinates "Latitude_1 Longitude_1";
@@ -838,10 +838,10 @@ Attributes {
     }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.9";
-        Int16 maximum_observations_1km 3;
+        Int32 maximum_observations_1km 3;
         Int32 total_additional_observations_1km 524331;
         String l2g_storage_format_1km "compact";
-        Int16 maximum_observations_500m 1;
+        Int32 maximum_observations_500m 1;
         Int32 total_additional_observations_500m 0;
         String l2g_storage_format_500m "one layer only";
         Int32 NumberLandWater1km 57840, 1090059, 6, 1321, 0, 0, 35047, 247791, 0;
@@ -947,8 +947,8 @@ Attributes {
     orbit_pnt_c_NONEOS {
         String long_name "Orbit pointer - additional layers, compact";
         String units "none";
-        Int16 valid_range 0, 15;
-        Int16 _FillValue 255;
+        Int32 valid_range 0, 15;
+        Int32 _FillValue 255;
     }
     nadd_obs_row_1km_NONEOS {
         String long_name "Number of additional observations per row";

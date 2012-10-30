@@ -6183,13 +6183,13 @@
         <Attribute name="QA_LUT_Serial_Number_and_Date_of_Last_Change" type="String">
             <value>Q134 2009:05:13:17:00</value>
         </Attribute>
-        <Attribute name="Focal_Plane_Set_Point_State" type="Int16">
+        <Attribute name="Focal_Plane_Set_Point_State" type="Int32">
             <value>1</value>
         </Attribute>
-        <Attribute name="Doors_and_Screens_Configuration" type="Int16">
+        <Attribute name="Doors_and_Screens_Configuration" type="Int32">
             <value>240</value>
         </Attribute>
-        <Attribute name="Reflective_Bands_With_Bad_Data" type="Int16">
+        <Attribute name="Reflective_Bands_With_Bad_Data" type="Int32">
             <value>0</value>
             <value>0</value>
             <value>0</value>
@@ -6213,7 +6213,7 @@
             <value>0</value>
             <value>0</value>
         </Attribute>
-        <Attribute name="Emissive_Bands_With_Bad_Data" type="Int16">
+        <Attribute name="Emissive_Bands_With_Bad_Data" type="Int32">
             <value>1</value>
             <value>1</value>
             <value>0</value>
@@ -6275,7 +6275,7 @@
         <Attribute name="Noise_in_Temperature_of_Vis_FPA" type="Byte">
             <value>0</value>
         </Attribute>
-        <Attribute name="Dead_Detector_List" type="Int16">
+        <Attribute name="Dead_Detector_List" type="Int32">
             <value>0</value>
             <value>0</value>
             <value>0</value>
@@ -6767,7 +6767,7 @@
             <value>0</value>
             <value>0</value>
         </Attribute>
-        <Attribute name="Noisy_Detector_List" type="Int16">
+        <Attribute name="Noisy_Detector_List" type="Int32">
             <value>0</value>
             <value>0</value>
             <value>0</value>
@@ -8524,11 +8524,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>28</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>
@@ -8666,11 +8666,11 @@
         <Attribute name="units" type="String">
             <value>none</value>
         </Attribute>
-        <Attribute name="valid_range" type="Int16">
+        <Attribute name="valid_range" type="Int32">
             <value>0</value>
             <value>6</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>255</value>
         </Attribute>
         <Int32/>

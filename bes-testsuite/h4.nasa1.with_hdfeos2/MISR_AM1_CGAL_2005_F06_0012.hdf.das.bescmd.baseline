@@ -2,7 +2,7 @@ Attributes {
     Average_fill_flag___1_deg {
         String coordinates "Latitude Longitude";
         String long_name "AlbedoAverage_1_degree:Average fill flag - 1 deg";
-        Int16 _FillValue 0;
+        Int32 _FillValue 0;
     }
     Swath_count___1_deg {
         String coordinates "Latitude Longitude";
@@ -99,7 +99,7 @@ Attributes {
     Average_fill_flag___5_deg {
         String coordinates "Latitude_1 Longitude_1";
         String long_name "AlbedoAverage_5_degree:Average fill flag - 5 deg";
-        Int16 _FillValue 0;
+        Int32 _FillValue 0;
     }
     Swath_count___5_deg {
         String coordinates "Latitude_1 Longitude_1";

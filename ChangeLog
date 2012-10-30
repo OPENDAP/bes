@@ -1,3 +1,8 @@
+2012-10-26  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* NEWS
+	* configure.ac
+	* hdf4_handler.spec
+	changed version to 3.10.1.
 
 2012-01-19  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 

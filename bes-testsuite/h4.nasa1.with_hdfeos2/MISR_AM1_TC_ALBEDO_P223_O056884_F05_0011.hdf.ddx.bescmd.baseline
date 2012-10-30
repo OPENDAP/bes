@@ -4116,7 +4116,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:NumUnobscuredTop</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4341,7 +4341,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:CloudLiquidProbability</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4447,7 +4447,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:IndexSolarZenith</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4462,7 +4462,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:IndexViewingZenith</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4478,7 +4478,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:IndexBlueAltitude</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4493,7 +4493,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:IndexGreenAltitude</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>
@@ -4508,7 +4508,7 @@
         <Attribute name="long_name" type="String">
             <value>ReflectingLevelParameters_2.2_km:IndexBrightness</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>157</value>
         </Attribute>
         <Int32/>

@@ -1977,7 +1977,7 @@
         <Attribute name="long_name" type="String">
             <value>AlbedoAverage_1_degree:Average fill flag - 1 deg</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Int32/>
@@ -2260,7 +2260,7 @@
         <Attribute name="long_name" type="String">
             <value>AlbedoAverage_5_degree:Average fill flag - 5 deg</value>
         </Attribute>
-        <Attribute name="_FillValue" type="Int16">
+        <Attribute name="_FillValue" type="Int32">
             <value>0</value>
         </Attribute>
         <Int32/>

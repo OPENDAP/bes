@@ -122,8 +122,8 @@ Attributes {
     }
     Cloud_Mask_QA {
         String coordinates "Latitude Longitude";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Cloud Mask info on 10x10 km resolution";
         String units "None";
         Float64 scale_factor 1.0000000000000000;
@@ -461,8 +461,8 @@ Attributes {
     }
     Quality_Assurance_Land {
         String coordinates "Latitude Longitude QA_Byte_Land";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Runtime QA flags";
         String units "None";
         Float64 scale_factor 1.0000000000000000;
@@ -475,8 +475,8 @@ Attributes {
     }
     Quality_Assurance_Crit_Ref_Land {
         String coordinates "Latitude Longitude QA_Byte_Land";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Runtime QA flags";
         String units "None";
         Float64 scale_factor 1.0000000000000000;
@@ -813,8 +813,8 @@ Attributes {
     }
     Quality_Assurance_Ocean {
         String coordinates "Latitude Longitude QA_Byte_Ocean";
-        Int16 valid_range 0, 255;
-        Int16 _FillValue 0;
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
         String long_name "Run time QA flags";
         String units "None";
         Float64 scale_factor 1.0000000000000000;

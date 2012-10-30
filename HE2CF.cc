@@ -343,7 +343,7 @@ HE2CF::print_type(int32 type)
 	return BYTE;
         
     case DFNT_INT8:
-	return INT16;
+	return INT32;
         
     case DFNT_UINT16:
 	return UINT16;
