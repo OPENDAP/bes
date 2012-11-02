@@ -7,7 +7,7 @@
 AT_INIT([bescmdln getdap])
 # AT_COPYRIGHT([])
 
-AT_TESTED([bescmdln])
+# AT_TESTED([bescmdln])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
