@@ -1,3 +1,34 @@
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	distcheck really fixed this time?
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	Eh - removed the AT_TESTED() macro to quiet a distcheck error about
+	AT_BUGREPORT nt=ot being defined - it is defined in package.m4.
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed cache dir permissions in the bes.spec file
+
+2012-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Change to the Makefile so that the libdap client code is linked into
+	the libdap_module (it's used for the caching operations)
+
+	M    dispatch/Makefile.am
+	M    dispatch/BESCache3.cc
+
+2012-09-28  James Gallagher <jgallagher@opendap.org>
+
+	A more sensible branch name
+
+	A    https://scm.opendap.org/svn/branch/bes/hyrax-1.8-release
+
 2012-07-27  James Gallagher <jgallagher@opendap.org>
 
 	Added a set_dds() method to BESDDSResponse and BESDataDDSResponse.
