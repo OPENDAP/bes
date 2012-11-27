@@ -1,7 +1,6 @@
-
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.10.0
+Updated for 3.10.1
 
 ---------------------------------------------------------------------------
 
@@ -25,6 +24,10 @@ before reporting problems. Thanks.
     and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
     Red Hat or CentOS) it was necessary to build HDF4. To do so I ran
     configure as './configure --with-pic --disable-fortran --disable-netcdf'
+
+    If hdf4_handler reports an error like "HDFEOS2.cc:112: grid open.." or 
+  fileout_netdf module dumps an netcdf file with size 0, please configure and 
+  build the HDF4 library with './configure --with-pic --disable-netcdf' option.
 
 1. In this version of the release, the handler is enhanced to support
    the access of many NASA HDF-EOS2 products and some NASA pure HDF4

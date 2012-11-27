@@ -21,48 +21,46 @@ HDFCFUtil::check_beskeys(const string key) {
 
 
 void
-HDFCFUtil::ClearMem (int32 * offset32, int32 * count32, int32 * step32,
-					 int *offset, int *count, int *step)
+HDFCFUtil::ClearMem (int32 * offset32, int32 * count32, int32 * step32, int *offset, int *count, int *step)
 {
-	if(offset32 != NULL)
-           delete[]offset32;
-        if(count32 != NULL) 
-	   delete[]count32;
-        if(step32 != NULL) 
-	   delete[]step32;
-        if(offset != NULL) 
-	   delete[]offset;
-        if(count != NULL) 
-	   delete[]count;
-        if(step != NULL) 
-	   delete[]step;
+    if(offset32 != NULL)
+        delete[]offset32;
+    if(count32 != NULL) 
+        delete[]count32;
+    if(step32 != NULL) 
+        delete[]step32;
+    if(offset != NULL) 
+        delete[]offset;
+    if(count != NULL) 
+        delete[]count;
+    if(step != NULL) 
+        delete[]step;
 }
 
 void
 HDFCFUtil::ClearMem2 (int32 * offset32, int32 * count32, int32 * step32)
 {
-     if(offset32 != NULL)
-	delete[]offset32;
-     if(count32 != NULL) 
-	delete[]count32;
-     if(step32 != NULL)
-	delete[]step32;
+    if(offset32 != NULL)
+        delete[]offset32;
+    if(count32 != NULL) 
+        delete[]count32;
+    if(step32 != NULL)
+        delete[]step32;
 }
 
 void
 HDFCFUtil::ClearMem3 (int *offset, int *count, int *step)
 {
-     if (offset != NULL)
-	delete[]offset;
-     if (count != NULL)
-	delete[]count;
-     if (step != NULL)
-	delete[]step;
+    if (offset != NULL)
+        delete[]offset;
+    if (count != NULL)
+        delete[]count;
+    if (step != NULL)
+        delete[]step;
 }
 
 void 
-HDFCFUtil::Split(const char *s, int len, char sep,
-                    std::vector<std::string> &names)
+HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
 {
     names.clear();
     for (int i = 0, j = 0; j <= len; ++j) {
@@ -134,7 +132,7 @@ HDFCFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_index) {
         gen_unique_name(str,namelist,clash_index);
     }
     else
-       str = newstr;
+        str = newstr;
 }
 
 void
@@ -153,15 +151,14 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
 
     vector<string>::const_iterator irv;
 
-    for (irv = newobjnamelist.begin();
-                irv != newobjnamelist.end(); ++irv) {
-         setret = objnameset.insert((*irv));
-         if (false == setret.second ) {
+    for (irv = newobjnamelist.begin(); irv != newobjnamelist.end(); ++irv) {
+        setret = objnameset.insert((*irv));
+        if (false == setret.second ) {
             clashnamelist.insert(clashnamelist.end(),(*irv));
             cl_to_ol[cl_index] = ol_index;
             cl_index++;
-         }
-         ol_index++;
+        }
+        ol_index++;
     }
 
     // Now change the clashed elements to unique elements; 
@@ -342,7 +339,7 @@ bool HDFCFUtil::is_special_value(int32 dtype, float fillvalue, float realvalue) 
         if (MAX_NON_SCALE_SPECIAL_VALUE == fillvalue_int) {
             int realvalue_int = (int)realvalue;
             if (realvalue_int <= MAX_NON_SCALE_SPECIAL_VALUE && realvalue_int >=MIN_NON_SCALE_SPECIAL_VALUE)
-               ret_value = true;
+                ret_value = true;
         }
     }
 
@@ -363,9 +360,9 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
                                 int32 * step)
 {
 
-     //          float64 templatlon[majordim][minordim];
-     T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-     int i, j, k;
+    //  float64 templatlon[majordim][minordim];
+    T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
+    int i, j, k;
 
     // do subsetting
     // Find the correct index

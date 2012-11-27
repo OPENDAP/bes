@@ -1,4 +1,9 @@
-Updated for version 3.10.0 (30 Sep, 2012)
+Updated for version 3.10.1 (27 Nov 2012)
+
+ This version fixes a bug for reading Int16 type dataset from NASA MODIS 09 
+ products.
+
+Updated for version 3.10.0 (30 Sep 2012)
 
 1. Introduction
 

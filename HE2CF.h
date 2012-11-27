@@ -57,96 +57,95 @@ using namespace libdap;
 class HE2CF
 {
 
- private:
+    private:
 
-    DAS* das;
+        DAS* das;
 
-    // SDStart return value
-    int32 sd_id;
-    // Hopen return value
-    int32 file_id;
-    int32 num_global_attributes;
+        // SDStart return value
+        int32 sd_id;
+        // Hopen return value
+        int32 file_id;
+        int32 num_global_attributes;
 
-    string metadata;
-    string gname;
+        string metadata;
+        string gname;
 
-    // Store all metadata names.
-    // Not an ideal approach, need to re-visit later. KY 2012-6-11
-    vector<string>  eosmetadata_namelist;
+        // Store all metadata names.
+        // Not an ideal approach, need to re-visit later. KY 2012-6-11
+        vector<string>  eosmetadata_namelist;
     
-    map < string, int32 > vg_sd_map;
-    map < string, int32 > vg_vd_map;
+        map < string, int32 > vg_sd_map;
+        map < string, int32 > vg_vd_map;
 
-    void set_eosmetadata_namelist(const string &metadata_name)
-    {
-        eosmetadata_namelist.push_back(metadata_name);
-    }
+        void set_eosmetadata_namelist(const string &metadata_name)
+        {
+            eosmetadata_namelist.push_back(metadata_name);
+        }
 
-    bool is_eosmetadata(const string& metadata_name) {
-        return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
-    }
+        bool is_eosmetadata(const string& metadata_name) {
+            return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
+        }
          
-    bool get_vgroup_field_refids(const string&  _gname, 
-                                 int32* _ref_df, int32* _ref_gf);
-    bool open_sd(const string& filename);
-    bool open_vgroup(const string& filename);
-    bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
-    void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
-    void obtain_SD_attr_value(const string &,string&);
+        bool get_vgroup_field_refids(const string&  _gname, int32* _ref_df, int32* _ref_gf);
+        bool open_sd(const string& filename);
+        bool open_vgroup(const string& filename);
+        bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
+        void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
+        void obtain_SD_attr_value(const string &,string&);
 
-    bool set_vgroup_map(int32 refid);
-    bool write_attr_long_name(const string& long_name, 
-                              const string& varname,
-                              int fieldtype);
-    bool write_attr_long_name(const string& group_name, 
-                              const string& long_name, 
-                              const string& varname,
-                              int fieldtype);
-    bool write_attr_sd(int32 sds_id, const string& newfname);
-    bool write_attr_vdata(int32 vd_id, const string& newfname);
-    void write_error(string _error);
+        bool set_vgroup_map(int32 refid);
+        bool write_attr_long_name(const string& long_name, 
+            const string& varname,
+            int fieldtype);
+        bool write_attr_long_name(const string& group_name, 
+            const string& long_name, 
+            const string& varname,
+            int fieldtype);
+        bool write_attr_sd(int32 sds_id, const string& newfname);
+        bool write_attr_vdata(int32 vd_id, const string& newfname);
+        void write_error(string _error);
     
- public:
-    HE2CF();
-    virtual ~HE2CF();
+    public:
+        HE2CF();
+        virtual ~HE2CF();
 
-    /// closes the opened file.
-    bool   close();
+        /// closes the opened file.
+        bool   close();
 
-    /// retrieves the merged metadata.
-    string get_metadata(const string& metadataname,bool&suffix_is_num,vector<string>&non_num_names, vector<string>&non_num_data);
-    bool set_non_ecsmetadata_attrs();
+        /// retrieves the merged metadata.
+        string get_metadata(const string& metadataname,bool&suffix_is_num,vector<string>&non_num_names, vector<string>&non_num_data);
+        bool set_non_ecsmetadata_attrs();
 
-    /// openes \afilename  HDF4 file.
-    bool   open(const string& filename);
+        /// openes \afilename  HDF4 file.
+        bool   open(const string& filename);
 
-    /// sets DAS pointer so that we can bulid attribute tables.
-    void   set_DAS(DAS* das);
+        /// sets DAS pointer so that we can bulid attribute tables.
+        void   set_DAS(DAS* das);
 
-    /// writes attribute table into DAS given grid/swath name and
-    /// its field name.
-    bool   write_attribute(const string& gname, 
-                           const string& fname, 
-                           const string& newfname,
-                           int n_groups,
-                           int fieldtype);
+        /// writes attribute table into DAS given grid/swath name and
+        /// its field name.
+        bool   write_attribute(const string& gname, 
+            const string& fname, 
+            const string& newfname,
+            int n_groups,
+            int fieldtype);
 
-    /// writes _FillValue attribute into \a varname attribute table.
-    /// 
-    /// This attribute plays an essential role for two dimensional
-    /// coordinate system like Swath.
-    bool write_attribute_FillValue(const string& varname, int type, float val);
+        /// writes _FillValue attribute into \a varname attribute table.
+        /// 
+        /// This attribute plays an essential role for two dimensional
+        /// coordinate system like Swath.
+        bool write_attribute_FillValue(const string& varname, int type, float val);
 
-    /// writes coordinates attribute into \a varname attribute table.
-    /// 
-    /// This attribute plays an essential role for two dimensional
-    /// coordinate system like Swath.
-    bool write_attribute_coordinates(const string& varname, string coord);
+        /// writes coordinates attribute into \a varname attribute table.
+        /// 
+        /// This attribute plays an essential role for two dimensional
+        /// coordinate system like Swath.
+        bool write_attribute_coordinates(const string& varname, string coord);
 
-    /// writes units attribute into \a varname attribute table.
-    /// 
-    /// Any existing units attribute will be overwritten by this function.
-    bool write_attribute_units(const string& varname, string units);
+        /// writes units attribute into \a varname attribute table.
+        /// 
+        /// Any existing units attribute will be overwritten by this function.
+        bool write_attribute_units(const string& varname, string units);
 
 };
 

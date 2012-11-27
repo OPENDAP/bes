@@ -19,32 +19,32 @@ using namespace libdap;
 
 class HDFSPArray_VDField:public Array
 {
-  public:
-  HDFSPArray_VDField (int vdrank, const std::string & filename, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const string & n = "", BaseType * v = 0):
-	Array (n, v),
-		rank (vdrank),
-		filename (filename),
-		vdref (objref),
-		dtype (dtype), fdorder (fieldorder), fdname (fieldname) {
-	}
-	virtual ~ HDFSPArray_VDField ()
-	{
-	}
-	int format_constraint (int *cor, int *step, int *edg);
+    public:
+        HDFSPArray_VDField (int vdrank, const std::string & filename, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+            Array (n, v),
+            rank (vdrank),
+            filename (filename),
+            vdref (objref),
+            dtype (dtype), fdorder (fieldorder), fdname (fieldname) {
+        }
+        virtual ~ HDFSPArray_VDField ()
+        {
+        }
+        int format_constraint (int *cor, int *step, int *edg);
 
-	BaseType *ptr_duplicate ()
-	{
-		return new HDFSPArray_VDField (*this);
-	}
+        BaseType *ptr_duplicate ()
+        {
+            return new HDFSPArray_VDField (*this);
+        }
 
-	virtual bool read ();
+        virtual bool read ();
 
-  private:
-	int rank;
+    private:
+        int rank;
         string filename;
-	int32 vdref;
-	int32 dtype;
-	int32 fdorder;
+        int32 vdref;
+        int32 dtype;
+        int32 fdorder;
         string fdname;
 };
 

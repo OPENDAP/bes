@@ -20,25 +20,25 @@ using namespace libdap;
 
 class HDFSPArrayMissGeoField:public Array
 {
-  public:
-  HDFSPArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
-	Array (n, v), rank (rank), tnumelm (tnumelm) {
-	}
-	virtual ~ HDFSPArrayMissGeoField ()
-	{
-	}
-	int format_constraint (int *cor, int *step, int *edg);
+    public:
+        HDFSPArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
+            Array (n, v), rank (rank), tnumelm (tnumelm) {
+        }
+        virtual ~ HDFSPArrayMissGeoField ()
+        {
+        }
+        int format_constraint (int *cor, int *step, int *edg);
 
-	BaseType *ptr_duplicate ()
-	{
-		return new HDFSPArrayMissGeoField (*this);
-	}
+        BaseType *ptr_duplicate ()
+        {
+            return new HDFSPArrayMissGeoField (*this);
+        }
 
-	virtual bool read ();
+        virtual bool read ();
 
-  private:
+    private:
 
-	int rank, tnumelm;
+        int rank, tnumelm;
 };
 
 

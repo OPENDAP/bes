@@ -217,73 +217,71 @@ bool read_das_hdfeos2(DAS & das, const string & filename);
 // 
 bool change_data_type(DAS & das, SOType scaletype, string new_field_name) 
 {
-	AttrTable *at = das.get_table(new_field_name);
+    AttrTable *at = das.get_table(new_field_name);
 
-        if(scaletype!=DEFAULT_CF_EQU && at!=NULL)
+    if(scaletype!=DEFAULT_CF_EQU && at!=NULL)
+    {
+        AttrTable::Attr_iter it = at->attr_begin();
+        string  scale_factor_value="";
+        string  add_offset_value="0";
+        string  radiance_scales_value="";
+        string  radiance_offsets_value="";
+        string  reflectance_scales_value=""; 
+        string  reflectance_offsets_value="";
+        string  scale_factor_type, add_offset_type;
+        while (it!=at->attr_end())
         {
-		AttrTable::Attr_iter it = at->attr_begin();
-                string  scale_factor_value="";
-                string  add_offset_value="0";
-                string  radiance_scales_value="";
-                string  radiance_offsets_value="";
-                string  reflectance_scales_value=""; 
-                string  reflectance_offsets_value="";
-                string  scale_factor_type, add_offset_type;
-		while (it!=at->attr_end())
-                {
-                        if(at->get_name(it)=="radiance_scales")
-                                radiance_scales_value = *(at->get_attr_vector(it)->begin());
-                        if(at->get_name(it)=="radiance_offsets")
-                                radiance_offsets_value = *(at->get_attr_vector(it)->begin());
-                        if(at->get_name(it)=="reflectance_scales")
-                                reflectance_scales_value = *(at->get_attr_vector(it)->begin());
-                        if(at->get_name(it)=="reflectance_offsets")
-                                reflectance_offsets_value = *(at->get_attr_vector(it)->begin());
+            if(at->get_name(it)=="radiance_scales")
+                radiance_scales_value = *(at->get_attr_vector(it)->begin());
+            if(at->get_name(it)=="radiance_offsets")
+                radiance_offsets_value = *(at->get_attr_vector(it)->begin());
+            if(at->get_name(it)=="reflectance_scales")
+                reflectance_scales_value = *(at->get_attr_vector(it)->begin());
+            if(at->get_name(it)=="reflectance_offsets")
+                reflectance_offsets_value = *(at->get_attr_vector(it)->begin());
 
-                        // Ideally may just check if the attribute name is scale_factor.
-                        // But don't know if some products use attribut name like "scale_factor  "
-                        // So now just filter out the attribute scale_factor_err. KY 2012-09-20
-			if(at->get_name(it).find("scale_factor")!=string::npos){
-                            string temp_attr_name = at->get_name(it);
-                            if (temp_attr_name != "scale_factor_err") {
-                                scale_factor_value = *(at->get_attr_vector(it)->begin());
-                                scale_factor_type = at->get_type(it);
-                            }
-                        }
-                        if(at->get_name(it).find("add_offset")!=string::npos)
-                        {
-                            string temp_attr_name = at->get_name(it);
-                            if (temp_attr_name !="add_offset_err") {
-                                add_offset_value = *(at->get_attr_vector(it)->begin());
-                                add_offset_type = at->get_type(it);
-                            }
-                        }
-			it++;
-		}
-
-		if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) 
-                   || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
-                       return true;
-		
-		if(scale_factor_value.length()!=0) 
-                {
-                        // using == to compare the double values is dangerous. May improve this when we redo this function.  KY 2012-6-14
-                        if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
-                                return true;
+            // Ideally may just check if the attribute name is scale_factor.
+            // But don't know if some products use attribut name like "scale_factor  "
+            // So now just filter out the attribute scale_factor_err. KY 2012-09-20
+            if(at->get_name(it).find("scale_factor")!=string::npos){
+                string temp_attr_name = at->get_name(it);
+                if (temp_attr_name != "scale_factor_err") {
+                    scale_factor_value = *(at->get_attr_vector(it)->begin());
+                    scale_factor_type = at->get_type(it);
                 }
-	}
+            }
+            if(at->get_name(it).find("add_offset")!=string::npos)
+            {
+                string temp_attr_name = at->get_name(it);
+                if (temp_attr_name !="add_offset_err") {
+                    add_offset_value = *(at->get_attr_vector(it)->begin());
+                    add_offset_type = at->get_type(it);
+                }
+            }
+            it++;
+        }
 
-	return false;
+        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
+            return true;
+		
+        if(scale_factor_value.length()!=0) 
+        {
+            // using == to compare the double values is dangerous. May improve this when we redo this function.  KY 2012-6-14
+            if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
+                return true;
+        }
+    }
+
+    return false;
 }
 
 // read_dds for one grid or swath
-void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
-                                 HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype)
+void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype)
 {
 
     // grid_or_swath - 0: grid, 1: swath
     if(grid_or_swath < 0 ||  grid_or_swath > 1)
-     throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+        throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
 
     const std::vector<HDFEOS2::Field*>& fields = (dataset)->getDataFields(); 
     std::vector<HDFEOS2::Field*>::const_iterator it_f;
@@ -301,66 +299,66 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
         struct dimmap_entry tempdimmap;
 
         for(size_t i=0;i<origdimmaps.size();i++){
-           tempdimmap.geodim = origdimmaps[i]->getGeoDimension();
-           tempdimmap.datadim = origdimmaps[i]->getDataDimension();
-           tempdimmap.offset = origdimmaps[i]->getOffset();
-           tempdimmap.inc    = origdimmaps[i]->getIncrement();
-           dimmaps.push_back(tempdimmap);
+            tempdimmap.geodim = origdimmaps[i]->getGeoDimension();
+            tempdimmap.datadim = origdimmaps[i]->getDataDimension();
+            tempdimmap.offset = origdimmaps[i]->getOffset();
+            tempdimmap.inc    = origdimmaps[i]->getIncrement();
+            dimmaps.push_back(tempdimmap);
         }
 
         // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
         if(origdimmaps.size() != 0) {
 
-          char*tempcstr;
-          tempcstr = new char [filename.size()+1];
-          strncpy (tempcstr,filename.c_str(),filename.size());
-          std::string basefilename = basename(tempcstr);
-          std::string dirfilename = dirname(tempcstr);
-          delete [] tempcstr;
+            char*tempcstr;
+            tempcstr = new char [filename.size()+1];
+            strncpy (tempcstr,filename.c_str(),filename.size());
+            std::string basefilename = basename(tempcstr);
+            std::string dirfilename = dirname(tempcstr);
+            delete [] tempcstr;
 
-          // This part is implemented specifically for supporting MODIS dimension map data.
-          // MODIS Aqua Swath dimension map geolocation file always starts with MYD03
-          // MODIS Terra Swath dimension map geolocation file always starts with MOD03
-	  // We will check the first three characters to see if the dimension map geolocation file exists.
-	  // An example MODIS swath filename is MOD05_L2.A2008120.0000.005.2008121182723.hdf
-	  // An example MODIS geo-location file name is MOD03.A2008120.0000.005.2010003235220.hdf
-	  // Notice that the "A2008120.0000" in the middle of the name is the "Acquistion Date" of the data
-	  // So the geo-location file name should have exactly the same string. We will use this
-	  // string to identify if a MODIS geo-location file exists or not.
-          // Note the string size is 14(.A2008120.0000).
-	  // More information of naming convention, check http://modis-atmos.gsfc.nasa.gov/products_filename.html
-	  // KY 2010-5-10
+            // This part is implemented specifically for supporting MODIS dimension map data.
+            // MODIS Aqua Swath dimension map geolocation file always starts with MYD03
+            // MODIS Terra Swath dimension map geolocation file always starts with MOD03
+            // We will check the first three characters to see if the dimension map geolocation file exists.
+            // An example MODIS swath filename is MOD05_L2.A2008120.0000.005.2008121182723.hdf
+            // An example MODIS geo-location file name is MOD03.A2008120.0000.005.2010003235220.hdf
+            // Notice that the "A2008120.0000" in the middle of the name is the "Acquistion Date" of the data
+            // So the geo-location file name should have exactly the same string. We will use this
+            // string to identify if a MODIS geo-location file exists or not.
+            // Note the string size is 14(.A2008120.0000).
+            // More information of naming convention, check http://modis-atmos.gsfc.nasa.gov/products_filename.html
+            // KY 2010-5-10
 
 
-          // Obtain string "MYD" or "MOD"
-          if (basefilename.size() >3) {
-            std::string fnameprefix = basefilename.substr(0,3);
+            // Obtain string "MYD" or "MOD"
+            if (basefilename.size() >3) {
+                std::string fnameprefix = basefilename.substr(0,3);
 
-            if(fnameprefix == "MYD" || fnameprefix =="MOD") {
-   	       size_t fnamemidpos = basefilename.find(".A");
-               if(fnamemidpos != string::npos) {
-       	          std::string fnamemiddle = basefilename.substr(fnamemidpos,14);
-                  if(fnamemiddle.size()==14) {
-                    std::string geofnameprefix = fnameprefix+"03";
+                if(fnameprefix == "MYD" || fnameprefix =="MOD") {
+                    size_t fnamemidpos = basefilename.find(".A");
+                    if(fnamemidpos != string::npos) {
+       	                std::string fnamemiddle = basefilename.substr(fnamemidpos,14);
+                        if(fnamemiddle.size()==14) {
+                            std::string geofnameprefix = fnameprefix+"03";
 
-          	    // geofnamefp will be something like "MOD03.A2008120.0000"
-                    std::string geofnamefp = geofnameprefix + fnamemiddle;
-                    DIR *dirp;
-                    struct dirent* dirs;
+                            // geofnamefp will be something like "MOD03.A2008120.0000"
+                            std::string geofnamefp = geofnameprefix + fnamemiddle;
+                            DIR *dirp;
+                            struct dirent* dirs;
     
-    	            dirp = opendir(dirfilename.c_str());
-                    while ((dirs = readdir(dirp))){
-	               if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
-          	         dimmapfilename = dirfilename + "/"+ dirs->d_name;
-                         closedir(dirp);
-                         break;
-                       }
+                            dirp = opendir(dirfilename.c_str());
+                            while ((dirs = readdir(dirp))){
+                                if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
+                                    dimmapfilename = dirfilename + "/"+ dirs->d_name;
+                                    closedir(dirp);
+                                    break;
+                                }
+                            }
+                        }
                     }
-                 }
-               }
-             }
-          }
-       }
+                }
+            }
+        }
     }
 
     int32 projcode=-1;
@@ -376,290 +374,285 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
     // First handling data fields
     for(it_f = fields.begin(); it_f != fields.end(); it_f++)
     {	
-           BESDEBUG("h4","New field Name " <<(*it_f)->getNewName()<<endl);
+        BESDEBUG("h4","New field Name " <<(*it_f)->getNewName()<<endl);
 
-           BaseType *bt=NULL;
+        BaseType *bt=NULL;
            
-           // Whether the field is real field,lat/lon field or missing Z-dimension field
-	   int fieldtype = (*it_f)->getFieldType();
+        // Whether the field is real field,lat/lon field or missing Z-dimension field
+        int fieldtype = (*it_f)->getFieldType();
 
-           // Check if the datatype needs to be changed.This is for MODIS data that needs to apply scale and offset.
-           bool changedtype = false;
-           for (std::vector<string>::const_iterator i = ctype_field_namelist.begin();
-             i != ctype_field_namelist.end(); ++i){
-                if ((*i) == (*it_f)->getNewName()){
-                   changedtype = true;
-                   break;
-                } 
-           }
+        // Check if the datatype needs to be changed.This is for MODIS data that needs to apply scale and offset.
+        bool changedtype = false;
+        for (std::vector<string>::const_iterator i = ctype_field_namelist.begin(); i != ctype_field_namelist.end(); ++i){
+            if ((*i) == (*it_f)->getNewName()){
+                changedtype = true;
+                break;
+            } 
+        }
                    
-           switch((*it_f)->getType())
-		{
+        switch((*it_f)->getType())
+        {
 
 #define HANDLE_CASE2(tid, type) \
-	case tid: \
-	        if(true == changedtype && fieldtype==0) \
-                        bt = new (HDFFloat32) ((*it_f)->getNewName(), (dataset)->getName()); \
-		else \
-                        bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
+    case tid: \
+        if(true == changedtype && fieldtype==0) \
+            bt = new (HDFFloat32) ((*it_f)->getNewName(), (dataset)->getName()); \
+        else \
+            bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
         break;
 
 #define HANDLE_CASE(tid, type)\
-                    case tid: \
-                        	bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
-			break;
-                    HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
-                    HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+    case tid: \
+        bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
+        break;
+            HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
+            HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
 #ifndef SIGNED_BYTE_TO_INT32
-                    HANDLE_CASE2(DFNT_INT8, HDFByte);
+            HANDLE_CASE2(DFNT_INT8, HDFByte);
 #else
-                    HANDLE_CASE2(DFNT_INT8,HDFInt32);
+            HANDLE_CASE2(DFNT_INT8,HDFInt32);
 #endif
-                    HANDLE_CASE2(DFNT_UINT8, HDFByte);
-                    HANDLE_CASE2(DFNT_INT16, HDFInt16);
-                    HANDLE_CASE2(DFNT_UINT16,HDFUInt16);
-		    HANDLE_CASE2(DFNT_INT32, HDFInt32);
-                    HANDLE_CASE2(DFNT_UINT32, HDFUInt32);
-                    HANDLE_CASE2(DFNT_UCHAR8, HDFByte);
-                    HANDLE_CASE2(DFNT_CHAR8, HDFByte);
-                  default:
-                    throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            HANDLE_CASE2(DFNT_UINT8, HDFByte);
+            HANDLE_CASE2(DFNT_INT16, HDFInt16);
+            HANDLE_CASE2(DFNT_UINT16,HDFUInt16);
+            HANDLE_CASE2(DFNT_INT32, HDFInt32);
+            HANDLE_CASE2(DFNT_UINT32, HDFUInt32);
+            HANDLE_CASE2(DFNT_UCHAR8, HDFByte);
+            HANDLE_CASE2(DFNT_CHAR8, HDFByte);
+            default:
+                throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
 #undef HANDLE_CASE2
-		}
+        }
 
-            if(bt)
-		{
+        if(bt)
+        {
 
-                    const std::vector<HDFEOS2::Dimension*>& dims= (*it_f)->getCorrectedDimensions();
-                    std::vector<HDFEOS2::Dimension*>::const_iterator it_d;
+            const std::vector<HDFEOS2::Dimension*>& dims= (*it_f)->getCorrectedDimensions();
+            std::vector<HDFEOS2::Dimension*>::const_iterator it_d;
 
-                    if(fieldtype == 0 || fieldtype == 3 || fieldtype == 5) {
+            if(fieldtype == 0 || fieldtype == 3 || fieldtype == 5) {
 
-                        // grid or swath without using dimension map
-			if(grid_or_swath==0){
+                // grid or swath without using dimension map
+                if(grid_or_swath==0){
+                    HDFEOS2Array_RealField *ar = NULL;
+                    ar = new HDFEOS2Array_RealField(
+                        (*it_f)->getRank(),
+                        filename,
+                        (dataset)->getName(), "", (*it_f)->getName(),
+                        sotype,
+                        (*it_f)->getNewName(), bt);
+                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                    dds.add_var(ar);
+                    delete ar;
+
+                }
+                else if(grid_or_swath==1){
+
+                    // current design: Z field should be under geofield.
+                    // We find the third dimension is located under "data fields" group for some MODIS files; 
+                    // so release this for you. KY 2010-6-26
+
+
+                    std::string tempfieldname;
+                    // Because the field name gets changed for third-dimension grid 
+                    // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
+                    // we have to obtain the original field name,saved as the tempfieldname.
+                    // **** This may need to be investigated in the next release, tempfieldname probably not needed. KY-2012-09-18
+                             
+                    if((*it_f)->getSpecialCoard()) {
+                        if(fieldtype != 3){
+                            throw InternalErr(__FILE__, __LINE__, "Coordinate variables for Swath should be under geolocation group");
+                        }
+                        tempfieldname = (*it_f)->getName_specialcoard();
+                    }
+                    else 
+                        tempfieldname = (*it_f)->getName();
+
+                    if((*it_f)->UseDimMap()) {
+
+                        // Have an extra HDF-EOS file for geolocation fields such as SolarZenith etc.
+                        // These fields are under "data fields" rather than "geolocation fields" groups.
+                        if(!dimmapfilename.empty() && is_modis_dimmap_nonll_field(tempfieldname)) {
+
+                            // Here we have to use HDFEOS2Array_RealField since the field may
+                            // need to apply scale and offset equation.
+                            // MODIS geolocation swath name is always MODIS_Swath_Type_GEO.
+                            // We can improve the handling of this by not hard-coding the swath name
+                            // in the future. KY 2012-08-16
                             HDFEOS2Array_RealField *ar = NULL;
                             ar = new HDFEOS2Array_RealField(
-                                                            (*it_f)->getRank(),
-                                                            filename,
-                                                            (dataset)->getName(), "", (*it_f)->getName(),
-                                                             sotype,
-                                                            (*it_f)->getNewName(), bt);
+                                (*it_f)->getRank(),
+                                dimmapfilename,
+                                "", "MODIS_Swath_Type_GEO", tempfieldname,
+                                sotype,
+                                (*it_f)->getNewName(), bt);
+
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                             ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
                             delete ar;
 
                         }
-			else if(grid_or_swath==1){
+                        else {
+                              
+                            HDFEOS2ArraySwathDimMapField * ar = NULL;
+                            ar = new HDFEOS2ArraySwathDimMapField((*it_f)->getRank(), filename, "", (dataset)->getName(), tempfieldname, dimmaps,sotype,(*it_f)->getNewName(),bt);
+                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
 
-                            // current design: Z field should be under geofield.
-                            // We find the third dimension is located under "data fields" group for some MODIS files; 
-                            // so release this for you. KY 2010-6-26
-
-
-                            std::string tempfieldname;
-                            // Because the field name gets changed for third-dimension grid 
-                            // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
-                            // we have to obtain the original field name,saved as the tempfieldname.
-                            // **** This may need to be investigated in the next release, tempfieldname probably not needed. KY-2012-09-18
-                             
-                            if((*it_f)->getSpecialCoard()) {
-                               if(fieldtype != 3){
-                                  throw InternalErr(__FILE__, __LINE__,
-                                  "Coordinate variables for Swath should be under geolocation group");
-                               }
-                               tempfieldname = (*it_f)->getName_specialcoard();
-                            }
-                            else 
-                               tempfieldname = (*it_f)->getName();
-
-                            if((*it_f)->UseDimMap()) {
-
-                                // Have an extra HDF-EOS file for geolocation fields such as SolarZenith etc.
-                                // These fields are under "data fields" rather than "geolocation fields" groups.
-                                if(!dimmapfilename.empty() && is_modis_dimmap_nonll_field(tempfieldname)) {
-
-                                     // Here we have to use HDFEOS2Array_RealField since the field may
-                                     // need to apply scale and offset equation.
-                                     // MODIS geolocation swath name is always MODIS_Swath_Type_GEO.
-                                     // We can improve the handling of this by not hard-coding the swath name
-                                     // in the future. KY 2012-08-16
-                                      HDFEOS2Array_RealField *ar = NULL;
-                                      ar = new HDFEOS2Array_RealField(
-                                                            (*it_f)->getRank(),
-                                                            dimmapfilename,
-                                                            "", "MODIS_Swath_Type_GEO", tempfieldname,
-                                                             sotype,
-                                                            (*it_f)->getNewName(), bt);
-
-                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                                      dds.add_var(ar);
-                                      delete ar;
-
-                                }
-
-                                else {
-                                
-                                   HDFEOS2ArraySwathDimMapField * ar = NULL;
-    				   ar = new HDFEOS2ArraySwathDimMapField((*it_f)->getRank(), filename, "", (dataset)->getName(), tempfieldname, dimmaps,sotype,(*it_f)->getNewName(),bt);
-                                   for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                      ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-
-                                   dds.add_var(ar);
-                                   delete ar;
-                                }
+                            dds.add_var(ar);
+                            delete ar;
+                        }
                                
-                            }
-                            else {
+                    }
+                    else {
 
-                               HDFEOS2Array_RealField * ar = NULL;
-                               ar = new HDFEOS2Array_RealField(
-                                                            (*it_f)->getRank(),
-                                                            filename,
-                                                            "", (dataset)->getName(), tempfieldname,
-                                                            sotype,
-                                                            (*it_f)->getNewName(), bt);
-                               for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                   ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                               dds.add_var(ar);
-                               delete ar;
-                            }
-                        }
-			else {
-                               delete bt;
-		         	throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
-                        }
+                        HDFEOS2Array_RealField * ar = NULL;
+                        ar = new HDFEOS2Array_RealField(
+                            (*it_f)->getRank(),
+                            filename,
+                            "", (dataset)->getName(), tempfieldname,
+                            sotype,
+                            (*it_f)->getNewName(), bt);
+                        for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                            ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                        dds.add_var(ar);
+                        delete ar;
+                    }
+                }
+                else {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+                }
                            
+            }
 
-                    }
+            if(fieldtype == 1 || fieldtype == 2) {
 
-                    if(fieldtype == 1 || fieldtype == 2) {
+                if(grid_or_swath==0) {
 
-                        if(grid_or_swath==0) {
+                    HDFEOS2ArrayGridGeoField *ar = NULL;
+                    int fieldtype = (*it_f)->getFieldType();
+                    bool ydimmajor = (*it_f)->getYDimMajor();
+                    bool condenseddim = (*it_f)->getCondensedDim();
+                    bool speciallon = (*it_f)->getSpecialLon();
+                    int  specialformat = (*it_f)->getSpecialLLFormat();
 
-                            HDFEOS2ArrayGridGeoField *ar = NULL;
-                            int fieldtype = (*it_f)->getFieldType();
-                            bool ydimmajor = (*it_f)->getYDimMajor();
-                            bool condenseddim = (*it_f)->getCondensedDim();
-                            bool speciallon = (*it_f)->getSpecialLon();
-                            int  specialformat = (*it_f)->getSpecialLLFormat();
-
-                            ar = new HDFEOS2ArrayGridGeoField(
-                                                              (*it_f)->getRank(),
-                                                              fieldtype,
-                                                              ownll,
-                                                              ydimmajor,
-                                                              condenseddim,
-                                                              speciallon,
-                                                              specialformat,
-                                                              filename,
-                                                              (dataset)->getName(),(*it_f)->getName(),
-                                                              (*it_f)->getNewName(), bt);
+                    ar = new HDFEOS2ArrayGridGeoField(
+                        (*it_f)->getRank(),
+                        fieldtype,
+                        ownll,
+                        ydimmajor,
+                        condenseddim,
+                        speciallon,
+                        specialformat,
+                        filename,
+                        (dataset)->getName(),(*it_f)->getName(),
+                        (*it_f)->getNewName(), bt);
 			    
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
+                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                    dds.add_var(ar);
 
-                            delete ar;
-                        }
+                    delete ar;
+                }
 
-                        // We encounter a very special MODIS case (MOD/MYD ATML2 files),
-                        // Latitude and longitude fields are located under data fields.
-                        // So include this case. KY 2010-7-12
-                        // We also encounter another special case(MOD11_L2.A2012248.2355.041.2012249083024.hdf),
-                        // the latitude/longitude with dimension map is under the "data fields".
-                        // So we have to consider this. KY 2012-09-24
+                // We encounter a very special MODIS case (MOD/MYD ATML2 files),
+                // Latitude and longitude fields are located under data fields.
+                // So include this case. KY 2010-7-12
+                // We also encounter another special case(MOD11_L2.A2012248.2355.041.2012249083024.hdf),
+                // the latitude/longitude with dimension map is under the "data fields".
+                // So we have to consider this. KY 2012-09-24
                        
-                        if(grid_or_swath ==1) {
+                if(grid_or_swath ==1) {
 
-                          // Use Swath dimension map
-                          if((*it_f)->UseDimMap()) {
+                    // Use Swath dimension map
+                    if((*it_f)->UseDimMap()) {
 
-                                // Have an extra HDF-EOS file for latitude and longtiude
-                                if(!dimmapfilename.empty()) {
-				     HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
-                                     ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
-                                                                     (*it_f)->getRank(),
-                                                                      dimmapfilename,
-                                                                      (*it_f)->getName(),
-                                                                     (*it_f)->getNewName(),bt);
-                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-	                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-        	                      dds.add_var(ar);
-                	              delete ar;
+                        // Have an extra HDF-EOS file for latitude and longtiude
+                        if(!dimmapfilename.empty()) {
+                            HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
+                            ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
+                                (*it_f)->getRank(),
+                                dimmapfilename,
+                                (*it_f)->getName(),
+                                (*it_f)->getNewName(),bt);
+                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                            dds.add_var(ar);
+                            delete ar;
 
-                                }
-                                // Will interpolate by the handler
-                                else {
+                        }
+                        // Will interpolate by the handler
+                        else {
 
-                                     if ((*it_f)->getRank() >2) {
-                                        throw InternalErr(__FILE__, __LINE__,
-                                        "Currently doesn't support rank >2 when interpolating with dimension map");
-                                     } 
+                            if ((*it_f)->getRank() >2) {
+                                throw InternalErr(__FILE__, __LINE__, "Currently doesn't support rank >2 when interpolating with dimension map");
+                            } 
 
-                                     HDFEOS2ArraySwathGeoDimMapField * ar = NULL;
-                                     ar = new HDFEOS2ArraySwathGeoDimMapField(
-                                                                     (*it_f)->getType(),
-                                                                     (*it_f)->getRank(),
-                                                                      filename,
-                                                                     (dataset)->getName(), (*it_f)->getName(),
-                                                                     dimmaps,(*it_f)->getNewName(),bt);
-                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                                      dds.add_var(ar);
-                                      delete ar;
+                            HDFEOS2ArraySwathGeoDimMapField * ar = NULL;
+                            ar = new HDFEOS2ArraySwathGeoDimMapField(
+                                (*it_f)->getType(),
+                                (*it_f)->getRank(),
+                                filename,
+                                (dataset)->getName(), (*it_f)->getName(),
+                                dimmaps,(*it_f)->getNewName(),bt);
+                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                            dds.add_var(ar);
+                            delete ar;
 
-                                }
+                        }
                                
-                         }
-
-                         else {
+                    }
+                    else {
  
-                            HDFEOS2ArraySwathGeoField * ar = NULL;
-                            ar = new HDFEOS2ArraySwathGeoField(
-                                                               (*it_f)->getRank(),
-                                                               filename,
-                                                               (dataset)->getName(), (*it_f)->getName(),
-                                                               (*it_f)->getNewName(), bt);
+                        HDFEOS2ArraySwathGeoField * ar = NULL;
+                        ar = new HDFEOS2ArraySwathGeoField(
+                            (*it_f)->getRank(),
+                            filename,
+                            (dataset)->getName(), (*it_f)->getName(),
+                            (*it_f)->getNewName(), bt);
 
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
+                        for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                            ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                        dds.add_var(ar);
 
-                            delete ar;
-                          }
-                        }
+                        delete ar;
                     }
+                }
+            }
                     
-                    if(fieldtype == 4) { //missing Z dimensional field
+            if(fieldtype == 4) { //missing Z dimensional field
 
-                        if(grid_or_swath == 0) {// only need to handle the grid case.Swath case will be handled next.
+                if(grid_or_swath == 0) {// only need to handle the grid case.Swath case will be handled next.
 
-                            if((*it_f)->getRank()!=1){
-                               delete bt;
-                               throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
-                            }
-
-                            int nelem = ((*it_f)->getDimensions()[0])->getSize();
-                            HDFEOS2ArrayMissGeoField *ar = NULL;
-                            ar = new HDFEOS2ArrayMissGeoField(
-                                                              (*it_f)->getRank(),
-                                                              nelem,
-                                                              (*it_f)->getNewName(),bt);
-
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
-
-                            delete ar;
-                        }
+                    if((*it_f)->getRank()!=1){
+                        delete bt;
+                        throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                     }
-		}
-	}
-        // Clear the field name list of which the datatype is changed. KY 2012-8-1
-        ctype_field_namelist.clear();
+
+                    int nelem = ((*it_f)->getDimensions()[0])->getSize();
+                    HDFEOS2ArrayMissGeoField *ar = NULL;
+                    ar = new HDFEOS2ArrayMissGeoField(
+                        (*it_f)->getRank(),
+                        nelem,
+                        (*it_f)->getNewName(),bt);
+
+                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                    dds.add_var(ar);
+
+                    delete ar;
+                }
+            }
+        }
+    }
+    // Clear the field name list of which the datatype is changed. KY 2012-8-1
+    // NOT HERE to clean up.
+    // ctype_field_namelist.clear();
 
     // For swath, we have to include fields under "geolocation fields"
     if(grid_or_swath == 1) {// swath
@@ -674,9 +667,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                 switch((*it_f)->getType())
                     {
 #define HANDLE_CASE(tid, type)                                          \
-                        case tid:                                       \
-                            bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
-                            break;
+     case tid:                                       \
+        bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
+        break;
                         HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
                         HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
 #ifndef SIGNED_BYTE_TO_INT32
@@ -712,21 +705,20 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                             // we have to obtain the original field name,saved as the tempfieldname.
                              
                             if((*it_f)->getSpecialCoard()) {
-                               if(fieldtype != 3){
-                                  throw InternalErr(__FILE__, __LINE__,
-                                  "Coordinate variables for Swath should be under geolocation group");
-                               }
-                               tempfieldname = (*it_f)->getName_specialcoard();
+                                if(fieldtype != 3){
+                                    throw InternalErr(__FILE__, __LINE__, "Coordinate variables for Swath should be under geolocation group");
+                                }
+                                tempfieldname = (*it_f)->getName_specialcoard();
                             }
                             else tempfieldname = (*it_f)->getName();
  
                             HDFEOS2Array_RealField *ar = NULL;
                             ar = new HDFEOS2Array_RealField(
-                                                            (*it_f)->getRank(),
-                                                            filename,
-                                                            "",(dataset)->getName(), tempfieldname,
-                                                             sotype,
-                                                            (*it_f)->getNewName(), bt);
+                                (*it_f)->getRank(),
+                                filename,
+                                "",(dataset)->getName(), tempfieldname,
+                                sotype,
+                                (*it_f)->getNewName(), bt);
  
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -734,89 +726,88 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
 
                             delete ar;
 
-                         }
+                        }
                     
-                         if(fieldtype == 1 || fieldtype == 2) { // Latitude,Longitude
+                        if(fieldtype == 1 || fieldtype == 2) { // Latitude,Longitude
 
-                          // Use Swath dimension map
-                          if((*it_f)->UseDimMap()) {
+                            // Use Swath dimension map
+                            if((*it_f)->UseDimMap()) {
 
                                 // Have an extra HDF-EOS file for latitude and longtiude
                                 if(!dimmapfilename.empty()) {
-				     HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
-                                     ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
-                                                                     (*it_f)->getRank(),
-                                                                      dimmapfilename,
-                                                                      (*it_f)->getName(),
-                                                                     (*it_f)->getNewName(),bt);
-                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+				    HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
+                                    ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
+                                        (*it_f)->getRank(),
+                                        dimmapfilename,
+                                        (*it_f)->getName(),
+                                        (*it_f)->getNewName(),bt);
+                                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
 	                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-        	                      dds.add_var(ar);
-                	              delete ar;
+        	                    dds.add_var(ar);
+                	            delete ar;
 
                                 }
                                 // Will interpolate by the handler
                                 else {
 
-                                     if ((*it_f)->getRank() >2) {
-                                        throw InternalErr(__FILE__, __LINE__,
-                                        "Currently doesn't support rank >2 when interpolating with dimension map");
-                                     } 
+                                    if ((*it_f)->getRank() >2) {
+                                        throw InternalErr(__FILE__, __LINE__, "Currently doesn't support rank >2 when interpolating with dimension map");
+                                    } 
 
-                                     HDFEOS2ArraySwathGeoDimMapField * ar = NULL;
-                                     ar = new HDFEOS2ArraySwathGeoDimMapField(
-                                                                     (*it_f)->getType(),
-                                                                     (*it_f)->getRank(),
-                                                                      filename,
-                                                                     (dataset)->getName(), (*it_f)->getName(),
-                                                                     dimmaps,(*it_f)->getNewName(),bt);
-                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                    HDFEOS2ArraySwathGeoDimMapField * ar = NULL;
+                                    ar = new HDFEOS2ArraySwathGeoDimMapField(
+                                        (*it_f)->getType(),
+                                        (*it_f)->getRank(),
+                                        filename,
+                                        (dataset)->getName(), (*it_f)->getName(),
+                                        dimmaps,(*it_f)->getNewName(),bt);
+                                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                                      dds.add_var(ar);
-                                      delete ar;
+                                    dds.add_var(ar);
+                                    delete ar;
 
                                 }
                                
-                         }
-                         else {// General swath(no dimension map)
+                            }
+                            else {// General swath(no dimension map)
 
-                            HDFEOS2ArraySwathGeoField * ar = NULL;
-                            ar = new HDFEOS2ArraySwathGeoField(
-                                                               (*it_f)->getRank(),
-                                                               filename,
-                                                               (dataset)->getName(), (*it_f)->getName(),
-                                                               (*it_f)->getNewName(), bt);
+                                HDFEOS2ArraySwathGeoField * ar = NULL;
+                                ar = new HDFEOS2ArraySwathGeoField(
+                                    (*it_f)->getRank(),
+                                    filename,
+                                    (dataset)->getName(), (*it_f)->getName(),
+                                    (*it_f)->getNewName(), bt);
 
+                                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                dds.add_var(ar);
+
+                                delete ar;
+
+                            }
+                        }
+
+
+                        if(fieldtype == 4) {//missing Z dimensional field
+                            if((*it_f)->getRank()!=1){
+                                delete bt;
+                                throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                            }
+                            // Using getCorrectedDimensions() also covers the potential dimension map case.
+                            int nelem = ((*it_f)->getCorrectedDimensions()[0])->getSize();
+                        
+                            HDFEOS2ArrayMissGeoField * ar = NULL;
+                            ar = new HDFEOS2ArrayMissGeoField(
+                                (*it_f)->getRank(),
+                                nelem,
+                                (*it_f)->getNewName(),bt);
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
 
                             delete ar;
 
-                         }
-                       }
-
-
-                       if(fieldtype == 4) {//missing Z dimensional field
-                           if((*it_f)->getRank()!=1){
-                               delete bt;
-                               throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
-                           }
-                           // Using getCorrectedDimensions() also covers the potential dimension map case.
-                           int nelem = ((*it_f)->getCorrectedDimensions()[0])->getSize();
-                        
-                           HDFEOS2ArrayMissGeoField * ar = NULL;
-                           ar = new HDFEOS2ArrayMissGeoField(
-                                                             (*it_f)->getRank(),
-                                                             nelem,
-                                                             (*it_f)->getNewName(),bt);
-                           for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                           dds.add_var(ar);
-
-                           delete ar;
-
-                      }
+                        }
                     }
             }
     }
@@ -837,44 +828,43 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
     // There are some HDF-EOS2 files(MERRA) that should be treated
     // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
     // retrieve any information. In fact, treating them as HDF-EOS2 files
-   // will cause confusions and wrong information, although may not be essential.
-   // So far, we've found only MERRA data that have this problem.
-   // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
-//   cerr<<"basename " <<basename(filename) <<endl;
-     // Find MERRA data, return false, use HDF4 SDS code.
-     if((basename(filename)).compare(0,5,"MERRA")==0) {
+    // will cause confusions and wrong information, although may not be essential.
+    // So far, we've found only MERRA data that have this problem.
+    // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
+    //  cerr<<"basename " <<basename(filename) <<endl;
+    // Find MERRA data, return false, use HDF4 SDS code.
+    if((basename(filename)).compare(0,5,"MERRA")==0) {
         return false; 
-     }
+    }
 
     HDFEOS2::File *f;
     try {
         f = HDFEOS2::File::Read(filename.c_str());
     } catch (HDFEOS2::Exception &e)
-	{
-          if(!e.getFileType()){
+    {
+        if(!e.getFileType()){
             return false;
-          }
-          else {
+        }
+        else {
             throw InternalErr(e.what());
-	}
+        }
     }
         
-   try {
-       f->Prepare(filename.c_str());
-       //f->Prepare(filename.c_str(),sn,sn_dim,un,un_dim);
-   } catch (HDFEOS2::Exception &e)
-      {
+    try {
+        f->Prepare(filename.c_str());
+        //f->Prepare(filename.c_str(),sn,sn_dim,un,un_dim);
+    } catch (HDFEOS2::Exception &e)
+    {
         delete f;
         throw InternalErr(e.what());
-   }
+    }
         
     std::vector<std::string> out;
 
     // Not sure why we have this. Leave this for the time being to see if odd issues occur.
 #if 0
     // Remove the path, only obtain the "file name"
-    HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/',
-                            out);
+    HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/', out);
     dds.set_dataset_name(*out.rbegin());
 #endif
 
@@ -884,21 +874,27 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
     const std::vector<HDFEOS2::GridDataset *>& grids = f->getGrids();
     bool ownll= false;
     bool onelatlon = f->getOneLatLon();
-    SOType sotype = f->getScaleType();
+    SOType sotype = DEFAULT_CF_EQU;
 
     std::vector<HDFEOS2::GridDataset *>::const_iterator it_g;
     for(it_g = grids.begin(); it_g != grids.end(); it_g++){
         ownll = onelatlon?onelatlon:(*it_g)->getLatLonFlag();
+        sotype = (*it_g)->getScaleType();
         read_dds_hdfeos2_grid_swath(
-                                    dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype);
+            dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype);
     }
 
     const std::vector<HDFEOS2::SwathDataset *>& swaths= f->getSwaths();
     std::vector<HDFEOS2::SwathDataset *>::const_iterator it_s;
-    for(it_s = swaths.begin(); it_s != swaths.end(); it_s++)
-        read_dds_hdfeos2_grid_swath(
-                                    dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype);//No global lat/lon for multiple swaths
+    for(it_s = swaths.begin(); it_s != swaths.end(); it_s++) {
 
+        sotype = (*it_s)->getScaleType();
+        read_dds_hdfeos2_grid_swath(
+            dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype);//No global lat/lon for multiple swaths
+    }
+
+    // Clear the field name list of which the datatype is changed. KY 2012-8-1
+    ctype_field_namelist.clear();
 
     delete f;
     return true;
@@ -923,16 +919,15 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
     try {
         f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
     } catch (HDFSP::Exception &e)
-	{
-            throw InternalErr(e.what());
+    {
+        throw InternalErr(e.what());
     }
     
         
 #if 0
     // Not sure why I don't use basename. Will investigate in the future. KY 2012-09-18
     std::vector<std::string> out;
-    HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/',
-                            out);
+    HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/', out);
     dds.set_dataset_name(*out.rbegin());
 #endif
 
@@ -941,7 +936,7 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
     // Read SDS 
     std::vector<HDFSP::SDField *>::const_iterator it_g;
     for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-           read_dds_spfields(dds,filename,(*it_g),f->getSPType());
+        read_dds_spfields(dds,filename,(*it_g),f->getSPType());
     }
 
 
@@ -958,8 +953,7 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
 
     if( true == turn_on_vdata_key) {
         if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
-            for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
-                i!=f->getVDATAs().end();i++) {
+            for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
                 if(!(*i)->getTreatAsAttrFlag()){
                     for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
                         read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
@@ -1003,10 +997,10 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
 
         for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {       
 
-           if((*i)->getName() == "long_name") {
-             long_name_flag = true;
-             break;
-           }
+            if((*i)->getName() == "long_name") {
+                long_name_flag = true;
+                break;
+            }
         }
         
         if(false == long_name_flag) 
@@ -1014,19 +1008,19 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
         
         for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
 
-          // Handle string first.
-          if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+            // Handle string first.
+            if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
                 at->append_attr((*i)->getNewName(), "String" , tempfinalstr);
-          }
-          else {
-           for (int loc=0; loc < (*i)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
-                at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
-           }
-         }
-       }
+            }
+            else {
+                for (int loc=0; loc < (*i)->getCount() ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                }
+            }
+        }
     }
 
     // Check the EnableVdataDescAttr key. If this key is turned on, the handler-added attribute VDdescname and
@@ -1045,172 +1039,171 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
    
 
     if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
-     for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
-       i!=f->getVDATAs().end();i++) {
+        for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
 
-       AttrTable *at = das.get_table((*i)->getNewName());
-       if(!at)
-        at = das.add_table((*i)->getNewName(),new AttrTable);
-
-
-       if (true == turn_on_vdata_desc_key) {
-
-         // Add special vdata attributes, if no attributes are found, check_vdata_desc_key will not be activiated.
-         bool emptyvddasflag = true;
-         if(!((*i)->getAttributes().empty())) 
-            emptyvddasflag = false;
-
-         if(((*i)->getTreatAsAttrFlag()))
-           emptyvddasflag = false;
-         else {
-           for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
-             if(!((*j)->getAttributes().empty())) {
-               emptyvddasflag = false;
-               break;
-             }
-           }
-         }
-
-         if(emptyvddasflag) 
-           continue;
-
-         at->append_attr(VDdescname, "String" , VDdescvalue);
-
-         for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
-
-           if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
-
-              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-              string tempfinalstr= string(tempstring2.c_str());
-              at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
-           }
-           else {
-             for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
-             }
-           }
-        }
-     }
-
-     // Vdata field will not be mapped to DAS
-     if(!((*i)->getTreatAsAttrFlag())){ 
-
-       if (true == turn_on_vdata_desc_key) {
-
-         for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+            AttrTable *at = das.get_table((*i)->getNewName());
+            if(!at)
+                at = das.add_table((*i)->getNewName(),new AttrTable);
 
 
-            // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
-          for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+            if (true == turn_on_vdata_desc_key) {
 
-            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                // Add special vdata attributes, if no attributes are found, check_vdata_desc_key will not be activiated.
+                bool emptyvddasflag = true;
+                if(!((*i)->getAttributes().empty())) 
+                    emptyvddasflag = false;
 
-              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-              string tempfinalstr= string(tempstring2.c_str());
-              at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , tempfinalstr);
+                if(((*i)->getTreatAsAttrFlag()))
+                    emptyvddasflag = false;
+                else {
+                    for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                        if(!((*j)->getAttributes().empty())) {
+                            emptyvddasflag = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(emptyvddasflag) 
+                    continue;
+
+                at->append_attr(VDdescname, "String" , VDdescvalue);
+
+                for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
+
+                    if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+                        string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                        string tempfinalstr= string(tempstring2.c_str());
+                        at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                    }
+                    else {
+                        for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                            string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                            at->append_attr(VDattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                        }
+                    }
+                }
             }
+
+            // Vdata field will not be mapped to DAS
+            if(!((*i)->getTreatAsAttrFlag())){ 
+
+                if (true == turn_on_vdata_desc_key) {
+
+                    for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+
+
+                        // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
+                        for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+
+                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , tempfinalstr);
+                            }
+                            else {
+                                for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                                    at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Vdata field will be mapped to DAS
             else {
-              for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
-              }
-            }
-          }
+
+                for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+ 
+                    if((*j)->getFieldOrder() == 1) {
+                        if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                        string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                        string tempfinalstr= string(tempstring2.c_str());
+                        at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
+                        }
+                        else {
+                            for (int loc=0; loc < (*j)->getNumRec(); loc++) {
+                                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+                                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                            }
+                        }
+                    }
+                    else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
+
+                        if((*j)->getValue().size() != (unsigned int)(DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
+                            throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
+                        }
+
+                        if((*j)->getNumRec()==1){
+                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                                string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempfinalstr);
+                            }
+                            else {
+                                for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                }
+                            }
+                        }
+
+                        else {
+                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                                for(int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
+                                    std::vector<char>::const_iterator tempit;
+                                    tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
+                                    string tempstring2(tempit,tempit+(*j)->getFieldOrder());
+                                    string tempfinalstr= string(tempstring2.c_str());
+                                    string tempoutstring = "'"+tempfinalstr+"'";
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempoutstring);
+                                }
+                            }
+
+                            else {
+                                for( int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
+                                    for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                                        string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
+                                        at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                    }
+
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
+                                }
+                            }
+                        }
+                    } 
+
+                    // Only when the key is turned on, the vdata and vdata field attributes will be outputed to DAS. 
+                    if (true == turn_on_vdata_desc_key) {
+
+                        for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+
+                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                            }
+                            else {
+                                for ( int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                                    at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
         }
-      }
     }
 
-    // Vdata field will be mapped to DAS
-    else {
-
-      for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
- 
-         if((*j)->getFieldOrder() == 1) {
-           if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-             string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-             string tempfinalstr= string(tempstring2.c_str());
-             at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
-           }
-           else {
-             for (int loc=0; loc < (*j)->getNumRec(); loc++) {
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-             }
-           }
-         }
-         else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
-
-           if((*j)->getValue().size() != (unsigned int)(DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
-               throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
-            }
-
-           if((*j)->getNumRec()==1){
-             if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-               string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-               string tempfinalstr= string(tempstring2.c_str());
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempfinalstr);
-             }
-             else {
-               for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-               }
-             }
-           }
-
-           else {
-            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-             for(int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
-               std::vector<char>::const_iterator tempit;
-               tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
-               string tempstring2(tempit,tempit+(*j)->getFieldOrder());
-               string tempfinalstr= string(tempstring2.c_str());
-               string tempoutstring = "'"+tempfinalstr+"'";
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempoutstring);
-             }
-           }
-
-           else {
-             for( int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
-               for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                 string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
-                 at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-               }
-
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
-             }
-          }
-        }
-      } 
-
-      // Only when the key is turned on, the vdata and vdata field attributes will be outputed to DAS. 
-      if (true == turn_on_vdata_desc_key) {
-
-         for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
-
-            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
-
-              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-              string tempfinalstr= string(tempstring2.c_str());
-              at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
-            }
-            else {
-              for ( int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
-              }
-            }
-          }
-        }
-      }
-    } 
-   }
- }
-
- delete f;
- return true;
+    delete f;
+    return true;
 
 }
 
@@ -1218,8 +1211,8 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename)
 {
     if(true == read_dds_hdfeos2(dds, filename)){
 
-      if(true == read_dds_hdfhybrid(dds,filename))
-         return;
+        if(true == read_dds_hdfhybrid(dds,filename))
+            return;
     }
 
     if(read_dds_hdfsp(dds, filename)){
@@ -1232,7 +1225,7 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename)
 // Write other HDF global attributes, this routine must be called after all ECS metadata are handled.
 void write_non_ecsmetadata_attrs(HE2CF& cf) {
 
-     cf.set_non_ecsmetadata_attrs();
+    cf.set_non_ecsmetadata_attrs();
 
 }
 void write_ecsmetadata(DAS& das, HE2CF& cf, const string& _meta)
@@ -1251,11 +1244,11 @@ void write_ecsmetadata(DAS& das, HE2CF& cf, const string& _meta)
     BESDEBUG("h4",meta << endl);        
 
     if (false == suffix_is_number) {
-       for (unsigned int i = 0; i <meta_nonum_names.size(); i++) 
-           parse_ecs_metadata(das,meta_nonum_names[i],meta_nonum_data[i]);
+        for (unsigned int i = 0; i <meta_nonum_names.size(); i++) 
+            parse_ecs_metadata(das,meta_nonum_names[i],meta_nonum_data[i]);
     }
     else 
-       parse_ecs_metadata(das,_meta,meta);
+        parse_ecs_metadata(das,_meta,meta);
 
 }
 
@@ -1271,7 +1264,7 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     parser_arg arg(at);
 
     if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-            throw Error("HDF-EOS parse error while processing a " + metadata + " HDFEOS attribute.");
+        throw Error("HDF-EOS parse error while processing a " + metadata + " HDFEOS attribute.");
 
     if (arg.status() == false) {
         (*BESLog::TheLog())<<  "HDF-EOS parse error while processing a "
@@ -1286,14 +1279,14 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
 bool read_das_hdfeos2(DAS & das, const string & filename)
 {
 
-     // There are some HDF-EOS2 files(MERRA) that should be treated
-     // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
-     // retrieve any information. In fact, treating them as HDF-EOS2 files
-     // will cause confusions and wrong information, although may not be essential.
-     // So far, we've found only MERRA data that have this problem.
-     // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
+    // There are some HDF-EOS2 files(MERRA) that should be treated
+    // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
+    // retrieve any information. In fact, treating them as HDF-EOS2 files
+    // will cause confusions and wrong information, although may not be essential.
+    // So far, we've found only MERRA data that have this problem.
+    // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
 
-     // Find MERRA data, return false, use HDF4 SDS code.
+    // Find MERRA data, return false, use HDF4 SDS code.
     if((basename(filename)).compare(0,5,"MERRA")==0) {
         return false;
     }
@@ -1306,33 +1299,34 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
     } 
     catch (HDFEOS2::Exception &e){
 
-	if (!e.getFileType()){
-              return false;
+        if (!e.getFileType()){
+            return false;
         }
         else
         {
-              throw InternalErr(e.what());
-         }
+            throw InternalErr(e.what());
+        }
     }
 
     try {
-	f->Prepare(filename.c_str());
+        f->Prepare(filename.c_str());
     }
 
     catch (HDFEOS2:: Exception &e) {
-         delete f;
-         throw InternalErr(e.what());
+        delete f;
+        throw InternalErr(e.what());
     }
 
     HE2CF cf;
     cf.open(filename);
     cf.set_DAS(&das);
 
-   // Many special handlings of attributes from different products are in this routine. This should be divided into small functions
-   // in the future. KY 2012-09-18
+    // Many special handlings of attributes from different products are in this routine. This should be divided into small functions
+    // in the future. KY 2012-09-18
 
-   // Obtaining Scale and offset type. This will be used to detect no-CF scale offset equations such as MODIS
-   SOType sotype = f->getScaleType();
+    // Obtaining Scale and offset type. This will be used to detect no-CF scale offset equations such as MODIS
+    // SOType sotype = f->getScaleType();
+    SOType sotype = DEFAULT_CF_EQU;
 
     // A flag not to generate structMetadata for the MOD13C2 file.
     // MOD13C2's structMetadata has wrong values. It couldn't pass the parser. 
@@ -1345,15 +1339,16 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
         string temp_fname = basename(filename);
         string temp_prod_prefix = "AMSR_E";
         if ((temp_fname.size() > temp_prod_prefix.size()) && (0 == (temp_fname.compare(0,temp_prod_prefix.size(),temp_prod_prefix)))) 
-           filename_change_scale = true;
+            filename_change_scale = true;
     }
 
     // MAP grids to DAS.
     for (int i = 0; i < (int) f->getGrids().size(); i++) {
         HDFEOS2::GridDataset*  grid = f->getGrids()[i];
         string gname = grid->getName();
-        
         BESDEBUG("h4","Grid Name: " <<  gname << endl);
+
+        sotype = grid->getScaleType();
 
         for (unsigned int j = 0; j < grid->getDataFields().size(); ++j) {
 
@@ -1417,7 +1412,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                 string coordinate = grid->getDataFields()[j]->getCoordinate();
                 BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
                 if (coordinate != "") 
-                   cf.write_attribute_coordinates(newfname, coordinate);
+                    cf.write_attribute_coordinates(newfname, coordinate);
             }
 
             BESDEBUG("h4","Original Field Name: " <<  fname << endl);
@@ -1435,7 +1430,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
                 // MOD13C2 is treated specially. 
                 if(fieldtype == 1 && (grid->getDataFields()[j]->getSpecialLLFormat())==3)
-                  tempstrflag = true;
+                    tempstrflag = true;
 
                 string tempunits = grid->getDataFields()[j]->getUnits();
                 BESDEBUG("h4",
@@ -1459,71 +1454,71 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                 string  valid_range_value="";
                 string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
 
-		bool add_offset_found = false;
+                bool add_offset_found = false;
 
                 // Check if the datatype of this field needs to be changed.
                 bool changedtype = change_data_type(das,sotype,newfname);
 
                 if (true == changedtype) 
-{
+                {
                     ctype_field_namelist.push_back(newfname);
-}
+                }
 
 		while (it!=at->attr_end())
                 {
-                        if(at->get_name(it)=="scale_factor")
+                    if(at->get_name(it)=="scale_factor")
+                    {
+                        scale_factor_value = (*at->get_attr_vector(it)->begin());
+                        scale_factor_type = at->get_type(it);
+                    }
+                    if(at->get_name(it)=="add_offset")
+                    {
+                        add_offset_value = (*at->get_attr_vector(it)->begin());
+                        add_offset_type = at->get_type(it);
+                        add_offset_found = true;
+                    }
+                    if(at->get_name(it)=="_FillValue")
+                    {
+                        fillvalue =  (*at->get_attr_vector(it)->begin());
+                        fillvalue_type = at->get_type(it);
+                    }
+                    if(at->get_name(it)=="valid_range")
+                    {
+                        vector<string> *avalue = at->get_attr_vector(it);
+                        vector<string>::iterator ait = avalue->begin();
+                        while(ait!=avalue->end())
                         {
-                                scale_factor_value = (*at->get_attr_vector(it)->begin());
-                                scale_factor_type = at->get_type(it);
+                            valid_range_value += *ait;
+                            ait++;	
+                            if(ait!=avalue->end())
+                                valid_range_value += ", ";
                         }
-                        if(at->get_name(it)=="add_offset")
-                        {
-                                add_offset_value = (*at->get_attr_vector(it)->begin());
-                                add_offset_type = at->get_type(it);
-				add_offset_found = true;
-                        }
-			if(at->get_name(it)=="_FillValue")
-			{
-				fillvalue =  (*at->get_attr_vector(it)->begin());
-                        	fillvalue_type = at->get_type(it);
-			}
-			if(at->get_name(it)=="valid_range")
-			{
-				vector<string> *avalue = at->get_attr_vector(it);
-				vector<string>::iterator ait = avalue->begin();
-				while(ait!=avalue->end())
-				{
-					valid_range_value += *ait;
-					ait++;	
-					if(ait!=avalue->end())
-						valid_range_value += ", ";
-				}
-				valid_range_type = at->get_type(it);
-			}
-			it++;
+                        valid_range_type = at->get_type(it);
+                    }
+                    it++;
                 }
-		if(scale_factor_value.length()!=0)
-		{
-			if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
-                	{
-                        	at->del_attr("scale_factor");
-				at->append_attr("orig_scale_factor", scale_factor_type, scale_factor_value);
-                        	if(add_offset_found)
-				{
-					at->del_attr("add_offset");
-					at->append_attr("orig_add_offset", add_offset_type, add_offset_value);
-                		}
-			}
-		}
-		if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
-		{
-			at->del_attr("_FillValue");
-			at->append_attr("_FillValue", "Float32", fillvalue);
-		}
-		if(true == changedtype && valid_range_value.length()!=0 && valid_range_type!="Float32" && valid_range_type!="Float64") //Change attribute type.
-		{
-			at->del_attr("valid_range");
-		}
+                if(scale_factor_value.length()!=0)
+                {
+                    if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
+                    {
+                        at->del_attr("scale_factor");
+                        at->append_attr("orig_scale_factor", scale_factor_type, scale_factor_value);
+                        if(add_offset_found)
+                        {
+                            at->del_attr("add_offset");
+                            at->append_attr("orig_add_offset", add_offset_type, add_offset_value);
+                        }
+                    }
+                }
+                if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
+                {
+                    at->del_attr("_FillValue");
+                    at->append_attr("_FillValue", "Float32", fillvalue);
+                }
+                if(true == changedtype && valid_range_value.length()!=0 && valid_range_type!="Float32" && valid_range_type!="Float64") //Change attribute type.
+                {
+                    at->del_attr("valid_range");
+                }
             }
         }
     }
@@ -1535,12 +1530,15 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
         string gname = swath->getName();
         BESDEBUG("h4","Swath name: " << gname << endl);
 
+        sotype = swath->getScaleType();
+
         // First GeoFields.
         for (unsigned int j = 0; j < swath->getGeoFields().size(); ++j) {
             string fname = swath->getGeoFields()[j]->getName();
             string newfname = swath->getGeoFields()[j]->getNewName();
             BESDEBUG("h4","Original Field name: " <<  fname << endl);
             BESDEBUG("h4","Corrected Field name: " <<  newfname << endl);
+
 
             int dimlistsize = swath->getGeoFields()[j]->getDimensions().size();
             BESDEBUG("h4","the original dimlist size: "<< dimlistsize << endl);
@@ -1600,37 +1598,37 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 	    AttrTable *at = das.get_table(newfname);
             if (true == filename_change_scale) {
 
-		AttrTable::Attr_iter it = at->attr_begin();
-		string scale_factor_value="", add_offset_value="0";
-		string scale_factor_type, add_offset_type;
+                AttrTable::Attr_iter it = at->attr_begin();
+                string scale_factor_value="", add_offset_value="0";
+                string scale_factor_type, add_offset_type;
                 bool OFFSET_found = false;
                 bool SCALE_found = false;
                 while (it!=at->attr_end()) 
                 {
-                        if(at->get_name(it) == "SCALE_FACTOR")
-                        {
-                                scale_factor_value = (*at->get_attr_vector(it)->begin());
-                                scale_factor_type = at->get_type(it);
-                                SCALE_found = true;
-                        }
-                        if(at->get_name(it)=="OFFSET")
-                        {
-                                add_offset_value = (*at->get_attr_vector(it)->begin());
-                                add_offset_type = at->get_type(it);
-                                OFFSET_found = true;
-                        }
-                        it++;
+                    if(at->get_name(it) == "SCALE_FACTOR")
+                    {
+                        scale_factor_value = (*at->get_attr_vector(it)->begin());
+                        scale_factor_type = at->get_type(it);
+                        SCALE_found = true;
+                    }
+                    if(at->get_name(it)=="OFFSET")
+                    {
+                        add_offset_value = (*at->get_attr_vector(it)->begin());
+                        add_offset_type = at->get_type(it);
+                        OFFSET_found = true;
+                    }
+                    it++;
                 }
 
                 if (true == SCALE_found) {
-                   at->del_attr("SCALE_FACTOR");
+                    at->del_attr("SCALE_FACTOR");
                    
-                   at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
+                    at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
                 }
 
                 if (true == OFFSET_found) {
-                   at->del_attr("OFFSET");
-                   at->append_attr("add_offset",add_offset_type,add_offset_value);
+                    at->del_attr("OFFSET");
+                    at->append_attr("add_offset",add_offset_type,add_offset_value);
                 }
             }
    
@@ -1643,6 +1641,8 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
             string newfname = swath->getDataFields()[j]->getNewName();
             BESDEBUG("h4","Original Field Name: " <<  fname << endl);
             BESDEBUG("h4","Corrected Field Name: " <<  newfname << endl);
+
+
             int dimlistsize = swath->getDataFields()[j]->getDimensions().size();
             BESDEBUG("h4","the original dimlist size: "<< dimlistsize << endl);
             for(unsigned int k = 0; 
@@ -1713,71 +1713,72 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
             cf.write_attribute(gname, fname, newfname, 
                                f->getSwaths().size(), fieldtype);
 
-	    //Rename attributes of MODIS products.
-	    AttrTable *at = das.get_table(newfname);
-	    if(sotype!=DEFAULT_CF_EQU && at!=NULL) 
-	    {
-		AttrTable::Attr_iter it = at->attr_begin();
-		string scale_factor_value="", add_offset_value="0", fillvalue="", valid_range_value="";
-		string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
+            //Rename attributes of MODIS products.
+            AttrTable *at = das.get_table(newfname);
+            if(sotype!=DEFAULT_CF_EQU && at!=NULL) 
+            {
+                AttrTable::Attr_iter it = at->attr_begin();
+                string scale_factor_value="", add_offset_value="0", fillvalue="", valid_range_value="";
+                string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
 
                 string number_type_value="";
                 string number_type_dap_type="";
 
                 float orig_valid_max = 0;
                 float orig_valid_min = 0;
-		bool add_offset_found = false;
+                bool add_offset_found = false;
 
-                 // Check if the datatype of this field needs to be changed.
+                // Check if the datatype of this field needs to be changed.
                 bool changedtype = change_data_type(das,sotype,newfname); 
 
                 if(true == changedtype) 
                     ctype_field_namelist.push_back(newfname);
                 
-		while (it!=at->attr_end()) 
-		{
-			if(at->get_name(it)=="scale_factor")
-			{
-				scale_factor_value = (*at->get_attr_vector(it)->begin());
-				scale_factor_type = at->get_type(it);
-			}
-			if(at->get_name(it)=="add_offset")
-			{
-				add_offset_value = (*at->get_attr_vector(it)->begin());
-				add_offset_type = at->get_type(it);
-				add_offset_found = true;
-			}
-			if(at->get_name(it)=="_FillValue")
-			{
-                                fillvalue =  (*at->get_attr_vector(it)->begin());
-                        	fillvalue_type = at->get_type(it);
-			}
-			if(at->get_name(it)=="valid_range")
+                while (it!=at->attr_end()) 
+                {
+                    if(at->get_name(it)=="scale_factor")
+                    {
+                        scale_factor_value = (*at->get_attr_vector(it)->begin());
+                        scale_factor_type = at->get_type(it);
+                    }
+                    if(at->get_name(it)=="add_offset")
+                    {
+                        add_offset_value = (*at->get_attr_vector(it)->begin());
+                        add_offset_type = at->get_type(it);
+                        add_offset_found = true;
+                    }
+                    if(at->get_name(it)=="_FillValue")
+                    {
+                        fillvalue =  (*at->get_attr_vector(it)->begin());
+                        fillvalue_type = at->get_type(it);
+                    }
+                    if(at->get_name(it)=="valid_range")
+                    {
+                        vector<string> *avalue = at->get_attr_vector(it);
+                        vector<string>::iterator ait = avalue->begin();
+                        while(ait!=avalue->end())
                         {
-                                vector<string> *avalue = at->get_attr_vector(it);
-                                vector<string>::iterator ait = avalue->begin();
-                                while(ait!=avalue->end())
-                                {
-                                    valid_range_value += *ait;
-                                    ait++;
-                                    if(ait!=avalue->end())
-                                       valid_range_value += ", ";
-                                }
-				valid_range_type = at->get_type(it);
-
-                                // valid range is always like (valid_min,valid_max)                               
-                                // So we can just obtain the values
-                                orig_valid_min = (float)(atof((avalue->at(0)).c_str()));
-                                orig_valid_max = (float)(atof((avalue->at(1)).c_str()));
+                            valid_range_value += *ait;
+                            ait++;
+                            if(ait!=avalue->end())
+                                valid_range_value += ", ";
                         }
+                        valid_range_type = at->get_type(it);
 
-                        if(true == changedtype && (at->get_name(it)=="Number_Type")) {
-                            number_type_value = (*at->get_attr_vector(it)->begin());
-                            number_type_dap_type= at->get_type(it);
-                        }
+                        // valid range is always like (valid_min,valid_max)                               
+                        // So we can just obtain the values
+                        orig_valid_min = (float)(atof((avalue->at(0)).c_str()));
+                        orig_valid_max = (float)(atof((avalue->at(1)).c_str()));
+                    }
 
-			it++;
-		}
+                    if(true == changedtype && (at->get_name(it)=="Number_Type"))
+                    {
+                        number_type_value = (*at->get_attr_vector(it)->begin());
+                        number_type_dap_type= at->get_type(it);
+                    }
+
+                    it++;
+                }
 
 
                 // Tackle the build_up of the final CF valid_min and valid_max, KY 2012-08-28
@@ -1791,39 +1792,39 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                     bool is_emissive_field = false;
                     bool is_refsb_field = false;
                     if(newfname.find(emissive_str)!=string::npos) {
-                      if(0 == newfname.compare(newfname.size()-emissive_str.size(),emissive_str.size(),emissive_str))
-                         is_emissive_field = true;
+                        if(0 == newfname.compare(newfname.size()-emissive_str.size(),emissive_str.size(),emissive_str))
+                            is_emissive_field = true;
                     }
 
-                   if(newfname.find(RefSB_str)!=string::npos) {
-                      if(0 == newfname.compare(newfname.size()-RefSB_str.size(),RefSB_str.size(),RefSB_str))
-                         is_refsb_field = true;
+                    if(newfname.find(RefSB_str)!=string::npos) {
+                        if(0 == newfname.compare(newfname.size()-RefSB_str.size(),RefSB_str.size(),RefSB_str))
+                            is_refsb_field = true;
                     }
 
 
 
                     if ((true == is_emissive_field) || (true== is_refsb_field)){
 
-                       float valid_max = 0;
-                       float valid_min = 0;
+                        float valid_max = 0;
+                        float valid_min = 0;
 
-                       float scale_max = 0;
-                       float scale_min = 100000;
+                        float scale_max = 0;
+                        float scale_min = 100000;
 
-                       float offset_max = 0;
-                       float offset_min = 0;
+                        float offset_max = 0;
+                        float offset_min = 0;
 
-                       float temp_var_val = 0;
+                        float temp_var_val = 0;
 
-                       string orig_long_name_value;
-                       string modify_long_name_value;
-                       string str_removed_from_long_name=" Scaled Integers";
-                       string radiance_units_value;
+                        string orig_long_name_value;
+                        string modify_long_name_value;
+                        string str_removed_from_long_name=" Scaled Integers";
+                        string radiance_units_value;
                         
-                       while (it!=at->attr_end()) 
-		       {
-                           // Radiance field(Emissive field)
-                           if(true == is_emissive_field) {
+                        while (it!=at->attr_end()) 
+		        {
+                            // Radiance field(Emissive field)
+                            if(true == is_emissive_field) {
                            
                                 if ("radiance_scales" == (at->get_name(it))) {
 
@@ -1850,10 +1851,9 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                                 }
 
                                 if ("long_name" == (at->get_name(it))) {
-                                   orig_long_name_value = (*at->get_attr_vector(it)->begin());
-                                   if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(),
-                                                                             str_removed_from_long_name.size(),str_removed_from_long_name)) {
+                                    orig_long_name_value = (*at->get_attr_vector(it)->begin());
+                                    if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
+                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
 
                                             modify_long_name_value = 
                                                 orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
@@ -1861,14 +1861,14 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                                             at->append_attr("long_name","String",modify_long_name_value);
                                             at->append_attr("orig_long_name","String",orig_long_name_value);
                                         }
-                                   }
+                                    }
                                 }
                                 if ("radiance_units" == (at->get_name(it))) 
                                     radiance_units_value = (*at->get_attr_vector(it)->begin());
 
-                           }
+                            }
 
-                           if (true == is_refsb_field) {
+                            if (true == is_refsb_field) {
                                 if ("reflectance_scales" == (at->get_name(it))) {
 
                                     vector<string> *avalue = at->get_attr_vector(it);
@@ -1894,10 +1894,9 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                                 }
 
                                 if ("long_name" == (at->get_name(it))) {
-                                   orig_long_name_value = (*at->get_attr_vector(it)->begin());
-                                   if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(),
-                                                                             str_removed_from_long_name.size(),str_removed_from_long_name)) {
+                                    orig_long_name_value = (*at->get_attr_vector(it)->begin());
+                                    if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
+                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
 
                                             modify_long_name_value = 
                                                 orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
@@ -1905,13 +1904,13 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                                             at->append_attr("long_name","String",modify_long_name_value);
                                             at->append_attr("orig_long_name","String",orig_long_name_value);
                                         }
-                                   }
+                                    }
                                 }
  
-                           }
-                           it++;
-                       }
-                       // Calculate the final valid_max and valid_min.
+                            }
+                            it++;
+                        }
+                        // Calculate the final valid_max and valid_min.
                         if (scale_min <= 0)
                             throw InternalErr(__FILE__,__LINE__,"the scale factor should always be greater than 0.");
 
@@ -1935,110 +1934,110 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                         
                         // Change the units for the emissive field
                         if (true == is_emissive_field && radiance_units_value.size() >0) {
-                           at->del_attr("units");
-                           at->append_attr("units","String",radiance_units_value);
+                            at->del_attr("units");
+                            at->append_attr("units","String",radiance_units_value);
                         }  
                     }
                 }
 			
-		if(scale_factor_value.length()!=0)
+                if(scale_factor_value.length()!=0)
                 {
-			if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
-			{
-				at->del_attr("scale_factor");
-				at->append_attr("scale_factor_modis", scale_factor_type, scale_factor_value);
-				if(add_offset_found) 
-				{
-					at->del_attr("add_offset");
-					at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
-				}
-			}
-		}
-		if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
+                    if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
+                    {
+                        at->del_attr("scale_factor");
+                        at->append_attr("scale_factor_modis", scale_factor_type, scale_factor_value);
+                        if(add_offset_found) 
+                        {
+                            at->del_attr("add_offset");
+                            at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
+                        }
+                    }
+                }
+                if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
                 {
-                        at->del_attr("_FillValue");
+                    at->del_attr("_FillValue");
 			
-			int32 sdfileid;
-        		sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
-                        if (FAIL == sdfileid) {
-                            ostringstream eherr;
-                            eherr << "Cannot Start the SD interface for the file " << filename <<endl;
-                        }
+                    int32 sdfileid;
+                    sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+                    if (FAIL == sdfileid) {
+                        ostringstream eherr;
+                        eherr << "Cannot Start the SD interface for the file " << filename <<endl;
+                    }
 
-        		int32 sdsindex, sdsid;
-        		sdsindex = SDnametoindex(sdfileid, fname.c_str());
-                        if (FAIL == sdsindex) {
-                             SDend(sdfileid);
-                             ostringstream eherr;
-                             eherr << "Cannot obtain the index of " << fname; 
-                             throw InternalErr (__FILE__, __LINE__, eherr.str ());
-                        }
-        		sdsid = SDselect(sdfileid, sdsindex);
-                        if (FAIL == sdsid) {
-                            SDend(sdfileid);
-                            ostringstream eherr;
-                            eherr << "Cannot obtain the SDS ID  of " << fname;         
-                            throw InternalErr (__FILE__, __LINE__, eherr.str ());
-                        }
+                    int32 sdsindex, sdsid;
+                    sdsindex = SDnametoindex(sdfileid, fname.c_str());
+                    if (FAIL == sdsindex) {
+                        SDend(sdfileid);
+                        ostringstream eherr;
+                        eherr << "Cannot obtain the index of " << fname; 
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
+                    sdsid = SDselect(sdfileid, sdsindex);
+                    if (FAIL == sdsid) {
+                        SDend(sdfileid);
+                        ostringstream eherr;
+                        eherr << "Cannot obtain the SDS ID  of " << fname;         
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
 
-        		char attrname[H4_MAX_NC_NAME + 1];
-        		int32 attrtype = 0;
-                        int32 attrcount = 0;
-                        int32 attrindex = 0;
-        		vector<char> attrbuf;
-        		float _fillvalue = 0.;
+                    char attrname[H4_MAX_NC_NAME + 1];
+                    int32 attrtype = 0;
+                    int32 attrcount = 0;
+                    int32 attrindex = 0;
+                    vector<char> attrbuf;
+                    float _fillvalue = 0.;
 
-			attrindex = SDfindattr(sdsid, "_FillValue");
-                        if (FAIL == attrindex) {
-                            SDendaccess(sdsid);
-                            SDend(sdfileid);
-                            ostringstream eherr;
-                            eherr << "SDfindattr fails for SDS  " << fname; 
-                            throw InternalErr (__FILE__, __LINE__, eherr.str ());
-                        }
-			intn ret = 0;
-               	 	ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
-                	if (ret==FAIL)
-                	{
-                                SDendaccess(sdsid);
-                                SDend(sdfileid);
-                        	ostringstream eherr;
-                        	eherr << "Attribute '_FillValue' in " << fname.c_str () << " cannot be obtained.";
-                        	throw InternalErr (__FILE__, __LINE__, eherr.str ());
-                	}
-                	attrbuf.resize(DFKNTsize(attrtype)*attrcount);
-                	ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
-                	if (ret==FAIL)
-                	{
-                                SDendaccess(sdsid);
-                                SDend(sdfileid);
-                        	ostringstream eherr;
-                        	eherr << "Attribute '_FillValue' in " << fname.c_str () << " cannot be obtained.";
-                        	throw InternalErr (__FILE__, __LINE__, eherr.str ());
-                	}
-			switch(attrtype)
-                	{
+                    attrindex = SDfindattr(sdsid, "_FillValue");
+                    if (FAIL == attrindex) {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
+                        ostringstream eherr;
+                        eherr << "SDfindattr fails for SDS  " << fname; 
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
+                    intn ret = 0;
+                    ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                    if (ret==FAIL)
+                    {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
+                        ostringstream eherr;
+                        eherr << "Attribute '_FillValue' in " << fname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
+                    attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                    ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                    if (ret==FAIL)
+                    {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
+                        ostringstream eherr;
+                        eherr << "Attribute '_FillValue' in " << fname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
+                    switch(attrtype)
+                    {
 #define GET_FILLVALUE_ATTR_VALUE(TYPE, CAST) \
-        case DFNT_##TYPE: \
-        { \
-                CAST tmpvalue = *(CAST*)&attrbuf[0]; \
-                _fillvalue = (float)tmpvalue; \
-        } \
-        break;
+    case DFNT_##TYPE: \
+    { \
+        CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+        _fillvalue = (float)tmpvalue; \
+    } \
+    break;
                         GET_FILLVALUE_ATTR_VALUE(INT8, int8);
                         GET_FILLVALUE_ATTR_VALUE(INT16, int16);
                         GET_FILLVALUE_ATTR_VALUE(INT32, int32);
                         GET_FILLVALUE_ATTR_VALUE(UINT8, uint8);
                         GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
                         GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
-                	};
+                    };
 #undef GET_FILLVALUE_ATTR_VALUE
-			SDend(sdfileid);
-			std::ostringstream ss;
-			ss << _fillvalue;
-			fillvalue = ss.str();
+                    SDend(sdfileid);
+                    std::ostringstream ss;
+                    ss << _fillvalue;
+                    fillvalue = ss.str();
                         
-			at->append_attr("_FillValue", "Float32", fillvalue);
+                    at->append_attr("_FillValue", "Float32", fillvalue);
                 }
                 if(true == changedtype && valid_range_value.length()!=0 && valid_range_type!="Float32" && valid_range_type!="Float64") // Change attribute type.
                 {
@@ -2054,41 +2053,41 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
                 }
                    
-	    }
+            }
 
             // For some AMSR-E data.
             if (true == filename_change_scale) {
 
-		AttrTable::Attr_iter it = at->attr_begin();
-		string scale_factor_value="", add_offset_value="0";
-		string scale_factor_type, add_offset_type;
+                AttrTable::Attr_iter it = at->attr_begin();
+                string scale_factor_value="", add_offset_value="0";
+                string scale_factor_type, add_offset_type;
                 bool OFFSET_found = false;
                 bool SCALE_found = false;
                 while (it!=at->attr_end()) 
                 {
-                        if(at->get_name(it)=="SCALE_FACTOR")
-                        {
-                                scale_factor_value = (*at->get_attr_vector(it)->begin());
-                                scale_factor_type = at->get_type(it);
-                                SCALE_found = true;
-                        }
-                        if(at->get_name(it)=="OFFSET")
-                        {
-                                add_offset_value = (*at->get_attr_vector(it)->begin());
-                                add_offset_type = at->get_type(it);
-                                OFFSET_found = true;
-                        }
-                        it++;
+                    if(at->get_name(it)=="SCALE_FACTOR")
+                    {
+                        scale_factor_value = (*at->get_attr_vector(it)->begin());
+                        scale_factor_type = at->get_type(it);
+                        SCALE_found = true;
+                    }
+                    if(at->get_name(it)=="OFFSET")
+                    {
+                        add_offset_value = (*at->get_attr_vector(it)->begin());
+                        add_offset_type = at->get_type(it);
+                        OFFSET_found = true;
+                    }
+                    it++;
                 }
 
                 if (true == SCALE_found) {
-                   at->del_attr("SCALE_FACTOR");
-                   at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
+                    at->del_attr("SCALE_FACTOR");
+                    at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
                 }
 
                 if (true == OFFSET_found) {
-                   at->del_attr("OFFSET");
-                   at->append_attr("add_offset",add_offset_type,add_offset_value);
+                    at->del_attr("OFFSET");
+                    at->append_attr("add_offset",add_offset_type,add_offset_value);
                 }
             }
         }
@@ -2125,8 +2124,8 @@ void read_das_use_eos2lib(DAS & das, const string & filename)
 {
 
     if(true == read_das_hdfeos2(das, filename)){
-       if (true == read_das_hdfhybrid(das,filename))
-        return;
+        if (true == read_das_hdfhybrid(das,filename))
+            return;
     }
 
     if(true == read_das_hdfsp(das, filename)){
@@ -2163,11 +2162,11 @@ bool is_modis_dimmap_nonll_field(string & fieldname) {
     for (unsigned int i = 0; i <modis_dimmap_nonll_fieldlist.size(); i++) {
 
         if (fieldname == modis_dimmap_nonll_fieldlist[i]) {
-           itmap = modis_field_to_geofile_field.find(fieldname);
-           if (itmap !=modis_field_to_geofile_field.end())
-              fieldname = itmap->second;
-           modis_dimmap_nonll_field = true;
-           break;
+            itmap = modis_field_to_geofile_field.find(fieldname);
+            if (itmap !=modis_field_to_geofile_field.end())
+                fieldname = itmap->second;
+            modis_dimmap_nonll_field = true;
+            break;
         }
     }
 
@@ -2195,8 +2194,8 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
         f = HDFSP::File::Read(filename.c_str(), myfileid);
     } 
     catch (HDFSP::Exception &e)
-	{
-            throw InternalErr(e.what());
+    {
+        throw InternalErr(e.what());
     }
     
         
@@ -2221,21 +2220,19 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
     // Read SDS 
     std::vector<HDFSP::SDField *>::const_iterator it_g;
     for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-       if (false == f->Has_Dim_NoScale_Field() || (0 == (*it_g)->getFieldType()) 
-                                               || (true == (*it_g)->IsDimScale()))
+        if (false == f->Has_Dim_NoScale_Field() || (0 == (*it_g)->getFieldType()) || (true == (*it_g)->IsDimScale()))
             read_dds_spfields(dds,filename,(*it_g),f->getSPType());
     }
 
     // Read Vdata fields.
     // This is just for speeding up the performance for CERES data, we turn off some CERES vdata fields
     if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
-       for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
-          i!=f->getVDATAs().end();i++) {
-          if(!(*i)->getTreatAsAttrFlag()){
-             for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) 
-                read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
-          }
-       }
+        for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
+            if(!(*i)->getTreatAsAttrFlag()){
+                for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) 
+                    read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+            }
+        }
     }
         
     delete f;
@@ -2256,9 +2253,9 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         f = HDFSP::File::Read(filename.c_str(), myfileid);
     } 
     catch (HDFSP::Exception &e)
-	{
-            throw InternalErr(e.what());
-	}
+    {
+        throw InternalErr(e.what());
+    }
         
     try {
         f->Prepare();
@@ -2287,61 +2284,61 @@ bool read_das_hdfsp(DAS & das, const string & filename)
  
     for(std::vector<HDFSP::Attribute *>::const_iterator i=spsd->getAttributes().begin();i!=spsd->getAttributes().end();i++) {
        
-	//We want to add two new attributes, "scale_factor" and "add_offset" to data fields if the scaling equation is linear. 
+        //We want to add two new attributes, "scale_factor" and "add_offset" to data fields if the scaling equation is linear. 
         // OBPG products use "Slope" instead of "scale_factor", "intercept" instead of "add_offset". "Scaling" describes if the equation is linear.
         // Their values will be copied directly from File attributes. This addition is for OBPG L3 only.
         // We also add OBPG L2 support since all OBPG level 2 products(CZCS,MODISA,MODIST,OCTS,SeaWiFS) we evaluate use Slope,intercept and linear equation
         // for the final data. KY 2012-09-06
 	if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)
-	{
-		if((*i)->getName()=="Scaling")
-		{
-			string tmpstring((*i)->getValue().begin(), (*i)->getValue().end());
-			scaling = tmpstring;
-		}
-		if((*i)->getName()=="Slope" || (*i)->getName()=="slope")
-		{
-                    global_slope_flag = true;
+        {
+            if((*i)->getName()=="Scaling")
+            {
+                string tmpstring((*i)->getValue().begin(), (*i)->getValue().end());
+                scaling = tmpstring;
+            }
+            if((*i)->getName()=="Slope" || (*i)->getName()=="slope")
+            {
+                global_slope_flag = true;
 			
-			switch((*i)->getType())
-			{
+                switch((*i)->getType())
+                {
 #define GET_SLOPE(TYPE, CAST) \
-        case DFNT_##TYPE: \
-        { \
-                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
-                slope = (float)tmpvalue; \
-        } \
-        break;
+    case DFNT_##TYPE: \
+    { \
+        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        slope = (float)tmpvalue; \
+    } \
+    break;
 
-				GET_SLOPE(INT16,   int16);
-				GET_SLOPE(INT32,   int32);
-				GET_SLOPE(FLOAT32, float);
-				GET_SLOPE(FLOAT64, double);
+                    GET_SLOPE(INT16,   int16);
+                    GET_SLOPE(INT32,   int32);
+                    GET_SLOPE(FLOAT32, float);
+                    GET_SLOPE(FLOAT64, double);
 #undef GET_SLOPE
-			} ;
-			//slope = *(float*)&((*i)->getValue()[0]);
-		}
-		if((*i)->getName()=="Intercept" || (*i)->getName()=="intercept")
-                {	
-                        global_intercept_flag = true;
-			switch((*i)->getType())
-                        {
+                } ;
+                //slope = *(float*)&((*i)->getValue()[0]);
+            }
+            if((*i)->getName()=="Intercept" || (*i)->getName()=="intercept")
+            {	
+                global_intercept_flag = true;
+                switch((*i)->getType())
+                {
 #define GET_INTERCEPT(TYPE, CAST) \
-        case DFNT_##TYPE: \
-        { \
-                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
-                intercept = (float)tmpvalue; \
-        } \
-        break;
-				GET_INTERCEPT(INT16,   int16);
-				GET_INTERCEPT(INT32,   int32);
-                                GET_INTERCEPT(FLOAT32, float);
-                                GET_INTERCEPT(FLOAT64, double);
+    case DFNT_##TYPE: \
+    { \
+        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        intercept = (float)tmpvalue; \
+    } \
+    break;
+                    GET_INTERCEPT(INT16,   int16);
+                    GET_INTERCEPT(INT32,   int32);
+                    GET_INTERCEPT(FLOAT32, float);
+                    GET_INTERCEPT(FLOAT64, double);
 #undef GET_INTERCEPT
-                        } ;
-                        //intercept = *(float*)&((*i)->getValue()[0]);
-                }
-	}
+                } ;
+                //intercept = *(float*)&((*i)->getValue()[0]);
+            }
+        }
  
         // Here we try to combine ECS metadata into a string.
         if(((*i)->getName().compare(0, 12, "CoreMetadata" )== 0) ||
@@ -2352,27 +2349,27 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             // Otherwise, this won't work.
             string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
           
-             // Temporarily turn off CERES data since there are so many fields in CERES. It will choke clients KY 2010-7-9
-             if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) 
+            // Temporarily turn off CERES data since there are so many fields in CERES. It will choke clients KY 2010-7-9
+            if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) 
                 core_metadata.append(tempstring);
         }
         else if(((*i)->getName().compare(0, 15, "ArchiveMetadata" )== 0) ||
-                 ((*i)->getName().compare(0, 16, "ArchivedMetadata")==0) ||
+                ((*i)->getName().compare(0, 16, "ArchivedMetadata")==0) ||
                 ((*i)->getName().compare(0, 15, "archivemetadata" )== 0)){
             string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
-              // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
-              // So turn it off.
-              // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
-              if(f->getSPType() != TRMML2 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
+            // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
+            // So turn it off.
+            // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
+            if(f->getSPType() != TRMML2 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
                 archive_metadata.append(tempstring);
         }
         else if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
                 ((*i)->getName().compare(0, 14, "structmetadata" )== 0)){
             string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
-              // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
-              // So turn it off
-              // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
-              if(f->getSPType() != TRMML2 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
+            // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
+            // So turn it off
+            // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
+            if(f->getSPType() != TRMML2 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
                 struct_metadata.append(tempstring);
         }        
         else {
@@ -2389,10 +2386,10 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             }
 
             else {
-              for (int loc=0; loc < (*i)->getCount() ; loc++) {
-                 string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
-                 at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
-              }
+                for (int loc=0; loc < (*i)->getCount() ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                }
           
             }
         }
@@ -2416,7 +2413,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // Errors returned from here are ignored.
         if (arg.status() == false) {
             (*BESLog::TheLog()) << "HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute. (2)" << endl
-                     << arg.error()->get_error_message() << endl;
+                << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -2431,12 +2428,12 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         void *buf = hdfeos_string(archive_metadata.c_str());
         parser_arg arg(at);
         if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-        	throw Error("HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute.");
+            throw Error("HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute.");
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-        	(*BESLog::TheLog())<< "HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute. (2)" << endl
-        		<< arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog())<< "HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute. (2)" << endl
+                << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -2451,12 +2448,12 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         void *buf = hdfeos_string(struct_metadata.c_str());
         parser_arg arg(at);
         if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-        	throw Error("HDF-EOS parse error while processing a StructMetadata HDFEOS attribute.");
+            throw Error("HDF-EOS parse error while processing a StructMetadata HDFEOS attribute.");
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-        	(*BESLog::TheLog())<< "HDF-EOS parse error while processing a StructMetadata HDFEOS attribute. (2)" << endl
-        		<< arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog())<< "HDF-EOS parse error while processing a StructMetadata HDFEOS attribute. (2)" << endl
+                << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -2484,73 +2481,73 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 
         bool long_name_flag = false;
 
-	//For OBPG L2 and L3 only.Some OBPG products put "slope" and "Intercept" etc. in the field attributes
+        //For OBPG L2 and L3 only.Some OBPG products put "slope" and "Intercept" etc. in the field attributes
         // We still need to handle the scale and offset here.
-	bool scale_factor_flag = false;
-	bool add_offset_flag = false;
+        bool scale_factor_flag = false;
+        bool add_offset_flag = false;
         bool slope_flag = false;
         bool intercept_flag = false;
 
         if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) {// Begin OPBG CF attribute handling(Checking "slope" and "intercept") 
-           for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-           	if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
-		{
-                   slope_flag = true;
+            for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
+                {
+                    slope_flag = true;
 			
-			switch((*i)->getType())
-			{
+                    switch((*i)->getType())
+                    {
 #define GET_SLOPE(TYPE, CAST) \
-        case DFNT_##TYPE: \
-        { \
-                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
-                slope = (float)tmpvalue; \
-        } \
-        break;
+    case DFNT_##TYPE: \
+    { \
+        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        slope = (float)tmpvalue; \
+    } \
+    break;
 
-				GET_SLOPE(INT16,   int16);
-				GET_SLOPE(INT32,   int32);
-				GET_SLOPE(FLOAT32, float);
-				GET_SLOPE(FLOAT64, double);
+                        GET_SLOPE(INT16,   int16);
+                        GET_SLOPE(INT32,   int32);
+                        GET_SLOPE(FLOAT32, float);
+                        GET_SLOPE(FLOAT64, double);
 #undef GET_SLOPE
-			} ;
-			//slope = *(float*)&((*i)->getValue()[0]);
-		}
-		if(global_intercept_flag != true && ((*i)->getName()=="Intercept" || (*i)->getName()=="intercept"))
+                    } ;
+                    //slope = *(float*)&((*i)->getValue()[0]);
+                }
+                if(global_intercept_flag != true && ((*i)->getName()=="Intercept" || (*i)->getName()=="intercept"))
                 {	
-                        intercept_flag = true;
-			switch((*i)->getType())
-                        {
+                    intercept_flag = true;
+                    switch((*i)->getType())
+                    {
 #define GET_INTERCEPT(TYPE, CAST) \
-        case DFNT_##TYPE: \
-        { \
-                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
-                intercept = (float)tmpvalue; \
-        } \
-        break;
-				GET_INTERCEPT(INT16,   int16);
-				GET_INTERCEPT(INT32,   int32);
-                                GET_INTERCEPT(FLOAT32, float);
-                                GET_INTERCEPT(FLOAT64, double);
+    case DFNT_##TYPE: \
+    { \
+        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        intercept = (float)tmpvalue; \
+    } \
+    break;
+                        GET_INTERCEPT(INT16,   int16);
+                        GET_INTERCEPT(INT32,   int32);
+                        GET_INTERCEPT(FLOAT32, float);
+                        GET_INTERCEPT(FLOAT64, double);
 #undef GET_INTERCEPT
-                        } ;
-                        //intercept = *(float*)&((*i)->getValue()[0]);
+                    } ;
+                    //intercept = *(float*)&((*i)->getValue()[0]);
                 }
             }
-	} // End of checking "slope" and "intercept"
+        } // End of checking "slope" and "intercept"
 
         // Checking if OBPG has "scale_factor" ,"add_offset", generally checking for "long_name" attributes.
         for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {       
 
-           if((*i)->getName() == "long_name") {
-             long_name_flag = true;
-             //break;
-           }
+            if((*i)->getName() == "long_name") {
+                long_name_flag = true;
+                //break;
+            }
 
-	   if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && (*i)->getName()=="scale_factor")
-	     scale_factor_flag = true;		
+            if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && (*i)->getName()=="scale_factor")
+                scale_factor_flag = true;		
 
-	   if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && (*i)->getName()=="add_offset")
-	     add_offset_flag = true;
+            if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && (*i)->getName()=="add_offset")
+                add_offset_flag = true;
         }
         
         if(!long_name_flag) 
@@ -2558,23 +2555,23 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 
         // Checking if the scale and offset equation is linear, this is only for OBPG level 3.
         // Also checking if having the fill value and adding fill value if not having one for some OBPG data type
-	if((f->getSPType() == OBPGL2 || f->getSPType()==OBPGL3 )&& (*it_g)->getFieldType()==0)
-	{
+        if((f->getSPType() == OBPGL2 || f->getSPType()==OBPGL3 )&& (*it_g)->getFieldType()==0)
+        {
             
-           if((OBPGL3 == f->getSPType() && (scaling.find("linear")!=string::npos)) || OBPGL2 == f->getSPType() ) {
+            if((OBPGL3 == f->getSPType() && (scaling.find("linear")!=string::npos)) || OBPGL2 == f->getSPType() ) {
 
-		if(false == scale_factor_flag && (true == slope_flag || true == global_slope_flag))
-		{
-			string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(slope));
-			at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-		}
+                if(false == scale_factor_flag && (true == slope_flag || true == global_slope_flag))
+                {
+                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(slope));
+                    at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+                }
 
-		if(false == add_offset_flag && (true == intercept_flag || true == global_intercept_flag))
-		{
-			string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(intercept));
-                	at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-		}
-           }
+                if(false == add_offset_flag && (true == intercept_flag || true == global_intercept_flag))
+                {
+                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(intercept));
+                    at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+                }
+            }
 
             bool has_fill_value = false;
             for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
@@ -2585,69 +2582,69 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             }
          
 
-           // Add fill value to some type of OBPG data. 16-bit integer, fill value = -32767, unsigned 16-bit integer fill value = 65535
-           // This is based on the evaluation of the example files. KY 2012-09-06
-           if ((false == has_fill_value) &&(DFNT_INT16 == (*it_g)->getType())) {
-              short fill_value = -32767;
-              string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&(fill_value));
-              at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
-           }
+            // Add fill value to some type of OBPG data. 16-bit integer, fill value = -32767, unsigned 16-bit integer fill value = 65535
+            // This is based on the evaluation of the example files. KY 2012-09-06
+            if ((false == has_fill_value) &&(DFNT_INT16 == (*it_g)->getType())) {
+                short fill_value = -32767;
+                string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&(fill_value));
+                at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
+            }
 
-           if ((false == has_fill_value) &&(DFNT_UINT16 == (*it_g)->getType())) {
-              unsigned short fill_value = 65535;
-              string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&(fill_value));
-              at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_UINT16),print_rep);
-           }
+            if ((false == has_fill_value) &&(DFNT_UINT16 == (*it_g)->getType())) {
+                unsigned short fill_value = 65535;
+                string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&(fill_value));
+                at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_UINT16),print_rep);
+            }
 
-	}// Finish OBPG handling
+        }// Finish OBPG handling
 
         // MAP individual SDS field to DAP DAS
         for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
 
-          // Handle string first.
-          if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+            // Handle string first.
+            if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
                 at->append_attr((*i)->getNewName(), "String" , tempfinalstr);
-          }
-          else {
-           for (int loc=0; loc < (*i)->getCount() ; loc++) {
-
-                string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
-                at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
-            }
-          }
-
-       }
-
-       // MAP dimension info. to DAS(Currently this should only affect the OTHERHDF case when no dimension scale for some dimensions)
-       // KY 2012-09-19
-       for(std::vector<HDFSP::AttrContainer *>::const_iterator i=(*it_g)->getDimInfo().begin();i!=(*it_g)->getDimInfo().end();i++) {
-
-          // Here a little surgory to add the field path(including) name before dim0, dim1, etc.
-          string attr_container_name = (*it_g)->getNewName() + (*i)->getName();
-          AttrTable *dim_at = das.get_table(attr_container_name);
-          if (!dim_at)
-                dim_at = das.add_table(attr_container_name, new AttrTable);
-
-          for(std::vector<HDFSP::Attribute *>::const_iterator j=(*i)->getAttributes().begin();j!=(*i)->getAttributes().end();j++) {
-
-            // Handle string first.
-            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-                string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-                string tempfinalstr= string(tempstring2.c_str());
-                dim_at->append_attr((*j)->getNewName(), "String" , tempfinalstr);
             }
             else {
-               for (int loc=0; loc < (*j)->getCount() ; loc++) {
+                for (int loc=0; loc < (*i)->getCount() ; loc++) {
 
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                dim_at->append_attr((*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-               }
-           }
-         }
+                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                }
+            }
 
-       }
+        }
+
+        // MAP dimension info. to DAS(Currently this should only affect the OTHERHDF case when no dimension scale for some dimensions)
+        // KY 2012-09-19
+        for(std::vector<HDFSP::AttrContainer *>::const_iterator i=(*it_g)->getDimInfo().begin();i!=(*it_g)->getDimInfo().end();i++) {
+
+            // Here a little surgory to add the field path(including) name before dim0, dim1, etc.
+            string attr_container_name = (*it_g)->getNewName() + (*i)->getName();
+            AttrTable *dim_at = das.get_table(attr_container_name);
+            if (!dim_at)
+                dim_at = das.add_table(attr_container_name, new AttrTable);
+
+            for(std::vector<HDFSP::Attribute *>::const_iterator j=(*i)->getAttributes().begin();j!=(*i)->getAttributes().end();j++) {
+
+                // Handle string first.
+                if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                    string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                    string tempfinalstr= string(tempstring2.c_str());
+                    dim_at->append_attr((*j)->getNewName(), "String" , tempfinalstr);
+                }
+                else {
+                    for (int loc=0; loc < (*j)->getCount() ; loc++) {
+
+                        string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+                        dim_at->append_attr((*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                    }
+                }
+            }
+
+        }
 
         // Handle special CF attributes such as units, valid_range and coordinates 
         // Overwrite units if fieldtype is latitude.
@@ -2656,7 +2653,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             // at->append_attr("units", "String", "degrees_north");
             at->append_attr("units", "String",(*it_g)->getUnits());
             if (f->getSPType() == CER_ES4) // Drop the valid_range attribute since the value will be interpreted wrongly by CF tools
-               at->del_attr("valid_range");
+                at->del_attr("valid_range");
         }
         // Overwrite units if fieldtype is longitude
         if((*it_g)->getFieldType() == 2){
@@ -2664,7 +2661,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             // at->append_attr("units", "String", "degrees_east");
             at->append_attr("units", "String",(*it_g)->getUnits());
             if (f->getSPType() == CER_ES4) // Drop the valid_range attribute since the value will be interpreted wrongly by CF tools
-               at->del_attr("valid_range");
+                at->del_attr("valid_range");
 
         }
 
@@ -2681,38 +2678,38 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 
             // If no "dimension scale" dimension exists, delete the "coordinates" attributes
             if (false == f->Has_Dim_NoScale_Field()) {
-               string coordinate = (*it_g)->getCoordinate();
-               if (coordinate !="") 
+                string coordinate = (*it_g)->getCoordinate();
+                if (coordinate !="") 
                     at->append_attr("coordinates", "String", coordinate);
             }
         }
-      }
+    }
 
-       // For some HDF4 files that follow HDF4 dimension scales, P.O. DAAC's AVHRR files.
-      // The "otherHDF" category can almost make AVHRR files work, except
-     // that AVHRR uses the attribute name "unit" instead of "units" for latitude and longitude,
-     // I have to correct the name to follow CF conventions(using "units"). I won't check
-     // the latitude and longitude values since latitude and longitude values for some files(LISO files)   
-     // are not in the standard range(0-360 for lon and 0-180 for lat). KY 2011-3-3
-     if(f->getSPType() == OTHERHDF) {
+    // For some HDF4 files that follow HDF4 dimension scales, P.O. DAAC's AVHRR files.
+    // The "otherHDF" category can almost make AVHRR files work, except
+    // that AVHRR uses the attribute name "unit" instead of "units" for latitude and longitude,
+    // I have to correct the name to follow CF conventions(using "units"). I won't check
+    // the latitude and longitude values since latitude and longitude values for some files(LISO files)   
+    // are not in the standard range(0-360 for lon and 0-180 for lat). KY 2011-3-3
+    if(f->getSPType() == OTHERHDF) {
 
-         bool latflag = false;
-         bool latunitsflag = false; //CF conventions use "units" instead of "unit"
-         bool lonflag = false;
-         bool lonunitsflag = false; // CF conventions use "units" instead of "unit"
-         int llcheckoverflag = 0;
+        bool latflag = false;
+        bool latunitsflag = false; //CF conventions use "units" instead of "unit"
+        bool lonflag = false;
+        bool lonunitsflag = false; // CF conventions use "units" instead of "unit"
+        int llcheckoverflag = 0;
 
-         // Here I try to condense the code within just two for loops
-         // The outer loop: Loop through all SDS objects
-         // The inner loop: Loop through all attributes of this SDS
-         // Inside two inner loops(since "units" are common for other fields), 
-         // inner loop 1: when an attribute's long name value is L(l)atitude,mark it.
-         // inner loop 2: when an attribute's name is units, mark it.
-         // Outside the inner loop, when latflag is true, and latunitsflag is false,
-         // adding a new attribute called units and the value should be "degrees_north".
-         // doing the same thing for longitude.
+        // Here I try to condense the code within just two for loops
+        // The outer loop: Loop through all SDS objects
+        // The inner loop: Loop through all attributes of this SDS
+        // Inside two inner loops(since "units" are common for other fields), 
+        // inner loop 1: when an attribute's long name value is L(l)atitude,mark it.
+        // inner loop 2: when an attribute's name is units, mark it.
+        // Outside the inner loop, when latflag is true, and latunitsflag is false,
+        // adding a new attribute called units and the value should be "degrees_north".
+        // doing the same thing for longitude.
 
-         for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
 
             // Ignore ALL coordinate variables if this is "OTHERHDF" case and some dimensions 
             // don't have dimension scale data.
@@ -2721,57 +2718,57 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 
             // Ignore the empty(no data) dimension variable.
             if (OTHERHDF == f->getSPType() && true == (*it_g)->IsDimNoScale())
-               continue;
+                continue;
 
-             AttrTable *at = das.get_table((*it_g)->getNewName());
-             if (!at)
-               at = das.add_table((*it_g)->getNewName(), new AttrTable);
+            AttrTable *at = das.get_table((*it_g)->getNewName());
+            if (!at)
+                at = das.add_table((*it_g)->getNewName(), new AttrTable);
 
-             for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-               if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+            for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
 
-                if((*i)->getName() == "long_name") {
-                  string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
-                  string tempfinalstr= string(tempstring2.c_str());// This may remove some garbage characters
-                  if(tempfinalstr=="latitude" || tempfinalstr == "Latitude") // Find long_name latitude
-                     latflag = true;
-                  if(tempfinalstr=="longitude" || tempfinalstr == "Longitude") // Find long_name latitude
-                     lonflag = true;
+                    if((*i)->getName() == "long_name") {
+                        string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                        string tempfinalstr= string(tempstring2.c_str());// This may remove some garbage characters
+                        if(tempfinalstr=="latitude" || tempfinalstr == "Latitude") // Find long_name latitude
+                            latflag = true;
+                        if(tempfinalstr=="longitude" || tempfinalstr == "Longitude") // Find long_name latitude
+                            lonflag = true;
+                    }
                 }
-              }
-             }
+            }
 
-             if(latflag) {
-               for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-                if((*i)->getName() == "units") 
-                  latunitsflag = true;
-              }
-             }
+            if(latflag) {
+                for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                    if((*i)->getName() == "units") 
+                        latunitsflag = true;
+                }
+            }
 
-             if(lonflag) {
-               for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-                if((*i)->getName() == "units") 
-                  lonunitsflag = true;
-              }
-             }
-             if(latflag && !latunitsflag){ // No "units" for latitude, add "units"
-               at->append_attr("units","String","degrees_north");
-               latflag = false;
-               latunitsflag = false;
-               llcheckoverflag++;
-             }
+            if(lonflag) {
+                for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                    if((*i)->getName() == "units") 
+                        lonunitsflag = true;
+                }
+            }
+            if(latflag && !latunitsflag){ // No "units" for latitude, add "units"
+                at->append_attr("units","String","degrees_north");
+                latflag = false;
+                latunitsflag = false;
+                llcheckoverflag++;
+            }
 
-             if(lonflag && !lonunitsflag){ // No "units" for latitude, add "units"
-               at->append_attr("units","String","degrees_east");
-               lonflag = false;
-               latunitsflag = false;
-               llcheckoverflag++;
-             }
-             if(llcheckoverflag ==2) break;
+            if(lonflag && !lonunitsflag){ // No "units" for latitude, add "units"
+                at->append_attr("units","String","degrees_east");
+                lonflag = false;
+                latunitsflag = false;
+                llcheckoverflag++;
+            }
+            if(llcheckoverflag ==2) break;
 
-          }
+        }
 
-     }
+    }
 
     // Optimization for users to tune the DAS output.
 
@@ -2790,17 +2787,17 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     turn_on_ceres_merra_short_name_key = HDFCFUtil::check_beskeys(check_ceres_merra_short_name_key);
 
     if (true == turn_on_ceres_merra_short_name_key && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
-                || CER_CDAY == f->getSPType() || CER_CGEO == f->getSPType() 
-                || CER_SYN == f->getSPType() || CER_ZAVG == f->getSPType()
-                || CER_AVG == f->getSPType() || (0== (basename(filename).compare(0,5,"MERRA"))))) {
+        || CER_CDAY == f->getSPType() || CER_CGEO == f->getSPType() 
+        || CER_SYN == f->getSPType() || CER_ZAVG == f->getSPType()
+        || CER_AVG == f->getSPType() || (0== (basename(filename).compare(0,5,"MERRA"))))) {
 
         for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
 
-             AttrTable *at = das.get_table((*it_g)->getNewName());
-             if (!at)
-               at = das.add_table((*it_g)->getNewName(), new AttrTable);
+            AttrTable *at = das.get_table((*it_g)->getNewName());
+            if (!at)
+                at = das.add_table((*it_g)->getNewName(), new AttrTable);
 
-             at->append_attr("fullpath","String",(*it_g)->getSpecFullPath());
+            at->append_attr("fullpath","String",(*it_g)->getSpecFullPath());
 
         }
 
@@ -2821,172 +2818,171 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     std::string VDfieldattrprefix ="Vdata_field_attr_";
 
 
-  if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
+    if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
 
-    for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
-       i!=f->getVDATAs().end();i++) {
+        for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
 
-     AttrTable *at = das.get_table((*i)->getNewName());
-     if(!at)
-        at = das.add_table((*i)->getNewName(),new AttrTable);
+            AttrTable *at = das.get_table((*i)->getNewName());
+            if(!at)
+                at = das.add_table((*i)->getNewName(),new AttrTable);
  
-   if (true == turn_on_vdata_desc_key) {
-      // Add special vdata attributes
-      bool emptyvddasflag = true;
-      if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
-      if(((*i)->getTreatAsAttrFlag()))
-        emptyvddasflag = false;
-      else {
-        for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
-          if(!((*j)->getAttributes().empty())) {
-            emptyvddasflag = false;
-            break;
-          }
-       }
-      }
+            if (true == turn_on_vdata_desc_key) {
+                // Add special vdata attributes
+                bool emptyvddasflag = true;
+                if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
+                if(((*i)->getTreatAsAttrFlag()))
+                    emptyvddasflag = false;
+                else {
+                    for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                        if(!((*j)->getAttributes().empty())) {
+                            emptyvddasflag = false;
+                            break;
+                        }
+                    }
+                }
 
-     if(emptyvddasflag) 
-        continue;
-       at->append_attr(VDdescname, "String" , VDdescvalue);
+                if(emptyvddasflag) 
+                    continue;
+                at->append_attr(VDdescname, "String" , VDdescvalue);
 
-      for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
+                for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
 
-        if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                    if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
 
-           string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-           string tempfinalstr= string(tempstring2.c_str());
-           at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
-          }
-        else {
-           for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                        string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                        string tempfinalstr= string(tempstring2.c_str());
+                        at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                    }
+                    else {
+                        for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                            string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                            at->append_attr(VDattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                        }
+                    }
+
+                }
             }
-          }
 
-      }
-    }
+            if(!((*i)->getTreatAsAttrFlag())){ 
 
-     if(!((*i)->getTreatAsAttrFlag())){ 
+                if (true == turn_on_vdata_desc_key) {
 
-     if (true == turn_on_vdata_desc_key) {
+                    //NOTE: for vdata field, we assume that no special characters are found 
+                    for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
 
-      //NOTE: for vdata field, we assume that no special characters are found 
-      for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                        // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
+                        for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
 
-        // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
-       for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
 
-            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , tempfinalstr);
+                            }
+                            else {
+                                for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                                    at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                }
+                            }
 
-              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-              string tempfinalstr= string(tempstring2.c_str());
-              at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , tempfinalstr);
+                        }
+                    }
+                }
+
             }
+
             else {
-              for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
-              }
-            }
 
-          }
-      }
-     }
-
-    }
-
-    else {
-
-      for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
            
  
-         if((*j)->getFieldOrder() == 1) {
-           if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-             string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-             string tempfinalstr= string(tempstring2.c_str());
-             at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
-           }
-           else {
-             for ( int loc=0; loc < (*j)->getNumRec(); loc++) {
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-            }
-           }
-        }
-        else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
+                    if((*j)->getFieldOrder() == 1) {
+                        if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                            string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                            string tempfinalstr= string(tempstring2.c_str());
+                            at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
+                        }
+                        else {
+                            for ( int loc=0; loc < (*j)->getNumRec(); loc++) {
+                                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+                                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                            }
+                        }
+                    }
+                    else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
 
-           if((*j)->getValue().size() != (unsigned int)(DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
-               throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
-            }
+                        if((*j)->getValue().size() != (unsigned int)(DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
+                            throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
+                        }
 
-          if((*j)->getNumRec()==1){
-             if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-               string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-               string tempfinalstr= string(tempstring2.c_str());
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempfinalstr);
-             }
-             else {
-              for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-              }
-             }
+                        if((*j)->getNumRec()==1){
+                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                                string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempfinalstr);
+                            }
+                            else {
+                                for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                }
+                            }
 
-          }
+                        }
 
-         else {
-          if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                        else {
+                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
 
-            for(int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
-               std::vector<char>::const_iterator tempit;
-               tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
-               string tempstring2(tempit,tempit+(*j)->getFieldOrder());
-               string tempfinalstr= string(tempstring2.c_str());
-               string tempoutstring = "'"+tempfinalstr+"'";
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempoutstring);
-            }
-          }
+                                for(int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
+                                    std::vector<char>::const_iterator tempit;
+                                    tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
+                                    string tempstring2(tempit,tempit+(*j)->getFieldOrder());
+                                    string tempfinalstr= string(tempstring2.c_str());
+                                    string tempoutstring = "'"+tempfinalstr+"'";
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempoutstring);
+                                }
+                            }
 
-          else {
-            for(int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
-               for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
-                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
-               }
-               at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
-            }
-          }
-        }
-        }
+                            else {
+                                for(int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
+                                    for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                                        string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
+                                        at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                    }
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
+                                }
+                            }
+                        }
+                    }
 
          
-        if (true == turn_on_vdata_desc_key) {
-         for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+                    if (true == turn_on_vdata_desc_key) {
+                        for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
 
-            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
 
-              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-              string tempfinalstr= string(tempstring2.c_str());
-              at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                string tempfinalstr= string(tempstring2.c_str());
+                                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                            }
+                            else {
+                                for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                                    at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            else {
-              for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
-              }
-            }
-          }
+
         }
-       }
-      }
-
-     }
-  } 
+    } 
         
-  delete f;
-  return true;
+    delete f;
+    return true;
 }
 
 // Read SDS fields
@@ -2996,28 +2992,28 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
     if(OTHERHDF == sptype && (true == spsds->IsDimNoScale()))
         return;
     
-     BaseType *bt=NULL;
-     switch(spsds->getType()) {
+    BaseType *bt=NULL;
+    switch(spsds->getType()) {
 #define HANDLE_CASE(tid, type)                                          \
-                    case tid:                                           \
-                        bt = new (type)(spsds->getNewName(),filename); \
-			break;
-                    HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
-                    HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+    case tid:                                           \
+        bt = new (type)(spsds->getNewName(),filename); \
+        break;
+        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
+        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
 #ifndef SIGNED_BYTE_TO_INT32
-                    HANDLE_CASE(DFNT_INT8, HDFByte);
+        HANDLE_CASE(DFNT_INT8, HDFByte);
 #else
-                    HANDLE_CASE(DFNT_INT8,HDFInt32);
+        HANDLE_CASE(DFNT_INT8,HDFInt32);
 #endif
-                    HANDLE_CASE(DFNT_UINT8, HDFByte); 
-                    HANDLE_CASE(DFNT_INT16, HDFInt16);
-                    HANDLE_CASE(DFNT_UINT16, HDFUInt16);
-                    HANDLE_CASE(DFNT_INT32, HDFInt32);
-                    HANDLE_CASE(DFNT_UINT32, HDFUInt32);
-                    HANDLE_CASE(DFNT_UCHAR8, HDFByte);
-                    HANDLE_CASE(DFNT_CHAR8, HDFByte);
-                  default:
-                    InternalErr(__FILE__,__LINE__,"unsupported data type.");
+        HANDLE_CASE(DFNT_UINT8, HDFByte); 
+        HANDLE_CASE(DFNT_INT16, HDFInt16);
+        HANDLE_CASE(DFNT_UINT16, HDFUInt16);
+        HANDLE_CASE(DFNT_INT32, HDFInt32);
+        HANDLE_CASE(DFNT_UINT32, HDFUInt32);
+        HANDLE_CASE(DFNT_UCHAR8, HDFByte);
+        HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        default:
+            InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
     }
     int fieldtype = spsds->getFieldType();// Whether the field is real field,lat/lon field or missing Z-dimension field 
@@ -3025,166 +3021,166 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
     if(bt)
     {
               
-                    const std::vector<HDFSP::Dimension*>& dims= spsds->getCorrectedDimensions();
-                    std::vector<HDFSP::Dimension*>::const_iterator it_d;
+        const std::vector<HDFSP::Dimension*>& dims= spsds->getCorrectedDimensions();
+        std::vector<HDFSP::Dimension*>::const_iterator it_d;
 
-                    if(fieldtype == 0 || fieldtype == 3 ) {
+        if(fieldtype == 0 || fieldtype == 3 ) {
 
-                            HDFSPArray_RealField *ar = NULL;
-                            ar = new HDFSPArray_RealField(
-                                                            spsds->getRank(),
-                                                            filename,
-                                                            spsds->getSDSref(),
-                                                            spsds->getType(),
-                                                            sptype,
-                                                            spsds->getName(),
-                                                            spsds->getNewName(),bt);
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                             ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
-                            delete ar;
-                    }
+            HDFSPArray_RealField *ar = NULL;
+            ar = new HDFSPArray_RealField(
+                spsds->getRank(),
+                filename,
+                spsds->getSDSref(),
+                spsds->getType(),
+                sptype,
+                spsds->getName(),
+                spsds->getNewName(),bt);
+            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+            dds.add_var(ar);
+            delete ar;
+        }
 
-                    if(fieldtype == 1 || fieldtype == 2) {
+        if(fieldtype == 1 || fieldtype == 2) {
 
-                      if(sptype == MODISARNSS) { 
+            if(sptype == MODISARNSS) { 
 
-                             HDFSPArray_RealField *ar = NULL;
-                            ar = new HDFSPArray_RealField(
-                                                            spsds->getRank(),
-                                                            filename,
-                                                            spsds->getSDSref(),
-                                                            spsds->getType(),
-                                                            sptype,
-                                                            spsds->getName(),
-                                                             spsds->getNewName(),bt);
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                             ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
-                            delete ar;
+                HDFSPArray_RealField *ar = NULL;
+                ar = new HDFSPArray_RealField(
+                    spsds->getRank(),
+                    filename,
+                    spsds->getSDSref(),
+                    spsds->getType(),
+                    sptype,
+                    spsds->getName(),
+                    spsds->getNewName(),bt);
+                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                dds.add_var(ar);
+                delete ar;
 
-                      }
-                      else {
+            }
+            else {
 
-                            HDFSPArrayGeoField *ar = NULL;
+                HDFSPArrayGeoField *ar = NULL;
 
-                            ar = new HDFSPArrayGeoField(
-                                                           spsds->getRank(),
-                                                           filename,
-                                                           spsds->getSDSref(),
-                                                           spsds->getType(),
-                                                           sptype,
-                                                           fieldtype,
-                                                           spsds->getName(),
-                                                           spsds->getNewName(), bt);
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
+                ar = new HDFSPArrayGeoField(
+                    spsds->getRank(),
+                    filename,
+                    spsds->getSDSref(),
+                    spsds->getType(),
+                    sptype,
+                    fieldtype,
+                    spsds->getName(),
+                    spsds->getNewName(), bt);
+                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                dds.add_var(ar);
 
-                            delete ar;
-                      }
-                    }
+                delete ar;
+            }
+        }
                     
                     
-                    if(fieldtype == 4) { //missing Z dimensional field
-                            if(spsds->getRank()!=1){
-                               delete bt;
-                               throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
-                            }
-                            int nelem = (spsds->getDimensions()[0])->getSize();
+        if(fieldtype == 4) { //missing Z dimensional field
+            if(spsds->getRank()!=1){
+                delete bt;
+                throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+            }
+            int nelem = (spsds->getDimensions()[0])->getSize();
                         
-                            HDFSPArrayMissGeoField *ar = NULL;
-                            ar = new HDFSPArrayMissGeoField(
-                                                              spsds->getRank(),
-                                                              nelem,
-                                                              spsds->getNewName(),bt);
+            HDFSPArrayMissGeoField *ar = NULL;
+            ar = new HDFSPArrayMissGeoField(
+                spsds->getRank(),
+                nelem,
+                spsds->getNewName(),bt);
 
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                            dds.add_var(ar);
+            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+            dds.add_var(ar);
 
-                            delete ar;
-                    }
+            delete ar;
+        }
                    
-       	}
+    }
 
 }
 
 // Read Vdata fields.
 void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numrec,HDFSP::VDField *spvd) {
 
-     BaseType *bt=NULL;
-     switch(spvd->getType()) {
+    BaseType *bt=NULL;
+    switch(spvd->getType()) {
 #define HANDLE_CASE(tid, type)                                          \
-                    case tid:                                           \
-                        bt = new (type)(spvd->getNewName(),filename); \
-			break;
-                    HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
-                    HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+    case tid:                                           \
+        bt = new (type)(spvd->getNewName(),filename); \
+        break;
+        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
+        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
 #ifndef SIGNED_BYTE_TO_INT32
-                    HANDLE_CASE(DFNT_INT8, HDFByte);
+        HANDLE_CASE(DFNT_INT8, HDFByte);
 #else
-                    HANDLE_CASE(DFNT_INT8,HDFInt32);
+        HANDLE_CASE(DFNT_INT8,HDFInt32);
 #endif
-                    HANDLE_CASE(DFNT_UINT8, HDFByte);
-                    HANDLE_CASE(DFNT_INT16, HDFInt16);
-                    HANDLE_CASE(DFNT_UINT16, HDFUInt16);
-                    HANDLE_CASE(DFNT_INT32, HDFInt32);
-                    HANDLE_CASE(DFNT_UINT32, HDFUInt32);
-                    HANDLE_CASE(DFNT_UCHAR8, HDFByte);
-                    HANDLE_CASE(DFNT_CHAR8, HDFByte);
-                  default:
-                    InternalErr(__FILE__,__LINE__,"unsupported data type.");
+        HANDLE_CASE(DFNT_UINT8, HDFByte);
+        HANDLE_CASE(DFNT_INT16, HDFInt16);
+        HANDLE_CASE(DFNT_UINT16, HDFUInt16);
+        HANDLE_CASE(DFNT_INT32, HDFInt32);
+        HANDLE_CASE(DFNT_UINT32, HDFUInt32);
+        HANDLE_CASE(DFNT_UCHAR8, HDFByte);
+        HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        default:
+            InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
     }
              
     if(bt)
     {
-                            HDFSPArray_VDField *ar = NULL;
+        HDFSPArray_VDField *ar = NULL;
 
-                            // If the field order is >1, the vdata field will be 2-D array
-                            // with the number of elements along the fastest changing dimension
-                            // as the field order.
-                            int vdrank = ((spvd->getFieldOrder())>1)?2:1;
-                            ar = new HDFSPArray_VDField(
-                                                            vdrank,
-                                                            filename,
-                                                            objref,
-                                                            spvd->getType(),
-                                                            spvd->getFieldOrder(),
-                                                            spvd->getName(),
-                                                            spvd->getNewName(),
-                                                            bt);
+        // If the field order is >1, the vdata field will be 2-D array
+        // with the number of elements along the fastest changing dimension
+        // as the field order.
+        int vdrank = ((spvd->getFieldOrder())>1)?2:1;
+        ar = new HDFSPArray_VDField(
+            vdrank,
+            filename,
+            objref,
+            spvd->getType(),
+            spvd->getFieldOrder(),
+            spvd->getName(),
+            spvd->getNewName(),
+            bt);
 
-                            std::string dimname1 = "VDFDim0_"+spvd->getNewName();
+        std::string dimname1 = "VDFDim0_"+spvd->getNewName();
 
-                            std::string dimname2 = "VDFDim1_"+spvd->getNewName();
-                            if(spvd->getFieldOrder() >1) {
-                              ar->append_dim(numrec,dimname1);
-                              ar->append_dim(spvd->getFieldOrder(),dimname2);
-                            }
-                            else 
-                              ar->append_dim(numrec,dimname1);
+        std::string dimname2 = "VDFDim1_"+spvd->getNewName();
+        if(spvd->getFieldOrder() >1) {
+            ar->append_dim(numrec,dimname1);
+            ar->append_dim(spvd->getFieldOrder(),dimname2);
+        }
+        else 
+            ar->append_dim(numrec,dimname1);
 
-                            dds.add_var(ar);
-                            delete ar;
-                  }
+        dds.add_var(ar);
+        delete ar;
+    }
 
-      }
+}
 
 
 // Default option 
 void read_dds(DDS & dds, const string & filename)
 {
-	// generate DDS, DAS
-	DAS das;
-	dds.set_dataset_name(basename(filename));
-	build_descriptions(dds, das, filename);
+    // generate DDS, DAS
+    DAS das;
+    dds.set_dataset_name(basename(filename));
+    build_descriptions(dds, das, filename);
 
-	if (!dds.check_semantics()) {       // DDS didn't get built right
-		THROW(dhdferr_ddssem);
-	}
-	return;
+    if (!dds.check_semantics()) {       // DDS didn't get built right
+        THROW(dhdferr_ddssem);
+    }
+    return;
 }
 
 void read_das(DAS & das, const string & filename)
@@ -3252,13 +3248,13 @@ struct accum_attr
         BESDEBUG("h4",  "attr.name: " << attr.name << endl);
         if (attr.name.find(d_named) != string::npos) {
 #if 0
-        	string stuff;
-        	stuff.assign(attr.values.data(), attr.values.size());
-        	cerr << "Attribute chunk: " << attr.name << endl;
-        	cerr << stuff << endl;
+            string stuff;
+            stuff.assign(attr.values.data(), attr.values.size());
+            cerr << "Attribute chunk: " << attr.name << endl;
+            cerr << stuff << endl;
 #endif
             accum.append(attr.values.number_type(), attr.values.data(),
-                         attr.values.size());
+                attr.values.size());
             return accum;
         }
         else {
@@ -3279,7 +3275,7 @@ struct is_named:public unary_function < hdf_attr, bool > {
 };
 
 static void
-merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
+merge_split_eos_attributes(vector < hdf_attr > &attr_vec, 
                            const string & attr_name)
 {
     // Only do this if there's more than one part.
@@ -3297,9 +3293,9 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
         // is called, a vector of s_m will always be generated and a chunk of memory is
         // always used. So don't change this for the time being. KY 2012-09-13
         DBG(vector < string > s_m;
-             attributes.print(s_m);
-             cerr << "Accum struct MD: (" << s_m.size() << ") "
-             << s_m[0] << endl);
+            attributes.print(s_m);
+            cerr << "Accum struct MD: (" << s_m.size() << ") "
+            << s_m[0] << endl);
 
         // Remove all the parts that have been merged
         attr_vec.erase(remove_if(attr_vec.begin(), attr_vec.end(),
@@ -3438,12 +3434,12 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 break;
             default:
                 (*BESLog::TheLog()) << "unknown tag: " << tag << " ref: " << ref << endl;
-            	// TODO: Make this an exception? jhrg 8/19/11
+                // TODO: Make this an exception? jhrg 8/19/11
                 // Don't make an exception. Possibly you will meet other valid tags. Need to know if it
                 // is worth to tackle this. KY 09/13/12
                 // cerr << "unknown tag: " << tag << " ref: " << ref << endl;
                 break;
-            }	// switch (tag) 
+            }// switch (tag) 
         } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
     } //   for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) 
     // Build DDS for all toplevel vgroups
@@ -3617,17 +3613,17 @@ BESDEBUG("h4","Testing Debug message "<<endl);
                 //
                 // TODO: How to log (as opposed to using BESDEBUG)?
                 if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-                	throw Error("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute.");
+                    throw Error("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute.");
 
                 if (arg.status() == false) {
 #if 0
-                	cerr << "HDF-EOS parse error while processing a "
-                    	<< container_name << " HDFEOS attribute. (2)" << endl
-                    	<< arg.error()->get_error_message() << endl;
+                    cerr << "HDF-EOS parse error while processing a "
+                    << container_name << " HDFEOS attribute. (2)" << endl
+                    << arg.error()->get_error_message() << endl;
 #endif
-                	(*BESLog::TheLog())<< "HDF-EOS parse error while processing a "
-                		<< container_name << " HDFEOS attribute. (2)" << endl
-                		<< arg.error()->get_error_message() << endl;
+                    (*BESLog::TheLog())<< "HDF-EOS parse error while processing a "
+                    << container_name << " HDFEOS attribute. (2)" << endl
+                    << arg.error()->get_error_message() << endl;
                 }
 
                 hdfeos_delete_buffer(buf);

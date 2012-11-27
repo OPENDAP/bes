@@ -1434,12 +1434,14 @@ void File::Prepare(const char *path) throw(Exception)
         }
 
 
-        // Check and set the scale type
-        for(std::vector<GridDataset *>::const_iterator i = file->grids.begin();
-                i != file->grids.end(); ++i)
-            SetScaleType((*i)->name);
-
     }// End of handling grid
+
+    // Check and set the scale type
+    for(std::vector<GridDataset *>::const_iterator i = file->grids.begin();
+           i != file->grids.end(); ++i){
+        (*i)->SetScaleType((*i)->name);
+    }
+
 
     
     if(numgrid==0) {
@@ -1707,10 +1709,10 @@ void File::Prepare(const char *path) throw(Exception)
 
                // If lat,lon are not found under either "Data fields" or "Geolocation fields", we should not generate "coordiantes"
                // However, this case should be handled in the future release. KY 2012-09-24
-               /**************** INVESTIGATE in the NEXT RELEASE ******************************
-               if (!lat_in_datafields && !lon_in_datafields)
-                  throw1("Latitude and longitude don't exist");
-               *********************************************************************************/
+               //**************** INVESTIGATE in the NEXT RELEASE ******************************
+               //if (!lat_in_datafields && !lon_in_datafields)
+               //  throw1("Latitude and longitude don't exist");
+               //*********************************************************************************/
                
             }
           
@@ -2203,7 +2205,7 @@ void File::Prepare(const char *path) throw(Exception)
             // Check and set the scale type
             for(std::vector<SwathDataset *>::const_iterator i = file->swaths.begin();
                 i != file->swaths.end(); ++i)
-                SetScaleType((*i)->name);
+                (*i)->SetScaleType((*i)->name);
         }
 
     }
@@ -2211,12 +2213,12 @@ void File::Prepare(const char *path) throw(Exception)
 }
 
 
-void File::SetScaleType(const string EOS2ObjName) throw(Exception) {
+void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
 
 
         // Group features of MODIS products.
         // Using vector of strings instead of the following. C++11 may allow the vector of string to be assigned as follows
-        //  string modis_type1[] = {"L1B", "GEO", "BRDF", "0.05Deg", "Reflectance", "MOD17A2", "North"};
+        //  string modis_type1[] = {"L1B", "GEO", "BRDF", "0.05Deg", "Reflectance", "MOD17A2", "North","MOD_Grid_MOD15A2","MODIS_NACP_LAI"};
 
         vector<string> modis_multi_scale_type;
         modis_multi_scale_type.push_back("L1B");
@@ -2226,13 +2228,20 @@ void File::SetScaleType(const string EOS2ObjName) throw(Exception) {
         modis_multi_scale_type.push_back("Reflectance");
         modis_multi_scale_type.push_back("MOD17A2");
         modis_multi_scale_type.push_back("North");
+        modis_multi_scale_type.push_back("MOD_Grid_MOD15A2");
+        modis_multi_scale_type.push_back("MODIS_NACP_LAI");
         
         vector<string> modis_div_scale_type;
         modis_div_scale_type.push_back("VI");
         modis_div_scale_type.push_back("1km_2D");
         modis_div_scale_type.push_back("L2g_2d");
+        modis_div_scale_type.push_back("CMG");
+        modis_div_scale_type.push_back("MODIS SWATH TYPE L2");
 
         string modis_eq_scale_type   = "LST";
+        string modis_divequ_scale_group = "MODIS_Grid";
+        string modis_div_scale_group = "MOD_Grid";
+        string modis_equ_scale_group  = "MODIS_Grid_1km_2D";
 
         if(EOS2ObjName=="mod05" || EOS2ObjName=="mod06" || EOS2ObjName=="mod07" || EOS2ObjName=="mod08" || EOS2ObjName=="atml2")
         {
@@ -2240,8 +2249,12 @@ void File::SetScaleType(const string EOS2ObjName) throw(Exception) {
                 return;
         }
 
+        // Find one MYD09GA2012.version005 file that the grid names change to MODIS_Grid_500m_2D. 
+        // So add this one. KY 2012-11-20
+
         if(EOS2ObjName.find("MOD")==0 || EOS2ObjName.find("mod")==0)
         {
+        
                 size_t pos = EOS2ObjName.rfind(modis_eq_scale_type);
                 if(pos != string::npos && (pos== (EOS2ObjName.length()-modis_eq_scale_type.length())))
                 {
@@ -2264,9 +2277,30 @@ void File::SetScaleType(const string EOS2ObjName) throw(Exception) {
                         pos = EOS2ObjName.rfind(modis_div_scale_type[k]);
                         if(pos != string::npos && (pos==(EOS2ObjName.length()-modis_div_scale_type[k].length()))){
                                 scaletype = MODIS_DIV_SCALE;
-                                return;
+                                // We have a case that group MODIS_Grid_1km_2D should apply the equal scale equation.
+                                // This will be handled after this loop.
+                                if (EOS2ObjName != "MODIS_Grid_1km_2D") 
+                                    return;
                         }
                 }
+                // Special handling for MOD_Grid and MODIS_Grid_500m_2D. 
+                // Check if the group name starts with the modis_divequ and modis_div_scale.
+                pos = EOS2ObjName.find(modis_divequ_scale_group);
+                // Find the "MODIS_Grid???" group. We have to separate MODIS_Grid_1km_2D(EQ) from other grids(DIV). 
+                if (0 == pos) { 
+                       size_t eq_scale_pos = EOS2ObjName.find(modis_equ_scale_group);
+                       if (0 == eq_scale_pos) 
+                          scaletype = MODIS_EQ_SCALE;
+                       else 
+                          scaletype = MODIS_DIV_SCALE;
+                }
+                else {
+                     size_t div_scale_pos = EOS2ObjName.find(modis_div_scale_group);
+                     // Find the "MOD_Grid???" group. 
+                     if ( 0 == div_scale_pos) 
+                         scaletype = MODIS_DIV_SCALE;
+                }
+              
         }
 
 }

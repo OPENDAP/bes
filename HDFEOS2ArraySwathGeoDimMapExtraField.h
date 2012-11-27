@@ -23,25 +23,25 @@ using namespace libdap;
 // a different swath name.
 class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
 {
-  public:
-  HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", BaseType * v = 0):
-	Array (n, v), rank (rank), filename (filename), fieldname (fieldname) {
-	}
-	virtual ~ HDFEOS2ArraySwathGeoDimMapExtraField ()
-	{
-	}
-	int format_constraint (int *cor, int *step, int *edg);
+    public:
+    HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+        Array (n, v), rank (rank), filename (filename), fieldname (fieldname) {
+        }
+        virtual ~ HDFEOS2ArraySwathGeoDimMapExtraField ()
+        {
+        }
+        int format_constraint (int *cor, int *step, int *edg);
 
-	BaseType *ptr_duplicate ()
-	{
-		return new HDFEOS2ArraySwathGeoDimMapExtraField (*this);
-	}
+        BaseType *ptr_duplicate ()
+        {
+            return new HDFEOS2ArraySwathGeoDimMapExtraField (*this);
+        }
 
-	virtual bool read ();
+        virtual bool read ();
 
-  private:
-	int rank;
-	std::string filename, fieldname;
+    private:
+        int rank;
+        std::string filename, fieldname;
 };
 
 
