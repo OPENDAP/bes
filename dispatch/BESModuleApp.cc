@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,8 +32,8 @@
 
 #include <iostream>
 
-using std::cerr ;
-using std::endl ;
+using std::cerr;
+using std::endl;
 
 #include "BESModuleApp.h"
 #include "BESError.h"
@@ -47,8 +47,8 @@ using std::endl ;
  * Initialized the static _the Applicatioon to point to this application
  * object
  */
-BESModuleApp::
-BESModuleApp(void) : BESBaseApp()
+BESModuleApp::BESModuleApp(void) :
+        BESBaseApp()
 {
 }
 
@@ -57,8 +57,7 @@ BESModuleApp(void) : BESBaseApp()
  * sets the static _theApplicaiton to null. Does not call terminate. It is up
  * to the main method to call the terminate method.
  */
-BESModuleApp::
-~BESModuleApp(void)
+BESModuleApp::~BESModuleApp(void)
 {
 }
 
@@ -68,141 +67,118 @@ BESModuleApp::
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int
-BESModuleApp::initialize(int argC, char **argV)
+int BESModuleApp::initialize(int argC, char **argV)
 {
-    int retVal = BESBaseApp::initialize( argC, argV ) ;
-    if( !retVal )
-    {
-	try
-	{
-	    retVal = loadModules() ;
-	}
-	catch( BESError &e )
-	{
-	    string newerr = "Error during module initialization: " ;
-	    newerr += e.get_message() ;
-	    cerr << newerr << endl ;
-	    retVal = 1 ;
-	}
-	catch( ... )
-	{
-	    string newerr = "Error during module initialization: " ;
-	    newerr += "caught unknown exception" ;
-	    cerr << newerr << endl ;
-	    retVal = 1 ;
-	}
+    int retVal = BESBaseApp::initialize(argC, argV);
+    if (!retVal) {
+        try {
+            retVal = loadModules();
+        }
+        catch( BESError &e ) {
+            string newerr = "Error during module initialization: ";
+            newerr += e.get_message();
+            cerr << newerr << endl;
+            retVal = 1;
+        }
+        catch( ... ) {
+            string newerr = "Error during module initialization: ";
+            newerr += "caught unknown exception";
+            cerr << newerr << endl;
+            retVal = 1;
+        }
     }
 
-    return retVal ;
+    return retVal;
 }
 
 /** @brief load data handler modules using the initialization file
  */
-int
-BESModuleApp::loadModules()
+int BESModuleApp::loadModules()
 {
-    int retVal = 0 ;
+    int retVal = 0;
 
-    bool found = false ;
-    vector<string> vals ;
-    TheBESKeys::TheKeys()->get_values( "BES.modules", vals, found ) ;
-    vector<string>::iterator l = vals.begin() ;
-    vector<string>::iterator le = vals.end() ;
+    bool found = false;
+    vector<string> vals;
+    TheBESKeys::TheKeys()->get_values("BES.modules", vals, found);
+    vector<string>::iterator l = vals.begin();
+    vector<string>::iterator le = vals.end();
 
     // FIXME: This is a kludge. But we want to be sure that the dap
     // modules get loaded first.
-    vector<string> ordered_list ;
-    for( ; l != le; l++ )
-    {
-	string mods = (*l) ;
-	if( mods != "" )
-	{
-	    if( mods.find( "dap", 0 ) != string::npos )
-	    {
-		ordered_list.insert( ordered_list.begin(), mods ) ;
-	    }
-	    else
-	    {
-		ordered_list.push_back( mods ) ;
-	    }
-	}
+    vector<string> ordered_list;
+    for (; l != le; l++) {
+        string mods = (*l);
+        if (mods != "") {
+            if (mods.find("dap", 0) != string::npos) {
+                ordered_list.insert(ordered_list.begin(), mods);
+            }
+            else {
+                ordered_list.push_back(mods);
+            }
+        }
     }
 
-    l = ordered_list.begin() ;
-    le = ordered_list.end() ;
-    for( ; l != le; l++ )
-    {
-	string mods = (*l) ;
-	list<string> mod_list ;
-	BESUtil::explode( ',', mods, mod_list ) ;
+    l = ordered_list.begin();
+    le = ordered_list.end();
+    for (; l != le; l++) {
+        string mods = (*l);
+        list<string> mod_list;
+        BESUtil::explode(',', mods, mod_list);
 
-	list<string>::iterator i = mod_list.begin() ;
-	list<string>::iterator e = mod_list.end() ;
-	for( ; i != e; i++ )
-	{
-	    if( !(*i).empty() )
-	    {
-		string key = "BES.module." + (*i) ;
-		string so ;
-		try
-		{
-		    TheBESKeys::TheKeys()->get_value( key, so, found ) ;
-		}
-		catch( BESError &e )
-		{
-		    cerr << e.get_message() << endl ;
-		    return 1 ;
-		}
-		if( so == "" )
-		{
-		    cerr << "couldn't find the module for " << (*i) << endl ;
-		    return 1 ;
-		}
-		bes_module new_mod ;
-		new_mod._module_name = (*i) ;
-		new_mod._module_library = so ;
-		_module_list.push_back( new_mod ) ;
-	    }
-	}
+        list<string>::iterator i = mod_list.begin();
+        list<string>::iterator e = mod_list.end();
+        for (; i != e; i++) {
+            if (!(*i).empty()) {
+                string key = "BES.module." + (*i);
+                string so;
+                try {
+                    TheBESKeys::TheKeys()->get_value(key, so, found);
+                }
+                catch( BESError &e ) {
+                    cerr << e.get_message() << endl;
+                    return 1;
+                }
+                if (so == "") {
+                    cerr << "couldn't find the module for " << (*i) << endl;
+                    return 1;
+                }
+                bes_module new_mod;
+                new_mod._module_name = (*i);
+                new_mod._module_library = so;
+                _module_list.push_back(new_mod);
+            }
+        }
     }
 
-    list< bes_module >::iterator mi = _module_list.begin() ;
-    list< bes_module >::iterator me = _module_list.end() ;
-    for( ; mi != me; mi++ )
-    {
-	bes_module curr_mod = *mi ;
-	_moduleFactory.add_mapping( curr_mod._module_name, curr_mod._module_library ) ;
+    list<bes_module>::iterator mi = _module_list.begin();
+    list<bes_module>::iterator me = _module_list.end();
+    for (; mi != me; mi++) {
+        bes_module curr_mod = *mi;
+        _moduleFactory.add_mapping(curr_mod._module_name, curr_mod._module_library);
     }
 
-    for( mi = _module_list.begin(); mi != me; mi++ )
-    {
-	bes_module curr_mod = *mi ;
-	try
-	{
-	    string modname = curr_mod._module_name ;
-	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
-	    o->initialize( modname ) ;
-	    delete o ;
-	}
-	catch( BESError &e )
-	{
-	    cerr << "Caught plugin exception during initialization of "
-		 << curr_mod._module_name << " module:" << endl << "    "
-		 << e.get_message() << endl ;
-	    retVal = 1 ;
-	    break ;
-	}
-	catch( ... )
-	{
-	    cerr << "Caught unknown exception during initialization of "
-		 << curr_mod._module_name << " module" << endl ;
-	    retVal = 1 ;
-	    break ;
-	}
+    for (mi = _module_list.begin(); mi != me; mi++) {
+        bes_module curr_mod = *mi;
+        try {
+            string modname = curr_mod._module_name;
+            BESAbstractModule *o = _moduleFactory.get(modname);
+            o->initialize(modname);
+            delete o;
+        }
+        catch( BESError &e ) {
+            cerr << "Caught plugin exception during initialization of " << curr_mod._module_name << " module:" << endl
+                    << "    " << e.get_message() << endl;
+            retVal = 1;
+            break;
+        }
+        catch( ... ) {
+            cerr << "Caught unknown exception during initialization of " << curr_mod._module_name << " module" << endl;
+            retVal = 1;
+            break;
+        }
     }
 
-    return retVal ;
+    return retVal;
 }
 
 /** @brief clean up after the application
@@ -213,43 +189,37 @@ BESModuleApp::loadModules()
  * @param sig if the application is terminating due to a signal, otherwise 0
  * is passed.
  */
-int
-BESModuleApp::terminate( int sig )
+int BESModuleApp::terminate(int sig)
 {
-    list< bes_module >::iterator i = _module_list.begin() ;
-    list< bes_module >::iterator e = _module_list.end() ;
-    bool done = false ;
-    try
-    {
-	// go in the reverse order that the modules were loaded
-	while( !done )
-	{
-	    if( e == i ) done = true ;
-	    else
-	    {
-		e-- ;
-		bes_module curr_mod = *e ;
-		string modname = curr_mod._module_name ;
-		BESAbstractModule *o = _moduleFactory.get( modname ) ;
-		if( o )
-		{
-		    o->terminate( modname ) ;
-		    delete o ;
-		}
-	    }
-	}
+    list<bes_module>::iterator i = _module_list.begin();
+    list<bes_module>::iterator e = _module_list.end();
+    bool done = false;
+    try {
+        // go in the reverse order that the modules were loaded
+        // TODO replace this with a reverse iterator. jhrg 12/21/12
+        while (!done) {
+            if (e == i)
+                done = true;
+            else {
+                e--;
+                bes_module curr_mod = *e;
+                string modname = curr_mod._module_name;
+                BESAbstractModule *o = _moduleFactory.get(modname);
+                if (o) {
+                    o->terminate(modname);
+                    delete o;
+                }
+            }
+        }
     }
-    catch( BESError &e )
-    {
-	cerr << "Caught exception during module termination: "
-	     << e.get_message() << endl ;
+    catch( BESError &e ) {
+        cerr << "Caught exception during module termination: " << e.get_message() << endl;
     }
-    catch( ... )
-    {
-	cerr << "Caught unknown exception during terminate" << endl ;
+    catch( ... ) {
+        cerr << "Caught unknown exception during terminate" << endl;
     }
 
-    return BESBaseApp::terminate( sig ) ;
+    return BESBaseApp::terminate(sig);
 }
 
 /** @brief dumps information about this object
@@ -260,30 +230,24 @@ BESModuleApp::terminate( int sig )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESModuleApp::dump( ostream &strm ) const
+void BESModuleApp::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESModuleApp::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _module_list.size() )
-    {
-	strm << BESIndent::LMarg << "loaded modules:" << endl ;
-	BESIndent::Indent() ;
-	list< bes_module >::const_iterator i = _module_list.begin() ;
-	list< bes_module >::const_iterator e = _module_list.end() ;
-	for( ; i != e; i++ )
-	{
-	    bes_module curr_mod = *i ;
-	    strm << BESIndent::LMarg << curr_mod._module_name << ": "
-		 << curr_mod._module_library << endl ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESModuleApp::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_module_list.size()) {
+        strm << BESIndent::LMarg << "loaded modules:" << endl;
+        BESIndent::Indent();
+        list<bes_module>::const_iterator i = _module_list.begin();
+        list<bes_module>::const_iterator e = _module_list.end();
+        for (; i != e; i++) {
+            bes_module curr_mod = *i;
+            strm << BESIndent::LMarg << curr_mod._module_name << ": " << curr_mod._module_library << endl;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "loaded modules: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "loaded modules: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

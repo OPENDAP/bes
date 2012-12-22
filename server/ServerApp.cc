@@ -74,6 +74,7 @@ ServerApp::ServerApp() :
 
 ServerApp::~ServerApp()
 {
+    delete TheBESKeys::TheKeys();
 }
 
 // This is needed so that the master beslistner will get the exit status of

@@ -296,6 +296,15 @@ BESDapTransmit::BESDapTransmit() :
     add_method(DATADDX_SERVICE, BESDapTransmit::send_basic_dataddx);
 }
 
+BESDapTransmit::~BESDapTransmit()
+{
+    remove_method(DAS_SERVICE);
+    remove_method(DDS_SERVICE);
+    remove_method(DDX_SERVICE);
+    remove_method(DATA_SERVICE);
+    remove_method(DATADDX_SERVICE);
+}
+
 void BESDapTransmit::send_basic_das(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 {
     SendDAS sender;

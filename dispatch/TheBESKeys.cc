@@ -45,7 +45,8 @@
 BESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
-BESKeys *TheBESKeys::TheKeys() {
+BESKeys *TheBESKeys::TheKeys()
+{
     if (_instance == 0) {
         string use_ini = TheBESKeys::ConfigFile;
         if (use_ini == "") {
@@ -63,14 +64,14 @@ BESKeys *TheBESKeys::TheKeys() {
                         try_ini = "/usr/etc/bes/bes.conf";
                         int statret = stat(try_ini.c_str(), &buf);
                         if (statret == -1 || !S_ISREG( buf.st_mode )) {
-                            string s = "Unable to find a conf file or module version mismatch." ;
+                            string s = "Unable to find a conf file or module version mismatch.";
 #if 0
                             // This message is confusing because it often appears when
                             // the user has passed -c to besctl. It makes the command
                             // (besctl) more confusing to use. jhrg 10/12/11
                             "Unable to locate BES config file. " + "Please either pass -c "
-                                    + "option when starting the BES, set " + "the environment variable BES_CONF, "
-                                    + "or install in /usr/local/etc/bes/bes.conf " + "or /etc/bes/bes.conf.";
+                            + "option when starting the BES, set " + "the environment variable BES_CONF, "
+                            + "or install in /usr/local/etc/bes/bes.conf " + "or /etc/bes/bes.conf.";
 #endif
                             throw BESInternalFatalError(s, __FILE__, __LINE__);
                         }

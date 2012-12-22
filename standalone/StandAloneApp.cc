@@ -70,6 +70,8 @@ StandAloneApp::~StandAloneApp()
 	delete _client ;
 	_client = 0 ;
     }
+
+    delete TheBESKeys::TheKeys();
 }
 
 void
