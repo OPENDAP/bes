@@ -12,7 +12,7 @@ AT_TESTED([bescmdln])
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
 m4_define([_AT_BESCMD_TEST],   
-[AT_CHECK([bescmdln -h localhost -p 10002 -i $1 || true], [], [stdout], [stderr])
+[AT_CHECK([bescmdln -h localhost -p 10022 -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_XFAIL_IF([test "$3" = "xfail"])
 ])

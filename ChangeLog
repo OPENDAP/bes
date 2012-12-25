@@ -1,3 +1,54 @@
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-21  James Gallagher <jgallagher@opendap.org>
+
+	memory leaks removed from besstandalone: Started at 20, now at 7.
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Updated ChangeLog; reformatted BESDapTransmit.cc so it's easier to
+	read and fixed some of the includes, removing a few unnecessary
+	files.
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	distcheck really fixed this time?
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	Eh - removed the AT_TESTED() macro to quiet a distcheck error about
+	AT_BUGREPORT nt=ot being defined - it is defined in package.m4.
+
+	M    cmdln/testsuite/besTest.at
+
 2012-11-02  James Gallagher <jgallagher@opendap.org>
 
 	distcheck really fixed this time?
@@ -103,12 +154,18 @@
 
 2012-04-04  James Gallagher <jgallagher@opendap.org>
 
-	BESCache3 improvements: Atomic shared and exclusive lock acquisition simplifies use; purge and cache info code now manages its own locks so the caller doesn't need to; shared locks used where they make sense. Passes tests.
-	Fixed BESFileContainer.cc so that it uses a compile-time switch to choose between the original cache and the new one.
+	BESCache3 improvements: Atomic shared and exclusive lock
+	acquisition simplifies use; purge and cache info code now manages
+	its own locks so the caller doesn't need to; shared locks used
+	where they make sense. Passes tests. Fixed BESFileContainer.cc so
+	that it uses a compile-time switch to choose between the original
+	cache and the new one.
 
 2012-04-03  James Gallagher <jgallagher@opendap.org>
 
-	Modified the 'cache lock' so that it keeps the cache info (i.e. lock file) open for the duration and thus can use fcntl(2) atomically to set and release locks.
+	Modified the 'cache lock' so that it keeps the cache info (i.e.
+	lock file) open for the duration and thus can use fcntl(2)
+	atomically to set and release locks.
 
 2012-04-03  James Gallagher <jgallagher@opendap.org>
 
@@ -228,9 +285,6 @@
 
 	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2012-02-07  James Gallagher <jgallagher@opendap.org>
 
 	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
@@ -271,9 +325,6 @@
 
 	M    cmdln/CmdClient.cc
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2012-01-09  James Gallagher <jgallagher@opendap.org>
 
 	Code review.
@@ -424,9 +475,6 @@
 	M    README
 	M    bes.spec
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2011-04-25  James Gallagher <jgallagher@opendap.org>
 
 	Removed the doc rpm
@@ -714,9 +762,6 @@
 
 	Geogrid test baselines updated/fixed.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-09-03  James Gallagher <jgallagher@opendap.org>
 
 	Geogrid test baselines updated/fixed.
@@ -959,9 +1004,6 @@
 	D    csv-handler/config.h.in
 	M    csv-handler/Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-05-04  Patrick West <pwest@ucar.edu>
 
 	3.8.3 release
@@ -1071,9 +1113,6 @@
 	M    dispatch/BESFSFile.cc
 	M    Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-03-11  Patrick West <pwest@ucar.edu>
 
 	Cache now makes sure that there's enough space for the compressed file
@@ -1095,9 +1134,6 @@
 	Updated change log for 1.6.0 hyrax release
 	M    ChangeLog
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-02-23  Patrick West <pwest@ucar.edu>
 
 	Upgraded library versions. Removed command and pptcapi library
@@ -1168,9 +1204,6 @@
 	BES 3.8.0 release branch
 	A    http://scm.opendap.org/svn/branch/bes/3.8.0
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-01-26  mjohnson
 
 	Fixed multiple compiler warnings by removing empty
@@ -2490,9 +2523,6 @@
 
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2009-04-06  Patrick West <pwest@ucar.edu>
 
 	memory cleanup when an exception occurrs
@@ -4144,9 +4174,6 @@
 	M    server/BESServerHandler.cc
 	M    dispatch/BESKeys.cc
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2008-04-04  Patrick West <pwest@ucar.edu>
 
 	Fixed delete of the buffer.
@@ -4259,9 +4286,6 @@
 	M    apache/mod_opendap.cc
 	A    apache/Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2008-03-03  James Gallagher <jgallagher@opendap.org>
 
 	Changes from a code review.
@@ -4924,9 +4948,6 @@
 	M    ChangeLog
 	M    Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-29  Patrick West <pwest@ucar.edu>
 
 	Added bes.m4 file to be included in the distributions. Fixed a
@@ -4950,9 +4971,6 @@
 	A    INSTALL_MacOSX.rtf
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-28  Patrick West <pwest@ucar.edu>
 
 	Updated dods tests in bes/cmdln/testsuite to write the results to a
@@ -4985,9 +5003,6 @@
 	Few more changes for 3.5.2
 	M    ChangeLog
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-13  James Gallagher <jgallagher@opendap.org>
 
 	hyraxctl.in: I've fixed this so that it works on FC6/64-bit.
@@ -6036,9 +6051,6 @@
 	pkg target update. Part of 3.5.1
 	M    ChangeLog
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-22  Patrick West <pwest@ucar.edu>
 
 	Needed to copy off besctl and bes.conf as well as bes-config.
@@ -6054,9 +6066,6 @@
 	If the _cache files do not exist then the rm failed. Added -f.
 	M    Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-21  Patrick West <pwest@ucar.edu>
 
 	distcheck was failing because using the wrong test_config.h. So
@@ -6086,9 +6095,6 @@
 	M    configure.ac
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-18  Patrick West <pwest@ucar.edu>
 
 	Fixed comments that were written with a wide screen.
@@ -6151,9 +6157,6 @@
 
 	Props set on NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-14  James Gallagher <jgallagher@opendap.org>
 
 	In bes.conf.in: Fixed the value of Retry; Removed the UNIX socket.
@@ -6855,9 +6858,6 @@
 	M    bes/bin/Makefile.am
 	M    bes/NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-02-08  Patrick West <pwest@ucar.edu>
 
 	Changed name from Server4 to Hyrax
@@ -7118,9 +7118,6 @@
 	M    INSTALL
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2006-12-28  Nathan Potter <ndp@coas.oregonstate.edu>
 
 	Changed some tests in bes/cmdln/testsuit/show and
@@ -8343,9 +8340,6 @@
 	Updates to ChangeLog, configure.ac and NEWS: info about version 3.1.1.
 	dispatch/bes/bes.conf.in: Fixed problems with names in bug #456.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2006-07-11  Patrick West <pwest@ucar.edu>
 
 	Method in BESInfo set_buffered should be returning whether the
