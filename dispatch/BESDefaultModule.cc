@@ -136,11 +136,10 @@ BESDefaultModule::initialize(int, char**)
 
     BESDEBUG( "bes", "    adding " << DELETE_DEFINITIONS << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITIONS, BESDelDefsResponseHandler::DelDefsResponseBuilder ) ;
-#if 0
-    // no need to add the persistence stuff twice
+
     BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " definition persistence" << endl ) ;
     BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-#endif
+
     BESDEBUG( "bes", "    adding " << SET_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder ) ;
 
@@ -198,10 +197,9 @@ BESDefaultModule::terminate(void)
     BESResponseHandlerList::TheList()->remove_handler( SHOWDEFS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITION ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITIONS ) ;
-#if 0
-    // don't delete it twice
+
     BESDefinitionStorageList::TheList()->deref_persistence( PERSISTENCE_VOLATILE ) ;
-#endif
+
     BESResponseHandlerList::TheList()->remove_handler( SET_CONTEXT ) ;
     BESResponseHandlerList::TheList()->remove_handler( SHOW_CONTEXT ) ;
     BESResponseHandlerList::TheList()->remove_handler( SHOW_ERROR ) ;
