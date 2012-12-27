@@ -145,6 +145,6 @@ catT_SOURCES = catT.cc ../BESCatalogResponseHandler.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 endif
 
-BESCache3Test_SOURCES = BESCache3Test.cc
-BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS)
-BESCache3Test_LDFLAGS = -lcrypto
+# BESCache3Test_SOURCES = BESCache3Test.cc
+# BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS)
+# BESCache3Test_LDFLAGS = -lcrypto

@@ -263,6 +263,8 @@ AC_CONFIG_FILES([Makefile
 		 bes_xml_command.pc
 ])
 
+AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
+AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 

@@ -100,7 +100,7 @@ BESKeys *TheBESKeys::TheKeys()
 
 #if 0
 // I think adding this was a mistake because the bes really needs to restart
-// to have it's configuration updated - either that or this code must gets
+// to have it's configuration updated - either that or this code must get
 // much more complex - e.g., reload all modules (not just their configuration
 // files). jhrg 5/27/11
 void TheBESKeys::updateKeys()
