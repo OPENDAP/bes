@@ -28,5 +28,7 @@ bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc 		\
 
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 
-bes-configuration-tests:
-	cd testsuite && make bes-configuration-tests
+server-tests:
+	besctl start; \
+	(cd testsuite && make server-tests); \
+	besctl stop
