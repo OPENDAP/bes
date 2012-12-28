@@ -139,12 +139,15 @@ AT_BESCMD_DDX_RESPONSE_TEST([hdf4/S2000415.HDF.2.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([hdf4/S2000415.HDF.3.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf4/S2000415.HDF.4.bescmd])
 
-AT_BESCMD_DAS_RESPONSE_TEST([hdf5/tcompound.h5.0.bescmd], [pass])
-AT_BESCMD_DDS_RESPONSE_TEST([hdf5/tcompound.h5.1.bescmd], [pass])
-AT_BESCMD_DDX_RESPONSE_TEST([hdf5/tcompound.h5.2.bescmd], [pass])
-AT_BESCMD_INFO_RESPONSE_TEST([hdf5/tcompound.h5.3.bescmd], [pass])
-AT_BESCMD_ASCII_RESPONSE_TEST([hdf5/tcompound.h5.4.bescmd], [pass])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf5/tcompound.h5.5.bescmd])
+# 12.28.12 jhrg. The hdf5 handlers is calling all its datasets
+# 'virtual' and THG has completely revamped the tests, so the 
+# tcompoind.h5 file isn't there anyway. 
+# AT_BESCMD_DAS_RESPONSE_TEST([hdf5/tcompound.h5.0.bescmd], [pass])
+# AT_BESCMD_DDS_RESPONSE_TEST([hdf5/tcompound.h5.1.bescmd], [pass])
+# AT_BESCMD_DDX_RESPONSE_TEST([hdf5/tcompound.h5.2.bescmd], [pass])
+# AT_BESCMD_INFO_RESPONSE_TEST([hdf5/tcompound.h5.3.bescmd], [pass])
+# AT_BESCMD_ASCII_RESPONSE_TEST([hdf5/tcompound.h5.4.bescmd], [pass])
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([hdf5/tcompound.h5.5.bescmd])
 
 AT_BESCMD_DAS_RESPONSE_TEST([nc/fnoc1.nc.0.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([nc/fnoc1.nc.1.bescmd], [pass])

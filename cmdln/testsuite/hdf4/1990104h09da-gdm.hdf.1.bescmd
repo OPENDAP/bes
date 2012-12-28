@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
-    <setContainer name="gdm" space="catalog">/data/hdf4/1990104h09da-gdm.hdf</setContainer>
+    <setContainer name="gdm" space="catalog">/data/hdf4/1990104h09da-gdm.hdf.gz</setContainer>
     <define name="d">
 	<container name="gdm" />
     </define>
