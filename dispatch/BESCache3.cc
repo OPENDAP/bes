@@ -176,7 +176,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError("Could not get shared lock for " + file_name + ": " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -218,7 +218,7 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError("Could not get exclusive lock for " + file_name + ": " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -259,7 +259,7 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError("Could not get a non-blocking exclusive lock for " + file_name + ": " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -311,7 +311,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError("Could not create locked file (" + file_name + "): " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -395,7 +395,7 @@ void BESCache3::m_initialize_cache_info()
 	}
 	else {
 		if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
-			throw BESInternalError(get_errno(), __FILE__, __LINE__);
+			throw BESInternalError("Could not open the cache info file (" + d_cache_info + "): " + get_errno(), __FILE__, __LINE__);
 		}
 	}
 
@@ -565,7 +565,7 @@ void BESCache3::exclusive_to_shared_lock(int fd)
     lock.l_pid = getpid();
 
     if (fcntl(fd, F_SETLKW, &lock) == -1) {
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        throw BESInternalError("Could not convert an exclusive to a shared lock: " + get_errno(), __FILE__, __LINE__);
     }
 }
 
