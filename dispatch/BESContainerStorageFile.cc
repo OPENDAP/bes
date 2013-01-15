@@ -196,9 +196,9 @@ BESContainerStorageFile::look_for( const string &sym_name )
  * @param type type of data represented by this container
  */
 void
-BESContainerStorageFile::add_container( const string &sym_name,
-					const string &real_name,
-					const string &type )
+BESContainerStorageFile::add_container( const string &,
+					const string &,
+					const string & )
 {
     string err = "Unable to add a container to a file, not yet implemented" ;
     throw BESInternalError( err, __FILE__, __LINE__ ) ;

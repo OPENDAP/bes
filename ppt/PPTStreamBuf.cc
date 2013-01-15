@@ -76,7 +76,7 @@ PPTStreamBuf::open( int fd, unsigned bufsize )
     setp( d_buffer, d_buffer + d_bufsize ) ;
 }
 
-// We're stcuk with this return type because this is inherited from stdc++ streambuf. jhrg 
+// We're stuck with this return type because this is inherited from stdc++ streambuf. jhrg
 int
 PPTStreamBuf::sync()
 {

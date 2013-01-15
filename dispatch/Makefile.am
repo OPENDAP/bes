@@ -148,12 +148,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 # builds using a compile-time directive that selects BESCache
 # or BESCache3 (BESCache2 was a nice idea, but works only on
 # OSX and (maybe) BSD). jhrg 4/4/12
-#    BESCache.cc BESUncompressManager.cc
 #    BESCache2.cc BESUncompressManager2.cc 
-#    BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc
-
-# The old caching code. Still in the build. jhrg 3/23/12
-#   BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc     
 
 # BESProcessEncodedString.cc; moved to apache. jhrg 4/25/12
 
@@ -205,11 +200,6 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 
 # See note above about BESCache3 and BESFileContainer
 #   BESCache2.h BESUncompressManager2.h  
-#   BESCache.h BESUncompressManager.h 
-#   BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h       
-
-# The old caching code. Still in the build. jhrg 3/23/12
-#   BESCache.h BESUncompressManager.h
 
 # BESProcessEncodedString.h. Moved to apache. jhrg 4/25/12
 

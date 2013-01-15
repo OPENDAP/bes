@@ -195,6 +195,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
     return true;
 }
 
+#if 0
 /** Get an exclusive read/write lock on an existing file.
 
  @param file_name The name of the file.
@@ -236,6 +237,7 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
     ref_fd = fd;
     return true;
 }
+#endif
 
 /** Get an exclusive read/write lock on an existing file without blocking.
 
@@ -655,39 +657,43 @@ void BESCache3::unlock_and_close(int fd)
  */
 unsigned long long BESCache3::update_cache_info(const string &target)
 {
-	try {
-		lock_cache_write();
+    try
+    {
+        lock_cache_write();
 
-		if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-			throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
-		// read the size from the cache info file
-		unsigned long long current_size;
-		if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-			throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
+        // read the size from the cache info file
+        unsigned long long current_size;
+        if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+            throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
-		struct stat buf;
-		int statret = stat(target.c_str(), &buf);
-		if (statret == 0)
-			current_size += buf.st_size;
-		else
-			throw BESInternalError("Could not read the size of the new file: " + target + " : " + get_errno(), __FILE__, __LINE__);
+        struct stat buf;
+        int statret = stat(target.c_str(), &buf);
+        if (statret == 0)
+            current_size += buf.st_size;
+        else
+            throw BESInternalError("Could not read the size of the new file: " + target + " : " + get_errno(), __FILE__, __LINE__);
 
-		BESDEBUG("cache_internal", "BES Cache: cache size updated to: " << current_size << endl);
+        BESDEBUG("cache_internal", "BES Cache: cache size updated to: " << current_size << endl);
 
-		if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-			throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
-		if(write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-			throw BESInternalError("Could not write size info from the cache info file!", __FILE__, __LINE__);
+        if (write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+            throw BESInternalError("Could not write size info from the cache info file!", __FILE__, __LINE__);
 
-		unlock_cache();
-		return current_size;
-	}
-	catch (...) {
-		unlock_cache();
-		throw;
-	}
+        unlock_cache();
+        return current_size;
+    }
+    catch (...)
+    {
+        unlock_cache();
+        throw;
+    }
+
+    return 0; // quite warnings
 }
 
 /** @brief look at the cache size; is it too large?
@@ -708,23 +714,27 @@ bool BESCache3::cache_too_big(unsigned long long current_size) const
  */
 unsigned long long BESCache3::get_cache_size()
 {
-	try {
-		lock_cache_read();
+    try
+    {
+        lock_cache_read();
 
-		if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-	        throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
-		// read the size from the cache info file
-		unsigned long long current_size;
-		if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-		    throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+        // read the size from the cache info file
+        unsigned long long current_size;
+        if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+            throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
-		unlock_cache();
-	    return current_size;
-	}
-	catch(...) {
-		unlock_cache();
-		throw;
-	}
+        unlock_cache();
+        return current_size;
+    }
+    catch (...)
+    {
+        unlock_cache();
+        throw;
+    }
+
+    return 0; //quite warnings
 }
 
 

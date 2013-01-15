@@ -27,10 +27,8 @@
 #ifndef BESCache3_h_
 #define BESCache3_h_ 1
 
-// #include <algorithm>
 #include <map>
 #include <string>
-// #include <sstream>
 
 #include "BESObj.h"
 #include "BESDebug.h"

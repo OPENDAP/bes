@@ -95,7 +95,7 @@ BESXMLInterface::build_data_request_plan()
 		    << "] building" << endl ;
     }
 
-    LIBXML_TEST_VERSION
+    // LIBXML_TEST_VERSION
 
     xmlDoc *doc = NULL ;
     xmlNode *root_element = NULL ;

@@ -39,7 +39,7 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
-#include "BESDapTransmit.h"
+//#include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"

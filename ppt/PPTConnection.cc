@@ -465,7 +465,7 @@ PPTConnection::readBufferNonBlocking( char *inBuff,
 	{
 	    string error( "poll error" ) ;
 
-	    // Allow this call to be interrupted with it being an error. jhrg 6/15/11
+	    // Allow this call to be interrupted without it being an error. jhrg 6/15/11
 	    if (errno == EINTR || errno == EAGAIN)
 	        continue;
 

@@ -45,7 +45,7 @@ using std::list ;
 
 class BESInfo ;
 
-/** @brief The service registry allows modules to register services witht he
+/** @brief The service registry allows modules to register services with the
  * BES that they provide.
  *
  * For example, the dap service provides the das, dds, ddx, and dods

@@ -37,18 +37,18 @@ using std::ostringstream;
 //#define USE_DODSFILTER 1
 #undef DODSFILTER
 
-#include "BESDapTransmit.h"
 #ifdef USE_DODSFILTER
-#include "DODSFilter.h"
+#include <DODSFilter.h>
+#include <mime_util.h>
 #endif
-#include "ResponseBuilder.h"
+#include <ResponseBuilder.h>
+#include <Error.h>
+
+#include "BESDapTransmit.h"
 #include "BESContainer.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
-#ifdef USE_DODSFILTER
-#include "mime_util.h"
-#endif
 #include "BESDASResponse.h"
 #include "BESDMRResponse.h"
 #include "BESDDSResponse.h"
@@ -57,7 +57,7 @@ using std::ostringstream;
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
 #include "BESDebug.h"
-#include "Error.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Helpers

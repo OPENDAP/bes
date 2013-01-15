@@ -34,7 +34,7 @@
 #include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
-#include "BESDapTransmit.h"
+//#include "BESDapTransmit.h"
 
 BESDASResponseHandler::BESDASResponseHandler( const string &name )
     : BESResponseHandler( name )
