@@ -1,5 +1,10 @@
 
- $Id$
+Updated for version 3.11.0
+
+Added a new method to the BESDDSResponse and BESDataDDSResponse classes
+so that the contained DDS/DataDDS object can be set/changed by a handler.
+This is used by the GDAL handler so that it can use a version of DDS that
+it has specialized.
 
 Updated for version 3.10.0
 

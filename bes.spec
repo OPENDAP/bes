@@ -9,7 +9,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.10.4
+Version:        3.11.0
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -104,6 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
+chmod g+w $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
 mkdir -p $RPM_BUILD_ROOT%{beslogdir}
 chmod g+w $RPM_BUILD_ROOT%{beslogdir}
@@ -152,6 +153,7 @@ exit 0
 %{bespkidir}/
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
+%attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
 %files devel
 %defattr(-,root,root,-)

@@ -34,35 +34,33 @@
 
 #include <sstream>
 
-using std::ostringstream ;
+using std::ostringstream;
 
 #include "BESCatalogEntry.h"
 #include "BESInfo.h"
 
-BESCatalogEntry::BESCatalogEntry( const string &name, const string &catalog )
-    : _name( name ), _catalog( catalog )
+BESCatalogEntry::BESCatalogEntry(const string &name, const string &catalog) :
+        _name(name), _catalog(catalog)
 {
 }
 
-BESCatalogEntry::~BESCatalogEntry( )
+BESCatalogEntry::~BESCatalogEntry()
 {
     // iterate through the entry list and delete them all
-    map<string,BESCatalogEntry *>::iterator i = _entry_list.begin() ;
-    map<string,BESCatalogEntry *>::iterator e = _entry_list.end() ;
-    for( ; i != e; i++ )
-    {
-	BESCatalogEntry *e = (*i).second ;
-	delete e ;
-	(*i).second = 0 ;
+    map<string, BESCatalogEntry *>::iterator i = _entry_list.begin();
+    map<string, BESCatalogEntry *>::iterator e = _entry_list.end();
+    for (; i != e; i++) {
+        BESCatalogEntry *e = (*i).second;
+        delete e;
+        (*i).second = 0;
     }
 }
 
-void
-BESCatalogEntry::set_size( off_t size )
+void BESCatalogEntry::set_size(off_t size)
 {
-    ostringstream strm ;
-    strm << size ;
-    _size = strm.str() ;
+    ostringstream strm;
+    strm << size;
+    _size = strm.str();
 }
 
 /** @brief dumps information about this object
@@ -72,71 +70,63 @@ BESCatalogEntry::set_size( off_t size )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESCatalogEntry::dump( ostream &strm ) const
+void BESCatalogEntry::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESCatalogEntry::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "BESCatalogEntry::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
 
-    strm << BESIndent::LMarg << "name: " << _name << endl ;
-    strm << BESIndent::LMarg << "catalog: " << _catalog << endl ;
-    strm << BESIndent::LMarg << "size: " << _size << endl ;
-    strm << BESIndent::LMarg << "modification date: " << _mod_date << endl ;
-    strm << BESIndent::LMarg << "modification time: " << _mod_time << endl ;
-    strm << BESIndent::LMarg << "services: " ;
-    if( _services.size() )
-    {
-	strm << endl ;
-	BESIndent::Indent() ;
-	list<string>::const_iterator si = _services.begin() ;
-	list<string>::const_iterator se = _services.end() ;
-	for( ; si != se; si++ )
-	{
-	    strm << BESIndent::LMarg << (*si) << endl ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "name: " << _name << endl;
+    strm << BESIndent::LMarg << "catalog: " << _catalog << endl;
+    strm << BESIndent::LMarg << "size: " << _size << endl;
+    strm << BESIndent::LMarg << "modification date: " << _mod_date << endl;
+    strm << BESIndent::LMarg << "modification time: " << _mod_time << endl;
+    strm << BESIndent::LMarg << "services: ";
+    if (_services.size()) {
+        strm << endl;
+        BESIndent::Indent();
+        list<string>::const_iterator si = _services.begin();
+        list<string>::const_iterator se = _services.end();
+        for (; si != se; si++) {
+            strm << BESIndent::LMarg << (*si) << endl;
+        }
+        BESIndent::UnIndent();
     }
+    else {
+        strm << "none" << endl;
+    }
+
+    strm << BESIndent::LMarg << "metadata: ";
+    if (_metadata.size()) {
+        strm << endl;
+        BESIndent::Indent();
+        map<string, string>::const_iterator mi = _metadata.begin();
+        map<string, string>::const_iterator me = _metadata.end();
+        for (; mi != me; mi++) {
+            strm << BESIndent::LMarg << (*mi).first << " = " << (*mi).second << endl;
+        }
+        BESIndent::UnIndent();
+    }
+    else {
+        strm << "none" << endl;
+    }
+
+    strm << BESIndent::LMarg << "is collection? ";
+    if (_entry_list.size() > 0)
+        strm << "yes" << endl;
     else
-    {
-	strm << "none" << endl ;
-    }
-
-    strm << BESIndent::LMarg << "metadata: " ;
-    if( _metadata.size() )
-    {
-	strm << endl ;
-	BESIndent::Indent() ;
-	map<string,string>::const_iterator mi = _metadata.begin() ;
-	map<string,string>::const_iterator me = _metadata.end() ;
-	for( ; mi != me; mi++ )
-	{
-	    strm << BESIndent::LMarg << (*mi).first << " = "
-	         << (*mi).second << endl ;
-	}
-	BESIndent::UnIndent() ;
-    }
-    else
-    {
-	strm << "none" << endl ;
-    }
-
-    strm << BESIndent::LMarg << "is collection? " ;
-    if( _entry_list.size() > 0 ) strm << "yes" << endl ;
-    else strm << "no" << endl ;
-    strm << BESIndent::LMarg << "count: " << _entry_list.size() << endl ;
+        strm << "no" << endl;
+    strm << BESIndent::LMarg << "count: " << _entry_list.size() << endl;
 
     // display this entries information, then the list
-    BESIndent::Indent() ;
-    map<string,BESCatalogEntry *>::const_iterator i = _entry_list.begin() ;
-    map<string,BESCatalogEntry *>::const_iterator e = _entry_list.end() ;
-    for( ; i != e; i++ )
-    {
-	BESCatalogEntry *e = (*i).second ;
-	e->dump( strm ) ;
+    BESIndent::Indent();
+    map<string, BESCatalogEntry *>::const_iterator i = _entry_list.begin();
+    map<string, BESCatalogEntry *>::const_iterator e = _entry_list.end();
+    for (; i != e; i++) {
+        BESCatalogEntry *e = (*i).second;
+        e->dump(strm);
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

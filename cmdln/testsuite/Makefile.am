@@ -25,7 +25,7 @@ AUTOM4TE = autom4te
  
 TESTSUITE = $(srcdir)/besTest
 
-bes-configuration-tests: atconfig atlocal $(TESTSUITE)
+server-tests: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:

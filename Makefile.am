@@ -41,8 +41,8 @@ dist-hook:
 
 ##############################################################################
 
-bes-configuration-tests:
-	cd cmdln && make bes-configuration-tests
+server-tests:
+	cd cmdln && make server-tests
 
 #########################################################################
 

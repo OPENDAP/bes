@@ -58,6 +58,7 @@ using std::ofstream;
 #include "PPTServer.h"
 #include "BESMemoryManager.h"
 #include "BESDebug.h"
+#include "BESCatalogUtils.h"
 #include "BESServerUtils.h"
 
 #include "BESDefaultModule.h"
@@ -74,6 +75,9 @@ ServerApp::ServerApp() :
 
 ServerApp::~ServerApp()
 {
+    delete TheBESKeys::TheKeys();
+
+	BESCatalogUtils::delete_all_catalogs();
 }
 
 // This is needed so that the master beslistner will get the exit status of

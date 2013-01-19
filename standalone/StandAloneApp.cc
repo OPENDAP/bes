@@ -51,6 +51,7 @@ using std::ofstream ;
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
+#include "BESCatalogUtils.h"
 #include "CmdTranslation.h"
 
 StandAloneApp::StandAloneApp()
@@ -65,11 +66,14 @@ StandAloneApp::StandAloneApp()
 
 StandAloneApp::~StandAloneApp()
 {
-    if( _client )
-    {
-	delete _client ;
-	_client = 0 ;
-    }
+    if (_client) {
+		delete _client;
+		_client = 0;
+	}
+
+	delete TheBESKeys::TheKeys();
+
+	BESCatalogUtils::delete_all_catalogs();
 }
 
 void

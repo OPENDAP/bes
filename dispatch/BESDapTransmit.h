@@ -42,7 +42,7 @@ class BESDapTransmit : public BESBasicTransmitter
 {
 public:
     			BESDapTransmit() ;
-    virtual		~BESDapTransmit() {}
+    virtual		~BESDapTransmit() ;
     static void		send_basic_das( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
     static void		send_basic_dds( BESResponseObject *obj,

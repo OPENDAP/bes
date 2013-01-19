@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,48 +35,55 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "BESObj.h"
 
-class BESCatalogEntry ;
+class BESCatalogEntry;
 
 /** @brief abstract base class catalog object. Derived classes know how to
  * show nodes and leaves in a catalog.
  */
-class BESCatalog : public BESObj {
+class BESCatalog: public BESObj {
 private:
-    string			_catalog_name ;
-    unsigned int		_reference ;
+    string _catalog_name;
+    unsigned int _reference;
 
-    				BESCatalog() {}
+    BESCatalog()
+    {
+    }
+
 protected:
-				BESCatalog( const string &catalog_name )
-				    : _catalog_name( catalog_name ),
-				      _reference( 0 ) {} ;
+    BESCatalog(const string &catalog_name) :
+            _catalog_name(catalog_name), _reference(0)
+    {
+    }
+
 public:
-    virtual			~BESCatalog( void ) {} ;
-    virtual void		reference_catalog()
-				{
-				    _reference++ ;
-				}
-    virtual unsigned int	dereference_catalog()
-				{
-				    if( !_reference )
-					return _reference ;
-				    return --_reference ;
-				}
+    virtual ~BESCatalog(void)
+    {
+    }
 
-    virtual string		get_catalog_name()
-				{
-				    return _catalog_name ;
-				}
-    virtual BESCatalogEntry *	show_catalog( const string &container,
-					      const string &coi,
-					      BESCatalogEntry *entry ) = 0 ;
+    virtual void reference_catalog()
+    {
+        _reference++;
+    }
 
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual unsigned int dereference_catalog()
+    {
+        if (!_reference)
+            return _reference;
+        return --_reference;
+    }
+
+    virtual string get_catalog_name()
+    {
+        return _catalog_name;
+    }
+
+    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry) = 0;
+
+    virtual void dump(ostream &strm) const = 0;
 };
 
 #endif // I_BESCatalog_h
-

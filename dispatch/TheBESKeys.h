@@ -49,6 +49,9 @@ class TheBESKeys : public BESKeys
 #endif
     static string ConfigFile ;
     static BESKeys *TheKeys() ;
+
+    // Tried adding this; didn't work. What's being leaked from the keys? jhrg 12/21/12
+    //virtual ~TheBESKeys() {}
 } ;
 
 #endif // E_TheBESKeys_h

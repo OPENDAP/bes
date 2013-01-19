@@ -1,3 +1,10 @@
+News for version 3.11.0
+
+Added a new method to the BESDDSResponse and BESDataDDSResponse classes
+so that the contained DDS/DataDDS object can be set/changed by a handler.
+This is used by the GDAL handler so that it can use a version of DDS that
+it has specialized.
+
 News for 3.10.4
 
 Merged to trunk; tagged.
@@ -6,7 +13,7 @@ News for version 3.10.2
 
 Changed the way the RPM packages install so that the 'bes' group has
 write permissions on both /var/log/bes and /var/run/bes. The latter is
-not strickly needed, but might be useful at some point.
+not strictly needed, but might be useful at some point.
 
 Changed the default port for the BES to 10022 dues to conflicts on CentOS.
 

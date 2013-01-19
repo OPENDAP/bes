@@ -57,6 +57,12 @@ class BESDDSResponse: public BESDapResponse {
 
         virtual void dump(ostream &strm) const;
 
+        /**
+         * Set the response object's DDS. The caller should probably
+         * free the existing DDS object before calling this method.
+         */
+        void set_dds(DDS *ddsIn) { _dds = ddsIn; }
+
         DDS * get_dds()
         {
             return _dds;

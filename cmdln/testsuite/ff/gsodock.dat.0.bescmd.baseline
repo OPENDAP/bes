@@ -11,7 +11,7 @@ Attributes {
     }
     Salinity {
     }
-    DO%20 {
+    DO_percent {
     }
     pH {
     }
