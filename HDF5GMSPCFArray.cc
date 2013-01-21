@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 /// Currently this only applies to ACOS level 2 data.
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011 The HDF Group
+/// Copyright (C) 2011-2012 The HDF Group
 ///
 /// All rights reserved.
 
@@ -244,33 +244,19 @@ cerr <<"var name "<<varname <<endl;
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    long long  *orig_val = NULL;
-    int *val = NULL;
     hid_t read_ret = -1;
 
-    try {
-        orig_val = new long long[nelms];
-        val = new int[nelms];
-    }
-    catch(...) {
-        if (rank >0) 
-            H5Sclose(mspace);
-        H5Tclose(dtypeid);
-        H5Tclose(memtype);
-        H5Sclose(dspace);
-        H5Dclose(dsetid);
-        H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-        ostringstream eherr;
-        eherr << "The type size of the HDF5 dataset " << varname
-              << " is not right. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
 
+    vector<long long>orig_val;
+    orig_val.resize(nelms);
+
+    vector<int> val;
+    val.resize(nelms);
+ 
     if (0 == rank) 
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,orig_val);
+        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,&orig_val[0]);
     else 
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,orig_val);
+        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&orig_val[0]);
 
     if (read_ret < 0) {
         if (rank >0) 
@@ -308,9 +294,7 @@ cerr <<"var name "<<varname <<endl;
         val[i] = (orig_val[i]/num_cut)%max_num;
 
 
-    set_value ((dods_int32 *)val,nelms);
-    delete[] val;
-    delete[] orig_val;
+    set_value ((dods_int32 *)&val[0],nelms);
        
     if (rank >0) 
         H5Sclose(mspace);

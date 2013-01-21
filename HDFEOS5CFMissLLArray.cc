@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011 The HDF Group
+/// Copyright (C) 2011-2012 The HDF Group
 ///
 /// All rights reserved.
 
@@ -49,65 +49,37 @@ BaseType *HDFEOS5CFMissLLArray::ptr_duplicate()
 
 bool HDFEOS5CFMissLLArray::read()
 {
-    int* offset = NULL;
-    int* count = NULL ;
-    int* step = NULL;
-    hsize_t* hoffset = NULL;
-    hsize_t* hcount = NULL;
-    hsize_t* hstep = NULL;
     int nelms = -1;
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
 
-#if 0
-cerr<<"coming to read function"<<endl;
-cerr<<"file name " <<filename <<endl;
-cerr <<"var name "<<varname <<endl;
-#endif
     if (eos5_projcode != HE5_GCTP_GEO) 
         throw InternalErr (__FILE__, __LINE__,"The projection is not supported.");
                           
 
-    if (rank < 0) 
-        throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is negative.");
-
-    else if (rank == 0) 
-        nelms = 1;
+    if (rank <=  0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of dimension of this variable should be greater than 0");
     else {
-        try {
-            offset = new int[rank];
-            count = new int[rank];
-            step = new int[rank];
-            hoffset = new hsize_t[rank];
-            hcount = new hsize_t[rank];
-            hstep = new hsize_t[rank];
-        }
 
-        catch (...) {
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-            throw InternalErr (__FILE__, __LINE__,
-                          "Cannot allocate the memory for offset,count and setp.");
-        }
-
-        nelms = format_constraint (offset, step, count);
-
-        for (int i = 0; i <rank; i++) {
-            hoffset[i] = (hsize_t) offset[i];
-            hcount[i] = (hsize_t) count[i];
-            hstep[i] = (hsize_t) step[i];
-        }
+         offset.resize(rank);
+         count.resize(rank);
+         step.resize(rank);
+         nelms = format_constraint (&offset[0], &step[0], &count[0]);
     }
+
+    if (nelms <= 0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments is negative.");
+
 
     float start = 0.0;
     float end   = 0.0;
-    float *val  = NULL;
-    try {
-        val = new float[nelms];
-    }
-    catch (...) {
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-        throw InternalErr (__FILE__, __LINE__, "Cannot allocate memory buffer.");
-    }
 
+    vector<float>val;
+    val.resize(nelms);
+    
 
     if (CV_LAT_MISS == cvartype) {
         
@@ -122,9 +94,16 @@ cerr <<"var name "<<varname <<endl;
             start = point_lower;
             end = point_upper;
         }
+
+        if(ydimsize <=0) 
+           throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments should be greater than 0.");
            
         float lat_step = (end - start) /ydimsize;
 
+        // FIXME There are ways to get to this code where offset and step are still null
+        // or have not been allocated
+        // Now offset,step and val will always be valid. line 74 and 85 assure this.
         if ( HE5_HDFE_CENTER == eos5_pixelreg ) {
             for (int i = 0; i < nelms; i++)
                 val[i] = ((float)(offset[0]+i*step[0] + 0.5f) * lat_step + start) / 1000000.0;
@@ -149,8 +128,14 @@ cerr <<"var name "<<varname <<endl;
             start = point_right;
             end = point_left;
         }
+
+        if(xdimsize <=0) 
+           throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments should be greater than 0.");
         float lon_step = (end - start) /xdimsize;
 
+        // FIXME offset and step
+        // fixed already.
         if (HE5_HDFE_CENTER == eos5_pixelreg) {
             for (int i = 0; i < nelms; i++)
                 val[i] = ((float)(offset[0] + i *step[0] + 0.5f) * lon_step + start ) / 1000000.0;
@@ -167,12 +152,7 @@ for (int i =0; i <nelms; i++)
 cerr <<"final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
-    set_value ((dods_float32 *) val, nelms);
-    if (val !=NULL) 
-        delete[] (float*)val;
-
-    HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-
+    set_value ((dods_float32 *) &val[0], nelms);
     return false;
 }
 

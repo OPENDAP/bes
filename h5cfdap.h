@@ -1,7 +1,7 @@
 // This file is the main header file for the main holder of 
 // the HDF5 OPeNDAP data handler for the CF option
 
-// Copyright (c) 2009,2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free

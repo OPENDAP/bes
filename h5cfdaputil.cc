@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -28,7 +28,7 @@
 ///  
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011 The HDF Group
+/// Copyright (C) 2011-2012 The HDF Group
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////

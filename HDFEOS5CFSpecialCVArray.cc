@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011 The HDF Group
+/// Copyright (C) 2011-2012 The HDF Group
 ///
 /// All rights reserved.
 
@@ -210,21 +210,21 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    float *val = NULL;
-    float *total_val = NULL;
-    float *orig_val = NULL;
-    try {
-        val = new float[nelms];
-        orig_val = new float[total_num_elm-1];
-        total_val = new float[total_num_elm];
-    }
-    catch (...) {
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
-        throw InternalErr (__FILE__, __LINE__,
-                          "Cannot allocate the memory for offset,count and setp.");
-    }
+    if (nelms <= 0 || (total_num_elm -1) <=0 ||total_num_elm < 0) 
+       throw InternalErr(__FILE__,__LINE__,
+                         "Number of elements must be greater than 0");
 
-    if (H5Aread(cv_attr_id,attr_mem_type, (void*)orig_val)<0){
+    vector<float> val;
+    val.resize(nelms);
+
+    vector<float>orig_val;
+    orig_val.resize(total_num_elm-1);
+  
+    vector<float>total_val;
+    total_val.resize(total_num_elm);
+
+
+    if (H5Aread(cv_attr_id,attr_mem_type, (void*)&orig_val[0])<0){
         string msg = "cannot retrieve the value of  the attribute ";
         msg += cv_attr_name;
         H5Tclose(attr_type);
@@ -264,17 +264,15 @@ for (int i = 1; i < total_num_elm; i++)
 cerr<<"total_val "<< total_val[i] <<endl;
 #endif
  
-    for (int i = 0; i <nelms; i++)
+	// FIXME offset and/or step can be null
+	for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];
 #if 0
 for (int i = 0; i <nelms; i++)
 cerr <<"val "<< val[i] <<endl;
 #endif
 
-    set_value((dods_float32*)val, nelms);
-    delete []val;
-    delete []total_val;
-    delete [](float*)orig_val;
+    set_value((dods_float32*)&val[0], nelms);
     HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
     H5Tclose(attr_type);
     H5Tclose(attr_mem_type);

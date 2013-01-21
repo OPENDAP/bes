@@ -3,7 +3,7 @@
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //
-// Copyright (c) 2007-2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free

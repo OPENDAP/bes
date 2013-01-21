@@ -1,6 +1,6 @@
 Summary:         HDF5 data handler for the OPeNDAP Data server
 Name:            hdf5_handler
-Version:         2.1.0
+Version:         2.1.1
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 

@@ -1,3 +1,9 @@
+News for version 2.1.1
+
+This version changes the _FillValue datatype to be consistent with the variable datatype.
+This is not required by CF, however, netCDF-3 has this requirement.
+This change makes fileout_netcdf work smoothly for some NASA products.
+
 News for version 2.1.0
 
 This version improves the performance of hdf5_handler in dealing with big files

@@ -2,7 +2,7 @@
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
 // Copyright (c) 2005 OPeNDAP, Inc.
-// Copyright (c) 2007 HDF Group, Inc.
+// Copyright (c) 2007-2012 The HDF Group, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //         Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 // 

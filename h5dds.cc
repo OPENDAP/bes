@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007, 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -108,6 +108,7 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     for (hsize_t i = 0; i < nelems; i++) {
 
         char *oname = NULL;
+//        vector <char>oname;
 
         try {
 
@@ -121,7 +122,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
-            // Obtain the name of the object 
+            // Obtain the name of the object
+            // TODO vector<char>
             oname = new char[(size_t) oname_size + 1];
 
             if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
@@ -168,11 +170,17 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                     << endl);
 
                 // Get the C char* of the object name
-                char *t_fpn = new char[full_path_name.length() + 1];
-                (void)full_path_name.copy(t_fpn, full_path_name.length());
+                // FIXME t_fpn leaked
+
+                vector <char>t_fpn;
+                t_fpn.resize(full_path_name.length()+1);
+                copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
+
+//                char *t_fpn = new char[full_path_name.length() + 1];
+ //               (void)full_path_name.copy(t_fpn, full_path_name.length());
                 t_fpn[full_path_name.length()] = '\0';
 
-                hid_t cgroup = H5Gopen(pid, t_fpn,H5P_DEFAULT);
+                hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
                 if (cgroup < 0){
 		   throw InternalErr(__FILE__, __LINE__, "h5_dds handler: H5Gopen() failed.");
 		}
@@ -181,13 +189,13 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 // Note the function get_hardlink is defined in h5das.cc
 		string oid = get_hardlink(pid, oname);
                 if (oid == "") {
-                    depth_first(cgroup, t_fpn, dds, fname);
+                    depth_first(cgroup, &t_fpn[0], dds, fname);
                 }
 
                 if (H5Gclose(cgroup) < 0){
 		   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
 		}
-                if (t_fpn) {delete[]t_fpn; t_fpn = NULL;}                
+  //              if (t_fpn) {delete[]t_fpn; t_fpn = NULL;}                
                 break;
             }
 
@@ -407,6 +415,9 @@ static BaseType *Get_bt(const string &vname,
     switch (btp->type()) {
 
     case dods_byte_c: {
+    	// TODO In this/these case(s) you know the type is a dods_byte so you can
+    	// safely use static_cast<>() instead of the more expensive dynamic_cast
+    	// operator. Not a huge deal, but static_cast is faster.
         HDF5Byte &v = dynamic_cast < HDF5Byte & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);

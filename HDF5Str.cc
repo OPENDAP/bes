@@ -4,7 +4,7 @@
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang
 // <myang6@hdfgroup.org> 
 
-// Copyright (c) 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -33,7 +33,7 @@
 /// \author Kent Yang       (myang6@hdfgroup.org)
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
-/// Copyright (c) 2007 HDF Group
+/// Copyright (c) 2007-2012 HDF Group
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,10 +88,11 @@ bool HDF5Str::read()
 	throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
     }
     if (get_dap_type(ty_id) == "String") {
-	char *chr = new char[size + 1];
-	get_data(dset_id, (void *) chr);
+        vector<char>chr;
+        chr.resize(size+1);
+	get_data(dset_id, (void *) &chr[0]);
 	set_read_p(true);
-	string str = chr;
+        string str(chr.begin(),chr.end());
 	set_value(str);
 
         // Release the handles.
@@ -102,8 +103,6 @@ bool HDF5Str::read()
             throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
         }
 
-
-	delete[] chr;
     }
 
     if (get_dap_type(ty_id) == "Structure") {

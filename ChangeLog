@@ -1,3 +1,21 @@
+2012-11-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HDF5GCFProduct.cc:added a dummy netCDF-4 handling function	
+	* HDF5GCFProduct.h:added a dummy netCDF-4 handling function	
+	* heos5cfdap.cc:handled the concatenation of coremetadata.0 and 
+	  coremeata.0.1
+	* h5commoncfdap.cc:
+   	  fixed a critical typo. This caused a bug to access BUV files
+	* h5gmcfdap.cc:
+	  fixed a critical typo. This caused a bug to access BUV files
+
+2012-10-26  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* NEWS 
+	* configure.ac
+	* hdf5_handler.spec
+	changed version to 2.1.1.
+
 2012-06-08  hyoklee
 
 	added a special note about make check failure in Hyrax-1.7.1.
@@ -30,7 +48,7 @@
 
 	Removed useless file.
 
-2012-05-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-05-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* reengineered handler for the better support of CF option.
 
 2012-02-01  James Gallagher <jgallagher@opendap.org>
@@ -75,23 +93,23 @@
 
 	corrected typo in error outputs.
 
-2011-12-08  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2011-12-08  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5Array.cc (m_array_of_reference): corrected typos.
 
-2011-12-01  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2011-12-01  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5Array.cc (m_array_of_reference): fixed bug in object reference
 	handling.
 
-2011-11-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2011-11-22  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5das.cc (is_mappable): added two more unsupported types checking.
 
-2011-10-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2011-10-28  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* HDF5Array.cc (read): handled Int8 to Int16 conversion correctly.
 
-2011-10-27  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2011-10-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5das.cc (read_objects): added Int8 to Int16 conversion.
 	* h5get.cc (get_dap_type): changed Int16 to Int8.
@@ -183,7 +201,7 @@
 	Bug fixes for augmented files that have DIMENSION_LIST attributes.
 	Bug fixes for debug mode.
 
-2010-12-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2010-12-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	h5das.cc: bug fixes for augmented files (HIRDLS v5 / MLS v3).
 	h5das.h: bug fixes for augmented files (HIRDLS v5 / MLS v3).
@@ -240,7 +258,7 @@
 	Removed old EXTRADIST items (removed some of the old, unused,
 	dejaGNU files.
 
-2010-04-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-04-28  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5get.cc has H5Aclose(). This improves performance under
           HDF5-1.8.x library.
@@ -248,14 +266,14 @@
 	* h5das.cc has H5Aclose(). This improves performance under
           HDF5-1.8.x library.
 
-2010-02-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-02-10  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc has new limit(=30) for StructMetadata files to scan.
 	* HDF5RequestHandler.cc has more meaningful error message when it 
 	  deals with multiple Swaths case.
 	* h5das.cc checks null pointers when it adds group information.
 
-2010-02-03  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2010-02-03  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc is cleaned up and checks 30 metadata files
 
@@ -276,7 +294,7 @@
 
 	Bug fix Ticket #1211 and documentation update.
 
-2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-01-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* doc/Doxygen is added.
 	* configure.ac set version to 1.3.5 in AC_INIT().
@@ -285,17 +303,17 @@
 	* h5das.cc updated comments for Doxygen.
 	* HE5Parser.h removed useless boolean variables.
 
-2010-01-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-01-20  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5das.cc removed double quotes.
 	* h5das.cc renamed COARDS,GrADS to CF-1.4.
 	* h5das.cc added fake in lev/time long_name attribute.
 
-2010-01-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-01-19  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	Corrected the missing dimension names in the old(<2007) OMUVB product.
 
-2010-01-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2010-01-12  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	Corrected coordinates attribute for 2D-swath case.
 	
@@ -309,11 +327,11 @@
 	* common.h is removed.
 	* hdf5_handler.h has the contents of the old common.h.
 	
-2009-12-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2009-12-18  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc fix for Ticket #1460.
 
-2009-12-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2009-12-11  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* hdfeos_das.lex/y is renamed to he5das.lex/y 
 	* hdfeos.lex/y is renamed to he5dds.lex/y 
@@ -322,7 +340,7 @@
 	* H5ShortName.h/cc is renamed to HE5ShortName.h/cc.
 	* H5PathFinder.h/cc is renamed to HDF5PathFinder.h/cc.
 
-2009-12-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2009-12-10  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5_handler.h is renamed to hdf5_handler.h and is cleaned-up.
 	* H5Git.h/cc is renamed to h5get.h/cc to distinguish them from classes.
@@ -343,7 +361,7 @@
 
 	Documented change for swath and dimension scale support.
 
-2009-10-02  H. Joe Lee  <hyoklee@hdfgroup.org>
+2009-10-02  H. Lee  <hyoklee@hdfgroup.org>
 
 	Added support for HDF5 dimension scale.
 	Added support for HDF-EOS5 OMI swath.
@@ -777,9 +795,6 @@
 
 	Memory leak problem is fixed. See Ticket #1079.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2008-03-12  James Gallagher <jgallagher@opendap.org>
 
 	More code review changes.
@@ -1017,16 +1032,16 @@
 	Changed the number of arguments in depth_first() function for
 	HDF5RequestHander.cc.
 	
-2007-11-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2007-11-29  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5RequestHander.cc (hdf5_build_dds) Changed the number of arguments 
 	in depth_first() function for DAS generation.
 
-2007-11-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2007-11-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* H5EOS.cc (get_EOS_name) A new function is added.
 	
-2007-11-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2007-11-07  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h5das.cc (depth_first)  Removed the redundant argument "fname".
 

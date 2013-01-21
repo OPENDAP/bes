@@ -35,6 +35,15 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.1.1
+----------------------------
+
+  This version fixes a few bugs. It handles the concatenation of metadata files
+ in a format like "coremetadata.0" and "coremeata.0.1." In previous versions,
+it handled only "coremetadata.x" format. It fixes a bug to access GESDISC 
+BUV Ozone files.
+
+
 What's new for version 2.1.0
 ----------------------------
 

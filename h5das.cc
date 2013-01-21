@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007, 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -385,6 +385,12 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         }
 
         case H5T_FLOAT: {
+        	// FIXME rep is leaked by the throw - replace with vector<char>
+                // James, I try to change rep to vector<char>, but it fails.
+                // I guess it is because of the c string functions we are using.
+                // It may take longer to fix this.
+                // Given the time constraint, I leave this and we will tackle in
+                // the next release. KY 2012-09-28
             rep = new char[32];
             memset(rep, 0, 32);
             char gps[30];
@@ -497,7 +503,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into the DAS table.
     char *print_rep = NULL;
-    char *temp_buf = NULL;
+    vector<char>temp_buf;
 
     try {
         bool ignore_attr = false;
@@ -531,15 +537,16 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                  DBG(cerr <<"attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
 
                 // Variable length string attribute values only store pointers of the actual string value.
-                temp_buf = new char[(size_t)attr_inst.need];
-	        if (H5Aread(attr_id, ty_id, temp_buf) < 0) {
+                temp_buf.resize((size_t)attr_inst.need);
+                
+	        if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
                     H5Sclose(temp_space_id);
                     H5Aclose(attr_id);
 	       	    throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
                 }
 
                 char *temp_bp;
-                temp_bp = temp_buf;
+                temp_bp = &temp_buf[0];
                 char* onestring;
                 for (unsigned int temp_i = 0; temp_i <attr_inst.nelmts; temp_i++) {
 
@@ -556,24 +563,23 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                     // going to the next value.
                     temp_bp +=H5Tget_size(attr_inst.type);
                 }
-                if (temp_buf) {
+                if (temp_buf.empty() != true) {
                    // Reclaim any VL memory if necessary.
-                   H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,temp_buf);
-                   delete []temp_buf;
+                   H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+                   temp_buf.clear();
                 }
                 H5Sclose(temp_space_id);
             }
             else {
 
-	        char *value = new char[attr_inst.need + sizeof(char)];
-	        memset(value, 0, attr_inst.need + sizeof(char));
+                vector<char> value;
+                value.resize(attr_inst.need + sizeof(char));
 	        DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
   
 	        // Read HDF5 attribute data.
-	        if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
+	        if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
 	           // value is deleted in the catch block below so
 		   // shouldn't be deleted here. pwest Mar 18, 2009
-		   //delete[] value;
 		   throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
 	        }
 	        DBG(cerr << "H5Aread(" << attr_inst.name << ")=" << value << endl);
@@ -581,12 +587,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	        // For scalar data, just read data once.
 	        if (attr_inst.ndims == 0) {
 		    for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-		        print_rep = print_attr(ty_id, loc, value);
+		        print_rep = print_attr(ty_id, loc, &value[0]);
 		        if (print_rep != NULL) {
 			    attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
-		        }
-		        delete[] print_rep;
-		        print_rep = NULL;
+		            delete[] print_rep;
+		            print_rep = NULL;
+                        }
 		    }
 
 	        }
@@ -600,7 +606,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 		    int elesize = (int) H5Tget_size(attr_inst.type);
 		    if (elesize == 0) {
 		        DBG(cerr << "=read_objects(): elesize=0" << endl);
-		        delete[] value;
+		        //delete[] value;
 		        if (H5Aclose(attr_id) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
 		        }
@@ -610,7 +616,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
                     // Due to the implementation of print_attr, the attribute value will be 
                     // written one by one.
-		    char *tempvalue = value;
+		    char *tempvalue = &value[0];
                     // cerr <<"nelems = "<<(int)attr_inst.nelmts <<endl;
 
 //		    for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
@@ -633,7 +639,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 			        print_rep = NULL;
 			    }
 			    else {
-                                delete[] value;
                                 if (H5Aclose(attr_id) < 0) {
                                    throw InternalErr(__FILE__, __LINE__, "unable to close HDF5 attibute id");
                                 }
@@ -644,8 +649,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 		 //       } // for (int sizeindex = 0; ...
 		 //   } // for (int dim = 0; ...
 	        } // if attr_inst.ndims != 0
-	        delete[] value;
-	        value = NULL;
             }
 	    if (H5Aclose(attr_id) < 0) {
 		throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
@@ -656,8 +659,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     catch (...) {
 	if (print_rep)
 	    delete[] print_rep;
-        if (temp_buf)
-           delete[] temp_buf;
 	throw;
     }
 
@@ -786,6 +787,8 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     char *buf = 0;
     try {
+    	// TODO replace buf with vector<char> buf(val_size + 1);
+    	// then access as a char * using &buf[0]
 	buf = new char[(val_size + 1) * sizeof(char)];
 	// get link target name
 	if (H5Lget_val(pgroup, oname.c_str(), (void*) buf,val_size + 1, H5P_DEFAULT)
@@ -871,9 +874,11 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 // cerr<<"comment_size= "<<comment_size <<endl;
 
     if (comment_size > 0) {
-
-        char* comment = new char[comment_size+1];
-        if (H5Oget_comment(oid,comment,comment_size+1)<0) {
+    	// FIXME comment leaked
+        //char* comment = new char[comment_size+1];
+        vector<char> comment;
+        comment.resize(comment_size+1);
+        if (H5Oget_comment(oid,&comment[0],comment_size+1)<0) {
 	    throw InternalErr(__FILE__, __LINE__,
                           "Could not retrieve the comment.");
         }
@@ -883,9 +888,9 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
         AttrTable *at = das.get_table(varname);
         if (!at)
             at = das.add_table(varname, new AttrTable);
-        at->append_attr("HDF5_COMMENT", STRING, comment);
+        at->append_attr("HDF5_COMMENT", STRING, &comment[0]);
 
-        delete[] comment;
+        //delete[] comment;
     }
 }
 

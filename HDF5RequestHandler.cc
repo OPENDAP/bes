@@ -148,6 +148,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->clear_container() ;
     }
     catch(InternalErr & e) {
+    	// TODO You can collapse this to 'throw BESDapError(e.get_er ...);'
+    	// Not a big deal...
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
         throw ex;
@@ -188,7 +190,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     try {
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
-
+#if 0
+        // Set the filename/dataset name for the DDS to be the hdf5 filename.
+        // The dataset name is showing up as 'virtual' which is the default
+        // set by the bes. I think we probably want the real filename.
+        // Added jhrg 12/28/12
+        dds->set_dataset_name(dhi.container->get_symbolic_name());
+#endif
         if( found ) {
             // cerr<<"found it" <<endl;
 
@@ -323,7 +331,10 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DataDDS *dds = bdds->get_dds();
-
+#if 0
+        //Added jhrg 12/28/12 See above
+        dds->set_dataset_name(dhi.container->get_symbolic_name());
+#endif
         if(!usecf) { // This is the default option
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
         }

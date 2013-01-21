@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c)  2011 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c)  2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -343,6 +343,12 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const string
         case tid:                                           \
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
         break;
+    // FIXME bt leaked by throw
+    // James, I don't know why bt is leaked below.  Since here we basically
+    // follow the netCDF handler(ncdds.cc), could you give us some advice?
+    // If it is still causing potential leaks, we can fix this in the next release.
+    // KY 2012-09-28
+
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
         HANDLE_CASE(H5CHAR,HDF5CFInt16);
@@ -513,7 +519,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); it_ra++) {
-            gen_dap_oneobj_das(at,*it_ra);
+            gen_dap_oneobj_das(at,*it_ra,NULL);
         }
     }
 
@@ -526,7 +532,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                gen_dap_oneobj_das(at,*it_ra);
+                gen_dap_oneobj_das(at,*it_ra,NULL);
             }
         }
     }
@@ -541,7 +547,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
             for (it_ra = (*it_v)->getAttributes().begin();
                  it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
-                gen_dap_oneobj_das(at,*it_ra);
+                gen_dap_oneobj_das(at,*it_ra,*it_v);
             }
         }
     }
@@ -557,7 +563,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
             for (it_ra = (*it_cv)->getAttributes().begin();
                  it_ra != (*it_cv)->getAttributes().end(); ++it_ra) {
-                 gen_dap_oneobj_das(at,*it_ra);
+                 gen_dap_oneobj_das(at,*it_ra,*it_cv);
             }
         }
     }
@@ -1447,16 +1453,37 @@ else cerr <<"xmlmeta data has the suffix" <<endl;
 
 int get_metadata_num(const string & meta_str) {
 
+    // The normal metadata names should be like coremetadata.0, coremetadata.1 etc.
+    // We just find a not so nice coremetadata names such as coremetadata.0, coremetadata.0.1 for a HIRDLS-MLS-Aura-L3
+    // We need to handle them. Here we assume no more than two dots in a name series. KY 2012-11-08
     size_t dot_pos = meta_str.find(".");
-    if (dot_pos == string::npos) 
+    if (dot_pos == string::npos) // No dot
         return -1;
-    else {
-       string num_str = meta_str.substr(dot_pos+1);
-       stringstream ssnum(num_str);
-       int num;
-       ssnum >> num;
-       return num;
+    else if (meta_str.find_first_of(".") == meta_str.find_last_of(".")) { // One dot
+        string num_str = meta_str.substr(dot_pos+1);
+        stringstream ssnum(num_str);
+        int num;
+        ssnum >> num;
+        if (false == ssnum) 
+            throw InternalErr(__FILE__,__LINE__,"Suffix after dots is not a number.");
+        return num;
     }
+    else { // Two dots
+        string str_after_first_dot = meta_str.substr(dot_pos+1);
+        if (str_after_first_dot.find_first_of(".") != str_after_first_dot.find_last_of("."))    
+            throw InternalErr(__FILE__,__LINE__,"Currently don't support metadata names containing more than two dots.");
+        // Here we don't check if names are like coremetadata.0 coremetadata.0.0 etc., Having ".0 .0.0" is,if not mistaken,
+        // is insane. 
+        // Instead we hope that the data producers will produce data like coremetadata.0 coremetadata.0.1 coremeatadata.0.2
+        // KY 2012-11-08
+        size_t second_dot_pos = str_after_first_dot.find(".");
+        string num_str = str_after_first_dot.substr(second_dot_pos+1);
+        stringstream ssnum(num_str);
+        int num;
+        ssnum >> num;
+        return num;
+    }
+        
 }
        
        
