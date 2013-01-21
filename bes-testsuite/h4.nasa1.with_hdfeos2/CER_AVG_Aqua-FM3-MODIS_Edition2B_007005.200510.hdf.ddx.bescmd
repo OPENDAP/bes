@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf" space="catalog">/data/CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf</setContainer>
+    <define name="d">
+	<container name="CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

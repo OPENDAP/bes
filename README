@@ -1,3 +1,435 @@
+Updated for version 3.10.1 (27 Nov 2012)
+
+ This version fixes a bug for reading Int16 type dataset from NASA MODIS 09 
+ products.
+
+Updated for version 3.10.0 (30 Sep 2012)
+
+1. Introduction
+
+  The HDF4 handler version 3.10.0 is a major update for the CF support. The 
+README for this version is *solely* for the CF support. 
+
+  The README consists of several sections: Usage, New Features, Bug fixes, 
+Code Improvement, Limitations, and Known Issues.
+
+2. Usage
+
+  The current version uses BES Keys to make the configuration of the CF option 
+more flexible and easier. The current version also doesn't require
+the HDF-EOS2 library to support the CF conventions for non-HDFEOS2 HDF4 files.
+Check the USAGE for the detailed information.
+
+3. New Features
+
+3.1 Testsuite Expansion
+
+  If you configure the handler with '--with-hdfeos2', the 'make check' will 
+test a new set of HDF-EOS2 test files that are added. Please make sure to 
+clean everything with 'make distclean' if you want to test with a different 
+configuration option each time. 
+
+  Source codes are also provided for the new set of HDF-EOS2 test files.
+
+3.2 Naming conventions follow HDF5 handler naming conventions for consistency.
+
+  Again, this is for the CF support only.
+
+3.2.1  Non-CF-compliant characters
+
+  Any non-CF-compliant character for objects and their attribute names will be
+changed to '_'. There is only one exception: if the first character of a name 
+is '/', handler will ignore the first '/'. This is a request from NASA data 
+centers since it means that the a path is prefixed to the name. The first '/' 
+is ignored for better readability.
+
+  The object names include all HDF-EOS2 and HDF4 objects supported by the CF 
+option. They are HDF-EOS2 swath fields and grid fields, HDF4 SDS, HDF4 Vdata, 
+HDF4 Vdata fields and corresponding attributes.  
+
+3.2.2 Multiple HDF-EOS2 swath and grid 
+
+  For multiple HDF-EOS2 swath and grid files, since we only find a bunch of 
+AIRS and MODIS grid products in this category and so far the field names under 
+these grids can be distinguished by themselves, so we simply keep the original 
+field names. Grid names are not prefixed.
+
+  For example, in AIRS.2002.08.24.L3.RetStd_H008.v4.0.21.0.G06104133343.hdf
+ there are two fields with similar names:
+
+    1) Field under vgroup "ascending": TotalCounts_A 
+    2) Field under vgroup "descending": TotalCounts_D
+
+  As you can see, the field "TotalCounts" in each vgroup can be distinguished 
+by their field names anyway. Prefixing a grid name to field name such as 
+"ascending_TotalCounts_A" and  "descending_TotalCounts_D" makes the field name 
+difficult to read. 
+
+3.2.3 Non-HDFEOS2 SDS objects
+
+  For pure HDF4 SDS objects, the handler prefixes the vgroup path for SDS object
+names.
+
+3.2.4 SDS objects in Hybrid HDF-EOS2 files
+
+  For SDS objects in hybrid HDF-EOS2 files, to make these SDS objects 
+distinguished from the HDF-EOS2 grid or swath field names, handler adds 
+"_NONEOS" to the object name. This is based on the following fact:
+
+  These added SDS objects often share the same name as the HDF-EOS2 fields.
+For example, band_number can be found both under HDF-EOS2 swath and under the 
+root vgroup. Thus, name clashing needs to be done. Adding "_NONEOS" is a better 
+way to handle the name clashing than simply adding a "_1".
+
+
+3.2.5 Vdata object name conventions 
+
+  The vdata name conventions are subject to change. We will evaluate the current
+name conventions after hearing feedback from users. Since the main NASA HDF4 
+object is SDS, hopefully this Vdata name conventions may not be critical.
+
+3.2.5.1 Vdata object mapped to DAP array
+
+  Since we would like to make sure that users can easily figure out the DAP 
+variables mapped from vdata, we use the following name conventions. 
+
+  For example, a vdata "level1B" has a field "scan" under the group "g1"
+ The mapped DAP variable name is "vdata_g1_level1B_vdf_scan." The "vdata_" 
+prefix tells the user that this is an original vdata. The "_vdf_" tells the 
+user that the string followed by "_vdf_" is the vdata field name.
+
+  The handler also adds the following attributes to DAS to serve the similar 
+purpose:
+
+    std::string VDdescname = "hdf4_vd_desc";
+    std::string VDdescvalue = "This is an HDF4 Vdata.";
+    std::string VDfieldprefix = "Vdata_field_";
+
+These attributes will be generated if the corresponding BES key is turned on. 
+See USAGE for details. 
+
+3.2.5.2 Vdata fields mapped to DAP attributes
+
+  For the current version, if the number of vdata records is less than 10, 
+the vdata field will be mapped to DAP attributes. This is based on the fact 
+that small number of vdata records is mostly metadata (like attributes), 
+so this kind of mapping may be more reasonable. However, the attribute name
+that are mapped from vdata field simply follows the conventions below:
+
+    <vdata path>_<vdata name>_<vdata field name>
+
+  The above name convention is simply following the handling of SDS. The 
+rationale here is that distinguishing between SDS and Vdata fields in DAP 
+attribute(DAS) is not as critical as distinguishing between SDS and Vdata 
+fields in DAP array(DDS). However, this may cause user's confusion. 
+We will evaluate this approach in the future based on user's feedback.
+
+3.3 Name clashings 
+
+  Name clashing is handled similarly like the HDF5 handler. Only the name that 
+has name clashing will be changed to a different name. This is according to
+NASA user's request. Previously, all corresponding names will be changed if 
+there is a name clashing found in the file.
+
+  See 3.2 for the details about the naming conventions.
+
+3.4 New BES Keys
+  There are six BES keys are newly added. 
+
+    H4.EnableCF 
+    H4.EnableMODISMISRVdata 
+    H4.EnableVdata_to_Attr 
+    H4.EnableCERESMERRAShortName
+    H4.DisableVdataNameclashingCheck
+    H4.EnableVdataDescAttr
+
+  H4.EnableCF is the most important key. It must be set to be true if CF 
+option is used. Other five keys are valid only if H4.EnableCF is set to be 
+true.
+
+  For more information, check the USAGE file.
+
+3.5 Dimension maps and scale/offset handling for MODIS swath 
+
+3.5.1 Interpolating more fields according to the dimension maps
+
+  Previously, we only supported the interpolation of latitude and longitude. 
+In this release, we add the support of other fields such as solar_zenith, etc. 
+if dimension map is used to store the field. Additionally, we also provide an 
+option to directly read these fields (latitude, longitude, solar zenith etc.)
+from MOD03 or MYD03 files distributed by LAADS. For more information on this 
+option, check the USAGE file.
+
+3.5.2 Enhance the scale/offset handling for MODIS level 1B fields
+
+  According to the discussions with NASA users, we found that for fields such 
+as EV_1KM_RefSB and EV_1KM_Emissive, for values greater than 65500 are special 
+values that should not be considered as the real data signal. So in this 
+release, we keep values between 65500 and 65535 when applying the scale and 
+offset function. Furthermore, we also calculated valid_min and valid_max for 
+EV_???_RefSB and EV_???_Emissive to assure that users can plot data easily 
+with Panoply and IDV. 
+
+3.6 Dimensions in MERRA products 
+
+  In this release, the handler uses HDF-EOS2 latitude and longitude fields as 
+the coordinate variables. The added HDF4 SDS XDim and YDim are used inside the 
+file as coordinate variables.
+
+3.7 Vdata mapping
+
+  The new handler can handle vdatas robustly either as an attribute in DAS or 
+as an array in DDS. Review the previous 3.2.5.2 section for details.
+
+  Several BES keys are also provided for users to have options on how to 
+generate vdata DAP output. See USAGE for details.
+
+  Vdata subsetting is handled robustly except for some HDF-EOS2 Vdata objects.
+See section 7.5 for the known issue.
+
+3.8 Handling general HDF4 files with the CF option
+
+  The previous release listed the NASA HDF4 products we handled specially to 
+follow the CF convention. For other HDF4 products (we call them general HDF4 
+files), we do the following:
+
+  A. Make the object and attribute names follow the CF conventions 
+  B. Follow the default handler's mapping to map SDS. In this way, some SDS 
+     objects that have dimension scales can be visualized by Panoply and IDV.
+  C. Map Vdata according to 3.7.
+
+4. Bug Fixes
+
+4.1 Attribute names are cleaned up. If an attribute name contains non alpha 
+numeric characters like '(' or '%', they are replaced with '_' to meet the
+CF naming conventions.
+
+4.2 Products that use SOM projection are handled correctly and Panoply can 
+display MISR data in block-by-block basis. However, please read 7.11 for 
+the known issue for the interpretation of final visualization output.
+
+4.3 We continued correcting attributes related to scale/offset. For example, 
+the handler  corrected "SCALE_FACTOR" and "OFFSET" attributes for AMSR_E L2A 
+product by renaming them to "scale_factor" and "add_offset". It also cleaned 
+any extra spaces in attribute names. We also corrected the rule on how to 
+applying scale/offset equations in MODIS product (e.g., Solar_Zenith dataset).
+Finally, the handler renames Number_Type attributes to Number_Type_Orig if 
+data field's type is changed by applying scale/offset by the handler (e.g., 
+LPDAAC MOD11_L2 LST).
+
+4.4 Strange ECS metadata sequences are handled. Some MODIS products have 
+metadata name sequence "coremetadata.0, coremetadata.0.1, ..." instead of 
+"coremdatadata.0, coremetadata.1, ..."
+
+4.5 Mismatched valid_range attribute is removed from CERES ES4 product.
+Panoply fails to visualize the product if the valid_range attribute in 
+lat/lon dataset doesn't match the calculated coordinate variable values 
+returned by the handler. Thus, the handler removes the valid_attribute from 
+coordinate variables.
+
+4.6 There was a bug regarding subsetting the vdata field when the stride is 
+greater than 1. It was fixed in this release. We also found a similar bug 
+inside the HDF-EOS2 library regarding the subsetting of 1-D HDF-EOS2 swath. 
+This should be fixed in the next HDF-EOS2 release.
+
+
+5. Code Improvement
+
+5.1 Refactored codes
+
+  There were huge code overlap between hdfdesc.cc and HE2CF.cc. Those code 
+lines are combined and are moved to HDFCFUtil.cc.
+
+5.2 Error handlings and debugging 
+
+  Error handlings are improved to ensure the closing of all opened HDF4 API 
+handles when error occurs. DEBUG macros are replaced with BESDEBUG or BESLog.
+
+6. Limitations
+
+  Again, all the limitations here are for the CF support (when the CF option is 
+ enabled) only.
+
+6.1 Unmapped objects
+
+  The handler ignores the mapping of image, palette, annotation, vgroup 
+attributes and HDF-EOS2 swath group and grid group attributes. Note HDF4 global
+attributes(attributes from SD interfaces), HDF4 SDS objects, HDF4 Vdata 
+attributes, HDF-EOS2 global(ECS metadata etc.) and field attributes are mapped 
+to DAP. 
+
+6.2 The handler doesn't handle unlimited dimension.
+
+  The result may be unexpected. (e.g., some fields in CER_ES8_TRMM-PFM_Edition2 
+product cannot be handled.)
+
+6.3 Non-printable vdata (unsigned) character type data will not appear in DAS.
+ If vdata char type column has a non-printable value like '\\005', it will not 
+ appear in DAS when vdata is mapped to attribute because the BES key, 
+ H4.EnableVdata_toAttr, is enabled. See the file USAGE for the usage of the key.
+
+6.4 Vdata with string type is handled in character-by-character basis in 2D 
+array. 
+
+  For example, when the vdata is a string of characters like 
+
+  "2006-1--01T16:17:12.693310Z",
+
+  the handler represents it as
+
+  Byte vdata_PerBlockMetadataTime_vdf_BlockCenterTime[VDFDim0_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 2][VDFDim1_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 28] = {{50, 48, 48, 54, 45, 49, 48, 45, 48, 49, 84, 49, 54, 58, 49, 55, 58, 49, 50, 46, 54, 57, 51, 51, 49, 48, 90, 0},{50, 48, 48, 54, 45, 49, 48, 45, 48, 49, 84, 49, 54, 58, 49, 55, 58, 51, 51, 46, 52, 51, 56, 57, 50, 54, 90, 0}};
+
+  
+
+7. Known Issues
+
+7.1 CER_SRBAVG3_Aqua-FM3-MODIS_Edition2A products have many blank spaces in 
+ long_name attribute.
+
+  These products have datasets with really long_name attribute with size 277. 
+However, most of them are blank spaces in the middle. For example, you'll see
+DAS output like below:
+
+    String long_name "1.0 Degree Regional Monthly Hourly  (200+ blank spaces) 
+ CERES Cloud Properties";
+    String units "unitless";
+
+  This is not a bug in the handler. The data product itself has such long 
+ attribute. 
+
+7.2 Longitude values for products that use LAMAZ projection will differ in i386
+ platform.
+
+  For i386 machines, handler will generate different longitude values from 
+x86_64 machines for the products that use Lambert azimuthal projection (LAMAZ) 
+near North Pole or South Pole. For example, the handler will return 0 
+for 64-bit machine while it'll return -135 for 32-bit machine in the middle 
+point of longitude in the NSIDC AMSR_E_L3_5DaySnow_V09_20050126.hdf product:
+
+< Float64 Longitude[YDim = 3][XDim = 3] = {{-135, 180, 135},{-90, 0, 90},
+{-45, 0, 45}};
+---
+> Float64 Longitude[YDim = 3][XDim = 3] = {{-135, -180, 135},{-90, -135, 90},
+{-45, -1.4320576915337e-15, 45}};
+
+
+  This is due to the calculations in the current GCTP library that HDF-EOS2 
+library uses. However, this will not affect the final visualization because, 
+for North Pole or South Pole, the longitude can be anything from -180 to 180. 
+So depending on floating point accuracy, handler may get different results for 
+longitude  of this pixel from GCTP. The longitude value is irrelevant at North 
+Pole or South Pole for visualization clients.
+
+7.3 IDV can't visualize SOM projection
+  
+  MISR products that use SOM projection have 3D lat/lon. Although Panoply can 
+visualize them but IDV cannot. Handler doesn't treat the 3rd dimension as
+a separate coordinate variable and coordinate attribute on dataset includes 
+only latitude and longitude variable names.
+
+7.4 Vdata is mapped to attribute if there are less than or equal to 10 records 
+
+  For example, the DAS output of TRMM data 1B21 will show Vdata as an attribute:
+
+   DATA_GRANULE_PR_CAL_COEF {
+        String hdf4_vd_desc "This is an HDF4 Vdata.";
+        Float32 Vdata_field_transCoef -0.5199999809;
+        Float32 Vdata_field_receptCoef 0.9900000095;
+        Float32 Vdata_field_fcifIOchar 0.000000000, 0.3790999949, 0.000000000, 
+        -102.7460022, 0.000000000, 24.00000000, 0.000000000, 226.0000000, 0.000000000, 
+        0.3790999949, 0.000000000, -102.7460022, 0.000000000, 24.00000000, 0.000000000, 
+        226.0000000;
+    }
+
+
+   This is part of the vdata handling convention, not an issue. However, we 
+list here just for user's convenience. See 3.7 for more information.
+  
+7.5 Vdata subsetting in HDF-EOS2 data products may not work. 
+
+  Subsetting HDF-EOS2 vdata with large step index (e.g. a_vdata[0:999:999]) 
+may not work due to a bug in HDF-EOS2 library. The bug has been reported to 
+HDF-EOS2 developer and should be fixed in the next HDF-EOS2 release. Reading 
+the entire Vdata is OK.
+
+7.6 DDX generation will fail on PO.DAAC AVHHR product.
+
+  For example, handler can't generate DDX output for NASA JPL PO.DAAC AVHRR
+product 2006001-2006005.s0454pfrt-bsst.hdf. Please see the OPeNDAP ticket #1930
+ for details.
+
+7.7 It is possible to have name clashing between dimension names and variable
+names.  Currently, the handler only checks the name clashing for the variables 
+and the name clashing for the dimensions, not combined. Here's a reason:
+ 
+Many good COARDS files will have the following layout:
+
+  lat[lat=180]
+  lon[lon=360]
+
+If we want to check the name clashings for the combined set, this kind of good 
+files will always have name clashings. And depending on the code flow, the 
+final layout may become something like:
+
+  lat_1[lat_1=180]
+  lon_1[lon_1=360]. 
+
+These are absolutely bad names for normal users. Instead, if we don't consider 
+the combined set, the chance of the name clashing due to changing the 
+conflicted coordinate variable names is very rare. So we may not do this at 
+all until we really find a typical product that causes a problem. 
+
+7.8 long_name attribute for <variable name>_NONEOS 
+
+  The handler generates long_name attribute to indicate the original variable
+ name for the SDS objects after renaming them with _NONEOS suffix. Those 
+_NONEOS variables appear in hybrid files --- files that have additional HDF4 
+objects written by the HDF4 APIs on top of the existing HDF-EOS2 files. This 
+ addition of long_name attribute cannot be turned off using the 
+H4.EnableVdataDescAttr=false key described in USAGE document.
+
+7.9 Empty dimension name creates a variable with empty name. 
+
+  It is possible to create dataset with no dimension name in HDF-EOS2 library. 
+In such case, the handler generates fake dimension variable without 
+dataset name in DDS like below: 
+
+    Int32 [4];
+
+ Since there's no dataset name, data reading will also fail.
+
+7.10 Special CF handlings for some products 
+
+  The handler doesn't correct scale_factor/add_offset/_FillValue for every HDF4 
+product to make it follow CF conventions. 
+
+  For example, the handler doesn't apply the scale and offset function(log 
+equation) for OBPG CZCS Level 3 products. 
+
+  The handler doesn't insert or correct fill value attribute for some OBPG 
+products so their plots may include fill values if you visualize them. OPeNDAP 
+server administrator can fix these easily by using the NCML handler.
+
+  PO.DAAC AVHRR product 2006001-2006005.s0454pfrt-bsst.hdf has "add_off" and 
+doesn't specify fill value in attribute. Therefore, the final visualization 
+image will not be correct for such product. 
+
+7.11 Bit shifting required in MISR product is not handled.
+  
+  Some datasets in MISR products combine two datasets into one, which requires
+ bit shifting for the correct interpretation of the data. Handler doesn't 
+perform such operation  so the final visualization image may not be correct.
+(e.g., Blue Radiance in MISR_AM1_GRP_ELLIPSOID_GM_P117_O058421_BA_F03_0024.hdf)
+
+7.12 Subsetting through Hyrax HTML interface will not work on LAMAZ products.
+
+ You cannot subset Latitude_1 and Longitude_1 datasets using the HTML form. 
+Checking the check box will not insert any array subscription text into the
+text box. 
+
+Kent Yang (myang6@hdfgroup.org)
+
+  
 Updated for version 3.9.4 (19 Jan, 2011)
 
   If your system is non-i368 such as64-bit architecture, please read 
@@ -67,7 +499,8 @@ equation to the data value if the CF "scale_factor" and "add_offset" attributes
 
 
 2.2 Latitude and longitude are provided for HDF-EOS2 grid files that use 
-Space-Oblique Mercator(SOM) and Lambert Azimuthal Equal Area(LAMAZ) projections.
+Space-Oblique Mercator(SOM) and Lambert Azimuthal Equal Area(LAMAZ) 
+projections.
  We added the support for LAMAZ projection data such as MOD29 from NSIDC. 
 For grid files using HDF-EOS2 Lambert Azimuthal Equal Area(LAMAZ) projection,
  the latitude and longitude values retrieved from the HDF-EOS2 library include
@@ -123,7 +556,7 @@ users.
 
 2. We also fix the bug of handling MERRA data. In the previous
 release, the unit of time is not handled correctly. This release fixes
-this bug under the condition that the filename of MERRA data must
+this bug under the condition that the file name of MERRA data must
 start with MERRA.
 
 3. We also enhance the support of mapping HDF4 files that uses HDF4
@@ -136,7 +569,7 @@ What we haven't done:
 1. We haven't mapped the Vdata objects added by using HDF4 APIs to an
 HDF-EOS2 file.
 
-2. We haven't handled the plotting of the vertical profiler files (Such
+2. We haven't handled the plotting of the vertical profile files (Such
 as MOP Level 2 data). More investigation needs to be done on how IDV
 can handle things.
 
@@ -291,6 +724,8 @@ protocol="HTTP/1.1" maxHttpHeaderSize="819200"
 
 4. Misc.
    
+   For pure HDF4 products, currently attributes in a vgroup(not SDS or SD)
+   are not mapped to DAP.
    To speed up the performance, we choose not to generate
    structMetadata, coreMetadata, archiveMetadata attributes for some
    CERES products. For applications that need these, please contact
@@ -330,8 +765,8 @@ THE LIMITATIONS of the ENHANCED HDF4 HANDLER
     option 2) will make some Grids with other projections (polar, sinusoidal) 
     work.
   
-  o No Vgroup to DAP structure mapping. Thus, the files that have same 
-    dataset name  under different Vgroups will throw a DDS semantics violation 
+  o No vgroup to DAP structure mapping. Thus, the files that have same 
+    dataset name  under different vgroups will throw a DDS semantics violation 
     error.
 
   o No support for files that have the same dimension names with different 

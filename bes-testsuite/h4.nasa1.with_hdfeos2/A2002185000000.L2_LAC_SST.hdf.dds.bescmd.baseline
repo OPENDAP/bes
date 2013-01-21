@@ -1,0 +1,28 @@
+Dataset {
+    Int32 Scan_Line_Attributes_year[Number_of_Scan_Lines = 2040];
+    Int32 Scan_Line_Attributes_day[Number_of_Scan_Lines = 2040];
+    Int32 Scan_Line_Attributes_msec[Number_of_Scan_Lines = 2040];
+    Float32 Navigation_Data_tilt[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_slon[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_clon[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_elon[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_slat[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_clat[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_elat[Number_of_Scan_Lines = 2040];
+    Float32 Scan_Line_Attributes_csol_z[Number_of_Scan_Lines = 2040];
+    Float32 Navigation_Data_longitude[Number_of_Scan_Lines = 2040][Pixels_per_Scan_Line = 1354];
+    Float32 Navigation_Data_latitude[Number_of_Scan_Lines = 2040][Pixels_per_Scan_Line = 1354];
+    Int16 Geophysical_Data_sst[Number_of_Scan_Lines = 2040][Pixels_per_Scan_Line = 1354];
+    Int32 Geophysical_Data_qual_sst[Number_of_Scan_Lines = 2040][Pixels_per_Scan_Line = 1354];
+    Int32 Geophysical_Data_l2_flags[Number_of_Scan_Lines = 2040][Pixels_per_Scan_Line = 1354];
+    Int32 Sensor_Band_Parameters_wavelength[band_number = 9];
+    Int32 Navigation_Data_cntl_pt_cols[Number_of_Pixel_Control_Points = 170];
+    Int32 Navigation_Data_cntl_pt_rows[Number_of_Scan_Lines = 2040];
+    Float32 Sensor_Band_Parameters_vcal_gain[band_number = 9];
+    Float32 Sensor_Band_Parameters_vcal_offset[band_number = 9];
+    Float32 Sensor_Band_Parameters_F0[band_number = 9];
+    Float32 Sensor_Band_Parameters_k_oz[band_number = 9];
+    Float32 Sensor_Band_Parameters_Tau_r[band_number = 9];
+    Int32 Number_of_Pixel_Control_Points[Number_of_Pixel_Control_Points = 170];
+    Int32 band_number[band_number = 9];
+} A2002185000000.L2_LAC_SST.hdf;

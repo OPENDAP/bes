@@ -35,7 +35,7 @@ BES.module.h4=@bes_modules_dir@/libhdf4_module.so
 # % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
 # expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
 
-BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos|HDFEOS)(\.bz2|\.gz|\.Z)?$;
 
 #-----------------------------------------------------------------------#
 # HDF4 handler specific parameters
@@ -44,3 +44,71 @@ BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
 # Suggestion: Consider making this '/tmp/bes'
 HDF4.CacheDir=/tmp
 
+#-----------------------------------------------------------------------#
+# HDF4 handler specific parameters: 
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#          (true,yes|false,no, defaults to true)
+# Since most centers  would like to handle HDF4 data that follows CF now,
+# EnableCF is set to be true, KY 2012-6-5
+#
+#   If this key's value is false, the handler will behave same as the default 
+#  handler. The output will not follow basic CF conventions and most of NASA 
+# products cannot be visualized by netCDF visualization tools such as IDV and 
+# Panoply. The rest of keys below relies on this option and it must be set
+# to be "true" to have effects on the handler's output. Thus, this is the most 
+# important key to turn it on first.
+H4.EnableCF=true
+
+#   If this key's value is false, additional Vdata such as "Level 1B Swath 
+#  Metadta" in LAADS MYD021KM product will not be processed and visible 
+#  in the DAS/DDS output. Those additional Vdatas are added directly using 
+#  HDF4 APIs and HDF-EOS2 APIs cannot access them.
+H4.EnableMODISMISRVdata=true
+
+#   If this key's value is false, small Vdata datasets will be mapped to 
+# arrays in DDS output instead of attributes in DAS. 
+#   If this key's value is true, Vdata is mapped to attribute if there are less than 
+# or equal to 10 records.
+H4.EnableVdata_to_Attr=true
+
+#   If this key's value is false, the short dataset name becomes long name with
+# Vgroup prefixed and fullpath attribute will not be printed in DAS output.
+#   For example, the DAS output for Region_Number dataset
+#
+#      Region_Number {
+#          String coordinates "Colatitude Longitude";
+#          String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
+# mber";
+#     }
+#
+# becomes
+#    
+#     Monthly_Hourly_Averages_Time_And_Position_Region_Number {
+#          String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
+# ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
+#     }
+#
+# in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
+H4.EnableCERESMERRAShortName=true
+
+#   If this key's value is false, handler will check if there's any Vdata that 
+#  has the same name as SDS. We haven't found such case in NASA products so it's 
+# safe to disable this to improve performance.
+H4.DisableVdataNameclashingCheck=true
+
+#   If this key's value is true, handler will generate Vdata's attributes. By 
+#     default, it's turned off because most NASA hybrid products do not seem to store
+#  important information in Vdata attributes. If you serve pure HDF4 files, it's 
+#     recommended to turn this value to true so that users can see all data. This
+#  key will not affect the behavior of the handler triggered by the 
+#     H4.EnableVdata_to_Attr key in section 3.3 except the Vdata attributes of
+#  small Vdatas that are mapped to DAS instead of DDS. They will be also turned
+#     off from the DAS output.
+#  If Vdata doesn't have any attribute or field attribute, the description
+
+#         String hdf4_vd_desc "This is an HDF4 Vdata.";
+
+#  will not appear in the attribute for that Vdata although the key is true.
+#     The attribute container of the Vdata will always appear regardless of this key.
+H4.EnableVdataDescAttr=false

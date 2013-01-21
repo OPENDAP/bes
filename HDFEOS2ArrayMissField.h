@@ -9,34 +9,36 @@
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_MISSFIELD_H
 #define HDFEOS2ARRAY_MISSFIELD_H
 
-#include <Array.h>
+#include "Array.h"
 using namespace libdap;
 
 class HDFEOS2ArrayMissGeoField:public Array
 {
-  public:
-  HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
-	Array (n, v), rank (rank), tnumelm (tnumelm) {
-	}
-	virtual ~ HDFEOS2ArrayMissGeoField ()
-	{
-	}
-	int format_constraint (int *cor, int *step, int *edg);
+    public:
+        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
+            Array (n, v), rank (rank), tnumelm (tnumelm) {
+            }
+        virtual ~ HDFEOS2ArrayMissGeoField ()
+        {
+        }
+        int format_constraint (int *cor, int *step, int *edg);
 
-	BaseType *ptr_duplicate ()
-	{
-		return new HDFEOS2ArrayMissGeoField (*this);
-	}
+        BaseType *ptr_duplicate ()
+        {
+            return new HDFEOS2ArrayMissGeoField (*this);
+        }
 
-	virtual bool read ();
+        virtual bool read ();
 
-  private:
+    private:
 
-	int rank, tnumelm;
+        int rank, tnumelm;
 };
 
 
+#endif
 #endif

@@ -1,0 +1,6 @@
+Dataset {
+    Float32 HRAC_COM_FR[Latitude = 360][Longitude = 720][Day_of_year = 365];
+    Float32 Day_of_year[Day_of_year = 365];
+    Float32 Longitude[Longitude = 720];
+    Float32 Latitude[Latitude = 360];
+} LISOTD_HRAC_V2.2.hdf;

@@ -1,0 +1,8 @@
+The data:
+Float64 Position_in_Orbit[DataTrack_lo = 3] = {0, 0, 0};
+Int16 High_res_cloud[DataTrack_lo = 3][DataXtrack_lo = 3] = {{-9990, -9990, -9990},{-9990, -9990, -9990},{-9990, -9990, -9990}};
+Float32 Longitude[DataTrack_lo = 3][DataXtrack_lo = 3] = {{-170.72, 113.263, 129.838},{3.69632, 10.1411, 18.075},{-68.9492, -93.0479, -2.08398}};
+Float32 Latitude[DataTrack_lo = 3][DataXtrack_lo = 3] = {{83.3981, 81.7305, 73.1462},{6.61859, 0.10765, 4.6423},{-73.6667, -81.9046, -85.1003}};
+Int32 Qual_dim[Qual_dim = 6] = {0, 1, 2, 3, 4, 5};
+Int32 Ocean_dim[Ocean_dim = 3] = {0, 2, 4};
+

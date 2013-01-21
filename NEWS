@@ -1,6 +1,19 @@
-Version 3.9.5
+Version 3.10.1
+  This version changes the _FillValue datatype to be consistent with the 
+variable datatype. This is not required by CF, however, netCDF-3 has this 
+requirement. This change makes fileout_netcdf work smoothly for some NASA 
+products.
 
-Merged to trunk; tagged.
+
+Version 3.10.0
+
+Added BESkey for enabling CF option. 
+Fixed many bugs in handling NASA products under CF option.
+Using HDF-EOS2 library is now optional for pure HDF4 products to genereate
+outputs that meet CF-conventions. Configuring with HDF-EOS2 library is
+strongly recommended for all HDF-EOS2 products and HDF4+HDF-EOS2 hybrid 
+products.
+Please read README for new features, bug fixes, limitations and known issues.
 
 Version 3.9.4
 

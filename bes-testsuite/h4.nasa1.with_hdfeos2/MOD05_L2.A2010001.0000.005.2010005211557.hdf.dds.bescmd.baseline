@@ -1,0 +1,17 @@
+Dataset {
+    Float64 Scan_Start_Time[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Solar_Zenith[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Solar_Azimuth[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Sensor_Zenith[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Sensor_Azimuth[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 Cloud_Mask_QA[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Water_Vapor_Near_Infrared[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Water_Vapor_Correction_Factors[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Water_Vapor_Infrared[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 Quality_Assurance_Near_Infrared[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354][QA_Bytes_NIR = 1];
+    Int32 Quality_Assurance_Infrared[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354][QA_Bytes_IR = 5];
+    Float32 Latitude[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Float32 Longitude[Cell_Along_Swath_1km = 2030][Cell_Across_Swath_1km = 1354];
+    Int32 QA_Bytes_IR[QA_Bytes_IR = 5];
+    Int32 QA_Bytes_NIR[QA_Bytes_NIR = 1];
+} MOD05_L2.A2010001.0000.005.2010005211557.hdf;

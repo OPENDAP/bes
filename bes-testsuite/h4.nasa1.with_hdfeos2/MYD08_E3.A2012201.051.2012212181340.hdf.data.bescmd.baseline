@@ -1,0 +1,8 @@
+The data:
+Float32 Solar_Zenith_Mean_Mean[YDim = 2][XDim = 2] = {{70, 70},{-9999, -9999}};
+Int32 Corrected_Optical_Depth_Land_Histogram_Counts[Corrected_Optical_Depth_Land_Micron_Levels = 1][Corrected_Optical_Depth_Land_Histo_Intervals = 1][YDim = 1][XDim = 1] = {{{{109}}}};
+Int32 Angstrom_Exponent_Land_Histogram_Counts[Angstrom_Exponent_Land_Histo_Intervals = 1][YDim = 7][XDim = 2] = {{{-9999, 33},{-9999, 75},{-9999, 63},{-9999, 61},{-9999, 37},{-9999, 34},{-9999, 416}}};
+Int32 Number_Pixels_Used_Land_Pixel_Counts[Number_Pixels_Used_Land_Micron_Levels = 1][YDim = 1][XDim = 2] = {{{214, 328}}};
+Float32 XDim[XDim = 2] = {-179.5, 179.5};
+Float32 YDim[YDim = 2] = {89.5, -89.5};
+

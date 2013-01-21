@@ -1,3 +1,4 @@
+#ifdef USE_HDFEOS2_LIB
 #include "misrproj.h" /* Prototype for this function */
 #include "errormacros.h" /* Error macros */
 extern int nb;
@@ -45,3 +46,4 @@ ERROR_HANDLE:
 *y = -1e-9;
 return(1);
 }
+#endif

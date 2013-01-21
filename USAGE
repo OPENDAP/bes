@@ -1,0 +1,248 @@
+
+  This supplementary document explains how to use HDF4 handler to serve NASA 
+HDF4/HDF-EOS products in a manner that follows the CF conventions.
+
+-------------------------------------------------------------------------------
+Contents
+
+1. What are the CF conventions and how is it related to the new HDF4 handler?
+2. How to install CF-enabled HDF4 Handler correctly.
+3. BES Keys in h4.conf
+4. How to utilize MODIS geo-location data products with other MODIS products.
+-------------------------------------------------------------------------------
+
+1. What are the CF conventions and how is it related to the new HDF4 handler?
+
+  Before we discuss the usage further, it's very important to know what the CF
+conventions are.  The CF conventions precisely define metadata that provide a 
+description of physical, spatial, and temporal properties of the data. 
+This enables users of data from different sources to decide which quantities 
+are comparable, and facilitates building easy-to-use visualization tools with 
+ maps in different projections.
+
+  Here, we define the two levels of meeting the CF conventions --- basic and 
+  extra.
+
+  1) basic: CF conventions have basic (syntactic) rules in describing the 
+            metadata itself correctly. For example, dimensions should have 
+            names; certain characters are not allowed; no duplicate variable /
+            dimension names are allowed.
+  2) extra: All physical, spatial, and temporal properties of the data are 
+            correctly described so that visualization tools (e.g., IDV and 
+            Panoply) can pick them up and display datasets correctly with the 
+            right physical units. A good example is the use of "units" and 
+            "coordinates" attributes.
+ 
+  If you look at NASA HDF4 and HDF-EOS2 products, they are very diverse in
+ self-describing data and fail to meet CF conventions in many ways. Thus, 
+ the HDF4 handler aims to meet the conventions by correcting OPeNDAP
+ attribute(DAS)/description(DDS)/data outputs on the fly. Although we tried
+ our best effort to implement the "extra" level of meeting the CF conventions,
+ some products are inherently difficult to meet such level. In those cases,
+ we ended up meeting the basic level of meeting the CF conventions.
+
+
+2. How to install CF-enabled HDF4 Handler correctly
+
+  The first step of using the HDF4 handler with CF option is to install
+the handler correctly because it has three different options. We'll call them
+default, generic, and hdfeos2 for convenience.
+
+  1) default: This option gives the same output as the legacy handler.
+  2) generic: This option gives the output that meets the basic CF conventions 
+              regardless of HDF4 and HDF-EOS2 products. Some HDF4 products
+              can meet the extra CF conventions while most HDF-EOS2 products 
+              will fail to meet the extra CF conventions.
+  3) hdfeos2: This option treats HDF-EOS2 products differently so that 
+              their output follows not only the basic CF conventions but 
+              also the extra CF conventions. For HDF4 products, the output is 
+              same as the generic option.
+
+2.1 Pick the right RPM instead of building from source
+
+   If you use Linux system that supports RPM package manager and have a super
+ user privilege, the easiest way to install the HDF4 handler is using RPMs 
+ provided by OPeNDAP, Inc. website. 
+
+  The OPeNDAP's download website provides two RPMs --- one with HDF-EOS and one
+ without HDF-EOS. You should pick the one with HDF-EOS if you want to take 
+ advantage of the extra CF support provided by the handler. If you pick one 
+ without HDF-EOS, please make sure that the H4.EnableCF key is set "true" in 
+ h4.conf file. See section 3.1 below for the full usage.
+
+  Here are two basic commands for deleting and adding RPMs:
+
+  o Remove any existing RPM package using 'rpm -e <package_name>'. 
+  o Install a new RPM package using 'rpm -i <package_name.rpm>'. 
+
+1) Download and install the latest "libdap", "BES", and "General purpose 
+ handlers (aka dap-server)" RPMs first from
+
+   http://opendap.org/download/hyrax
+
+3) Download and install the latest "hdf4_handler" RPM from
+
+   http://opendap.org/download/hyrax
+
+4) (Optional) Configure the handler after reading the section 3 below.
+
+5) (Re)start the BES server.
+ 
+   %/usr/bin/besctl (re)start
+
+2.2 Build with the HDF-EOS2 library if you plant to support HDF-EOS2 products.
+
+  If you plan to build one instead of using RPMs and to support HDF-EOS2
+ products, please consider installing the HDF-EOS2 library first. Then, build 
+ the handler by specifying --with-hdfeos2=/path/to/hdfeos2-install-prefix 
+during the configuration stage like below:
+   
+   ./configure --with-hdf4=/usr/local --with-hdfeos2=/usr/local/
+
+  Although the HDF-EOS2 library is not required to clean dataset names and 
+attributes that CF conventions require, visualization will fail for most 
+HDF-EOS2 products without the use of HDF-EOS2 library. Therefore, it is 
+strongly recommended to use --with-hdfeos2 configuration option if you plan
+to serve NASA HDF-EOS2 data products. The --with-hdfeos2 configuration option 
+will affect only the outputs of the HDF-EOS2 files including hybrid files,
+not pure HDF4 files.
+
+  As long as the H4.EnableCF key is set to be true as described in section 3.1
+ below, the HDF4 handler will generate outputs that conform to the basic CF 
+conventions even though the HDF-EOS2 library is not specified with the 
+--with-hdfeos2 configuration option. All HDF-EOS2 objects will be treated as 
+pure HDF4 objects.
+
+  Please see the INSTALL document on step-by-step instruction on building the
+ handler.
+
+3. BES Keys in h4.conf
+
+ You can control HDF4 handler's output behavior significantly by changing
+key values in a configuration file called "h4.conf".
+
+ If you used RPMs, you can find the h4.conf file in /etc/bes/modules/.
+ If you built one, you can find the h4.conf file in {prefix}/etc/bes/modules.
+
+ The following 6 BES keys are newly added in the h4.conf file. The default 
+configuration values are specified in the parentheses. 
+
+3.1 H4.EnableCF (true)
+
+  If this key's value is false, the handler will behave same as the default 
+handler. The output will not follow basic CF conventions. Object and attribute
+names will not be corrected to follow the CF conventions.  Most NASA 
+products cannot be visualized by visualization tools that follow the CF 
+conventions. Such tools include IDV and Panoply.
+
+  The rest of keys below relies on this option. This key must be set to be 
+"true" to ensure other keys to be valid. Thus, this is the most important key 
+to be turned on.
+
+
+3.2 H4.EnableMODISMISRVdata (true)
+
+  If this key's value is false, The non-HDFEOS vdata objects in an HDF-EOS2 
+files (e.g."Level 1B Swath Metadta" of MODIS level 1B products) will not be 
+mapped to DAP. Those vdatas are added directly using HDF4 APIs rather than 
+HDF-EOS2 APIs. The default setting of this key is true. these vdata objects 
+will be mapped to DAP.
+ 
+
+3.3 H4.EnableVdata_to_Attr (true)
+
+  If this key's value is false, small vdata datasets will be mapped to 
+arrays in DDS output instead of attributes in DAS.
+
+  If this key's value is true, vdata is mapped to attribute if there are less 
+than or equal to 10 records.
+
+ For example, the DAS output of TRMM data 1B21 will show vdata as an attribute:
+
+   DATA_GRANULE_PR_CAL_COEF {
+        String hdf4_vd_desc "This is an HDF4 Vdata.";
+        Float32 Vdata_field_transCoef -0.5199999809;
+        Float32 Vdata_field_receptCoef 0.9900000095;
+        Float32 Vdata_field_fcifIOchar 0.000000000, 0.3790999949, 0.000000000, 
+        -102.7460022, 0.000000000, 24.00000000, 0.000000000, 226.0000000, 0.000000000, 
+        0.3790999949, 0.000000000, -102.7460022, 0.000000000, 24.00000000, 0.000000000, 
+        226.0000000;
+    }
+
+3.4 H4.EnableCERESMERRAShortName (true)
+
+  If this key's value is false, the object name will be prefixed by the vgroup 
+path and the fullpath attribute will not be printed in DAS output. This key 
+only affects NASA CERES and MERRA products we support.
+
+  For example, the DAS output for Region_Number dataset
+
+     Region_Number {
+         String coordinates "Colatitude Longitude";
+         String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
+mber";
+    }
+
+becomes
+    
+    Monthly_Hourly_Averages_Time_And_Position_Region_Number {
+         String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
+ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
+    }
+
+in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
+
+3.5 H4.DisableVdataNameclashingCheck (true)
+
+  If this key's value is false, the handler will check if there's any vdata 
+that has the same name as SDS. We haven't found such a case in NASA products 
+so it's safe to disable this to improve performance.
+
+3.6 H4.EnableVdataDescAttr (false)
+
+  If this key's value is true, the handler will generate vdata's attributes. By 
+default, it's turned off because most NASA hybrid products do not seem to store
+ important information in vdata attributes. If you serve pure HDF4 files, it's 
+recommended to turn this value to true so that users can see all data. This
+ key will not affect the behavior of the handler triggered by the 
+H4.EnableVdata_to_Attr key in section 3.3 except the vdata attributes of
+ small vdatas that are mapped to attributes in DAS instead of arrays in DDS. 
+That is, only attributes of small vdatas will be also turned off from the DAS 
+output if this key is turned off, not the values of vdatas.
+ If a vdata doesn't have any attribute or field attribute, the description
+
+        String hdf4_vd_desc "This is an HDF4 Vdata.";
+
+ will not appear in the attribute for that vdata although the key is true.
+The attribute container of the vdata will always appear regardless of this key
+'s value.
+
+4. How to utilize MODIS Geolocation products with other MODIS swath products
+
+ For MODIS swath data products that use the dimension map, if a MODIS 
+geo-location product such as MOD03 is present and under the same directory as 
+the swath product, the geolocation values will be retrieved using the 
+geolocation fields in MOD03/MYD03 file instead of using the interpolation 
+according to the dimension map formula. We feel this is a more accurate 
+approach since additional corrections may be done for geo-location
+values stored in those files [1] although we've done a case study that shows 
+the differences between the interpolated values and the values stored in the 
+geo-location file are very small.
+
+ For example, when the handler serves 
+
+        "MOD05_L2.A2010001.0000.005.2010005211557.hdf" 
+ file,
+ 
+ it will first look for a geo-location file 
+
+        "MOD03.A2010001.0000.005.2010003235220.hdf" 
+
+ first from the SAME DIRECTORY where MOD05_L2 file exists. 
+
+   Please note that the "A2010001.0000" in the middle of the name is the 
+ "Acquisition Date" of the data so the geo-location file name should have 
+ exactly the same string. Handler uses this  string to identify if a MODIS 
+ geo-location file exists or not.
+
+[1] http://modis.gsfc.nasa.gov/data/dataprod/nontech/MOD0203.php

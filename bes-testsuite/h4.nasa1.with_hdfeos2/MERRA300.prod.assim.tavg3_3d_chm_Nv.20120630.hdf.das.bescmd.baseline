@@ -1,0 +1,338 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+        Float32 missing_value 9.999999870e+14;
+        String Conventions "CF-1.0";
+        String title "MERRA reanalysis. GEOS-5.2.0";
+        String history "File written by CFIO";
+        String institution "Global Modeling and Assimilation Office, NASA Goddard Space Flight Center, Greenbelt, MD 20771";
+        String source "Global Modeling and Assimilation Office. GEOSops_5_2_0";
+        String references "http://gmao.gsfc.nasa.gov/research/merra/";
+        String comment "GEOS-5.2.0";
+        String contact "http://gmao.gsfc.nasa.gov/";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V01";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "0", "1", "2", "3", "4";
+                    PARAMETERNAME {
+                        String CLASS "0", "1", "2", "3", "4";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1;
+                        String VALUE "MFXC", "MFYC", "UC", "VC", "DTRAIN";
+                    }
+                    QAFLAGS {
+                        String CLASS "0", "1", "2", "3", "4";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1;
+                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1;
+                            String VALUE "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly";
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MAT3NVCHM";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.2.0";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                VERTICALSPATIALDOMAIN {
+                    VERTICALSPATIALDOMAINCONTAINER {
+                        String CLASS "1";
+                        VERTICALSPATIALDOMAINTYPE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "Atmosphere Layer";
+                        }
+                        VERTICALSPATIALDOMAINVALUE {
+                            String CLASS "1";
+                            Int32 NUM_VAL 1;
+                            String VALUE "72 levels";
+                        }
+                    }
+                }
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-06-30";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59Z";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-06-30";
+                }
+            }
+        }
+    }
+    ArhiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            TimesPerDay {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 8;
+            }
+            ParameterFormat {
+                Int32 NUM_VAL 1;
+                String VALUE "32-bit floating point";
+            }
+            MissingValue {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 1.0E+15;
+            }
+            UnpackingScaleFactor {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1;
+            }
+            UnpackingOffset {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "EOSGRID";
+                Int32 XDim 540;
+                Int32 YDim 361;
+                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
+                String Projection "GCTP_GEO";
+                String GridOrigin "HDFE_GD_LL";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "TIME";
+                        Int32 Size 8;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Height";
+                        Int32 Size 72;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "MFXC";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "TIME", "Height", "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "MFYC";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "TIME", "Height", "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "UC";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "TIME", "Height", "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "VC";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "TIME", "Height", "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "DTRAIN";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "TIME", "Height", "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "XDim";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "YDim";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "YDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Height";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "Height";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Time";
+                        String DataType "DFNT_FLOAT64";
+                        String DimList "TIME";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    MFXC {
+        Float32 _FillValue 9.999999870e+14;
+        String long_name "Eastward mass flux on C-Grid";
+        String standard_name "pressure_weighted_eastward_wind_unremapped";
+        String units "Pa*m/s";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value 9.999999870e+14;
+        Float32 fmissing_value 9.999999870e+14;
+        Float32 vmin -1.000000015e+30;
+        Float32 vmax 1.000000015e+30;
+        Float32 valid_range -1.000000015e+30, 1.000000015e+30;
+        String coordinates "TIME Height YDim XDim";
+        String fullpath "/EOSGRID/Data Fields/MFXC";
+    }
+    MFYC {
+        Float32 _FillValue 9.999999870e+14;
+        String long_name "Northward mass flux on C-Grid";
+        String standard_name "pressure_weighted_northward_wind_unremapped";
+        String units "Pa*m/s";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value 9.999999870e+14;
+        Float32 fmissing_value 9.999999870e+14;
+        Float32 vmin -1.000000015e+30;
+        Float32 vmax 1.000000015e+30;
+        Float32 valid_range -1.000000015e+30, 1.000000015e+30;
+        String coordinates "TIME Height YDim XDim";
+        String fullpath "/EOSGRID/Data Fields/MFYC";
+    }
+    UC {
+        Float32 _FillValue 9.999999870e+14;
+        String long_name "Eastward component of wind on C-Grid";
+        String standard_name "eastward_wind_on_C-Grid";
+        String units "m/s";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value 9.999999870e+14;
+        Float32 fmissing_value 9.999999870e+14;
+        Float32 vmin -1.000000015e+30;
+        Float32 vmax 1.000000015e+30;
+        Float32 valid_range -1.000000015e+30, 1.000000015e+30;
+        String coordinates "TIME Height YDim XDim";
+        String fullpath "/EOSGRID/Data Fields/UC";
+    }
+    VC {
+        Float32 _FillValue 9.999999870e+14;
+        String long_name "Northward component of wind on C-Grid";
+        String standard_name "northward_wind_on_C-Grid";
+        String units "m/s";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value 9.999999870e+14;
+        Float32 fmissing_value 9.999999870e+14;
+        Float32 vmin -1.000000015e+30;
+        Float32 vmax 1.000000015e+30;
+        Float32 valid_range -1.000000015e+30, 1.000000015e+30;
+        String coordinates "TIME Height YDim XDim";
+        String fullpath "/EOSGRID/Data Fields/VC";
+    }
+    DTRAIN {
+        Float32 _FillValue 9.999999870e+14;
+        String long_name "Detrainment cloud mass flux";
+        String standard_name "detraining_mass_flux";
+        String units "kg/m2/s";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value 9.999999870e+14;
+        Float32 fmissing_value 9.999999870e+14;
+        Float32 vmin -1.000000015e+30;
+        Float32 vmax 1.000000015e+30;
+        Float32 valid_range -1.000000015e+30, 1.000000015e+30;
+        String coordinates "TIME Height YDim XDim";
+        String fullpath "/EOSGRID/Data Fields/DTRAIN";
+    }
+    XDim {
+        String long_name "longitude";
+        String units "degrees_east";
+        String fullpath "XDim:EOSGRID";
+    }
+    YDim {
+        String long_name "latitude";
+        String units "degrees_north";
+        String fullpath "YDim:EOSGRID";
+    }
+    Height {
+        String long_name "vertical level";
+        String units "layer";
+        String positive "down";
+        String coordinate "eta";
+        String standard_name "model_layers";
+        String formula_term "unknown";
+        String fullpath "Height:EOSGRID";
+    }
+    TIME {
+        String long_name "time";
+        String units "minutes since 2012-06-30 01:30:00";
+        Int32 time_increment 30000;
+        Int32 begin_date 20120630;
+        Int32 begin_time 13000;
+        String fullpath "TIME:EOSGRID";
+    }
+    XDim_EOS {
+        String long_name "XDim";
+        String coordinates "XDim";
+        String fullpath "/EOSGRID/Data Fields/XDim";
+    }
+    YDim_EOS {
+        String long_name "YDim";
+        String coordinates "YDim";
+        String fullpath "/EOSGRID/Data Fields/YDim";
+    }
+    Height_EOS {
+        String long_name "Height";
+        String coordinates "Height";
+        String fullpath "/EOSGRID/Data Fields/Height";
+    }
+    Time {
+        String long_name "Time";
+        String coordinates "TIME";
+        String fullpath "/EOSGRID/Data Fields/Time";
+    }
+}

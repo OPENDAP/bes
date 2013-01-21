@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.14</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="Conventions" type="String">
+            <value>CF-1.0</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>MERRA reanalysis. GEOS-5.2.0</value>
+        </Attribute>
+        <Attribute name="history" type="String">
+            <value>File written by CFIO</value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <value>Global Modeling and Assimilation Office, NASA Goddard Space Flight Center, Greenbelt, MD 20771</value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <value>Global Modeling and Assimilation Office. GEOSops_5_2_0</value>
+        </Attribute>
+        <Attribute name="references" type="String">
+            <value>http://gmao.gsfc.nasa.gov/research/merra/</value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <value>GEOS-5.2.0</value>
+        </Attribute>
+        <Attribute name="contact" type="String">
+            <value>http://gmao.gsfc.nasa.gov/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;V01&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;0&quot;</value>
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;0&quot;</value>
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MFXC&quot;</value>
+                            <value>&quot;MFYC&quot;</value>
+                            <value>&quot;UC&quot;</value>
+                            <value>&quot;VC&quot;</value>
+                            <value>&quot;DTRAIN&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;0&quot;</value>
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;parameter is produced correctly&quot;</value>
+                                <value>&quot;parameter is produced correctly&quot;</value>
+                                <value>&quot;parameter is produced correctly&quot;</value>
+                                <value>&quot;parameter is produced correctly&quot;</value>
+                                <value>&quot;parameter is produced correctly&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MAT3NVCHM&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.2.0&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="VERTICALSPATIALDOMAIN" type="Container">
+                    <Attribute name="VERTICALSPATIALDOMAINCONTAINER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="VERTICALSPATIALDOMAINTYPE" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Atmosphere Layer&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="VERTICALSPATIALDOMAINVALUE" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;72 levels&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2012-06-30&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;23:59:59Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2012-06-30&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArhiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="TimesPerDay" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <value>8</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ParameterFormat" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;32-bit floating point&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MissingValue" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <value>1.0E+15</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="UnpackingScaleFactor" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <value>1</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="UnpackingOffset" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <value>0</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;EOSGRID&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>540</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>361</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <value>HDFE_GD_LL</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;TIME&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>8</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Height&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>72</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MFXC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                            <value>&quot;Height&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MFYC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                            <value>&quot;Height&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;UC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                            <value>&quot;Height&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;VC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                            <value>&quot;Height&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;DTRAIN&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                            <value>&quot;Height&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT64</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT64</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Height&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT64</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Height&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT64</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;TIME&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Array name="MFXC">
+        <Attribute name="_FillValue" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Eastward mass flux on C-Grid</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>pressure_weighted_eastward_wind_unremapped</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Pa*m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="fmissing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="vmin" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="vmax" type="Float32">
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000015e+30</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME Height YDim XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/MFXC</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="TIME" size="8"/>
+        <dimension name="Height" size="72"/>
+        <dimension name="YDim" size="361"/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="MFYC">
+        <Attribute name="_FillValue" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Northward mass flux on C-Grid</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>pressure_weighted_northward_wind_unremapped</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Pa*m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="fmissing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="vmin" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="vmax" type="Float32">
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000015e+30</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME Height YDim XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/MFYC</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="TIME" size="8"/>
+        <dimension name="Height" size="72"/>
+        <dimension name="YDim" size="361"/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="UC">
+        <Attribute name="_FillValue" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Eastward component of wind on C-Grid</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>eastward_wind_on_C-Grid</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="fmissing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="vmin" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="vmax" type="Float32">
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000015e+30</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME Height YDim XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/UC</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="TIME" size="8"/>
+        <dimension name="Height" size="72"/>
+        <dimension name="YDim" size="361"/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="VC">
+        <Attribute name="_FillValue" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Northward component of wind on C-Grid</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>northward_wind_on_C-Grid</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="fmissing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="vmin" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="vmax" type="Float32">
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000015e+30</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME Height YDim XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/VC</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="TIME" size="8"/>
+        <dimension name="Height" size="72"/>
+        <dimension name="YDim" size="361"/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="DTRAIN">
+        <Attribute name="_FillValue" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Detrainment cloud mass flux</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>detraining_mass_flux</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>kg/m2/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="fmissing_value" type="Float32">
+            <value>9.999999870e+14</value>
+        </Attribute>
+        <Attribute name="vmin" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="vmax" type="Float32">
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-1.000000015e+30</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME Height YDim XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/DTRAIN</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="TIME" size="8"/>
+        <dimension name="Height" size="72"/>
+        <dimension name="YDim" size="361"/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="XDim">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>XDim:EOSGRID</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="YDim">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>YDim:EOSGRID</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim" size="361"/>
+    </Array>
+    <Array name="Height">
+        <Attribute name="long_name" type="String">
+            <value>vertical level</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>layer</value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <value>down</value>
+        </Attribute>
+        <Attribute name="coordinate" type="String">
+            <value>eta</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>model_layers</value>
+        </Attribute>
+        <Attribute name="formula_term" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>Height:EOSGRID</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Height" size="72"/>
+    </Array>
+    <Array name="TIME">
+        <Attribute name="long_name" type="String">
+            <value>time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>minutes since 2012-06-30 01:30:00</value>
+        </Attribute>
+        <Attribute name="time_increment" type="Int32">
+            <value>30000</value>
+        </Attribute>
+        <Attribute name="begin_date" type="Int32">
+            <value>20120630</value>
+        </Attribute>
+        <Attribute name="begin_time" type="Int32">
+            <value>13000</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>TIME:EOSGRID</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="TIME" size="8"/>
+    </Array>
+    <Array name="XDim_EOS">
+        <Attribute name="long_name" type="String">
+            <value>XDim</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>XDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/XDim</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="XDim" size="540"/>
+    </Array>
+    <Array name="YDim_EOS">
+        <Attribute name="long_name" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/YDim</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim" size="361"/>
+    </Array>
+    <Array name="Height_EOS">
+        <Attribute name="long_name" type="String">
+            <value>Height</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Height</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/Height</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Height" size="72"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="long_name" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>TIME</value>
+        </Attribute>
+        <Attribute name="fullpath" type="String">
+            <value>/EOSGRID/Data Fields/Time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="TIME" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

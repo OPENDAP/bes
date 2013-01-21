@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="2A25_CSI.990804.9692.KORA.6.hdf" space="catalog">/data/2A25_CSI.990804.9692.KORA.6.hdf</setContainer>
+    <define name="d">
+	<container name="2A25_CSI.990804.9692.KORA.6.hdf" />
+         <constraint>
+        vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_greenHourAng[0:20:218],latitudeLE_SwathData_geolocation[0:218:218][0:48:48],longitudeLE_SwathData_geolocation[0:218:218][0:48:48],DATA_GRANULE_SwathData_rainAve[0:100:218][0:23:48][0:1:1],fakeDim23[0:2:4],latlon[0:1:1]
+        </constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

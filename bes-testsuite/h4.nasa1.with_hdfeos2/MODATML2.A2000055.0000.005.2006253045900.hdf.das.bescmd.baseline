@@ -1,0 +1,785 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+    }
+    Radius_Difference {
+        String units "level";
+        String long_name "Radius_Difference(fake)";
+    }
+    QA_Parameter_5km {
+        String units "level";
+        String long_name "QA_Parameter_5km(fake)";
+    }
+    Byte_Segment {
+        String units "level";
+        String long_name "Byte_Segment(fake)";
+    }
+    Cloud_Optical_Thickness {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Optical Thickness two-channel retrieval using band 7 and either band 1, 2, or 5";
+        String units "none";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Effective_Radius {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Particle Effective Radius two-channel retrieval using band 7 and either band 1, 2, or 5";
+        String units "micron";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Water_Path {
+        String coordinates "Latitude Longitude";
+        String long_name "Column Water Path two-band retrieval using band 7 and either band 1, 2, or 5";
+        String units "g/m^2";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path";
+    }
+    Cloud_Effective_Radius_Difference {
+        String coordinates "Radius_Difference Latitude Longitude";
+        String long_name "Cloud Particle Effective Radius two-channel retrieval using band 6 and band 20 differenced from band 7 retrieval and either band 1, 2, or 5. Plane 1 of SDS is band 6 - band 7 retrieval, Plane 2 is band 20 - band 7 retrieval.";
+        String units "micron";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Effective_Radius_Difference";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Optical_Thickness_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Optical Thickness two-channel retrieval using band 7 and band 6";
+        String units "none";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_1621";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Effective_Radius_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Particle Effective Radius two-channel retrieval using band 7 and band 6";
+        String units "micron";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_1621";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Water_Path_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Column Water Path two-band retrieval using band 7 and band 6";
+        String units "g/m^2";
+        Int16 valid_range 0, 10000;
+        Int16 _FillValue -9999;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_1621";
+    }
+    Cloud_Optical_Thickness_Uncertainty {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Optical Thickness Relative Uncertainty (Percent)";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_Uncertainty";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Effective_Radius_Uncertainty {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Effective Particle Radius Relative Uncertainty (Percent)";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_Uncertainty";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Water_Path_Uncertainty {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Water Path Relative Uncertainty (Percent)";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_Uncertainty";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Optical_Thickness_Uncertainty_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Optical Thickness Relative Uncertainty (Percent) using band 7 and band 6";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_Uncertainty_1621";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Effective_Radius_Uncertainty_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Effective Particle Radius Relative Uncertainty (Percent) using band 7 and band 6";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_Uncertainty_1621";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Water_Path_Uncertainty_1621 {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Water Path Relative Uncertainty (Percent) using band 7 and band 6";
+        String units "percent";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_Uncertainty_1621";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Phase_Optical_Properties {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Phase Determination Used in Optical Thickness/Effective Radius Retrieval";
+        String units "none";
+        Int16 valid_range 0, 4;
+        Int16 _FillValue 0;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Phase_Optical_Properties";
+    }
+    Cloud_Phase_Infrared {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Phase Infrared";
+        String units "none";
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 127;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Phase_Infrared";
+    }
+    Cloud_Quality_Assurance {
+        String coordinates "Latitude Longitude QA_Parameter_5km";
+        String long_name "Cloud Quality Assurance at 5km Resolution";
+        String units "none";
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String description "See MODIS atmosphere QA plan (1 x 1 km Product quality and retrieval processing QA flags) for details";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Quality_Assurance_1km";
+    }
+    Cirrus_Reflectance {
+        String coordinates "Latitude Longitude";
+        String long_name "Cirrus Reflectance";
+        String units "none";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cirrus_Reflectance";
+        Float64 scale_factor_modis 0.00019999999494757503;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Top_Pressure {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Top Pressure";
+        String units "hPa";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Top_Pressure";
+        Float64 scale_factor_modis 0.10000000149011612;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -32768;
+    }
+    Cloud_Top_Temperature {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Top Temperature";
+        String units "K";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Top_Temperature";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis -15000.000000000000;
+        Float32 _FillValue -32768;
+    }
+    Cloud_Fraction {
+        String coordinates "Latitude Longitude";
+        String long_name "Cloud Fraction";
+        String units "none";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String source_info "\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Fraction";
+        Float64 scale_factor_modis 0.0099999997764825821;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue 127;
+    }
+    Precipitable_Water_Near_Infrared_Clear {
+        String coordinates "Latitude Longitude";
+        String long_name "Total Column Precipitable Water Vapor - Near Infrared Clear Retrieval";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD05_L2.A2000055.0000.005.2006253044843.hdf\\012pge04v5.2.6\\012\\011Water_Vapor_Near_Infrared\\012\\011Quality_Assurance_Near_Infrared\\012pixels w/o 0|3 in two most significant bits of QA_Near_IR byte 0 get _FillValue";
+        Float64 scale_factor_modis 0.0010000000474974513;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Precipitable_Water_Infrared_Clear {
+        String coordinates "Latitude Longitude";
+        String long_name "Total Column Precipitable Water Vapor - IR Clear Retrieval";
+        String units "cm";
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 3, 2028, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "Internal geolocation arrays";
+        String source_info "\\012MOD07_L2.A2000055.0000.005.2006249021033.hdf\\012pge03v5.3.0\\012\\011Water_Vapor";
+        Float64 scale_factor_modis 0.0010000000474974513;
+        Float64 add_offset_modis 0.0000000000000000;
+        Float32 _FillValue -9999;
+    }
+    Cloud_Mask {
+        String coordinates "Byte_Segment Latitude Longitude";
+        String long_name "MODIS Cloud Mask";
+        String units "none";
+        Int32 valid_range 0, 255;
+        Int32 _FillValue 0;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "Output";
+        Int32 Cell_Along_Swath_Sampling 4, 2029, 5;
+        Int32 Cell_Across_Swath_Sampling 3, 1348, 5;
+        String Geolocation_Pointer "External MODIS geolocation product";
+        String description "\\012                                                                                   \\012                                                                                    \\012 Bit fields within each byte are numbered from the left:                            \\012 7, 6, 5, 4, 3, 2, 1, 0.                                                            \\012 The left-most bit (bit 7) is the most significant bit.                             \\012 The right-most bit (bit 0) is the least significant bit.                           \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 0               Cloud Mask Flag                      0 = Not  determined           \\012                                                      1 = Determined                \\012                                                                                    \\012 2, 1            Unobstructed FOV Quality Flag        00 = Cloudy                   \\012                                                      01 = Uncertain                \\012                                                      10 = Probably  Clear          \\012                                                      11 = Confident  Clear         \\012                 PROCESSING PATH                                                    \\012                 ---------------                                                    \\012 3               Day or Night Path                    0 = Night  / 1 = Day          \\012 4               Sunglint Path                        0 = Yes    / 1 = No           \\012 5               Snow/Ice Background Path             0 = Yes    / 1 = No           \\012 7, 6            Land or Water Path                   00 = Water                    \\012                                                      01 = Coastal                  \\012                                                      10 = Desert                   \\012                                                      11 = Land                     \\012 ";
+        String _1_km_to_5_km_subsampling_description "Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.";
+        String source_info "\\012MOD35_L2.A2000055.0000.005.2006249020743.hdf\\012pge03v5.3.0\\012\\011Cloud_Mask";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODATML2.A2000055.0000.005.2006253045900.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-09-10T04:59:00.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Night";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "005";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed: >10% useable; Failed: <10% useable";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Failed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 100;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Cloud_Top_Pressure";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2000-02-24";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:31:07.777131";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 985;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 153.398184366839;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODATML2";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 30;
+                    String VALUE "MOD03.A2000055.0000.005.2006248153353.hdf", "MOD05_L2.A2000055.0000.005.2006253044843.hdf", "MOD06_L2.A2000055.0000.005.2006253045251.hdf", "MOD07_L2.A2000055.0000.005.2006249021033.hdf", "MOD35_L2.A2000055.0000.005.2006249020743.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 7.2006084116719;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -95.0350314860321;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 60.2309011145443;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 84.9641341307896;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-02-24";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:05:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2000-02-24";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.3.6";
+                }
+            }
+            ANCILLARYINPUTGRANULE {
+                ANCILLARYINPUTGRANULECONTAINER {
+                    String CLASS "1";
+                    ANCILLARYINPUTPOINTER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MOD03.A2000055.0000.005.2006248153353.hdf";
+                    }
+                    ANCILLARYINPUTTYPE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Geolocation";
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "SuccessfulRetrievalPct", "DayProcessedPct", "NightProcessedPct", "LandProcessedPct", "WaterProcessedPct", "Snow_IceSurfaceProcessedPct", "ShadowFoundPct", "SunglintProcessedPct", "NonCloudObstructionFoundPct", "MaxSolarZenithAngle", "MinSolarZenithAngle", "VeryHighConfidentClearPct", "HighConfidentClearPct", "UncertainConfidentClearPct", "LowConfidentClearPct", "ThinCirrusSolarFoundPct", "ThinCirrusIR_FoundPct", "SuccessfulRetrievalPct_Land", "SuccessfulRetrievalPct_Ocean", "SuccessfulRetrievalPct_NIR", "SuccessfulRetrievalPct_IR", "SuccessCloudTopPropRtrPct_IR", "SuccessCloudPhaseRtrPct_IR", "SuccessCloudOptPropRtrPct_VIS", "CloudCoverFractionPct_VIS", "WaterCloudDetectedPct_VIS", "IceCloudDetectedPct_VIS";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27";
+                            String VALUE "    0.49", "    0.00", "    0.49", "    0.15", "    0.34", "    0.33", "    0.00", "    0.00", "    0.00", "  122.06", "   96.87", "    0.00", "    0.00", "    0.00", "    0.49", "    0.00", "    0.02", "    0.00", "    0.00", "    0.00", "    0.00", "    0.27", "    0.49", "    0.00", "    0.00", "    0.00", "    0.00";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5193 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Xeon(TM) CPU 2.80GHz unknown GNU/Linux";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra Aerosol, Cloud and Water Vapor Subset 5-Min L2 Swath 5km and 10km";
+            }
+            INSTRUMENTNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "Moderate Resolution Imaging Spectroradiometer";
+            }
+            GPOLYGON {
+                GPOLYGONCONTAINER {
+                    String CLASS "1";
+                    GRING {
+                        String CLASS "1";
+                        EXCLUSIONGRINGFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "N";
+                        }
+                    }
+                    GRINGPOINT {
+                        String CLASS "1";
+                        GRINGPOINTLONGITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE -9.77486167943177, -57.4984862937547, -95.2529373833584, 9.00889487738152;
+                        }
+                        GRINGPOINTLATITUDE {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 66.9099424652611, 60.2282376958739, 70.2390000154219, 84.7905572783001;
+                        }
+                        GRINGPOINTSEQUENCENO {
+                            Int32 NUM_VAL 4;
+                            String CLASS "1";
+                            Float64 VALUE 1, 2, 3, 4;
+                        }
+                    }
+                }
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.1";
+            }
+            PRODUCTIONHISTORY {
+                Int32 NUM_VAL 1;
+                String VALUE "PGE83:5.3.6";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "atml2";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Cell_Along_Swath_5km";
+                        Int32 Size 406;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Cell_Across_Swath_5km";
+                        Int32 Size 270;
+                    }
+                    Dimension_3 {
+                        String DimensionName "Radius_Difference";
+                        Int32 Size 2;
+                    }
+                    Dimension_4 {
+                        String DimensionName "QA_Parameter_5km";
+                        Int32 Size 5;
+                    }
+                    Dimension_5 {
+                        String DimensionName "Byte_Segment";
+                        Int32 Size 1;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Latitude";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Longitude";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Cloud_Optical_Thickness";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Cloud_Effective_Radius";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Cloud_Water_Path";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Cloud_Effective_Radius_Difference";
+                        String DataType "DFNT_INT16";
+                        String DimList "Radius_Difference", "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Cloud_Optical_Thickness_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Cloud_Effective_Radius_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Cloud_Water_Path_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Cloud_Optical_Thickness_Uncertainty";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Cloud_Effective_Radius_Uncertainty";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Cloud_Water_Path_Uncertainty";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Cloud_Optical_Thickness_Uncertainty_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Cloud_Effective_Radius_Uncertainty_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Cloud_Water_Path_Uncertainty_1621";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Cloud_Phase_Optical_Properties";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Cloud_Phase_Infrared";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Cloud_Quality_Assurance";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km", "QA_Parameter_5km";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Cirrus_Reflectance";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_18 {
+                        String DataFieldName "Cloud_Top_Pressure";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_19 {
+                        String DataFieldName "Cloud_Top_Temperature";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_20 {
+                        String DataFieldName "Cloud_Fraction";
+                        String DataType "DFNT_INT8";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_21 {
+                        String DataFieldName "Precipitable_Water_Near_Infrared_Clear";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_22 {
+                        String DataFieldName "Precipitable_Water_Infrared_Clear";
+                        String DataType "DFNT_INT16";
+                        String DimList "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                    DataField_23 {
+                        String DataFieldName "Cloud_Mask";
+                        String DataType "DFNT_INT8";
+                        String DimList "Byte_Segment", "Cell_Along_Swath_5km", "Cell_Across_Swath_5km";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+    }
+}

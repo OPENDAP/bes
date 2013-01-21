@@ -1,9 +1,28 @@
-2012-01-19  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-11-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HDFEOS2.cc
+	* HDFEOS2.h
+	* HDFEOS2Array_RealField.cc
+	* hdfdesc.cc:
+	fixed some MODS scale offset handling bugs for multiple grid cases.
+
+	* HDFEOS*.cc
+	* HDFSP*.cc:
+	formatted indentation.
+	
+
+2012-10-26  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* NEWS
+	* configure.ac
+	* hdf4_handler.spec
+	changed version to 3.10.1.
+
+2012-01-19  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* README: updated to have known bugs and details about MODIS
 	scale/offset rule implementation.
 
-2012-01-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-01-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS2.h
 	* hdfdesc.cc
@@ -11,7 +30,7 @@
 	* HDFEOS2.cc
 	updated the above files to fix LAMAZ problem.
 
-2012-01-13  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-01-13  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* NEWS: added what's new in this release.
 	* README: updated new features.
@@ -20,22 +39,65 @@
 	* hdf4_handler.cf.spec: added for those who are interested in building
 	custom RPM using --with-hdfeos2 option.
 
-2012-01-12  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-01-12  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HE2CF.cc (print_attr): fixed bug for uint16/uint32 type handling.
 	* hdfdesc.cc (print_attr): fixed bug for uint16/uint32 type handling.
 	* data.local/src/: created for small test file generation programs.
 
-2011-12-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-01-11  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-	* HDFSP.cc (File::prepare): Replaced map[key]=val assignments for string:string map.
-	* HDFEOS2.cc (insert_map): is added. Replaced map[key]=val assignments for string:string map.
+	* HDFEOS2.cc: fixed the bug for LAMAZ visualization anomaly.
 
-2010-03-18  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2012-01-10  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: added hdfdesc.h
+
+2012-01-10  hyoklee
+
+	added the missing file that caused RPM build failure with
+	--with-hdfeos2 option.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  hyoklee
+
+	Corrected scale/offset for MODIS products. Added LAMAZ/SOM
+	projection support. See ChangeLog for details.
+
+2012-01-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* configure.ac: changed version number to 3.9.4.
+	* hdf4_handler.spec: changed version number to 3.9.4.
+	* hdfesc.cc: improved MODIS scale/offset handling and OBPG support.
+	* hdfdesc.h: added for MODIS and MISR product support.
+	* HDEEOPS2ArrayGridGeoField.cc: added SOM projection support.
+	* HDEEOPS2ArrayGridGeoField. (CalculateSpeLatLon)h: renamed to
+	CalculateLAMAZLatLon().
+	* HDFEOS2Array_RealField.cc: corrected scale/offset application in
+	MODIS products.
+	* HDFEOS2ArraySwathDimMapField.cc: corrected scale/offset application in
+	MODIS products.
+	* Makefile.am: added files for MISR product support.
+	* misr_init.cc, misrinv.cc, misrproj.h, errormacros.h: added.
+
+2012-01-06  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HE2CFUniqName.cc (set_uniq_name): removed exit(-1) function.
+
+2011-12-22  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HDFSP.cc (File::prepare): Replaced map[key]=val assignments
+	* for string:string map. HDFEOS2.cc (insert_map): is added.
+	* Replaced map[key]=val assignments for string:string map.
+
+2010-03-18  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* enable-short-name option is added.
 
-2010-03-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2010-03-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* CF option is removed.
 
@@ -43,16 +105,16 @@
 
 	* HE2CFValidChar.cc is added.
 
-2010-02-04  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2010-02-04  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDF4RequestHandler.cc removed the use of cache
 	* hdfdesc.cc removed the use of cache
 
-2010-01-25  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2010-01-25  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* bes-testsuite Updated baseline files
 
-2009-12-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2009-12-28  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS The first bug fix effort by Kent for Ticket #1451.
 
@@ -525,7 +587,7 @@
 ;; coding: utf-8
 ;; End:
 
-2009-07-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+2009-07-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	
 	The existing handler is enhanced to support OPeNDAP visualization
 	clients like IDV and GrADS so that they can display Grids and Swath 

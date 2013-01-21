@@ -1,0 +1,7 @@
+The data:
+Float32 SW_TOA_Total_Sky[Stats = 2][Monthly_Hourly_Avgs = 2][_1_0_deg__zonal_colat__zones = 2][_1_0_deg__zonal_long__zones = 1] = {{{{14.1941},{50.2487}},{{16.2019},{46.9361}}},{{{0},{0}},{{0},{0}}}};
+Float32 Tuned_Total_Sky_SW_Up[Flux_Profile_levels_TOA_70_200_500_Surface_ = 2][Stats = 2][Monthly_Hourly_Avgs = 2][_1_0_deg__zonal_colat__zones = 2][_1_0_deg__zonal_long__zones = 1] = {{{{{12.4934},{46.7299}},{{14.2678},{43.0585}}},{{{0},{0}},{{0},{0}}}},{{{{5.6085},{23.4295}},{{6.58567},{20.7854}}},{{{0},{0}},{{0},{0}}}}};
+Float32 SW_TOA_Total_Sky_3[Stats = 2][Monthly_Avg = 1][_1_0_deg__global_colat__zones = 1][_1_0_deg__global_long__zones = 1] = {{{{96.0665}}},{{{24.5851}}}};
+Float32 _1_0_deg__zonal_colat__zones[_1_0_deg__zonal_colat__zones = 2] = {89.5, -89.5};
+Float32 _1_0_deg__zonal_long__zones[_1_0_deg__zonal_long__zones = 1] = {0};
+

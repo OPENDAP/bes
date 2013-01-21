@@ -5,7 +5,7 @@
 // To know more information about these products,check HDFSP.h.
 // Each product stores lat/lon in different way, so we have to retrieve them differently.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDFSPArrayGeoField.h"
@@ -17,10 +17,11 @@
 #include "mfhdf.h"
 #include "InternalErr.h"
 #include <BESDebug.h>
-#include "HDFSPUtil.h"
+#include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
-#define NUM_SCAN_LINE_NAME "Pixels per Scan Line"
+#define NUM_PIXEL_NAME "Pixels per Scan Line"
 #define NUM_POINTS_LINE_NAME "Number of Pixel Control Points"
+#define NUM_SCAN_LINE_NAME "Number of Scan Lines"
 #define NUM_LAT_NAME "Number of Lines"
 #define NUM_LON_NAME "Number of Columns"
 #define LAT_STEP_NAME "Latitude Step"
@@ -72,7 +73,7 @@ bool HDFSPArrayGeoField::read ()
 				readtrmml2 (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -84,7 +85,7 @@ bool HDFSPArrayGeoField::read ()
 				readtrmml3 (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -96,7 +97,7 @@ bool HDFSPArrayGeoField::read ()
 				readceravgsyn (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -109,7 +110,7 @@ bool HDFSPArrayGeoField::read ()
 				readceres4ig (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -121,7 +122,7 @@ bool HDFSPArrayGeoField::read ()
 				readcersavgid2 (offset, count, step, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -135,7 +136,7 @@ bool HDFSPArrayGeoField::read ()
 				readceres4ig (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -149,7 +150,7 @@ bool HDFSPArrayGeoField::read ()
 					readcersavgid1 (offset, count, step, nelms);
 				}
 				catch (...) {
-					HDFSPUtil::ClearMem (offset32, count32, step32, offset,
+					HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 										 count, step);
 					throw;
 				}
@@ -160,7 +161,7 @@ bool HDFSPArrayGeoField::read ()
 					readcersavgid2 (offset, count, step, nelms);
 				}
 				catch (...) {
-					HDFSPUtil::ClearMem (offset32, count32, step32, offset,
+					HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 										 count, step);
 					throw;
 				}
@@ -174,7 +175,7 @@ bool HDFSPArrayGeoField::read ()
 				readceravgsyn (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -186,7 +187,7 @@ bool HDFSPArrayGeoField::read ()
 				readcerzavg (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -199,7 +200,7 @@ bool HDFSPArrayGeoField::read ()
 				readobpgl2 (offset32, count32, step32, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -212,7 +213,7 @@ bool HDFSPArrayGeoField::read ()
 				readobpgl3 (offset, count, step, nelms);
 			}
 			catch (...) {
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				throw;
 			}
@@ -221,7 +222,7 @@ bool HDFSPArrayGeoField::read ()
 		}
 	case OTHERHDF:
 		{
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			throw
 			InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
@@ -231,7 +232,7 @@ bool HDFSPArrayGeoField::read ()
 	default:
 		{
 
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			throw
 			InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
@@ -240,7 +241,7 @@ bool HDFSPArrayGeoField::read ()
 		}
 	}
 
-	HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 
 	return false;
 
@@ -256,8 +257,8 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 								int32 * step32, int nelms)
 {
 
-	// 
-	int32 sdid, sdsid;
+	int32 sdid = 0;
+        int32 sdsid = 0;
 	int32 *geooffset32 = new int32[rank + 1];
 	int32 *geocount32 = new int32[rank + 1];
 	int32 *geostep32 = new int32[rank + 1];
@@ -283,9 +284,8 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (sdid < 0) {
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "File " << filename.c_str () << " cannot be open.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -294,9 +294,8 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 
 	if (sdsindex == -1) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "SDS index " << sdsindex << " is not right.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -304,15 +303,14 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 	sdsid = SDselect (sdid, sdsindex);
 	if (sdsid < 0) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "SDselect failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-	void *val;
-	int32 r;
+	void *val = NULL;
+	int32 r = 0;
 
 
 	switch (dtype) {
@@ -326,7 +324,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 				SDendaccess (sdsid);
 
 				delete[](int8 *) val;
-				HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+				HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 
 				ostringstream eherr;
 
@@ -363,7 +361,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](uint8 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -383,7 +381,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](int16 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -403,7 +401,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](uint16 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -421,7 +419,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](int32 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -439,7 +437,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](uint32 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -457,7 +455,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](float32 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -476,7 +474,7 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 			SDendaccess (sdsid);
 
 			delete[](float64 *) val;
-			HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+			HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 			ostringstream eherr;
 
 			eherr << "SDreaddata failed";
@@ -489,14 +487,14 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 	default:
 		SDend (sdid);
 		SDendaccess (sdsid);
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = SDendaccess (sdsid);
 	if (r != 0) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
 
 		eherr << "SDendaccess failed.";
@@ -506,13 +504,13 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 
 	r = SDend (sdid);
 	if (r != 0) {
-		HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
 
 		eherr << "SDend failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
-	HDFSPUtil::ClearMem2 (geooffset32, geocount32, geostep32);
+	HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 
 }
 
@@ -579,10 +577,11 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 	// Read File attributes to otain the segment
 
 	int32 attr_index, attr_dtype, n_values;
-	int32 num_scan_line_data;
+	int32 num_pixel_data;
 	int32 num_point_data;
+        int32 num_scan_data;
 
-	attr_index = SDfindattr (sd_id, NUM_SCAN_LINE_NAME);
+	attr_index = SDfindattr (sd_id, NUM_PIXEL_NAME);
 	if (attr_index == FAIL) {
 		SDend (sd_id);
 		throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
@@ -602,7 +601,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 						   "Only one value of number of scan line ");
 	}
 
-	status = SDreadattr (sd_id, attr_index, &num_scan_line_data);
+	status = SDreadattr (sd_id, attr_index, &num_pixel_data);
 	if (status == FAIL) {
 		SDend (sd_id);
 		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
@@ -611,7 +610,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 	attr_index = SDfindattr (sd_id, NUM_POINTS_LINE_NAME);
 	if (attr_index == FAIL) {
 		SDend (sd_id);
-		throw InternalErr (__FILE__, __LINE__, "SDfileinfo failed ");
+		throw InternalErr (__FILE__, __LINE__, "SDfindattr failed, should find this attribute ");
 	}
 
 	status =
@@ -633,54 +632,50 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
 	}
 
+	attr_index = SDfindattr (sd_id, NUM_SCAN_LINE_NAME);
+	if (attr_index == FAIL) {
+		SDend (sd_id);
+		throw InternalErr (__FILE__, __LINE__, "SDfindattr failed, should find this attribute ");
+	}
+
+	status =
+		SDattrinfo (sd_id, attr_index, attr_name, &attr_dtype, &n_values);
+	if (status == FAIL) {
+		SDend (sd_id);
+		throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+	}
+
+	if (n_values != 1) {
+		SDend (sd_id);
+		throw InternalErr (__FILE__, __LINE__,
+						   "Only one value of number of point ");
+	}
+
+	status = SDreadattr (sd_id, attr_index, &num_scan_data);
+	if (status == FAIL) {
+		SDend (sd_id);
+		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+	}
+
+
+        if ( 0 == num_scan_data || 0 == num_point_data || 0 == num_pixel_data) {
+                SDend (sd_id);
+                throw InternalErr (__FILE__, __LINE__, "num_scan or num_point or num_pixel should not be zero. ");
+        }
+
+        if ( 1 == num_point_data && num_pixel_data != 1) {
+                SDend (sd_id);
+                throw InternalErr (__FILE__, __LINE__, "num_point is 1 and  num_pixel is not 1, interpolation cannot be done ");
+        }
 	bool compmapflag = false;
 
-	if (num_scan_line_data == num_point_data)
+	if (num_pixel_data == num_point_data)
 		compmapflag = true;
-
-	int32 *orioffset32;
-	int32 *oricount32;
-	int32 *oristep32;
-
-	orioffset32 = new int32[rank];
-	oricount32 = new int32[rank];
-	oristep32 = new int32[rank];
-
-	int tempseg, tempnewseg, total_elm;
-
-	if (!compmapflag) {
-
-		if (num_scan_line_data % num_point_data == 0)
-			tempseg = num_scan_line_data / num_point_data;
-		else
-			tempseg = num_scan_line_data / num_point_data + 1;
-
-		orioffset32[0] = offset32[0];
-		oricount32[0] = count32[0];
-		oristep32[0] = step32[0];
-
-		orioffset32[1] = offset32[1] / tempseg;
-		if ((int) step32[1] < tempseg)
-			oristep32[1] = 1;
-		else
-			oristep32[1] = step32[1] / tempseg;
-
-		tempnewseg = tempseg / step32[1];
-		if (count32[1] / tempnewseg < 1)
-			oricount32[1] = 2;
-		else
-			oricount32[1] = 1 + count32[1] / tempnewseg;
-
-		total_elm = 1;
-		for (int i = 0; i < rank; i++)
-			total_elm = total_elm * ((int) (oricount32[i]));
-	}
 
 	int32 sdsindex = SDreftoindex (sd_id, (int32) sdsref);
 
 	if (sdsindex == -1) {
 		SDend (sd_id);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		ostringstream eherr;
 
 		eherr << "SDS index " << sdsindex << " is not right.";
@@ -690,7 +685,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 	sdsid = SDselect (sd_id, sdsindex);
 	if (sdsid < 0) {
 		SDend (sd_id);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		ostringstream eherr;
 
 		eherr << "SDselect failed.";
@@ -711,7 +705,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 	case DFNT_FLOAT64:
 		SDendaccess (sdsid);
 		SDend (sd_id);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		throw InternalErr (__FILE__, __LINE__,
 						   "datatype is not float, unsupported.");
 		break;
@@ -726,7 +719,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 					delete[](float32 *) val;
 					SDendaccess (sdsid);
 					SDend (sd_id);
-					HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 					ostringstream eherr;
 
 					eherr << "SDreaddata failed";
@@ -735,22 +727,87 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 			}
 
 			else {
+
+                              
+                              int total_elm = num_scan_data * num_point_data;
 				float32 *orival = new float32[total_elm];
 
-				r = SDreaddata (sdsid, orioffset32, oristep32, oricount32,
+                                int32 all_start[2],all_edges[2];
+                                all_start[0] = 0;
+                                all_start[1] = 0;
+                                all_edges[0] = num_scan_data;
+                                all_edges[1] = num_point_data;
+
+				r = SDreaddata (sdsid, all_start, NULL, all_edges,
 								orival);
 				if (r != 0) {
-					delete[](float32 *) orival;
+					delete[] orival;
 					SDendaccess (sdsid);
 					SDend (sd_id);
-					HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 					ostringstream eherr;
 
 					eherr << "SDreaddata failed";
 					throw InternalErr (__FILE__, __LINE__, eherr.str ());
 				}
+                                int interpolate_elm = num_scan_data *num_pixel_data;
 
+                                float32 * interp_val = new float[interpolate_elm];
+
+                                // Number of scan line doesn't change, so just interpolate according to the fast changing dimension
+                                int tempseg = 0;
+                                float tempdiff = 0;
+
+		                if (num_pixel_data % num_point_data == 0)
+			            tempseg = num_pixel_data / num_point_data;
+		                else
+			            tempseg = num_pixel_data / num_point_data + 1;
+
+                                int last_tempseg = (num_pixel_data%num_point_data)?(num_pixel_data-1-(tempseg*(num_point_data-2))):tempseg;
+
+                                if ( 0 == last_tempseg || 0 == tempseg) {
+                                    SDendaccess(sdsid);
+                                    SDend(sd_id);
+                                    throw InternalErr(__FILE__,__LINE__,"Segments cannot be zero");
+                                }
+
+                                int interp_val_index = 0;
+
+                                for (int i = 0; i <num_scan_data; i++) {
+
+                                    // All the segements except the last one
+                                    for( int j =0; j <num_point_data -2; j ++) {
+                                        tempdiff = orival[i*num_point_data+j+1] - orival[i*num_point_data+j];
+                                        for (int k = 0; k <tempseg; k++) {
+                                            interp_val[interp_val_index] = orival[i*num_point_data+j] +
+                                                tempdiff/tempseg *k;
+                                            interp_val_index++;
+                                        }
+                                    }
+                                    
+                                    // The last segment
+                                    tempdiff = orival[i*num_point_data+num_point_data-1]-orival[i*num_point_data+num_point_data-2];
+                                    for (int k = 0; k <last_tempseg; k++) {
+                                            interp_val[interp_val_index] = orival[i*num_point_data+num_point_data-2] +
+                                                tempdiff/last_tempseg *k;
+                                            interp_val_index++;
+                                    }
+
+                                    interp_val[interp_val_index] = orival[i*num_point_data+num_point_data-1];
+                                    interp_val_index++;
+
+                                }
+
+                                LatLon2DSubset(val,num_scan_data,num_pixel_data,interp_val,offset32,count32,step32);
+
+                                delete[] orival;
+                                delete[] interp_val;
+                            }
+                            // Leave the following comments until the next release
+#if 0
 				// WE SHOULD INTERPOLATE ACCORDING TO THE FAST CHANGING DIMENSION
+                                // THis method will save some memory, but it will cause greater error
+                                // if the step is very large. However, we should still take advantage 
+                                // of the small memory approach in the future implementation. KY 2012-09-04
 				float tempdiff;
 				int i, j, k, k2;
 				int32 realcount2 = oricount32[1] - 1;
@@ -771,7 +828,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 						orival[i * (int) oricount32[1] + j];
 					// There are three cases:
 					// 1. when the oricount is 1
-					//              int lastseg = num_scan_line_data - tempnewseg*((int)oricount32[1]-1)-1;
+					//              int lastseg = num_pixel_data - tempnewseg*((int)oricount32[1]-1)-1;
 					int lastseg =
 						(int) (count32[1] -
 							   tempnewseg * (int) (realcount2 - 1));
@@ -783,6 +840,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
 				delete[](float32 *) orival;
 			}
+#endif
 
 			set_value ((dods_float32 *) val, nelms);
 			delete[](float32 *) val;
@@ -792,14 +850,12 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
 		SDendaccess (sdsid);
 		SDend (sd_id);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = SDendaccess (sdsid);
 	if (r != 0) {
 		SDend (sd_id);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		ostringstream eherr;
 
 		eherr << "SDendaccess failed.";
@@ -808,16 +864,12 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
 	r = SDend (sd_id);
 	if (r != 0) {
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		ostringstream eherr;
 
 		eherr << "SDend failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-	delete[]orioffset32;
-	delete[]oristep32;
-	delete[]oricount32;
 }
 
 // Obtain lat/lon for OBPG CZCS, MODISA, MODIST,OCTS and SeaWIFS products
@@ -827,7 +879,7 @@ void
 HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 {
 
-	int32 sd_id, sdsid;
+	int32 sd_id;
 	intn status;
 
 	sd_id = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -840,13 +892,15 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 	}
 
 	// Read File attributes to otain the segment
-	int32 attr_index, attr_dtype, n_values;
-	int32 num_lat_data;
-	int32 num_lon_data;
-	float32 lat_step;
-	float32 lon_step;
-	float32 swp_lat;
-	float32 swp_lon;
+	int32 attr_index = 0;
+        int32 attr_dtype = 0;
+        int32 n_values = 0;
+	int32 num_lat_data = 0;
+	int32 num_lon_data = 0;
+	float32 lat_step = 0.;
+	float32 lon_step = 0.;
+	float32 swp_lat = 0.;
+	float32 swp_lon = 0.;
 
 	// Obtain number of latitude
 	attr_index = SDfindattr (sd_id, NUM_LAT_NAME);
@@ -1000,7 +1054,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
 	}
 
-	//float32 *val; Unused jhrg 3/16/11
 
 	if (fieldtype == 1) {
 
@@ -1227,7 +1280,6 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
 	// 
 	int i;
 	int32 sdid, sdsid;
-	intn status;
 
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -1364,12 +1416,11 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 								  int32 * step32, int nelms)
 {
 
-	// 
-	int32 sdid, sdsid;
-	intn status;
+	int32 sdid = 0;
+        int32 sdsid = 0;
+	intn status = 0;
 
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
 	if (sdid < 0) {
 		ostringstream eherr;
 
@@ -1378,7 +1429,6 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 	}
 
 	int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
-
 	if (sdsindex == -1) {
 		SDend (sdid);
 		ostringstream eherr;
@@ -1429,7 +1479,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 	case DFNT_FLOAT64:
 		SDendaccess (sdsid);
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
+		HDFCFUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		throw InternalErr (__FILE__, __LINE__,
 						   "datatype is not float, unsupported.");
 	case DFNT_FLOAT32:
@@ -1442,7 +1492,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 						SDendaccess (sdsid);
 						SDend (sdid);
 						delete[](float32 *) val;
-						HDFSPUtil::ClearMem2 (orioffset32, oricount32,
+						HDFCFUtil::ClearMem2 (orioffset32, oricount32,
 											  oristep32);
 						throw InternalErr (__FILE__, __LINE__,
 										   "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D");
@@ -1462,7 +1512,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 						SDendaccess (sdsid);
 						SDend (sdid);
 						delete[](float32 *) val;
-						HDFSPUtil::ClearMem2 (orioffset32, oricount32,
+						HDFCFUtil::ClearMem2 (orioffset32, oricount32,
 											  oristep32);
 						throw InternalErr (__FILE__, __LINE__,
 										   "For CER_ES4 case, lat/lon must be 2-D");
@@ -1482,7 +1532,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 						SDendaccess (sdsid);
 						SDend (sdid);
 						delete[](float32 *) val;
-						HDFSPUtil::ClearMem2 (orioffset32, oricount32,
+						HDFCFUtil::ClearMem2 (orioffset32, oricount32,
 											  oristep32);
 						throw InternalErr (__FILE__, __LINE__,
 										   "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D");
@@ -1502,7 +1552,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 						SDendaccess (sdsid);
 						SDend (sdid);
 						delete[](float32 *) val;
-						HDFSPUtil::ClearMem2 (orioffset32, oricount32,
+						HDFCFUtil::ClearMem2 (orioffset32, oricount32,
 											  oristep32);
 						throw InternalErr (__FILE__, __LINE__,
 										   "For CER_ES4 case, lat/lon must be 2-D");
@@ -1521,7 +1571,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 				SDendaccess (sdsid);
 				SDend (sdid);
 				delete[](float32 *) val;
-				HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
+				HDFCFUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 
 				ostringstream eherr;
 
@@ -1548,14 +1598,14 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 	default:
 		SDendaccess (sdsid);
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
+		HDFCFUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = SDendaccess (sdsid);
 	if (r != 0) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
+		HDFCFUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 		ostringstream eherr;
 
@@ -1566,7 +1616,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 
 	r = SDend (sdid);
 	if (r != 0) {
-		HDFSPUtil::ClearMem2 (orioffset32, oricount32, oristep32);
+		HDFCFUtil::ClearMem2 (orioffset32, oricount32, oristep32);
 		ostringstream eherr;
 
 		eherr << "SDend failed.";
@@ -1658,3 +1708,45 @@ HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 
 	return nels;
 }
+
+// Subset of latitude and longitude to follow the parameters from the DAP expression constraint
+template < typename T >
+void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
+                                                                                                                  int majordim,
+                                                                                                                  int minordim,
+                                                                                                                  T * latlon,
+                                                                                                                  int32 * offset,
+                                                                                                                  int32 * count,
+                                                                                                                  int32 * step)
+{
+
+//          float64 templatlon[majordim][minordim];
+        T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
+     int i, j, k;
+
+    // do subsetting
+    // Find the correct index
+    int dim0count = count[0];
+    int dim1count = count[1]; 
+    int dim0index[dim0count], dim1index[dim1count];
+
+    for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
+        dim0index[i] = offset[0] + i * step[0];
+
+
+    for (j = 0; j < count[1]; j++) 
+        dim1index[j] = offset[1] + j * step[1];
+
+    // Now assign the subsetting data
+    k = 0;
+
+    for (i = 0; i < count[0]; i++) {
+        for (j = 0; j < count[1]; j++) {
+            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+            k++;
+
+        }
+    }
+
+}
+

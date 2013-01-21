@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="1B21_CSI.990906.10217.KORA.6.hdf" space="catalog">/data/1B21_CSI.990906.10217.KORA.6.hdf</setContainer>
+    <define name="d">
+	<container name="1B21_CSI.990906.10217.KORA.6.hdf" />
+    </define>
+    <get type="das" definition="d" />
+</request>

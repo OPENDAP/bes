@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">/hdf-testfiles/testsds1.hdf</setContainer>
+    <define name="d">
+	<container name="data">
+	    <constraint>SDS_DFNT_INT32[1:2],SDS_DFNT_UINT32[1:1],SDS_DFNT_INT16[1:2],SDS_DFNT_UINT16[0:0],SDS_DFNT_INT8[0:0],SDS_DFNT_UINT8[2:2],SDS_DFNT_FLOAT32[2:3],SDS_DFNT_FLOAT64,SDS_DFNT_CHAR8[0:1],SDS_DFNT_UCHAR8[0:1]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

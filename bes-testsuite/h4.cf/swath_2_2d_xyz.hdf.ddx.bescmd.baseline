@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="swath_2_2d_xyz.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;Swath1&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>4</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>8</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_3" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+            <Attribute name="SWATH_2" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;Swath2&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>8</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>16</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_3" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;ZDim&quot;</value>
+                            <value>&quot;NDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="Swath1_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>NDim:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>NDim:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_pressure" type="Container">
+        <Attribute name="Vdata_field_pressure" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_latitude" type="Container">
+        <Attribute name="Vdata_field_latitude" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_longitude" type="Container">
+        <Attribute name="Vdata_field_longitude" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_pressure" type="Container">
+        <Attribute name="Vdata_field_pressure" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_latitude" type="Container"/>
+    <Attribute name="Swath2_Geolocation_Fields_longitude" type="Container"/>
+    <Array name="Swath1_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_Swath1" size="4"/>
+        <dimension name="NDim_Swath1" size="8"/>
+    </Array>
+    <Array name="Swath2_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_Swath2" size="8"/>
+        <dimension name="NDim_Swath2" size="16"/>
+    </Array>
+    <Array name="vdata_Swath2_Geolocation_Fields_latitude_vdf_latitude">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_latitude_vdf_latitude" size="16"/>
+    </Array>
+    <Array name="vdata_Swath2_Geolocation_Fields_longitude_vdf_longitude">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_longitude_vdf_longitude" size="16"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,8 @@
+The data:
+Int32 Byte_Segment[Byte_Segment = 2] = {0, 0};
+Int16 Solar_Zenith[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{10352, 9625},{8665, 7939}};
+Int32 Cloud_Mask[Byte_Segment = 2][Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{{49, 49},{17, -7}},{{0, 0},{0, 0}}};
+Int32 Quality_Assurance[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2][QA_Dimension = 2] = {{{15, 1},{15, 1}},{{13, 1},{13, 1}}};
+Float32 Latitude[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{57.1267, 52.041},{74.9864, 66.0993}};
+Float32 Longitude[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{-14.4729, -50.1445},{-12.0202, -73.6707}};
+

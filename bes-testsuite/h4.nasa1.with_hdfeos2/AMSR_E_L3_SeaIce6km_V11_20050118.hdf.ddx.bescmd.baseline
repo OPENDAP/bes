@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="AMSR_E_L3_SeaIce6km_V11_20050118.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AMSR_E_L3_SeaIce6km_V11_20050118.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-07-02T09:59:35Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;reprocessed once&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Sea Ice Parameters&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Program Execution Completed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Currently not used&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Currently not used&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AE_SI6&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>2</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>29</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180116_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180206_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180255_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180345_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180434_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180523_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180613_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180702_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180752_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180841_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501180931_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181020_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181109_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181159_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181248_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181338_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181427_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181517_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181606_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181656_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181745_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181834_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501181924_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501182013_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501182103_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501182152_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501182242_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V10_200501182331_D.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2005-01-18&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:27:15.30Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2005-01-19&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:21:30.03Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;11&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;NpPolarGrid06km&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>1216</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>1792</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-3850000.000000</value>
+                    <value>5850000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>3750000.000000</value>
+                    <value>-5350000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_PS</value>
+                </Attribute>
+                <Attribute name="ProjParams" type="Float64">
+                    <value>6378273</value>
+                    <value>-0.0066938830000000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>-45000000</value>
+                    <value>70000000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                </Attribute>
+                <Attribute name="SphereCode" type="Int32">
+                    <value>-1</value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <value>HDFE_GD_UL</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container"/>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89V_ASC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89V_DSC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89V_DAY&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89H_ASC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89H_DSC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_NH_89H_DAY&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+            <Attribute name="GRID_2" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;SpPolarGrid06km&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>1264</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>1328</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-3950000.000000</value>
+                    <value>4350000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>3950000.000000</value>
+                    <value>-3950000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_PS</value>
+                </Attribute>
+                <Attribute name="ProjParams" type="Float64">
+                    <value>6378273</value>
+                    <value>-0.0066938830000000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>-70000000</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                    <value>0</value>
+                </Attribute>
+                <Attribute name="SphereCode" type="Int32">
+                    <value>-1</value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <value>HDFE_GD_UL</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container"/>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89V_ASC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89V_DSC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89V_DAY&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89H_ASC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89H_DSC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SI_06km_SH_89H_DAY&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.14</value>
+        </Attribute>
+    </Attribute>
+    <Array name="SI_06km_NH_89V_ASC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89V_ASC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_NH_89V_DSC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89V_DSC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_NH_89V_DAY">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89V_DAY</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_NH_89H_ASC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89H_ASC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_NH_89H_DSC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89H_DSC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_NH_89H_DAY">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:SI_06km_NH_89H_DAY</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="long_name" type="String">
+            <value>NpPolarGrid06km:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim" size="1792"/>
+        <dimension name="XDim" size="1216"/>
+    </Array>
+    <Array name="SI_06km_SH_89V_ASC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89V_ASC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="SI_06km_SH_89V_DSC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89V_DSC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="SI_06km_SH_89V_DAY">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89V_DAY</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="SI_06km_SH_89H_ASC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89H_ASC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="SI_06km_SH_89H_DSC">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89H_DSC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="SI_06km_SH_89H_DAY">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:SI_06km_SH_89H_DAY</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="Latitude_1">
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <Array name="Longitude_1">
+        <Attribute name="long_name" type="String">
+            <value>SpPolarGrid06km:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="YDim_1" size="1328"/>
+        <dimension name="XDim_1" size="1264"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

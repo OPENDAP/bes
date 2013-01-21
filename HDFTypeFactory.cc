@@ -108,14 +108,3 @@ Grid *HDFTypeFactory::NewGrid(const string & n) const
 {
     return new HDFGrid(n, d_filename);
 }
-#ifdef CF
-Grid *HDFTypeFactory::NewEOSGrid(const string & n) const
-{
-    return new HDFEOSGrid(n, d_filename);
-}
-
-Array *HDFTypeFactory::NewEOSArray(const string & n,  BaseType * v) const
-{
-    return new HDFEOSArray(n, d_filename, v);
-}
-#endif

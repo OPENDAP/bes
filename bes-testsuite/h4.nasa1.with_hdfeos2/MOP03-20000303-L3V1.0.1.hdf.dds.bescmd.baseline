@@ -1,0 +1,26 @@
+Dataset {
+    Float32 Latitude[Latitude = 180];
+    Float32 Longitude[Longitude = 360];
+    Int32 Pressure_Grid[Pressure_Grid = 7];
+    Int32 Surface_Indicator[Latitude = 180][Longitude = 360];
+    Float32 Surface_Pressure_Day[Latitude = 180][Longitude = 360];
+    Float32 Surface_Pressure_Night[Latitude = 180][Longitude = 360];
+    Float32 Surface_Temperature_Day[Latitude = 180][Longitude = 360];
+    Float32 Surface_Temperature_Night[Latitude = 180][Longitude = 360];
+    Float32 Surface_Temperature_Std_Dev_Day[Latitude = 180][Longitude = 360];
+    Float32 Surface_Temperature_Std_Dev_Night[Latitude = 180][Longitude = 360];
+    Int32 Number_of_Pixels_Day[Latitude = 180][Longitude = 360];
+    Int32 Number_of_Pixels_Night[Latitude = 180][Longitude = 360];
+    Float32 CO_Total_Column_Day[Latitude = 180][Longitude = 360];
+    Float32 CO_Total_Column_Night[Latitude = 180][Longitude = 360];
+    Float32 CO_Total_Column_Std_Dev_Day[Latitude = 180][Longitude = 360];
+    Float32 CO_Total_Column_Std_Dev_Night[Latitude = 180][Longitude = 360];
+    Float32 CO_Profiles_Day[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+    Float32 CO_Profiles_Night[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+    Float32 CO_Profiles_Std_Dev_Day[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+    Float32 CO_Profiles_Std_Dev_Night[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+    Float32 Averaging_Kernel_Day[Latitude = 180][Longitude = 360][Pressure_Grid = 7][Pressure_Grid = 7];
+    Float32 Averaging_Kernel_Night[Latitude = 180][Longitude = 360][Pressure_Grid = 7][Pressure_Grid = 7];
+    Float32 CO_Profiles_Percent_Apriori_Day[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+    Float32 CO_Profiles_Percent_Apriori_Night[Latitude = 180][Longitude = 360][Pressure_Grid = 7];
+} MOP03-20000303-L3V1.0.1.hdf;

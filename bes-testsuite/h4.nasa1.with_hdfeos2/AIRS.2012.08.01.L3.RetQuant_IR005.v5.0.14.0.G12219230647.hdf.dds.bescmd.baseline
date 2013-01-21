@@ -1,0 +1,22 @@
+Dataset {
+    Float32 LatCenter[LatCenter = 36];
+    Float32 LonCenter[LonCenter = 72];
+    Float32 SouthLatBound[LatCenter = 36][LonCenter = 72];
+    Float32 NorthLatBound[LatCenter = 36][LonCenter = 72];
+    Float32 WestLonBound[LatCenter = 36][LonCenter = 72];
+    Float32 EastLonBound[LatCenter = 36][LonCenter = 72];
+    Int16 NumClusters[LatCenter = 36][LonCenter = 72];
+    Int16 NumObsInCluster[MaxNumClusters = 100][LatCenter = 36][LonCenter = 72];
+    Float32 ClusterMeanSquaredError[MaxNumClusters = 100][LatCenter = 36][LonCenter = 72];
+    Float32 ClusterDistortion[MaxNumClusters = 100][LatCenter = 36][LonCenter = 72];
+    Float32 Entropy[NumTrials = 200][LatCenter = 36][LonCenter = 72];
+    Float32 GridCellMeanSquaredError[NumTrials = 200][LatCenter = 36][LonCenter = 72];
+    Float32 NormalizedValues[MaxNumClusters = 100][NumDimNorm = 18][LatCenter = 36][LonCenter = 72];
+    Float32 PhysicalValues[MaxNumClusters = 100][NumDimPhys = 35][LatCenter = 36][LonCenter = 72];
+    Int16 PentadComposition[MaxNumClusters = 100][NumPentad = 6][LatCenter = 36][LonCenter = 72];
+    Int32 NumTrials[NumTrials = 200];
+    Int32 MaxNumClusters[MaxNumClusters = 100];
+    Int32 NumDimNorm[NumDimNorm = 18];
+    Int32 NumDimPhys[NumDimPhys = 35];
+    Int32 NumPentad[NumPentad = 6];
+} AIRS.2012.08.01.L3.RetQuant_IR005.v5.0.14.0.G12219230647.hdf;

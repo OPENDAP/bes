@@ -1,0 +1,864 @@
+Attributes {
+    Average_fill_flag___1_deg {
+        String coordinates "Latitude Longitude";
+        String long_name "AlbedoAverage_1_degree:Average fill flag - 1 deg";
+        Int32 _FillValue 0;
+    }
+    Swath_count___1_deg {
+        String coordinates "Latitude Longitude";
+        String long_name "AlbedoAverage_1_degree:Swath count - 1 deg";
+        Int32 _FillValue 0;
+    }
+    Expansive_albedo_average___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Expansive albedo average - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_first_moment___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Expansive albedo first moment - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_standard_deviation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Expansive albedo standard deviation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_solar_insolation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Expansive albedo solar insolation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_swath_count___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Expansive albedo swath count - 1 deg";
+        Int32 _FillValue 0;
+    }
+    Restrictive_albedo_average___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Restrictive albedo average - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_first_moment___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Restrictive albedo first moment - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_standard_deviation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Restrictive albedo standard deviation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_solar_insolation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Restrictive albedo solar insolation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_swath_count___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Restrictive albedo swath count - 1 deg";
+        Int32 _FillValue 0;
+    }
+    Local_albedo_average___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Local albedo average - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_first_moment___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Local albedo first moment - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_standard_deviation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Local albedo standard deviation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_solar_insolation___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Local albedo solar insolation - 1 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_swath_count___1_deg {
+        String coordinates "Latitude Longitude Band";
+        String long_name "AlbedoAverage_1_degree:Local albedo swath count - 1 deg";
+        Int32 _FillValue 0;
+    }
+    Band {
+        String long_name "AlbedoAverage_1_degree:Band(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "AlbedoAverage_1_degree:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "AlbedoAverage_1_degree:Longitude";
+        String units "degrees_east";
+    }
+    Average_fill_flag___5_deg {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "AlbedoAverage_5_degree:Average fill flag - 5 deg";
+        Int32 _FillValue 0;
+    }
+    Swath_count___5_deg {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "AlbedoAverage_5_degree:Swath count - 5 deg";
+        Int32 _FillValue 0;
+    }
+    Expansive_albedo_average___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Expansive albedo average - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_first_moment___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Expansive albedo first moment - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_standard_deviation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Expansive albedo standard deviation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_solar_insolation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Expansive albedo solar insolation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Expansive_albedo_swath_count___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Expansive albedo swath count - 5 deg";
+        Int32 _FillValue 0;
+    }
+    Restrictive_albedo_average___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Restrictive albedo average - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_first_moment___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Restrictive albedo first moment - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_standard_deviation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Restrictive albedo standard deviation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_solar_insolation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Restrictive albedo solar insolation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Restrictive_albedo_swath_count___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Restrictive albedo swath count - 5 deg";
+        Int32 _FillValue 0;
+    }
+    Local_albedo_average___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Local albedo average - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_first_moment___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Local albedo first moment - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_standard_deviation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Local albedo standard deviation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_solar_insolation___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Local albedo solar insolation - 5 deg";
+        Float32 _FillValue -9999.000000;
+    }
+    Local_albedo_swath_count___5_deg {
+        String coordinates "Latitude_1 Longitude_1 Band_1";
+        String long_name "AlbedoAverage_5_degree:Local albedo swath count - 5 deg";
+        Int32 _FillValue 0;
+    }
+    Band_1 {
+        String long_name "AlbedoAverage_5_degree:Band(fake)";
+        String units "level";
+    }
+    Latitude_1 {
+        String long_name "AlbedoAverage_5_degree:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "AlbedoAverage_5_degree:Longitude";
+        String units "degrees_east";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_AM1_CGAL_2005_F06_0012.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-02-01T20:31:55.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_EXEC_VERSION: V3.3_i1_PGE12BP MISR_EXEC_NAME:pge12bp.cc";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "3.3";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Automatic quality determination software not yet implemented";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Granule";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 6;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MIL3YAL";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 55;
+                    String VALUE "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:21:SC:MICNFG.002:9652926", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:23:SC:MIL3YAL.005:13869913";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0000000000000;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0000000000000;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.00000000000000;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.00000000000000;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-12-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2004-12-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "SP_AM_MISR_ProductVersion";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "12";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "AlbedoAverage_1_degree";
+                Int32 XDim 360;
+                Int32 YDim 180;
+                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Band";
+                        Int32 Size 5;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Average fill flag - 1 deg";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Swath count - 1 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Expansive albedo average - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Expansive albedo first moment - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Expansive albedo standard deviation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Expansive albedo solar insolation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Expansive albedo swath count - 1 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Restrictive albedo average - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Restrictive albedo first moment - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Restrictive albedo standard deviation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Restrictive albedo solar insolation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Restrictive albedo swath count - 1 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Local albedo average - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Local albedo first moment - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Local albedo standard deviation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Local albedo solar insolation - 1 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Local albedo swath count - 1 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "AlbedoAverage_5_degree";
+                Int32 XDim 72;
+                Int32 YDim 36;
+                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Band";
+                        Int32 Size 5;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Average fill flag - 5 deg";
+                        String DataType "DFNT_INT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Swath count - 5 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Expansive albedo average - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Expansive albedo first moment - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Expansive albedo standard deviation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Expansive albedo solar insolation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Expansive albedo swath count - 5 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Restrictive albedo average - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Restrictive albedo first moment - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Restrictive albedo standard deviation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Restrictive albedo solar insolation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Restrictive albedo swath count - 5 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Local albedo average - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Local albedo first moment - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Local albedo standard deviation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Local albedo solar insolation - 5 deg";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Local albedo swath count - 5 deg";
+                        String DataType "DFNT_INT32";
+                        String DimList "YDim", "XDim", "Band";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.10";
+    }
+    Local_albedo_histogram_NONEOS {
+        String long_name "Local albedo histogram";
+        Int32 _FillValue 0;
+    }
+    Zonal_expansive_albedo_average_NONEOS {
+        String long_name "Zonal expansive albedo average";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_expansive_albedo_first_momement_NONEOS {
+        String long_name "Zonal expansive albedo first momement";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_expansive_albedo_standard_deviation_NONEOS {
+        String long_name "Zonal expansive albedo standard deviation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_expansive_albedo_solar_insolation_NONEOS {
+        String long_name "Zonal expansive albedo solar insolation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_expansive_albedo_swath_count_NONEOS {
+        String long_name "Zonal expansive albedo swath count";
+        Int32 _FillValue 0;
+    }
+    Zonal_restrictive_albedo_average_NONEOS {
+        String long_name "Zonal restrictive albedo average";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_restrictive_albedo_first_momement_NONEOS {
+        String long_name "Zonal restrictive albedo first momement";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_restrictive_albedo_standard_deviation_NONEOS {
+        String long_name "Zonal restrictive albedo standard deviation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_restrictive_albedo_solar_insolation_NONEOS {
+        String long_name "Zonal restrictive albedo solar insolation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_restrictive_albedo_swath_count_NONEOS {
+        String long_name "Zonal restrictive albedo swath count";
+        Int32 _FillValue 0;
+    }
+    Zonal_local_albedo_average_NONEOS {
+        String long_name "Zonal local albedo average";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_local_albedo_first_momement_NONEOS {
+        String long_name "Zonal local albedo first momement";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_local_albedo_standard_deviation_NONEOS {
+        String long_name "Zonal local albedo standard deviation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_local_albedo_solar_insolation_NONEOS {
+        String long_name "Zonal local albedo solar insolation";
+        Float32 _FillValue -9999.000000;
+    }
+    Zonal_local_albedo_swath_count_NONEOS {
+        String long_name "Zonal local albedo swath count";
+        Int32 _FillValue 0;
+    }
+    Source_file {
+    }
+    Band_Enumeration {
+        String Vdata_field_Value "'Blue (443 nm)'", "'Green (555 nm)'", "'Red (670 nm)'", "'Infrared (865 nm)'", "'Broadband'";
+    }
+    CosineSolarZenithAngle_Enumeration {
+        String Vdata_field_Value "'0.0 - 0.1'", "'0.1 - 0.2'", "'0.2 - 0.3'", "'0.3 - 0.4'", "'0.4 - 0.5'", "'0.5 - 0.6'", "'0.6 - 0.7'", "'0.7 - 0.8'", "'0.8 - 0.9'", "'0.9 - 1.0'";
+    }
+    LandOcean_Enumeration {
+        String Vdata_field_Value "'All'", "'Land'", "'Ocean'";
+    }
+    Latitude_Enumeration {
+    }
+    SurfaceType_Enumeration {
+        String Vdata_field_Value "'Land'", "'Ocean'", "'Snow/ice'";
+    }
+    TextureType_Enumeration {
+        String Vdata_field_Value "'Smooth'", "'Medium'", "'Rough'";
+    }
+    HistogramBin_Enumeration {
+    }
+    Flux_data {
+    }
+    Swath_count___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 82.00000000;
+        Float32 Vdata_field_Maximum 1017.000000;
+        Float32 Vdata_field_Mean 197.4178162;
+        Float32 Vdata_field_Standard_Deviation 181.7728882;
+        Int32 Vdata_field_Count 61200;
+    }
+    Restrictive_albedo_standard_deviation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.01684257016, 0.01330780238, 0.01195508242, 0.01225077547, 0.009412402287;
+        Float32 Vdata_field_Maximum 8946.236328, 8946.236328, 8946.236328, 8946.236328, 8946.236328;
+        Float32 Vdata_field_Mean 598.1268921, 598.1212769, 598.1348267, 598.1359253, 598.0820312;
+        Float32 Vdata_field_Standard_Deviation 1805.797729, 1805.799438, 1805.794922, 1805.794922, 1805.812988;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Restrictive_albedo_solar_insolation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 409.6597900, 405.2830505, 333.8402710, 212.2716522, 299.4796753;
+        Float32 Vdata_field_Maximum 1667.031006, 1649.220581, 1358.498291, 863.7983398, 1218.674438;
+        Float32 Vdata_field_Mean 1156.151489, 1143.797974, 942.1730347, 599.0787964, 845.1979980;
+        Float32 Vdata_field_Standard_Deviation 398.0182190, 393.7657776, 324.3533020, 206.2393799, 290.9691467;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Restrictive_albedo_first_moment___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1739872545, 0.1012325659, 0.07758102566, 0.06252348423, 0.08299180865;
+        Float32 Vdata_field_Maximum 1.038408160, 0.8977030516, 0.9519310594, 0.9563176632, 0.6864003539;
+        Float32 Vdata_field_Mean 0.5124154091, 0.4186007082, 0.4330850542, 0.4530003369, 0.3318882287;
+        Float32 Vdata_field_Standard_Deviation 0.2241770476, 0.1938634962, 0.2148473263, 0.2154265791, 0.1496043205;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Restrictive_albedo_swath_count___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 38.00000000, 38.00000000, 38.00000000, 38.00000000, 38.00000000;
+        Float32 Vdata_field_Maximum 699.0000000, 699.0000000, 699.0000000, 699.0000000, 699.0000000;
+        Float32 Vdata_field_Mean 124.2737732, 124.2739105, 124.2752838, 124.2752609, 124.2733612;
+        Float32 Vdata_field_Standard_Deviation 102.2149048, 102.2148972, 102.2145538, 102.2145081, 102.2149506;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Restrictive_albedo_average___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1736028790, 0.1009718999, 0.07733490318, 0.06149576232, 0.08279465139;
+        Float32 Vdata_field_Maximum 1.030119777, 0.9030399919, 0.9500448704, 0.9537332654, 0.6784182787;
+        Float32 Vdata_field_Mean 0.4926666617, 0.4109318852, 0.4202023149, 0.4379751384, 0.3192914128;
+        Float32 Vdata_field_Standard_Deviation 0.2163853049, 0.1970914155, 0.2129865736, 0.2098599076, 0.1440382451;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Local_albedo_standard_deviation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.01186514553, 0.006281167734, 0.01424803026, 0.01373982802, 0.01086207293;
+        Float32 Vdata_field_Maximum 9819.362305, 9819.362305, 9819.362305, 9819.362305, 9819.362305;
+        Float32 Vdata_field_Mean 516.9602051, 516.5945435, 516.6088867, 516.6104736, 516.6366577;
+        Float32 Vdata_field_Standard_Deviation 1797.078735, 1797.129272, 1797.125122, 1797.124634, 1797.120117;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Local_albedo_solar_insolation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 384.9462280, 380.8335571, 313.7006836, 199.4659424, 281.4129639;
+        Float32 Vdata_field_Maximum 1666.649414, 1648.843140, 1358.187256, 863.6005859, 1218.395508;
+        Float32 Vdata_field_Mean 1158.806519, 1146.425903, 944.3355103, 600.4537964, 847.1395264;
+        Float32 Vdata_field_Standard_Deviation 393.2735596, 389.0718689, 320.4868164, 203.7808838, 287.5006104;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Local_albedo_first_moment___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1899067909, 0.1057294756, 0.08000946790, 0.06300786138, 0.08741238713;
+        Float32 Vdata_field_Maximum 164.6884613, 0.9499098063, 1.018760920, 1.029744983, 38.55981445;
+        Float32 Vdata_field_Mean 0.5791854858, 0.4473278522, 0.4627092183, 0.4825007915, 0.3599456251;
+        Float32 Vdata_field_Standard_Deviation 1.357591987, 0.2038260698, 0.2247532010, 0.2242642939, 0.3489488065;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Local_albedo_swath_count___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 2.000000000, 2.000000000, 2.000000000, 2.000000000, 2.000000000;
+        Float32 Vdata_field_Maximum 713.0000000, 713.0000000, 713.0000000, 713.0000000, 713.0000000;
+        Float32 Vdata_field_Mean 114.0932846, 114.0932846, 114.0932846, 114.0932846, 114.0932846;
+        Float32 Vdata_field_Standard_Deviation 92.49743652, 92.49743652, 92.49743652, 92.49743652, 92.49743652;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Local_albedo_average___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1853975803, 0.1039622650, 0.07871864736, 0.06200947985, 0.08598361164;
+        Float32 Vdata_field_Maximum 219.4223175, 0.9514294863, 1.014989614, 1.022382140, 51.27612305;
+        Float32 Vdata_field_Mean 0.5633001328, 0.4398207366, 0.4502671659, 0.4682080150, 0.3485886157;
+        Float32 Vdata_field_Standard_Deviation 1.626030087, 0.2064388841, 0.2223932594, 0.2184674293, 0.4042621553;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Expansive_albedo_standard_deviation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.01593130454, 0.01164671872, 0.01060010493, 0.01006551739, 0.008143788204;
+        Float32 Vdata_field_Maximum 8263.456055, 8263.456055, 8263.456055, 8263.456055, 8263.456055;
+        Float32 Vdata_field_Mean 586.4590454, 586.4523926, 586.4668579, 586.4677734, 586.4146118;
+        Float32 Vdata_field_Standard_Deviation 1721.833374, 1721.835571, 1721.830688, 1721.830322, 1721.848755;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Expansive_albedo_solar_insolation___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 450.2603149, 445.4497681, 366.9264832, 233.3094482, 329.1604919;
+        Float32 Vdata_field_Maximum 1667.098022, 1649.286987, 1358.552856, 863.8330688, 1218.723511;
+        Float32 Vdata_field_Mean 1153.856201, 1141.528564, 940.3014526, 597.8887329, 843.5208130;
+        Float32 Vdata_field_Standard_Deviation 401.2124939, 396.9259949, 326.9563904, 207.8945618, 293.3041077;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Expansive_albedo_first_moment___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1812045723, 0.1039712280, 0.08092482388, 0.06718633324, 0.08493736386;
+        Float32 Vdata_field_Maximum 1.201497436, 1.057627678, 1.150627136, 1.150951982, 0.8037531376;
+        Float32 Vdata_field_Mean 0.5284358859, 0.4315113723, 0.4474670589, 0.4682343006, 0.3422678709;
+        Float32 Vdata_field_Standard_Deviation 0.2423672527, 0.2092895359, 0.2327211499, 0.2335492224, 0.1617813259;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Expansive_albedo_swath_count___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 41.00000000, 41.00000000, 41.00000000, 41.00000000, 41.00000000;
+        Float32 Vdata_field_Maximum 744.0000000, 744.0000000, 744.0000000, 744.0000000, 744.0000000;
+        Float32 Vdata_field_Mean 130.6677551, 130.6677551, 130.6677551, 130.6677551, 130.6676636;
+        Float32 Vdata_field_Standard_Deviation 114.0334778, 114.0334778, 114.0334778, 114.0334778, 114.0333939;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Expansive_albedo_average___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1800076813, 0.1037845239, 0.08075646311, 0.06703119725, 0.08479319513;
+        Float32 Vdata_field_Maximum 1.146575451, 0.9982426763, 1.065129757, 1.085648656, 0.7565363646;
+        Float32 Vdata_field_Mean 0.5049985051, 0.4206760228, 0.4304110110, 0.4487437010, 0.3269855380;
+        Float32 Vdata_field_Standard_Deviation 0.2288022637, 0.2073889822, 0.2244255841, 0.2214223742, 0.1520833224;
+        Int32 Vdata_field_Count 60480, 60480, 60480, 60480, 60480;
+    }
+    Average_fill_flag___1_deg_Statistic {
+        Float32 Vdata_field_Minimum 1.000000000;
+        Float32 Vdata_field_Maximum 1.000000000;
+        Float32 Vdata_field_Mean 1.000000000;
+        Float32 Vdata_field_Standard_Deviation 0.000000000;
+        Int32 Vdata_field_Count 61200;
+    }
+    Swath_count___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 148.0000000;
+        Float32 Vdata_field_Maximum 1242.000000;
+        Float32 Vdata_field_Mean 322.4816284;
+        Float32 Vdata_field_Standard_Deviation 266.9738770;
+        Int32 Vdata_field_Count 2448;
+    }
+    Restrictive_albedo_standard_deviation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.02258026600, 0.02286939695, 0.02039642073, 0.02100597695, 0.01548700314;
+        Float32 Vdata_field_Maximum 6756.570801, 6756.570801, 6756.570801, 6756.570801, 6756.570801;
+        Float32 Vdata_field_Mean 842.0166626, 842.0093994, 842.0200195, 842.0206909, 841.9806519;
+        Float32 Vdata_field_Standard_Deviation 1826.336060, 1826.335449, 1826.330566, 1826.330200, 1826.352783;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Restrictive_albedo_solar_insolation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 457.8386536, 452.9471436, 373.1022339, 237.2362976, 334.7005920;
+        Float32 Vdata_field_Maximum 1661.425415, 1643.674927, 1353.930054, 860.8936768, 1214.576538;
+        Float32 Vdata_field_Mean 1139.625366, 1127.450073, 928.7048340, 590.5150757, 833.1172485;
+        Float32 Vdata_field_Standard_Deviation 411.6515198, 407.2538147, 335.4636536, 213.3038940, 300.9357300;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Restrictive_albedo_first_moment___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1873515546, 0.1127770320, 0.09199032187, 0.07947055995, 0.09129817039;
+        Float32 Vdata_field_Maximum 0.9966163635, 0.8550031185, 0.9058952332, 0.9111327529, 0.6559012532;
+        Float32 Vdata_field_Mean 0.5137777328, 0.4180201292, 0.4333430231, 0.4529981911, 0.3327954412;
+        Float32 Vdata_field_Standard_Deviation 0.2220820785, 0.1892045438, 0.2105557472, 0.2099895775, 0.1477627903;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Restrictive_albedo_swath_count___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 125.0000000, 125.0000000, 125.0000000, 125.0000000, 125.0000000;
+        Float32 Vdata_field_Maximum 856.0000000, 856.0000000, 856.0000000, 856.0000000, 856.0000000;
+        Float32 Vdata_field_Mean 248.5228729, 248.5232849, 248.5232849, 248.5232849, 248.5228729;
+        Float32 Vdata_field_Standard_Deviation 190.2963867, 190.2973785, 190.2973785, 190.2973785, 190.2963867;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Restrictive_albedo_average___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1868248284, 0.1123994887, 0.09164629132, 0.07915170491, 0.09100624919;
+        Float32 Vdata_field_Maximum 0.9866794348, 0.8636385798, 0.9070755243, 0.9060503244, 0.6478462219;
+        Float32 Vdata_field_Mean 0.4928275645, 0.4107742906, 0.4203905165, 0.4376857877, 0.3193666637;
+        Float32 Vdata_field_Standard_Deviation 0.2130878419, 0.1928479373, 0.2086835206, 0.2042235732, 0.1413264871;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Local_albedo_standard_deviation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.02393592149, 0.02841824666, 0.03208492696, 0.03041968495, 0.02302827686;
+        Float32 Vdata_field_Maximum 8894.402344, 8894.402344, 8894.402344, 8894.402344, 8894.402344;
+        Float32 Vdata_field_Mean 1007.945618, 1007.650208, 1007.661560, 1007.662415, 1007.682495;
+        Float32 Vdata_field_Standard_Deviation 2252.610107, 2252.729980, 2252.724854, 2252.724365, 2252.716064;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Local_albedo_solar_insolation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 455.9226074, 451.0515747, 371.5408020, 236.2434692, 333.2998657;
+        Float32 Vdata_field_Maximum 1659.288452, 1641.560913, 1352.188721, 859.7864380, 1213.014282;
+        Float32 Vdata_field_Mean 1140.944458, 1128.754761, 929.7793579, 591.1983032, 834.0815430;
+        Float32 Vdata_field_Standard_Deviation 407.5200195, 403.1661072, 332.0965271, 211.1629028, 297.9154053;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Local_albedo_first_moment___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1994260401, 0.1275397986, 0.1061395481, 0.09320840240, 0.1020971462;
+        Float32 Vdata_field_Maximum 17.40013504, 0.9118577838, 0.9595948458, 0.9637990594, 4.268094540;
+        Float32 Vdata_field_Mean 0.5836662054, 0.4533012509, 0.4700470865, 0.4899553955, 0.3648243248;
+        Float32 Vdata_field_Standard_Deviation 0.5823707581, 0.2030105442, 0.2246968597, 0.2230921984, 0.2009962499;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Local_albedo_swath_count___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 125.0000000, 125.0000000, 125.0000000, 125.0000000, 125.0000000;
+        Float32 Vdata_field_Maximum 747.0000000, 747.0000000, 747.0000000, 747.0000000, 747.0000000;
+        Float32 Vdata_field_Mean 231.8590698, 231.8590698, 231.8590698, 231.8590698, 231.8590698;
+        Float32 Vdata_field_Standard_Deviation 160.1530762, 160.1530762, 160.1530762, 160.1530762, 160.1530762;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Local_albedo_average___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1942553073, 0.1269787401, 0.1055873036, 0.09266845882, 0.1016794890;
+        Float32 Vdata_field_Maximum 20.46829033, 0.9228076339, 0.9585058689, 0.9573930502, 4.965941429;
+        Float32 Vdata_field_Mean 0.5667621493, 0.4460386038, 0.4573534727, 0.4752559662, 0.3526157439;
+        Float32 Vdata_field_Standard_Deviation 0.6669806838, 0.2053945959, 0.2214808911, 0.2162485868, 0.2098144442;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Expansive_albedo_standard_deviation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.02316934057, 0.02373080514, 0.01806339435, 0.01654069312, 0.01568518579;
+        Float32 Vdata_field_Maximum 5040.312988, 5040.312988, 5040.312988, 5040.312988, 5040.312988;
+        Float32 Vdata_field_Mean 705.9277344, 705.9207153, 705.9328613, 705.9338989, 705.8933105;
+        Float32 Vdata_field_Standard_Deviation 1512.342773, 1512.346069, 1512.340332, 1512.339844, 1512.366943;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Expansive_albedo_solar_insolation___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 456.0158691, 451.1438599, 371.6168213, 236.2917938, 333.3680725;
+        Float32 Vdata_field_Maximum 1661.490234, 1643.739136, 1353.982910, 860.9273071, 1214.623901;
+        Float32 Vdata_field_Mean 1137.799561, 1125.643433, 927.2165527, 589.5687256, 831.7828369;
+        Float32 Vdata_field_Standard_Deviation 414.3503418, 409.9234619, 337.6626892, 214.7021332, 302.9082031;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Expansive_albedo_first_moment___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1928305626, 0.1156174615, 0.09395528585, 0.08101879805, 0.09356503934;
+        Float32 Vdata_field_Maximum 1.156498432, 0.9810805917, 1.040750265, 1.054070234, 0.7556757331;
+        Float32 Vdata_field_Mean 0.5370754600, 0.4371036291, 0.4549319148, 0.4758468866, 0.3480325043;
+        Float32 Vdata_field_Standard_Deviation 0.2485394925, 0.2119076252, 0.2369890362, 0.2370955050, 0.1656064987;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Expansive_albedo_swath_count___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 125.0000000, 125.0000000, 125.0000000, 125.0000000, 125.0000000;
+        Float32 Vdata_field_Maximum 1061.000000, 1061.000000, 1061.000000, 1061.000000, 1061.000000;
+        Float32 Vdata_field_Mean 259.1388855, 259.1388855, 259.1388855, 259.1388855, 259.1380615;
+        Float32 Vdata_field_Standard_Deviation 216.4728851, 216.4728851, 216.4728851, 216.4728851, 216.4710388;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Expansive_albedo_average___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 0.1923296452, 0.1152371466, 0.09359765053, 0.08068113774, 0.09327390045;
+        Float32 Vdata_field_Maximum 1.093745232, 0.9394493699, 0.9934959412, 0.9986428022, 0.7108189464;
+        Float32 Vdata_field_Mean 0.5097602606, 0.4243768752, 0.4347854257, 0.4529392421, 0.3300729692;
+        Float32 Vdata_field_Standard_Deviation 0.2301773727, 0.2073592693, 0.2247549444, 0.2207840085, 0.1525864452;
+        Int32 Vdata_field_Count 2448, 2448, 2448, 2448, 2448;
+    }
+    Average_fill_flag___5_deg_Statistic {
+        Float32 Vdata_field_Minimum 1.000000000;
+        Float32 Vdata_field_Maximum 1.000000000;
+        Float32 Vdata_field_Mean 1.000000000;
+        Float32 Vdata_field_Standard_Deviation 0.000000000;
+        Int32 Vdata_field_Count 2448;
+    }
+    Time_of_Observations_AlbedoAverage_5_degree {
+    }
+    Time_of_Observations_AlbedoAverage_1_degree {
+    }
+}

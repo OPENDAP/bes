@@ -1,3 +1,4 @@
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of hdf4_handler, a data handler for the OPeNDAP data
@@ -50,33 +51,22 @@
 #include "config_hdf.h"
 
 #define HDF4_NAME "h4"
+#include "HE2CF.h"
+
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
 
-#ifdef USE_HDFEOS2_LIB
-#include "HE2CFNcML.h"
-#include "HE2CFShortName.h"
-#include "HE2CF.h"
-void
-read_conf_xml(DAS & das, const string & filename,
-		HE2CFNcML* ncml,
-		HE2CFShortName* sn, HE2CFShortName* sn_dim,
-		HE2CFUniqName* un, HE2CFUniqName* un_dim);
-void
-set_counters(HE2CFShortName* sn, HE2CFShortName* sn_dim,
-		HE2CFUniqName* un, HE2CFUniqName* un_dim);
-void
-read_das_use_eos2lib(DAS & das, const string & filename,
-		HE2CFNcML* ncml,
-		HE2CFShortName* sn, HE2CFShortName* sn_dim,
-		HE2CFUniqName* un, HE2CFUniqName* un_dim);
+bool read_dds_hdfsp(DDS & dds, const string & filename);
 
-void
-read_dds_use_eos2lib(DDS & dds, const string & filename,
-		HE2CFNcML* ncml,
-		HE2CFShortName* sn, HE2CFShortName* sn_dim,
-		HE2CFUniqName* un, HE2CFUniqName* un_dim);
+bool read_das_hdfsp(DAS & das, const string & filename);
+
+
+#ifdef USE_HDFEOS2_LIB
+
+void read_das_use_eos2lib(DAS & das, const string & filename);
+void read_dds_use_eos2lib(DDS & dds, const string & filename);
+
 #endif
 
 HDF4RequestHandler::HDF4RequestHandler(const string & name) :
@@ -92,173 +82,268 @@ HDF4RequestHandler::~HDF4RequestHandler() {
 }
 
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
-	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
-	if (!bdas)
-		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	try {
-		bdas->set_container(dhi.container->get_symbolic_name());
-		DAS *das = bdas->get_das();
+    bool found = false;
+    bool usecf = false;
 
-		string accessed = dhi.container->access();
+    string key="H4.EnableCF";
+    string doset;
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found )
+    {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" ) {
+
+           // This is the CF option, go to the CF function
+            usecf = true;
+        }
+    }
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
+    if (!bdas)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    try {
+        bdas->set_container(dhi.container->get_symbolic_name());
+        DAS *das = bdas->get_das();
+
+        string accessed = dhi.container->access();
+         
+        if (true == usecf) {
+
+            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
+            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
+            // KY 2012-6-29
+            // Don't need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
+            // KY 2012-09-18
+
+
 #ifdef USE_HDFEOS2_LIB
-		HE2CFNcML ncml; // for conf input file
-		HE2CFShortName sn; // for variable
-		HE2CFShortName sn_dim; // for dimension
-		HE2CFUniqName un; // for variable name clashing
-		HE2CFUniqName un_dim; // for dimension name clashing
-		read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
-		read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+            read_das_use_eos2lib(*das, accessed);
 #else
-		read_das(*das, accessed);
+            read_das_hdfsp(*das,accessed);
 #endif
-		Ancillary::read_ancillary_das(*das, accessed);
+        }
+        else 
+            read_das(*das,accessed);
 
-		bdas->clear_container();
-	} catch (BESError & e) {
-		throw;
-	} catch (InternalErr & e) {
-		BESDapError ex(e.get_error_message(), true, e.get_error_code(),
-				__FILE__, __LINE__);
-		throw ex;
-	} catch (Error & e) {
-		BESDapError ex(e.get_error_message(), false, e.get_error_code(),
-				__FILE__, __LINE__);
-		throw ex;
-	} catch (...) {
-		string s = "unknown exception caught building HDF4 DAS";
-		BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-		throw ex;
-	}
+        Ancillary::read_ancillary_das(*das, accessed);
+        bdas->clear_container();
+    } 
 
-	return true;
+    catch (BESError & e) {
+        throw;
+    } 
+    catch (InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+				__FILE__, __LINE__);
+        throw ex;
+    } 
+    catch (Error & e) {
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+				__FILE__, __LINE__);
+        throw ex;
+    } 
+    catch (...) {
+        string s = "unknown exception caught building HDF4 DAS";
+	BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
+	throw ex;
+    }
+
+    return true;
 }
 
 bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
-	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
-	if (!bdds)
-		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	try {
-		bdds->set_container(dhi.container->get_symbolic_name());
-		DDS *dds = bdds->get_dds();
-		ConstraintEvaluator & ce = bdds->get_ce();
+    bool found = false;
+    bool usecf = false;
 
-		string accessed = dhi.container->access();
-		dds->filename(accessed);
+    string key="H4.EnableCF";
+    string doset;
 
-		DAS *das = new DAS;
-		BESDASResponse bdas(das);
-		bdas.set_container(dhi.container->get_symbolic_name());
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found )
+    {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" ) {
+           // This is the CF option, go to the CF function
+            usecf = true;
+        }
+    }
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    try {
+        bdds->set_container(dhi.container->get_symbolic_name());
+        DDS *dds = bdds->get_dds();
+        ConstraintEvaluator & ce = bdds->get_ce();
+
+        string accessed = dhi.container->access();
+        dds->filename(accessed);
+
+        DAS *das = new DAS;
+        BESDASResponse bdas(das);
+        bdas.set_container(dhi.container->get_symbolic_name());
+
+        if (true == usecf) {
+
+            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
+            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
+            // KY 2012-6-29
+            // Don't need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
+            // KY 2012-09-18
+
 #ifdef USE_HDFEOS2_LIB        
-		HE2CFNcML ncml; // for conf input file
-		HE2CFShortName sn; // for variable
-		HE2CFShortName sn_dim; // for dimension
-		HE2CFUniqName un; // for variable name clashing
-		HE2CFUniqName un_dim; // for dimension name clashing
-		read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
-		read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+
+            read_das_use_eos2lib(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+
+            read_dds_use_eos2lib(*dds, accessed);
+
 #else
-		read_das(*das, accessed);
+            read_das_hdfsp(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+
+            read_dds_hdfsp(*dds, accessed);
 #endif
-		Ancillary::read_ancillary_das(*das, accessed);
+        }
+        else {
+            read_das(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+            read_dds(*dds, accessed);
+        }
 
-#ifdef USE_HDFEOS2_LIB        
-		// Reset all counters to 0.
-		set_counters(&sn, &sn_dim, &un, &un_dim);
-		read_dds_use_eos2lib(*dds, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
-#else
-		read_dds(*dds, accessed);
-#endif
+	Ancillary::read_ancillary_dds(*dds, accessed);
 
-		Ancillary::read_ancillary_dds(*dds, accessed);
+	dds->transfer_attributes(das);
 
-		dds->transfer_attributes(das);
+	bdds->set_constraint(dhi);
 
-		bdds->set_constraint(dhi);
-
-		bdds->clear_container();
-	} catch (BESError & e) {
-		throw;
-	} catch (InternalErr & e) {
-		BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+	bdds->clear_container();
+    } 
+    catch (BESError & e) {
+        throw;
+    } 
+    catch (InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
 				__FILE__, __LINE__);
-		throw ex;
-	} catch (Error & e) {
-		BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+        throw ex;
+    } 
+    catch (Error & e) {
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
 				__FILE__, __LINE__);
-		throw ex;
-	} catch (...) {
-		string s = "unknown exception caught building HDF4 DDS";
-		BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-		throw ex;
-	}
+        throw ex;
+    } 
+    catch (...) {
+        string s = "unknown exception caught building HDF4 DDS";
+        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
+        throw ex;
+    }
 
-	return true;
+    return true;
 }
 
 bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
-	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
-	if (!bdds)
-		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	try {
-		bdds->set_container(dhi.container->get_symbolic_name());
-		DataDDS *dds = bdds->get_dds();
-		ConstraintEvaluator & ce = bdds->get_ce();
+    bool found = false;
+    bool usecf = false;
 
-		string accessed = dhi.container->access();
-		dds->filename(accessed);
+    string key="H4.EnableCF";
+    string doset;
 
-		DAS *das = new DAS;
-		BESDASResponse bdas(das);
-		bdas.set_container(dhi.container->get_symbolic_name());
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found )
+    {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" ) {
+
+           // This is the CF option, go to the CF function
+            usecf = true;
+        }
+    }
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    try {
+        bdds->set_container(dhi.container->get_symbolic_name());
+        DataDDS *dds = bdds->get_dds();
+        ConstraintEvaluator & ce = bdds->get_ce();
+
+        string accessed = dhi.container->access();
+        dds->filename(accessed);
+
+        DAS *das = new DAS;
+        BESDASResponse bdas(das);
+        bdas.set_container(dhi.container->get_symbolic_name());
+
+        if (true == usecf) {
+
+            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
+            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
+            // KY 2012-6-29
+            // No need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
+            // KY 2012-09-18
+
+
 #ifdef USE_HDFEOS2_LIB        
-		HE2CFNcML ncml; // for conf input file
-		HE2CFShortName sn; // for variable
-		HE2CFShortName sn_dim; // for dimension
-		HE2CFUniqName un; // for variable name clashing
-		HE2CFUniqName un_dim; // for dimension name clashing
-		read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
-		read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+            read_das_use_eos2lib(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+
+            read_dds_use_eos2lib(*dds, accessed);
+
 #else
-		read_das(*das, accessed);
+            read_das_hdfsp(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+
+
+            read_dds_hdfsp(*dds, accessed);
 #endif
-		Ancillary::read_ancillary_das(*das, accessed);
-#ifdef USE_HDFEOS2_LIB                
-		// Reset all counters to 0.
-		set_counters(&sn, &sn_dim, &un, &un_dim);
-		read_dds_use_eos2lib(*dds, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
-#else
-		read_dds(*dds, accessed);
-#endif
-		Ancillary::read_ancillary_dds(*dds, accessed);
+        }
+        else {
+            read_das(*das, accessed);
+            Ancillary::read_ancillary_das(*das, accessed);
+            read_dds(*dds, accessed);
+        }
 
-		dds->transfer_attributes(das);
 
-		bdds->set_constraint(dhi);
+        Ancillary::read_ancillary_dds(*dds, accessed);
 
-		bdds->clear_container();
-	} catch (BESError & e) {
-		throw;
-	} catch (InternalErr & e) {
-		BESDapError ex(e.get_error_message(), true, e.get_error_code(),
-				__FILE__, __LINE__);
-		throw ex;
-	} catch (Error & e) {
-		BESDapError ex(e.get_error_message(), false, e.get_error_code(),
-				__FILE__, __LINE__);
-		throw ex;
-	} catch (...) {
-		string s = "unknown exception caught building HDF4 DataDDS";
-		BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-		throw ex;
-	}
+        dds->transfer_attributes(das);
 
-	return true;
+        bdds->set_constraint(dhi);
+
+        bdds->clear_container();
+    } 
+
+    catch (BESError & e) {
+        throw;
+    }
+    catch (InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (Error & e) {
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                                __FILE__, __LINE__);
+        throw ex;
+    }
+    catch (...) {
+        string s = "unknown exception caught building HDF4 DataDDS";
+        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
+        throw ex;
+    }
+
+    return true;
 }
 
 bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {

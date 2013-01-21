@@ -1,0 +1,1152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="1B21_CSI.990906.10217.KORA.6.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="OrbitNumber" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>10217</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeBeginningDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>1999/09/06</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeBeginningTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>18:57:48</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeEndingDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>1999/09/06</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeEndingTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>18:59:59</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GranulePointer" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;1B21_CSI.990906.10217.KORA.6.HDF&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ShortName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;PR Total Power, Noise&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SizeMBECSDataGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>3.710351</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LongitudeOfMaximumLatitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>146.933502</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SpatialCoverageType" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Both&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EllipsoidName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;World Geodetic System (WGS) 84&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EquatorialRadius" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>6378.137</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DenominatorFlatteningRatio" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>0.00335281</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitalModelName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Definitive FDF Ephemeris&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SemiMajorAxis" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>6725185.000000</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MeanAnomaly" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>3.285997</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RightAscensionNode" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>5.731554</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ArgumentOfPerigee" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>1.426419</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="Eccentricity" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>0.000191</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="Inclination" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>0.610335</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>18:17:30</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>1999/09/06</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochMillisec" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>458</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="WestBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-180</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EastBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>180</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="NorthBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>40</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SouthBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-40</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterLatitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterLongitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadiusValue" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LatitudeResolution" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LongitudeResolution" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GeographicCoordinateUnits" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="TemporalRangeType" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Continuous Range&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="QualityAssuranceParameterName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;ScienceQualityFlag&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="QualityAssuranceParameterValue" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NOT BEING INVESTIGATED&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ReprocessingActual" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="BrowsePointer" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScienceContact" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;JAXA/Earth Observation Center&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MeanMotion" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>15.741517</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitAdjustFlag" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>0</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="AttitudeModeFlag" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>0</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SolarBetaAngleAtBeginningOfGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>14.697345</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SolarBetaAngleAtEndOfGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>14.710173</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SensorAlignment" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;0.0,0.0,0.0,1,2,3&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SensorAlignmentChannelOffsets" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;0&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScanPathModel" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;1,3,90.0,-17.0,34.0,0.3,0.0&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScanPathModelParam" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;0&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EphemerisFileID" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;EPHEM.990906&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DATA_GRANULE_PR_CAL_COEF" type="Container">
+        <Attribute name="Vdata_field_transCoef" type="Float32">
+            <value>-0.5199999809</value>
+        </Attribute>
+        <Attribute name="Vdata_field_receptCoef" type="Float32">
+            <value>0.9900000095</value>
+        </Attribute>
+        <Attribute name="Vdata_field_fcifIOchar" type="Float32">
+            <value>0.000000000</value>
+            <value>0.3790999949</value>
+            <value>0.000000000</value>
+            <value>-102.7460022</value>
+            <value>0.000000000</value>
+            <value>24.00000000</value>
+            <value>0.000000000</value>
+            <value>226.0000000</value>
+            <value>0.000000000</value>
+            <value>0.3790999949</value>
+            <value>0.000000000</value>
+            <value>-102.7460022</value>
+            <value>0.000000000</value>
+            <value>24.00000000</value>
+            <value>0.000000000</value>
+            <value>226.0000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DATA_GRANULE_RAY_HEADER" type="Container"/>
+    <Attribute name="DATA_GRANULE_SwathData_scan_time" type="Container"/>
+    <Attribute name="DATA_GRANULE_SwathData_pr_scan_status" type="Container"/>
+    <Attribute name="DATA_GRANULE_SwathData_pr_navigation" type="Container"/>
+    <Attribute name="DATA_GRANULE_SwathData_powers" type="Container"/>
+    <Array name="DATA_GRANULE_SwathData_systemNoise">
+        <Attribute name="long_name" type="String">
+            <value>systemNoise</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>100.00000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_sysNoiseWarnFlag">
+        <Attribute name="long_name" type="String">
+            <value>sysNoiseWarnFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_minEchoFlag">
+        <Attribute name="long_name" type="String">
+            <value>minEchoFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binStormHeight">
+        <Attribute name="long_name" type="String">
+            <value>binStormHeight</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation threshold</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+        <dimension name="threshold" size="2"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binEllipsoid">
+        <Attribute name="long_name" type="String">
+            <value>binEllipsoid</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binClutterFreeBottom">
+        <Attribute name="long_name" type="String">
+            <value>binClutterFreeBottom</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation threshold</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+        <dimension name="threshold" size="2"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binDIDHmean">
+        <Attribute name="long_name" type="String">
+            <value>binDIDHmean</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binDIDHtop">
+        <Attribute name="long_name" type="String">
+            <value>binDIDHtop</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation boxsize</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+        <dimension name="boxsize" size="2"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binDIDHbottom">
+        <Attribute name="long_name" type="String">
+            <value>binDIDHbottom</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation boxsize</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+        <dimension name="boxsize" size="2"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_scLocalZenith">
+        <Attribute name="long_name" type="String">
+            <value>scLocalZenith</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_scRange">
+        <Attribute name="long_name" type="String">
+            <value>scRange</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_osBinStart">
+        <Attribute name="long_name" type="String">
+            <value>osBinStart</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray_os" size="29"/>
+        <dimension name="binstart_surtrack" size="2"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_landOceanFlag">
+        <Attribute name="long_name" type="String">
+            <value>landOceanFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_surfWarnFlag">
+        <Attribute name="long_name" type="String">
+            <value>surfWarnFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_binSurfPeak">
+        <Attribute name="long_name" type="String">
+            <value>binSurfPeak</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_normalSample">
+        <Attribute name="long_name" type="String">
+            <value>normalSample</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>100.00000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitudeLE_SwathData_geolocation longitudeLE_SwathData_geolocation sample_norm</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+        <dimension name="sample_norm" size="140"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_osSurf">
+        <Attribute name="long_name" type="String">
+            <value>osSurf</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>100.00000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray_os" size="29"/>
+        <dimension name="sample_surf" size="5"/>
+    </Array>
+    <Array name="DATA_GRANULE_SwathData_osRain">
+        <Attribute name="long_name" type="String">
+            <value>osRain</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>100.00000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray_os_rain" size="11"/>
+        <dimension name="sample_rain" size="28"/>
+    </Array>
+    <Array name="latitudeLE_SwathData_geolocation">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="longitudeLE_SwathData_geolocation">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="219"/>
+        <dimension name="ray" size="49"/>
+    </Array>
+    <Array name="binstart_surtrack">
+        <Attribute name="long_name" type="String">
+            <value>binstart_surtrack</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="binstart_surtrack" size="2"/>
+    </Array>
+    <Array name="boxsize">
+        <Attribute name="long_name" type="String">
+            <value>boxsize</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="boxsize" size="2"/>
+    </Array>
+    <Array name="ray_os">
+        <Attribute name="long_name" type="String">
+            <value>ray_os</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ray_os" size="29"/>
+    </Array>
+    <Array name="ray_os_rain">
+        <Attribute name="long_name" type="String">
+            <value>ray_os_rain</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ray_os_rain" size="11"/>
+    </Array>
+    <Array name="sample_norm">
+        <Attribute name="long_name" type="String">
+            <value>sample_norm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="sample_norm" size="140"/>
+    </Array>
+    <Array name="sample_rain">
+        <Attribute name="long_name" type="String">
+            <value>sample_rain</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="sample_rain" size="28"/>
+    </Array>
+    <Array name="sample_surf">
+        <Attribute name="long_name" type="String">
+            <value>sample_surf</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="sample_surf" size="5"/>
+    </Array>
+    <Array name="threshold">
+        <Attribute name="long_name" type="String">
+            <value>threshold</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="threshold" size="2"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_rayStart">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_rayStart" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_raySize">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_raySize" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_angle">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_angle" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_startBinDist">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_startBinDist" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_rainThres1">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_rainThres1" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_rainThres2">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_rainThres2" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_transAntenna">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_transAntenna" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_recvAntenna">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_recvAntenna" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_onewayAlongTrack">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_onewayAlongTrack" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_onewayCrossTrack">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_onewayCrossTrack" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_eqvWavelength">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_eqvWavelength" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_radarConst">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_radarConst" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_prIntrDelay">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_prIntrDelay" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_rangeBinSize">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_rangeBinSize" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_logAveOffset">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_logAveOffset" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_mainlobeEdge">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_mainlobeEdge" size="49"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_RAY_HEADER_vdf_sidelobeRange">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_RAY_HEADER_vdf_sidelobeRange" size="49"/>
+        <dimension name="VDFDim1_vdata_DATA_GRANULE_RAY_HEADER_vdf_sidelobeRange" size="3"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_scan_time_vdf_scanTime">
+        <Float64/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_scan_time_vdf_scanTime" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_missing">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_missing" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_validity">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_validity" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_qac">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_qac" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_geoQuality">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_geoQuality" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_dataQuality">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_dataQuality" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_scOrient">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_scOrient" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_acsMode">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_acsMode" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_yawUpdateS">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_yawUpdateS" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prMode">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prMode" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prStatus1">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prStatus1" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prStatus2">
+        <Int32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_prStatus2" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_fractOrbitN">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_scan_status_vdf_fractOrbitN" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosX">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosX" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosY">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosY" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosZ">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scPosZ" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelX">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelX" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelY">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelY" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelZ">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scVelZ" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scLat">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scLat" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scLon">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scLon" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAlt">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAlt" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttRoll">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttRoll" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttPitch">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttPitch" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttYaw">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_scAttYaw" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att1">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att1" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att2">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att2" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att3">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att3" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att4">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att4" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att5">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att5" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att6">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att6" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att7">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att7" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att8">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att8" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att9">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_att9" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_greenHourAng">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_pr_navigation_vdf_greenHourAng" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_powers_vdf_radarTransPower">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_powers_vdf_radarTransPower" size="219"/>
+    </Array>
+    <Array name="vdata_DATA_GRANULE_SwathData_powers_vdf_transPulseWidth">
+        <Float32/>
+        <dimension name="VDFDim0_vdata_DATA_GRANULE_SwathData_powers_vdf_transPulseWidth" size="219"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,1002 @@
+Attributes {
+    AlbedoExpansive {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:AlbedoExpansive";
+        Float32 _FillValue -9999.000000;
+    }
+    AlbedoRestrictive {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:AlbedoRestrictive";
+        Float32 _FillValue -9999.000000;
+    }
+    AlbedoExpansiveBroadband {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:AlbedoExpansiveBroadband";
+        Float32 _FillValue -9999.000000;
+    }
+    AlbedoRestrictiveBroadband {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:AlbedoRestrictiveBroadband";
+        Float32 _FillValue -9999.000000;
+    }
+    SolarZenithCosineRegional {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:SolarZenithCosineRegional";
+        Float32 _FillValue -9999.000000;
+    }
+    NumLocalAlbedoGood {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumLocalAlbedoGood";
+        Int16 _FillValue -9999;
+    }
+    NumLocalAlbedoGoodNoCamFill {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumLocalAlbedoGoodNoCamFill";
+        Int16 _FillValue -9999;
+    }
+    LocalAlbedo_Mean {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:LocalAlbedo_Mean";
+        Float32 _FillValue -9999.000000;
+    }
+    LocalAlbedo_StdDev {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:LocalAlbedo_StdDev";
+        Float32 _FillValue -9999.000000;
+    }
+    LocalAlbedoNoCamFill_Mean {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:LocalAlbedoNoCamFill_Mean";
+        Float32 _FillValue -9999.000000;
+    }
+    LocalAlbedoNoCamFill_StdDev {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:LocalAlbedoNoCamFill_StdDev";
+        Float32 _FillValue -9999.000000;
+    }
+    NumDeterministicSucceeded {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:NumDeterministicSucceeded";
+        Int16 _FillValue -9999;
+    }
+    NumDeterministicFailed {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:NumDeterministicFailed";
+        Int16 _FillValue -9999;
+    }
+    NumStochasticSucceeded {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:NumStochasticSucceeded";
+        Int16 _FillValue -9999;
+    }
+    NumStochasticFailed {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:NumStochasticFailed";
+        Int16 _FillValue -9999;
+    }
+    RestrictiveAlbedoTop {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:RestrictiveAlbedoTop";
+        Float32 _FillValue -9999.000000;
+    }
+    RestrictiveAlbedoSide {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:RestrictiveAlbedoSide";
+        Float32 _FillValue -9999.000000;
+    }
+    NumSubRestrictiveAlbedoTop {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubRestrictiveAlbedoTop";
+        UInt16 _FillValue 65533;
+    }
+    NumSubRestrictiveAlbedoSide {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubRestrictiveAlbedoSide";
+        UInt16 _FillValue 65533;
+    }
+    FlagRestrictiveAlbedoSide {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:FlagRestrictiveAlbedoSide";
+        UInt16 _FillValue 0;
+    }
+    NumSubExpansiveConsidered {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveConsidered";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveUsed {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveUsed";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveMissBRFTop {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveMissBRFTop";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveMissBRFSide {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveMissBRFSide";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveBadObscTop {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveBadObscTop";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveBadObscSide {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveBadObscSide";
+        Int32 _FillValue -8888;
+    }
+    NumSubExpansiveOblique {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:NumSubExpansiveOblique";
+        Int32 _FillValue -8888;
+    }
+    FractionExpansiveClearHighConf {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:FractionExpansiveClearHighConf";
+        Float32 _FillValue -9999.000000;
+    }
+    FractionExpansiveClearLowConf {
+        String coordinates "Longitude Latitude";
+        String long_name "AlbedoParameters_35.2_km:FractionExpansiveClearLowConf";
+        Float32 _FillValue -9999.000000;
+    }
+    Latitude {
+        String long_name "AlbedoParameters_35.2_km:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "AlbedoParameters_35.2_km:Longitude";
+        String units "degrees_east";
+    }
+    SolarZenithAngle {
+        String coordinates "Longitude_1 Latitude_1";
+        String long_name "GeometricParameters_17.6_km:SolarZenithAngle";
+        Float32 _FillValue -9999.000000;
+    }
+    ViewZenithAngle {
+        String coordinates "Longitude_1 Latitude_1 NCamDim_1";
+        String long_name "GeometricParameters_17.6_km:ViewZenithAngle";
+        Float32 _FillValue -9999.000000;
+    }
+    RelativeAzimuthAngle {
+        String coordinates "Longitude_1 Latitude_1 NCamDim_1";
+        String long_name "GeometricParameters_17.6_km:RelativeAzimuthAngle";
+        Float32 _FillValue -9999.000000;
+    }
+    Latitude_1 {
+        String long_name "GeometricParameters_17.6_km:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "GeometricParameters_17.6_km:Longitude";
+        String units "degrees_east";
+    }
+    AlbedoLocal {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:AlbedoLocal";
+        Float32 _FillValue -9999.000000;
+    }
+    AlbedoLocalBroadband {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:AlbedoLocalBroadband";
+        Float32 _FillValue -9999.000000;
+    }
+    NumUnobscuredTop {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:NumUnobscuredTop";
+        Int32 _FillValue 157;
+    }
+    BRFTop_Mean {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:BRFTop_Mean";
+        Float32 _FillValue -9999.000000;
+    }
+    FlagCamFillTop {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:FlagCamFillTop";
+        Byte _FillValue 0;
+    }
+    NumUnobscuredSide {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:NumUnobscuredSide";
+        Int16 _FillValue -9999;
+    }
+    BRFSide_Mean {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:BRFSide_Mean";
+        Float32 _FillValue -9999.000000;
+    }
+    FlagCamFillSide {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:FlagCamFillSide";
+        Byte _FillValue 0;
+    }
+    LocalAlbedoMethodAndSAWReason {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:LocalAlbedoMethodAndSAWReason";
+        Byte _FillValue 0;
+    }
+    GLDVStdDevTotal {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:GLDVStdDevTotal";
+        Float32 _FillValue -9999.000000;
+    }
+    GLDVStdDevAlong {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:GLDVStdDevAlong";
+        Float32 _FillValue -9999.000000;
+    }
+    GLDVStdDevAcross {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:GLDVStdDevAcross";
+        Float32 _FillValue -9999.000000;
+    }
+    RLRAInterpolated {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:RLRAInterpolated";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudyClearDesignation {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CloudyClearDesignation";
+        Byte _FillValue 0;
+    }
+    HighCloudIndicator {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:HighCloudIndicator";
+        Byte _FillValue 0;
+    }
+    CloudyClearSource {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CloudyClearSource";
+        Byte _FillValue 0;
+    }
+    CloudLiquidProbability {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CloudLiquidProbability";
+        Int32 _FillValue 157;
+    }
+    CloudTopTemperature {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CloudTopTemperature";
+        Float32 _FillValue -9999.000000;
+    }
+    FlagCloudPhaseOverride {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:FlagCloudPhaseOverride";
+        Byte _FillValue 0;
+    }
+    CloudTexture {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CloudTexture";
+        Byte _FillValue 0;
+    }
+    HomogeneityReferenceCam {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:HomogeneityReferenceCam";
+        Byte _FillValue 0;
+    }
+    SurfaceType {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:SurfaceType";
+        Byte _FillValue 0;
+    }
+    CSSCSurfaceType {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:CSSCSurfaceType";
+        Int16 _FillValue -9999;
+    }
+    IndexSolarZenith {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexSolarZenith";
+        Int32 _FillValue 157;
+    }
+    IndexViewingZenith {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexViewingZenith";
+        Int32 _FillValue 157;
+    }
+    IndexBlueAltitude {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexBlueAltitude";
+        Int32 _FillValue 157;
+    }
+    IndexGreenAltitude {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexGreenAltitude";
+        Int32 _FillValue 157;
+    }
+    IndexBrightness {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexBrightness";
+        Int32 _FillValue 157;
+    }
+    IndexIgloo {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "ReflectingLevelParameters_2.2_km:IndexIgloo";
+        Byte _FillValue 0;
+    }
+    RelativeAzimuthBinInterpolator {
+        String coordinates "Longitude_2 Latitude_2 NCamDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:RelativeAzimuthBinInterpolator";
+        Float32 _FillValue -9999.000000;
+    }
+    ClearSkyR0 {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:ClearSkyR0";
+        Float32 _FillValue -9999.000000;
+    }
+    ClearSkyKappa {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:ClearSkyKappa";
+        Float32 _FillValue -9999.000000;
+    }
+    ClearSkyBeta {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:ClearSkyBeta";
+        Float32 _FillValue -9999.000000;
+    }
+    ClearSkyCameras {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:ClearSkyCameras";
+        UInt16 _FillValue 0;
+    }
+    ClearSkyChiSquare {
+        String coordinates "Longitude_2 Latitude_2 NBandDim_2";
+        String long_name "ReflectingLevelParameters_2.2_km:ClearSkyChiSquare";
+        Float32 _FillValue -9999.000000;
+    }
+    Latitude_2 {
+        String long_name "ReflectingLevelParameters_2.2_km:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_2 {
+        String long_name "ReflectingLevelParameters_2.2_km:Longitude";
+        String units "degrees_east";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_AM1_TC_ALBEDO_P223_O056884_F05_0011.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-10-02T20:55:15.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_EXEC_VERSION: V5.0 MISR_EXEC_NAME:TC_AL_postprocess.c";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V5.0";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Automatic quality determination software not yet implemented";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Granule";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2010-08-28";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "13:39:54.134199Z";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 56884;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE -47.5373336224085;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MIL2TCAL";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 55;
+                    String VALUE "MISR_AM1_TC_AL_SCI_CONFIG_F05_0007.txt", "MISR_AM1_AZM_F01_01.hdf", "MISR_AM1_PGE8C_PCS_CONFIG_F02_0005.txt", "MISR_AM1_AGP_P223_F01_24.hdf", "MISR_AM1_CSSC_F02_06.hdf", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650589", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650518", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650567", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650521", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650539", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650581", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650519", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650577", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2T.003:28650520", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650594", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650516", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650579", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650522", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650552", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650593", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650523", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650587", "UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:22:SC:MI1B2E.003:28650517", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_DF_F04_0025.hdf", "
+          LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_CF_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_BF_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_AF_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_AN_F04_0025.hdf", "
+          LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_DA_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_CA_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_BA_F04_0025.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P223_O056884_AA_F04_0025.hdf", "
+          UR:10:DsShESDTUR:UR:15:DsShSciServerUR:13:[LAR:DSSDSRV]:24:SC:MIB2GEOP.002:28649345", "MISR_AM1_TASC_AUG_2010_F02_04.hdf", "MISR_AM1_ARP_PRFLTCHAR_F02_0002.hdf", "MISR_AM1_ARP_PRFLTCAL_F02_0005.hdf", "MISR_AM1_ARP_INFLTCAL_T065_F02_0010.hdf", "MISR_AM1_ARP_CONFIG_F03_0003.hdf", "
+          LGID:MIL2TCST:002:MISR_AM1_TC_STEREO_P223_O056884_F08_0017.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 120.34842703333, 118.751262246841, 103.255990542428, 105.545380532364, 118.751262246841, 116.90257477641, 100.696184543035, 103.255990542428, 116.316131222557, 114.112690376589, 97.3966175391428, 100.274005585598, 114.112690376589, 111.506926725419, 94.1672059785757, 97.3966175391428, 111.506926725419, 108.386624555449, 90.5393189349981, 94.1672059785757, 108.386624555449, 104.601381851295, 86.4667143571452, 90.5393189349981, 104.601381851295, 99.951311418043, 81.9086414404555, 86.4667143571452, 99.1709531899953, 93.3841967437853, 76.4882162162341, 81.5223627278411, 93.3841967437853, 86.2103019785189, 70.9552069634428, 76.4882162162341, 86.2103019785189, 77.3880582077797, 64.9595134425435, 70.9552069634428, 77.3880582077797, 66.8327599188732, 58.5825473466362, 64.9595134425435, 66.8327599188732, 54.868115506434, 51.9523417589575, 58.5825473466362, 54.868115506434, 42.3450465042544, 45.2328845009574, 51.9523417589575, 42.3450465042544, 30.3752124701764, 38.6018229360078, 45.2328845009574, 30.3752124701764, 19.8118201227604, 32.2232734113592, 38.6018229360078, 19.8118201227604, 10.9810865092316, 26.2254811823842, 32.2232734113592, 10.9810865092316, 3.79971362635236, 20.6900907628962, 26.2254811823842, 3.79971362635236, -1.99310754966939, 15.6534833237047, 20.6900907628962, -1.99310754966939, -6.68190858260068, 11.1159086486548, 15.6534833237047, -6.68190858260068, -10.5124456940587, 7.05316943138418, 11.1159086486548, -10.5124456940587, -13.6786610087656, 3.42721409587649, 7.05316943138418, -14.3405575042696, -16.9485344008934, -0.229252572081007, 3.0019905943445, -16.9485344008934, -19.1537163340497, -3.1082504414151, -0.229252572081007, -19.1537163340497, -21.0401801379261, -5.67870592173451, -3.1082504414151, -21.0401801379261, -22.6713487120432, -7.98014928219822, -5.67870592173451, -23.1886686995062, -24.583247538445, -10.43796075877, -8.3823110257462, -24.583247538445, -25.8111277878291, -12.2895169098375, -10.43796075877, -25.8111277878291, -26.9011032646143, -13.963519213952, -12.2895169098375, -27.3397589638837, -28.2924572744095, -15.8392902521839, -14.3322887795579, -28.2924572744095, -29.1501056245974, -17.2112599985619, -15.8392902521839, -29.1501056245974, -29.9269972155844, -18.4648648413798, -17.2112599985619, -30.3066299859578, -30.9977578723435, -19.9385827524329, -18.8000536640378, -30.9977578723435, -31.6307134912795, -20.9857349757494, -19.9385827524329, -31.9793789197775, -32.5479111455556, -22.2571513147905, -21.300867593224, -32.5479111455556, -33.0735359391936, -23.1420768661941, -22.2571513147905, -33.3960743196387, -33.8722332744457, -24.2512524794551, -23.4388800375228, -33.8722332744457, -34.3160910611754, -25.0072312857592, -24.2512524794551, -34.616416568519, -35.0215667068842, -25.9848914695518, -25.2874956149402, -35.3122116854774, -35.6832670371902, -26.9026336297719, -26.2578873068047, -35.6832670371902, -36.0328767478338, -27.5071171994459, -26.9026336297719, -36.3058262546998, -36.6281230461059, -28.3273289551427, -27.7660282729387, -36.6281230461059, -36.9336313138027, -28.8559122126746, -28.3273289551427, -37.1912790147271, -37.4746140640645, -29.5950641465508, -29.1022554965963, -37.725483099602, -37.9889799970028, -30.2961449075388, -29.8358514824231, -37.9889799970028, -38.2407960957145, -30.732177105202, -30.2961449075388, -38.4792101908378, -38.7146531774714, -31.3710748680621, -30.9623427875549, -38.9475084259477, -39.1682021890503, -31.9802996258793, -31.5965255099045, -39.3958387736737, -39.6032233487914, -32.5621968328896, -32.2012777144358, -39.6032233487914, -39.8032892169431, -32.9064112063948, -32.5621968328896, -40.0213137232999, -40.210208179888, -33.443616475529, -33.1188898327157, -40.4239104150288, -40.6026756620048, -33.9590966029471, -33.6523047283761, -40.8123104011013, -40.9818819110241, -34.4544552617593, -34.1641921710735, -41.187687567814, -41.3489073379664, -34.9311561206774, -34.6561464760166, -41.3489073379664, -41.5059883963725, -35.1952810526518, -34.9311561206774, -41.7047353422465, -41.8547081862935, -35.6414478379369, -35.3905376169363, -42.0502634405581, -42.1937641808091, -36.0724926269241, -35.8338259892259, -42.3863129547815, -42.5239203464606, -36.4894573895847, -36.2621467954968, -42.7136374719435, -42.8458794638176, -36.8933022313054, -36.6765351099849, -43.0329302546445, -43.1602897148646, -37.2849134450363, -37.0779445674633, -43.3448307518875, -43.467750489335, -37.6651106832242, -37.4672554000433, -43.649930336733, -43.7688175177679, -38.0346533578413, -37.8452815923268, -43.9487773777357, -44.0640074228047, -38.3942463625748, -38.2127772639283, -44.2418817349383, -44.3538017666844, -38.7445451989808, -38.5704423739564, -44.5297187577173, -44.638650661555, -39.0861605778419, -38.9189278296423, -44.8127328505055, -44.9189759997086, -39.4196625578676, -39.2588400706277, -45.0913406629707, -45.195174352849, -39.7455842760224, -39.5907451912439, -45.3659339532878, -45.4676195827582, -40.0644253169985, -39.9151726552, -45.6368821664553, -45.7366652000301, -40.3766547634963, -40.2326186502822, -45.9045347639538, -46.002646502717, -40.6827139639205, -40.5435491247776, -46.1692233362628, -46.2658825226379, -40.983019049724, -40.848402542256, -46.4312635256976, -46.5266778036263, -41.2779632308448, -41.1475923869508, -46.6909567835819, -46.7853240330279, -41.5679188944003, -41.4415094481778, -46.9485919800375, -47.0421015423785, -41.853239528959, -41.7305239089425, -47.204446901628, -47.2972807109339, -42.1342614942432, -42.014987261036, -47.458789612216, -47.5511232447914, -42.4113056539839, -42.2952340664523, -47.7118797458748, -47.8038834003712, -42.6846788877897, -42.5715835828203, -47.9639697048372, -48.0558091230512, -42.9546754963001, -42.8443412686939, -48.2153057901913, -48.3071431280863, -43.2215785124989, -43.1138001829415, -48.4661292734478, -48.5581239310423, -43.4856609308827, -43.380242291097, -48.8752196047943, -48.9671844651427, -43.9051557637807, -43.8022456554028, -49.1253695692385, -49.2178825762715, -44.1641462737771, -44.0631502403795, -49.3757865027993, -49.4690027672284, -44.4211604034425, -44.3219039395457, -49.6267006991774, -49.7207758143231, -44.6764417546955, -44.5787555212492, -49.8783423833811, -49.973433156125, -44.9302293108692, -44.8339483341301, -50.1309426093502, -50.2272077925162, -45.1827583714281, -45.0877212692118, -50.3847341564843, -50.482335188818, -45.4342614660724, -45.3403096948608, -50.6399524320561, -50.7390541920081, -45.6849692553075, -45.5919463719049, -50.8968363865062, -50.997607966142, -45.935111424451, -45.8428623560059, -51.1556294487151, -51.2582449542775, -46.1849175780316, -46.0932878942809, -51.4165804885437, -51.5212198744876, -46.4346181416063, -46.3434533231571, -51.8386419490902, -51.9459852125412, -46.8439310974276, -46.7525730306248, -52.1051460441802, -52.2149730403309, -47.0947128028006, -47.0034269234907, -52.3746744838024, -52.4871893762366, -47.3461750391447, -47.2548005521393, -52.6475094292695, -52.7629262426278, -47.5985626075134, -47.5069353207008, -52.9239441610555, -53.0424879082632, -47.8521262248041, -47.760077686988, -53.2042843865831, -53.3261922833862, -48.1071236450965, -48.0144802352644, -53.4888496412574, -53.6143724201096, -48.3638208496888, -48.2704028083427, -53.7779747956259, -53.9073781323237, -48.6224933150599, -48.5281137071664, -54.0720116829265, -54.2055777509708, -48.8834273870039, -48.7878909855579, -54.3713308628926, -54.5093600323782, -49.1469217369293, -49.0500238132639, -54.6763235395376, -54.8191362394883, -49.413288968699, -49.3148139760041, -54.9874036527834, -55.1353424182979, -49.6828573549063, -49.582577488046, -55.3050101662699, -55.4584418946786, -49.9559727395053, -49.85364635253, -55.6296095765402, -55.7889280200555, -50.2330006279024, -50.1283704878845, -55.9616986720885, -56.1273271982363, -50.5143284917352, -50.4071198444038, -56.3018075745664, -56.4742022301055, -50.8003683195935, -50.6902867385145, -56.6505030988467, -56.8301560180083, -51.0915594496898, -50.9782884363226, -57.0083924737288, -57.1958356775794, -51.3883717260992, -51.2715700228318, -57.3761274709719, -57.5719371116439, -51.6913090268465, -51.5706075988842, -57.7544089971673, -57.9592101088032, -52.0009132200106, -51.8759118545861, -58.1439922108888, -58.3584640385928, -52.3177686134262, -52.1880320759445, -58.5456922367584, -58.7705742258928, -52.6425069747825, -52.5075606509052, -58.9603905587515, -59.1964890998319, -52.9758132123555, -52.8351381522937, -59.3890421874891, -59.6372382270534, -53.3184318227434, -53.17145908867, -59.6372382270534, -59.8952735058221, -53.4688677285198, -53.3184318227434, -60.0939413562565, -60.3659091510447, -53.8290042576761, -53.6711742314049, -60.5678186207809, -60.8548698548337, -54.2008983206354, -54.0349271752752, -61.0602020691217, -61.3636035344769, -54.5856024145692, -54.4106623051988, -61.5725487201623, -61.8936973911333, -54.9842762563406, -54.7994472205433, -62.1064553711562, -62.446894753497, -55.398201341365, -55.2024581906218, -62.446894753497, -62.8038082254963, -55.6009734532767, -55.398201341365, -63.0251142622519, -63.4046627552892, -56.0445807131226, -55.8287978480719, -63.6304717557024, -64.0347473416011, -56.5078551007095, -56.2776443351675, -64.2653052736782, -64.6966390067327, -56.9927381192191, -56.746500776445, -64.6966390067327, -65.1519432704181, -57.2502588108341, -56.9927381192191, -65.3931983024905, -65.8807488838075, -57.7783591347385, -57.5014088300958, -66.1276071126535, -66.6506522950986, -58.3350018034831, -58.0363212499144, -66.6506522950986, -67.2060704475123, -58.6499547158889, -58.3350018034831, -67.4656038383461, -68.0638984677694, -59.2650290737868, -58.9232920820841, -68.0638984677694, -68.7020718678108, -59.6275883258021, -59.2650290737868, -68.9758274509404, -69.666322139459, -60.3147353690591, -59.9187182025766, -69.9474325318007, -70.6961808112861, -61.0496408152177, -60.6156120183801, -70.6961808112861, -71.5008936008329, -61.5151330846372, -61.0496408152177, -71.7987461459385, -72.6756867064787, -62.3524883208705, -61.8383769207028, -72.6756867064787, -73.6235453178967, -62.9084721208596, -62.3524883208705, -73.9399943868575, -74.9784408698772, -63.8774304731314, -63.2580578860206, -74.9784408698772, -76.1078587457299, -64.5536881404485, -63.8774304731314, -76.1078587457299, -77.3404782598577, -65.2959785148513, -64.5536881404485, -77.6890560610642, -79.0514841345427, -66.5352211782416, -65.695307378358, -79.0514841345427, -80.5487767669367, -67.4683765991693, -66.5352211782416, -80.9199784845458, -82.5846092786592, -68.9777575304856, -67.9090024535431, -82.5846092786592, -84.4270962901568, -70.1822193546805, -68.9777575304856, -84.4270962901568, -86.474350960163, -71.550950211055, -70.1822193546805, -86.8801092986032, -89.1748689551852, -73.6751137200282, -72.0716780406604;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 73.3980610805471, 74.5789038528009, 72.1393949224558, 71.1059551444999, 74.5789038528009, 75.7468122681221, 73.1421553204903, 72.1393949224558, 75.6846874096084, 76.8310999366665, 74.0039231079415, 73.0435150892389, 76.8310999366665, 77.9556506252395, 74.9204168363389, 74.0039231079415, 77.9556506252395, 79.0516663454561, 75.784535270384, 74.9204168363389, 79.0516663454561, 80.1097211512565, 76.5861861637233, 75.784535270384, 80.1097211512565, 81.1163051829424, 77.3135535935502, 76.5861861637233, 81.0157833567518, 81.9399199151656, 77.8138976951798, 77.1811604323027, 81.9399199151656, 82.7637486035406, 78.3448297477495, 77.8138976951798, 82.7637486035406, 83.44936471927, 78.7595418818166, 78.3448297477495, 83.44936471927, 83.9496395427734, 79.0448433919401, 78.7595418818166, 83.9496395427734, 84.2163055926423, 79.1904933900317, 79.0448433919401, 84.2163055926423, 84.2169700983555, 79.190850533469, 79.1904933900317, 84.2169700983555, 83.951545420912, 79.045900624041, 79.190850533469, 83.951545420912, 83.4522988926661, 78.7612593020518, 79.045900624041, 83.4522988926661, 82.7674675564649, 78.3471487224798, 78.7612593020518, 82.7674675564649, 81.9442130425482, 77.8167495219789, 78.3471487224798, 81.9442130425482, 81.0204911668484, 77.1844741933441, 77.8167495219789, 81.0204911668484, 80.0241307744871, 76.4645707886463, 77.1844741933441, 80.0241307744871, 78.9747635275871, 75.670216329616, 76.4645707886463, 78.9747635275871, 77.8861103725862, 74.8130629669991, 75.670216329616, 77.9610783511792, 76.8366489685991, 74.008511452286, 74.92477124203, 76.8366489685991, 75.6903302762959, 73.0482997382028, 74.008511452286, 75.6903302762959, 74.5269356324926, 72.0511581574938, 73.0482997382028, 74.5269356324926, 73.3499927485409, 71.0228760370323, 72.0511581574938, 73.4038543873039, 72.2126458038231, 70.051799699302, 71.1110681118251, 72.2126458038231, 71.0129242552374, 68.970456109784, 70.051799699302, 71.0129242552374, 69.8061549220072, 67.8702407111402, 68.970456109784, 69.8500582385327, 68.6351438855248, 66.8249182642297, 67.9449003831943, 68.6351438855248, 67.4154647342452, 65.6911957162977, 66.8249182642297, 67.4154647342452, 66.1917019407733, 64.5455365579836, 65.6911957162977, 66.2286591935969, 64.9998024421632, 63.450827712579, 64.6096525822769, 64.9998024421632, 63.7680080122098, 62.2830558430658, 63.450827712579, 63.801156493016, 62.5655357890469, 61.1632144449634, 62.3411974749225, 62.5655357890469, 61.3277217889438, 59.978402129349, 61.1632144449634, 61.3577468963361, 60.1169757300121, 58.8385477044197, 60.0314165273873, 60.1169757300121, 58.8745088061137, 57.6403750802594, 58.8385477044197, 58.9019423844543, 57.6571306331904, 56.4843282927967, 57.688960217287, 57.6830974096697, 56.4362257738286, 55.3202425662676, 56.5306251389749, 56.4362257738286, 55.1881563184843, 54.1061679627677, 55.3202425662676, 55.212156791301, 53.962396920061, 52.9300978013439, 54.1488838796856, 53.962396920061, 52.7116346854587, 51.7083326984658, 52.9300978013439, 52.7339681000691, 51.4817905138098, 50.5222273112577, 51.7479036426977, 51.5031165011985, 50.2496624681592, 49.330905959172, 50.5601203016216, 50.2496624681592, 48.9954174226868, 48.099507777397, 49.330905959172, 49.015447981185, 47.7601050835226, 46.9004118927392, 48.1347990672285, 47.7793219175662, 46.5229757112603, 45.6971783024495, 46.9342911868239, 46.5414398034523, 45.2841728943813, 44.4901223363155, 45.7297268698529, 45.2841728943813, 44.0262861670613, 43.2490286658772, 44.4901223363155, 44.0438254098672, 42.7851233559088, 42.0362876642318, 43.279528188045, 42.8020492260232, 41.5425911903658, 40.8204365679269, 42.0656526923605, 41.5589492087638, 40.2987880104524, 39.601690880065, 40.8487285904123, 40.3146205808968, 39.0538034685199, 38.380246964936, 39.6289673600215, 39.0538034685199, 37.7924869903374, 37.1305623308006, 38.380246964936, 37.8077196407402, 36.5458080933145, 35.9051224848505, 37.1562842210859, 36.5606119879636, 35.2981420189356, 34.6774343563049, 35.9299669794291, 35.3125501889898, 34.0495553340556, 33.4476395690942, 34.7014461649748, 34.0635988653712, 32.8001100070803, 32.2158688729656, 33.4708607548159, 32.8138182136806, 31.5498639777463, 30.9822432910319, 32.238339060081, 31.5632645585677, 30.2988716568781, 29.7468751331133, 31.0039998554131, 30.3119908377993, 29.0471843658162, 28.5098688922312, 29.7679533760626, 29.060047028716, 27.7948507237305, 27.2713220391358, 28.5303021997649, 27.8074805240943, 26.5419169897946, 26.0313257276552, 27.2911420281151, 26.5543364641962, 25.2884273661721, 24.7899654218847, 26.0505623800767, 25.3006580307963, 24.034424266914, 23.547321454731, 24.8086472085055, 24.0464867081395, 22.7799485571446, 22.303469526049, 23.5654754490839, 22.7918625150899, 21.5250397663221, 21.0584811475227, 22.3211215097955, 21.5368242121483, 20.2697362788493, 19.8124240405119, 21.0756557079938, 20.2814094865265, 19.0140755048905, 18.5653624922935, 19.829144661204, 19.0256551180543, 17.7580940338907, 17.3173576754463, 18.5816516370092, 17.7695971283485, 16.5018277729926, 16.068467934545, 17.3332368667032, 16.5132709153819, 15.2453120722913, 14.8187490438278, 16.0839578268171, 15.2567114134324, 13.9885818775227, 13.5682544390698, 14.8338694921286, 13.9999530545656, 12.7316716813535, 12.3170354265237, 13.5830245633436, 12.7430300894637, 11.4746158434953, 11.0651413714667, 12.331473672265, 11.4859765371499, 10.2174485318862, 9.81261986861691, 11.0792655669573, 10.2288263063226, 8.96020384083904, 8.55951689644309, 9.82644727913194, 8.97161327575201, 7.70291586810709, 7.30587695718252, 8.57306427575322, 7.71437136991997, 6.44561878792048, 6.05174320420571, 7.31916059665322, 6.46860139255556, 5.19993728723711, 4.80996097549588, 6.0777690406949, 5.21148817303739, 3.94281382119698, 3.55474705140412, 4.8227281978162, 3.95446291988023, 2.68579903441352, 2.29917668868816, 3.56730658928468, 2.69756042965594, 1.42892811358276, 1.04328847133159, 2.31154341974604, 1.44081592243545, 0.172236696530304, -0.2128798308763, 1.05547703756971, 0.184265107798333, -1.08423906036533, -1.46929118451979, -0.200854983070036, -1.07205574762832, -2.34046241258714, -2.72590921900066, -1.45741576510182, -2.32810975027408, -3.59639595488482, -3.98269815636283, -2.71416905552893, -3.58385930652275, -4.85200154479123, -5.23962274364853, -3.97107915558737, -4.83926604552236, -6.10724022133356, -6.49664818695706, -5.22811085323958, -6.0942907369848, -7.36207211796929, -7.75374008639448, -6.48522935717652, -7.33565875553354, -8.60303222281699, -8.9995893303529, -7.73100144401693, -8.58954294124153, -9.85666542949336, -10.2567627314293, -8.98824564958703, -9.84290506356577, -11.1097491971665, -11.5138866679344, -10.2454598134987, -11.0957010416195, -12.36223851766, -12.7709274577164, -11.5026100041187, -12.3478853631934, -13.6140868649556, -14.0278514289058, -12.7596623324605, -13.5994109468431, -14.865246045939, -15.2846248410227, -14.0165828764181, -14.8502289899498, -16.11566603565, -16.5412138005328, -15.2733376002146, -16.100288800956, -17.3652947950627, -17.7975841360856, -16.5298922330122, -17.34953761378, -18.6140780691962, -19.0537014371347, -17.7862123184577, -18.5979203821717, -19.8619591630807, -20.3095307348378, -19.0422628943964, -19.8453795515011, -21.1088786927955, -21.5650365269496, -20.2980085305657, -21.0918548051533, -22.3547743084321, -22.820182609958, -21.5534131684569, -22.3372827823366, -23.5995803854157, -24.0749319337844, -22.8084399863723, -23.5815967636829, -24.8432276801284, -25.3292464402444, -24.063051249832, -24.8247263205249, -26.085642945208, -26.5830868828966, -25.3172081451828, -26.0665969231558, -27.3267484992337, -27.8364126255752, -26.5708705939746, -27.3071295027054, -28.5664617447307, -29.0891814164931, -27.8239970453189, -28.5462399604791, -29.804694627518, -30.3413491343348, -29.0765442430294, -29.7838386176873, -31.0413530293581, -31.5928695021822, -30.328466963856, -31.019829597414, -32.2763360846119, -32.8436937644433, -31.5797177225385, -32.2541101294043, -33.509535410127, -34.0937703211404, -32.8302464387056, -33.4865697667621, -34.7408342358427, -35.3430443129399, -34.0800000598126, -34.7170895018859, -35.9701064215357, -36.5914571491321, -35.3289221333089, -35.9455407668917, -37.1972153426806, -37.8389459693557, -36.5769523200195, -37.1972153426806, -38.4480232613989, -39.1004628906994, -37.8389459693557, -38.4220126255009, -39.6712965160085, -40.3463663816992, -39.0854430281408, -39.6443367078194, -40.8919736698486, -41.5911641498758, -40.3308749892592, -40.8640111981926, -42.1098653080576, -42.8347719053192, -41.5751621143212, -42.0808430008769, -43.3247634996716, -44.0770972320661, -42.8182173269328, -43.294620168253, -44.5364393669504, -45.3180383682426, -44.0599451298871, -44.5364393669504, -45.7768033194823, -46.5755255095487, -45.3180383682426, -45.7446402865735, -46.9825658922188, -47.8140831998779, -46.5574827845689, -46.9490866587498, -48.1843445446089, -49.0509401299955, -47.7953055217303, -48.1494681678589, -49.3818002044319, -50.2859454564666, -49.0313672381074, -49.3818002044319, -50.6119996908606, -51.5397573761426, -50.2859454564666, -50.5745543111743, -51.8012903560222, -52.7715149693739, -51.5189295500947, -51.7621829905657, -52.9850892495415, -54.0009264847943, -52.7497008461156, -52.9850892495415, -54.2050863834951, -55.2511870919297, -54.0009264847943, -54.1628694195282, -55.3782519445662, -56.4763907815822, -55.227752640565, -55.3782519445662, -56.5900282749254, -57.7238797773865, -56.4763907815822, -56.5442676723624, -57.7504092370441, -58.9440441454845, -57.6985309575068, -57.7023778625242, -58.9021872411931, -60.1605188975585, -58.9172557069011, -58.9021872411931, -60.0968106846026, -61.4021608341789, -60.1605188975585, -60.0443891138643, -61.2311088528941, -62.6116467257955, -61.3728422159253, -61.2311088528941, -62.4111449057672, -63.8483571456273, -62.6116467257955, -62.3536354926995, -63.5236442949209, -65.0490221432681, -63.8159843778797, -63.5236442949209, -64.6848858137584, -66.2792561566344, -65.0490221432681, -64.6848858137584, -65.8361326022248, -67.5062852685348, -66.2792561566344, -65.7697363742799, -66.9063166315564, -68.6899344087989, -67.4684936729422, -66.9063166315564, -68.0294000961418, -69.9068250863593, -68.6899344087989, -67.9554616985543, -69.0590620885995, -71.0729712640719, -69.8639168591281, -69.0590620885995, -70.1440808017031, -72.2752811338835, -71.0729712640719, -70.1440808017031, -71.2073377843847, -73.4694388229321, -72.2752811338835, -71.1198884278436, -72.1524909697626, -74.5971302972255, -73.4167407291277;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 576, 575, 2, 1, 574, 573, 4, 3, 572, 571, 6, 5, 570, 569, 8, 7, 568, 567, 10, 9, 566, 565, 12, 11, 564, 563, 14, 13, 562, 561, 16, 15, 560, 559, 18, 17, 558, 557, 20, 19, 556, 555, 22, 21, 554, 553, 24, 23, 552, 551, 26, 25, 550, 549, 28, 27, 548, 547, 30, 29, 546, 545, 32, 31, 544, 543, 34, 33, 542, 541, 36, 35, 540, 539, 38, 37, 538, 537, 40, 39, 536, 535, 42, 41, 534, 533, 44, 43, 532, 531, 46, 45, 530, 529, 48, 47, 528, 527, 50, 49, 526, 525, 52, 51, 524, 523, 54, 53, 522, 521, 56, 55, 520, 519, 58, 57, 518, 517, 60, 59, 516, 515, 62, 61, 514, 513, 64, 63, 512, 511, 66, 65, 510, 509, 68, 67, 508, 507, 70, 69, 506, 505, 72, 71, 504, 503, 74, 73, 502, 501, 76, 75, 500, 499, 78, 77, 498, 497, 80, 79, 496, 495, 82, 81, 494, 493, 84, 83, 492, 491, 86, 85, 490, 489, 88, 87, 488, 487, 90, 89, 486, 485, 92, 91, 484, 483, 94, 93, 482, 481, 96, 95, 480, 479, 98, 97, 478, 477, 100, 99, 476, 475, 102, 101, 474, 473, 104, 103, 472, 471, 106, 105, 470, 469, 108, 107, 468, 467, 110, 109, 466, 465, 112, 111, 464, 463, 114, 113, 462, 461, 116, 115, 460, 459, 118, 117, 458, 457, 120, 119, 456, 455, 122, 121, 454, 453, 124, 123, 452, 451, 126, 125, 450, 449, 128, 127, 448, 447, 130, 129, 446, 445, 132, 131, 444, 443, 134, 133, 442, 441, 136, 135, 440, 439, 138, 137, 438, 437, 140, 139, 436, 435, 142, 141, 434, 433, 144, 143, 432, 431, 146, 145, 430, 429, 148, 147, 428, 427, 150, 149, 426, 425, 152, 151, 424, 423, 154, 153, 422, 421, 156, 155, 420, 419, 158, 157, 418, 417, 160, 159, 416, 415, 162, 161, 414, 413, 164, 163, 412, 411, 166, 165, 410, 409, 168, 167, 408, 407, 170, 169, 406, 405, 172, 171, 404, 403, 174, 173, 402, 401, 176, 175, 400, 399, 178, 177, 398, 397, 180, 179, 396, 395, 182, 181, 394, 393, 184, 183, 392, 391, 186, 185, 390, 389, 188, 187, 388, 387, 190, 189, 386, 385, 192, 191, 384, 383, 194, 193, 382, 381, 196, 195, 380, 379, 198, 197, 378, 377, 200, 199, 376, 375, 202, 201, 374, 373, 204, 203, 372, 371, 206, 205, 370, 369, 208, 207, 368, 367, 210, 209, 366, 365, 212, 211, 364, 363, 214, 213, 362, 361, 216, 215, 360, 359, 218, 217, 358, 357, 220, 219, 356, 355, 222, 221, 354, 353, 224, 223, 352, 351, 226, 225, 350, 349, 228, 227, 348, 347, 230, 229, 346, 345, 232, 231, 344, 343, 234, 233, 342, 341, 236, 235, 340, 339, 238, 237, 338, 337, 240, 239, 336, 335, 242, 241, 334, 333, 244, 243, 332, 331, 246, 245, 330, 329, 248, 247, 328, 327, 250, 249, 326, 325, 252, 251, 324, 323, 254, 253, 322, 321, 256, 255, 320, 319, 258, 257, 318, 317, 260, 259, 316, 315, 262, 261, 314, 313, 264, 263, 312, 311, 266, 265, 310, 309, 268, 267, 308, 307, 270, 269, 306, 305, 272, 271, 304, 303, 274, 273, 302, 301, 276, 275, 300, 299, 278, 277, 298, 297, 280, 279, 296, 295, 282, 281, 294, 293, 284, 283, 292, 291, 286, 285, 290, 289, 288, 287;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-08-28";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "14:04:32.000000Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2010-08-28";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "13:07:36.000000Z";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4";
+                        Int32 NUM_VAL 1, 1, 1, 1;
+                        String VALUE "SP_AM_PATH_NO", "SP_AM_MISR_StartBlock", "SP_AM_MISR_EndBlock", "SP_AM_MISR_ProductVersion";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4";
+                            String VALUE "223", "7", "150", "11";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "AlbedoParameters_35.2_km";
+                Int32 XDim 4;
+                Int32 YDim 16;
+                Float64 UpperLeftPointMtrs 7460750.000000, 1090650.000000;
+                Float64 LowerRightMtrs 7601550.000000, 527450.000000;
+                String Projection "GCTP_SOM";
+                Float64 ProjParams 6378137, -0.006694, 0, 98018013.750000, -215014037.520000, 0, 0, 0, 98.880000, 0, 0, 180, 0;
+                Int32 SphereCode 12;
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "NBandDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "NCamDim";
+                        Int32 Size 9;
+                    }
+                    Dimension_3 {
+                        String DimensionName "SOMBlockDim";
+                        Int32 Size 180;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "AlbedoExpansive";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "AlbedoRestrictive";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "AlbedoExpansiveBroadband";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "AlbedoRestrictiveBroadband";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "SolarZenithCosineRegional";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "NumLocalAlbedoGood";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "NumLocalAlbedoGoodNoCamFill";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "LocalAlbedo_Mean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "LocalAlbedo_StdDev";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_10 {
+                        String DataFieldName "LocalAlbedoNoCamFill_Mean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_11 {
+                        String DataFieldName "LocalAlbedoNoCamFill_StdDev";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_12 {
+                        String DataFieldName "NumDeterministicSucceeded";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_13 {
+                        String DataFieldName "NumDeterministicFailed";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_14 {
+                        String DataFieldName "NumStochasticSucceeded";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_15 {
+                        String DataFieldName "NumStochasticFailed";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_16 {
+                        String DataFieldName "RestrictiveAlbedoTop";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_17 {
+                        String DataFieldName "RestrictiveAlbedoSide";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_18 {
+                        String DataFieldName "NumSubRestrictiveAlbedoTop";
+                        String DataType "DFNT_UINT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_19 {
+                        String DataFieldName "NumSubRestrictiveAlbedoSide";
+                        String DataType "DFNT_UINT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_20 {
+                        String DataFieldName "FlagRestrictiveAlbedoSide";
+                        String DataType "DFNT_UINT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_21 {
+                        String DataFieldName "NumSubExpansiveConsidered";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_22 {
+                        String DataFieldName "NumSubExpansiveUsed";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_23 {
+                        String DataFieldName "NumSubExpansiveMissBRFTop";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_24 {
+                        String DataFieldName "NumSubExpansiveMissBRFSide";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_25 {
+                        String DataFieldName "NumSubExpansiveBadObscTop";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_26 {
+                        String DataFieldName "NumSubExpansiveBadObscSide";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_27 {
+                        String DataFieldName "NumSubExpansiveOblique";
+                        String DataType "DFNT_INT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_28 {
+                        String DataFieldName "FractionExpansiveClearHighConf";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_29 {
+                        String DataFieldName "FractionExpansiveClearLowConf";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "GeometricParameters_17.6_km";
+                Int32 XDim 8;
+                Int32 YDim 32;
+                Float64 UpperLeftPointMtrs 7460750.000000, 1090650.000000;
+                Float64 LowerRightMtrs 7601550.000000, 527450.000000;
+                String Projection "GCTP_SOM";
+                Float64 ProjParams 6378137, -0.006694, 0, 98018013.750000, -215014037.520000, 0, 0, 0, 98.880000, 0, 0, 180, 0;
+                Int32 SphereCode 12;
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "NBandDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "NCamDim";
+                        Int32 Size 9;
+                    }
+                    Dimension_3 {
+                        String DimensionName "SOMBlockDim";
+                        Int32 Size 180;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "SolarZenithAngle";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "ViewZenithAngle";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "RelativeAzimuthAngle";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_3 {
+                String GridName "ReflectingLevelParameters_2.2_km";
+                Int32 XDim 64;
+                Int32 YDim 256;
+                Float64 UpperLeftPointMtrs 7460750.000000, 1090650.000000;
+                Float64 LowerRightMtrs 7601550.000000, 527450.000000;
+                String Projection "GCTP_SOM";
+                Float64 ProjParams 6378137, -0.006694, 0, 98018013.750000, -215014037.520000, 0, 0, 0, 98.880000, 0, 0, 180, 0;
+                Int32 SphereCode 12;
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "NBandDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "NCamDim";
+                        Int32 Size 9;
+                    }
+                    Dimension_3 {
+                        String DimensionName "SOMBlockDim";
+                        Int32 Size 180;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "AlbedoLocal";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "AlbedoLocalBroadband";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "NumUnobscuredTop";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "BRFTop_Mean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "FlagCamFillTop";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "NumUnobscuredSide";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "BRFSide_Mean";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "FlagCamFillSide";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "LocalAlbedoMethodAndSAWReason";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim", "NCamDim";
+                    }
+                    DataField_10 {
+                        String DataFieldName "GLDVStdDevTotal";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_11 {
+                        String DataFieldName "GLDVStdDevAlong";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_12 {
+                        String DataFieldName "GLDVStdDevAcross";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_13 {
+                        String DataFieldName "RLRAInterpolated";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_14 {
+                        String DataFieldName "CloudyClearDesignation";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_15 {
+                        String DataFieldName "HighCloudIndicator";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_16 {
+                        String DataFieldName "CloudyClearSource";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_17 {
+                        String DataFieldName "CloudLiquidProbability";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_18 {
+                        String DataFieldName "CloudTopTemperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_19 {
+                        String DataFieldName "FlagCloudPhaseOverride";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_20 {
+                        String DataFieldName "CloudTexture";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_21 {
+                        String DataFieldName "HomogeneityReferenceCam";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_22 {
+                        String DataFieldName "SurfaceType";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_23 {
+                        String DataFieldName "CSSCSurfaceType";
+                        String DataType "DFNT_INT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_24 {
+                        String DataFieldName "IndexSolarZenith";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_25 {
+                        String DataFieldName "IndexViewingZenith";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_26 {
+                        String DataFieldName "IndexBlueAltitude";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_27 {
+                        String DataFieldName "IndexGreenAltitude";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_28 {
+                        String DataFieldName "IndexBrightness";
+                        String DataType "DFNT_INT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_29 {
+                        String DataFieldName "IndexIgloo";
+                        String DataType "DFNT_UINT8";
+                        String DimList "SOMBlockDim", "XDim", "YDim";
+                    }
+                    DataField_30 {
+                        String DataFieldName "RelativeAzimuthBinInterpolator";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NCamDim";
+                    }
+                    DataField_31 {
+                        String DataFieldName "ClearSkyR0";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_32 {
+                        String DataFieldName "ClearSkyKappa";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_33 {
+                        String DataFieldName "ClearSkyBeta";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_34 {
+                        String DataFieldName "ClearSkyCameras";
+                        String DataType "DFNT_UINT16";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                    DataField_35 {
+                        String DataFieldName "ClearSkyChiSquare";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "SOMBlockDim", "XDim", "YDim", "NBandDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+        Int32 Path_number 223;
+        Int32 AGP_version_id 2;
+        Int32 DID_version_id 4;
+        Int32 Number_blocks 180;
+        Int32 Ocean_blocks_size 180;
+        Int32 Ocean_blocks_count 67;
+        Int32 Ocean_blocks_numbers 16, 20, 26, 27, 28, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 0, 81, 82, 83, 84, 85, 86, 87, 88, 89, 123, 124, 125, 126, 127, 128, 129, 130, 137, 138, 139, 140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Float64 SOM_parameters_som_ellipsoid_a 6378137.0000000000;
+        Float64 SOM_parameters_som_ellipsoid_e2 0.0066943479999964474;
+        Float64 SOM_parameters_som_orbit_aprime 1.0000000000000000;
+        Float64 SOM_parameters_som_orbit_eprime 1.0000000000000000;
+        Float64 SOM_parameters_som_orbit_gama 1.0000000000000000;
+        Int32 SOM_parameters_som_orbit_nrev 233;
+        Float64 SOM_parameters_som_orbit_ro 7078040.7999878405;
+        Float64 SOM_parameters_som_orbit_i 1.7157253262848964;
+        Float64 SOM_parameters_som_orbit_P2P1 0.068666666666105339;
+        Float64 SOM_parameters_som_orbit_lambda0 -3.7567122404289890;
+        Float64 Origin_block_ulc_x 7460750.0000000000;
+        Float64 Origin_block_ulc_y 527450.00000000000;
+        Float64 Origin_block_lrc_x 7601550.0000000000;
+        Float64 Origin_block_lrc_y 1090650.0000000000;
+        Int32 Start_block 7;
+        Int32 End_block 150;
+        Int32 Cam_mode 1;
+        Int32 Num_local_modes 0;
+        String Local_mode_site_name "";
+        Float32 Orbit_QA 0.000000000;
+    }
+    PerBlockMetadataCommon {
+    }
+    Common_Per_Block_Metadata {
+    }
+    PerBlockMetadataTime {
+    }
+}

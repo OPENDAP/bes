@@ -1,0 +1,77 @@
+Attributes {
+    temperature {
+        String coordinates "Latitude Longitude";
+        String long_name "GeoGrid1:temperature";
+    }
+    Latitude {
+        String long_name "GeoGrid1:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "GeoGrid1:Longitude";
+        String units "degrees_east";
+    }
+    temperature_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "GeoGrid2:temperature";
+    }
+    Latitude_1 {
+        String long_name "GeoGrid2:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "GeoGrid2:Longitude";
+        String units "degrees_east";
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "GeoGrid1";
+                Int32 XDim 16;
+                Int32 YDim 8;
+                Float64 UpperLeftPointMtrs 0.000000, 8000000.000000;
+                Float64 LowerRightMtrs 16000000.000000, 0.000000;
+                String Projection "GCTP_GEO";
+                String GridOrigin "HDFE_GD_UR";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "GeoGrid2";
+                Int32 XDim 8;
+                Int32 YDim 4;
+                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
+                Float64 LowerRightMtrs 8000000.000000, 0.000000;
+                String Projection "GCTP_GEO";
+                String GridOrigin "HDFE_GD_UR";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

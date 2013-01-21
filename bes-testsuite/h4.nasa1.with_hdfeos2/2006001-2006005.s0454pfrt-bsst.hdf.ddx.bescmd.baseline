@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    <getDDX>
+        <BESError>
+            <Type>2</Type>
+            <Message>libdap exception building response: error_code = 1002: libdap error transmitting DDX: An internal error was encountered in AttrTable.cc at line 1444:
+Could not write attribute for name
+Please report this to support@opendap.org
+</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+        </BESError>
+    </getDDX>
+</response>

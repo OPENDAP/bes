@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MCD43C1.A2006353.004.2007012185705.hdf" space="catalog">/data/MCD43C1.A2006353.004.2007012185705.hdf</setContainer>
+    <define name="d">
+	<container name="MCD43C1.A2006353.004.2007012185705.hdf" />
+        <constraint>Black_Sky_Albedo[0:1799:3599][0:3599:7199][0:4:9],Albedo_Quality[0:1799:3599][0:3599:7199],Latitude[0:1799:3599],Longitude[0:3599:7199]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

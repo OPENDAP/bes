@@ -1,0 +1,10 @@
+Dataset {
+    Int16 Very_low_res_sst[Latitude = 720][Longitude = 1440];
+    Int16 Low_res_sst[Latitude = 720][Longitude = 1440];
+    Int16 Low_res_wind[Latitude = 720][Longitude = 1440];
+    Int16 Med_res_wind[Latitude = 720][Longitude = 1440];
+    Int16 Med_res_vapor[Latitude = 720][Longitude = 1440];
+    Int16 High_res_cloud[Latitude = 720][Longitude = 1440];
+    Float64 Latitude[Latitude = 720];
+    Float64 Longitude[Longitude = 1440];
+} AMSR_E_L3_DailyOcean_V03_20020619.hdf;

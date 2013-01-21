@@ -1,0 +1,4 @@
+Dataset {
+    Float32 temperature[ZDim = 4];
+    Float32 Time[ZDim = 4];
+} swath_1_1d_t.hdf;

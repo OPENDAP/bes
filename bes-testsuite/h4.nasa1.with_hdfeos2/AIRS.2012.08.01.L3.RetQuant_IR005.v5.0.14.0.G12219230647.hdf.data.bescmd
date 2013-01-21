@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AIRS.2012.08.01.L3.RetQuant_IR005.v5.0.14.0.G12219230647.hdf" space="catalog">/data/AIRS.2012.08.01.L3.RetQuant_IR005.v5.0.14.0.G12219230647.hdf</setContainer>
+    <define name="d">
+	<container name="AIRS.2012.08.01.L3.RetQuant_IR005.v5.0.14.0.G12219230647.hdf" />
+                <constraint>LatCenter[0:17:35],LonCenter[0:35:71],NumObsInCluster[0:49:99][0:17:35][0:35:71],Entropy[0:99:199][0:17:35][0:35:71],NumTrials[0:99:199],MaxNumClusters[0:49:99],NumDimNorm[0:8:17],NumDimPhys[0:17:34],NumPentad[0:3:5]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

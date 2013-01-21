@@ -1,0 +1,249 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+# This test simple HDF-EOS2 files, hybrid files, and generic files used in
+# the default handler.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+# Use the following AT_CHECK to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2 || true], [], [stdout], [stderr])
+
+# This is the original.
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([_AT_BESCMD_BINARYDATA_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+# Use the following AT_CHECK to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
+
+# This is the original.
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/h4.cf/$1], [$abs_srcdir/h4.cf/$1.baseline])
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h4.cf/$1], [$abs_srcdir/h4.cf/$1.baseline])
+])
+
+
+# The same set of tests that the old default handler uses.
+AT_BESCMD_RESPONSE_TEST([S2000415.HDF.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([S2000415.HDF.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([S2000415.HDF.2.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([S2000415.HDF.3.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testan1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testan1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testan1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testdfp1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testdfp1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfp1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testdfr1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testdfr1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testdfr2.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testdfr2.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr2.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testdfr3.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testdfr3.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr3.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testgr1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testgr1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testgr2.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testgr2.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr2.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testgr3.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testgr3.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr3.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testgr4.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testgr4.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr4.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testgr5.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testgr5.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr5.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds2.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds2.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds2.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds3.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds3.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds4.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds4.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds4.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds5.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds5.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds5.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds6.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds6.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds6.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testsds7.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds7.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds7.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testvs1.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testvs1.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testvs2.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testvs2.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs2.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testvs3.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testvs3.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs3.hdf.data.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([testvs4.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([testvs4.hdf.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs4.hdf.data.bescmd])
+
+# Throws an error.
+# AT_BESCMD_RESPONSE_TEST([testvs5.hdf.das.bescmd])
+# AT_BESCMD_RESPONSE_TEST([testvs5.hdf.dds.bescmd])
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs5.hdf.data.bescmd])
+
+# Test Hybrid files.
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data1.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data1.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data1.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data1.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_grid.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_swath.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.ddx.bescmd])
+
+# Test HDF-EOS2 files.
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d_xy.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy_no_cf_attr.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d_xy_no_cf_attr.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy_no_cf_attr.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_xy_no_cf_attr.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xy.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d_xy.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xy.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xy.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xyz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d_xyz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xyz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xyz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_z.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d_z.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_z.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_z.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_zz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d_zz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_zz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_zz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_2_2d.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_size.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_2_2d_size.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_size.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_size.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_xy.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_2_2d_xy.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_xy.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_xy.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_size.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_2_3d_size.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_size.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_size.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_xyz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_2_3d_xyz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_xyz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_3d_xyz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_1d_t.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_1d_t.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_1d_t.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_1d_t.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xyz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyzz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xyzz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyzz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_2d_xyzz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_2x2yz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_3d_2x2yz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_2x2yz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_2x2yz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_xyz_2dim.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_3d_xyz_2dim.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_xyz_2dim.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_3d_xyz_2dim.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_4d_2x2yzt.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_4d_2x2yzt.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_4d_2x2yzt.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_1_4d_2x2yzt.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_2d_xyz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_2d_xyz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_2d_xyz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_2d_xyz.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.ddx.bescmd])

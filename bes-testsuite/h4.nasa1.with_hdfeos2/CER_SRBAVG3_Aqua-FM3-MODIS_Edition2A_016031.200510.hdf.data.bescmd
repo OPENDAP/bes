@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_SRBAVG3_Aqua-FM3-MODIS_Edition2A_016031.200510.hdf" space="catalog">/data/CER_SRBAVG3_Aqua-FM3-MODIS_Edition2A_016031.200510.hdf</setContainer>
+    <define name="d">
+	<container name="CER_SRBAVG3_Aqua-FM3-MODIS_Edition2A_016031.200510.hdf" />
+        <constraint>latitude[0:1:179][0:1:0],longitude[2:1:2][0:1:359],_1_0_deg__global_colat__zones[0:1:0],_1_0_deg__global_long__zones[0:1:0],_1_0_deg__zonal_colat__zones[0:179:179],_1_0_deg__zonal_long__zones[0:1:0],Cloud_Area_Fraction[0:2:2][0:23:23][0:179:179][0:359:359]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

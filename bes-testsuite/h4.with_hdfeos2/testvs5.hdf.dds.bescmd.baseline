@@ -1,0 +1,5 @@
+Dataset {
+    Int32 Main_Vgroup_Array_Vgroup_SDS_Array[fakeDim0 = 5];
+    Int32 Main_Vgroup_Grid_Vgroup_SDS_Grid[fakeDim1 = 5];
+    Int32 fakeDim1[fakeDim1 = 5];
+} testvs5.hdf;

@@ -1,0 +1,10 @@
+Dataset {
+    Byte Sea_Ice_by_Reflectance_NP[XDim = 4501][YDim = 4501];
+    Float32 Ice_Surface_Temperature_NP[XDim = 4501][YDim = 4501];
+    Float64 Latitude[XDim = 4501][YDim = 4501];
+    Float64 Longitude[XDim = 4501][YDim = 4501];
+    Byte Sea_Ice_by_Reflectance_SP[XDim_1 = 4501][YDim_1 = 4501];
+    UInt16 Ice_Surface_Temperature_SP[XDim_1 = 4501][YDim_1 = 4501];
+    Float64 Latitude_1[XDim_1 = 4501][YDim_1 = 4501];
+    Float64 Longitude_1[XDim_1 = 4501][YDim_1 = 4501];
+} MOD29E1D.A2009340.005.2009341094922.hdf;

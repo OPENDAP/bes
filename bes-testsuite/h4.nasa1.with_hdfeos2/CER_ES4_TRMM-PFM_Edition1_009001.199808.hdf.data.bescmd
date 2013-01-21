@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="CER_ES4_TRMM-PFM_Edition1_009001.199808.hdf" space="catalog">/data/CER_ES4_TRMM-PFM_Edition1_009001.199808.hdf</setContainer>
+    <define name="d">
+	<container name="CER_ES4_TRMM-PFM_Edition1_009001.199808.hdf" />
+        <constraint>Number_Of_Observations_For_Clear_Sky_LW___Hourly__G_[0:23:23][0:2:2][0:1:0],Longitude,Latitude_6,Longitude_6</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

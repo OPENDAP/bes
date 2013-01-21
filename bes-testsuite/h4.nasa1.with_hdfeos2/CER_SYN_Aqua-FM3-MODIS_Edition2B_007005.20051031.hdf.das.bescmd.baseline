@@ -1,0 +1,1969 @@
+Attributes {
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "CER_SYN_Aqua-FM3-MODIS_Edition2B_007005.20051031";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Clib-20081009 TK5.2.15 HDF-4.2r3 HDFEOS- 2.15v SW689 ANC689";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2009-06-11T08:39:18.000Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "GranuleParameters";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Suspect";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "QA flag explanation";
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "XXXXXXXX";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 1;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 800;
+                    String VALUE "/CERES/tisa_avg/ancillary/twilight.dat", "/CERES/tisa_avg/ancillary/twilight_clr.dat", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z001", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z001", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z002", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z002", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z003", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z003", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z004", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z004", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z005", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z005", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z006", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z006", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z007", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z007", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z008", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z008", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z009", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z009", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z010", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z010", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z011", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z011", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z012", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z012", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z013", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z013", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z014", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z014", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z015", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z015", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z016", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z016", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z017", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z017", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z018", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z018", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z019", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z019", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z020", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z020", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z021", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z021", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z022", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z022", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z023", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z023", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z024", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z024", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z025", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z025", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z026", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z026", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z027", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z027", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z028", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z028", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z029", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z029", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z030", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z030", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z031", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z031", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z032", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z032", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z033", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z033", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z034", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z034", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z035", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z035", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z036", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z036", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z037", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z037", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z038", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z038", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z039", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z039", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z040", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z040", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z041", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z041", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z042", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z042", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z043", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z043", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z044", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z044", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z045", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z045", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z046", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z046", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z047", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z047", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z048", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z048", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z049", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z049", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z050", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z050", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z051", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z051", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z052", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z052", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z053", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z053", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z054", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z054", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z055", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z055", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z056", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z056", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z057", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z057", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z058", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z058", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z059", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z059", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z060", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z060", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z061", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z061", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z062", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z062", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z063", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z063", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z064", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z064", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z065", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z065", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z066", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z066", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z067", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z067", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z068", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z068", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z069", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z069", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z070", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z070", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z071", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z071", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z072", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z072", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z073", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z073", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z074", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z074", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z075", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z075", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z076", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z076", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z077", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z077", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z078", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z078", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z079", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z079", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z080", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z080", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z081", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z081", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z082", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z082", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z083", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z083", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z084", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z084", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z085", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z085", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z086", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z086", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z087", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z087", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z088", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z088", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z089", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z089", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z090", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z090", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z091", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z091", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z092", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z092", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z093", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z093", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z094", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z094", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z095", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z095", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z096", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z096", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z097", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z097", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z098", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z098", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z099", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z099", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z100", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z100", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z101", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z101", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z102", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z102", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z103", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z103", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z104", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z104", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z105", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z105", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z106", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z106", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z107", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z107", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z108", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z108", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z109", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z109", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z110", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z110", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z111", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z111", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z112", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z112", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z113", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z113", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z114", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z114", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z115", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z115", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z116", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z116", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z117", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z117", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z118", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z118", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z119", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z119", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z120", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z120", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z121", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z121", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z122", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z122", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z123", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z123", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z124", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z124", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z125", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z125", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z126", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z126", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z127", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z127", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z128", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z128", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z129", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z129", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z130", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z130", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z131", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z131", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z132", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z132", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z133", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z133", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z134", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z134", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z135", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z135", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z136", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z136", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z137", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z137", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z138", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z138", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z139", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z139", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z140", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z140", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z141", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z141", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z142", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z142", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z143", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z143", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z144", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z144", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z145", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z145", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z146", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z146", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z147", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z147", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z148", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z148", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z149", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z149", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z150", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z150", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z151", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z151", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z152", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z152", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z153", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z153", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z154", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z154", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z155", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z155", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z156", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z156", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z157", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z157", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z158", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z158", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z159", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z159", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z160", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z160", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z161", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z161", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z162", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z162", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z163", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z163", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z164", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z164", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z165", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z165", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z166", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z166", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z167", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z167", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z168", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z168", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z169", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z169", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z170", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z170", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z171", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z171", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z172", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z172", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z173", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z173", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z174", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z174", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z175", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z175", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z176", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z176", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z177", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z177", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z178", "
+          /CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z178", "/CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z179", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z179", "
+          /CERES/sarb/data/out_comp/data/sarbsyn/CER_SYNI_Aqua-FM3-MODIS_Edition2B_004007.200510Z180", "/CERES/tisa_avg/data/data_7/out_comp/CER_TSIB_Aqua-FM3-MODIS_Edition2B_013018.200510Z180", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z001", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z002", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z003", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z004", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z005", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z006", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z007", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z008", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z009", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z010", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z011", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z012", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z013", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z014", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z015", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z016", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z017", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z018", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z019", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z020", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z021", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z022", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z023", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z024", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z025", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z026", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z027", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z028", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z029", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z030", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z031", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z032", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z033", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z034", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z035", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z036", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z037", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z038", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z039", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z040", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z041", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z042", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z043", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z044", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z045", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z046", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z047", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z048", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z049", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z050", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z051", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z052", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z053", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z054", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z055", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z056", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z057", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z058", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z059", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z060", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z061", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z062", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z063", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z064", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z065", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z066", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z067", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z068", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z069", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z070", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z071", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z072", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z073", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z074", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z075", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z076", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z077", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z078", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z079", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z080", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z081", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z082", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z083", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z084", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z085", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z086", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z087", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z088", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z089", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z090", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z091", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z092", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z093", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z094", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z095", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z096", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z097", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z098", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z099", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z100", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z101", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z102", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z103", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z104", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z105", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z106", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z107", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z108", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z109", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z110", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z111", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z112", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z113", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z114", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z115", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z116", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z117", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z118", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z119", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z120", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z121", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z122", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z123", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z124", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z125", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z126", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z127", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z128", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z129", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z130", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z131", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z132", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z133", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z134", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z135", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z136", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z137", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z138", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z139", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z140", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z141", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z142", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z143", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z144", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z145", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z146", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z147", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z148", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z149", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z150", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z151", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z152", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z153", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z154", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z155", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z156", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z157", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z158", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z159", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z160", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z161", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z162", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z163", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z164", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z165", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z166", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z167", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z168", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z169", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z170", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z171", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z172", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z173", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z174", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z175", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z176", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z177", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z178", "
+          /CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z179", "/CERES/tisa_avg/data/scr/CER_SYNB_Aqua-FM3-MODIS_Edition2B_007005.200510Z180";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-10-01";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2005-10-31";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "007005";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "CERPGEName", "SamplingStrategy", "ProductionStrategy", "CERDataDateYear", "CERDataDateMonth", "CERDataDateDay", "CERHRofMonth", "ImagerShortName", "NumberInputFiles";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                            String VALUE "CER8.1P1", "Aqua-FM3-MODIS", "Edition2B", "2005", "10", "01", "000", "MODIS", "542";
+                        }
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2", "3";
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "Aqua", "Aqua", "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "FM3", "FM3", "FM3";
+                    }
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2", "3";
+                        Int32 NUM_VAL 1, 1, 1;
+                        String VALUE "Total Detector", "Window Detector", "Shortwave Detector";
+                    }
+                }
+            }
+        }
+    }
+    ArhiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            CEREASTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 0.0;
+            }
+            CERNORTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 0.0;
+            }
+            CERSOUTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 180.0;
+            }
+            CERWESTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 360.0;
+            }
+            CERPRODUCTIONDATETIME {
+                Int32 NUM_VAL 1;
+                String VALUE "2009-06-11T04:39:12";
+            }
+            PRODUCTGENERATIONLOC {
+                Int32 NUM_VAL 1;
+                String VALUE "NASA Langley Research Center, HOST - mag305 OS - Linux";
+            }
+        }
+    }
+    Region_number {
+        String long_name "Region number";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Number";
+        String coordinates "Colatitude Longitude";
+        String fullpath "/Time And Position/Region number";
+    }
+    Colatitude {
+        String long_name "Colatitude";
+        Float32 _FillValue 3.402823466e+38;
+        String units "degrees_north";
+        String fullpath "/Time And Position/Colatitude";
+    }
+    Longitude {
+        String long_name "Longitude";
+        Float32 _FillValue 3.402823466e+38;
+        String units "degrees_east";
+        String fullpath "/Time And Position/Longitude";
+    }
+    Surface_altitude_above_sea_level {
+        String long_name "Surface altitude above sea level";
+        Float32 _FillValue 3.402823466e+38;
+        String units "meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Time And Position/Surface altitude above sea level";
+    }
+    Surface_type_percent_coverage {
+        String long_name "Surface type percent coverage";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Percent";
+        String coordinates "Surface_Type_Percent Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Time And Position/Surface type percent coverage";
+    }
+    SW_TOA_Total_Sky {
+        String long_name "SW TOA Total-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/SW TOA Total-Sky";
+    }
+    LW_TOA_Total_Sky {
+        String long_name "LW TOA Total-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/LW TOA Total-Sky";
+    }
+    WN_TOA_Total_Sky {
+        String long_name "WN TOA Total-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/WN TOA Total-Sky";
+    }
+    SW_TOA_Clear_Sky {
+        String long_name "SW TOA Clear-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/SW TOA Clear-Sky";
+    }
+    LW_TOA_Clear_Sky {
+        String long_name "LW TOA Clear-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/LW TOA Clear-Sky";
+    }
+    WN_TOA_Clear_Sky {
+        String long_name "WN TOA Clear-Sky";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Observed TOA Fluxes/WN TOA Clear-Sky";
+    }
+    Area_Fraction_Percentage {
+        String long_name "Area Fraction Percentage";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Percent";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Area Fraction Percentage";
+    }
+    Vis__Opt__Depth__linear_ {
+        String long_name "Vis. Opt. Depth (linear)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Vis. Opt. Depth (linear)";
+    }
+    Vis__Opt__Depth__log_ {
+        String long_name "Vis. Opt. Depth (log)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Vis. Opt. Depth (log)";
+    }
+    Infrared_Emissivity {
+        String long_name "Infrared Emissivity";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Infrared Emissivity";
+    }
+    Liquid_Water_Path {
+        String long_name "Liquid Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Liquid Water Path";
+    }
+    Ice_Water_Path {
+        String long_name "Ice Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Ice Water Path";
+    }
+    Top_Pressure {
+        String long_name "Top Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Top Pressure";
+    }
+    Effective_Pressure {
+        String long_name "Effective Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Effective Pressure";
+    }
+    Effective_Temperature {
+        String long_name "Effective Temperature";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kelvin";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Effective Temperature";
+    }
+    Effective_Height {
+        String long_name "Effective Height";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kilometer";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Effective Height";
+    }
+    Bottom_Pressure {
+        String long_name "Bottom Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Bottom Pressure";
+    }
+    Liquid_Particle_Radius {
+        String long_name "Liquid Particle Radius";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Liquid Particle Radius";
+    }
+    Ice_Particle_Diameter {
+        String long_name "Ice Particle Diameter";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Ice Particle Diameter";
+    }
+    Particle_Phase {
+        String long_name "Particle Phase";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Particle Phase";
+    }
+    Vertical_Aspect_Ratio {
+        String long_name "Vertical Aspect Ratio";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - High/Vertical Aspect Ratio";
+    }
+    Area_Fraction_Percentage_1 {
+        String long_name "Area Fraction Percentage";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Percent";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Area Fraction Percentage";
+    }
+    Vis__Opt__Depth__linear__1 {
+        String long_name "Vis. Opt. Depth (linear)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Vis. Opt. Depth (linear)";
+    }
+    Vis__Opt__Depth__log__1 {
+        String long_name "Vis. Opt. Depth (log)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Vis. Opt. Depth (log)";
+    }
+    Infrared_Emissivity_1 {
+        String long_name "Infrared Emissivity";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Infrared Emissivity";
+    }
+    Liquid_Water_Path_1 {
+        String long_name "Liquid Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Liquid Water Path";
+    }
+    Ice_Water_Path_1 {
+        String long_name "Ice Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Ice Water Path";
+    }
+    Top_Pressure_1 {
+        String long_name "Top Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Top Pressure";
+    }
+    Effective_Pressure_1 {
+        String long_name "Effective Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Effective Pressure";
+    }
+    Effective_Temperature_1 {
+        String long_name "Effective Temperature";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kelvin";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Effective Temperature";
+    }
+    Effective_Height_1 {
+        String long_name "Effective Height";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kilometer";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Effective Height";
+    }
+    Bottom_Pressure_1 {
+        String long_name "Bottom Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Bottom Pressure";
+    }
+    Liquid_Particle_Radius_1 {
+        String long_name "Liquid Particle Radius";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Liquid Particle Radius";
+    }
+    Ice_Particle_Diameter_1 {
+        String long_name "Ice Particle Diameter";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Ice Particle Diameter";
+    }
+    Particle_Phase_1 {
+        String long_name "Particle Phase";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Particle Phase";
+    }
+    Vertical_Aspect_Ratio_1 {
+        String long_name "Vertical Aspect Ratio";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - UpperMid/Vertical Aspect Ratio";
+    }
+    Area_Fraction_Percentage_2 {
+        String long_name "Area Fraction Percentage";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Percent";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Area Fraction Percentage";
+    }
+    Vis__Opt__Depth__linear__2 {
+        String long_name "Vis. Opt. Depth (linear)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Vis. Opt. Depth (linear)";
+    }
+    Vis__Opt__Depth__log__2 {
+        String long_name "Vis. Opt. Depth (log)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Vis. Opt. Depth (log)";
+    }
+    Infrared_Emissivity_2 {
+        String long_name "Infrared Emissivity";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Infrared Emissivity";
+    }
+    Liquid_Water_Path_2 {
+        String long_name "Liquid Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Liquid Water Path";
+    }
+    Ice_Water_Path_2 {
+        String long_name "Ice Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Ice Water Path";
+    }
+    Top_Pressure_2 {
+        String long_name "Top Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Top Pressure";
+    }
+    Effective_Pressure_2 {
+        String long_name "Effective Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Effective Pressure";
+    }
+    Effective_Temperature_2 {
+        String long_name "Effective Temperature";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kelvin";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Effective Temperature";
+    }
+    Effective_Height_2 {
+        String long_name "Effective Height";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kilometer";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Effective Height";
+    }
+    Bottom_Pressure_2 {
+        String long_name "Bottom Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Bottom Pressure";
+    }
+    Liquid_Particle_Radius_2 {
+        String long_name "Liquid Particle Radius";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Liquid Particle Radius";
+    }
+    Ice_Particle_Diameter_2 {
+        String long_name "Ice Particle Diameter";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Ice Particle Diameter";
+    }
+    Particle_Phase_2 {
+        String long_name "Particle Phase";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Particle Phase";
+    }
+    Vertical_Aspect_Ratio_2 {
+        String long_name "Vertical Aspect Ratio";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - LowerMid/Vertical Aspect Ratio";
+    }
+    Area_Fraction_Percentage_3 {
+        String long_name "Area Fraction Percentage";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Percent";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Area Fraction Percentage";
+    }
+    Vis__Opt__Depth__linear__3 {
+        String long_name "Vis. Opt. Depth (linear)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Vis. Opt. Depth (linear)";
+    }
+    Vis__Opt__Depth__log__3 {
+        String long_name "Vis. Opt. Depth (log)";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Vis. Opt. Depth (log)";
+    }
+    Infrared_Emissivity_3 {
+        String long_name "Infrared Emissivity";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Infrared Emissivity";
+    }
+    Liquid_Water_Path_3 {
+        String long_name "Liquid Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Liquid Water Path";
+    }
+    Ice_Water_Path_3 {
+        String long_name "Ice Water Path";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Grams per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Ice Water Path";
+    }
+    Top_Pressure_3 {
+        String long_name "Top Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Top Pressure";
+    }
+    Effective_Pressure_3 {
+        String long_name "Effective Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Effective Pressure";
+    }
+    Effective_Temperature_3 {
+        String long_name "Effective Temperature";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kelvin";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Effective Temperature";
+    }
+    Effective_Height_3 {
+        String long_name "Effective Height";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Kilometer";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Effective Height";
+    }
+    Bottom_Pressure_3 {
+        String long_name "Bottom Pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "HectoPascals";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Bottom Pressure";
+    }
+    Liquid_Particle_Radius_3 {
+        String long_name "Liquid Particle Radius";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Liquid Particle Radius";
+    }
+    Ice_Particle_Diameter_3 {
+        String long_name "Ice Particle Diameter";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Micron";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Ice Particle Diameter";
+    }
+    Particle_Phase_3 {
+        String long_name "Particle Phase";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Particle Phase";
+    }
+    Vertical_Aspect_Ratio_3 {
+        String long_name "Vertical Aspect Ratio";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Cloud Layer - Low/Vertical Aspect Ratio";
+    }
+    Aerosol_visible_optical_depth___0_63_um {
+        String long_name "Aerosol visible optical depth - 0.63 um";
+        Float32 _FillValue 3.402823466e+38;
+        String units "N/A";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Stowe-Ignatov Aerosol Optical Depth/Aerosol visible optical depth - 0.63 um";
+    }
+    Aerosol_visible_optical_depth___1_6_um {
+        String long_name "Aerosol visible optical depth - 1.6 um";
+        Float32 _FillValue 3.402823466e+38;
+        String units "N/A";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Stowe-Ignatov Aerosol Optical Depth/Aerosol visible optical depth - 1.6 um";
+    }
+    Initial_Aerosol_Optical_Depth {
+        String long_name "Initial Aerosol Optical Depth";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Initial Aerosol Optical Depth";
+    }
+    Aerosol_Opt__Depth_at_0_47um_in_Land {
+        String long_name "Aerosol Opt. Depth at 0.47um in Land";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.47um in Land";
+    }
+    Aerosol_Opt__Depth_at_0_55um_in_Land {
+        String long_name "Aerosol Opt. Depth at 0.55um in Land";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.55um in Land";
+    }
+    Aerosol_Opt__Depth_at_0_66um_in_Land {
+        String long_name "Aerosol Opt. Depth at 0.66um in Land";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.66um in Land";
+    }
+    Aerosol_Opt__Depth_at_0_47um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 0.47um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.47um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_0_55um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 0.55um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.55um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_0_66um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 0.66um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.66um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_0_87um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 0.87um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 0.87um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_1_24um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 1.24um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 1.24um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_1_64um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 1.64um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 1.64um in Ocean";
+    }
+    Aerosol_Opt__Depth_at_2_13um_in_Ocean {
+        String long_name "Aerosol Opt. Depth at 2.13um in Ocean";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/MODIS Aerosol Optical Depth/Aerosol Opt. Depth at 2.13um in Ocean";
+    }
+    Tuned_Pristine_SW_Surface_Up {
+        String long_name "Tuned Pristine SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine SW Surface Up";
+    }
+    Tuned_Pristine_SW_Surface_Down {
+        String long_name "Tuned Pristine SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine SW Surface Down";
+    }
+    Tuned_Pristine_SW_TOA_Up {
+        String long_name "Tuned Pristine SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine SW TOA Up";
+    }
+    Tuned_Pristine_LW_Surface_Up {
+        String long_name "Tuned Pristine LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine LW Surface Up";
+    }
+    Tuned_Pristine_LW_Surface_Down {
+        String long_name "Tuned Pristine LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine LW Surface Down";
+    }
+    Tuned_Pristine_LW_TOA_Up {
+        String long_name "Tuned Pristine LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine LW TOA Up";
+    }
+    Tuned_Pristine_WN_Surface_Up {
+        String long_name "Tuned Pristine WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine WN Surface Up";
+    }
+    Tuned_Pristine_WN_Surface_Down {
+        String long_name "Tuned Pristine WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine WN Surface Down";
+    }
+    Tuned_Pristine_WN_TOA_Up {
+        String long_name "Tuned Pristine WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned Pristine Fluxes/Tuned Pristine WN TOA Up";
+    }
+    Tuned_Clear_Sky_SW_Up {
+        String long_name "Tuned Clear-Sky SW Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky SW Up";
+    }
+    Tuned_Clear_Sky_SW_Down {
+        String long_name "Tuned Clear-Sky SW Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky SW Down";
+    }
+    Tuned_Clear_Sky_LW_Up {
+        String long_name "Tuned Clear-Sky LW Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky LW Up";
+    }
+    Tuned_Clear_Sky_LW_Down {
+        String long_name "Tuned Clear-Sky LW Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky LW Down";
+    }
+    Tuned_Clear_Sky_WN_Up {
+        String long_name "Tuned Clear-Sky WN Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky WN Up";
+    }
+    Tuned_Clear_Sky_WN_Down {
+        String long_name "Tuned Clear-Sky WN Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned ClearSky Flux Profiles/Tuned Clear-Sky WN Down";
+    }
+    Tuned_Total_Sky_NoAerosol_SW_Surface_Up {
+        String long_name "Tuned Total-Sky-NoAerosol SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol SW Surface Up";
+    }
+    Tuned_Total_Sky_NoAerosol_SW_Surface_Down {
+        String long_name "Tuned Total-Sky-NoAerosol SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol SW Surface Down";
+    }
+    Tuned_Total_Sky_NoAerosol_SW_TOA_Up {
+        String long_name "Tuned Total-Sky-NoAerosol SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol SW TOA Up";
+    }
+    Tuned_Total_Sky_NoAerosol_LW_Surface_Up {
+        String long_name "Tuned Total-Sky-NoAerosol LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol LW Surface Up";
+    }
+    Tuned_Total_Sky_NoAerosol_LW_Surface_Down {
+        String long_name "Tuned Total-Sky-NoAerosol LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol LW Surface Down";
+    }
+    Tuned_Total_Sky_NoAerosol_LW_TOA_Up {
+        String long_name "Tuned Total-Sky-NoAerosol LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol LW TOA Up";
+    }
+    Tuned_Total_Sky_NoAerosol_WN_Surface_Up {
+        String long_name "Tuned Total-Sky-NoAerosol WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol WN Surface Up";
+    }
+    Tuned_Total_Sky_NoAerosol_WN_Surface_Down {
+        String long_name "Tuned Total-Sky-NoAerosol WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol WN Surface Down";
+    }
+    Tuned_Total_Sky_NoAerosol_WN_TOA_Up {
+        String long_name "Tuned Total-Sky-NoAerosol WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky-NoAerosol Fluxes/Tuned Total-Sky-NoAerosol WN TOA Up";
+    }
+    Tuned_Total_Sky_SW_Up {
+        String long_name "Tuned Total-Sky SW Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky SW Up";
+    }
+    Tuned_Total_Sky_SW_Down {
+        String long_name "Tuned Total-Sky SW Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky SW Down";
+    }
+    Tuned_Total_Sky_LW_Up {
+        String long_name "Tuned Total-Sky LW Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky LW Up";
+    }
+    Tuned_Total_Sky_LW_Down {
+        String long_name "Tuned Total-Sky LW Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky LW Down";
+    }
+    Tuned_Total_Sky_WN_Up {
+        String long_name "Tuned Total-Sky WN Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky WN Up";
+    }
+    Tuned_Total_Sky_WN_Down {
+        String long_name "Tuned Total-Sky WN Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Flux_Profile_levels_TOA_70_200_500_Surface_ Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Tuned TotalSky Flux Profiles/Tuned Total-Sky WN Down";
+    }
+    Untuned_Pristine_SW_Surface_Up {
+        String long_name "Untuned Pristine SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine SW Surface Up";
+    }
+    Untuned_Pristine_SW_Surface_Down {
+        String long_name "Untuned Pristine SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine SW Surface Down";
+    }
+    Untuned_Pristine_SW_TOA_Up {
+        String long_name "Untuned Pristine SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine SW TOA Up";
+    }
+    Untuned_Pristine_LW_Surface_Up {
+        String long_name "Untuned Pristine LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine LW Surface Up";
+    }
+    Untuned_Pristine_LW_Surface_Down {
+        String long_name "Untuned Pristine LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine LW Surface Down";
+    }
+    Untuned_Pristine_LW_TOA_Up {
+        String long_name "Untuned Pristine LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine LW TOA Up";
+    }
+    Untuned_Pristine_WN_Surface_Up {
+        String long_name "Untuned Pristine WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine WN Surface Up";
+    }
+    Untuned_Pristine_WN_Surface_Down {
+        String long_name "Untuned Pristine WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine WN Surface Down";
+    }
+    Untuned_Pristine_WN_TOA_Up {
+        String long_name "Untuned Pristine WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned Pristine Fluxes/Untuned Pristine WN TOA Up";
+    }
+    Untuned_Clear_Sky_SW_Surface_Up {
+        String long_name "Untuned Clear-Sky SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky SW Surface Up";
+    }
+    Untuned_Clear_Sky_SW_Surface_Down {
+        String long_name "Untuned Clear-Sky SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky SW Surface Down";
+    }
+    Untuned_Clear_Sky_SW_TOA_Up {
+        String long_name "Untuned Clear-Sky SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky SW TOA Up";
+    }
+    Untuned_Clear_Sky_LW_Surface_Up {
+        String long_name "Untuned Clear-Sky LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky LW Surface Up";
+    }
+    Untuned_Clear_Sky_LW_Surface_Down {
+        String long_name "Untuned Clear-Sky LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky LW Surface Down";
+    }
+    Untuned_Clear_Sky_LW_TOA_Up {
+        String long_name "Untuned Clear-Sky LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky LW TOA Up";
+    }
+    Untuned_Clear_Sky_WN_Surface_Up {
+        String long_name "Untuned Clear-Sky WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky WN Surface Up";
+    }
+    Untuned_Clear_Sky_WN_Surface_Down {
+        String long_name "Untuned Clear-Sky WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky WN Surface Down";
+    }
+    Untuned_Clear_Sky_WN_TOA_Up {
+        String long_name "Untuned Clear-Sky WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned ClearSky Fluxes/Untuned Clear-Sky WN TOA Up";
+    }
+    Untuned_Total_Sky_SW_Surface_Up {
+        String long_name "Untuned Total-Sky SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky SW Surface Up";
+    }
+    Untuned_Total_Sky_SW_Surface_Down {
+        String long_name "Untuned Total-Sky SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky SW Surface Down";
+    }
+    Untuned_Total_Sky_SW_TOA_Up {
+        String long_name "Untuned Total-Sky SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky SW TOA Up";
+    }
+    Untuned_Total_Sky_LW_Surface_Up {
+        String long_name "Untuned Total-Sky LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky LW Surface Up";
+    }
+    Untuned_Total_Sky_LW_Surface_Down {
+        String long_name "Untuned Total-Sky LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky LW Surface Down";
+    }
+    Untuned_Total_Sky_LW_TOA_Up {
+        String long_name "Untuned Total-Sky LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky LW TOA Up";
+    }
+    Untuned_Total_Sky_WN_Surface_Up {
+        String long_name "Untuned Total-Sky WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky WN Surface Up";
+    }
+    Untuned_Total_Sky_WN_Surface_Down {
+        String long_name "Untuned Total-Sky WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky WN Surface Down";
+    }
+    Untuned_Total_Sky_WN_TOA_Up {
+        String long_name "Untuned Total-Sky WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky-NoAerosol Fluxes/Untuned Total-Sky WN TOA Up";
+    }
+    Untuned_Total_Sky_SW_Surface_Up_1 {
+        String long_name "Untuned Total-Sky SW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky SW Surface Up";
+    }
+    Untuned_Total_Sky_SW_Surface_Down_1 {
+        String long_name "Untuned Total-Sky SW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky SW Surface Down";
+    }
+    Untuned_Total_Sky_SW_TOA_Up_1 {
+        String long_name "Untuned Total-Sky SW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky SW TOA Up";
+    }
+    Untuned_Total_Sky_LW_Surface_Up_1 {
+        String long_name "Untuned Total-Sky LW Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky LW Surface Up";
+    }
+    Untuned_Total_Sky_LW_Surface_Down_1 {
+        String long_name "Untuned Total-Sky LW Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky LW Surface Down";
+    }
+    Untuned_Total_Sky_LW_TOA_Up_1 {
+        String long_name "Untuned Total-Sky LW TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky LW TOA Up";
+    }
+    Untuned_Total_Sky_WN_Surface_Up_1 {
+        String long_name "Untuned Total-Sky WN Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky WN Surface Up";
+    }
+    Untuned_Total_Sky_WN_Surface_Down_1 {
+        String long_name "Untuned Total-Sky WN Surface Down";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky WN Surface Down";
+    }
+    Untuned_Total_Sky_WN_TOA_Up_1 {
+        String long_name "Untuned Total-Sky WN TOA Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Untuned TotalSky Fluxes/Untuned Total-Sky WN TOA Up";
+    }
+    Untuned_Satellite_Emulated_WN_TOA {
+        String long_name "Untuned Satellite Emulated WN TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Satellite Emulated WN TOA Fluxes/Untuned Satellite Emulated WN TOA";
+    }
+    Tuned_Satellite_Emulated_WN_TOA {
+        String long_name "Tuned Satellite Emulated WN TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Satellite Emulated WN TOA Fluxes/Tuned Satellite Emulated WN TOA";
+    }
+    Tuned_Minus_Observed_SW_TOA {
+        String long_name "Tuned Minus Observed SW TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/TOA Flux Error/Tuned Minus Observed SW TOA";
+    }
+    Untuned_Minus_Observed_SW_TOA {
+        String long_name "Untuned Minus Observed SW TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/TOA Flux Error/Untuned Minus Observed SW TOA";
+    }
+    Tuned_Minus_Observed_LW_TOA {
+        String long_name "Tuned Minus Observed LW TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/TOA Flux Error/Tuned Minus Observed LW TOA";
+    }
+    Untuned_Minus_Observed_LW_TOA {
+        String long_name "Untuned Minus Observed LW TOA";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/TOA Flux Error/Untuned Minus Observed LW TOA";
+    }
+    Number_of_Observed_SW {
+        String long_name "Number of Observed SW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Observed SW";
+    }
+    Number_of_Untuned_SW {
+        String long_name "Number of Untuned SW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Untuned SW";
+    }
+    Number_of_Tuned_SW {
+        String long_name "Number of Tuned SW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Tuned SW";
+    }
+    Number_of_Observed_LW {
+        String long_name "Number of Observed LW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Observed LW";
+    }
+    Number_of_Untuned_LW {
+        String long_name "Number of Untuned LW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Untuned LW";
+    }
+    Number_of_Tuned_LW {
+        String long_name "Number of Tuned LW";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Number of Hourboxes/Number of Tuned LW";
+    }
+    Total_column_precipitable_water___initial {
+        String long_name "Total column precipitable water - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Total column precipitable water - initial";
+    }
+    Total_column_precipitable_water___adjusted {
+        String long_name "Total column precipitable water - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Total column precipitable water - adjusted";
+    }
+    Upper_tropospheric_precipitable_water___initial {
+        String long_name "Upper tropospheric precipitable water - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Upper tropospheric precipitable water - initial";
+    }
+    Upper_tropospheric_precipitable_water___adjusted {
+        String long_name "Upper tropospheric precipitable water - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Upper tropospheric precipitable water - adjusted";
+    }
+    Upper_tropospheric_humidity___initial {
+        String long_name "Upper tropospheric humidity - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Upper tropospheric humidity - initial";
+    }
+    Upper_tropospheric_humidity___adjusted {
+        String long_name "Upper tropospheric humidity - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Upper tropospheric humidity - adjusted";
+    }
+    Corrected_initial_broadband_surface_albedo {
+        String long_name "Corrected initial broadband surface albedo";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Corrected initial broadband surface albedo";
+    }
+    Surface_albedo___adjusted {
+        String long_name "Surface albedo - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Surface albedo - adjusted";
+    }
+    Aerosol_optical_depth___initial {
+        String long_name "Aerosol optical depth - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Aerosol optical depth - initial";
+    }
+    Aerosol_optical_depth____adjusted {
+        String long_name "Aerosol optical depth  - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Aerosol optical depth  - adjusted";
+    }
+    Skin_temperature___initial {
+        String long_name "Skin temperature - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Skin temperature - initial";
+    }
+    Skin_temperature___adjusted {
+        String long_name "Skin temperature - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Skin temperature - adjusted";
+    }
+    Surface_pressure {
+        String long_name "Surface pressure";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Surface pressure";
+    }
+    Column_ozone___initial {
+        String long_name "Column ozone - initial";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Column ozone - initial";
+    }
+    Column_ozone___Flag_source {
+        String long_name "Column ozone - Flag source";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Column ozone - Flag source";
+    }
+    Mean_visible_optical_depth___adjusted {
+        String long_name "Mean visible optical depth - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Cloud_Layers_High_UpperMid_LowerMid_Low Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Mean visible optical depth - adjusted";
+    }
+    Mean_cloud_fractional_area___adjusted {
+        String long_name "Mean cloud fractional area - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Cloud_Layers_High_UpperMid_LowerMid_Low Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Mean cloud fractional area - adjusted";
+    }
+    Mean_cloud_effective_temperature___adjusted {
+        String long_name "Mean cloud effective temperature - adjusted";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Cloud_Layers_High_UpperMid_LowerMid_Low Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Constrainment Adjustments/Mean cloud effective temperature - adjusted";
+    }
+    Total_Sky_SW_flux___Diffuse {
+        String long_name "Total-Sky SW flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Total-Sky SW flux - Diffuse";
+    }
+    Clear_sky_SW_flux___Diffuse {
+        String long_name "Clear-sky SW flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Clear-sky SW flux - Diffuse";
+    }
+    Pristine_Sky_SW_flux___Diffuse {
+        String long_name "Pristine-Sky SW flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Pristine-Sky SW flux - Diffuse";
+    }
+    Actinic_Sky_SW_flux___Diffuse {
+        String long_name "Actinic-Sky SW flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Actinic-Sky SW flux - Diffuse";
+    }
+    Total_Sky_SW_flux___Direct {
+        String long_name "Total-Sky SW flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Total-Sky SW flux - Direct";
+    }
+    Clear_sky_SW_flux___Direct {
+        String long_name "Clear-sky SW flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Clear-sky SW flux - Direct";
+    }
+    Pristine_Sky_SW_flux___Direct {
+        String long_name "Pristine-Sky SW flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Pristine-Sky SW flux - Direct";
+    }
+    Actinic_Sky_SW_flux___Direct {
+        String long_name "Actinic-Sky SW flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watts per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Surface SW Fluxes/Actinic-Sky SW flux - Direct";
+    }
+    TOA_Downwelling_UVB_Flux {
+        String long_name "TOA Downwelling UVB Flux";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/TOA Downwelling UVB Flux";
+    }
+    TOA_Downwelling_UVA_Flux {
+        String long_name "TOA Downwelling UVA Flux";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/TOA Downwelling UVA Flux";
+    }
+    Pristine_UVB_Surface_flux___Direct {
+        String long_name "Pristine UVB Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Pristine UVB Surface flux - Direct";
+    }
+    Pristine_UVB_Surface_flux___Diffuse {
+        String long_name "Pristine UVB Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Pristine UVB Surface flux - Diffuse";
+    }
+    Pristine_UVA_Surface_flux___Direct {
+        String long_name "Pristine UVA Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Pristine UVA Surface flux - Direct";
+    }
+    Pristine_UVA_Surface_flux___Diffuse {
+        String long_name "Pristine UVA Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Pristine UVA Surface flux - Diffuse";
+    }
+    Clear_Sky_UVB_Surface_flux___Direct {
+        String long_name "Clear-Sky UVB Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Clear-Sky UVB Surface flux - Direct";
+    }
+    Clear_Sky_UVB_Surface_flux___Diffuse {
+        String long_name "Clear-Sky UVB Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Clear-Sky UVB Surface flux - Diffuse";
+    }
+    Clear_Sky_UVA_Surface_flux___Direct {
+        String long_name "Clear-Sky UVA Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Clear-Sky UVA Surface flux - Direct";
+    }
+    Clear_Sky_UVA_Surface_flux___Diffuse {
+        String long_name "Clear-Sky UVA Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Clear-Sky UVA Surface flux - Diffuse";
+    }
+    Total_Sky_No_Aerosol_UVB_Surface_flux___Direct {
+        String long_name "Total-Sky-No-Aerosol UVB Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky-No-Aerosol UVB Surface flux - Direct";
+    }
+    Total_Sky_No_Aerosol_UVB_Surface_flux___Diffuse {
+        String long_name "Total-Sky-No-Aerosol UVB Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky-No-Aerosol UVB Surface flux - Diffuse";
+    }
+    Total_Sky_No_Aerosol_UVA_Surface_flux___Direct {
+        String long_name "Total-Sky-No-Aerosol UVA Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky-No-Aerosol UVA Surface flux - Direct";
+    }
+    Total_Sky_No_Aerosol_UVA_Surface_flux___Diffuse {
+        String long_name "Total-Sky-No-Aerosol UVA Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky-No-Aerosol UVA Surface flux - Diffuse";
+    }
+    Total_Sky_UVB_Surface_flux___Direct {
+        String long_name "Total-Sky UVB Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky UVB Surface flux - Direct";
+    }
+    Total_Sky_UVB_Surface_flux___Diffuse {
+        String long_name "Total-Sky UVB Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky UVB Surface flux - Diffuse";
+    }
+    Total_Sky_UVA_Surface_flux___Direct {
+        String long_name "Total-Sky UVA Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky UVA Surface flux - Direct";
+    }
+    Total_Sky_UVA_Surface_flux___Diffuse {
+        String long_name "Total-Sky UVA Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky UVA Surface flux - Diffuse";
+    }
+    Total_Sky_Surface_UV_Index {
+        String long_name "Total-Sky Surface UV Index";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky Surface UV Index";
+    }
+    Clear_Sky_Surface_UV_Index {
+        String long_name "Clear-Sky Surface UV Index";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Clear-Sky Surface UV Index";
+    }
+    Pristine_Surface_UV_Index {
+        String long_name "Pristine Surface UV Index";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Pristine Surface UV Index";
+    }
+    Total_Sky_NoAerosol_Surface_UV_Index {
+        String long_name "Total-Sky-NoAerosol Surface UV Index";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky-NoAerosol Surface UV Index";
+    }
+    Total_Sky_UVB_Surface_Up {
+        String long_name "Total-Sky UVB Surface Up";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Total-Sky UVB Surface Up";
+    }
+    Snow_Grain_Size {
+        String long_name "Snow Grain Size";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Snow Grain Size";
+    }
+    Match_Total_Aerosol_Optical_Depth_at_0_55um {
+        String long_name "Match Total Aerosol Optical Depth at 0.55um";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/UVA - UVB Fluxes/Match Total Aerosol Optical Depth at 0.55um";
+    }
+    TOA_Downwelling_PAR_Flux {
+        String long_name "TOA Downwelling PAR Flux";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/TOA Downwelling PAR Flux";
+    }
+    Total_Sky_PAR_Surface_flux___Direct {
+        String long_name "Total-Sky PAR Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR Surface flux - Direct";
+    }
+    Total_Sky_PAR_Surface_flux___Diffuse {
+        String long_name "Total-Sky PAR Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR Surface flux - Diffuse";
+    }
+    Total_Sky_PAR_PURV_Surface_flux___Direct {
+        String long_name "Total-Sky PAR PURV Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR PURV Surface flux - Direct";
+    }
+    Total_Sky_PAR_PURV_Surface_flux___Diffuse {
+        String long_name "Total-Sky PAR PURV Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR PURV Surface flux - Diffuse";
+    }
+    Total_Sky_PAR_ChlorA_Surface_flux___Direct {
+        String long_name "Total-Sky PAR ChlorA Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR ChlorA Surface flux - Direct";
+    }
+    Total_Sky_PAR_ChlorA_Surface_flux___Diffuse {
+        String long_name "Total-Sky PAR ChlorA Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Total-Sky PAR ChlorA Surface flux - Diffuse";
+    }
+    Clear_Sky_PAR_Surface_flux___Direct {
+        String long_name "Clear-Sky PAR Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Clear-Sky PAR Surface flux - Direct";
+    }
+    Clear_Sky_PAR_Surface_Surface_flux___Diffuse {
+        String long_name "Clear-Sky PAR Surface Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Clear-Sky PAR Surface Surface flux - Diffuse";
+    }
+    Pristine_PAR_Surface_flux___Direct {
+        String long_name "Pristine PAR Surface flux - Direct";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Pristine PAR Surface flux - Direct";
+    }
+    Pristine_PAR_Surface_flux___Diffuse {
+        String long_name "Pristine PAR Surface flux - Diffuse";
+        Float32 _FillValue 3.402823466e+38;
+        String units "Watt per square meter";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/PAR Fluxes/Pristine PAR Surface flux - Diffuse";
+    }
+    SW_TOA_Flux___Up___Pristine_Sky___Corrected {
+        String long_name "SW TOA Flux - Up - Pristine-Sky - Corrected";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Pristine-Sky SW MultiStream Correction/SW TOA Flux - Up - Pristine-Sky - Corrected";
+    }
+    SW_Surface_Flux___Down___Pristine_Sky___Corrected {
+        String long_name "SW Surface Flux - Down - Pristine-Sky - Corrected";
+        Float32 _FillValue 3.402823466e+38;
+        String units "n/a";
+        String coordinates "Synoptic_Hours__1_4_7_10_13_16_19_22_ Colatitude Longitude";
+        String fullpath "/Pristine-Sky SW MultiStream Correction/SW Surface Flux - Down - Pristine-Sky - Corrected";
+    }
+    Cloud_Layers_High_UpperMid_LowerMid_Low {
+        String long_name "Cloud Layers:High,UpperMid,LowerMid,Low";
+        String units "level";
+        String fullpath "Cloud Layers:High,UpperMid,LowerMid,Low";
+    }
+    Flux_Profile_levels_TOA_70_200_500_Surface_ {
+        String long_name "Flux Profile levels(TOA,70,200,500,Surface)";
+        String units "level";
+        String fullpath "Flux Profile levels(TOA,70,200,500,Surface)";
+    }
+    Surface_Type_Percent {
+        String long_name "Surface Type Percent";
+        String units "level";
+        String fullpath "Surface Type Percent";
+    }
+    Synoptic_Hours__1_4_7_10_13_16_19_22_ {
+        String long_name "Synoptic Hours (1,4,7,10,13,16,19,22)";
+        String units "level";
+        String fullpath "Synoptic Hours (1,4,7,10,13,16,19,22)";
+    }
+    CERES_metadata {
+        String Vdata_field_SHORTNAME "                                ";
+        String Vdata_field_RANGEBEGINNINGDATE "2005-10-01                      ";
+        String Vdata_field_RANGEBEGINNINGTIME "00:00:00.000000                 ";
+        String Vdata_field_RANGEENDINGDATE "2005-10-31                      ";
+        String Vdata_field_RANGEENDINGTIME "23:59:59.000000                 ";
+        String Vdata_field_AUTOMATICQUALITYFLAG "Suspect                                                         ";
+        String Vdata_field_AUTOMATICQUALITYFLAGEXPLANATION "QA flag explanation                                                                                                                                                                                                                                             ";
+        String Vdata_field_ASSOCIATEDPLATFORMSHORTNAME "Aqua                            ";
+        String Vdata_field_ASSOCIATEDINSTRUMENTSHORTNAME "FM3                             ";
+        String Vdata_field_LOCALGRANULEID "CER_SYN_Aqua-FM3-MODIS_Edition2B_007005.20051031                                                ";
+        String Vdata_field_LOCALVERSIONID "Clib-20081009 TK5.2.15 HDF-4.2r3 HDFEOS- 2.15v SW689 ANC689     ";
+        String Vdata_field_CERPRODUCTIONDATETIME "2009-06-11T04:39:12             ";
+        Int32 Vdata_field_NUMBEROFRECORDS 2147483647;
+        String Vdata_field_PRODUCTGENERATIONLOC "NASA Langley Research Center, HOST - mag305 OS - Linux                                                                                                                                                                                                          ";
+    }
+}

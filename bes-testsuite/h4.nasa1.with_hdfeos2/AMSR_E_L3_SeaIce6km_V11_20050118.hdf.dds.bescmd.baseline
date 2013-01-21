@@ -1,0 +1,18 @@
+Dataset {
+    Int16 SI_06km_NH_89V_ASC[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_NH_89V_DSC[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_NH_89V_DAY[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_NH_89H_ASC[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_NH_89H_DSC[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_NH_89H_DAY[YDim = 1792][XDim = 1216];
+    Float64 Latitude[YDim = 1792][XDim = 1216];
+    Float64 Longitude[YDim = 1792][XDim = 1216];
+    Int16 SI_06km_SH_89V_ASC[YDim_1 = 1328][XDim_1 = 1264];
+    Int16 SI_06km_SH_89V_DSC[YDim_1 = 1328][XDim_1 = 1264];
+    Int16 SI_06km_SH_89V_DAY[YDim_1 = 1328][XDim_1 = 1264];
+    Int16 SI_06km_SH_89H_ASC[YDim_1 = 1328][XDim_1 = 1264];
+    Int16 SI_06km_SH_89H_DSC[YDim_1 = 1328][XDim_1 = 1264];
+    Int16 SI_06km_SH_89H_DAY[YDim_1 = 1328][XDim_1 = 1264];
+    Float64 Latitude_1[YDim_1 = 1328][XDim_1 = 1264];
+    Float64 Longitude_1[YDim_1 = 1328][XDim_1 = 1264];
+} AMSR_E_L3_SeaIce6km_V11_20050118.hdf;

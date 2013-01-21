@@ -1,0 +1,2207 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="MODATML2.A2000055.0000.005.2006253045900.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MODATML2.A2000055.0000.005.2006253045900.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2006-09-10T04:59:00.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Night&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;processed once&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;005&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;further update is anticipated&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed: &gt;10% useable; Failed: &lt;10% useable&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Failed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;See http://modis-atmos.gsfc.nasa.gov/validation.html for more details on MODIS Atmosphere data quality.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>100</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Cloud_Top_Pressure&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2000-02-24&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;00:31:07.777131&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>985</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>153.398184366839</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>5</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MODATML2&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>30</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;MOD03.A2000055.0000.005.2006248153353.hdf&quot;</value>
+                        <value>&quot;MOD05_L2.A2000055.0000.005.2006253044843.hdf&quot;</value>
+                        <value>&quot;MOD06_L2.A2000055.0000.005.2006253045251.hdf&quot;</value>
+                        <value>&quot;MOD07_L2.A2000055.0000.005.2006249021033.hdf&quot;</value>
+                        <value>&quot;MOD35_L2.A2000055.0000.005.2006249020743.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>7.2006084116719</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-95.0350314860321</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>60.2309011145443</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>84.9641341307896</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2000-02-24&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:05:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2000-02-24&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.3.6&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ANCILLARYINPUTGRANULE" type="Container">
+                <Attribute name="ANCILLARYINPUTGRANULECONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTPOINTER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MOD03.A2000055.0000.005.2006248153353.hdf&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ANCILLARYINPUTTYPE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Geolocation&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Terra&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;MODIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                        <value>&quot;23&quot;</value>
+                        <value>&quot;24&quot;</value>
+                        <value>&quot;25&quot;</value>
+                        <value>&quot;26&quot;</value>
+                        <value>&quot;27&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;SuccessfulRetrievalPct&quot;</value>
+                            <value>&quot;DayProcessedPct&quot;</value>
+                            <value>&quot;NightProcessedPct&quot;</value>
+                            <value>&quot;LandProcessedPct&quot;</value>
+                            <value>&quot;WaterProcessedPct&quot;</value>
+                            <value>&quot;Snow_IceSurfaceProcessedPct&quot;</value>
+                            <value>&quot;ShadowFoundPct&quot;</value>
+                            <value>&quot;SunglintProcessedPct&quot;</value>
+                            <value>&quot;NonCloudObstructionFoundPct&quot;</value>
+                            <value>&quot;MaxSolarZenithAngle&quot;</value>
+                            <value>&quot;MinSolarZenithAngle&quot;</value>
+                            <value>&quot;VeryHighConfidentClearPct&quot;</value>
+                            <value>&quot;HighConfidentClearPct&quot;</value>
+                            <value>&quot;UncertainConfidentClearPct&quot;</value>
+                            <value>&quot;LowConfidentClearPct&quot;</value>
+                            <value>&quot;ThinCirrusSolarFoundPct&quot;</value>
+                            <value>&quot;ThinCirrusIR_FoundPct&quot;</value>
+                            <value>&quot;SuccessfulRetrievalPct_Land&quot;</value>
+                            <value>&quot;SuccessfulRetrievalPct_Ocean&quot;</value>
+                            <value>&quot;SuccessfulRetrievalPct_NIR&quot;</value>
+                            <value>&quot;SuccessfulRetrievalPct_IR&quot;</value>
+                            <value>&quot;SuccessCloudTopPropRtrPct_IR&quot;</value>
+                            <value>&quot;SuccessCloudPhaseRtrPct_IR&quot;</value>
+                            <value>&quot;SuccessCloudOptPropRtrPct_VIS&quot;</value>
+                            <value>&quot;CloudCoverFractionPct_VIS&quot;</value>
+                            <value>&quot;WaterCloudDetectedPct_VIS&quot;</value>
+                            <value>&quot;IceCloudDetectedPct_VIS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                                <value>&quot;18&quot;</value>
+                                <value>&quot;19&quot;</value>
+                                <value>&quot;20&quot;</value>
+                                <value>&quot;21&quot;</value>
+                                <value>&quot;22&quot;</value>
+                                <value>&quot;23&quot;</value>
+                                <value>&quot;24&quot;</value>
+                                <value>&quot;25&quot;</value>
+                                <value>&quot;26&quot;</value>
+                                <value>&quot;27&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;    0.49&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.49&quot;</value>
+                                <value>&quot;    0.15&quot;</value>
+                                <value>&quot;    0.34&quot;</value>
+                                <value>&quot;    0.33&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;  122.06&quot;</value>
+                                <value>&quot;   96.87&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.49&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.02&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.27&quot;</value>
+                                <value>&quot;    0.49&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                                <value>&quot;    0.00&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="PROCESSINGENVIRONMENT" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;Linux minion5193 2.6.8.1-26mdksmp #1 SMP Mon Nov 28 12:40:04 MST 2005 i686 Intel(R) Xeon(TM) CPU 2.80GHz unknown GNU/Linux&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="LONGNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;MODIS/Terra Aerosol, Cloud and Water Vapor Subset 5-Min L2 Swath 5km and 10km&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INSTRUMENTNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;Moderate Resolution Imaging Spectroradiometer&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GPOLYGON" type="Container">
+                <Attribute name="GPOLYGONCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="GRING" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="EXCLUSIONGRINGFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;N&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GRINGPOINT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTLONGITUDE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-9.77486167943177</value>
+                                <value>-57.4984862937547</value>
+                                <value>-95.2529373833584</value>
+                                <value>9.00889487738152</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTLATITUDE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>66.9099424652611</value>
+                                <value>60.2282376958739</value>
+                                <value>70.2390000154219</value>
+                                <value>84.7905572783001</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="GRINGPOINTSEQUENCENO" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>4</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>1</value>
+                                <value>2</value>
+                                <value>3</value>
+                                <value>4</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DESCRREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;5.1&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PRODUCTIONHISTORY" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;PGE83:5.3.6&quot;</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;atml2&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>406</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>270</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Radius_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;QA_Parameter_5km&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_5" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Byte_Segment&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_Difference&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Radius_Difference&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_Uncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Optical_Thickness_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Effective_Radius_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Water_Path_Uncertainty_1621&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Optical_Properties&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Phase_Infrared&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Quality_Assurance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                            <value>&quot;QA_Parameter_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cirrus_Reflectance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Top_Temperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Fraction&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Precipitable_Water_Near_Infrared_Clear&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Precipitable_Water_Infrared_Clear&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT16</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Cloud_Mask&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_INT8</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;Byte_Segment&quot;</value>
+                            <value>&quot;Cell_Along_Swath_5km&quot;</value>
+                            <value>&quot;Cell_Across_Swath_5km&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.9</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Cloud_Optical_Thickness">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness two-channel retrieval using band 7 and either band 1, 2, or 5</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 7 and either band 1, 2, or 5</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Water_Path">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Column Water Path two-band retrieval using band 7 and either band 1, 2, or 5</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/m^2</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_Difference">
+        <Attribute name="coordinates" type="String">
+            <value>Radius_Difference Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 6 and band 20 differenced from band 7 retrieval and either band 1, 2, or 5. Plane 1 of SDS is band 6 - band 7 retrieval, Plane 2 is band 20 - band 7 retrieval.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Effective_Radius_Difference</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Radius_Difference" size="2"/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness two-channel retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_1621</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Particle Effective Radius two-channel retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>micron</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_1621</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Water_Path_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Column Water Path two-band retrieval using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/m^2</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_1621</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_Uncertainty</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Particle Radius Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_Uncertainty</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Water_Path_Uncertainty">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Water Path Relative Uncertainty (Percent)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_Uncertainty</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Optical_Thickness_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Thickness Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Optical_Thickness_Uncertainty_1621</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Effective_Radius_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Effective Particle Radius Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Effective_Radius_Uncertainty_1621</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Water_Path_Uncertainty_1621">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Water Path Relative Uncertainty (Percent) using band 7 and band 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Water_Path_Uncertainty_1621</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Phase_Optical_Properties">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Determination Used in Optical Thickness/Effective Radius Retrieval</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>4</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Phase_Optical_Properties</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Phase_Infrared">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Phase Infrared</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Phase_Infrared</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Quality_Assurance">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude QA_Parameter_5km</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Quality Assurance at 5km Resolution</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>See MODIS atmosphere QA plan (1 x 1 km Product quality and retrieval processing QA flags) for details</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Quality_Assurance_1km</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+        <dimension name="QA_Parameter_5km" size="5"/>
+    </Array>
+    <Array name="Cirrus_Reflectance">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cirrus Reflectance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cirrus_Reflectance</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.00019999999494757503</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Top_Pressure">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Top_Pressure</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.10000000149011612</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Top_Temperature">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Top Temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Top_Temperature</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>-15000.000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Fraction">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD06_L2.A2000055.0000.005.2006253045251.hdf\\012pge06v5.12.0\\012\\011Cloud_Fraction</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0099999997764825821</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>127</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Precipitable_Water_Near_Infrared_Clear">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Total Column Precipitable Water Vapor - Near Infrared Clear Retrieval</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD05_L2.A2000055.0000.005.2006253044843.hdf\\012pge04v5.2.6\\012\\011Water_Vapor_Near_Infrared\\012\\011Quality_Assurance_Near_Infrared\\012pixels w/o 0|3 in two most significant bits of QA_Near_IR byte 0 get _FillValue</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0010000000474974513</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Precipitable_Water_Infrared_Clear">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Total Column Precipitable Water Vapor - IR Clear Retrieval</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>cm</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>2028</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>Internal geolocation arrays</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD07_L2.A2000055.0000.005.2006249021033.hdf\\012pge03v5.3.0\\012\\011Water_Vapor</value>
+        </Attribute>
+        <Attribute name="scale_factor_modis" type="Float64">
+            <value>0.0010000000474974513</value>
+        </Attribute>
+        <Attribute name="add_offset_modis" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Cloud_Mask">
+        <Attribute name="coordinates" type="String">
+            <value>Byte_Segment Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS Cloud Mask</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>255</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Parameter_Type" type="String">
+            <value>Output</value>
+        </Attribute>
+        <Attribute name="Cell_Along_Swath_Sampling" type="Int32">
+            <value>4</value>
+            <value>2029</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Cell_Across_Swath_Sampling" type="Int32">
+            <value>3</value>
+            <value>1348</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Geolocation_Pointer" type="String">
+            <value>External MODIS geolocation product</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>\\012                                                                                   \\012                                                                                    \\012 Bit fields within each byte are numbered from the left:                            \\012 7, 6, 5, 4, 3, 2, 1, 0.                                                            \\012 The left-most bit (bit 7) is the most significant bit.                             \\012 The right-most bit (bit 0) is the least significant bit.                           \\012                                                                                    \\012 bit field       Description                             Key                        \\012 ---------       -----------                             ---                        \\012                                                                                    \\012 0               Cloud Mask Flag                      0 = Not  determined           \\012                                                      1 = Determined                \\012                                                                                    \\012 2, 1            Unobstructed FOV Quality Flag        00 = Cloudy                   \\012                                                      01 = Uncertain                \\012                                                      10 = Probably  Clear          \\012                                                      11 = Confident  Clear         \\012                 PROCESSING PATH                                                    \\012                 ---------------                                                    \\012 3               Day or Night Path                    0 = Night  / 1 = Day          \\012 4               Sunglint Path                        0 = Yes    / 1 = No           \\012 5               Snow/Ice Background Path             0 = Yes    / 1 = No           \\012 7, 6            Land or Water Path                   00 = Water                    \\012                                                      01 = Coastal                  \\012                                                      10 = Desert                   \\012                                                      11 = Land                     \\012 </value>
+        </Attribute>
+        <Attribute name="_1_km_to_5_km_subsampling_description" type="String">
+            <value>Each value in this dataset does not represent an average of properties over a 5 x 5 km grid box, but rather a single sample from within each 5 km box. Normally, pixels in across-track rows 4 and 9 (counting in the direction of increasing scan number) out of every set of 10 rows are used for subsampling the 1 km retrievals to a 5 km resolution. If the array contents are determined to be all fill values after selecting the default pixel subset (e.g., from failed detectors), a different pair of pixel rows is used to perform the subsampling. Note that 5 km data sets are centered on rows 3 and 8; the default sampling choice of 4 and 9 is for better data quality and avoidance of dead detectors on Aqua. The row pair used for the 1 km sample is always given by the first number and last digit of the second number of the attribute Cell_Along_Swath_Sampling. The attribute Cell_Across_Swath_Sampling indicates that columns 3 and 8 are used, as they always are, for across-track sampling. Again these values are to be interpreted counting in the direction of the scan, from 1 through 10 inclusively. For example, if the value of attribute Cell_Along_Swath_Sampling is 3, 2028, 5, then the third and eighth pixel rows were used for subsampling. A value of 4, 2029, 5 indicates that the default fourth and ninth rows pair was used.</value>
+        </Attribute>
+        <Attribute name="source_info" type="String">
+            <value>\\012MOD35_L2.A2000055.0000.005.2006249020743.hdf\\012pge03v5.3.0\\012\\011Cloud_Mask</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Byte_Segment" size="1"/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Cell_Along_Swath_5km" size="406"/>
+        <dimension name="Cell_Across_Swath_5km" size="270"/>
+    </Array>
+    <Array name="Radius_Difference">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Radius_Difference(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Radius_Difference" size="2"/>
+    </Array>
+    <Array name="QA_Parameter_5km">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>QA_Parameter_5km(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="QA_Parameter_5km" size="5"/>
+    </Array>
+    <Array name="Byte_Segment">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Byte_Segment(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Byte_Segment" size="1"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

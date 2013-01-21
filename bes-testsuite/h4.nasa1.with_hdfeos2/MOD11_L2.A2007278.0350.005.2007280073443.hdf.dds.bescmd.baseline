@@ -1,0 +1,11 @@
+Dataset {
+    Float32 LST[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    UInt16 QC[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Error_LST[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Emis_31[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Emis_32[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 View_angle[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 View_time[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Latitude[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Longitude[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+} MOD11_L2.A2007278.0350.005.2007280073443.hdf;

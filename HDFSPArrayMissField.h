@@ -9,7 +9,7 @@
 // with vertical cross-section. One can check the data level by level.
 
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010 The HDF Group
+// Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDFSPARRAY_MISSFIELD_H
@@ -20,25 +20,25 @@ using namespace libdap;
 
 class HDFSPArrayMissGeoField:public Array
 {
-  public:
-  HDFSPArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
-	Array (n, v), rank (rank), tnumelm (tnumelm) {
-	}
-	virtual ~ HDFSPArrayMissGeoField ()
-	{
-	}
-	int format_constraint (int *cor, int *step, int *edg);
+    public:
+        HDFSPArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
+            Array (n, v), rank (rank), tnumelm (tnumelm) {
+        }
+        virtual ~ HDFSPArrayMissGeoField ()
+        {
+        }
+        int format_constraint (int *cor, int *step, int *edg);
 
-	BaseType *ptr_duplicate ()
-	{
-		return new HDFSPArrayMissGeoField (*this);
-	}
+        BaseType *ptr_duplicate ()
+        {
+            return new HDFSPArrayMissGeoField (*this);
+        }
 
-	virtual bool read ();
+        virtual bool read ();
 
-  private:
+    private:
 
-	int rank, tnumelm;
+        int rank, tnumelm;
 };
 
 

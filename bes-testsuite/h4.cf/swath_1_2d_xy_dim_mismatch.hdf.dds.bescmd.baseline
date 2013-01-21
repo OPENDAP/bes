@@ -1,0 +1,3 @@
+Dataset {
+    Float32 Swath_Data_Fields_temperature[Unlim_Swath = 2][NDim_Swath = 8];
+} swath_1_2d_xy_dim_mismatch.hdf;

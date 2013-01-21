@@ -1,0 +1,414 @@
+Attributes {
+    Black_Sky_Albedo {
+        String coordinates "Latitude Longitude Num_Albedo_Bands";
+        String long_name "Global_Black_Sky_Albedo";
+        String units "albedo, no units";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 0.0010000000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue 32767;
+    }
+    White_Sky_Albedo {
+        String coordinates "Latitude Longitude Num_Albedo_Bands";
+        String long_name "Global_White_Sky_Albedo";
+        String units "albedo, no units";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 orig_scale_factor 0.0010000000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue 32767;
+    }
+    Albedo_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "Aggregated_Albedo_Quality";
+        String units "concatenated flags";
+        UInt32 valid_range 0, 4294967294;
+        UInt32 _FillValue 4294967295;
+        String QC_Word_Description "Quality Control Explanation\\01200-01  Mandatory QA      0 = Majority processed, good quality\\012                         1 = Majority processed, see other QA\\012                         2 = Majority not processed due to cloud effects\\012                         3 = Majority not processed due to other effects\\01202     Period used       0 = 16 days\\012                         1 = 32 days\\01203-05  AM/MISR/PM        0 = AM\\012                         1 = AM/PM\\012                         2 = AM/PM/MISR\\012                         3 = AM/MISR\\012                         4 = PM\\012                         5 = PM/MISR\\012                         6 = MISR\\01206-07  BRDF Quality      0  = Majority full inversion\\012                         1  = Majority magnitude inversion\\012                         2  = Majority Bus-in DB parameters\\012                              (not currently used)\\012                         3  = Majority Fill value\\01208-15  Percent Inputs    0-100\\012(percent of the processed finer resolution data contributed to this CMG pixel)\\01216-23  Percent Snow      0-100\\01224-27  Local Solar Noon  0 = 0-5 degrees\\012                         1 = 5-10 degrees\\012                         2 = 10-15 degrees\\012                         3 = 15-20 degrees\\012                         4 = 20-25 degrees\\012                         5 = 25-30 degrees\\012                         6 = 30-35 degrees\\012                         7 = 35-40 degrees\\012                         8 = 40-45 degrees\\012                         9 = 45-50 degrees\\012                         10 = 50-55 degrees\\012                         11 = 55-60 degrees\\012                         12 = 60-65 degrees\\012                         13 = 65-70 degrees\\012                         14 = 70-75 degrees\\012                         15 = >75 degrees\\01228-30  TBD\\01231     QAfill";
+    }
+    Num_Albedo_Bands {
+        String long_name "Num_Albedo_Bands(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MCD43C1.A2006353.004.2007012185705.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2007-01-12T18:57:05.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "1.2.0";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed was set as a default value. More algorithm will be developed";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "See http://landdb1.nascom.nasa.gov/cgi-bin/QA_WWW/aquaPage.cgi for the Science QA status of this product.";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 27;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "CMG_Albedo";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 4;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MCD43C1";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 200;
+                    String VALUE "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h01v11.004.2007008174941.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v11.004.2007008175409.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h29v03.004.2007008175725.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v06.004.2007008180045.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h03v05.004.2007008180747.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v02.004.2007008180927.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v14.004.2007008181728.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v07.004.2007008182044.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v07.004.2007008182545.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v06.004.2007008183959.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v17.004.2007008183910.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v14.004.2007008184123.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v02.004.2007008185023.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h23v07.004.2007008191515.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v14.004.2007008192924.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v03.004.2007008192957.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v12.004.2007008193236.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v06.004.2007008193426.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v06.004.2007008200120.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h23v02.004.2007008200359.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v06.004.2007008201407.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v02.004.2007008201627.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v16.004.2007008202110.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v08.004.2007008202222.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v13.004.2007008202515.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v05.004.2007008203527.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h04v05.004.2007008204352.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v17.004.2007008204426.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v09.004.2007008204440.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v15.004.2007008204654.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v13.004.2007008205854.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h35v10.004.2007008211305.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h05v13.004.2007008211350.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v17.004.2007008211603.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v09.004.2007008212501.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v04.004.2007008213354.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v17.004.2007008213753.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v10.004.2007008214303.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v09.004.2007008221311.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v05.004.2007008221424.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h01v10.004.2007008222509.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h09v07.004.2007008225506.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v07.004.2007008230545.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v12.004.2007008230857.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v04.004.2007008231558.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h24v04.004.2007008232409.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v08.004.2007008233418.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v10.004.2007009000453.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v05.004.2007009001124.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v04.004.2007009001236.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v05.004.2007009001426.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h32v09.004.2007009002317.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v08.004.2007009002512.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v16.004.2007009002803.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v04.004.2007009002930.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v04.004.2007009003623.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v03.004.2007009004525.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v09.004.2007009005203.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v17.004.2007009010015.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v03.004.2007009011029.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v05.004.2007009012402.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v08.004.2007009012720.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v16.004.2007009013308.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v06.004.2007009015652.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v05.004.2007009021101.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v14.004.2007009022545.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h08v07.004.2007009025545.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h09v06.004.2007009033453.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h24v06.004.2007009034738.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v08.004.2007009040628.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h23v06.004.2007009041741.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v07.004.2007009045646.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v17.004.2007009050658.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v15.004.2007009051357.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v07.004.2007009051950.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v10.004.2007009054038.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h33v10.004.2007009055546.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h23v11.004.2007009060216.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v09.004.2007009060933.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v02.004.2007009054320.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v12.004.2007009061705.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v08.004.2007009070450.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h29v09.004.2007009071402.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v09.004.2007009074555.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h32v11.004.2007009075319.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v08.004.2007009075337.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v08.004.2007009083348.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v02.004.2007009083458.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v04.004.2007009084220.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v13.004.2007009093047.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v13.004.2007009093542.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v16.004.2007009093609.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v11.004.2007009094919.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v06.004.2007009103324.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v11.004.2007009111139.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v05.004.2007009112413.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v08.004.2007009113241.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v11.004.2007009123541.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v04.004.2007009124420.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v10.004.2007009125142.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h34v10.004.2007009134706.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v05.004.2007009134833.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v06.004.2007009144429.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v03.004.2007009154556.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h26v02.004.2007009160323.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h26v04.004.2007009162154.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h24v05.004.2007009165424.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v07.004.2007009170136.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h27v12.004.2007009175401.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v12.004.2007009175728.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h09v05.004.2007009180036.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v11.004.2007009192233.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v04.004.2007009192915.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v07.004.2007009194204.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h26v07.004.2007009221038.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v02.004.2007009222209.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v07.004.2007009223213.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v17.004.2007009224339.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h15v07.004.2007009230604.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v08.004.2007009234035.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v12.004.2007010000443.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h24v02.004.2007010002859.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v02.004.2007010005921.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v04.004.2007010012231.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v04.004.2007010012327.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v17.004.2007010013016.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h00v10.004.2007010014518.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v16.004.2007010015221.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v08.004.2007010021150.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v09.004.2007010023208.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h07v03.004.2007010023405.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v04.004.2007010030717.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v09.004.2007010030521.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v12.004.2007010033813.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v11.004.2007010042145.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v09.004.2007010043546.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v03.004.2007010044312.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h24v15.004.2007010050412.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h05v11.004.2007010050641.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h33v11.004.2007010051733.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v07.004.2007010051914.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h03v08.004.2007010060109.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v07.004.2007010060325.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v06.004.2007010060405.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v15.004.2007010061833.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v03.004.2007010073434.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v04.004.2007010074634.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h08v04.004.2007010083456.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v14.004.2007010085853.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v08.004.2007010085717.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v03.004.2007010091739.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v14.004.2007010095155.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v16.004.2007010102150.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v11.004.2007010104653.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v15.004.2007010103639.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v03.004.2007010110540.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v12.004.2007010110733.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v07.004.2007010111118.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v05.004.2007010113106.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h07v05.004.2007010114137.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h35v09.004.2007010114738.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v13.004.2007010115821.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h09v08.004.2007010122519.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v02.004.2007010123432.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h31v13.004.2007010124535.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h29v07.004.2007010125154.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v11.004.2007010130825.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h30v10.004.2007010132334.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h22v02.004.2007010132758.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v13.004.2007010132924.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h32v08.004.2007010134932.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h06v11.004.2007010140103.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v08.004.2007010140955.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h34v07.004.2007010141131.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v07.004.2007010150803.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v05.004.2007010151024.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v10.004.2007010160204.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h14v10.004.2007010161459.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h10v06.004.2007010163045.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h32v10.004.2007010163556.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v08.004.2007010164314.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v09.004.2007010165742.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h04v11.004.2007010171239.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h29v13.004.2007010172549.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h26v03.004.2007010173322.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h18v02.004.2007010173854.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h21v06.004.2007010182944.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h28v14.004.2007010183132.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v15.004.2007010190558.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h23v15.004.2007010192013.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h12v03.004.2007010192606.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h11v10.004.2007010194834.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h08v05.004.2007010201842.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h19v12.004.2007010204707.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h20v03.004.2007010205644.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h06v03.004.2007010210205.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h17v06.004.2007010211512.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h16v02.004.2007010212502.hdf", "
+          /MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h13v11.004.2007010214012.hdf", "/MODAPSops/archive/f11/running/AMPM_L13/56186285/MCD43B3.A2006353.h25v06.004.2007010215332.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.000000;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.000000;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.000000;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.000000;
+                        }
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "MODIS", "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "Terra", "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "MODIS", "MODIS";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-12-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.999999";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-12-19";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "4.3.0";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "BRDFCODEID", "SETUPFILEID", "ALBEDOFILEID", "BRDFDATABASEVERSION";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                            String VALUE "15", "17", "0", "68", "AMBRALS_V4.0R1", "6121997", "6121997", "v1.3";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "4.0";
+            }
+            GEOANYABNORMAL {
+                Int32 NUM_VAL 1;
+                String VALUE "False";
+            }
+            GEOESTMAXRMSERROR {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 50.000000;
+            }
+            GLOBALGRIDCOLUMNS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 7200;
+            }
+            GLOBALGRIDROWS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 3600;
+            }
+            NADIRDATARESOLUTION {
+                Int32 NUM_VAL 1;
+                String VALUE "0.05 degree";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "part of 4332";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra+Aqua Albedo 16-Day L3 Global 0.05Deg CMG";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "IRIX64 mtvs1 6.5 10070055 IP35";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "MOD_CMG_BRDF_0.05Deg";
+                Int32 XDim 7200;
+                Int32 YDim 3600;
+                Float64 UpperLeftPointMtrs -180.000000, 90.000000;
+                Float64 LowerRightMtrs 180.000000, -90.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Num_Albedo_Bands";
+                        Int32 Size 10;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Black_Sky_Albedo";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim", "Num_Albedo_Bands";
+                    }
+                    DataField_2 {
+                        String DataFieldName "White_Sky_Albedo";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim", "Num_Albedo_Bands";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Albedo_Quality";
+                        String DataType "DFNT_UINT32";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.4";
+    }
+}

@@ -1,0 +1,6 @@
+The data:
+Int32 Cloud_Mask_QA[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{-39, -35},{0, 0}};
+Float32 Water_Vapor_Infrared[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{-9999, 9.073},{-9999, -14.106}};
+Float32 Latitude[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{-70.065, -83.423},{-59.3259, -65.9709}};
+Float32 Longitude[Cell_Along_Swath_1km = 2][Cell_Across_Swath_1km = 2] = {{49.7707, -47.0331},{14.136, -31.9806}};
+

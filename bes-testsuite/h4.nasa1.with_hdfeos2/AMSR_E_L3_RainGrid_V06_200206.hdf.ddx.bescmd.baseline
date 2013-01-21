@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="AMSR_E_L3_RainGrid_V06_200206.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AMSR_E_L3_RainGrid_V06_200206.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2008-05-23T08:10:13Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;reprocessed once&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Global Rain&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Program Execution Completed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Currently not used&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Currently not used&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AE_RnGd&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>2</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>309</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190029_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190119_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190208_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190258_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190347_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190436_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190526_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190615_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190705_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190754_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190844_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206190933_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191023_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191112_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191201_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191251_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191340_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191430_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191519_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191609_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191658_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191748_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191837_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206191926_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206192155_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206192244_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206192334_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200023_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200112_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200202_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200251_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200341_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200430_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200520_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200609_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200659_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200748_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200837_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206200927_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201016_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201106_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201155_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201245_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201334_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201424_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201513_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201602_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201652_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201741_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201831_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206201920_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206202010_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206202059_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206202149_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206202238_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206202327_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210017_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210106_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210156_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210245_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210335_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210424_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210514_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210603_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210652_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210742_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210831_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206210921_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211010_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211100_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211149_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211238_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211328_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211417_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211507_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211556_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211646_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211735_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211825_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206211914_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206212003_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206212053_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206212142_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206212232_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206212321_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220011_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220100_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220149_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220239_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220328_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220418_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220507_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220557_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220646_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220736_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220825_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206220915_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221004_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221053_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221143_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221232_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221322_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221411_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221501_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221550_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221639_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221729_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221818_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221908_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206221957_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206222047_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206222136_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206222226_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206222315_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230004_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230054_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230143_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230233_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230322_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230412_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230501_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230550_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230640_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230729_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230819_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230908_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206230958_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231047_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231137_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231226_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231316_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231405_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231454_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231544_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231633_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231723_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231812_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231902_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206231951_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206232040_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206232130_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206232219_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206232309_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206232358_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240048_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240137_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240227_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240316_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240405_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240455_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240544_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240634_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240723_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240813_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240902_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206240952_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241041_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241130_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241220_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241309_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241359_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241448_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241538_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241627_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241717_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241806_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241855_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206241945_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206242034_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206242124_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206242213_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206242302_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206242352_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250041_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250131_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250220_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250310_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250359_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250449_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250538_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250628_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250717_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250806_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250856_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206250945_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251035_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251124_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251214_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251303_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251352_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251442_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251531_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251621_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251710_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251800_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251849_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206251939_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206252028_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206252118_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206252207_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206252256_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206252346_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260035_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260125_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260214_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260304_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260353_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260442_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260532_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260621_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260711_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260800_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260850_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206260939_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261029_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261118_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261207_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261257_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261346_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261436_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261525_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261615_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261704_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261753_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261843_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206261932_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206262022_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206262111_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206262201_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206262250_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206262340_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270029_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270118_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270208_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270257_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270347_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270436_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270526_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270615_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270704_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270754_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270843_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206270933_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271022_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271112_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271201_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271251_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271340_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206271430_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206282302_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206282327_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290016_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290106_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290155_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290245_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290334_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290424_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290513_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290603_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290652_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290742_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290831_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206290921_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291010_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291059_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291149_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291238_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291328_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291417_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291506_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291556_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291645_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291735_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291824_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206291914_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206292003_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206292053_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206292142_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206292231_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206292321_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300010_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300100_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300149_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300239_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300328_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300418_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300507_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300556_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300646_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300735_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300825_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206300914_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301004_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301053_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301143_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301232_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301321_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301411_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301500_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301550_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301639_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301729_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301818_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301907_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206301957_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206302046_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206302136_D.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206302225_A.hdf&quot;</value>
+                        <value>&quot;AMSR_E_L2A_BrightnessTemperatures_V09_200206302315_D.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2002-06-19&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:29:47.11Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2002-07-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:05:05.09Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;06&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;MonthlyRainTotal_GeoGrid&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>72</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>28</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>0.000000</value>
+                    <value>70000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>360000000.000000</value>
+                    <value>-70000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container"/>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TbOceanRain&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RrLandRain&quot;</value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <value>DFNT_FLOAT32</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.14</value>
+        </Attribute>
+    </Attribute>
+    <Array name="TbOceanRain">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>TbOceanRain</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="28"/>
+        <dimension name="Longitude" size="72"/>
+    </Array>
+    <Array name="RrLandRain">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>RrLandRain</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="28"/>
+        <dimension name="Longitude" size="72"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="28"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Longitude" size="72"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

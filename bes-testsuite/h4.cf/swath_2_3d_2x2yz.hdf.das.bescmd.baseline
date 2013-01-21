@@ -1,0 +1,177 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "Swath1";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "ZDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "xtrack";
+                        Int32 Size 4;
+                    }
+                    Dimension_3 {
+                        String DimensionName "ytrack";
+                        Int32 Size 8;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "pressure";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "xtrack", "ytrack";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "xtrack", "ytrack";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim", "xtrack", "ytrack";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            SWATH_2 {
+                String SwathName "Swath2";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "ZDim";
+                        Int32 Size 8;
+                    }
+                    Dimension_2 {
+                        String DimensionName "xtrack";
+                        Int32 Size 8;
+                    }
+                    Dimension_3 {
+                        String DimensionName "ytrack";
+                        Int32 Size 16;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "pressure";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "xtrack", "ytrack";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "xtrack", "ytrack";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim", "xtrack", "ytrack";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    Swath1_Geolocation_Fields_latitude {
+        String long_name "latitude";
+        String units "degrees_north";
+    }
+    Swath1_Geolocation_Fields_latitude_dim_0 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_latitude_dim_1 {
+        String name "ytrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_longitude {
+        String long_name "longitude";
+        String units "degrees_east";
+    }
+    Swath1_Geolocation_Fields_longitude_dim_0 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_longitude_dim_1 {
+        String name "ytrack:Swath1";
+    }
+    Swath1_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    Swath1_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath1";
+    }
+    Swath1_Data_Fields_temperature_dim_1 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Data_Fields_temperature_dim_2 {
+        String name "ytrack:Swath1";
+    }
+    Swath2_Geolocation_Fields_latitude {
+        String long_name "latitude";
+        String units "degrees_north";
+    }
+    Swath2_Geolocation_Fields_latitude_dim_0 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_latitude_dim_1 {
+        String name "ytrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_longitude {
+        String long_name "longitude";
+        String units "degrees_east";
+    }
+    Swath2_Geolocation_Fields_longitude_dim_0 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_longitude_dim_1 {
+        String name "ytrack:Swath2";
+    }
+    Swath2_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    Swath2_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath2";
+    }
+    Swath2_Data_Fields_temperature_dim_1 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Data_Fields_temperature_dim_2 {
+        String name "ytrack:Swath2";
+    }
+    Swath1_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000;
+    }
+    Swath2_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+}

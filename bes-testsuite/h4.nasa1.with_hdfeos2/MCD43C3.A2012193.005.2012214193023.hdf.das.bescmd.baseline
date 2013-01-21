@@ -1,0 +1,657 @@
+Attributes {
+    Albedo_BSA_Band1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band1";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band2 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band2";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band3 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band3";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band4 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band4";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band5 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band5";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band6 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band6";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_Band7 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_Band7";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_vis {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_vis";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_nir {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_nir";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_BSA_shortwave {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_BSA_shortwave";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band1 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band1";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band2 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band2";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band3 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band3";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band4 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band4";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band5 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band5";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band6 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band6";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_Band7 {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_Band7";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_vis {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_vis";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_nir {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_nir";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Albedo_WSA_shortwave {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Albedo_WSA_shortwave";
+        String units "albedo, no units";
+        Int16 valid_range 0, 32766;
+        Int16 _FillValue 32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    BRDF_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_BRDF_Quality";
+        String units "Quality Byte, no units";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+    }
+    Local_Solar_Noon {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Local_Solar_Noon";
+        String units "Quality Byte, degrees";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+    }
+    Percent_Inputs {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Percent_Inputs";
+        String units "Quality Byte, percent";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+    }
+    Percent_Snow {
+        String coordinates "Latitude Longitude";
+        String long_name "Global_Percent_Snow";
+        String units "Quality Byte, percent";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+        String no_value______QC_Word_Description "Quality Control Explanation\\012BRDF Quality      0 = best quality, 75% or more with best full inversions\\012                  1 = good quality, 75% or more with full inversions\\012                  2 = mixed, 75% or less full inversions and 25% or less fill values\\012                  3 = all magnitude iversions or 50% or less fill values\\012                  4 = over 50% fill values\\012                  255 = Fill Value\\012Local Solar Zenith Noon\\012Percent Inputs    0-100\\012(percent of the processed finer resolution data contributed to this CMG pixel)\\012Percent Snow      0-100\\012";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MCD43C3.A2012193.005.2012214193023.hdf";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-08-01T19:30:23.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "3.0.0";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "See http://landweb.nascom/nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua the product Science Quality status.";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed was set as a default value. More algorithm will be developed";
+                        }
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 1953702009;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 393262;
+                        }
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 1937077345;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "CMG_Parameters with Snow";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MCD43C3";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 200;
+                    String VALUE "/MODAPSops8/archive/f5223/running/AMPM_L13m/22054446/MCD43C1.A2012193.005.2012214192144.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Global";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-07-11";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.999999";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2012-07-26";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.5";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2";
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "Terra", "Aqua";
+                    }
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "MODIS", "MODIS";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "MODIS", "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "BRDFCODEID", "SETUPFILEID", "ALBEDOFILEID", "BRDFDATABASEVERSION";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8";
+                            String VALUE "22", "12", "0", "66", "v1.0(500m)", "Null", "Null", "Null";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.1";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra+Aqua Albedo 16-Day L3 Global 0.05Deg CMG";
+            }
+            GEOANYABNORMAL {
+                Int32 NUM_VAL 1;
+                String VALUE "False";
+            }
+            GEOESTMAXRMSERROR {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 75.0;
+            }
+            GLOBALGRIDCOLUMNS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 7200;
+            }
+            GLOBALGRIDROWS {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 3600;
+            }
+            NADIRDATARESOLUTION {
+                Int32 NUM_VAL 1;
+                String VALUE "0.05 degree";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "part of 4332";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5223 2.6.18-194.32.1.el5PAE #1 SMP Wed Jan 5 18:43:13 EST 2011 i686 i686 i386 GNU/Linux";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "MCD_CMG_BRDF_0.05Deg";
+                Int32 XDim 7200;
+                Int32 YDim 3600;
+                Float64 UpperLeftPointMtrs -180.000000, 90.000000;
+                Float64 LowerRightMtrs 180.000000, -90.000000;
+                String Projection "GCTP_GEO";
+                Dimension {
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Albedo_BSA_Band1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Albedo_BSA_Band2";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Albedo_BSA_Band3";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Albedo_BSA_Band4";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Albedo_BSA_Band5";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "Albedo_BSA_Band6";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "Albedo_BSA_Band7";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "Albedo_BSA_vis";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Albedo_BSA_nir";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_10 {
+                        String DataFieldName "Albedo_BSA_shortwave";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Albedo_WSA_Band1";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_12 {
+                        String DataFieldName "Albedo_WSA_Band2";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_13 {
+                        String DataFieldName "Albedo_WSA_Band3";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Albedo_WSA_Band4";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_15 {
+                        String DataFieldName "Albedo_WSA_Band5";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_16 {
+                        String DataFieldName "Albedo_WSA_Band6";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_17 {
+                        String DataFieldName "Albedo_WSA_Band7";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_18 {
+                        String DataFieldName "Albedo_WSA_vis";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_19 {
+                        String DataFieldName "Albedo_WSA_nir";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_20 {
+                        String DataFieldName "Albedo_WSA_shortwave";
+                        String DataType "DFNT_INT16";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_21 {
+                        String DataFieldName "BRDF_Quality";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_22 {
+                        String DataFieldName "Local_Solar_Noon";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_23 {
+                        String DataFieldName "Percent_Inputs";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                    DataField_24 {
+                        String DataFieldName "Percent_Snow";
+                        String DataType "DFNT_UINT8";
+                        String DimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+    }
+}

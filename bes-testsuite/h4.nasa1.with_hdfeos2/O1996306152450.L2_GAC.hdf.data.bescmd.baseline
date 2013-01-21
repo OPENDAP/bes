@@ -1,0 +1,6 @@
+The data:
+Float32 Navigation_Data_longitude[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{-70.8133, -52.9408},{-83.1706, -70.3063}};
+Float32 Navigation_Data_latitude[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{47.2794, 44.517},{-11.2372, -13.1975}};
+Float32 Geophysical_Data_chlor_a[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{-1, -1},{-1, -1}};
+Int32 total_band_number[total_band_number = 2] = {0, 7};
+

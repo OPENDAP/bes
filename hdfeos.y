@@ -48,7 +48,7 @@ using namespace std;
 
 #include "DAS.h"
 #include "Error.h"
-#include "debug.h"
+#include "BESDebug.h"
 #include "parser.h"
 #include "hdfeos.tab.hh"
 
@@ -170,7 +170,7 @@ attribute: GROUP '=' STR
     attr_list
     {
 	   /* pop top of stack; store in attr_tab */
-	   DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+	   BESDEBUG("h4", " Popped attr_tab: " << TOP_OF_STACK << endl);
 	   POP;
 	}
 	END_GROUP '=' STR
@@ -182,7 +182,7 @@ attribute: GROUP '=' STR
     attr_list
     {
         /* pop top of stack; store in attr_tab */
-		DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+		BESDEBUG("h4", " Popped attr_tab: " << TOP_OF_STACK << endl);
 		POP;
 	}
 	END_OBJECT '=' STR
@@ -201,7 +201,8 @@ attribute: GROUP '=' STR
 #else
         comment << "\"" << $1 << "\"";
 #endif
-		DBG(cerr << name.str() << ":" << comment.str() << endl);
+		 BESDEBUG("h4",name.str() << ":" << comment.str() << endl);
+
 		AttrTable *a;
 		if (STACK_EMPTY)
 		    a = ATTR_OBJ(arg);
@@ -262,8 +263,8 @@ ints:           INT
 		    /* integer. What's worse, long is 64  bits on Alpha and */
 		    /* SGI/IRIX 6.1... jhrg 10/27/96 */
 		    /* type = "Int32"; */
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
-		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
+		    BESDEBUG("h4", "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h4", " to AttrTable: " << TOP_OF_STACK << endl);
 		    if (!(check_int32($1) 
 			  || check_uint32($1))) {
 			ostringstream msg;
@@ -281,7 +282,7 @@ ints:           INT
 		| ints ',' INT
 		{
 		    type = "Int32";
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h4", "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!(check_int32($3)
 			  || check_uint32($3))) {
 			ostringstream msg;
@@ -301,7 +302,7 @@ ints:           INT
 floats:		FLOAT
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h4", "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -318,7 +319,7 @@ floats:		FLOAT
 		| floats ',' FLOAT
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h4", "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -337,7 +338,7 @@ floats:		FLOAT
 floatints:	float_or_int
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h4", "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -354,7 +355,7 @@ floatints:	float_or_int
 		| floatints ',' float_or_int
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h4", "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $3 << "' is not a Float64 value.";
@@ -376,7 +377,7 @@ float_or_int:   FLOAT | INT
 strs:		STR
 		{
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h4", "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
@@ -400,7 +401,7 @@ strs:		STR
                 | strs ',' STR
 		{
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h4", "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
@@ -439,7 +440,7 @@ static void
 process_group(parser_arg * arg, const string & id)
 {
     AttrTable *at;
-    DBG(cerr << "Processing ID: " << id << endl);
+    BESDEBUG("h4", "Processing ID: " << id << endl);
     /* If we are at the outer most level of attributes, make
        sure to use the AttrTable in the DAS. */
     if (STACK_EMPTY) {
@@ -458,5 +459,5 @@ process_group(parser_arg * arg, const string & id)
     }
 
     PUSH(at);
-    DBG(cerr << " Pushed attr_tab: " << at << endl);
+    BESDEBUG("h4", " Pushed attr_tab: " << at << endl);
 }

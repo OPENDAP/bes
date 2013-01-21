@@ -1,0 +1,811 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+    }
+    EV_1KM_RefSB {
+        String coordinates "Band_1KM_RefSB Latitude Longitude";
+        String units "none";
+        String band_names "8,9,10,11,12,13lo,13hi,14lo,14hi,15,16,17,18,19,26";
+        Float32 radiance_scales 0.006455244962, 0.004779992159, 0.003601932433, 0.002896558493, 0.002278374741, 0.001206206158, 0.0005809437134, 0.001148704090, 0.0004166734288, 0.0009519019513, 0.0006234014290, 0.006361005362, 0.009410406463, 0.006943362765, 0.002762298100;
+        Float32 radiance_offsets 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985;
+        String radiance_units "Watts/m^2/micrometer/steradian";
+        Float32 reflectance_scales 1.190812054e-05, 8.084773981e-06, 5.873635018e-06, 4.953585176e-06, 3.880773420e-06, 2.513088930e-06, 1.210376126e-06, 2.458993094e-06, 8.919591323e-07, 2.370476295e-06, 2.065223725e-06, 2.194585250e-05, 3.477808059e-05, 2.563950329e-05, 2.439520540e-05;
+        Float32 reflectance_offsets 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985;
+        String reflectance_units "none";
+        Float32 corrected_counts_scales 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300, 0.1261940300;
+        Float32 corrected_counts_offsets 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985, 316.9721985;
+        String corrected_counts_units "counts";
+        String long_name "Earth View 1KM Reflective Solar Bands";
+        String orig_long_name "Earth View 1KM Reflective Solar Bands Scaled Integers";
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.139573336;
+        Float32 _FillValue 65535;
+    }
+    EV_1KM_RefSB_Uncert_Indexes {
+        String coordinates "Band_1KM_RefSB Latitude Longitude";
+        String long_name "Earth View 1KM Reflective Solar Bands Uncertainty Indexes";
+        String units "none";
+        Byte valid_range 0, 15;
+        Byte _FillValue 255;
+        Float32 specified_uncertainty 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000;
+        Float32 scaling_factor 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 7.000000000, 5.000000000;
+        String uncertainty_units "percent";
+    }
+    EV_1KM_Emissive {
+        String coordinates "Band_1KM_Emissive Latitude Longitude";
+        String band_names "20,21,22,23,24,25,27,28,29,30,31,32,33,34,35,36";
+        Float32 radiance_scales 6.930753443e-05, 0.003466902766, 7.626575098e-05, 8.990753122e-05, 3.155613740e-05, 5.639820665e-05, 0.0001178319653, 0.0001924497192, 0.0005570848589, 0.0004063234373, 0.0006508072256, 0.0005710013211, 0.0002623370965, 0.0002008728334, 0.0001767632057, 0.0001185949222;
+        Float32 radiance_offsets 2467.264404, 2480.600342, 2478.176514, 2402.468506, 1077.444946, 1560.333374, 2724.218506, 2317.488525, 2610.015381, 1560.333252, 2035.933228, 2119.084473, 2500.599365, 2499.093506, 2500.520508, 2495.890869;
+        String radiance_units "Watts/m^2/micrometer/steradian";
+        String long_name "Earth View 1KM Emissive Bands";
+        String orig_long_name "Earth View 1KM Emissive Bands Scaled Integers";
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 113.6000061;
+        String units "Watts/m^2/micrometer/steradian";
+        Float32 _FillValue 65535;
+    }
+    EV_1KM_Emissive_Uncert_Indexes {
+        String coordinates "Band_1KM_Emissive Latitude Longitude";
+        String long_name "Earth View 1KM Emissive Bands Uncertainty Indexes";
+        String units "none";
+        Byte valid_range 0, 15;
+        Byte _FillValue 255;
+        Float32 specified_uncertainty 0.5625000000, 2.500000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.3750000000, 0.3750000000, 0.5000000000, 0.5000000000, 0.5000000000, 0.5000000000;
+        Float32 scaling_factor 5.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000, 4.000000000;
+        String uncertainty_units "percent";
+    }
+    EV_250_Aggr1km_RefSB {
+        String coordinates "Band_250M Latitude Longitude";
+        String units "none";
+        String band_names "1,2";
+        Float32 radiance_scales 0.02830461785, 0.009464076720;
+        Float32 radiance_offsets -0.000000000, -0.000000000;
+        String radiance_units "Watts/m^2/micrometer/steradian";
+        Float32 reflectance_scales 5.674978092e-05, 3.078005830e-05;
+        Float32 reflectance_offsets -0.000000000, -0.000000000;
+        String reflectance_units "none";
+        Float32 corrected_counts_scales 0.1249732971, 0.1249732971;
+        Float32 corrected_counts_offsets -0.000000000, -0.000000000;
+        String corrected_counts_units "counts";
+        String long_name "Earth View 250M Aggregated 1km Reflective Solar Bands";
+        String orig_long_name "Earth View 250M Aggregated 1km Reflective Solar Bands Scaled Integers";
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.859520078;
+        Float32 _FillValue 65535;
+    }
+    EV_250_Aggr1km_RefSB_Uncert_Indexes {
+        String coordinates "Band_250M Latitude Longitude";
+        String long_name "Earth View 250M Aggregated 1km Reflective Solar Bands Uncertainty Indexes";
+        String units "none";
+        Byte valid_range 0, 15;
+        Byte _FillValue 255;
+        Float32 specified_uncertainty 1.500000000, 1.500000000;
+        Float32 scaling_factor 7.000000000, 7.000000000;
+        String uncertainty_units "percent";
+    }
+    EV_250_Aggr1km_RefSB_Samples_Used {
+        String coordinates "Band_250M Latitude Longitude";
+        String long_name "Earth View 250M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation";
+        String units "none";
+        Int32 valid_range 0, 28;
+        Int32 _FillValue 255;
+    }
+    EV_500_Aggr1km_RefSB {
+        String coordinates "Band_500M Latitude Longitude";
+        String units "none";
+        String band_names "3,4,5,6,7";
+        Float32 radiance_scales 0.02100655437, 0.01849076338, 0.004752836190, 0.002720461227, 0.0008320466732;
+        Float32 radiance_offsets -0.000000000, -0.000000000, -0.000000000, -0.000000000, -0.000000000;
+        String radiance_units "Watts/m^2/micrometer/steradian";
+        Float32 reflectance_scales 3.243367973e-05, 3.196096441e-05, 3.226410263e-05, 3.645396282e-05, 2.967566797e-05;
+        Float32 reflectance_offsets -0.000000000, -0.000000000, -0.000000000, -0.000000000, -0.000000000;
+        String reflectance_units "none";
+        Float32 corrected_counts_scales 0.1249732971, 0.1249732971, 0.1249732971, 0.1249732971, 0.1249732971;
+        Float32 corrected_counts_offsets -0.000000000, -0.000000000, -0.000000000, -0.000000000, -0.000000000;
+        String corrected_counts_units "counts";
+        String long_name "Earth View 500M Aggregated 1km Reflective Solar Bands";
+        String orig_long_name "Earth View 500M Aggregated 1km Reflective Solar Bands Scaled Integers";
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 1.194486976;
+        Float32 _FillValue 65535;
+    }
+    EV_500_Aggr1km_RefSB_Uncert_Indexes {
+        String coordinates "Band_500M Latitude Longitude";
+        String long_name "Earth View 500M Aggregated 1km Reflective Solar Bands Uncertainty Indexes";
+        String units "none";
+        Byte valid_range 0, 15;
+        Byte _FillValue 255;
+        Float32 specified_uncertainty 1.500000000, 1.500000000, 1.500000000, 1.500000000, 1.500000000;
+        Float32 scaling_factor 7.000000000, 7.000000000, 5.000000000, 5.000000000, 5.000000000;
+        String uncertainty_units "percent";
+    }
+    EV_500_Aggr1km_RefSB_Samples_Used {
+        String coordinates "Band_500M Latitude Longitude";
+        String long_name "Earth View 500M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation";
+        String units "none";
+        Int32 valid_range 0, 6;
+        Int32 _FillValue 255;
+    }
+    Height {
+        String coordinates "Latitude Longitude";
+        String long_name "Height";
+        String units "meters";
+        Int16 valid_range -400, 10000;
+        Int16 _FillValue -32767;
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+    }
+    SensorZenith {
+        String coordinates "Latitude Longitude";
+        String long_name "SensorZenith";
+        String units "degrees";
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+        Float64 scale_factor_modis 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    SensorAzimuth {
+        String coordinates "Latitude Longitude";
+        String long_name "SensorAzimuth";
+        String units "degrees";
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+        Float64 scale_factor_modis 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    Range {
+        String coordinates "Latitude Longitude";
+        String long_name "Range";
+        String units "meters";
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+        Float64 scale_factor_modis 25.000000000000000;
+        Float32 _FillValue 0;
+    }
+    SolarZenith {
+        String coordinates "Latitude Longitude";
+        String long_name "SolarZenith";
+        String units "degrees";
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+        Float64 scale_factor_modis 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    SolarAzimuth {
+        String coordinates "Latitude Longitude";
+        String long_name "SolarAzimuth";
+        String units "degrees";
+        String line_numbers "3,8";
+        String frame_numbers "3,8,13,...";
+        Float64 scale_factor_modis 0.010000000000000000;
+        Float32 _FillValue -32767;
+    }
+    gflags {
+        String coordinates "Latitude Longitude";
+        String long_name "gflags";
+        Byte _FillValue 255;
+        String Bit_7_MSB_ "1 = invalid input data";
+        String Bit_6 "1 = no ellipsoid intersection";
+        String Bit_5 "1 = no valid terrain data";
+        String Bit_4 "1 = DEM missing or of inferior quality";
+        String Bit_3 "1 = invalid sensor range";
+    }
+    Band_250M {
+        String units "level";
+        Float32 _FillValue -9999.000000;
+        String long_name "Band_250M";
+    }
+    Band_500M {
+        String units "level";
+        Float32 _FillValue -9999.000000;
+        String long_name "Band_500M";
+    }
+    Band_1KM_RefSB {
+        String units "level";
+        Float32 _FillValue -9999.000000;
+        String long_name "Band_1KM_RefSB";
+    }
+    Band_1KM_Emissive {
+        String units "level";
+        Float32 _FillValue -9999.000000;
+        String long_name "Band_1KM_Emissive";
+    }
+    EV_Band26 {
+        String coordinates "Latitude Longitude";
+        String long_name "Earth View Band 26 Scaled Integers";
+        String units "none";
+        Float32 radiance_scales 0.002762298100;
+        Float32 radiance_offsets 316.9721985;
+        String radiance_units "Watts/m^2/micrometer/steradian";
+        Float32 reflectance_scales 2.439520540e-05;
+        Float32 reflectance_offsets 316.9721985;
+        String reflectance_units "none";
+        Float32 corrected_counts_scales 0.1261940300;
+        Float32 corrected_counts_offsets 316.9721985;
+        String corrected_counts_units "counts";
+        Float32 _FillValue 65535;
+    }
+    EV_Band26_Uncert_Indexes {
+        String coordinates "Latitude Longitude";
+        String long_name "Earth View Band 26 Uncertainty Indexes";
+        String units "none";
+        Byte valid_range 0, 15;
+        Byte _FillValue 255;
+        Float32 specified_uncertainty 1.500000000;
+        Float32 scaling_factor 5.000000000;
+        String uncertainty_units "percent";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD021KM.A2002226.0000.005.2009193222735.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2009-07-12T22:27:35.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Night";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2";
+                    QAFLAGS {
+                        String CLASS "1", "2";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String VALUE "Not Investigated", "Not Investigated";
+                            String CLASS "1", "2";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "not being investigated", "not being investigated";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "Suspect", "Suspect";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 93, 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 0, 0;
+                        }
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 0, 1;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "EV_1KM_RefSB", "EV_1KM_Emissive";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2002-08-14";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "00:06:02.472484";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 1482;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 21.993503027862;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD021KM";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 10;
+                    String VALUE "MYD01.A2002225.2355.005.2009193090334.hdf", "MYD01.A2002226.0000.005.2009193071100.hdf", "MYD01.A2002226.0005.005.2009193071128.hdf", "MYD02_Reflective_LUTs.hdf.V5.0.35.12", "MYD02_Emissive_LUTs.hdf.V5.0.35.12", "MYD02_QA_LUTs.hdf.V5.0.35.12";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 15.4072594119748, 37.808090575974, 33.298672712345, 12.3833668605496;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 23.1688553420537, 19.9155446499752, 2.13348986775837, 5.09038755601578;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-08-14";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:05:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-08-14";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.35";
+                }
+            }
+            ANCILLARYINPUTGRANULE {
+                ANCILLARYINPUTGRANULECONTAINER {
+                    String CLASS "1";
+                    ANCILLARYINPUTPOINTER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MYD03.A2002226.0000.005.2009193071127.hdf";
+                    }
+                    ANCILLARYINPUTTYPE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Geolocation";
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "AveragedBlackBodyTemperature", "AveragedMirrorTemperature", "AveragedFocalPlane1Temperature", "AveragedFocalPlane2Temperature", "AveragedFocalPlane3Temperature", "AveragedFocalPlane4Temperature", "CalibrationQuality", "MissionPhase", "NadirPointing";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                            String VALUE " 284.99", " 273.02", " 268.00", " 268.33", "  82.98", "  82.81", "marginal", "EXECUTION", "Y";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            BOUNDINGRECTANGLE {
+                NORTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 23.141580399134;
+                }
+                SOUTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 2.1571133255794;
+                }
+                EASTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 37.8025406096442;
+                }
+                WESTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 12.3996293328176;
+                }
+            }
+            ALGORITHMPACKAGE {
+                ALGORITHMPACKAGEACCEPTANCEDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-02-12";
+                }
+                ALGORITHMPACKAGEMATURITYCODE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "OPERATIONAL";
+                }
+                ALGORITHMPACKAGENAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODIS Level 1B Algorithm Package";
+                }
+                ALGORITHMPACKAGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.35.12_Aqua";
+                }
+            }
+            PROJECT {
+                INSTRUMENTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Moderate Resolution Imaging SpectroRadiometer";
+                }
+                PROCESSINGCENTER {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODAPS";
+                }
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.0";
+            }
+            PRODUCTIONHISTORY {
+                Int32 NUM_VAL 1;
+                String VALUE "PGE02:5.0.35.12;PGE01:5.0.32";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Aqua Calibrated Radiances 5-Min L1B Swath 1km";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5203 2.6.8.1-26mdksmp ";
+            }
+        }
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "MODIS_SWATH_Type_L1B";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Band_250M";
+                        Int32 Size 2;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Band_500M";
+                        Int32 Size 5;
+                    }
+                    Dimension_3 {
+                        String DimensionName "Band_1KM_RefSB";
+                        Int32 Size 15;
+                    }
+                    Dimension_4 {
+                        String DimensionName "Band_1KM_Emissive";
+                        Int32 Size 16;
+                    }
+                    Dimension_5 {
+                        String DimensionName "10*nscans";
+                        Int32 Size 2030;
+                    }
+                    Dimension_6 {
+                        String DimensionName "Max_EV_frames";
+                        Int32 Size 1354;
+                    }
+                    Dimension_7 {
+                        String DimensionName "2*nscans";
+                        Int32 Size 406;
+                    }
+                    Dimension_8 {
+                        String DimensionName "1KM_geo_dim";
+                        Int32 Size 271;
+                    }
+                }
+                DimensionMap {
+                    DimensionMap_1 {
+                        String GeoDimension "2*nscans";
+                        String DataDimension "10*nscans";
+                        Int32 Offset 2;
+                        Int32 Increment 5;
+                    }
+                    DimensionMap_2 {
+                        String GeoDimension "1KM_geo_dim";
+                        String DataDimension "Max_EV_frames";
+                        Int32 Offset 2;
+                        Int32 Increment 5;
+                    }
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "EV_1KM_RefSB";
+                        String DataType "DFNT_UINT16";
+                        String DimList "Band_1KM_RefSB", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_2 {
+                        String DataFieldName "EV_1KM_RefSB_Uncert_Indexes";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Band_1KM_RefSB", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_3 {
+                        String DataFieldName "EV_1KM_Emissive";
+                        String DataType "DFNT_UINT16";
+                        String DimList "Band_1KM_Emissive", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_4 {
+                        String DataFieldName "EV_1KM_Emissive_Uncert_Indexes";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Band_1KM_Emissive", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_5 {
+                        String DataFieldName "EV_250_Aggr1km_RefSB";
+                        String DataType "DFNT_UINT16";
+                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_6 {
+                        String DataFieldName "EV_250_Aggr1km_RefSB_Uncert_Indexes";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_7 {
+                        String DataFieldName "EV_250_Aggr1km_RefSB_Samples_Used";
+                        String DataType "DFNT_INT8";
+                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_8 {
+                        String DataFieldName "EV_500_Aggr1km_RefSB";
+                        String DataType "DFNT_UINT16";
+                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_9 {
+                        String DataFieldName "EV_500_Aggr1km_RefSB_Uncert_Indexes";
+                        String DataType "DFNT_UINT8";
+                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_10 {
+                        String DataFieldName "EV_500_Aggr1km_RefSB_Samples_Used";
+                        String DataType "DFNT_INT8";
+                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_11 {
+                        String DataFieldName "Height";
+                        String DataType "DFNT_INT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_12 {
+                        String DataFieldName "SensorZenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_13 {
+                        String DataFieldName "SensorAzimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_14 {
+                        String DataFieldName "Range";
+                        String DataType "DFNT_UINT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_15 {
+                        String DataFieldName "SolarZenith";
+                        String DataType "DFNT_INT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_16 {
+                        String DataFieldName "SolarAzimuth";
+                        String DataType "DFNT_INT16";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_17 {
+                        String DataFieldName "gflags";
+                        String DataType "DFNT_UINT8";
+                        String DimList "2*nscans", "1KM_geo_dim";
+                    }
+                    DataField_18 {
+                        String DataFieldName "Band_250M";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Band_250M";
+                    }
+                    DataField_19 {
+                        String DataFieldName "Band_500M";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Band_500M";
+                    }
+                    DataField_20 {
+                        String DataFieldName "Band_1KM_RefSB";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Band_1KM_RefSB";
+                    }
+                    DataField_21 {
+                        String DataFieldName "Band_1KM_Emissive";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "Band_1KM_Emissive";
+                    }
+                    DataField_22 {
+                        String DataFieldName "EV_Band26";
+                        String DataType "DFNT_UINT16";
+                        String DimList "10*nscans", "Max_EV_frames";
+                    }
+                    DataField_23 {
+                        String DataFieldName "EV_Band26_Uncert_Indexes";
+                        String DataType "DFNT_UINT8";
+                        String DimList "10*nscans", "Max_EV_frames";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        Float32 HDFEOS_FractionalOffset_10_nscans_MODIS_SWATH_Type_L1B 0.000000000;
+        Float32 HDFEOS_FractionalOffset_Max_EV_frames_MODIS_SWATH_Type_L1B 0.000000000;
+        Int32 Number_of_Scans 203;
+        Int32 Number_of_Day_mode_scans 0;
+        Int32 Number_of_Night_mode_scans 203;
+        Int32 Incomplete_Scans 0;
+        Int32 Max_Earth_View_Frames 74;
+        Float32 _Valid_EV_Observations 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 99.99868774, 99.46587372, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000;
+        Float32 _Saturated_EV_Observations 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __L1A_EV_All_Scan_Data_are_Missing 0.000000000;
+        Float32 __L1A_EV_RSB_DN_Not_in_Day_Mode 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 32.00000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __L1A_EV_DN_Missing_Within_Scan 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __Dead_Detector_EV_Data 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __Sector_Rotation_EV_Data 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __Saturated_EV_Data 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __TEB_EV_Data_With_Moon_in_SVP 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __EV_Data_Where_Cannot_Compute_BG_DN 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __RSB_EV_Data_With_dn___Below_Scale 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __EV_Data_Where_Nadir_Door_Closed 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        Float32 __EV_Data_Not_Calibrated 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 32.00000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 100.0000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        UInt32 Bit_QA_Flags_Last_Value 786504;
+        UInt32 Bit_QA_Flags_Change 8;
+        Float32 Granule_Average_QA_Values 285.0036621, 284.9792786, 284.9877930, 284.9898376, 284.9938354, 284.9917603, 285.0059204, 285.0054321, 284.9974670, 284.9842224, 284.9782410, 284.9773560, 128.9976807, 268.3308411, 82.98148346, 82.80685425, 273.0342102, 273.0060730, 274.2915344, 272.5721741, 273.2799072, 273.1960754, 271.9308167, 267.4067078, 267.6666260, 267.6816406, 267.8076782, 82.45945740, 82.48154449, 122.1195450, 122.1611786, 173.0045013, -0.0001440048218, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000, 0.000000000;
+        UInt32 Electronics_Redundancy_Vector 33615018, 2084;
+        UInt32 Electronics_Configuration_Change 0, 0;
+        String Reflective_LUT_Serial_Number_and_Date_of_Last_Change "R135 2009:05:13:17:00";
+        String Emissive_LUT_Serial_Number_and_Date_of_Last_Change "E134 2009:05:13:17:00";
+        String QA_LUT_Serial_Number_and_Date_of_Last_Change "Q134 2009:05:13:17:00";
+        Int32 Focal_Plane_Set_Point_State 1;
+        Int32 Doors_and_Screens_Configuration 240;
+        Int32 Reflective_Bands_With_Bad_Data 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Int32 Emissive_Bands_With_Bad_Data 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Byte Noise_in_Black_Body_Thermistors 1, 4, 7, 1, 4, 7, 7, 2, 5, 6, 12, 5;
+        Byte Noise_in_Average_BB_Temperature 8;
+        Byte Noise_in_LWIR_FPA_Temperature 18;
+        Byte Noise_in_MWIR_FPA_Temperature 11;
+        Byte Noise_in_Scan_Mirror_Thermistor__1 0;
+        Byte Noise_in_Scan_Mirror_Thermistor__2 0;
+        Byte Noise_in_Scan_Mirror_Thermistor_Average 0;
+        Byte Noise_in_Instrument_Temperature 1;
+        Byte Noise_in_Cavity_Temperature 1;
+        Byte Noise_in_Temperature_of_NIR_FPA 0;
+        Byte Noise_in_Temperature_of_Vis_FPA 0;
+        Int32 Dead_Detector_List 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0;
+        Int32 Noisy_Detector_List 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Byte Detector_Quality_Flag 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 66, 64, 66, 64, 64, 64, 66, 64, 64, 64, 66, 64, 66, 66, 66, 66, 66, 65, 66, 66, 66, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0;
+        Float32 Earth_Sun_Distance 1.007826924;
+        Float32 Solar_Irradiance_on_RSB_Detectors_over_pi 511.5846863, 511.5846863, 511.5846863, 511.5846863, 511.5846863, 511.5846863, 511.5846863, 511.5681152, 511.6438904, 511.7641907, 511.8328857, 511.8869019, 511.9465942, 511.9890137, 512.0393066, 512.0604248, 512.0803833, 512.0941772, 512.0902710, 512.0883179, 512.0930176, 512.0933838, 512.0902710, 512.0820923, 512.0620117, 512.0375977, 511.9979858, 511.9641113, 511.9197083, 511.8489990, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 511.8020020, 315.4869995, 315.4869995, 315.4869995, 315.4869995, 315.4869995, 315.4869995, 315.4869995, 315.4888000, 315.4988098, 315.5071106, 315.5166931, 315.5216980, 315.5311890, 315.5349121, 315.5372925, 315.5380859, 315.5365906, 315.5335083, 315.5343018, 315.5335083, 315.5267944, 315.5220947, 315.5185852, 315.5094910, 315.5050049, 315.4981079, 315.4881897, 315.4736023, 315.4603882, 315.4508972, 315.4448853, 315.4714050, 315.5046082, 315.5408020, 315.5947876, 315.7431030, 315.8229065, 315.8855896, 315.8855896, 315.8855896, 664.7365723, 664.7365723, 512.7365723, 664.7365723, 664.7000732, 664.7470703, 664.7432251, 664.7266235, 664.7188110, 664.7175293, 664.7213135, 664.7332153, 664.6851196, 664.7102051, 664.6629028, 664.6442261, 664.6538086, 664.5352173, 664.5352173, 664.5352173, 593.7072144, 593.7072144, 593.7072144, 593.7072144, 593.7001953, 593.7048950, 593.7009277, 593.7031250, 593.7050171, 593.7072754, 593.7084961, 593.7102051, 593.7186279, 593.7205811, 593.7255859, 593.7644043, 593.7888794, 593.8388062, 593.8388062, 593.8388062, 151.1795959, 151.1795959, 151.1795959, 151.1795959, 151.1795959, 151.1735992, 151.1773071, 151.1851959, 151.1772003, 151.1772003, 151.1793976, 151.1822052, 151.1735992, 151.1761932, 151.1932983, 151.1835022, 151.1894989, 151.1703949, 151.1703949, 151.1703949, 76.58248901, 76.58248901, 76.58248901, 76.58248901, 76.58287811, 76.58442688, 76.58516693, 76.58396149, 76.58341217, 76.59081268, 76.59130096, 76.58757019, 76.58486938, 76.63878632, 76.59094238, 76.59262085, 76.58381653, 76.57720184, 76.57720184, 76.57720184, 28.77769089, 28.77769089, 28.77769089, 28.77769089, 28.77304077, 28.77207947, 28.77556992, 28.77726936, 28.77688026, 28.77846909, 28.77578926, 28.77209091, 28.77242088, 28.77489090, 28.77380943, 28.77135086, 28.77090073, 28.77033043, 28.77033043, 28.77033043, 556.0842285, 556.0842285, 556.0053101, 556.1354980, 556.2669067, 556.4036255, 556.5034790, 556.7288208, 556.5126953, 556.5100098, 606.8427734, 606.8427734, 606.8634033, 606.7711792, 606.7139893, 606.7194214, 606.7739258, 606.7803955, 606.5256958, 606.7692871, 629.3129883, 629.3129883, 629.3129883, 629.4121704, 629.4171143, 629.3914795, 629.2725830, 629.1608276, 629.4335938, 629.3894043, 600.2150269, 600.2150269, 600.2150269, 600.1812744, 600.1444092, 600.1643066, 600.2406006, 600.2056885, 599.6879272, 599.6879272, 602.4011230, 602.4011230, 602.4813843, 602.4874878, 602.4970093, 602.5059204, 602.5153809, 602.5305786, 602.5897217, 602.6959839, 492.4797058, 492.4797058, 492.5938110, 492.6044006, 492.6184998, 492.6246948, 492.6228943, 492.6166992, 492.5820007, 492.5184021, 492.4797058, 492.4797058, 492.5938110, 492.6044006, 492.6184998, 492.6246948, 492.6228943, 492.6166992, 492.5820007, 492.5184021, 479.4277954, 479.4277954, 479.4125977, 479.4115906, 479.4093018, 479.4071960, 479.4096069, 479.4182129, 479.4036865, 479.3894958, 479.4277954, 479.4277954, 479.4125977, 479.4115906, 479.4093018, 479.4071960, 479.4096069, 479.4182129, 479.4036865, 479.3894958, 412.0707092, 412.0707092, 412.1205139, 412.1488037, 412.1434021, 412.1467896, 412.1477051, 412.0982056, 412.0902100, 412.0751038, 309.7168884, 309.7168884, 309.7084961, 309.7431030, 309.7634888, 309.7625122, 309.7625122, 309.7608948, 309.8164062, 310.0856934, 297.4602966, 297.4602966, 297.4620056, 297.4625854, 297.4646912, 297.4635925, 297.4625854, 297.4617004, 297.4599915, 297.4599915, 277.6908875, 277.6908875, 277.6904907, 277.6910095, 277.6906128, 277.6903992, 277.6903076, 277.6896057, 277.6893005, 277.6893005, 277.9197083, 277.9197083, 277.9197083, 277.9190979, 277.9201965, 277.9189148, 277.9187927, 277.9176941, 277.9177856, 277.9177856, 116.2086029, 116.2086029, 116.2058029, 116.2001038, 116.1993027, 116.2024002, 116.2058029, 116.2076035, 116.2046967, 116.2046967;
+    }
+    Noise_in_Thermal_Detectors_NONEOS {
+        String long_name "Noise in Thermal Detectors";
+    }
+    Change_in_relative_responses_of_thermal_detectors_NONEOS {
+        String long_name "Change in relative responses of thermal detectors";
+    }
+    DC_Restore_Change_for_Thermal_Bands_NONEOS {
+        String long_name "DC Restore Change for Thermal Bands";
+    }
+    DC_Restore_Change_for_Reflective_250m_Bands_NONEOS {
+        String long_name "DC Restore Change for Reflective 250m Bands";
+    }
+    DC_Restore_Change_for_Reflective_500m_Bands_NONEOS {
+        String long_name "DC Restore Change for Reflective 500m Bands";
+    }
+    DC_Restore_Change_for_Reflective_1km_Bands_NONEOS {
+        String long_name "DC Restore Change for Reflective 1km Bands";
+    }
+    Band_250M_NONEOS {
+        String long_name "250M Band Numbers for Subsetting";
+    }
+    Band_500M_NONEOS {
+        String long_name "500M Band Numbers for Subsetting";
+    }
+    Band_1KM_RefSB_NONEOS {
+        String long_name "1KM Reflective Solar Band Numbers for Subsetting";
+    }
+    Band_1KM_Emissive_NONEOS {
+        String long_name "1KM Emissive Band Numbers for Subsetting";
+    }
+    Level_1B_Swath_Metadata {
+    }
+}

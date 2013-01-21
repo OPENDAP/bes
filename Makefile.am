@@ -39,32 +39,31 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
-if HDFEOS2
-HDFEOS2_SRC = HDFEOS2.cc HDFEOS2Util.cc HDFSPUtil.cc HDFSP.cc HDFSPArrayGeoField.cc\
+HDFCF_SRC = HDFCFUtil.cc HDFEOS2.cc HDFSP.cc HDFSPArrayGeoField.cc\
 		HDFSPArrayMissField.cc HDFSPArray_RealField.cc HDFSPArray_VDField.cc\
 	          HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
               HDFEOS2ArraySwathDimMapField.cc HDFEOS2ArraySwathGeoDimMapField.cc HDFEOS2ArraySwathGeoDimMapExtraField.cc \
-	     HE2CFNcML.cc HE2CFShortName.cc HE2CFValidChar.cc HE2CFUniqName.cc HE2CF.cc misr_init.cc misrinv.cc
+	     HE2CF.cc misr_init.cc misrinv.cc
 
-HDFTYPE_SRC += $(HDFEOS2_SRC)
-endif
+HDFTYPE_SRC += $(HDFCF_SRC)
 
 HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
 
 
-if HDFEOS2
-HDFEOS2_HDR = HDFEOS2.h HDFSP.h HDFSPUtil.h\
-		HDFSPArrayGeoField.h HDFSPArrayMissField.h HDFSPArray_RealField.h \
-              HDFSPArray_VDField.h HDFEOS2Array_RealField.h \
-              HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
-              HDFEOS2ArraySwathDimMapField.h\
-              HDFEOS2ArraySwathGeoDimMapField.h HDFEOS2ArraySwathGeoDimMapExtraField.h HDFEOS2Util.h\
-              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h misrproj.h errormacros.h hdfdesc.h
-HDFTYPE_HDR += $(HDFEOS2_HDR)
-endif
+HDFCF_HDR = HDFEOS2.h HDFSP.h HDFCFUtil.h \
+	HDFSPEnumType.h \
+	HDFSPArrayGeoField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
+	HDFEOS2EnumType.h HDFEOS2HandleType.h \
+	HDFEOS2Array_RealField.h \
+	HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
+	HDFEOS2ArraySwathDimMapField.h\
+	HDFEOS2ArraySwathGeoDimMapField.h HDFEOS2ArraySwathGeoDimMapExtraField.h \
+	HE2CF.h misrproj.h errormacros.h
+
+HDFTYPE_HDR += $(HDFCF_HDR)
 
 GRAM_SRC = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc 
 
