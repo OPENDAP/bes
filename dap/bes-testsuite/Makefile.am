@@ -22,7 +22,7 @@ EXTRA_DIST = besdap besdap_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/packa
 
 DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in ../config.status
+bes.conf: bes.conf.in $(top_srcdir)/config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
