@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_srcdir)/dap 
 
 # AM_CPPFLAGS =
 AM_CXXFLAGS =
