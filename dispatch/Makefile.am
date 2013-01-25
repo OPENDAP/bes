@@ -203,37 +203,37 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 
 # BESProcessEncodedString.h. Moved to apache. jhrg 4/25/12
 
-DAP_SRCS = BESCatalogResponseHandler.cc \
-	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
-	BESDDXResponseHandler.cc \
-	BESDataResponseHandler.cc \
-	BESDataDDXResponseHandler.cc \
-	BESDMRResponseHandler.cc \
-	BESDapModule.cc \
-	BESDapRequestHandler.cc BESDapTransmit.cc
+#DAP_SRCS = BESCatalogResponseHandler.cc \
+#	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
+#	BESDDXResponseHandler.cc \
+#	BESDataResponseHandler.cc \
+#	BESDataDDXResponseHandler.cc \
+#	BESDMRResponseHandler.cc \
+#	BESDapModule.cc \
+#	BESDapRequestHandler.cc BESDapTransmit.cc
 
-DAP_HDRS = BESCatalogResponseHandler.h \
-	BESDASResponseHandler.h BESDDSResponseHandler.h \
-	BESDDXResponseHandler.h \
-	BESDataResponseHandler.h \
-	BESDataDDXResponseHandler.h \
-	BESDMRResponseHandler.h \
-	BESDapModule.h \
-	BESDapRequestHandler.h BESDapTransmit.h
+#DAP_HDRS = BESCatalogResponseHandler.h \
+#	BESDASResponseHandler.h BESDDSResponseHandler.h \
+#	BESDDXResponseHandler.h \
+#	BESDataResponseHandler.h \
+#	BESDataDDXResponseHandler.h \
+#	BESDMRResponseHandler.h \
+#	BESDapModule.h \
+#	BESDapRequestHandler.h BESDapTransmit.h
 
-BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
-	BESDataDDSResponse.cc BESDMRResponse.cc \
-	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
-	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
-	BESDapErrorInfo.cc BESDapService.cc BESCatalogEntry.cc
+#BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
+#	BESDataDDSResponse.cc BESDMRResponse.cc \
+#	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
+#	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
+#	BESDapErrorInfo.cc BESDapService.cc BESCatalogEntry.cc
 
-BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
-	BESDDSResponse.h BESDMRResponse.h \
-	BESDataDDSResponse.h \
-	BESContainerStorageCatalog.h \
-	BESCatalogDirectory.h BESCatalog.h \
-	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
-	BESDapErrorInfo.h BESDapService.h BESCatalogEntry.h
+#BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
+#	BESDDSResponse.h BESDMRResponse.h \
+#	BESDataDDSResponse.h \
+#	BESContainerStorageCatalog.h \
+#	BESCatalogDirectory.h BESCatalog.h \
+#	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
+#	BESDapErrorInfo.h BESDapService.h BESCatalogEntry.h
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
@@ -244,5 +244,7 @@ C4_DIR=./cccc
 cccc:	
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) \
-		$(SRCS) $(DAP_SRCS) $(BES_DAP_SRCS) \
-		$(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
+		$(SRCS) $(HDRS)  
+		
+#		$(DAP_SRCS) $(BES_DAP_SRCS) \
+#		$(DAP_HDRS) $(BES_DAP_HDRS)

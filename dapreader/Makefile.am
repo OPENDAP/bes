@@ -7,7 +7,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 ACLOCAL_AMFLAGS = -I conf
 
 SUBDIRS = bes-testsuite

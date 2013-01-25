@@ -18,7 +18,7 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates
+SUBDIRS = dispatch dap xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP
 SUBDIRS += dapreader
 endif
