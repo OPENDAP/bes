@@ -16,12 +16,13 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = . unit-tests
+#SUBDIRS = . unit-tests
 DIST_SUBDIRS = unit-tests
 
 if LIBDAP
-lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
-pkglib_LTLIBRARIES = libdap_module.la
+# lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
+lib_LTLIBRARIES = libbes_dispatch.la 
+# pkglib_LTLIBRARIES = libdap_module.la
 
 bin_PROGRAMS = besregtest
 else
@@ -32,21 +33,22 @@ libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 
-libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-libdap_module_la_LDFLAGS = -avoid-version -module
-libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+#libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
+#libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
+#libdap_module_la_LDFLAGS = -avoid-version -module
+#libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
-libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
-libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
-libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+#libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
+#libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
+#libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
+#libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 besregtest_SOURCES = besregtest.cc
 besregtest_CPPFLAGS = $(AM_CPPFLAGS)
 besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS)
 
-pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
+# pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
+pkginclude_HEADERS = $(HDRS) 
 
 #nobase_sysconf_DATA = bes/bes.conf
 

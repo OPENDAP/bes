@@ -212,6 +212,8 @@ AM_PATH_CPPUNIT(1.12.0,
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
+		 dap/Makefile
+		 dap/bes-testsuite/Makefile
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
