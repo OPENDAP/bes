@@ -1,9 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap 
-
-# AM_CPPFLAGS =
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch 
 AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
