@@ -17,7 +17,7 @@ SUBDIRS = . bes-testsuite
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libbesdap_module.la
 
-BESDAP_SRCS = BESCatalogResponseHandler.cc \
+BESDAP_SRCS = 	BESContainerStorageCatalog.cc \
 	BESDASResponseHandler.cc \
 	BESDDSResponseHandler.cc \
 	BESDDXResponseHandler.cc \
@@ -31,11 +31,15 @@ BESDAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponse.cc \
 	BESDDSResponse.cc \
 	BESDataDDSResponse.cc \
-	BESDMRResponse.cc 
+	BESDMRResponse.cc \
+	BESDapError.cc \
+	BESDapErrorInfo.cc \
+	BESDapService.cc 
+	
 	
 	
 
-BESDAP_HDRS = BESCatalogResponseHandler.h \
+BESDAP_HDRS = 	BESContainerStorageCatalog.h\
 	BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
 	BESDDXResponseHandler.h \
@@ -50,7 +54,11 @@ BESDAP_HDRS = BESCatalogResponseHandler.h \
 	BESDASResponse.h \
 	BESDDSResponse.h \
 	BESDMRResponse.h \
-	BESDataDDSResponse.h 
+	BESDataDDSResponse.h \
+	BESDapError.h \
+	BESDapErrorInfo.h \
+	BESDapService.h 
+	
 	
 
 

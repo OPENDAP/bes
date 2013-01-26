@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dap $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -144,13 +144,9 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc \
-	BESContainerStorageCatalog.cc \
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
-	BESDapError.cc \
-	BESDapErrorInfo.cc \
-	BESDapService.cc \
 	BESCatalogEntry.cc
 	
 
@@ -208,14 +204,10 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCache.h BESUncompressManager.h \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h \
 	BESTokenizer.h BESFSDir.h BESFSFile.h\
-	BESContainerStorageCatalog.h\
 	BESCatalogDirectory.h \
 	BESCatalog.h \
 	BESCatalogUtils.h \
 	BESCatalogList.h \
-	BESDapError.h \
-	BESDapErrorInfo.h \
-	BESDapService.h \
 	BESCatalogEntry.h
 
 # See note above about BESCache3 and BESFileContainer
