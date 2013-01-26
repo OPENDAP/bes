@@ -31,15 +31,9 @@ BESDAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponse.cc \
 	BESDDSResponse.cc \
 	BESDataDDSResponse.cc \
-	BESDMRResponse.cc \
-	BESContainerStorageCatalog.cc \
-	BESCatalogDirectory.cc \
-	BESCatalogUtils.cc \
-	BESCatalogList.cc \
-	BESDapError.cc \
-	BESDapErrorInfo.cc \
-	BESDapService.cc \
-	BESCatalogEntry.cc
+	BESDMRResponse.cc 
+	
+	
 
 BESDAP_HDRS = BESCatalogResponseHandler.h \
 	BESDASResponseHandler.h \
@@ -56,16 +50,8 @@ BESDAP_HDRS = BESCatalogResponseHandler.h \
 	BESDASResponse.h \
 	BESDDSResponse.h \
 	BESDMRResponse.h \
-	BESDataDDSResponse.h \
-	BESContainerStorageCatalog.h \
-	BESCatalogDirectory.h \
-	BESCatalog.h \
-	BESCatalogUtils.h \
-	BESCatalogList.h \
-	BESDapError.h \
-	BESDapErrorInfo.h \
-	BESDapService.h \
-	BESCatalogEntry.h
+	BESDataDDSResponse.h 
+	
 
 
 libbesdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)

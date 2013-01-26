@@ -28,7 +28,6 @@ libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS)		\
 	$(abs_top_builddir)/dispatch/libbes_dispatch.la	\
 	$(abs_top_builddir)/xmlcommand/libbes_xml_command.la	\
 	$(abs_top_builddir)/ppt/libbes_ppt.la			\
-	$(abs_top_builddir)/dispatch/libbes_dap.la		\
 	$(OPENSSL_LIBS)
 
 EXTRA_PROGRAMS = 

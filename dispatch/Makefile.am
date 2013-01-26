@@ -29,7 +29,7 @@ else
 lib_LTLIBRARIES = libbes_dispatch.la
 endif
 
-libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
+libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 
@@ -143,7 +143,16 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESCache.cc BESUncompressManager.cc \
 	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc \
 	BESTokenizer.cc		\
-	BESFSDir.cc BESFSFile.cc
+	BESFSDir.cc BESFSFile.cc \
+	BESContainerStorageCatalog.cc \
+	BESCatalogDirectory.cc \
+	BESCatalogUtils.cc \
+	BESCatalogList.cc \
+	BESDapError.cc \
+	BESDapErrorInfo.cc \
+	BESDapService.cc \
+	BESCatalogEntry.cc
+	
 
 # Older cache code removed from the BES, at least for testing. 
 # The BESFileContainer class is the user of the cache and it
@@ -198,7 +207,16 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESUncompress3BZ2.h BESUncompress3Z.h BESUncompress3GZ.h \
 	BESCache.h BESUncompressManager.h \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h \
-	BESTokenizer.h BESFSDir.h BESFSFile.h
+	BESTokenizer.h BESFSDir.h BESFSFile.h\
+	BESContainerStorageCatalog.h\
+	BESCatalogDirectory.h \
+	BESCatalog.h \
+	BESCatalogUtils.h \
+	BESCatalogList.h \
+	BESDapError.h \
+	BESDapErrorInfo.h \
+	BESDapService.h \
+	BESCatalogEntry.h
 
 # See note above about BESCache3 and BESFileContainer
 #   BESCache2.h BESUncompressManager2.h  
@@ -237,6 +255,27 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 #	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
 #	BESDapErrorInfo.h BESDapService.h BESCatalogEntry.h
 
+
+
+#CATALOG_SRCS = 	BESContainerStorageCatalog.cc \
+#	BESCatalogDirectory.cc \
+#	BESCatalogUtils.cc \
+#	BESCatalogList.cc \
+#	BESDapError.cc \
+#	BESDapErrorInfo.cc \
+#	BESDapService.cc \
+#	BESCatalogEntry.cc
+
+#CATALOG_HDRS = 	BESContainerStorageCatalog.h\
+#	BESCatalogDirectory.h \
+#	BESCatalog.h \
+#	BESCatalogUtils.h \
+#	BESCatalogList.h \
+#	BESDapErrorInfo.h \
+#	BESDapService.h \
+#	BESCatalogEntry.h
+
+
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
 C4_XM=$(C4_dir)/dispatch.xml
@@ -246,7 +285,11 @@ C4_DIR=./cccc
 cccc:	
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) \
-		$(SRCS) $(HDRS)  
+		$(SRCS)$(HDRS)  
+
+
+
+
 		
 #		$(DAP_SRCS) $(BES_DAP_SRCS) \
 #		$(DAP_HDRS) $(BES_DAP_HDRS)

@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
 
 # AM_CPPFLAGS =
 # AM_CXXFLAGS =
@@ -18,8 +18,8 @@ check_LTLIBRARIES = libtestmodule.la
 libtestmodule_la_SOURCES = $(SRCS) $(HDRS)
 libtestmodule_la_LDFLAGS = -avoid-version -module
 libtestmodule_la_LIBADD = ../../xmlcommand/libbes_xml_command.la \
-			  ../../dispatch/libbes_dispatch.la
-
+			  ../../dispatch/libbes_dispatch.la 
+			  
 ##############################################################################
 #
 # Sources and Headers for libtestmodule.

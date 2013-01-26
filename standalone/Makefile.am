@@ -27,5 +27,5 @@ besstandalone_SOURCES = StandAloneApp.cc StandAloneClient.cc \
 
 besstandalone_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 # Added libbes_dap.la jhrg 12/24/12 so besstandalone can call BESCatalogUtils::delete_all_catalogs()
-besstandalone_LDADD = ../dispatch/libbes_dispatch.la ../dispatch/libbes_dap.la \
+besstandalone_LDADD = ../dispatch/libbes_dispatch.la  \
 	../xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
