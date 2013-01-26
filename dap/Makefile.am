@@ -1,7 +1,7 @@
 
 # Automake file for besdap_module
 #
-# 01/22/2013 HAcked up by ndp
+# 01/22/2013 Hacked up by ndp
 #
 # 
 
@@ -12,7 +12,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = bes-testsuite
+SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libbesdap_module.la
@@ -69,7 +69,7 @@ BESDAP_HDRS = BESCatalogResponseHandler.h \
 
 
 libbesdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
-libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
 libbesdap_module_la_LDFLAGS = -avoid-version -module 
 libbesdap_module_la_LIBADD = $(BES_DAP_LIBS)
 
