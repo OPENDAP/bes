@@ -74,18 +74,18 @@ EXTRA_DIST = COPYRIGHT COPYING besdsap_module.spec \
 
 CLEANFILES = *~ besdap.conf
 
-install-data-local: besdap.conf
+install-data-local: dap.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/besdap.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/besdap.conf $(DESTDIR)$(sysconfdir)/bes/modules/besdap.conf.$$currdate; \
-	$(INSTALL_DATA) besdap.conf $(DESTDIR)$(sysconfdir)/bes/modules/besdap.conf
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf.$$currdate; \
+	$(INSTALL_DATA) dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
 uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/besdap.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
-besdap.conf: besdap.conf.in config.status
-	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > besdap.conf
+dap.conf: dap.conf.in ../config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
 
 # Not nearly as clean as it could be, but this removes .svn directories
 # in subdirs.

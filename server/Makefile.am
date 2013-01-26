@@ -28,6 +28,8 @@ beslistener_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 beslistener_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la \
 	../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
+# ../dispatch/libbes_dap.la
+
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h \
 	DaemonCommandHandler.cc DaemonCommandHandler.h BESXMLWriter.cc BESXMLWriter.h \
 	BESDaemonConstants.h
