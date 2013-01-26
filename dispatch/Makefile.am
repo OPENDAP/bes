@@ -92,7 +92,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]prefix[@]%${prefix}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
-
+# TODO Remove
 bes/dap.conf: bes/dap.conf.in ../config.status
 	mkdir -p bes
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
@@ -147,7 +147,8 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
-	BESCatalogEntry.cc
+	BESCatalogEntry.cc \
+	BESCatalogResponseHandler.cc
 	
 
 # Older cache code removed from the BES, at least for testing. 
@@ -208,7 +209,8 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCatalog.h \
 	BESCatalogUtils.h \
 	BESCatalogList.h \
-	BESCatalogEntry.h
+	BESCatalogEntry.h \
+	BESCatalogResponseHandler.h
 
 # See note above about BESCache3 and BESFileContainer
 #   BESCache2.h BESUncompressManager2.h  

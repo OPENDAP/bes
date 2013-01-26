@@ -4,17 +4,12 @@
 #-----------------------------------------------------------------------#
 
 #-----------------------------------------------------------------------#
-# Require dap configuration to be loaded first                          #
-#-----------------------------------------------------------------------#
-BES.Include=dap.conf
-
-#-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
 BES.modules+=dap,dapcmd
 
-BES.module.dap=@bes_modules_dir@/libdap_module.so
+BES.module.dap=@bes_modules_dir@/libbesdap_module.so
 BES.module.dapcmd=@bes_modules_dir@/libdap_xml_module.so
 
 BES.Catalog.Default=catalog

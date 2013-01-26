@@ -3,8 +3,6 @@
 #
 # 01/22/2013 Hacked up by ndp
 #
-# 
-
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
 
@@ -35,9 +33,6 @@ BESDAP_SRCS = 	BESContainerStorageCatalog.cc \
 	BESDapError.cc \
 	BESDapErrorInfo.cc \
 	BESDapService.cc 
-	
-	
-	
 
 BESDAP_HDRS = 	BESContainerStorageCatalog.h\
 	BESDASResponseHandler.h \
@@ -58,14 +53,13 @@ BESDAP_HDRS = 	BESContainerStorageCatalog.h\
 	BESDapError.h \
 	BESDapErrorInfo.h \
 	BESDapService.h 
-	
-	
-
 
 libbesdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
 libbesdap_module_la_LDFLAGS = -avoid-version -module 
-libbesdap_module_la_LIBADD = $(BES_DAP_LIBS)
+libbesdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
+# jhrg 1/25/13 $(BES_DAP_LIBS) $(DAP_LIBS)
 
 EXTRA_PROGRAMS = 
 
@@ -84,8 +78,18 @@ install-data-local: dap.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
+# dap.conf: dap.conf.in ../config.status
+#	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
+
 dap.conf: dap.conf.in ../config.status
-	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+                -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+                -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+                -e "s%[@]datarootdir[@]%${datarootdir}%" \
+                -e "s%[@]datadir[@]%${datadir}%" \
+                -e "s%[@]bindir[@]%${bindir}%" \
+                -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
+
 
 # Not nearly as clean as it could be, but this removes .svn directories
 # in subdirs.
