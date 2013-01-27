@@ -59,6 +59,8 @@ libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
 libbesdap_module_la_LDFLAGS = -avoid-version -module 
 libbesdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
+pkginclude_HEADERS = $(BESDAP_HDRS) 
+
 # jhrg 1/25/13 $(BES_DAP_LIBS) $(DAP_LIBS)
 
 EXTRA_PROGRAMS = 
