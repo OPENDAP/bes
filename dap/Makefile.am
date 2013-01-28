@@ -32,7 +32,8 @@ BESDAP_SRCS = 	BESContainerStorageCatalog.cc \
 	BESDMRResponse.cc \
 	BESDapError.cc \
 	BESDapErrorInfo.cc \
-	BESDapService.cc 
+	BESDapService.cc \
+	BESServerFunctionsList.cc
 
 BESDAP_HDRS = 	BESContainerStorageCatalog.h\
 	BESDASResponseHandler.h \
@@ -52,7 +53,8 @@ BESDAP_HDRS = 	BESContainerStorageCatalog.h\
 	BESDataDDSResponse.h \
 	BESDapError.h \
 	BESDapErrorInfo.h \
-	BESDapService.h 
+	BESDapService.h \
+	BESServerFunctionsList.h
 
 libbesdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)

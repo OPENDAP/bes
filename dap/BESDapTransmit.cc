@@ -57,6 +57,7 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
+#include "BESServerFunctionsList.h"
 #include "BESDebug.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,6 +167,10 @@ private:
         }
         DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
+
+        // Add functions to the CE instance.
+        BESServerFunctionsList::TheList()->store_functions(ce);
+
         dhi.first_container();
         bool print_mime = get_print_mime();
 
