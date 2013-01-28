@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap $(XML2_CFLAGS)
+AM_CPPFLAGS =  $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -111,6 +111,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
+	BESContainerStorageCatalog.cc \
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
 	BESShowErrorResponseHandler.cc					\
@@ -162,6 +163,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
+	BESNames.h \
 	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\
 	BESContainerStorageVolatile.h 					\
@@ -169,6 +171,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESShowErrorResponseHandler.h					\
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
 	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h 	\
+	BESContainerStorageCatalog.h \
 	BESDefinitionStorageVolatile.h 					\
 	BESDefineResponseHandler.h BESShowDefsResponseHandler.h 	\
 	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h 		\

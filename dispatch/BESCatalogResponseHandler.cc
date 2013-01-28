@@ -35,7 +35,7 @@
 #include "BESInfo.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
-#include "BESDapNames.h"
+#include "BESNames.h"
 #include "BESDataNames.h"
 #include "BESCatalogList.h"
 #include "BESCatalog.h"

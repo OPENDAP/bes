@@ -40,7 +40,7 @@ using std::ostringstream ;
 #include "BESInfo.h"
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
-#include "BESDapNames.h"
+#include "BESNames.h"
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
 

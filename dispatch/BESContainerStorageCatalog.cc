@@ -39,9 +39,6 @@
 #include "BESServiceRegistry.h"
 #include "BESRegex.h"
 #include "BESDebug.h"
-#include "Error.h"
-
-using namespace libdap ;
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -154,8 +151,6 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 	for( ; i != ie && !done; i++ )
 	{
 	    BESCatalogUtils::type_reg match = (*i) ;
-	    try
-	    {
 		BESRegex reg_expr( match.reg.c_str() ) ;
 		if( reg_expr.match( real_name.c_str(), real_name.length() ) ==
 		    static_cast<int>(real_name.length()) )
@@ -163,15 +158,7 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 		    new_type = match.type ;
 		    done = true ;
 		}
-	    }
-	    catch( Error &e )
-	    {
-		string serr = (string)"Unable to match data type, "
-		              + "malformed Catalog TypeMatch parameter " 
-			      + "in bes configuration file around " 
-			      + match.reg + ": " + e.get_error_message() ;
-		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-	    }
+
 	}
     }
     BESContainerStorageVolatile::add_container( sym_name, real_name, new_type );
@@ -197,8 +184,6 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
     for( ; i != ie && !done; i++ )
     {
 	BESCatalogUtils::type_reg match = (*i) ;
-	try
-	{
 	    BESRegex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
 	        static_cast<int>(inQuestion.length()) )
@@ -206,15 +191,6 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 		node_type = match.type ;
 		done = true ;
 	    }
-	}
-	catch( Error &e )
-	{
-	    string serr = (string)"Unable to determine data products (is data), "
-			  + "malformed Catalog TypeMatch parameter " 
-			  + "in bes configuration file around " 
-			  + match.reg + ": " + e.get_error_message() ;
-	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-	}
     }
 
     BESServiceRegistry::TheRegistry()->services_handled( node_type, provides ) ;
