@@ -39,6 +39,7 @@ using std::endl ;
 #include "BESRequestHandlerList.h"
 
 #include "BESDapNames.h"
+#include "BESNames.h"
 #include "BESResponseHandlerList.h"
 
 #include "BESDASResponseHandler.h"

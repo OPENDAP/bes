@@ -76,21 +76,13 @@
 #define DMR_DESCRIPT "OPeNDAP Data DMR Structure"
 #define DMR_RESPONSE_STR "getDMR"
 
-#define CATALOG_RESPONSE "show.catalog"
-#define CATALOG_RESPONSE_STR "showCatalog"
-#define SHOW_INFO_RESPONSE "show.info"
-#define SHOW_INFO_RESPONSE_STR "showInfo"
-
 /*
  * DataDDX data names
  */
 #define DATADDX_STARTID "dataddx_startid"
 #define DATADDX_BOUNDARY "dataddx_boundary"
 
-/*
- * show catalog/info data names
- */
-#define CATALOG_OR_INFO "catalog_or_info"
+
 
 #endif // E_BESDapNames_H
 

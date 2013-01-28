@@ -34,7 +34,7 @@
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
-#include "BESDapNames.h"
+#include "../dap/BESDapNames.h"
 #include "BESResponseNames.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
