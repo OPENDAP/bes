@@ -1,5 +1,5 @@
 
-# Automake file for besdap_module
+# Automake file for dap_module
 #
 # 01/22/2013 Hacked up by ndp
 #
@@ -13,7 +13,7 @@ ACLOCAL_AMFLAGS = -I conf
 SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
-lib_bes_LTLIBRARIES = libbesdap_module.la
+lib_bes_LTLIBRARIES = libdap_module.la
 
 BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDDSResponseHandler.cc \
@@ -54,10 +54,10 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapService.h \
 	BESServerFunctionsList.h
 
-libbesdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
-libbesdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
-libbesdap_module_la_LDFLAGS = -avoid-version -module 
-libbesdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
+libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
+libdap_module_la_LDFLAGS = -avoid-version -module 
+libdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 pkginclude_HEADERS = $(BESDAP_HDRS) 
 
@@ -101,7 +101,7 @@ dist-hook:
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
-	cccc --outdir=$(C4_DIR) $(libbesdap_module_la_SOURCES)
+	cccc --outdir=$(C4_DIR) $(libdap_module_la_SOURCES)
 
 ###########################################################################
 
