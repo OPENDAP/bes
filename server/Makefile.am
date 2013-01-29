@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/ppt  -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand
+AM_CPPFLAGS =  -I$(top_srcdir)/ppt  -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
