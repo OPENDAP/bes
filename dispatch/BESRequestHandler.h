@@ -55,7 +55,7 @@ typedef bool (*p_request_handler)(BESDataHandlerInterface &);
  * the request handler knows how to fill them in.
  *
  * Each container in the BESDataHandlerInterface has an associated data type
- * for that data continer, such as Cedar, NetCDF, CDF, HDF, etc... Usually, in
+ * for that data container, such as Cedar, NetCDF, CDF, HDF, etc... Usually, in
  * a given request, only one data type is requested. In other words, at least
  * currently, it is rare to see a request asking for information from more
  * than one type of data.

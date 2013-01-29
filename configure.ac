@@ -235,6 +235,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_ppt.pc
 		 bes_dap.pc
 		 bes_xml_command.pc
+		 functions/Makefile
 ])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])

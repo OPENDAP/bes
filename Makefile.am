@@ -18,9 +18,9 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch dap xmlcommand ppt cmdln server standalone docs bin templates 
+SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP
-SUBDIRS += dapreader
+SUBDIRS += dap dapreader functions
 endif
 
 bin_SCRIPTS = besd bes-config bes-config-pkgconfig

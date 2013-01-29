@@ -15,6 +15,8 @@ AUTOMAKE_OPTIONS = foreign check-news
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_functions_module.la
 
+BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
+
 SRCS = ce_functions.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
 gse.tab.cc lex.gse_.cc GSEClause.cc
 
@@ -38,6 +40,7 @@ gse.tab.cc gse.tab.hh: gse.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p gse_ -o gse.tab.cc $<
 	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
 
+ce_functions.o: ce_functions.cc ce_functions
 EXTRA_PROGRAMS = 
 
 EXTRA_DIST = COPYRIGHT COPYING dap_functions_module.spec \
