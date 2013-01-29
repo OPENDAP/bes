@@ -1,5 +1,5 @@
 
-# Automake file for dap_functions
+# Automake file for functions
 #
 # 01/28/2013 Hacked up by jhrg
 #
@@ -13,7 +13,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 # SUBDIRS = . tests
 
 lib_besdir=$(libdir)/bes
-lib_bes_LTLIBRARIES = libdap_functions_module.la
+lib_bes_LTLIBRARIES = libfunctions_module.la
 
 BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
 
@@ -23,10 +23,10 @@ gse.tab.cc lex.gse_.cc GSEClause.cc
 HDRS = ce_functions.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h
 
-libdap_functions_module_la_SOURCES = $(SRCS) $(HDRS)
-libdap_functions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-libdap_functions_module_la_LDFLAGS = -avoid-version -module 
-libdap_functions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
+libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+libfunctions_module_la_LDFLAGS = -avoid-version -module 
+libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # Don't install the headers for this kind of module.
 # pkginclude_HEADERS = $(HDRS) 
@@ -43,29 +43,29 @@ gse.tab.cc gse.tab.hh: gse.y
 ce_functions.o: ce_functions.cc ce_functions
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING dap_functions_module.spec \
-    dap_functions.conf.in OSX_Resources gse.y gse.lex
+EXTRA_DIST = COPYRIGHT COPYING functions_module.spec \
+    functions.conf.in OSX_Resources gse.y gse.lex
 
-CLEANFILES = *~ dap_functions.conf
+CLEANFILES = *~ functions.conf
 
-install-data-local: dap_functions.conf
+install-data-local: functions.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dap_functions.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dap_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap_functions.conf.$$currdate; \
-	$(INSTALL_DATA) dap_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap_functions.conf
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf.$$currdate; \
+	$(INSTALL_DATA) functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
 
 uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dap_functions.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
 
-dap_functions.conf: dap_functions.conf.in ../config.status
+functions.conf: functions.conf.in ../config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
                 -e "s%[@]datarootdir[@]%${datarootdir}%" \
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
-                -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap_functions.conf
+                -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > functions.conf
 
 distclean-local:
 	-rm gse.tab.cc gse.tab.hh lex.gse_.cc
@@ -78,7 +78,7 @@ dist-hook:
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
-	cccc --outdir=$(C4_DIR) $(libdap_functions_module_la_SOURCES)
+	cccc --outdir=$(C4_DIR) $(libfunctions_module_la_SOURCES)
 
 ###########################################################################
 

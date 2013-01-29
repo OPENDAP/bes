@@ -1,9 +1,0 @@
-
-#-----------------------------------------------------------------------#
-# OPeNDAP Dap Functions Configuration file                                 #
-#-----------------------------------------------------------------------#
-
-BES.modules+=dap_functions
-
-BES.module.dap_functions=@bes_modules_dir@/libdap_functions_module.so
-
