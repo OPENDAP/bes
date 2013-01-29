@@ -36,7 +36,7 @@ using std::endl ;
 using std::cout ;
 
 #include "BESXMLDapCommandModule.h"
-#include "../dap/BESDapNames.h"
+#include "BESDapNames.h"
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
