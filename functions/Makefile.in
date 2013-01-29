@@ -88,7 +88,9 @@ am__objects_1 = libdap_functions_module_la-ce_functions.lo \
 	libdap_functions_module_la-DapFunctions.lo \
 	libdap_functions_module_la-GeoConstraint.lo \
 	libdap_functions_module_la-GridGeoConstraint.lo \
-	libdap_functions_module_la-gse.tab.lo
+	libdap_functions_module_la-gse.tab.lo \
+	libdap_functions_module_la-lex.gse_.lo \
+	libdap_functions_module_la-GSEClause.lo
 am__objects_2 =
 am_libdap_functions_module_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_2)
@@ -302,10 +304,10 @@ AUTOMAKE_OPTIONS = foreign check-news
 lib_besdir = $(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_functions_module.la
 SRCS = ce_functions.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
-gse.tab.cc
+gse.tab.cc lex.gse_.cc GSEClause.cc
 
 HDRS = ce_functions.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
-gse.tab.hh gse_parser.h
+gse.tab.hh gse_parser.h GSEClause.h
 
 libdap_functions_module_la_SOURCES = $(SRCS) $(HDRS)
 libdap_functions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -399,10 +401,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-DapFunctions.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-GSEClause.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-GeoConstraint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-GridGeoConstraint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-ce_functions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-gse.tab.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdap_functions_module_la-lex.gse_.Plo@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -459,6 +463,20 @@ libdap_functions_module_la-gse.tab.lo: gse.tab.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gse.tab.cc' object='libdap_functions_module_la-gse.tab.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdap_functions_module_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdap_functions_module_la-gse.tab.lo `test -f 'gse.tab.cc' || echo '$(srcdir)/'`gse.tab.cc
+
+libdap_functions_module_la-lex.gse_.lo: lex.gse_.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdap_functions_module_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libdap_functions_module_la-lex.gse_.lo -MD -MP -MF $(DEPDIR)/libdap_functions_module_la-lex.gse_.Tpo -c -o libdap_functions_module_la-lex.gse_.lo `test -f 'lex.gse_.cc' || echo '$(srcdir)/'`lex.gse_.cc
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libdap_functions_module_la-lex.gse_.Tpo $(DEPDIR)/libdap_functions_module_la-lex.gse_.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='lex.gse_.cc' object='libdap_functions_module_la-lex.gse_.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdap_functions_module_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdap_functions_module_la-lex.gse_.lo `test -f 'lex.gse_.cc' || echo '$(srcdir)/'`lex.gse_.cc
+
+libdap_functions_module_la-GSEClause.lo: GSEClause.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdap_functions_module_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libdap_functions_module_la-GSEClause.lo -MD -MP -MF $(DEPDIR)/libdap_functions_module_la-GSEClause.Tpo -c -o libdap_functions_module_la-GSEClause.lo `test -f 'GSEClause.cc' || echo '$(srcdir)/'`GSEClause.cc
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libdap_functions_module_la-GSEClause.Tpo $(DEPDIR)/libdap_functions_module_la-GSEClause.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GSEClause.cc' object='libdap_functions_module_la-GSEClause.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdap_functions_module_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdap_functions_module_la-GSEClause.lo `test -f 'GSEClause.cc' || echo '$(srcdir)/'`GSEClause.cc
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -593,7 +611,7 @@ distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-tags
+	distclean-local distclean-tags
 
 dvi: dvi-am
 
@@ -660,17 +678,18 @@ uninstall-am: uninstall-lib_besLTLIBRARIES uninstall-local
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-lib_besLTLIBRARIES clean-libtool ctags dist-hook \
 	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-data-local install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-lib_besLTLIBRARIES \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-lib_besLTLIBRARIES uninstall-local
+	distclean-libtool distclean-local distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-data-local install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
+	install-lib_besLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-lib_besLTLIBRARIES \
+	uninstall-local
 
 
 # Don't install the headers for this kind of module.
@@ -703,6 +722,9 @@ dap_functions.conf: dap_functions.conf.in ../config.status
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap_functions.conf
+
+distclean-local:
+	-rm gse.tab.cc gse.tab.hh lex.gse_.cc
 
 # Not nearly as clean as it could be, but this removes .svn directories
 # in subdirs.
