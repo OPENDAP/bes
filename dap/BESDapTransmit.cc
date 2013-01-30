@@ -136,18 +136,16 @@ private:
         if (!bdas) {
             throw BESInternalError("cast error", __FILE__, __LINE__);
         }
+
         DAS *das = bdas->get_das();
         dhi.first_container();
         bool print_mime = get_print_mime();
-#ifdef USE_DODSFILTER
-        DODSFilter df;
-        df.set_dataset_name( dhi.container->get_real_name() );
-        df.send_das( dhi.get_output_stream(), *das, "", print_mime );
-#else
+
         ResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.send_das(dhi.get_output_stream(), *das, print_mime);
-#endif
+
+        //rb.send_das(dhi.get_output_stream(), DDS &dds, ConstraintEvaluator &eval, bool constrained, bool with_mime_headers)
     }
 };
 
@@ -164,28 +162,17 @@ private:
         if (!bdds) {
             throw BESInternalError("cast error", __FILE__, __LINE__);
         }
+
         DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
 
-#if 0
-        // Add functions to the CE instance.
-        // No longer used; CE now uses ServerFunctionsList directly
-        BESServerFunctionsList::TheList()->store_functions(ce);
-#endif
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-#ifdef USE_DODSFILTER
-        DODSFilter df;
-        df.set_dataset_name(dhi.container->get_real_name());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", print_mime);
-#else
         ResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_dds(dhi.get_output_stream(), *dds, ce, true, print_mime);
-#endif
     }
 };
 
@@ -201,26 +188,17 @@ private:
         if (!bdds) {
             throw BESInternalError("cast error", __FILE__, __LINE__);
         }
+
         DataDDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
-#if 0
-        // Add functions to the CE instance.
-        BESServerFunctionsList::TheList()->store_functions(ce);
-#endif
+
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-#ifdef USE_DODSFILTER
-        DODSFilter df;
-        df.set_dataset_name(dds->filename());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
-#else
         ResponseBuilder rb;
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_data(dhi.get_output_stream(), *dds, ce, print_mime);
-#endif
     }
 };
 
@@ -236,26 +214,17 @@ private:
         if (!bdds) {
             throw BESInternalError("cast error", __FILE__, __LINE__);
         }
+
         DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
-#if 0
-        // Add functions to the CE instance.
-        BESServerFunctionsList::TheList()->store_functions(ce);
-#endif
+
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-#ifdef USE_DODSFILTER
-        DODSFilter df;
-        df.set_dataset_name(dhi.container->get_real_name());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_ddx(*dds, ce, dhi.get_output_stream(), print_mime);
-#else
         ResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_ddx(dhi.get_output_stream(), *dds, ce, print_mime);
-#endif
     }
 };
 
@@ -273,29 +242,16 @@ private:
         }
         DataDDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
-#if 0
-        // Add functions to the CE instance.
-        BESServerFunctionsList::TheList()->store_functions(ce);
-#endif
+
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-#ifdef USE_DODSFILTER
-        DODSFilter df;
-        df.set_dataset_name(dds->filename());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-        df.send_data_ddx(*dds, ce, dhi.get_output_stream(),
-                dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
-                "", print_mime);
-#else
         ResponseBuilder rb;
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
         rb.send_data_ddx(dhi.get_output_stream(), *dds, ce, dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
                 print_mime);
-#endif
     }
 };
 
@@ -340,7 +296,7 @@ BESDapTransmit::BESDapTransmit() :
     add_method(DDX_SERVICE, BESDapTransmit::send_basic_ddx);
     add_method(DATA_SERVICE, BESDapTransmit::send_basic_data);
     add_method(DATADDX_SERVICE, BESDapTransmit::send_basic_dataddx);
-    add_method( DMR_SERVICE, BESDapTransmit::send_basic_dmr ) ;
+    add_method(DMR_SERVICE, BESDapTransmit::send_basic_dmr);
 }
 
 BESDapTransmit::~BESDapTransmit()

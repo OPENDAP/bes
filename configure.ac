@@ -79,6 +79,11 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+AC_PROG_LEX
+dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
+dnl Makefile will call bison -y which doesn't know how to make the parsers 
+dnl we require. jhrg 6/15/05
+AC_CHECK_PROG(YACC,[bison],[bison])
 
 dnl Use libtool instead?
 dnl AC_PROG_RANLIB
