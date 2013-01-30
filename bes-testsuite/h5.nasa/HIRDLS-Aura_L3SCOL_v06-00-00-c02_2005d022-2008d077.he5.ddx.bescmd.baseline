@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="InstrumentName" type="String">
+            <value>HIRDLS</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>L3    </value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>L3PSTB16sc</value>
+        </Attribute>
+        <Attribute name="HIRDLSFileType" type="String">
+            <value>HIR3SCOL</value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <value>Daily</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_HIRDLS" type="Container">
+        <Attribute name="VerticalCoordinate" type="String">
+            <value>Partial Column</value>
+        </Attribute>
+        <Attribute name="ColumnPressureMinimum" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="ColumnPressureMaximum" type="Float32">
+            <value>57.00000000</value>
+        </Attribute>
+        <Attribute name="ColumnPressureUnits" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS_HIRDLS_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.13</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;HIRDLS&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>180</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>73</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>-65000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>81000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>HE5_GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <value>HE5_HDFE_GD_LL</value>
+                </Attribute>
+                <Attribute name="PixelRegistration" type="String">
+                    <value>HE5_HDFE_CENTER</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>73</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1151</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Month&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Day&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Year&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>73</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NO2DayColumn&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                            <value>73</value>
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NO2DayColumnPrecision&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                            <value>73</value>
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NO2DayDataCount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="TilingDimensions" type="Float64">
+                            <value>1151</value>
+                            <value>73</value>
+                            <value>180</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Further update anticipated using enhanced PGE&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Reprocessed once&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;./HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2011-08-19T21:20:43.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;6.00.00&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;N2O (Day)&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Suspect&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Process Terminated Normally - Check Science Quality Flag for Science Team quality assessment&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Q/A process has not yet been run&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;HIR3SCOL&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>6</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;See Production History File for this information&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="GRANULELOCALITY" type="Container">
+                    <Attribute name="LOCALITYVALUE" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Global&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERTICALSPATIALDOMAIN" type="Container">
+                    <Attribute name="VERTICALSPATIALDOMAINCONTAINER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="VERTICALSPATIALDOMAINTYPE" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Atmosphere Layer&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="VERTICALSPATIALDOMAINVALUE" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Atmosphere Profile&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>80.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-64.0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2005-01-22&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00.00&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2008-03-17&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;23:59:59.99&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;L3PSTB16sc&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Array name="Day">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Day of Observation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value> </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Day</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Day</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="1151"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degress_north</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Latitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim" size="73"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Longitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>XDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="XDim" size="180"/>
+    </Array>
+    <Array name="Month">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Month of observation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value> </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Month</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Month</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="1151"/>
+    </Array>
+    <Array name="NO2DayColumn">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Nitrogen Dioxide Column vmr</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NO2DayColumn</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/NO2DayColumn</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1151"/>
+        <dimension name="YDim" size="73"/>
+        <dimension name="XDim" size="180"/>
+    </Array>
+    <Array name="NO2DayColumnPrecision">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Nitrogen Dioxide Column Precision vmr</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NO2DayColumnPrecision</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/NO2DayColumnPrecision</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1151"/>
+        <dimension name="YDim" size="73"/>
+        <dimension name="XDim" size="180"/>
+    </Array>
+    <Array name="NO2DayDataCount">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Nitrogen Dioxide Data Count</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value> </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NO2DayDataCount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/NO2DayDataCount</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1151"/>
+        <dimension name="YDim" size="73"/>
+        <dimension name="XDim" size="180"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TAI Time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>seconds since 1993-01-01</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Time</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1151"/>
+    </Array>
+    <Array name="Year">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-999</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Year of Observation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value> </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Year</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/Data Fields/Year</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="1151"/>
+    </Array>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <String name="coremetadata_0">
+        <Attribute name="origname" type="String">
+            <value>coremetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/coremetadata.0</value>
+        </Attribute>
+    </String>
+    <Array name="XDim">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>XDim</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/XDim</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>XDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="XDim" size="180"/>
+    </Array>
+    <Array name="YDim">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/YDim</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim" size="73"/>
+    </Array>
+    <Array name="nTimes">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>seconds since 1993-01-01</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/HIRDLS/nTimes</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1151"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

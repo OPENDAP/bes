@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z" space="catalog">/data/DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5</setContainer>
+    <define name="d">
+	<container name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z" />
+    </define>
+    <get type="das" definition="d" />
+</request>

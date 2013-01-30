@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2012 The HDF Group
+/// Copyright (C) 2011-2013 The HDF Group
 ///
 /// All rights reserved.
 
@@ -968,7 +968,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var,
                             setret2 = thisvar_dimname_set.insert(dimname_candidate);
                             if (true == setret2.second) {
                                 (*ird)->name =  dimname_candidate;
-                                // Should check in the future if the newname may cause potential inconsistency. KY-2012-3-9
+                                // Should check in the future if the newname may cause potential inconsistency. KY:2012-3-9
                                 (*ird)->newname = (num_groups == 1)? he5d.name :(*ird)->name;
                                 eos5data->vardimnames.insert((*ird)->name);
                             }
@@ -2350,7 +2350,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
     
 void EOS5File::Handle_Za_CVar(bool isaugmented) throw(Exception){
 
-    // We are not supporting non-augmented zonal average HDF-EOS5 product now. KY-2012-1-20
+    // We are not supporting non-augmented zonal average HDF-EOS5 product now. KY:2012-1-20
     if(false == isaugmented) 
         return;
 

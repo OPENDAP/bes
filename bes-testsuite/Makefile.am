@@ -16,7 +16,7 @@ noinst_DATA = bes.conf bes.default.conf
 
 CLEANFILES = *.log *.sum *.out site.exp
 
-EXTRA_DIST = hdf5_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 h5 bes.conf.in bes.default.conf.in
+EXTRA_DIST = hdf5_handlerTest.at hdf5_handlerTest.nasa.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 h5 h5.nasa bes.conf.in bes.default.conf.in
 
 DISTCLEANFILES = bes.conf bes.default.conf $(srcdir)/package.m4 hdf5_handlerTest
 

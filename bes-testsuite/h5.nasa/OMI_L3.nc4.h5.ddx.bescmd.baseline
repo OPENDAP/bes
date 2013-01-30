@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="OMI_L3.nc4.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="OrbitNumber" type="Int32">
+            <value>7510</value>
+            <value>7511</value>
+            <value>7512</value>
+            <value>7513</value>
+            <value>7514</value>
+            <value>7515</value>
+            <value>7516</value>
+            <value>7517</value>
+            <value>7518</value>
+            <value>7519</value>
+            <value>7520</value>
+            <value>7521</value>
+            <value>7522</value>
+            <value>7523</value>
+            <value>7524</value>
+            <value>7525</value>
+            <value>7526</value>
+            <value>7527</value>
+            <value>7528</value>
+            <value>7529</value>
+            <value>7530</value>
+            <value>7531</value>
+            <value>7532</value>
+            <value>7533</value>
+            <value>7534</value>
+            <value>7535</value>
+            <value>7536</value>
+            <value>7537</value>
+            <value>7538</value>
+            <value>7539</value>
+            <value>7540</value>
+            <value>7541</value>
+            <value>7542</value>
+            <value>7543</value>
+            <value>7544</value>
+            <value>7545</value>
+            <value>7546</value>
+            <value>7547</value>
+            <value>7548</value>
+            <value>7549</value>
+            <value>7550</value>
+            <value>7551</value>
+            <value>7552</value>
+            <value>7553</value>
+            <value>7554</value>
+        </Attribute>
+        <Attribute name="OrbitPeriod" type="Float64">
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5933.0000000000000</value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <value>OMI</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>3e</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>12</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>14</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2005</value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <value>348</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>408672005.00000000</value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>0.9.26</value>
+        </Attribute>
+        <Attribute name="StartUTC" type="String">
+            <value>2005-12-13T18:00:00.000000Z</value>
+        </Attribute>
+        <Attribute name="EndUTC" type="String">
+            <value>2005-12-15T06:00:00.000000Z</value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <value>Daily</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="OMI_Column_Amount_O3" type="Container">
+        <Attribute name="GCTPProjectionCode" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Projection" type="String">
+            <value>Geographic</value>
+        </Attribute>
+        <Attribute name="GridOrigin" type="String">
+            <value>Center</value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <value>1440</value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <value>720</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="OMI_Column_Amount_O3_Data_Fields" type="Container"/>
+    <Array name="OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="Title" type="String">
+            <value>Best Total Ozone Solution</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="ScaleFactor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="ValidRange" type="Float32">
+            <value>50.00000000</value>
+            <value>700.0000000</value>
+        </Attribute>
+        <Attribute name="MissingValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ColumnAmountO3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="OMI_Column_Amount_O3_lat" size="720"/>
+        <dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
+    </Array>
+    <Array name="OMI_Column_Amount_O3_Data_Fields_Reflectivity331">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="Title" type="String">
+            <value>Effective Surface Reflectivity at 331 nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="ScaleFactor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="ValidRange" type="Float32">
+            <value>-15.00000000</value>
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="MissingValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3/Data_Fields/Reflectivity331</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="OMI_Column_Amount_O3_lat" size="720"/>
+        <dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
+    </Array>
+    <Array name="OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="Title" type="String">
+            <value>UV Aerosol Index</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="ScaleFactor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="Offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="ValidRange" type="Float32">
+            <value>-30.00000000</value>
+            <value>30.00000000</value>
+        </Attribute>
+        <Attribute name="MissingValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="OMI_Column_Amount_O3_lat" size="720"/>
+        <dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
+    </Array>
+    <Array name="OMI_Column_Amount_O3_lat">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>latitude </value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3/lat</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="OMI_Column_Amount_O3_lat" size="720"/>
+    </Array>
+    <Array name="OMI_Column_Amount_O3_lon">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>longitude </value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east </value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lon</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/OMI_Column_Amount_O3/lon</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

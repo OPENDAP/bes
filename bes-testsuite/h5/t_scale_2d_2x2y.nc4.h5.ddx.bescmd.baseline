@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_scale_2d_2x2y.nc4.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="_nc3_strict" type="Int32">
+            <value>1</value>
+        </Attribute>
+    </Attribute>
+    <Array name="lon">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lon</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/lon</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xc" size="4"/>
+        <dimension name="yc" size="4"/>
+    </Array>
+    <Array name="lat">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/lat</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xc" size="4"/>
+        <dimension name="yc" size="4"/>
+    </Array>
+    <Array name="scale_yes">
+        <Attribute name="coordinates" type="String">
+            <value>lat lon</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>10.000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>1000.0000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>scale_yes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/scale_yes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xc" size="4"/>
+        <dimension name="yc" size="4"/>
+    </Array>
+    <Array name="xc">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         4</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xc" size="4"/>
+    </Array>
+    <Array name="yc">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         4</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="yc" size="4"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

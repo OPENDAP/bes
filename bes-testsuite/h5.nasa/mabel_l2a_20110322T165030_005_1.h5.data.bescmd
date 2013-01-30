@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="mabel_l2a_20110322T165030_005_1" space="catalog">/data/mabel_l2a_20110322T165030_005_1.h5</setContainer>
+    <define name="d">
+	<container name="mabel_l2a_20110322T165030_005_1">
+	     <constraint>_novatel_ins_geolocation_latitude[0:1600:3200],_novatel_ins_geolocation_longitude[0:1600:3200],_photon_channel001_latitude[0:309339:618678],_photon_channel001_longitude[0:309339:618678],_photon_channel001_flag[0],_photon_channel001_photon_id[618678],_altimetry_histogram_channel001_histogram[0:375:749][199:199:199],_atmosphere_histogram_channel004_histogram[0:187:374][0:1:499],_flight_parameters_Flight_Start_GPS_Seconds[0]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

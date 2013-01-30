@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249" space="catalog">/data/OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5</setContainer>
+    <define name="d">
+	<container name="OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249">
+	     <constraint>Latitude[0:821:1642][0:30:59],Longitude[0:821:1642][0:30:59],CSErythemalDailyDose[0][0],OMTO3QualityFlags[1642][59],OPErythemalDoseRate[0:821:1642][59:59:59],OMUVBQuality[0:821:1642][0:1:59]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

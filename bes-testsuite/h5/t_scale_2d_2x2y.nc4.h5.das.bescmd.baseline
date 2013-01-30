@@ -1,0 +1,30 @@
+Attributes {
+    HDF5_GLOBAL {
+        Int32 _nc3_strict 1;
+    }
+    lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    scale_yes {
+        String coordinates "lat lon";
+        Float64 scale_factor 10.000000000000000;
+        Float64 add_offset 1000.0000000000000;
+        String origname "scale_yes";
+        String fullnamepath "/scale_yes";
+    }
+    xc {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "This is a netCDF dimension but not a netCDF variable.         4";
+    }
+    yc {
+        String CLASS "DIMENSION_SCALE";
+        String NAME "This is a netCDF dimension but not a netCDF variable.         4";
+    }
+}

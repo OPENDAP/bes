@@ -1,0 +1,10 @@
+The data:
+Float32 HALOE_lat_max[HALOE_time = 2][HALOE_lev = 2][HALOE_lat = 2] = {{{-999, -999},{-999, -999}},{{-999, -999},{-999, -999}}};
+Float32 HALOE_lst_min[HALOE_time = 2][HALOE_lat = 2] = {{-999, -999},{-999, -999}};
+Int16 HALOE_days_used[HALOE_time = 2][HALOE_lev = 2][HALOE_lat = 2][HALOE_dayInBin = 2] = {{{{0, 0},{0, 0}},{{0, 0},{0, 0}}},{{{0, 0},{0, 0}},{{0, 0},{0, 0}}}};
+Int16 ACE_FTS_days_used[ACE_FTS_time = 2][ACE_FTS_lev = 2][ACE_FTS_lat = 2][ACE_FTS_dayInBin = 2] = {{{{0, 0},{0, 0}},{{0, 0},{0, 0}}},{{{0, 0},{0, 0}},{{0, 0},{0, 0}}}};
+Float32 ACE_FTS_lat[ACE_FTS_lat = 2] = {-85, 85};
+Float32 ACE_FTS_lev[ACE_FTS_lev = 2] = {1000, 0.1};
+Int32 ACE_FTS_time[ACE_FTS_time = 2] = {20103, 20437};
+Float32 HALOE_dayInBin[HALOE_dayInBin = 2] = {0, 30};
+

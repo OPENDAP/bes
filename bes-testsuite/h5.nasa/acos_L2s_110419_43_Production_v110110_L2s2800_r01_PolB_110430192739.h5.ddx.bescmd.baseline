@@ -1,0 +1,2950 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="Dimensions" type="Container"/>
+    <Attribute name="Dimensions_Aerosol" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>5</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Retrieved aerosol type.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Aerosol</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_AncFile" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>3</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Number of ancillary input files.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/AncFile</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Band" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>3</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Spectrum index (O2, weak CO2, strong CO2).</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Band</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Exposure" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>649</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Index of scans in granule.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Exposure</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Gap" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Number of gaps.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Gap</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_InputPtr" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Number of primary input files.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/InputPtr</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_L2FullPhysicsInputPtr" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>10</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Number of full physics input files.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/L2FullPhysicsInputPtr</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Level" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>20</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Atmospheric retrieval levels.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Level</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Polarization" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Polarization index: 0=P, 1=S</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Polarization</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Retrieval" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>60</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Number retrievals reported.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/Retrieval</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_WNConv" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Wavenumber conversion Coefficients.</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Dimensions/WNConv</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Metadata" type="Container"/>
+    <Attribute name="RetrievalResults" type="Container"/>
+    <Attribute name="Shapes" type="Container"/>
+    <Attribute name="Shapes_Aerosol_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Aerosol</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Aerosol_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_AncFile_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>AncFile</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/AncFile_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Band_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Band</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Band_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Band_Polarization_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Band</value>
+            <value>Polarization</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Band_Polarization_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Exposure_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Exposure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Exposure_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Gap_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Gap</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Gap_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_InputPtr_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>InputPtr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/InputPtr_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_L2FullPhysicsInputPtr_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>L2FullPhysicsInputPtr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/L2FullPhysicsInputPtr_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Aerosol_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+            <value>Aerosol</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Aerosol_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Band_Polarization_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>3</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+            <value>Band</value>
+            <value>Polarization</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Band_Polarization_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Band_Polarization_WNConv_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>4</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+            <value>Band</value>
+            <value>Polarization</value>
+            <value>WNConv</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Band_Polarization_WNConv_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Level_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+            <value>Level</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Level_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Polarization_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <value>Retrieval</value>
+            <value>Polarization</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Retrieval_Polarization_Array</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Scalar" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Shapes/Scalar</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="SoundingGeometry" type="Container"/>
+    <Attribute name="SoundingHeader" type="Container"/>
+    <Attribute name="SpacecraftGeometry" type="Container"/>
+    <Attribute name="SpectralParameters" type="Container"/>
+    <Array name="Metadata_AerosolTypes">
+        <Attribute name="Shape" type="String">
+            <value>Aerosol_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolTypes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/AerosolTypes</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim0" size="5"/>
+    </Array>
+    <Array name="Metadata_AncillaryDataDescriptors">
+        <Attribute name="Shape" type="String">
+            <value>AncFile_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AncillaryDataDescriptors</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/AncillaryDataDescriptors</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim1" size="3"/>
+    </Array>
+    <Array name="Metadata_AscendingNodeCrossingDate">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AscendingNodeCrossingDate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/AscendingNodeCrossingDate</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_AscendingNodeCrossingTime">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AscendingNodeCrossingTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/AscendingNodeCrossingTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_AutomaticQualityFlag">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AutomaticQualityFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/AutomaticQualityFlag</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_BuildId">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>BuildId</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/BuildId</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_CollectionLabel">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CollectionLabel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/CollectionLabel</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_DataFormatType">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DataFormatType</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/DataFormatType</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_GranulePointer">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GranulePointer</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/GranulePointer</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_HDFVersionId">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>HDFVersionId</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/HDFVersionId</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_InputPointer">
+        <Attribute name="Shape" type="String">
+            <value>InputPtr_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>InputPointer</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/InputPointer</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_InstrumentShortName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>InstrumentShortName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/InstrumentShortName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_L2FullPhysicsAlgorithmDescriptor">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>L2FullPhysicsAlgorithmDescriptor</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/L2FullPhysicsAlgorithmDescriptor</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_L2FullPhysicsDataVersion">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>L2FullPhysicsDataVersion</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/L2FullPhysicsDataVersion</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_L2FullPhysicsExeVersion">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>L2FullPhysicsExeVersion</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/L2FullPhysicsExeVersion</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_L2FullPhysicsInputPointer">
+        <Attribute name="Shape" type="String">
+            <value>L2FullPhysicsInputPtr_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>L2FullPhysicsInputPointer</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/L2FullPhysicsInputPointer</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim3" size="10"/>
+    </Array>
+    <Array name="Metadata_L2FullPhysicsOperationsVersion">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>L2FullPhysicsOperationsVersion</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/L2FullPhysicsOperationsVersion</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_LongName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LongName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/LongName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_MissingExposures">
+        <Attribute name="Shape" type="String">
+            <value>Band_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MissingExposures</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/MissingExposures</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim1" size="3"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="Metadata_NominalDay">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NominalDay</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/NominalDay</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_NumberOfExposures">
+        <Attribute name="Minimum" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Int32">
+            <value>1320</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NumberOfExposures</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/NumberOfExposures</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_OrbitOfDay">
+        <Attribute name="Minimum" type="Int16">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Int16">
+            <value>15</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OrbitOfDay</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/OrbitOfDay</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_PlatformLongName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PlatformLongName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/PlatformLongName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_PlatformShortName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PlatformShortName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/PlatformShortName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_PlatformType">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PlatformType</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/PlatformType</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProcessingLevel">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProcessingLevel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProcessingLevel</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProducerAgency">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProducerAgency</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProducerAgency</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProducerInstitution">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProducerInstitution</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProducerInstitution</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProductionDateTime">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProductionDateTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProductionDateTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProductionLocation">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProductionLocation</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProductionLocation</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProductionLocationCode">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProductionLocationCode</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProductionLocationCode</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ProjectId">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ProjectId</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ProjectId</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_QAGranulePointer">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>QAGranulePointer</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/QAGranulePointer</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RangeBeginningDate">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RangeBeginningDate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RangeBeginningDate</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RangeBeginningTime">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RangeBeginningTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RangeBeginningTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RangeEndingDate">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RangeEndingDate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RangeEndingDate</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RangeEndingTime">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RangeEndingTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RangeEndingTime</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RetrievalIterationLimit">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RetrievalIterationLimit</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RetrievalIterationLimit</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_RetrievalPolarization">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RetrievalPolarization</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/RetrievalPolarization</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_SISName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SISName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/SISName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_SISVersion">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SISVersion</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/SISVersion</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_ShortName">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ShortName</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/ShortName</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_SizeMBECSDataGranule">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Megabyte</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SizeMBECSDataGranule</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/SizeMBECSDataGranule</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_SpectralChannel">
+        <Attribute name="Shape" type="String">
+            <value>Band_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>VarLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SpectralChannel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/SpectralChannel</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim1" size="3"/>
+    </Array>
+    <Array name="Metadata_StartPathNumber">
+        <Attribute name="Minimum" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Int32">
+            <value>44</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>StartPathNumber</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/StartPathNumber</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_StopPathNumber">
+        <Attribute name="Minimum" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Int32">
+            <value>44</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>StopPathNumber</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/StopPathNumber</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_TFTSVersion">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TFTSVersion</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/TFTSVersion</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_VMRO2">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>VMRO2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/VMRO2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="RetrievalResults_albedo_o2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>albedo_o2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/albedo_o2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_albedo_strong_co2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>albedo_strong_co2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/albedo_strong_co2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_albedo_weak_co2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>albedo_weak_co2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/albedo_weak_co2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_co2_profile">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>co2_profile</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/co2_profile</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_co2_profile_apriori">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>co2_profile_apriori</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/co2_profile_apriori</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_co2_profile_uncert">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>co2_profile_uncert</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/co2_profile_uncert</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_diverging_steps">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed16</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>diverging_steps</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/diverging_steps</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_dof_co2_profile">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>dof_co2_profile</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/dof_co2_profile</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_dof_full_vector">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>dof_full_vector</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/dof_full_vector</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_exposure_index">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>exposure_index</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/exposure_index</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_iterations">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed16</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>iterations</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/iterations</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_master_quality_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>master_quality_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/master_quality_flag</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_num_active_levels">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed16</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>num_active_levels</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/num_active_levels</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_outcome_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>outcome_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/outcome_flag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_retrieved_aerosol_aod_by_type">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Aerosol_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>retrieved_aerosol_aod_by_type</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/retrieved_aerosol_aod_by_type</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim0" size="5"/>
+    </Array>
+    <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_high">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Aerosol_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>retrieved_aerosol_aod_by_type_high</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/retrieved_aerosol_aod_by_type_high</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim0" size="5"/>
+    </Array>
+    <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_low">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Aerosol_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>retrieved_aerosol_aod_by_type_low</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/retrieved_aerosol_aod_by_type_low</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim0" size="5"/>
+    </Array>
+    <Array name="RetrievalResults_retrieved_aerosol_aod_by_type_mid">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Aerosol_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>retrieved_aerosol_aod_by_type_mid</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/retrieved_aerosol_aod_by_type_mid</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim0" size="5"/>
+    </Array>
+    <Array name="RetrievalResults_surface_pressure_apriori_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Pascals</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>surface_pressure_apriori_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/surface_pressure_apriori_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_surface_pressure_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Pascals</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>surface_pressure_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/surface_pressure_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_surface_pressure_uncert_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Pascals</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>surface_pressure_uncert_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/surface_pressure_uncert_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_vector_pressure_levels">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Pascals</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>vector_pressure_levels</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/vector_pressure_levels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_xco2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_apriori">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_apriori</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_apriori</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_avg_kernel">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_avg_kernel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_avg_kernel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_avg_kernel_norm">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_avg_kernel_norm</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_avg_kernel_norm</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_pressure_weighting_function">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Level_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_pressure_weighting_function</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_pressure_weighting_function</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim6" size="20"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_uncert">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_uncert</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_uncert</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_uncert_interf">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_uncert_interf</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_uncert_interf</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_uncert_noise">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_uncert_noise</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_uncert_noise</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_xco2_uncert_smooth">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Mole Mole^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>xco2_uncert_smooth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/xco2_uncert_smooth</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_altitude">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_altitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_altitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_altitude_max">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_altitude_max</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_altitude_max</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_altitude_min">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_altitude_min</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_altitude_min</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_altitude_stddev">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_altitude_stddev</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_altitude_stddev</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_altitude_uncert">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_altitude_uncert</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_altitude_uncert</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_aspect">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_aspect</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_aspect</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_at_angle">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_at_angle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_at_angle</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_at_angle_error">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_at_angle_error</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_at_angle_error</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_azimuth">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_azimuth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_azimuth</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_ct_angle">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_ct_angle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_ct_angle</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_ct_angle_error">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_ct_angle_error</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_ct_angle_error</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_glint_angle">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_glint_angle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_glint_angle</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_land_fraction">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Percent</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_land_fraction</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_land_fraction</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_latitude">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_latitude_geoid">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_latitude_geoid</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_latitude_geoid</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_longitude">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_longitude_geoid">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_longitude_geoid</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_longitude_geoid</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_plane_fit_quality">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_plane_fit_quality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_plane_fit_quality</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_slope">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_slope</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_slope</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_solar_azimuth">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_solar_azimuth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_solar_azimuth</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_solar_zenith">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_solar_zenith</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_solar_zenith</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingGeometry_sounding_zenith">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_zenith</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingGeometry/sounding_zenith</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_acquisition_mode">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>acquisition_mode</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/acquisition_mode</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_cloud_flag">
+        <Attribute name="Shape" type="String">
+            <value>Exposure_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>cloud_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/cloud_flag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim7" size="649"/>
+    </Array>
+    <Array name="SoundingHeader_ct_observation_points">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ct_observation_points</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/ct_observation_points</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_exposure_duration">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Seconds</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>exposure_duration</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/exposure_duration</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_gain_swir">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>gain_swir</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/gain_swir</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="SoundingHeader_glint_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>glint_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/glint_flag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_l2_packaging_qual_flag">
+        <Attribute name="Shape" type="String">
+            <value>Exposure_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>IntBitfield8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>l2_packaging_qual_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/l2_packaging_qual_flag</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="FakeDim7" size="649"/>
+    </Array>
+    <Array name="SoundingHeader_retrieval_index">
+        <Attribute name="Shape" type="String">
+            <value>Exposure_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>retrieval_index</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/retrieval_index</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim7" size="649"/>
+    </Array>
+    <Array name="SoundingHeader_sounding_qual_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>IntBitfield32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_qual_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/sounding_qual_flag</value>
+        </Attribute>
+        <UInt32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_sounding_time_string">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>FixLenStr</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_time_string</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/sounding_time_string</value>
+        </Attribute>
+        <String/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_sounding_time_tai93">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Seconds</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float64</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_time_tai93</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/sounding_time_tai93</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_spike_noise_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Band_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>spike_noise_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/spike_noise_flag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim1" size="3"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="SoundingHeader_zpd_saturation_flag">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Band_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed8</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>zpd_saturation_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/zpd_saturation_flag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim1" size="3"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="SpacecraftGeometry_ground_track">
+        <Attribute name="Minimum" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>360.0000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ground_track</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/ground_track</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_relative_velocity">
+        <Attribute name="Minimum" type="Float32">
+            <value>-7.000000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>7.000000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters Second^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>relative_velocity</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/relative_velocity</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_spacecraft_alt">
+        <Attribute name="Minimum" type="Float32">
+            <value>700000.0000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>900000.0000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>spacecraft_alt</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/spacecraft_alt</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_spacecraft_lat">
+        <Attribute name="Minimum" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>spacecraft_lat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/spacecraft_lat</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_spacecraft_lon">
+        <Attribute name="Minimum" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Degrees</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>spacecraft_lon</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/spacecraft_lon</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_x_pos">
+        <Attribute name="Minimum" type="Float32">
+            <value>-9999999.000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>9999999.000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>x_pos</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/x_pos</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_x_vel">
+        <Attribute name="Minimum" type="Float32">
+            <value>-8000.000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>8000.000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters Second^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>x_vel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/x_vel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_y_pos">
+        <Attribute name="Minimum" type="Float32">
+            <value>-9999999.000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>9999999.000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>y_pos</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/y_pos</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_y_vel">
+        <Attribute name="Minimum" type="Float32">
+            <value>-8000.000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>8000.000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters Second^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>y_vel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/y_vel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_z_pos">
+        <Attribute name="Minimum" type="Float32">
+            <value>-9999999.000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>9999999.000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>z_pos</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/z_pos</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpacecraftGeometry_z_vel">
+        <Attribute name="Minimum" type="Float32">
+            <value>-8000.000000</value>
+        </Attribute>
+        <Attribute name="Maximum" type="Float32">
+            <value>8000.000000</value>
+        </Attribute>
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>Meters Second^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>z_vel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpacecraftGeometry/z_vel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_reduced_chi_squared_o2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>reduced_chi_squared_o2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/reduced_chi_squared_o2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_reduced_chi_squared_strong_co2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>reduced_chi_squared_strong_co2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/reduced_chi_squared_strong_co2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_reduced_chi_squared_weak_co2_fph">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>reduced_chi_squared_weak_co2_fph</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/reduced_chi_squared_weak_co2_fph</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_relative_residual_mean_square_o2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>relative_residual_mean_square_o2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/relative_residual_mean_square_o2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_relative_residual_mean_square_strong_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>relative_residual_mean_square_strong_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/relative_residual_mean_square_strong_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_relative_residual_mean_square_weak_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>relative_residual_mean_square_weak_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/relative_residual_mean_square_weak_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_residual_mean_square_o2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>residual_mean_square_o2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/residual_mean_square_o2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_residual_mean_square_strong_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>residual_mean_square_strong_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/residual_mean_square_strong_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_residual_mean_square_weak_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>residual_mean_square_weak_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/residual_mean_square_weak_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_signal_o2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>signal_o2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/signal_o2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_signal_strong_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>signal_strong_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/signal_strong_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_signal_weak_co2">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>W cm^{-2} sr^{-1} (cm^{-1})^{-1}</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>signal_weak_co2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/signal_weak_co2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SpectralParameters_snr_o2_l1b">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>snr_o2_l1b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/snr_o2_l1b</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="SpectralParameters_snr_strong_co2_l1b">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>snr_strong_co2_l1b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/snr_strong_co2_l1b</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="SpectralParameters_snr_weak_co2_l1b">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Polarization_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Float32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>snr_weak_co2_l1b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SpectralParameters/snr_weak_co2_l1b</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim5" size="60"/>
+        <dimension name="FakeDim4" size="2"/>
+    </Array>
+    <Array name="Metadata_FirstSoundingId_Time">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FirstSoundingId_Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/FirstSoundingId</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_FirstSoundingId_Date">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FirstSoundingId_Date</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/FirstSoundingId</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_LastSoundingId_Time">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LastSoundingId_Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/LastSoundingId</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="Metadata_LastSoundingId_Date">
+        <Attribute name="Shape" type="String">
+            <value>Scalar</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LastSoundingId_Date</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/Metadata/LastSoundingId</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim2" size="1"/>
+    </Array>
+    <Array name="RetrievalResults_sounding_id_reference_Time">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_id_reference_Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/sounding_id_reference</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="RetrievalResults_sounding_id_reference_Date">
+        <Attribute name="Shape" type="String">
+            <value>Retrieval_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_id_reference_Date</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/RetrievalResults/sounding_id_reference</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim5" size="60"/>
+    </Array>
+    <Array name="SoundingHeader_sounding_id_Time">
+        <Attribute name="Shape" type="String">
+            <value>Exposure_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_id_Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/sounding_id</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim7" size="649"/>
+    </Array>
+    <Array name="SoundingHeader_sounding_id_Date">
+        <Attribute name="Shape" type="String">
+            <value>Exposure_Array</value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <value>Signed32</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>sounding_id_Date</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SoundingHeader/sounding_id</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim7" size="649"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,3 +1,48 @@
+2013-01-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* NEWS
+	* configure.ac
+	* hdf5_handler.spec
+	changed version to 2.2.0
+	* HDF5RequestHandler.cc: cleaned up codes that are commented out.
+	* HDFEOS5CF.cc: cleaned up codes that are commented out.
+
+2013-01-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* data/swath_1_2d_xyzz.h5: file name is changed from 
+	swath_1_3d_xyzz.h5.testsuite is updated accordingly.
+	
+
+2013-01-03  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* INSTALL:added information about optional NASA data testing.
+	* test.nasa.sh:added for optional testing with real NASA data files.
+	* bes-testsuite/h5.nasa/:added for optional testing with real NASA 
+	data files.
+	* bes-testsuite/hdf5_handlerTest.nasa.at:added for optional testing 
+	with real NASA data files.
+
+2012-12-29  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>	
+	* h5cfdap.cc: made DDS name be the file name.
+	* HDF5GMCF.cc: fixed dimension scale HDF5 dataset handling when CLASS
+	attribute is not DIMENSION_SCALE. This is fix for ICESat/GLAS product.
+
+2012-12-14  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* NEWS
+	* configure.ac
+	* hdf5_handler.spec
+	changed version to 2.1.2
+	* Makefile.am: updated to support dimension scale.
+	* HDF5CF.h: updated to support dimension scale.
+	* HDF5GMCF.cc: updated to support dimension scale.
+	* h5gmcfdap.cc: updated to support dimension scale.
+	* HDF5GMCFFillIndexArray.h: added to support dimension scale.
+	* HDF5GMCFFillIndexArray.cc:added to support  dimension scale.
+	* he5dds.y: fixed to handle OMI products that have dimension names like
+	1,2.
+	* heos5cfdap.cc:fixed to handle ArchiveMetadata correctly.
+	* HDFEOS5CF.cc: removed debugging information.
+
+
 2012-11-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5GCFProduct.cc:added a dummy netCDF-4 handling function	

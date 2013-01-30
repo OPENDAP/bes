@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2012 The HDF Group
+/// Copyright (C) 2011-2013 The HDF Group
 ///
 /// All rights reserved.
 
@@ -102,8 +102,8 @@ GMSPVar::GMSPVar(Var*var) {
 }
 
 
-GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type):
-File(path,file_id), product_type(product_type),iscoard(false) 
+GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
+File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false) 
 {
 
 
@@ -120,7 +120,7 @@ GMFile::~GMFile()
 
 string GMFile::get_CF_string(string s) {
 
-    if (General_Product == product_type || s[0] !='/') 
+    if ((General_Product == product_type &&  OTHERGMS == gproduct_pattern) || s[0] !='/') 
         return File::get_CF_string(s);
     else {
         s.erase(0,1);
@@ -131,17 +131,10 @@ string GMFile::get_CF_string(string s) {
 void GMFile::Retrieve_H5_Info(const char *path,
                               hid_t file_id, bool include_attr) throw (Exception) {
 
-    // Since missing coordinate variables may be added, so we need to check
-    // if the added variables have any name clashings with the existing variables
-    // so the var name will always be a key for variables.
-    // Be default, the absolute path of an HDF5 dataset is unique. So we can savely 
-    // create a varname set without checking for existing variables. When missing
-    // variables are added,we need to check.
-
     // MeaSure SeaWiFS needs the attribute info. to build the dimension name list.
     // So set the include_attr to be true.
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
-        || Mea_Ozone == product_type)  
+        || Mea_Ozone == product_type || General_Product == product_type)  
         File::Retrieve_H5_Info(path,file_id,true);
     else 
         File::Retrieve_H5_Info(path,file_id,include_attr);
@@ -153,7 +146,8 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
           ircv != this->cvars.end(); ++ircv) {
           
-        if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
+        if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype) 
+            || (CV_FILLINDEX == (*ircv)->cvartype)){
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
@@ -458,6 +452,8 @@ throw (Exception){
 
         vector<char> objname;
         int vlbuf_index = 0;
+
+        // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
         for (vector<Dimension *>::iterator ird = var->dims.begin();
                 ird != var->dims.end(); ++ird) {
 
@@ -804,6 +800,284 @@ void GMFile::Add_Dim_Name_ACOS_L2S()throw(Exception){
 }
 void GMFile::Add_Dim_Name_General_Product()throw(Exception){
 
+    // Check attributes 
+    Check_General_Product_Pattern();
+
+    // This general product should follow the HDF5 dimension scale model. 
+    if (GENERAL_DIMSCALE == this->gproduct_pattern)
+        Add_Dim_Name_Dimscale_General_Product();
+
+}
+
+void GMFile::Check_General_Product_Pattern() throw(Exception) {
+
+    bool has_dimlist = false;
+    bool has_dimscalelist  = false;
+
+    // Check if containing the "DIMENSION_LIST" attribute;
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+          ira != (*irv)->attrs.end();ira++) {
+           if ("DIMENSION_LIST" == (*ira)->name) {
+                has_dimlist = true;
+                break;
+           }
+        }
+        if (true == has_dimlist)
+            break;
+    }
+
+    // Check if containing both the attribute "CLASS" and the attribute "REFERENCE_LIST" for the same variable.
+    // This is the dimension scale. 
+    // Actually "REFERENCE_LIST" is not necessary for a dimension scale dataset. If a dimension scale doesn't
+    // have a "REFERENCE_LIST", it is still valid. But no other variables use this dimension scale. We found
+    // such a case in a matched_airs_aqua product. KY 2012-12-03
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+
+
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+          ira != (*irv)->attrs.end();ira++) {
+            if ("CLASS" == (*ira)->name) {
+
+                Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
+                string class_value;
+                class_value.resize((*ira)->value.size());
+                copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
+
+                // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                // "DIMENSION_SCALE", which is 15.
+                if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                    has_dimscalelist = true;
+                    break;
+                }
+            }
+        }
+
+        if (true == has_dimscalelist)
+            break;
+        
+    }
+
+    if (true == has_dimlist && true == has_dimscalelist)
+        this->gproduct_pattern = GENERAL_DIMSCALE;
+
+}
+
+void GMFile::Add_Dim_Name_Dimscale_General_Product() throw(Exception) {
+
+    //cerr<<"coming to Add_Dim_Name_Dimscale_General_Product"<<endl;
+    pair<set<string>::iterator,bool> setret;
+    this->iscoard = true;
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        Handle_UseDimscale_Var_Dim_Names_General_Product((*irv));
+        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+            ird !=(*irv)->dims.end();++ird) { 
+            setret = dimnamelist.insert((*ird)->name);
+            if (true == setret.second) 
+                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+        }
+    } // for (vector<Var *>::iterator irv = this->vars.begin();
+ 
+    if (true == dimnamelist.empty()) 
+        throw1("This product should have the dimension names, but no dimension names are found");
+
+}
+
+void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var) throw(Exception) {
+
+    Attribute* dimlistattr = NULL;
+    bool has_dimlist = false;
+    bool has_dimclass   = false;
+
+    for(vector<Attribute *>::iterator ira = var->attrs.begin();
+          ira != var->attrs.end();ira++) {
+        if ("DIMENSION_LIST" == (*ira)->name) {
+            dimlistattr = *ira;
+            has_dimlist = true;  
+        }
+        if ("CLASS" == (*ira)->name) {
+
+            Retrieve_H5_Attr_Value(*ira,var->fullpath);
+            string class_value;
+            class_value.resize((*ira)->value.size());
+            copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
+
+            // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+            // "DIMENSION_SCALE", which is 15.
+            if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                has_dimclass = true;
+                break;
+            }
+        }
+
+    } // for(vector<Attribute *>::iterator ira = var->attrs.begin(); ...
+
+    // This is a general variable, we need to find the corresponding coordinate variables.
+    if (true == has_dimlist) 
+        Add_UseDimscale_Var_Dim_Names_General_Product(var,dimlistattr);
+
+    // Dim name is the same as the variable name for dimscale variable
+    else if(true == has_dimclass) {
+        if (var->dims.size() !=1) 
+           throw2("Currently dimension scale dataset must be 1 dimension, this is not true for the dataset ",
+                  var->name);
+
+        // The var name is the object name, however, we would like the dimension name to be the full path.
+        // so that the dim name can be served as the key for future handling.
+        (var->dims)[0]->name = var->fullpath;
+        (var->dims)[0]->newname = var->fullpath;
+        pair<set<string>::iterator,bool> setret;
+        setret = dimnamelist.insert((var->dims)[0]->name);
+        if (true == setret.second) 
+            Insert_One_NameSizeMap_Element((var->dims)[0]->name,(var->dims)[0]->size);
+    }
+
+    // No dimension, add fake dim names, this will rarely happen.
+    else {
+
+        set<hsize_t> fakedimsize;
+        pair<set<hsize_t>::iterator,bool> setsizeret;
+        for (vector<Dimension *>::iterator ird= var->dims.begin();
+            ird != var->dims.end(); ++ird) {
+                Add_One_FakeDim_Name(*ird);
+                setsizeret = fakedimsize.insert((*ird)->size);
+                // Avoid the same size dimension sharing the same dimension name.
+                if (false == setsizeret.second)   
+                    Adjust_Duplicate_FakeDim_Name(*ird);
+        }
+    }
+
+}
+
+void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*dimlistattr) 
+throw (Exception){
+    
+    ssize_t objnamelen = -1;
+    hobj_ref_t rbuf;
+    //hvl_t *vlbuf = NULL;
+    vector<hvl_t> vlbuf;
+    
+    hid_t dset_id = -1;
+    hid_t attr_id = -1;
+    hid_t atype_id = -1;
+    hid_t amemtype_id = -1;
+    hid_t aspace_id = -1;
+    hid_t ref_dset = -1;
+
+
+    if(NULL == dimlistattr) 
+        throw2("Cannot obtain the dimension list attribute for variable ",var->name);
+
+    if (0==var->rank) 
+        throw2("The number of dimension should NOT be 0 for the variable ",var->name);
+    
+    try {
+
+        //vlbuf = new hvl_t[var->rank];
+        vlbuf.resize(var->rank);
+    
+        hid_t dset_id = H5Dopen(this->fileid,(var->fullpath).c_str(),H5P_DEFAULT);
+        if (dset_id < 0) 
+            throw2("Cannot open the dataset ",var->fullpath);
+
+        attr_id = H5Aopen(dset_id,(dimlistattr->name).c_str(),H5P_DEFAULT);
+        if (attr_id <0 ) 
+            throw4("Cannot open the attribute ",dimlistattr->name," of HDF5 dataset ",var->fullpath);
+
+        atype_id = H5Aget_type(attr_id);
+        if (atype_id <0) 
+            throw4("Cannot obtain the datatype of the attribute ",dimlistattr->name," of HDF5 dataset ",var->fullpath);
+
+        amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
+
+        if (amemtype_id < 0) 
+            throw2("Cannot obtain the memory datatype for the attribute ",dimlistattr->name);
+
+
+        if (H5Aread(attr_id,amemtype_id,&vlbuf[0]) <0)  
+            throw2("Cannot obtain the referenced object for the variable ",var->name);
+        
+
+        vector<char> objname;
+        int vlbuf_index = 0;
+
+        // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
+        for (vector<Dimension *>::iterator ird = var->dims.begin();
+                ird != var->dims.end(); ++ird) {
+
+            rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
+            if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
+                throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
+
+            if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
+                throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
+            objname.resize(objnamelen+1);
+            if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
+                throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
+
+            string objname_str = string(objname.begin(),objname.end());
+            string trim_objname = objname_str.substr(0,objnamelen);
+            (*ird)->name = string(trim_objname.begin(),trim_objname.end());
+
+            pair<set<string>::iterator,bool> setret;
+            setret = dimnamelist.insert((*ird)->name);
+            if (true == setret.second) 
+               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+            (*ird)->newname = (*ird)->name;
+            H5Dclose(ref_dset);
+            ref_dset = -1;
+            objname.clear();
+            vlbuf_index++;
+        }// for (vector<Dimension *>::iterator ird = var->dims.begin()
+        if(vlbuf.size()!= 0) {
+
+            if ((aspace_id = H5Aget_space(attr_id)) < 0)
+                throw2("Cannot get hdf5 dataspace id for the attribute ",dimlistattr->name);
+
+            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)&vlbuf[0])<0) 
+                throw2("Cannot successfully clean up the variable length memory for the variable ",var->name);
+
+            H5Sclose(aspace_id);
+           
+        }
+
+        H5Tclose(atype_id);
+        H5Tclose(amemtype_id);
+        H5Aclose(attr_id);
+        H5Dclose(dset_id);
+    
+       // if(vlbuf != NULL)
+        //  delete[] vlbuf;
+    }
+
+    catch(...) {
+
+        if(atype_id != -1)
+            H5Tclose(atype_id);
+
+        if(amemtype_id != -1)
+            H5Tclose(amemtype_id);
+
+        if(aspace_id != -1)
+            H5Sclose(aspace_id);
+
+        if(attr_id != -1)
+            H5Aclose(attr_id);
+
+        if(dset_id != -1)
+            H5Dclose(dset_id);
+
+        //if(vlbuf != NULL)
+         //   delete[] vlbuf;
+
+        //throw1("Error in method GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone"); 
+        throw;
+    }
+ 
 }
 
 
@@ -811,19 +1085,23 @@ void GMFile::Handle_CVar() throw(Exception){
 
     // No support for coordinate variables for general HDF5 products
     // and ACOS_L2S
-    if (General_Product == product_type ||
-        ACOS_L2S == product_type) 
-        return;
+    if (General_Product == this->product_type ||
+        ACOS_L2S == this->product_type) {
+        if (GENERAL_DIMSCALE == this->gproduct_pattern)
+            Handle_CVar_Dimscale_General_Product();
+        else
+            return;
+    } 
 
-    if (Mea_SeaWiFS_L2 == product_type ||
-        Mea_SeaWiFS_L3 == product_type) 
+    if (Mea_SeaWiFS_L2 == this->product_type ||
+        Mea_SeaWiFS_L3 == this->product_type) 
         Handle_CVar_Mea_SeaWiFS();
 
-    if (Aqu_L3 == product_type) 
+    if (Aqu_L3 == this->product_type) 
         Handle_CVar_Aqu_L3(); 
-    if (SMAP == product_type) 
+    if (SMAP == this->product_type) 
         Handle_CVar_SMAP();
-    if (Mea_Ozone == product_type) 
+    if (Mea_Ozone == this->product_type) 
         Handle_CVar_Mea_Ozone();
 }
 
@@ -1026,6 +1304,58 @@ void GMFile::Handle_CVar_Mea_Ozone() throw(Exception){
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
+}
+
+void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
+
+    pair<set<string>::iterator,bool> setret;
+    set<string>tempdimnamelist = dimnamelist;
+
+    if(false == iscoard) 
+        throw1("Currently products that use HDF5 dimension scales  must follow COARDS conventions");
+
+    for (set<string>::iterator irs = dimnamelist.begin();
+            irs != dimnamelist.end();++irs) {
+        for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+
+            // This is the dimension scale dataset; it should be changed to a coordinate variable.
+            if ((*irs)== (*irv)->fullpath) {
+
+                if((*irv)->dims.size()!=1) 
+                    throw3("COARDS coordinate variable",(*irv)->name, "is not 1D");
+
+                // Create Coordinate variables.
+                tempdimnamelist.erase(*irs);
+                GMCVar* GMcvar = new GMCVar(*irv);
+                GMcvar->cfdimname = *irs;
+
+                // Check if this is just a netCDF-4 dimension. 
+                bool is_netcdf_dimension = Is_netCDF_Dimension(*irv);
+                if (true == is_netcdf_dimension)
+                   GMcvar->cvartype = CV_FILLINDEX;
+                else 
+                    GMcvar->cvartype = CV_EXIST;
+
+                GMcvar->product_type = product_type;
+                this->cvars.push_back(GMcvar); 
+                delete(*irv);
+                this->vars.erase(irv);
+                irv--;
+            } // if ((*irs)== (*irv)->fullpath)
+       } // for (vector<Var *>::iterator irv = this->vars.begin();
+    } // for (set<string>::iterator irs = dimnamelist.begin();
+
+    // Wait for the final product to see if the following statement is true. Now comment out.
+    //if(false == tempdimnamelist.empty()) throw1("Measure Ozone level 3 new data shouldnot have missing dimensions");
+    for (set<string>::iterator irs = tempdimnamelist.begin();
+        irs != tempdimnamelist.end();irs++) {
+
+        GMCVar*GMcvar = new GMCVar();
+        Create_Missing_CV(GMcvar,*irs);
+        this->cvars.push_back(GMcvar);
+    }
+
 }
 
 void GMFile::Handle_SpVar() throw(Exception){
@@ -1623,8 +1953,34 @@ void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname) throw(Exc
     GMcvar->product_type = product_type;
 }
 
+ // Check if this is just a netCDF-4 dimension. We need to check the dimension scale dataset attribute "NAME",
+ // the value should start with "This is a netCDF dimension but not a netCDF variable".
+bool GMFile::Is_netCDF_Dimension(Var *var) throw(Exception) {
     
+    string netcdf_dim_mark = "This is a netCDF dimension but not a netCDF variable";
 
+    bool is_only_dimension = false;
+
+    for(vector<Attribute *>::iterator ira = var->attrs.begin();
+          ira != var->attrs.end();ira++) {
+
+        if ("NAME" == (*ira)->name) {
+
+             Retrieve_H5_Attr_Value(*ira,var->fullpath);
+             string name_value;
+             name_value.resize((*ira)->value.size());
+             copy((*ira)->value.begin(),(*ira)->value.end(),name_value.begin());
+
+             // Compare the attribute "NAME" value with the string netcdf_dim_mark. We only compare the string with the size of netcdf_dim_mark
+             if (0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark))
+                is_only_dimension = true;
+           
+            break;
+        }
+    } // for(vector<Attribute *>::iterator ira = var->attrs.begin(); ...
+
+    return is_only_dimension;
+}
     
 
 

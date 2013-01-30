@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315" space="catalog">/data/OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5</setContainer>
+    <define name="d">
+	<container name="OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315">
+	     <constraint>lon[0:719:1439],lat[0:359:719],AerosolModelMW[0:359:719][0:719:1439],AerosolOpticalThicknessMW[0:2:3][0:359:719][0:719:1439],nWavelDiagnostic</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

@@ -8,4 +8,4 @@ Dataset {
     Float32 TDim[TDim = 2];
     Float32 YDim[YDim = 8];
     Float32 ZDim[ZDim = 4];
-} virtual;
+} za_1_3d_yztd_aug.h5;

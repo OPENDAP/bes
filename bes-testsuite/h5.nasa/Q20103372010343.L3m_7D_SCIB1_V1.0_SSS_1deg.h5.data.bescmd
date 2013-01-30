@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg" space="catalog">/data/Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5</setContainer>
+    <define name="d">
+	<container name="Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg">
+	     <constraint>lat[0:90:179],lon[0:180:359],palette[0:1:2][255:255:255],l3m_data[0:90:179][0:1:359]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

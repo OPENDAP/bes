@@ -1,0 +1,10 @@
+The data:
+String Metadata_AerosolTypes[FakeDim0 = 1] = {"Total"};
+String RetrievalResults_master_quality_flag[FakeDim5 = 1] = {"Caution"};
+Float32 SoundingGeometry_sounding_latitude[FakeDim5 = 2] = {69.0899, 25.2399};
+Float32 SoundingGeometry_sounding_longitude[FakeDim5 = 2] = {-144.955, -174.905};
+Byte SoundingHeader_l2_packaging_qual_flag[FakeDim7 = 1] = {4};
+UInt32 SoundingHeader_sounding_qual_flag[FakeDim5 = 60] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+Int32 SoundingHeader_sounding_id_Time[FakeDim7 = 3] = {1733, 4312, 10852};
+Int32 SoundingHeader_sounding_id_Date[FakeDim7 = 3] = {20110419, 20110419, 20110419};
+

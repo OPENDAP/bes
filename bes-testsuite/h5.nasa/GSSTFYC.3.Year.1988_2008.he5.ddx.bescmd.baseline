@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="GSSTFYC.3.Year.1988_2008.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="BeginDate" type="String">
+            <value>1988-01-01</value>
+        </Attribute>
+        <Attribute name="EndDate" type="String">
+            <value>2008-12-31</value>
+        </Attribute>
+        <Attribute name="DurationUnit" type="String">
+            <value>Year</value>
+        </Attribute>
+        <Attribute name="DurationValue" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="PeriodCycleDurationUnit" type="String">
+            <value>YEAR</value>
+        </Attribute>
+        <Attribute name="PeriodCycleDurationValue" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="ShortName" type="String">
+            <value>GSSTFYC</value>
+        </Attribute>
+        <Attribute name="VersionID" type="String">
+            <value>3</value>
+        </Attribute>
+        <Attribute name="CollectionDescription" type="String">
+            <value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 degree Yearly Grid, 1998-2008, Set1 and NCEP Variables, V3, (GSSTFYC), at GES DISC</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 deg, Yearly Grid, V3, (GSSTFYC), at GES DISC</value>
+        </Attribute>
+        <Attribute name="DOI" type="String">
+            <value>10.5067/MEASURES/GSSTF/DATA311</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NCEP" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NCEP_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SET1" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SET1_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.11</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;SET1&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>1440</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>720</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>HE5_GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Xdim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1440</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Ydim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>720</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;E&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;STu&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;STv&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;H&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Qair&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;U&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;DQ&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Tot_Precip_Water&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+            <Attribute name="GRID_2" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;NCEP&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>1440</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>720</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>HE5_GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Xdim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1440</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Ydim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>720</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SST&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Psea_level&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Tair_2m&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Qsat&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Array name="NCEP_Psea_level">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>sea level pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Psea_level</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/NCEP/Data Fields/Psea_level</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="NCEP_Qsat">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>sea surface saturation humidity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/kg</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qsat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/NCEP/Data Fields/Qsat</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="NCEP_SST">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>sea surface skin temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>C</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SST</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/NCEP/Data Fields/SST</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="NCEP_Tair_2m">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>2m air temperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>C</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Tair_2m</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/NCEP/Data Fields/Tair_2m</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_DQ">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>sea-air humidity difference</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/kg</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DQ</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/DQ</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_E">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>latent heat flux</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m^^2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>E</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/E</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_H">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>sensible heat flux</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m^^2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/H</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_Qair">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>surface air (~10-m) specific humidity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/kg</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qair</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/Qair</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_STu">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>zonal wind stress</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/m^^2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>STu</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/STu</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_STv">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>meridional wind stress</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/m^^2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>STv</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/STv</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_Tot_Precip_Water">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>total precipitable water</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>g/cm^^2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Tot_Precip_Water</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="SET1_U">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>10-m wind speed</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>U</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/SET1/Data Fields/U</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <Array name="lon">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lon" size="1440"/>
+    </Array>
+    <Array name="lat">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="720"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

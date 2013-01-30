@@ -1,0 +1,1749 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+        String InstrumentName "OMI";
+        String ProcessLevel "2A";
+        String PGEVersion "1.0.5.2";
+        String ProcessingSystem "OFFLINE";
+        Float64 TAI93At0zOfGranule 490665606.00000000;
+        Int32 GranuleMonth 7;
+        Int32 GranuleDay 20;
+        Int32 GranuleYear 2008;
+        Int32 NO2ColumnAmountHistogram 108, 8176, 29593, 21292, 27203, 959, 56, 7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Float32 CloudAlbedo 0.8000000119;
+        Int32 SolarProductMissing 0;
+        Int32 SolarProductOutOfDate 0;
+        Int32 SolarIrradianceWarning 0;
+        Int32 BackupSolarProductUsed 0;
+        Int32 ParametersInconsistent -1;
+        Int32 RadianceParametersMissing 0;
+        String RadianceScienceQualityFlag "Not Investigated";
+        String IrradianceScienceQualityFlag "Not Investigated";
+        Int32 CloudProductMissing 0;
+        Int32 SolarIrradianceWavelengthRegistrationWarning 0;
+        Int32 QAPctSunGlint 10;
+        Int32 QAPctEclipse 0;
+        Int32 QAPctIrradianceWarning 0;
+        Int32 QAPctRadianceMissing 0;
+        Int32 QAPctRadianceError 2;
+        Int32 QAPctRadianceWarning 10;
+        Int32 QAPctCloudDataError 11;
+        Int32 QAPctCloudDataWarning 14;
+        Int32 QAPctSnowIceDataError 0;
+        Int32 QAPctSCDError 0;
+        Int32 QAPctSCDWarning 1;
+        Int32 QAPctIAMFError 0;
+        Int32 QAPctIAMFWarning 1;
+        Int32 QAPctIVCDError 11;
+        Int32 QAPctIVCDWarning 3;
+        Int32 QAPctMeasMissing 0;
+        Int32 QAPctMeasError 0;
+        Int32 QAPctMeasWarning 0;
+        Int32 QAPctRebinned 0;
+        Int32 QAPctSAA 4;
+        Int32 QAPctSpacecraftManeuver 0;
+        Int32 QAPctInstrumentSettingsError 0;
+        Int32 QAPctCloudDataNotSynchronized 0;
+        Int32 QAPctWavelengthRegistrationWarning 0;
+        Int32 QAPctAmfTableExtrapolation 0;
+        Int32 QAPctAmfTableValueProblem 0;
+        Int32 QAPctAmfProfileProblem 0;
+        Int32 QAPctAmfPollutedHighTerrain 0;
+        Int32 QAPctAmfLargeWarning 0;
+        Int32 QAPctAmfSmallWarning 0;
+        Int32 QAPctAmfStratWarning 0;
+        Int32 QAPctAmfTropWarning 0;
+        Int32 QAPctVcdTooSmall 23;
+        Int32 QAPctVcdTooLarge 11;
+        Int32 UnpolFldNumberOfOrbits -1;
+        Int32 UnpolFldOrbitList -1;
+        String OPF_fittingWindow "405.0, 465.0";
+        String OPF_fittingWindowColumnRange "0, 1200";
+        String OPF_level1ReadBufferSize "10";
+        String OPF_level2WriteBufferSize "20";
+        String OPF_fittingPolydegree "5";
+        String OPF_meritFunction "6 ";
+        String OPF_interpolationMethod "1";
+        String OPF_amfAngleUpperLimit "88";
+        String OPF_NO2ReferenceTemperature "220";
+        String OPF_O3ReferenceTemperature "220";
+        String OPF_O2O2ReferenceTemperature "220";
+        String OPF_H2OReferenceTemperature "220";
+        String OPF_maxNSolarWavelengthsFlagged "20";
+        String OPF_maxNEarthWavelengthsFlagged "20";
+        String OPF_maxNEarthWavelengthsFlaggedMissing "20";
+        String OPF_maxSolarWavelnPrecision "999E39";
+        String OPF_maxEarthWavelnPrecision "999E39";
+        String OPF_maxScdPrecision "5E15";
+        String OPF_maxFitRms "5E-4";
+        String OPF_opfVersion "1.0";
+        String OPF_limitsSCD "5E13,    1E17";
+        String OPF_limitsVCD "5E13,    1E17";
+        String OPF_limitsAMF "1E-4,    1E4 ";
+        String OPF_limitsEarthRad "0,       1E20";
+        String OPF_limitsSolarIrrad "0,       1E20";
+        String OPF_maxEarthRadPrecision "1E20";
+        String OPF_maxSolarIrradPrecision "1E20";
+        String OPF_limitsLatitude "-90,      90";
+        String OPF_limitsLongitude "-180,     180";
+        String OPF_limitsSZA "-90,      90";
+        String OPF_limitsSAZ "-180,     180";
+        String OPF_limitsVZA "-90,      90";
+        String OPF_limitsVAZ "-180,     180";
+        String OPF_limitsRAZ "0,     180";
+        String OPF_limitsSurfaceHeigth "-9000,    9000";
+        String OPF_limitsSurfacePressure "100,    1200";
+        String OPF_limitsSurfaceAlbedo "0,       1";
+        String OPF_albedoSnow "0.6";
+        String OPF_albedoWater "0.065";
+        String OPF_albedoLandThreshold "0.1";
+        String OPF_albedoWaterThreshold "0.03";
+        String OPF_albedoSeaIceNH "0.70, 0.73, 0.76, 0.80, 0.84, 0.78, 0.61, 0.61, 0.62, 0.68, 0.67, 0.71";
+        String OPF_albedoSeaIceSH "0.53, 0.50, 0.44, 0.60, 0.61, 0.64, 0.68, 0.76, 0.80, 0.83, 0.78, 0.66";
+        String OPF_maxSCDCovariance "1E20";
+        String OPF_maxSolarIrradianceAgeInDays "10000";
+        String OPF_automaticQualityFailed "50";
+        String OPF_automaticQualitySuspect "20";
+        String OPF_wavelengthRegistrationCheckPixels "0, 30, 59";
+        String OPF_wavelengthRegistrationLimit "0.2";
+        String OPF_intermediateProductWavelengths "300";
+        Float32 xTrackAnomaly 6.197053961e+14, -5.453697128e+14, -1.177653189e+14, -1.416234009e+12, -7.495171587e+14, -6.350937271e+14, 1.456994842e+14, -4.366030214e+14, -1.158192155e+15, 2.472766016e+14, 9.401232439e+14, -4.030904318e+14, 1.569551506e+14, -6.954996906e+14, 3.366243029e+14, 1.037159943e+14, 1.129953551e+15, 2.410990293e+14, 5.865121440e+14, -3.515486097e+14, 1.993814751e+14, -7.954942971e+13, -2.073549813e+14, 3.672550031e+14, -3.832479010e+13, -2.388456479e+14, 6.903579437e+14, 4.823603279e+14, 3.889890811e+14, -5.744595263e+14, -3.191831118e+14, 2.795804599e+14, -4.033072270e+14, 1.802924594e+14, 2.980253648e+14, 4.744278589e+14, 1.596588829e+14, -8.729072742e+14, 3.571506060e+13, 9.685525720e+14, 1.432597582e+14, 2.579581517e+14, 3.793869435e+14, 9.774510899e+12, 2.768650507e+14, -5.597978836e+14, -1.768585156e+14, -1.353729903e+14, 4.342047520e+14, -2.185668256e+14, -8.593957768e+13, -3.078326206e+14, 2.380962768e+14, 9.205026254e+14, -3.850729098e+14, -3.352148490e+14, -3.155989616e+14, -7.350707678e+14, -4.863762901e+14, -1.225864532e+14;
+        String fullnamepath "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES";
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_ColumnAmountNO2 {
+        Int32 NumTimes 1644;
+        Int32 NumTimesSmallPixel 6488;
+        Int32 NumLatitude 180;
+        Int32 NumUnpolFldCoefs 5;
+        Int16 VerticalCoordinate 84, 111, 116, 97, 108, 32, 67, 111, 108, 117, 109, 110, 0;
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2";
+    }
+    HDFEOS_SWATHS_ColumnAmountNO2_Data_Fields {
+    }
+    HDFEOS_SWATHS_ColumnAmountNO2_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.8";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    AMFInitial {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Initial AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitial";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitial";
+        String coordinates "Latitude Longitude";
+    }
+    AMFInitialClear {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Initial AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitialClear";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitialClear";
+        String coordinates "Latitude Longitude";
+    }
+    AMFInitialClearStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Initial AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitialClearStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitialClearStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFInitialCloudy {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Initial AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitialCloudy";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitialCloudy";
+        String coordinates "Latitude Longitude";
+    }
+    AMFInitialCloudyStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Initial AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitialCloudyStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitialCloudyStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFInitialStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Initial AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFInitialStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFInitialStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPolluted {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Polluted AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPolluted";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPolluted";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedClear {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Polluted AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPollutedClear";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedClear";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedClearStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Polluted AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPollutedClearStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedClearStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedCloudy {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Polluted AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPollutedCloudy";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedCloudy";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedCloudyStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Polluted AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPollutedCloudyStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedCloudyStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Polluted AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFPollutedStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedToGround {
+        Float32 _FillValue 0.000000000;
+        Float32 missing_value -1.267650600e+30;
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        String title "AMFPollutedToGround";
+        String units "NoUnits";
+        String origname "AMFPollutedToGround";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedToGround";
+        String coordinates "Latitude Longitude";
+    }
+    AMFPollutedToGroundStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        String title "AMFPollutedToGroundStd";
+        String units "NoUnits";
+        String origname "AMFPollutedToGroundStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFPollutedToGroundStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFQualityFlags {
+        UInt16 _FillValue 65535;
+        UInt16 missing_value 65535;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Bit level AMF quality flags at ground pixel level";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFQualityFlags";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpolluted {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Unpolluted AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpolluted";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpolluted";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpollutedClear {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Unpolluted AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpollutedClear";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpollutedClear";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpollutedClearStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Unpolluted AMF for Cloud-free Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpollutedClearStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpollutedClearStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpollutedCloudy {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Unpolluted AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpollutedCloudy";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpollutedCloudy";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpollutedCloudyStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Unpolluted AMF for Cloudy Conditions";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpollutedCloudyStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpollutedCloudyStd";
+        String coordinates "Latitude Longitude";
+    }
+    AMFUnpollutedStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Unpolluted AMF";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "AMFUnpollutedStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AMFUnpollutedStd";
+        String coordinates "Latitude Longitude";
+    }
+    ChiSquaredOfFit {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Chi-squared diagnostics of DOAS fit";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ChiSquaredOfFit";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ChiSquaredOfFit";
+        String coordinates "Latitude Longitude";
+    }
+    CloudFraction {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Effective cloud fraction";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "CloudFraction";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudFraction";
+        String coordinates "Latitude Longitude";
+    }
+    CloudFractionStd {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Effective cloud fraction precision";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "CloudFractionStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudFractionStd";
+        String coordinates "Latitude Longitude";
+    }
+    CloudPressure {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Effective cloud pressure";
+        String units "hPa";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "CloudPressure";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudPressure";
+        String coordinates "Latitude Longitude";
+    }
+    CloudPressureStd {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Effective cloud pressure precision";
+        String units "hPa";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "CloudPressureStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudPressureStd";
+        String coordinates "Latitude Longitude";
+    }
+    CloudRadianceFraction {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Fraction of the radiance from the cloudy part";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "CloudRadianceFraction";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudRadianceFraction";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2 {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "NO2 vertical column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2BelowCloud {
+        Float32 _FillValue -1.267650600e+30;
+        String title "NO2 polluted colummn density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value -1.267650600e+30;
+        String origname "ColumnAmountNO2BelowCloud";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2BelowCloud";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2BelowCloudStd {
+        Float32 _FillValue -1.267650600e+30;
+        String title "NO2 polluted colummn density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value -1.267650600e+30;
+        String origname "ColumnAmountNO2BelowCloudStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2BelowCloudStd";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2Initial {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "NO2 initial vertical column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2Initial";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Initial";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2InitialStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the NO2 initial vertical column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2InitialStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2InitialStd";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2Polluted {
+        Float32 _FillValue -1.267650600e+30;
+        String title "NO2 polluted colummn density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value -1.267650600e+30;
+        String origname "ColumnAmountNO2Polluted";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Polluted";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2PollutedStd {
+        Float32 _FillValue -1.267650600e+30;
+        String title "NO2 polluted colummn density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 0.000000000;
+        Float32 missing_value -1.267650600e+30;
+        String origname "ColumnAmountNO2PollutedStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2PollutedStd";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2Std {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the NO2 vertical column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2Std";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Std";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2Trop {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "NO2 tropospheric column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2Trop";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Trop";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2TropStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the NO2 tropospheric column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2TropStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2TropStd";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2Unpolluted {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "NO2 unpolluted column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2Unpolluted";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Unpolluted";
+        String coordinates "Latitude Longitude";
+    }
+    ColumnAmountNO2UnpollutedStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the NO2 unpolluted column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ColumnAmountNO2UnpollutedStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2UnpollutedStd";
+        String coordinates "Latitude Longitude";
+    }
+    FitQualityFlags {
+        UInt16 _FillValue 65535;
+        UInt16 missing_value 65535;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Bit level DOAS fit quality flags at ground pixel level";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "FitQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/FitQualityFlags";
+        String coordinates "Latitude Longitude";
+    }
+    InstrumentConfigurationId {
+        Byte _FillValue 255;
+        Byte missing_value 255;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Unique ID for instrument settings for current measurement";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "InstrumentConfigurationId";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/InstrumentConfigurationId";
+    }
+    MeasurementQualityFlags {
+        Byte _FillValue 255;
+        Byte missing_value 255;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Bit level quality flags at measurement level";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "MeasurementQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/MeasurementQualityFlags";
+    }
+    PolynomialCoefficients {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Polynomial Coefficients";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "PolynomialCoefficients";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/PolynomialCoefficients";
+        String coordinates "Latitude Longitude nPolynomial";
+    }
+    PolynomialCoefficientsStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the Polynomial Coefficients";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "PolynomialCoefficientsStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/PolynomialCoefficientsStd";
+        String coordinates "Latitude Longitude nPolynomial";
+    }
+    RingCoefficient {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Fitted amount of Ring effect";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "RingCoefficient";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RingCoefficient";
+        String coordinates "Latitude Longitude";
+    }
+    RingCoefficientStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the fitted amount of Ring effect";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "RingCoefficientStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RingCoefficientStd";
+        String coordinates "Latitude Longitude";
+    }
+    RootMeanSquareErrorOfFit {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Root-Mean-Square error of DOAS fit";
+        String units "sr^-1";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "RootMeanSquareErrorOfFit";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RootMeanSquareErrorOfFit";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountH2O {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "H2O slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountH2O";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountH2O";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountH2OStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the H2O slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountH2OStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountH2OStd";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountNO2 {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "NO2 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountNO2";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountNO2";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountNO2Std {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the NO2 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountNO2Std";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountNO2Std";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountO2O2 {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000e+47;
+        Float64 add_offset 0.0000000000000000;
+        String title "O2-O2 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountO2O2";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO2O2";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountO2O2Std {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000e+47;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the O2-O2 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountO2O2Std";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO2O2Std";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountO3 {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "O3 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountO3";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO3";
+        String coordinates "Latitude Longitude";
+    }
+    SlantColumnAmountO3Std {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the O3 slant column density";
+        String units "molec/cm^2";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SlantColumnAmountO3Std";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO3Std";
+        String coordinates "Latitude Longitude";
+    }
+    SmallPixelRadiance {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Radiance of small pixel data column";
+        String units "photons/ (s.nm.cm^2.sr)";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SmallPixelRadiance";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiance";
+    }
+    SmallPixelRadiancePointer {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Offset and count of nTimesSmallPixel wrt nTimes";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "SmallPixelRadiancePointer";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiancePointer";
+    }
+    TerrainHeight {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Terrain height at for center co-ordinate of the ground pixel";
+        String units "m";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "TerrainHeight";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainHeight";
+        String coordinates "Latitude Longitude";
+    }
+    TerrainPressure {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Pressure of the center of the ground pixel";
+        String units "hPa";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "TerrainPressure";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainPressure";
+        String coordinates "Latitude Longitude";
+    }
+    TerrainReflectivity {
+        Int16 _FillValue -32767;
+        Int16 missing_value -32767;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Reflectivity of the ground pixel";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "TerrainReflectivity";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainReflectivity";
+        String coordinates "Latitude Longitude";
+    }
+    TropFractionUnpolluted {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Fraction of the NO2 unpolluted column below the tropopause";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "TropFractionUnpolluted";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TropFractionUnpolluted";
+        String coordinates "Latitude Longitude";
+    }
+    TropFractionUnpollutedStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the fraction of the NO2 unpolluted column that is below the tropopause";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "TropFractionUnpollutedStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TropFractionUnpollutedStd";
+        String coordinates "Latitude Longitude";
+    }
+    UnpolFldCoefficients {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Smoothing coefficients for the unpolluted field";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "UnpolFldCoefficients";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/UnpolFldCoefficients";
+        String coordinates "FakeDim2 FakeDim3";
+    }
+    UnpolFldLatBandQualityFlags {
+        Byte _FillValue 255;
+        Byte missing_value 255;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Bit level quality flags on latitude band level";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "UnpolFldLatBandQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/UnpolFldLatBandQualityFlags";
+        String coordinates "nLatitude";
+    }
+    WavelengthRegistrationCheck {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Result from wavelength check algorithm";
+        String units "nm";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "WavelengthRegistrationCheck";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/WavelengthRegistrationCheck";
+    }
+    WavelengthRegistrationCheckStd {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Precision of the result from wavelength check algorithm";
+        String units "nm";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "WavelengthRegistrationCheckStd";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/WavelengthRegistrationCheckStd";
+    }
+    vcdQualityFlags {
+        Int16 _FillValue 0;
+        String title "Vertical Column Density Quality Flags";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        Int16 missing_value 0;
+        String origname "vcdQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/vcdQualityFlags";
+        String coordinates "Latitude Longitude";
+    }
+    GroundPixelQualityFlags {
+        UInt16 _FillValue 65535;
+        UInt16 missing_value 65535;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Ground Pixel Quality Flags";
+        String units "NoUnits";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "GroundPixelQualityFlags";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/GroundPixelQualityFlags";
+        String coordinates "Latitude Longitude";
+    }
+    SolarAzimuthAngle {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Solar azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North";
+        String units "deg";
+        String UniqueFieldDefinition "OMI-TES-Shared";
+        String origname "SolarAzimuthAngle";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SolarAzimuthAngle";
+        String coordinates "Latitude Longitude";
+    }
+    SolarZenithAngle {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Solar zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel";
+        String units "deg";
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "SolarZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SolarZenithAngle";
+        String coordinates "Latitude Longitude";
+    }
+    SpacecraftAltitude {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Altitude above WGS84 ellipsoid";
+        String units "m";
+        String UniqueFieldDefinition "HIRDLS-OMI-TES-Shared";
+        String origname "SpacecraftAltitude";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftAltitude";
+    }
+    SpacecraftLatitude {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Geodetic Latitude above WGS84 ellipsoid";
+        String units "deg";
+        String UniqueFieldDefinition "HIRDLS-OMI-TES-Shared";
+        String origname "SpacecraftLatitude";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftLatitude";
+    }
+    SpacecraftLongitude {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Geodetic Longitude above WGS84 ellipsoid";
+        String units "deg";
+        String UniqueFieldDefinition "HIRDLS-OMI-TES-Shared";
+        String origname "SpacecraftLongitude";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftLongitude";
+    }
+    Time {
+        Float64 _FillValue -1.2676506002282294e+30;
+        Float64 missing_value -1.2676506002282294e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Time at Start of Scan (s, TAI93)";
+        String units "s";
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Time";
+    }
+    ViewingAzimuthAngle {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Viewing azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North";
+        String units "deg";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ViewingAzimuthAngle";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/ViewingAzimuthAngle";
+        String coordinates "Latitude Longitude";
+    }
+    ViewingZenithAngle {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Viewing zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel";
+        String units "deg";
+        String UniqueFieldDefinition "OMI-Specific";
+        String origname "ViewingZenithAngle";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/ViewingZenithAngle";
+        String coordinates "Latitude Longitude";
+    }
+    ArchiveMetadata_0 {
+        String origname "ArchiveMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/ArchiveMetadata.0";
+    }
+    CoreMetadata_0 {
+        String origname "CoreMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/CoreMetadata.0";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Latitude {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Latitude of the center of the groundpixel";
+        String units "degrees_north";
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Latitude";
+    }
+    Longitude {
+        Float32 _FillValue -1.267650600e+30;
+        Float32 missing_value -1.267650600e+30;
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String title "Longitude of the center of the groundpixel";
+        String units "degrees_east";
+        String UniqueFieldDefinition "Aura-Shared";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Longitude";
+    }
+    FakeDim1 {
+        String units "level";
+    }
+    FakeDim2 {
+        String units "level";
+    }
+    FakeDim3 {
+        String units "level";
+    }
+    nLatitude {
+        String units "level";
+    }
+    nPolynomial {
+        String units "level";
+    }
+    nSmallPixelPointer {
+        String units "level";
+    }
+    nWavelCheck {
+        String units "level";
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "ColumnAmountNO2";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "nXtrack";
+                        Int32 Size 60;
+                    }
+                    Dimension_2 {
+                        String DimensionName "nTimes";
+                        Int32 Size 1;
+                    }
+                    Dimension_3 {
+                        String DimensionName "nTimesSmallPixel";
+                        Int32 Size 10;
+                    }
+                    Dimension_4 {
+                        String DimensionName "nWavelCheck";
+                        Int32 Size 3;
+                    }
+                    Dimension_5 {
+                        String DimensionName "nLatitude";
+                        Int32 Size 1;
+                    }
+                    Dimension_6 {
+                        String DimensionName "nUnpolFldCoefs";
+                        Int32 Size 1;
+                    }
+                    Dimension_7 {
+                        String DimensionName "nSmallPixelPointer";
+                        Int32 Size 2;
+                    }
+                    Dimension_8 {
+                        String DimensionName "nPolynomial";
+                        Int32 Size 6;
+                    }
+                    Dimension_9 {
+                        String DimensionName "Unlimited";
+                        Int32 Size -1;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Time";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Latitude";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "Longitude";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_4 {
+                        String GeoFieldName "SpacecraftLatitude";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    GeoField_5 {
+                        String GeoFieldName "SpacecraftLongitude";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    GeoField_6 {
+                        String GeoFieldName "SpacecraftAltitude";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    GeoField_7 {
+                        String GeoFieldName "SolarZenithAngle";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_8 {
+                        String GeoFieldName "SolarAzimuthAngle";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_9 {
+                        String GeoFieldName "ViewingZenithAngle";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_10 {
+                        String GeoFieldName "ViewingAzimuthAngle";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    GeoField_11 {
+                        String GeoFieldName "GroundPixelQualityFlags";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "TerrainHeight";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_2 {
+                        String DataFieldName "ColumnAmountNO2Initial";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_3 {
+                        String DataFieldName "ColumnAmountNO2InitialStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_4 {
+                        String DataFieldName "SlantColumnAmountNO2";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_5 {
+                        String DataFieldName "SlantColumnAmountNO2Std";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_6 {
+                        String DataFieldName "SlantColumnAmountO3";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_7 {
+                        String DataFieldName "SlantColumnAmountO3Std";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_8 {
+                        String DataFieldName "SlantColumnAmountO2O2";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_9 {
+                        String DataFieldName "SlantColumnAmountO2O2Std";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_10 {
+                        String DataFieldName "SlantColumnAmountH2O";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_11 {
+                        String DataFieldName "SlantColumnAmountH2OStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_12 {
+                        String DataFieldName "AMFInitial";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_13 {
+                        String DataFieldName "AMFInitialStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_14 {
+                        String DataFieldName "AMFInitialCloudy";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_15 {
+                        String DataFieldName "AMFInitialCloudyStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_16 {
+                        String DataFieldName "AMFInitialClear";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_17 {
+                        String DataFieldName "AMFInitialClearStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_18 {
+                        String DataFieldName "CloudFraction";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_19 {
+                        String DataFieldName "CloudFractionStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_20 {
+                        String DataFieldName "CloudPressure";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_21 {
+                        String DataFieldName "CloudPressureStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_22 {
+                        String DataFieldName "CloudRadianceFraction";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_23 {
+                        String DataFieldName "TerrainReflectivity";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_24 {
+                        String DataFieldName "TerrainPressure";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_25 {
+                        String DataFieldName "RingCoefficient";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_26 {
+                        String DataFieldName "RingCoefficientStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_27 {
+                        String DataFieldName "PolynomialCoefficients";
+                        String DimList "nTimes", "nXtrack", "nPolynomial";
+                        String MaxdimList "Unlimited", "nXtrack", "nPolynomial";
+                    }
+                    DataField_28 {
+                        String DataFieldName "PolynomialCoefficientsStd";
+                        String DimList "nTimes", "nXtrack", "nPolynomial";
+                        String MaxdimList "Unlimited", "nXtrack", "nPolynomial";
+                    }
+                    DataField_29 {
+                        String DataFieldName "ChiSquaredOfFit";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_30 {
+                        String DataFieldName "RootMeanSquareErrorOfFit";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_31 {
+                        String DataFieldName "MeasurementQualityFlags";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    DataField_32 {
+                        String DataFieldName "FitQualityFlags";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_33 {
+                        String DataFieldName "SmallPixelRadiance";
+                        String DimList "nTimesSmallPixel", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_34 {
+                        String DataFieldName "SmallPixelRadiancePointer";
+                        String DimList "nTimes", "nSmallPixelPointer";
+                        String MaxdimList "Unlimited", "nSmallPixelPointer";
+                    }
+                    DataField_35 {
+                        String DataFieldName "InstrumentConfigurationId";
+                        String DimList "nTimes";
+                        String MaxdimList "Unlimited";
+                    }
+                    DataField_36 {
+                        String DataFieldName "WavelengthRegistrationCheck";
+                        String DimList "nTimes", "nWavelCheck";
+                        String MaxdimList "Unlimited", "nWavelCheck";
+                    }
+                    DataField_37 {
+                        String DataFieldName "WavelengthRegistrationCheckStd";
+                        String DimList "nTimes", "nWavelCheck";
+                        String MaxdimList "Unlimited", "nWavelCheck";
+                    }
+                    DataField_38 {
+                        String DataFieldName "ColumnAmountNO2";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_39 {
+                        String DataFieldName "ColumnAmountNO2Std";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_40 {
+                        String DataFieldName "ColumnAmountNO2Trop";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_41 {
+                        String DataFieldName "ColumnAmountNO2TropStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_42 {
+                        String DataFieldName "ColumnAmountNO2Unpolluted";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_43 {
+                        String DataFieldName "ColumnAmountNO2UnpollutedStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_44 {
+                        String DataFieldName "AMFUnpolluted";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_45 {
+                        String DataFieldName "AMFUnpollutedStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_46 {
+                        String DataFieldName "AMFUnpollutedClear";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_47 {
+                        String DataFieldName "AMFUnpollutedClearStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_48 {
+                        String DataFieldName "AMFUnpollutedCloudy";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_49 {
+                        String DataFieldName "AMFUnpollutedCloudyStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_50 {
+                        String DataFieldName "AMFPolluted";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_51 {
+                        String DataFieldName "AMFPollutedStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_52 {
+                        String DataFieldName "AMFPollutedClear";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_53 {
+                        String DataFieldName "AMFPollutedClearStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_54 {
+                        String DataFieldName "AMFPollutedCloudy";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_55 {
+                        String DataFieldName "AMFPollutedCloudyStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_56 {
+                        String DataFieldName "AMFQualityFlags";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_57 {
+                        String DataFieldName "UnpolFldCoefficients";
+                        String DimList "nLatitude", "nUnpolFldCoefs";
+                        String MaxdimList "Unlimited", "Unlimited";
+                    }
+                    DataField_58 {
+                        String DataFieldName "UnpolFldLatBandQualityFlags";
+                        String DimList "nLatitude";
+                        String MaxdimList "Unlimited";
+                    }
+                    DataField_59 {
+                        String DataFieldName "TropFractionUnpolluted";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_60 {
+                        String DataFieldName "TropFractionUnpollutedStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_61 {
+                        String DataFieldName "AMFPollutedToGround";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_62 {
+                        String DataFieldName "AMFPollutedToGroundStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_63 {
+                        String DataFieldName "ColumnAmountNO2Polluted";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_64 {
+                        String DataFieldName "ColumnAmountNO2PollutedStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_65 {
+                        String DataFieldName "ColumnAmountNO2BelowCloud";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_66 {
+                        String DataFieldName "ColumnAmountNO2BelowCloudStd";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                    DataField_67 {
+                        String DataFieldName "vcdQualityFlags";
+                        String DimList "nTimes", "nXtrack";
+                        String MaxdimList "Unlimited", "nXtrack";
+                    }
+                }
+                ProfileField {
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+        ZaStructure {
+        }
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "OMI-Aura_L2-OMNO2_2008m0720t2016-o21357_v003-2008m0721t022631.he5";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-07-21T02:26:31.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed 1 time";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "RFC1321 MD5 = not yet calculated";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "The value is based on a combination of the RadianceScienceQualityFlag, IrradianceScienceQualityFlag, QAPctRadianceError, QAPctFitError, QAPctCloudFractionMissing, QAPctCloudPressureMissing. Thresholds used: 50% for Failed and 20% for Suspect.";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.";
+                            String CLASS "1";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Passed";
+                            String CLASS "1";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Nitrogen_Dioxide_Total_and_Trop_Column";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2008-07-20";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "20:58:55.000000";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 21357;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE -108.51;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 3;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "OMNO2";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 15;
+                    String VALUE "OMNO2A_OPF.txt", "OMI-Aura_L1-OML1BRVG_2008m0720t2016-o21357_v003-2008m0721t014631.he4", "OMI-Aura_L2-OMCLDO2_2008m0720t2016-o21357_v003-2008m0721t015837.he5", "GOMEsfcrefl.he5", "ProfileLut.h5", "TemperatureLut.h5", "damf.h5", "refspec_OMNO2A_NO2.dat", "
+          refspec_OMNO2A_O3.dat", "refspec_OMNO2A_O4.dat", "refspec_OMNO2A_H2O.dat", "refspec_OMNO2A_ring.dat", "refspec_OMNO2A_sun.dat", "cloudRadWeight.h5", "OMI-Aura_L1-GLOBAL-OMTMIRRYA_2005m0101t0000-syear-rPDS01_v003-2007m0716t145802.he4";
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-07-20";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "21:55:18.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-07-20";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "20:16:25.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "1.0.5.2";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "CCD Visible";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Aura";
+                    }
+                    OPERATIONMODE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Normal";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "OMI";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "NrMeasurements", "NrZoom", "NrSpatialZoom", "NrSpectralZoom", "ExpeditedData", "SouthAtlanticAnomalyCrossing", "SpacecraftManeuverFlag", "SolarEclipse", "InstrumentConfigurationIDs", "MasterClockPeriods", "ExposureTimes", "PathNr", "StartBlockNr", "EndBlockNr";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                            String VALUE "1644", "0", "0", "0", "FALSE", "TRUE", "FALSE", "FALSE", "0", "1", "2", "2.000400", "1.000200", "0.500100", "0.400080", "158", "15", "42";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "OMI/Aura Nitrogen Dioxide (NO2) Total & Troposph.Column 1-Orbit L2 Swath 13x24km";
+            }
+            ESDTDESCRIPTORREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "2.0.02";
+            }
+        }
+    }
+}

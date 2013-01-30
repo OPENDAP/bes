@@ -6,4 +6,4 @@ Dataset {
     Float32 GeoGrid1_lat[GeoGrid1_lat = 4];
     Float32 GeoGrid2_lon[GeoGrid2_lon = 8];
     Float32 GeoGrid2_lat[GeoGrid2_lat = 4];
-} virtual;
+} grid_2_2d_pixel.h5;

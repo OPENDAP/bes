@@ -1,6 +1,13 @@
+News for version 2.2.0
+
+This version corrects dimension scale handling and archive metadata handling.
+It correctly handles OMI products that have dimensoin names like "1" and "2".
+It prints the file name instead of "virtual" in DDS output.
+
 News for version 2.1.1
 
-This version changes the _FillValue datatype to be consistent with the variable datatype.
+This version changes the _FillValue datatype to be consistent with the 
+variable datatype.
 This is not required by CF, however, netCDF-3 has this requirement.
 This change makes fileout_netcdf work smoothly for some NASA products.
 

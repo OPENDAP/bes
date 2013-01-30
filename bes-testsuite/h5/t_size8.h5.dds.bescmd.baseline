@@ -3,4 +3,4 @@ Dataset {
     Int16 _dschar[2][2];
     Byte _duchar_1[2][2][2];
     Byte _duchar_2[2][2][2][2][2];
-} virtual;
+} t_size8.h5;

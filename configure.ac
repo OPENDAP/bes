@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(hdf5_handler, 2.1.1, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 2.2.0, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.10 tar-pax])
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([HDF5UInt32.h])

@@ -1,0 +1,9 @@
+The data:
+Int16 AIRS_RetStd_dust_flag[airs_idx = 2] = {-3, 0};
+Float32 AIRS_RetStd_CldFrcStd[airs_idx = 2][AIRS_RetStd_Cloud = 2] = {{0.562006, 0},{0.0391873, 0}};
+Float64 CloudSat_GEOPROF_Latitude[airs_idx = 2][CloudSat_cs_idx = 2] = {{-0.562442362308502, 9.96920996838687e+36},{21.0168304443359, 21.1711940765381}};
+Byte CloudSat_CWC_RO_IO_RO_log_num_conc_uncertainty[airs_idx = 2][CloudSat_cs_idx = 2][CloudSat_cs_nbin = 2] = {{{0, 0},{0, 0}},{{0, 0},{0, 0}}};
+Float32 AIRS_RetStd_CH4Func[AIRS_RetStd_CH4Func = 2] = {0, 6};
+Float32 AIRS_RetStd_Cloud[AIRS_RetStd_Cloud = 2] = {0, 1};
+Float32 airs_idx[airs_idx = 2] = {0, 140};
+

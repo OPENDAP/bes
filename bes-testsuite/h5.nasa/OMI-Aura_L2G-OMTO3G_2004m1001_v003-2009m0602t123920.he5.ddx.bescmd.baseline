@@ -1,0 +1,3097 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="OrbitNumber" type="Int32">
+            <value>1132</value>
+            <value>1133</value>
+            <value>1134</value>
+            <value>1135</value>
+            <value>1136</value>
+            <value>1137</value>
+            <value>1138</value>
+            <value>1139</value>
+            <value>1140</value>
+            <value>1141</value>
+            <value>1142</value>
+            <value>1143</value>
+            <value>1144</value>
+            <value>1145</value>
+            <value>1146</value>
+        </Attribute>
+        <Attribute name="FirstLineInOrbit" type="Int32">
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>43</value>
+            <value>42</value>
+            <value>43</value>
+            <value>43</value>
+            <value>42</value>
+            <value>42</value>
+            <value>43</value>
+        </Attribute>
+        <Attribute name="LastLineInOrbit" type="Int32">
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1608</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1496</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>1607</value>
+            <value>915</value>
+        </Attribute>
+        <Attribute name="NumberOfLinesMissingGeolocation" type="Int32">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </Attribute>
+        <Attribute name="OrbitPeriod" type="Float64">
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+            <value>5932.0000000000000</value>
+            <value>5933.0000000000000</value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <value>OMI</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>2G</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>10</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2004</value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <value>275</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>370742405.00000000</value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>&quot;1.0.3.1&quot;</value>
+        </Attribute>
+        <Attribute name="StartUTC" type="String">
+            <value>2004-10-01T00:00:00.000000Z</value>
+        </Attribute>
+        <Attribute name="EndUTC" type="String">
+            <value>2004-10-01T23:59:59.999999Z</value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <value>Daily</value>
+        </Attribute>
+        <Attribute name="QAPercentMissingData" type="Int32">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_OMI_Column_Amount_O3" type="Container">
+        <Attribute name="GCTPProjectionCode" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Projection" type="String">
+            <value>Geographic</value>
+        </Attribute>
+        <Attribute name="GridOrigin" type="String">
+            <value>Center</value>
+        </Attribute>
+        <Attribute name="GridSpacing" type="String">
+            <value>(0.25,0.25)</value>
+        </Attribute>
+        <Attribute name="GridSpacingUnit" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="GridSpan" type="String">
+            <value>(-180,180,-90,90)</value>
+        </Attribute>
+        <Attribute name="GridSpanUnit" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <value>1440</value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <value>720</value>
+        </Attribute>
+        <Attribute name="NumberOfGridCells" type="Int32">
+            <value>1036800</value>
+        </Attribute>
+        <Attribute name="NumberOfEmptyGridCells" type="Int32">
+            <value>363977</value>
+        </Attribute>
+        <Attribute name="NumberOfPopulatedGridCells" type="Int32">
+            <value>672823</value>
+        </Attribute>
+        <Attribute name="NumberOfMultiplyPopulatedGridCells" type="Int32">
+            <value>473934</value>
+        </Attribute>
+        <Attribute name="MinimumNumberOfCandidatesPerGridCell" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="MaximumNumberOfCandidatesPerGridCell" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesConsideredForGrid" type="Int32">
+            <value>1426680</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesAcceptedIntoGrid" type="Int32">
+            <value>1269207</value>
+        </Attribute>
+        <Attribute name="NumberOfDuplicateScenesAcceptedIntoGrid" type="Int32">
+            <value>596384</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesRejectedFromGrid" type="Int32">
+            <value>157473</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS_OMI_Column_Amount_O3_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.8</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <value>&quot;OMI Column Amount O3&quot;</value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <value>1440</value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <value>720</value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <value>-180000000.000000</value>
+                    <value>90000000.000000</value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <value>180000000.000000</value>
+                    <value>-90000000.000000</value>
+                </Attribute>
+                <Attribute name="PixelRegistration" type="String">
+                    <value>HE5_HDFE_CENTER</value>
+                </Attribute>
+                <Attribute name="GridOrigin" type="String">
+                    <value>HE5_HDFE_GD_LL</value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <value>HE5_GCTP_GEO</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1440</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;YDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>720</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nLayers&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>7</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nWavel&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>12</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_5" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>15</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;GroundPixelQualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;LineNumber&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NumberOfCandidateScenes&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OrbitNumber&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;PathLength&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RelativeAzimuthAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SceneNumber&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SecondsInDay&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SolarZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TerrainHeight&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ViewingZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AlgorithmFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudPressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ColumnAmountO3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;InstrumentConfigurationId&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MeasurementQualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NumberSmallPixelColumns&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;O3BelowCloud&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;QualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadiativeCloudFraction&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_24" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Reflectivity331&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_25" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Reflectivity360&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_26" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SmallPixelColumn&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_27" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SO2index&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_28" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;StepTwoO3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_29" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TerrainPressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_30" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;UVAerosolIndex&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_31" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Wavelength&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nWavel&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nWavel&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_32" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;APrioriLayerO3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nLayers&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nLayers&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_33" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;LayerEfficiency&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nLayers&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nLayers&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_34" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Residual&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nWavel&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nCandidate&quot;</value>
+                            <value>&quot;nWavel&quot;</value>
+                            <value>&quot;YDim&quot;</value>
+                            <value>&quot;XDim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>5</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="LONGNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;OMI/Aura Ozone (O3) Total Column Daily L2 Global 0.25deg Lat/Lon Grid&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ESDTDESCRIPTORREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;2.0.00&quot;</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Array name="APrioriLayerO3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>A Priori Ozone Profile</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>125.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>APrioriLayerO3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/APrioriLayerO3</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="nLayers" size="7"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="AlgorithmFlags">
+        <Attribute name="_FillValue" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Algorithm Flags</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>13</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AlgorithmFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/AlgorithmFlags</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Byte/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="CloudPressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Effective Cloud Pressure</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1013.250000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudPressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/CloudPressure</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="ColumnAmountO3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Best Total Ozone Solution</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>50.00000000</value>
+            <value>700.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ColumnAmountO3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ColumnAmountO3</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="GroundPixelQualityFlags">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65535</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Ground Pixel Quality Flags</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <value>65535</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="InstrumentConfigurationId">
+        <Attribute name="_FillValue" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Instrument Configuration ID</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>200</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>InstrumentConfigurationId</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/InstrumentConfigurationId</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Byte/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Geodetic Latitude</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Latitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="LayerEfficiency">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Algorithmic Layer Efficiency</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>10.00000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LayerEfficiency</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LayerEfficiency</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="nLayers" size="7"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="LineNumber">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Line Number of Candidate Scene</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>1700</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LineNumber</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LineNumber</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Geodetic Longitude</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Longitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="MeasurementQualityFlags">
+        <Attribute name="_FillValue" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Measurement Quality Flags</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>254</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MeasurementQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/MeasurementQualityFlags</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Byte/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="NumberOfCandidateScenes">
+        <Attribute name="_FillValue" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Number of Candidate Scenes</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>15</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NumberOfCandidateScenes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberOfCandidateScenes</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int32/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="NumberSmallPixelColumns">
+        <Attribute name="_FillValue" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Number of Small Pixel Columns</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NumberSmallPixelColumns</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberSmallPixelColumns</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Byte/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="O3BelowCloud">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Ozone Below Fractional Cloud</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3BelowCloud</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/O3BelowCloud</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="OrbitNumber">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Orbit Number of Candidate Scene</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>999999</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OrbitNumber</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/OrbitNumber</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="PathLength">
+        <Attribute name="_FillValue" type="Float32">
+            <value>1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Path Length</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>2.000000000</value>
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PathLength</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/PathLength</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="QualityFlags">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65535</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Quality Flags</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <value>65535</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>QualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/QualityFlags</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="RadiativeCloudFraction">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiative Cloud Fraction = fc*Ic331/Im331</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadiativeCloudFraction</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RadiativeCloudFraction</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Reflectivity331">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Effective Surface Reflectivity at 331 nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-15.00000000</value>
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity331</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Reflectivity360">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Effective Surface Reflectivity at 360 nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-15.00000000</value>
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity360</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="RelativeAzimuthAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg(EastofNorth)</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Relative Azimuth Angle (sun + 180 - view)</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RelativeAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RelativeAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Residual">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>N-Value Residual</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-32.00000000</value>
+            <value>32.00000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Residual</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Residual</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="nWavel" size="12"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="SO2index">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SO2 Index</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-300.0000000</value>
+            <value>300.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SO2index</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SO2index</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="SceneNumber">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Scene Number of Candidate Scene</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>60</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SceneNumber</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SceneNumber</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="SecondsInDay">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>s</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Seconds after UTC midnight</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>86401.00000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SecondsInDay</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SecondsInDay</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="SmallPixelColumn">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Small Pixel Column</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>1000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SmallPixelColumn</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SmallPixelColumn</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="SolarZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Solar Zenith Angle</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="StepTwoO3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Step 2 Ozone Solution</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>5.000000000</value>
+            <value>700.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>StepTwoO3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/StepTwoO3</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="TerrainHeight">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Terrain Height</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-200</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-32767</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TerrainHeight</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainHeight</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="TerrainPressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Terrain Pressure</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1013.250000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TerrainPressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainPressure</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.2676506002282294e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>s</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Time at Start of Scan (TAI93)</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-Aura-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-5000000000.0000000</value>
+            <value>10000000000.000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.2676506002282294e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Time</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="UVAerosolIndex">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>UV Aerosol Index</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-30.00000000</value>
+            <value>30.00000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/UVAerosolIndex</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="ViewingZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Viewing Zenith Angle</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>70.00000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>XDim </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nCandidate" size="15"/>
+        <dimension name="YDim" size="720"/>
+        <dimension name="XDim" size="1440"/>
+    </Array>
+    <Array name="Wavelength">
+        <Attribute name="units" type="String">
+            <value>nm</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Wavelength</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TOMS-OMI-Shared</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>300.0000000</value>
+            <value>400.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Wavelength</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Wavelength</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nWavel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nWavel" size="12"/>
+    </Array>
+    <String name="ArchivedMetadata">
+        <Attribute name="origname" type="String">
+            <value>ArchivedMetadata</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/ArchivedMetadata</value>
+        </Attribute>
+    </String>
+    <String name="CoreMetadata">
+        <Attribute name="origname" type="String">
+            <value>CoreMetadata</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/CoreMetadata</value>
+        </Attribute>
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-06-02T12:39:20.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;processed 1 time&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;RFC1321 MD5 = not yet calculated&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;further update is anticipated&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;An automatic quality investigation has not yet been devised.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Failed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Total Column Ozone Gridded&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                            <value>&quot;2004-10-01&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;00:52:22.000000&quot;</value>
+                            <value>&quot;02:31:15.000000&quot;</value>
+                            <value>&quot;04:10:08.000000&quot;</value>
+                            <value>&quot;05:49:01.000000&quot;</value>
+                            <value>&quot;07:27:54.000000&quot;</value>
+                            <value>&quot;09:06:47.000000&quot;</value>
+                            <value>&quot;10:45:40.000000&quot;</value>
+                            <value>&quot;12:24:33.000000&quot;</value>
+                            <value>&quot;14:03:26.000000&quot;</value>
+                            <value>&quot;15:42:19.000000&quot;</value>
+                            <value>&quot;17:21:12.000000&quot;</value>
+                            <value>&quot;19:00:05.000000&quot;</value>
+                            <value>&quot;20:38:58.000000&quot;</value>
+                            <value>&quot;22:17:51.000000&quot;</value>
+                            <value>&quot;23:56:44.000000&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>1132</value>
+                            <value>1133</value>
+                            <value>1134</value>
+                            <value>1135</value>
+                            <value>1136</value>
+                            <value>1137</value>
+                            <value>1138</value>
+                            <value>1139</value>
+                            <value>1140</value>
+                            <value>1141</value>
+                            <value>1142</value>
+                            <value>1143</value>
+                            <value>1144</value>
+                            <value>1145</value>
+                            <value>1146</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>-167.57</value>
+                            <value>167.71</value>
+                            <value>142.99</value>
+                            <value>118.27</value>
+                            <value>93.55</value>
+                            <value>68.83</value>
+                            <value>44.1</value>
+                            <value>19.38</value>
+                            <value>-5.34</value>
+                            <value>-30.06</value>
+                            <value>-54.78</value>
+                            <value>-79.5</value>
+                            <value>-104.22</value>
+                            <value>-128.94</value>
+                            <value>-153.66</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>3</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMTO3G&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>15</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0003-o01132_v003-2009m0531t100121.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0141-o01133_v003-2009m0531t095703.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0320-o01134_v003-2009m0531t095656.he5&quot;</value>
+                        <value>&quot;
+          OMI-Aura_L2-OMTO3_2004m1001t0459-o01135_v003-2009m0531t100110.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0638-o01136_v003-2009m0531t095551.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0817-o01137_v003-2009m0531t100145.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t0956-o01138_v003-2009m0531t095639.he5&quot;</value>
+                        <value>&quot;
+          OMI-Aura_L2-OMTO3_2004m1001t1135-o01139_v003-2009m0531t095651.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t1314-o01140_v003-2009m0531t095815.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t1452-o01141_v003-2009m0531t095647.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t1631-o01142_v003-2009m0531t095639.he5&quot;</value>
+                        <value>&quot;
+          OMI-Aura_L2-OMTO3_2004m1001t1810-o01143_v003-2009m0531t095702.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t1949-o01144_v003-2009m0531t100315.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t2128-o01145_v003-2009m0531t095712.he5&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMTO3_2004m1001t2307-o01146_v003-2009m0531t095143.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="GRANULELOCALITY" type="Container">
+                    <Attribute name="LOCALITYVALUE" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Global&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2004-10-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;23:59:59.999999&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2004-10-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:00:00.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;1.0.3.1&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;CCD Ultra Violet&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Aura&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;OMI&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;NrMeasurements&quot;</value>
+                            <value>&quot;NrZoom&quot;</value>
+                            <value>&quot;NrSpatialZoom&quot;</value>
+                            <value>&quot;NrSpectralZoom&quot;</value>
+                            <value>&quot;ExpeditedData&quot;</value>
+                            <value>&quot;SouthAtlanticAnomalyCrossing&quot;</value>
+                            <value>&quot;SpacecraftManeuverFlag&quot;</value>
+                            <value>&quot;SolarEclipse&quot;</value>
+                            <value>&quot;MasterClockPeriods&quot;</value>
+                            <value>&quot;ExposureTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>3</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;23778&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;TRUE&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;2.000400&quot;</value>
+                                <value>&quot;1.000200&quot;</value>
+                                <value>&quot;0.500100&quot;</value>
+                                <value>&quot;0.400080&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <dataBLOB href=""/>
+</Dataset>

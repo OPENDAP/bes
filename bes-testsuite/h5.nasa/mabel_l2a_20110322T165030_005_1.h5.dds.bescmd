@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="mabel_l2a_20110322T165030_005_1" space="catalog">/data/mabel_l2a_20110322T165030_005_1.h5</setContainer>
+    <define name="d">
+	<container name="mabel_l2a_20110322T165030_005_1" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

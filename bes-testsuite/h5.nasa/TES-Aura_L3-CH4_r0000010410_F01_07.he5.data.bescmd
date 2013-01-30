@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="TES-Aura_L3-CH4_r0000010410_F01_07" space="catalog">/data/TES-Aura_L3-CH4_r0000010410_F01_07.he5</setContainer>
+    <define name="d">
+	<container name="TES-Aura_L3-CH4_r0000010410_F01_07">
+	     <constraint>Latitude[0:41:82],Longitude[0:45:89],CH4[0][0][0],CH4AtSurface[89][82],SurfacePressure[0:45:89][82:82:82],TotalColumnDensity[0:45:89][0:1:82],Pressure</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

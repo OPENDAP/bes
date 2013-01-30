@@ -1,0 +1,1582 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="InstrumentName" type="String">
+            <value>OMI</value>
+        </Attribute>
+        <Attribute name="PlatformName" type="String">
+            <value>Aura</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>4</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2006</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>410486406.00000000</value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>1.1</value>
+        </Attribute>
+        <Attribute name="LUTLibraryVersion" type="String">
+            <value>MLER_0.3.bin,FLUX_0.3.bin,ERY_0.3.bin,REFEP_0.3.bin,CCF_0.3.txt,RADHIGH_0.3.bin,RADLOW_0.3.bin,RAMANEP_0.3.txt,ALBEDO_0.3.bin</value>
+        </Attribute>
+        <Attribute name="ProductType" type="String">
+            <value>Global</value>
+        </Attribute>
+        <Attribute name="ProcessingCenter" type="String">
+            <value>FIN-GS</value>
+        </Attribute>
+        <Attribute name="ShortName" type="String">
+            <value>OMUVB</value>
+        </Attribute>
+        <Attribute name="ProductionDateTime" type="String">
+            <value>2008-07-16T02:50:06.000Z</value>
+        </Attribute>
+        <Attribute name="PctSuspiciousInputData" type="Int32">
+            <value>35</value>
+        </Attribute>
+        <Attribute name="PctFatalInputData" type="Int32">
+            <value>11</value>
+        </Attribute>
+        <Attribute name="PctSuspiciousOutputData" type="Int32">
+            <value>46</value>
+        </Attribute>
+        <Attribute name="PctFatalOutputData" type="Int32">
+            <value>11</value>
+        </Attribute>
+        <Attribute name="LocalGranuleId" type="String">
+            <value>OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5</value>
+        </Attribute>
+        <Attribute name="OrbitNumber" type="Int16">
+            <value>7831</value>
+        </Attribute>
+        <Attribute name="EquatorCrossingDate" type="String">
+            <value>2006-01-04</value>
+        </Attribute>
+        <Attribute name="EquatorCrossingTime" type="String">
+            <value>01:15:21.000000</value>
+        </Attribute>
+        <Attribute name="EquatorCrossingLongitude" type="Float64">
+            <value>-173.59999999999999</value>
+        </Attribute>
+        <Attribute name="RangeBeginningDate" type="String">
+            <value>2006-01-04</value>
+        </Attribute>
+        <Attribute name="RangeBeginningTime" type="String">
+            <value>00:19:58.000000</value>
+        </Attribute>
+        <Attribute name="RangeEndingDate" type="String">
+            <value>2006-01-04</value>
+        </Attribute>
+        <Attribute name="RangeEndingTime" type="String">
+            <value>01:58:51.000000</value>
+        </Attribute>
+        <Attribute name="InputVersions" type="String">
+            <value>OMTO3:1.0.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS" type="Container">
+        <Attribute name="NumTimes" type="Int32">
+            <value>1643</value>
+        </Attribute>
+        <Attribute name="VerticalCoordinate" type="String">
+            <value>SurfaceData</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS_UVB" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_UVB_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_UVB_Geolocation_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.5</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;UVB&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>60</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>-1</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_3" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SolarZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_4" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_5" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;TerrainHeight&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_6" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;GroundPixelQualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Irradiance305&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Irradiance310&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Irradiance324&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxDimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Irradiance380&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSIrradiance305&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSIrradiance310&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSIrradiance324&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSIrradiance380&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ErythemalDailyDose&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ErythemalDoseRate&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSErythemalDailyDose&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CSErythemalDoseRate&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OPIrradiance310&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OPIrradiance324&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OPIrradiance380&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OPErythemalDoseRate&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceAlbedo&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;LambertianEquivalentReflectivity&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudOpticalThickness&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OMTO3ColumnAmountO3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OMTO3AlgorithmFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OMTO3QualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;OMUVBQuality&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;Unlimited&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Array name="CSErythemalDailyDose">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Erythemal Daily Dose</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>J/m2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSErythemalDailyDose</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSErythemalDailyDose</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CSErythemalDoseRate">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Erythemal Dose Rate</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CSIrradiance305">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Irradiance at 305 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSIrradiance305</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance305</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CSIrradiance310">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Irradiance at 310 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSIrradiance310</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance310</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CSIrradiance324">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Irradiance at 324 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSIrradiance324</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance324</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CSIrradiance380">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Clear Sky Irradiance at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CSIrradiance380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="CloudOpticalThickness">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Cloud Optical Thickness</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudOpticalThickness</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/CloudOpticalThickness</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="ErythemalDailyDose">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Erythemal Daily Dose</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>J/m2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ErythemalDailyDose</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/ErythemalDailyDose</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="ErythemalDoseRate">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Erythemal Dose Rate</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/ErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Irradiance305">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Irradiance at 305 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Irradiance305</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance305</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Irradiance310">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Irradiance at 310 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Irradiance310</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance310</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Irradiance324">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Irradiance at 324 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Irradiance324</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance324</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Irradiance380">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Irradiance at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Irradiance380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="LambertianEquivalentReflectivity">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Lambertian Equivalent Reflectivity at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LambertianEquivalentReflectivity</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/LambertianEquivalentReflectivity</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OMTO3AlgorithmFlags">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>OMTO3 Algorithm Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OMTO3AlgorithmFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3AlgorithmFlags</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OMTO3ColumnAmountO3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>OMTO3 Column Amount O3</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>DU</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OMTO3ColumnAmountO3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3ColumnAmountO3</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OMTO3QualityFlags">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>OMTO3 Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OMTO3QualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3QualityFlags</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OMUVBQuality">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>OMUVB Quality</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OMUVBQuality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OMUVBQuality</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OPErythemalDoseRate">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Overpass Erythemal Dose Rate</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OPErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OPErythemalDoseRate</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OPIrradiance305">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Overpass Irradiance at 305 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OPIrradiance305</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance305</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OPIrradiance310">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Overpass Irradiance at 310 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OPIrradiance310</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance310</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OPIrradiance324">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Overpass Irradiance at 324 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OPIrradiance324</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance324</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="OPIrradiance380">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Overpass Irradiance at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>W/m2/nm</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>OPIrradiance380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SurfaceAlbedo">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Surface Albedo at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedo</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Data Fields/SurfaceAlbedo</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="GroundPixelQualityFlags">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Groundpixel Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unitless</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SolarZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Solar Zenith Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degree</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="TerrainHeight">
+        <Attribute name="_FillValue" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Terrain Height for Center Co-ordinate of Ground Pixel</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TerrainHeight</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/TerrainHeight</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.2676506002282294e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.2676506002282294e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>second</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="FakeDim0" size="1643"/>
+    </Array>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="FakeDim0" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

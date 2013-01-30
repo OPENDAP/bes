@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077" space="catalog">/data/HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5</setContainer>
+    <define name="d">
+	<container name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077">
+           <constraint>
+ Day[0:575:1150],
+ Latitude[0:36:72],
+ Longitude[0:89:179],
+ Month[0:575:1150],
+ NO2DayColumn[0:575:1150][0:36:72][0:89:179],
+ NO2DayColumnPrecision[0:575:1150][0:36:72][0:89:179],
+ NO2DayDataCount[0:575:1150][0:36:72][0:89:179],
+ Time[0:575:1150],
+ Year[0:575:1150],
+ StructMetadata_0,
+ coremetadata_0,
+ XDim[0:89:179],
+ YDim[0:36:72],
+ nTimes[0:575:1150]
+           </constraint>          
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

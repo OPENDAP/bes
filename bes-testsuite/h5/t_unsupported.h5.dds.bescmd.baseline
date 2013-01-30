@@ -2,4 +2,4 @@ Dataset {
     Int16 _dataset[3][16];
     UInt32 _group1_dataset1[4];
     Byte _group1_dataset2[4];
-} virtual;
+} t_unsupported.h5;

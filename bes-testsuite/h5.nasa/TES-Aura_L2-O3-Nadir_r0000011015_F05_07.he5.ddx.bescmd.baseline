@@ -1,0 +1,3648 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="InstrumentName" type="String">
+            <value>TES</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>L2</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>535457767.19505298</value>
+        </Attribute>
+        <Attribute name="GlobalSurveyNumber" type="Int32">
+            <value>11015</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int16">
+            <value>12</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int16">
+            <value>20</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2009</value>
+        </Attribute>
+        <Attribute name="SurveyMode" type="String">
+            <value>Global</value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>R11.01.00</value>
+        </Attribute>
+        <Attribute name="Command_Seq_ID" type="Int32">
+            <value>41</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath" type="Container">
+        <Attribute name="VerticalCoordinate" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="CloudFrequency" type="Float32">
+            <value>600.0000000</value>
+            <value>650.0000000</value>
+            <value>700.0000000</value>
+            <value>750.0000000</value>
+            <value>800.0000000</value>
+            <value>850.0000000</value>
+            <value>900.0000000</value>
+            <value>950.0000000</value>
+            <value>975.0000000</value>
+            <value>1000.000000</value>
+            <value>1025.000000</value>
+            <value>1050.000000</value>
+            <value>1075.000000</value>
+            <value>1100.000000</value>
+            <value>1150.000000</value>
+            <value>1200.000000</value>
+            <value>1250.000000</value>
+            <value>1300.000000</value>
+            <value>1350.000000</value>
+            <value>1400.000000</value>
+            <value>1900.000000</value>
+            <value>2000.000000</value>
+            <value>2100.000000</value>
+            <value>2200.000000</value>
+            <value>2250.000000</value>
+        </Attribute>
+        <Attribute name="EmissivityWavenumber" type="Float32">
+            <value>600.0000000</value>
+            <value>650.0000000</value>
+            <value>675.0000000</value>
+            <value>700.0000000</value>
+            <value>725.0000000</value>
+            <value>750.0000000</value>
+            <value>770.0000000</value>
+            <value>780.0000000</value>
+            <value>790.0000000</value>
+            <value>800.0000000</value>
+            <value>810.0000000</value>
+            <value>830.0000000</value>
+            <value>850.0000000</value>
+            <value>900.0000000</value>
+            <value>910.0000000</value>
+            <value>920.0000000</value>
+            <value>930.0000000</value>
+            <value>940.0000000</value>
+            <value>950.0000000</value>
+            <value>960.0000000</value>
+            <value>970.0000000</value>
+            <value>980.0000000</value>
+            <value>990.0000000</value>
+            <value>1000.000000</value>
+            <value>1020.000000</value>
+            <value>1030.000000</value>
+            <value>1040.000000</value>
+            <value>1050.000000</value>
+            <value>1060.000000</value>
+            <value>1070.000000</value>
+            <value>1080.000000</value>
+            <value>1090.000000</value>
+            <value>1100.000000</value>
+            <value>1105.000000</value>
+            <value>1110.000000</value>
+            <value>1115.000000</value>
+            <value>1120.000000</value>
+            <value>1125.000000</value>
+            <value>1130.000000</value>
+            <value>1135.000000</value>
+            <value>1140.000000</value>
+            <value>1145.000000</value>
+            <value>1150.000000</value>
+            <value>1155.000000</value>
+            <value>1160.000000</value>
+            <value>1165.000000</value>
+            <value>1170.000000</value>
+            <value>1175.000000</value>
+            <value>1180.000000</value>
+            <value>1185.000000</value>
+            <value>1190.000000</value>
+            <value>1195.000000</value>
+            <value>1200.000000</value>
+            <value>1205.000000</value>
+            <value>1210.000000</value>
+            <value>1215.000000</value>
+            <value>1220.000000</value>
+            <value>1225.000000</value>
+            <value>1230.000000</value>
+            <value>1235.000000</value>
+            <value>1240.000000</value>
+            <value>1245.000000</value>
+            <value>1250.000000</value>
+            <value>1255.000000</value>
+            <value>1260.000000</value>
+            <value>1265.000000</value>
+            <value>1270.000000</value>
+            <value>1275.000000</value>
+            <value>1280.000000</value>
+            <value>1285.000000</value>
+            <value>1290.000000</value>
+            <value>1295.000000</value>
+            <value>1300.000000</value>
+            <value>1350.000000</value>
+            <value>1400.000000</value>
+            <value>1450.000000</value>
+            <value>1500.000000</value>
+            <value>1550.000000</value>
+            <value>1600.000000</value>
+            <value>1650.000000</value>
+            <value>1700.000000</value>
+            <value>1750.000000</value>
+            <value>1800.000000</value>
+            <value>1830.000000</value>
+            <value>1850.000000</value>
+            <value>1870.000000</value>
+            <value>1900.000000</value>
+            <value>1930.000000</value>
+            <value>1950.000000</value>
+            <value>1960.000000</value>
+            <value>1980.000000</value>
+            <value>2000.000000</value>
+            <value>2030.000000</value>
+            <value>2050.000000</value>
+            <value>2060.000000</value>
+            <value>2100.000000</value>
+            <value>2120.000000</value>
+            <value>2140.000000</value>
+            <value>2160.000000</value>
+            <value>2180.000000</value>
+            <value>2200.000000</value>
+            <value>2220.000000</value>
+            <value>2240.000000</value>
+            <value>2260.000000</value>
+            <value>2280.000000</value>
+            <value>2300.000000</value>
+            <value>2320.000000</value>
+            <value>2340.000000</value>
+            <value>2360.000000</value>
+            <value>2380.000000</value>
+            <value>2400.000000</value>
+            <value>2460.000000</value>
+            <value>2500.000000</value>
+            <value>2540.000000</value>
+            <value>2560.000000</value>
+            <value>2600.000000</value>
+            <value>2700.000000</value>
+            <value>2800.000000</value>
+            <value>2900.000000</value>
+            <value>3000.000000</value>
+            <value>3100.000000</value>
+        </Attribute>
+        <Attribute name="Scan_Resolution" type="String">
+            <value>Low</value>
+        </Attribute>
+        <Attribute name="Pressure" type="Float32">
+            <value>1211.530029</value>
+            <value>1100.699951</value>
+            <value>1000.000000</value>
+            <value>908.5139771</value>
+            <value>825.4019775</value>
+            <value>749.8930054</value>
+            <value>681.2910156</value>
+            <value>618.9660034</value>
+            <value>562.3419800</value>
+            <value>510.8980103</value>
+            <value>464.1600037</value>
+            <value>421.6979980</value>
+            <value>383.1170044</value>
+            <value>348.0690002</value>
+            <value>316.2269897</value>
+            <value>287.2980042</value>
+            <value>261.0159912</value>
+            <value>237.1369934</value>
+            <value>215.4440002</value>
+            <value>195.7350006</value>
+            <value>177.8289948</value>
+            <value>161.5610046</value>
+            <value>146.7790070</value>
+            <value>133.3520050</value>
+            <value>121.1520004</value>
+            <value>110.0690002</value>
+            <value>100.0000000</value>
+            <value>90.85179901</value>
+            <value>82.54060364</value>
+            <value>74.98960114</value>
+            <value>68.12950134</value>
+            <value>61.89630127</value>
+            <value>56.23389816</value>
+            <value>51.08959961</value>
+            <value>46.41579819</value>
+            <value>42.16960144</value>
+            <value>38.31190109</value>
+            <value>34.80709839</value>
+            <value>31.62290001</value>
+            <value>28.72990036</value>
+            <value>26.10169983</value>
+            <value>23.71360016</value>
+            <value>21.54430008</value>
+            <value>19.57340050</value>
+            <value>17.78280067</value>
+            <value>16.15600014</value>
+            <value>14.67800045</value>
+            <value>13.33520031</value>
+            <value>12.11530018</value>
+            <value>11.00699997</value>
+            <value>10.00000000</value>
+            <value>9.085140228</value>
+            <value>8.254019737</value>
+            <value>6.812910080</value>
+            <value>5.108980179</value>
+            <value>4.641600132</value>
+            <value>3.162270069</value>
+            <value>2.610160112</value>
+            <value>2.154429913</value>
+            <value>1.615599990</value>
+            <value>1.333520055</value>
+            <value>1.000000000</value>
+            <value>0.6812919974</value>
+            <value>0.3831180036</value>
+            <value>0.2154430002</value>
+            <value>0.1000000015</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath_Geolocation_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.10.1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES_ProductionHistory" type="Container">
+        <Attribute name="origname" type="String">
+            <value>ProductionHistory</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/ProductionHistory</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>NoDimName</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;O3NadirSwath&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2293</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>67</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nFreq&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>25</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nLength&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>28</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_3" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_4" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SurfaceElevStandardDeviation&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_5" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;BoresightNadirAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_6" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;BoresightNadirAngleUnc&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_7" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;BoresightAzimuth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_8" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SolarZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_9" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;LocalSolarTime&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_10" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Tgt_SpacecraftZenith&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_11" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Tgt_SpacecraftAzimuth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_12" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude_Footprint_1&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_13" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude_Footprint_2&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_14" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude_Footprint_3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_15" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude_Footprint_4&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_16" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude_Footprint_1&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_17" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude_Footprint_2&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_18" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude_Footprint_3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_19" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude_Footprint_4&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_20" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Sequence&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_21" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Scan&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_22" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SurfaceTypeFootprint&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_23" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;DayNightFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_24" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;DominantSurfaceType&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;O3&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;O3Precision&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TotalError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;VerticalResolution&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ConstraintVector&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Pressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Altitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Initial&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AirDensity&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AveragingKernelDiagonal&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AveragingKernel&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TotalErrorCovariance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MeasurementErrorCovariance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ObservationErrorCovariance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                            <value>&quot;nLevels&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudTopPressureError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudTopPressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTemperature&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TotalColumnDensity&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TotalColumnDensityError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SpeciesRetrievalConverged&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;DeviationVsRetrievalCovariance&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceResidualMax&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_24" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;NumberIterPerformed&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_25" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MaxNumIterations&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_26" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Scan_Averaged_Count&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_27" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;DegreesOfFreedomForSignal&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_28" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;InformationContent&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_29" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SpeciesRetrievalQuality&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_30" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempInitial&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_31" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempDegreesOfFreedom&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_32" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempObservationError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_33" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempConstraint&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_34" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempPrecision&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_35" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;TotalColumnDensityInitial&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_36" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudVariability_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_37" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;KDotDL_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_38" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;LDotDL_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_39" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;Calibration_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_40" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AverageCloudEffOpticalDepth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_41" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceEmissMean_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_42" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceEmissionLayer_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_43" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempVsApriori_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_44" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SurfaceTempVsAtmTemp_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_45" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;H2O_HDO_Corr_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_46" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;UTCTime&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_47" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceResidualRMS&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_48" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceResidualMean&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_49" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;O3_Ccurve_QA&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_50" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AverageCloudEffOpticalDepthError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_51" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudEffectiveOpticalDepth&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nFreq&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nFreq&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_52" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;CloudEffectiveOpticalDepthError&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nFreq&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nFreq&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ProfileField" type="Container"/>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-12-31T00:59:19.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;L2_Products_Main:R11.01.00&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Granule&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;TL2O3N&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>4</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Production History at block: /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PRODUCTION_HISTORY&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>90.00000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-90.00000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-180.0000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>180.0000000000000</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="GRANULELOCALITY" type="Container">
+                    <Attribute name="LOCALITYVALUE" type="Container">
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Global&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-12-20&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;10:16:00.195053Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;12:15:06.119552Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-12-21&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;R11.01.00&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="OPERATIONMODE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Routine&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Aura&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;FTS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;TES&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Array name="AirDensity">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>AirDensity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Molec/m^3</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AirDensity</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AirDensity</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="Altitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Altitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>meters</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Altitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Altitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="AverageCloudEffOpticalDepth">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>AverageCloudEffOpticalDepth</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AverageCloudEffOpticalDepth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AverageCloudEffOpticalDepth</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="AverageCloudEffOpticalDepthError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>AverageCloudEffOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AverageCloudEffOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AverageCloudEffOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="AveragingKernel">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>AveragingKernel</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AveragingKernel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernel</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels_1 </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+        <dimension name="Pressure_CV_1" size="67"/>
+    </Array>
+    <Array name="AveragingKernelDiagonal">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>AveragingKernelDiagonal</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AveragingKernelDiagonal</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernelDiagonal</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="Calibration_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Calibration_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Calibration_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Calibration_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="CloudEffectiveOpticalDepth">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>CloudEffectiveOpticalDepth</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudEffectiveOpticalDepth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepth</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nFreq </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="nFreq" size="25"/>
+    </Array>
+    <Array name="CloudEffectiveOpticalDepthError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>CloudEffectiveOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudEffectiveOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepthError</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nFreq </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="nFreq" size="25"/>
+    </Array>
+    <Array name="CloudTopPressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>CloudTopPressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudTopPressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudTopPressure</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="CloudTopPressureError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>CloudTopPressureError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(hPa)</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudTopPressureError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudTopPressureError</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="CloudVariability_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>CloudVariability_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudVariability_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudVariability_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="ConstraintVector">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>ConstraintVector</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr) or K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ConstraintVector</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ConstraintVector</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="DegreesOfFreedomForSignal">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>DegreesOfFreedomForSignal</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DegreesOfFreedomForSignal</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/DegreesOfFreedomForSignal</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="DeviationVsRetrievalCovariance">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>DeviationVsRetrievalCovariance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DeviationVsRetrievalCovariance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/DeviationVsRetrievalCovariance</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="H2O_HDO_Corr_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>H2O_HDO_Corr_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2O_HDO_Corr_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/H2O_HDO_Corr_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="InformationContent">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>InformationContent</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>InformationContent</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/InformationContent</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Initial">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Initial</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>vmr or K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Initial</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Initial</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="KDotDL_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>KDotDL_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>KDotDL_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/KDotDL_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="LDotDL_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>LDotDL_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LDotDL_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/LDotDL_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="MaxNumIterations">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>MaxNumIterations</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MaxNumIterations</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MaxNumIterations</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="MeasurementErrorCovariance">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>MeasurementErrorCovariance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr)^2 or K^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MeasurementErrorCovariance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MeasurementErrorCovariance</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels_1 </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+        <dimension name="Pressure_CV_1" size="67"/>
+    </Array>
+    <Array name="NumberIterPerformed">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>NumberIterPerformed</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Integer</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NumberIterPerformed</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/NumberIterPerformed</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="O3">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>O3</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>vmr or K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="O3Precision">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>O3Precision</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr) or K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3Precision</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3Precision</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="O3_Ccurve_QA">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>O3_Ccurve_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3_Ccurve_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3_Ccurve_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="ObservationErrorCovariance">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>ObservationErrorCovariance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr)^2 or K^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ObservationErrorCovariance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ObservationErrorCovariance</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels_1 </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+        <dimension name="Pressure_CV_1" size="67"/>
+    </Array>
+    <Array name="Pressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>AURA-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Pressure</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="RadianceResidualMax">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>RadianceResidualMax</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceResidualMax</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualMax</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="RadianceResidualMean">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>RadianceResidualMean</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceResidualMean</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualMean</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="RadianceResidualRMS">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>RadianceResidualRMS</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceResidualRMS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualRMS</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Scan_Averaged_Count">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Scan_Averaged_Count</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Scan_Averaged_Count</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Scan_Averaged_Count</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SpeciesRetrievalConverged">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SpeciesRetrievalConverged</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SpeciesRetrievalConverged</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SpeciesRetrievalConverged</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SpeciesRetrievalQuality">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SpeciesRetrievalQuality</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SpeciesRetrievalQuality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SpeciesRetrievalQuality</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceEmissMean_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceEmissMean_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceEmissMean_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceEmissMean_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceEmissionLayer_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceEmissionLayer_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceEmissionLayer_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceEmissionLayer_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempConstraint">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempConstraint</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempConstraint</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempConstraint</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempDegreesOfFreedom">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempDegreesOfFreedom</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempDegreesOfFreedom</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempDegreesOfFreedom</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempError</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempInitial">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempInitial</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempInitial</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempInitial</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempObservationError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempObservationError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempObservationError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempObservationError</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempPrecision">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempPrecision</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempPrecision</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempPrecision</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempVsApriori_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempVsApriori_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempVsApriori_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempVsApriori_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTempVsAtmTemp_QA">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTempVsAtmTemp_QA</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTempVsAtmTemp_QA</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempVsAtmTemp_QA</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTemperature">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTemperature</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTemperature</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTemperature</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="TotalColumnDensity">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TotalColumnDensity</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Molec/cm^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotalColumnDensity</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensity</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="TotalColumnDensityError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TotalColumnDensityError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Molec/cm^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotalColumnDensityError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensityError</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="TotalColumnDensityInitial">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TotalColumnDensityInitial</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Molec/cm^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotalColumnDensityInitial</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensityInitial</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="TotalError">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TotalError</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr) or K</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotalError</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalError</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="TotalErrorCovariance">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>TotalErrorCovariance</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>ln(vmr)^2 or K^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotalErrorCovariance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalErrorCovariance</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels_1 </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+        <dimension name="Pressure_CV_1" size="67"/>
+    </Array>
+    <Array name="UTCTime">
+        <Attribute name="ARRAYOFSTRINGS" type="Int32">
+            <value>57</value>
+        </Attribute>
+        <Attribute name="missing_value" type="String">
+            <value> </value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>UTCTime</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="StringLengthAttribute" type="Int32">
+            <value>27</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UTCTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/UTCTime</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <String/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="VerticalResolution">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>VerticalResolution</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>meters</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>VerticalResolution</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/VerticalResolution</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>nLevels </value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="BoresightAzimuth">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>BoresightAzimuth</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>BoresightAzimuth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightAzimuth</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="BoresightNadirAngle">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>BoresightNadirAngle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>BoresightNadirAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightNadirAngle</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="BoresightNadirAngleUnc">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>BoresightNadirAngleUnc</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>BoresightNadirAngleUnc</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightNadirAngleUnc</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="DayNightFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>DayNightFlag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DayNightFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/DayNightFlag</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="DominantSurfaceType">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>DominantSurfaceType</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Enumerated</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DominantSurfaceType</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/DominantSurfaceType</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Latitude_Footprint_1">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Latitude_Footprint_2">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Latitude_Footprint_3">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Latitude_Footprint_4">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="LocalSolarTime">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>LocalSolarTime</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hours</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>LocalSolarTime</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/LocalSolarTime</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Longitude_Footprint_1">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_1</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Longitude_Footprint_2">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_2</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Longitude_Footprint_3">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_3</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Longitude_Footprint_4">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Longitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Decimal degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_4</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Scan">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-1</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-1</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Scan</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Scan</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Scan</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Sequence">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-1</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-1</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Sequence</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>N/A</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Sequence</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Sequence</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SolarZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceElevStandardDeviation">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceElevStandardDeviation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>meters</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceElevStandardDeviation</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SurfaceElevStandardDeviation</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="SurfaceTypeFootprint">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SurfaceTypeFootprint</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>Enumerated</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceTypeFootprint</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SurfaceTypeFootprint</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Tgt_SpacecraftAzimuth">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Tgt_SpacecraftAzimuth</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees (of north)</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Tgt_SpacecraftAzimuth</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Tgt_SpacecraftAzimuth</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Tgt_SpacecraftZenith">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Tgt_SpacecraftZenith</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>TES-SPECIFIC</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Tgt_SpacecraftZenith</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Tgt_SpacecraftZenith</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-999.00000000000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>sec</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>AURA-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Time</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <String name="coremetadata">
+        <Attribute name="origname" type="String">
+            <value>coremetadata</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/coremetadata</value>
+        </Attribute>
+    </String>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>HIRDLS-MLS-TES-SHARED</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Latitude" size="2293"/>
+    </Array>
+    <Array name="Pressure_CV">
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Pressure_CV" size="67"/>
+    </Array>
+    <Array name="Pressure_CV_1">
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Pressure_CV_1" size="67"/>
+    </Array>
+    <Array name="nFreq">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nFreq" size="25"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

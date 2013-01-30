@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="t_fillvalue_2d_2x2y.nc4" space="catalog">/data/t_fillvalue_2d_2x2y.nc4.h5</setContainer>
+    <define name="d">
+	<container name="t_fillvalue_2d_2x2y.nc4" >
+           <constraint>
+                lon[0:3:3][0:3:3],lat[0:3:3][0:3:3],FVattr_yes[0:3:3][0:3:3],xc[0:3:3],yc[0:3:3]
+           </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
+

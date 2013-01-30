@@ -4,4 +4,4 @@ Dataset {
     String StructMetadata_0;
     Float32 Latitude[Latitude = 8];
     Float32 Pressure[Pressure = 4];
-} virtual;
+} swath_1_2d_xyz.h5;

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920" space="catalog">/data/OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5</setContainer>
+    <define name="d">
+	<container name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920" />
+    </define>
+    <get type="das" definition="d" />
+</request>

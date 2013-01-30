@@ -4,4 +4,4 @@ Dataset {
     Float32 lon[lon = 8];
     Float32 lat[lat = 4];
     Float32 pressure[pressure = 2];
-} virtual;
+} grid_1_3d_z.h5;

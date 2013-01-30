@@ -28,7 +28,7 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 // Uncomment the following line for debugging.
-// #define VERBOSE 
+//#define VERBOSE 
 #define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
@@ -69,6 +69,7 @@ int  he5ddslex(void);
 %token GRID_NAME  
 %token SWATH_NAME 
 %token ZA_NAME
+
 
 %token DEFAULT                  // is it used?
 %token XDIM
@@ -120,6 +121,31 @@ data: // empty
          << ((HE5Parser*)(he5parser))->parser_state 
          << endl;	   
 #endif	   
+    // We find that some products have dimension names "1", "2", etc., so add this parsing. KY 2012-12-4
+    HE5Parser* p = (HE5Parser*)he5parser;
+    if(p->parser_state == 10){ // THis is parsing DimList. 
+        string a;
+        a = a.append($$);
+        HE5Dim d;
+        d.name = a;
+        d.size = 0;             /* <hyokyung 2011.12. 8. 13:50:34> */
+
+        if(p->structure_state == HE5Parser::GRID) {
+            p->grid_list.back().data_var_list.back().dim_list.push_back(d);
+        }
+
+
+        if(p->structure_state == HE5Parser::SWATH) {
+            if(swath_is_geo_field == true)
+                p->swath_list.back().geo_var_list.back().dim_list.push_back(d);
+            else
+                p->swath_list.back().data_var_list.back().dim_list.push_back(d);
+        }
+               
+        if(p->structure_state == HE5Parser::ZA) {
+            p->za_list.back().data_var_list.back().dim_list.push_back(d);
+        }
+    }
 }
 | FLOAT
 {

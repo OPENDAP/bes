@@ -4,4 +4,4 @@ Dataset {
     Float32 Latitude[YDim = 4][XDim = 8];
     Float32 Longitude[YDim = 4][XDim = 8];
     Float32 Pressure[ZDim = 2];
-} virtual;
+} swath_1_3d_2x2yz.h5;

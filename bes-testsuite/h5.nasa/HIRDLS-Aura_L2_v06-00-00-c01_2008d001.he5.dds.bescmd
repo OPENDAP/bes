@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="HIRDLS-Aura_L2_v06-00-00-c01_2008d001" space="catalog">/data/HIRDLS-Aura_L2_v06-00-00-c01_2008d001.he5</setContainer>
+    <define name="d">
+	<container name="HIRDLS-Aura_L2_v06-00-00-c01_2008d001" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

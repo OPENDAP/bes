@@ -7,4 +7,4 @@ Dataset {
     Float32 XDim[XDim = 8];
     Float32 YDim[YDim = 4];
     Float32 ZDim[ZDim = 2];
-} virtual;
+} grid_1_3d_xyz_aug.h5;

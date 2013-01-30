@@ -1,0 +1,7 @@
+Dataset {
+    Float32 lon[xc = 4][yc = 4];
+    Float32 lat[xc = 4][yc = 4];
+    Float32 scale_yes[xc = 4][yc = 4];
+    Float32 xc[xc = 4];
+    Float32 yc[yc = 4];
+} t_scale_2d_2x2y.nc4.h5;

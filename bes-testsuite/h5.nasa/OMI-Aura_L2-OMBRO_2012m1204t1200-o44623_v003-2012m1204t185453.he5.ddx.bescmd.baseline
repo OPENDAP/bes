@@ -1,0 +1,3218 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="PGEVERSION" type="String">
+            <value>3.0.2</value>
+        </Attribute>
+        <Attribute name="ProcessingCenter" type="String">
+            <value>OMI SIPS</value>
+        </Attribute>
+        <Attribute name="ProcessingHost" type="String">
+            <value>Linux omin1044 2.6.18-308.11.1.el5PAE i686</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <value>OMI</value>
+        </Attribute>
+        <Attribute name="OPERATIONMODE" type="String">
+            <value>Test</value>
+        </Attribute>
+        <Attribute name="AuthorAffiliation" type="String">
+            <value>Smithsonian Astrophysical Observatory</value>
+        </Attribute>
+        <Attribute name="AuthorName" type="String">
+            <value>Thomas P. Kurosu</value>
+        </Attribute>
+        <Attribute name="InputVersions" type="String">
+            <value>OML1BRUG:1.1.3.0.1</value>
+        </Attribute>
+        <Attribute name="OrbitData" type="String">
+            <value>PREDICTED</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>4</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>12</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2012</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>628732808.00000000</value>
+        </Attribute>
+        <Attribute name="FittingWindowLimits" type="Float32">
+            <value>317.0000000</value>
+            <value>319.0000000</value>
+            <value>347.5000000</value>
+            <value>349.5000000</value>
+            <value>0.000000000</value>
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="NumberOfCrossTrackPixels" type="Int32">
+            <value>60</value>
+        </Attribute>
+        <Attribute name="NumberOfScanLines" type="Int32">
+            <value>1643</value>
+        </Attribute>
+        <Attribute name="NumberOfInputSamples" type="Int32">
+            <value>98580</value>
+        </Attribute>
+        <Attribute name="NumberOfGoodInputSamples" type="Int32">
+            <value>89067</value>
+        </Attribute>
+        <Attribute name="NumberOfGoodOutputSamples" type="Int32">
+            <value>88975</value>
+        </Attribute>
+        <Attribute name="NumberOfSuspectOutputSamples" type="Int32">
+            <value>80</value>
+        </Attribute>
+        <Attribute name="NumberOfBadOutputSamples" type="Int32">
+            <value>12</value>
+        </Attribute>
+        <Attribute name="NumberOfConvergedSamples" type="Int32">
+            <value>88975</value>
+        </Attribute>
+        <Attribute name="NumberOfFailedConvergenceSamples" type="Int32">
+            <value>4</value>
+        </Attribute>
+        <Attribute name="NumberOfExceededIterationsSamples" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="NumberOfOutOfBoundsSamples" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="PercentGoodOutputSamples" type="Float32">
+            <value>99.89670563</value>
+        </Attribute>
+        <Attribute name="PercentBadOutputSamples" type="Float32">
+            <value>0.01347300317</value>
+        </Attribute>
+        <Attribute name="PercentSuspectOutputSamples" type="Float32">
+            <value>0.08982001990</value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>OMI/Aura Bromine Monoxide (BrO) Total Column 1-Orbit L2 Swath 13x24km</value>
+        </Attribute>
+        <Attribute name="ESDTDescriptorRevision" type="String">
+            <value>3.0.2</value>
+        </Attribute>
+        <Attribute name="SpaceCraftMinAltitude" type="Float64">
+            <value>704315.00000000000</value>
+        </Attribute>
+        <Attribute name="SpaceCraftMaxAltitude" type="Float64">
+            <value>731861.40000000002</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_OMI_Total_Column_Amount_BrO" type="Container">
+        <Attribute name="VerticalCoordinate" type="String">
+            <value>Total Column</value>
+        </Attribute>
+        <Attribute name="EarthSunDistance" type="Float32">
+            <value>1.474293105e+11</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS_OMI_Total_Column_Amount_BrO_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_OMI_Total_Column_Amount_BrO_Geolocation_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.11</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container">
+            <Attribute name="SWATH_1" type="Container">
+                <Attribute name="SwathName" type="String">
+                    <value>&quot;OMI Total Column Amount BrO&quot;</value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container">
+                    <Attribute name="Dimension_1" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1643</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_2" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>60</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_3" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nTimes+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1644</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_4" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nXtrack+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>61</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_5" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;nUTCdim&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>6</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_6" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_7" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;2&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>2</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="Dimension_8" type="Container">
+                        <Attribute name="DimensionName" type="String">
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                        <Attribute name="Size" type="Int32">
+                            <value>4</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
+                <Attribute name="GeoField" type="Container">
+                    <Attribute name="GeoField_1" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Latitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_2" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Longitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_3" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SolarAzimuthAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_4" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SolarZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_5" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;SpacecraftAltitude&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_6" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;TerrainHeight&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_7" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;Time&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_8" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;TimeUTC&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nUTCdim&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nUTCdim&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_9" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;ViewingAzimuthAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_10" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;ViewingZenithAngle&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_11" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;XtrackQualityFlags&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="GeoField_12" type="Container">
+                        <Attribute name="GeoFieldName" type="String">
+                            <value>&quot;XtrackQualityFlagsExpanded&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SolarWavCalConvergenceFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceWavCalConvergenceFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceWavCalLatitudeRange&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceConvergenceFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceLatitudeRange&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;4&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceColumnAmount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceColumnUncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceColumnXTRFit&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;RadianceReferenceFittingRMS&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AirMassFactor&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AirMassFactorDiagnosticFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AirMassFactorGeometric&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_13" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AverageColumnAmount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_14" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AverageColumnUncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_15" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AverageFittingRMS&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_16" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ColumnAmount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_17" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ColumnAmountDestriped&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_18" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;ColumnUncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_19" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;FittingRMS&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_20" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;FitConvergenceFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_21" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MainDataQualityFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_22" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;MaximumColumnAmount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_23" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;PixelCornerLatitudes&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes+1&quot;</value>
+                            <value>&quot;nXtrack+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes+1&quot;</value>
+                            <value>&quot;nXtrack+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_24" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;PixelCornerLongitudes&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes+1&quot;</value>
+                            <value>&quot;nXtrack+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes+1&quot;</value>
+                            <value>&quot;nXtrack+1&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_25" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;PixelArea&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_26" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AMFCloudFraction&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_27" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AMFCloudPressure&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_28" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;AdjustedSceneAlbedo&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_29" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SlantColumnAmount&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_30" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SlantColumnAmountDestriped&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_31" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SlantColumnUncertainty&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_32" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SlantFittingRMS&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_33" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <value>&quot;SlantFitConvergenceFlag&quot;</value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="MaxdimList" type="String">
+                            <value>&quot;nTimes&quot;</value>
+                            <value>&quot;nXtrack&quot;</value>
+                        </Attribute>
+                        <Attribute name="CompressionType" type="String">
+                            <value>HE5_HDFE_COMP_SHUF_DEFLATE</value>
+                        </Attribute>
+                        <Attribute name="DeflateLevel" type="Int32">
+                            <value>9</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="ProfileField" type="Container"/>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
+    </Attribute>
+    <Array name="AMFCloudFraction">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Adjusted Cloud Fraction for AMF Computation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AMFCloudFraction</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AMFCloudFraction</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AMFCloudPressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Adjusted Cloud Pressure for AMF Computation</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AMFCloudPressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AMFCloudPressure</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AdjustedSceneAlbedo">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Adjusted Scene Albedo</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AdjustedSceneAlbedo</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AdjustedSceneAlbedo</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AirMassFactor">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Molecule Specific Air Mass Factor (AMF)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AirMassFactor</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactor</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AirMassFactorDiagnosticFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Diagnostic Flag for Molecule Specific AMF</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-2</value>
+            <value>13127</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AirMassFactorDiagnosticFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactorDiagnosticFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AirMassFactorGeometric">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Geometric Air Mass Factor (AMF)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AirMassFactorGeometric</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactorGeometric</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="AverageColumnAmount">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Average Column Amount</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AverageColumnAmount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageColumnAmount</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_1</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="_1" size="1"/>
+    </Array>
+    <Array name="AverageColumnUncertainty">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Average Column Uncertainty</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AverageColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_1</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="_1" size="1"/>
+    </Array>
+    <Array name="AverageFittingRMS">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Average Fitting RMS</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AverageFittingRMS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageFittingRMS</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_1</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="_1" size="1"/>
+    </Array>
+    <Array name="ColumnAmount">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Column Amount</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ColumnAmount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnAmount</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="ColumnAmountDestriped">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Column Amount with Destriping Correction</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ColumnAmountDestriped</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnAmountDestriped</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="ColumnUncertainty">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Column Uncertainty</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="FitConvergenceFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Fitting Convergence Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-10</value>
+            <value>12344</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FitConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/FitConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="FittingRMS">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Fitting RMS</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FittingRMS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/FittingRMS</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="MainDataQualityFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Main Data Quality Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-1</value>
+            <value>2</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MainDataQualityFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/MainDataQualityFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="MaximumColumnAmount">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Maximum Column Amount for QA Flag 'good'</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MaximumColumnAmount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/MaximumColumnAmount</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_1</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="_1" size="1"/>
+    </Array>
+    <Array name="PixelArea">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Pixel Area</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>km^2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>413294400.0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PixelArea</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelArea</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="PixelCornerLatitudes">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Pixel Corner Latitude Coordinates</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PixelCornerLatitudes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelCornerLatitudes</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>nTimes_1 nXtrack_1</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes_1" size="1644"/>
+        <dimension name="nXtrack_1" size="61"/>
+    </Array>
+    <Array name="PixelCornerLongitudes">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Pixel Corner Longitude Coordinates</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PixelCornerLongitudes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelCornerLongitudes</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>nTimes_1 nXtrack_1</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes_1" size="1644"/>
+        <dimension name="nXtrack_1" size="61"/>
+    </Array>
+    <Array name="RadianceReferenceColumnAmount">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit Colunm Amount</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceColumnAmount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnAmount</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceReferenceColumnUncertainty">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit Colunm Uncertainty</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnUncertainty</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceReferenceColumnXTRFit">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit Colunm XTR Fit</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceColumnXTRFit</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnXTRFit</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceReferenceConvergenceFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit Convergence Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-10</value>
+            <value>12344</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceConvergenceFlag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceReferenceFittingRMS">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit RMS</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceFittingRMS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceFittingRMS</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceReferenceLatitudeRange">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Reference Fit Latitude Range</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceReferenceLatitudeRange</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceLatitudeRange</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_4</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="_4" size="4"/>
+    </Array>
+    <Array name="RadianceWavCalConvergenceFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Wavelength Calibration Convergence Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-10</value>
+            <value>12344</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceWavCalConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceWavCalConvergenceFlag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="RadianceWavCalLatitudeRange">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Radiance Wavelength Calibration Latitude Range</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RadianceWavCalLatitudeRange</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceWavCalLatitudeRange</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>_4</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="_4" size="4"/>
+    </Array>
+    <Array name="SlantColumnAmount">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Slant Column Amount</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SlantColumnAmount</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnAmount</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SlantColumnAmountDestriped">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Slant Column Amount with Destriping Correction</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SlantColumnAmountDestriped</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnAmountDestriped</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SlantColumnUncertainty">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Slant Column Uncertainty</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>molec/cm2</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SlantColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnUncertainty</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SlantFitConvergenceFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Slant Fitting Convergence Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-10</value>
+            <value>12344</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SlantFitConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantFitConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SlantFittingRMS">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Slant Fitting RMS</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SlantFittingRMS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantFittingRMS</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SolarWavCalConvergenceFlag">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Solar Wavelength Calibration Convergence Flag</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-10</value>
+            <value>12344</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarWavCalConvergenceFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SolarWavCalConvergenceFlag</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SolarAzimuthAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Solar Azimuth Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SolarAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SolarZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Solar Zenith Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="SpacecraftAltitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Altitude of Aura Spacecraft</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SpacecraftAltitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SpacecraftAltitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+    </Array>
+    <Array name="TerrainHeight">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Terrain Height</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-1000</value>
+            <value>10000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TerrainHeight</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/TerrainHeight</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Time in TAI units</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>s</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <value>-1.0000000000000000e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>10000000000.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="1643"/>
+    </Array>
+    <Array name="TimeUTC">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Coordianted Universal Time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>9999</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TimeUTC</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/TimeUTC</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nUTCdim" size="6"/>
+    </Array>
+    <Array name="ViewingAzimuthAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Viewing Azimuth Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ViewingAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/ViewingAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="ViewingZenithAngle">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Viewing Zenith Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>0.000000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="XtrackQualityFlags">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-127</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Cross-Track Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-127</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>127</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>XtrackQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/XtrackQualityFlags</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="XtrackQualityFlagsExpanded">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Expanded Cross-Track Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>NoUnits</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>OMI-Specific</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <value>-30000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>0</value>
+            <value>11147</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>XtrackQualityFlagsExpanded</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/XtrackQualityFlagsExpanded</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <String name="ArchiveMetadata">
+        <Attribute name="origname" type="String">
+            <value>ArchiveMetadata</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/ArchiveMetadata</value>
+        </Attribute>
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="LONGNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;OMI/Aura Bromine Monoxide (BrO) Total Column 1-Orbit L2 Swath 13x24km&quot;</value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ESDTDESCRIPTORREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <value>1</value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <value>&quot;3.0.2&quot;</value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </String>
+    <String name="CoreMetadata">
+        <Attribute name="origname" type="String">
+            <value>CoreMetadata</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/CoreMetadata</value>
+        </Attribute>
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2012-12-04T18:54:53.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;processed 1 time&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;RFC1321 MD5 = not yet calculated&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;further update is anticipated&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Not Investigated&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Flag set to Passed if NrofGoodOutputSamples &gt;= 75% of NrofGoodInputSamples, to Suspect if NrofGoodOutputSamples &gt;= 50% but &lt; 75% of NrofGoodInputSamples, and to Failed if NrofGoodOutputSamples &lt; 50% of NrofGoodInputSamples.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="OPERATIONALQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.&quot;</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>10</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Total Column Bromine Oxide&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2012-12-04&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;12:55:50.000000&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>44623</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>12.04</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <value>3</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMBRO&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>20</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;OMI-Aura_L1-OML1BRUG_2012m1204t1200-o44623_v003-2012m1204t175600.he4&quot;</value>
+                        <value>&quot;OMI-Aura_L2-OMCLDO2_2012m1204t1200-o44623_v003-2012m1204t180700.he5&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2012-12-04&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;13:39:24.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2012-12-04&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;12:00:32.000000&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;3.0.2&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;CCD Ultra Violet&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Aura&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="OPERATIONMODE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Test&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;OMI&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;NrMeasurements&quot;</value>
+                            <value>&quot;NrZoom&quot;</value>
+                            <value>&quot;NrSpatialZoom&quot;</value>
+                            <value>&quot;NrSpectralZoom&quot;</value>
+                            <value>&quot;ExpeditedData&quot;</value>
+                            <value>&quot;SouthAtlanticAnomalyCrossing&quot;</value>
+                            <value>&quot;SpacecraftManeuverFlag&quot;</value>
+                            <value>&quot;SolarEclipse&quot;</value>
+                            <value>&quot;InstrumentConfigurationIDs&quot;</value>
+                            <value>&quot;MasterClockPeriods&quot;</value>
+                            <value>&quot;ExposureTimes&quot;</value>
+                            <value>&quot;PathNr&quot;</value>
+                            <value>&quot;StartBlockNr&quot;</value>
+                            <value>&quot;EndBlockNr&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>3</value>
+                                <value>1</value>
+                                <value>3</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;1643&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;TRUE&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;2.000400&quot;</value>
+                                <value>&quot;1.000200&quot;</value>
+                                <value>&quot;0.500100&quot;</value>
+                                <value>&quot;0.400080&quot;</value>
+                                <value>&quot;124&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;36&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Geodetic Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>Geodetic Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>Aura-Shared</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <value>-1.000000015e+30</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="1643"/>
+        <dimension name="nXtrack" size="60"/>
+    </Array>
+    <Array name="_1">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="_1" size="1"/>
+    </Array>
+    <Array name="_4">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="_4" size="4"/>
+    </Array>
+    <Array name="nTimes_1">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes_1" size="1644"/>
+    </Array>
+    <Array name="nUTCdim">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nUTCdim" size="6"/>
+    </Array>
+    <Array name="nXtrack_1">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nXtrack_1" size="61"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

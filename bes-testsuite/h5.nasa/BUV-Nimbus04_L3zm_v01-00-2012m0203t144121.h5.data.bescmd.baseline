@@ -1,0 +1,8 @@
+The data:
+Float32 AprioriTotalColumnOzone[Time = 2][Latitude = 2] = {{-9999, -9999},{-9999, -9999}};
+Int32 Date[Time = 2] = {197005, 197604};
+Float32 TotalCovarianceMatrix[FakeDim0 = 2][FakeDim4 = 2][Latitude = 2] = {{{-9999, -9999},{-9999, -9999}},{{-9999, -9999},{-9999, -9999}}};
+Int16 nSamples[Time = 2][Latitude = 2] = {{0, 0},{0, 0}};
+Float32 Latitude[Latitude = 2] = {-87.5, 87.5};
+Int32 FakeDim0[FakeDim0 = 2] = {0, 19};
+

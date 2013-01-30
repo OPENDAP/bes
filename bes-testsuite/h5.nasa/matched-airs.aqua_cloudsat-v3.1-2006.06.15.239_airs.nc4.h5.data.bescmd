@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4" space="catalog">/data/matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5</setContainer>
+    <define name="d">
+	<container name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4" >
+           <constraint>
+                AIRS_RetStd_CldFrcStd[0:140:140][0:1:1],AIRS_RetStd_dust_flag[0:140:140],CloudSat_GEOPROF_Latitude[0:140:140][0:16:16],CloudSat_CWC_RO_IO_RO_log_num_conc_uncertainty[0:140:140][0:16:16][0:124:124],AIRS_RetStd_CH4Func[0:6:6],AIRS_RetStd_Cloud[0:1:1],airs_idx[0:140:140]
+           </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
+

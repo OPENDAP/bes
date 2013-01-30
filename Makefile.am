@@ -30,13 +30,13 @@ HDF5DTYPE_HDRS = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h
 HDF5_SRCS = h5dds.cc h5das.cc h5get.cc HDF5PathFinder.cc 
 HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5get.h  HDF5PathFinder.h
 
-HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc \
+HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc \
                    HDFEOS5CFMissLLArray.cc HDFEOS5CFMissNonLLCVArray.cc  HDFEOS5CFSpecialCVArray.cc \
                    HDF5CFArray.cc HDF5BaseArray.cc \
                    HDF5CFByte.cc HDF5CFUInt16.cc HDF5CFInt16.cc HDF5CFInt32.cc HDF5CFUInt32.cc \
 	           HDF5CFFloat32.cc HDF5CFFloat64.cc HDF5CFStr.cc   
 
-HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFMissLLArray.h HDF5GMCFMissNonLLCVArray.h \
+HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFFillIndexArray.h HDF5GMCFMissLLArray.h HDF5GMCFMissNonLLCVArray.h \
 	            HDFEOS5CFMissLLArray.h HDFEOS5CFMissNonLLCVArray.h  HDFEOS5CFSpecialCVArray.h HDF5CFArray.h HDF5BaseArray.h \
                     HDF5CFByte.h HDF5CFUInt16.h HDF5CFInt16.h HDF5CFInt32.h HDF5CFUInt32.h \
 	            HDF5CFFloat32.h HDF5CFFloat64.h HDF5CFStr.h 
@@ -58,7 +58,7 @@ libhdf5_module_la_LDFLAGS = -avoid-version -module
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
 EXTRA_DIST = he5das.y he5dds.y he5das.lex he5dds.lex OSX_Resources \
-	data COPYING hdf5_handler.spec h5.conf.in 
+	data data.nasa COPYING hdf5_handler.spec h5.conf.in test.nasa.sh
 
 CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
 	lex.he5das.cc lex.he5dds.cc he5dds.tab.cc he5dds.tab.hh \

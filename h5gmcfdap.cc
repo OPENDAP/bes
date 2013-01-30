@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -51,6 +51,7 @@
 #include "HDF5CFStr.h"
 #include "HDF5CFArray.h"
 #include "HDF5GMCFMissLLArray.h"
+#include "HDF5GMCFFillIndexArray.h"
 #include "HDF5GMCFMissNonLLCVArray.h"
 #include "HDF5GMSPCFArray.h"
 
@@ -62,8 +63,9 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
 
-    H5GCFProduct gproduct_type = check_product(file_id);
-    GMFile *f = new GMFile(filename.c_str(),file_id,gproduct_type);
+    H5GCFProduct product_type = check_product(file_id);
+    GMPattern  gproduct_pattern = OTHERGMS;
+    GMFile *f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
 
     // Generally don't need to handle attributes when handling DDS. 
     bool include_attr = false;
@@ -97,7 +99,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Handle Object name clashings
         // Only when the check_nameclashing key is turned on or
         // general product.
-        if(General_Product == gproduct_type ||
+        if(General_Product == product_type ||
            true == is_check_nameclashing) 
            f->Handle_Obj_NameClashing(include_attr);
 
@@ -129,8 +131,9 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
     // if(is_add_path_attrs) cerr<<"adding attributes "<<endl;
 
-    H5GCFProduct gproduct_type = check_product(file_id);
-    HDF5CF::GMFile *f = new GMFile(filename.c_str(),file_id,gproduct_type);
+    H5GCFProduct product_type = check_product(file_id);
+    GMPattern gproduct_pattern = OTHERGMS;
+    HDF5CF::GMFile *f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
 
     bool include_attr = true;
     try {
@@ -153,7 +156,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Add_Supplement_Attrs(is_add_path_attrs);
         f->Adjust_Obj_Name();
         f->Flatten_Obj_Name(include_attr);
-        if(General_Product == gproduct_type ||
+        if(General_Product == product_type ||
            true == is_check_nameclashing) 
             f->Handle_Obj_NameClashing(include_attr);
 
@@ -268,11 +271,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             AttrTable *at = das.get_table((*it_cv)->getNewName());
             if (NULL == at)
                 at = das.add_table((*it_cv)->getNewName(), new AttrTable);
-                //cerr<<"cv coordinate variable name "<<(*it_cv)->getNewName() <<endl;
 
             for (it_ra = (*it_cv)->getAttributes().begin();
-                 it_ra != (*it_cv)->getAttributes().end(); ++it_ra) 
+                 it_ra != (*it_cv)->getAttributes().end(); ++it_ra){ 
                 gen_dap_oneobj_das(at,*it_ra,*it_cv);
+            }
                     
         }
     }
@@ -409,6 +412,33 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                 delete ar;
             }
             break;
+
+            case CV_FILLINDEX:
+            {
+
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                }
+
+                HDF5GMCFFillIndexArray *ar = NULL;
+                ar = new HDF5GMCFFillIndexArray(
+                                                      cvar->getRank(),
+                                                      cvar->getType(),
+                                                      cvar->getNewName(),
+                                                      bt);
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+                dds.add_var(ar);
+                delete ar;
+            }
+            break;
+
 
             case CV_SPECIAL:
             case CV_MODIFY:

@@ -1,0 +1,20 @@
+netcdf t_fillvalue_2d_2x2y {
+dimensions:
+        xc = 4 ;
+        yc = 4 ;
+variables:
+        float lon(xc,yc) ;
+        float lat(xc,yc) ;
+        float mydata(xc, yc);
+        lon:units = "degrees_east";
+        lat:units = "degrees_north";
+        mydata:coordinates = "lat lon";
+        mydata:_FillValue = -9999.0;
+data:
+ lon = 10.0,12.5,15.0,17.5,20.0,22.5,25.0,27.5,
+       30.0,32.5,35.0,37.5,40.0,42.5,45.0,47.5;
+ lat = 10.0,12.5,15.0,17.5,20.0,22.5,25.0,27.5,
+       30.0,32.5,35.0,37.5,40.0,42.5,45.0,47.5;
+ mydata = 1,2,3,-9999.0,5,6,7,-9999.0,
+          9,10,11,-9999.0,13,14,15,-9999.0;
+}

@@ -1,0 +1,328 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+        String BeginDate "2008-01-01";
+        String EndDate "2008-01-02";
+        String ShortName "GSSTF";
+        String VersionID "2b";
+        String CollectionDescription "Goddard Satellite-Based Surface Turbulent Fluxes (GSSTF2b) in HDF-EOS5, 1x1 degree Daily Grid, Set1 and Set2, Combined Satellites";
+        String LongName "Surface Turbulent Fluxes, 1x1 deg Daily Grid, Set1 and Set2";
+        String Set2eqSet1 "F";
+        String fullnamepath "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES";
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_SET1 {
+    }
+    HDFEOS_GRIDS_SET1_Data_Fields {
+    }
+    HDFEOS_GRIDS_SET2 {
+    }
+    HDFEOS_GRIDS_SET2_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.11";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    SET1_DQ {
+        Float32 _FillValue -999.0000000;
+        String LongName "sea-air humidity difference";
+        String Units "g/kg";
+        String origname "DQ";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/DQ";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_E {
+        Float32 _FillValue -999.0000000;
+        String LongName "latent heat flux";
+        String Units "W/m^^2";
+        String origname "E";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/E";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_H {
+        Float32 _FillValue -999.0000000;
+        String LongName "sensible heat flux";
+        String Units "W/m^^2";
+        String origname "H";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/H";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_Qair {
+        Float32 _FillValue -999.0000000;
+        String LongName "surface air (~10-m) specific humidity";
+        String Units "g/kg";
+        String origname "Qair";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/Qair";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_STu {
+        Float32 _FillValue -999.0000000;
+        String LongName "zonal wind stress";
+        String Units "N/m^^2";
+        String origname "STu";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/STu";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_STv {
+        Float32 _FillValue -999.0000000;
+        String LongName "meridional wind stress";
+        String Units "N/m^^2";
+        String origname "STv";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/STv";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_Tot_Precip_Water {
+        Float32 _FillValue -999.0000000;
+        String LongName "total precipitable water";
+        String Units "g/cm^^2";
+        String origname "Tot_Precip_Water";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_U {
+        Float32 _FillValue -999.0000000;
+        String LongName "10-m wind speed";
+        String Units "m/s";
+        String origname "U";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/U";
+        String orig_dimname_list "XDim ";
+    }
+    SET1_WB {
+        Float32 _FillValue -999.0000000;
+        String LongName "lowest 500-m precipitable water";
+        String Units "g/cm^^2";
+        String origname "WB";
+        String fullnamepath "/HDFEOS/GRIDS/SET1/Data Fields/WB";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_DQ {
+        Float32 _FillValue -999.0000000;
+        String LongName "sea-air humidity difference";
+        String Units "g/kg";
+        String origname "DQ";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/DQ";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_E {
+        Float32 _FillValue -999.0000000;
+        String LongName "latent heat flux";
+        String Units "W/m^^2";
+        String origname "E";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/E";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_H {
+        Float32 _FillValue -999.0000000;
+        String LongName "sensible heat flux";
+        String Units "W/m^^2";
+        String origname "H";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/H";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_Qair {
+        Float32 _FillValue -999.0000000;
+        String LongName "surface air (~10-m) specific humidity";
+        String Units "g/kg";
+        String origname "Qair";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/Qair";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_STu {
+        Float32 _FillValue -999.0000000;
+        String LongName "zonal wind stress";
+        String Units "N/m^^2";
+        String origname "STu";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/STu";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_STv {
+        Float32 _FillValue -999.0000000;
+        String LongName "meridional wind stress";
+        String Units "N/m^^2";
+        String origname "STv";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/STv";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_Tot_Precip_Water {
+        Float32 _FillValue -999.0000000;
+        String LongName "total precipitable water";
+        String Units "g/cm^^2";
+        String origname "Tot_Precip_Water";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/Tot_Precip_Water";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_U {
+        Float32 _FillValue -999.0000000;
+        String LongName "10-m wind speed";
+        String Units "m/s";
+        String origname "U";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/U";
+        String orig_dimname_list "XDim ";
+    }
+    SET2_WB {
+        Float32 _FillValue -999.0000000;
+        String LongName "lowest 500-m precipitable water";
+        String Units "g/cm^^2";
+        String origname "WB";
+        String fullnamepath "/HDFEOS/GRIDS/SET2/Data Fields/WB";
+        String orig_dimname_list "XDim ";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    lon {
+        String units "degrees_east";
+    }
+    lat {
+        String units "degrees_north";
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "SET1";
+                Int32 XDim 360;
+                Int32 YDim 180;
+                Float64 UpperLeftPointMtrs -180000000.000000, -90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, 90000000.000000;
+                String Projection "HE5_GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Xdim";
+                        Int32 Size 360;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Ydim";
+                        Int32 Size 180;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "E";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "STu";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "STv";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "H";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Qair";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "WB";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "U";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "DQ";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Tot_Precip_Water";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+            GRID_2 {
+                String GridName "SET2";
+                Int32 XDim 360;
+                Int32 YDim 180;
+                Float64 UpperLeftPointMtrs -180000000.000000, -90000000.000000;
+                Float64 LowerRightMtrs 180000000.000000, 90000000.000000;
+                String Projection "HE5_GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "Xdim";
+                        Int32 Size 360;
+                    }
+                    Dimension_2 {
+                        String DimensionName "Ydim";
+                        Int32 Size 180;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "E";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "STu";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "STv";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "H";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Qair";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_6 {
+                        String DataFieldName "WB";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_7 {
+                        String DataFieldName "U";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_8 {
+                        String DataFieldName "DQ";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    DataField_9 {
+                        String DataFieldName "Tot_Precip_Water";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+        ZaStructure {
+        }
+    }
+}

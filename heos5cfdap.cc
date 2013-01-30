@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c)  2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c)  2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -238,7 +238,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         HE5Checker c;
         he5dds_scan_string((const char*) st_str.c_str());
         he5ddsparse(&p);
-//        p.print();
+//      p.print();
 // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
 
         if (c.check_grids_unknown_parameters(&p)) {
@@ -900,8 +900,11 @@ else cerr <<"coremeta data doesn't have the suffix" <<endl;
 #endif
             }
 
+            // OMI has the metadata name as "ArchiveMetadata.0"
             else if ((0 == (s_one_oname.find("ArchivedMetadata"))) ||
-                     (0 == (s_one_oname.find("archivedmetadata")))){
+                     (0 == (s_one_oname.find("archivedmetadata"))) ||
+                     (0 == (s_one_oname.find("ArchiveMetadata"))) || 
+                     (0 == (s_one_oname.find("archivemetadata")))){
 
                 metatype[i] = ArchivedMeta;
                 // Do we have suffix for the metadata?
@@ -918,7 +921,9 @@ else cerr <<"coremeta data doesn't have the suffix" <<endl;
                 else if(archmeta_num_total >0) archmeta_num_total++;
                 else { // either no suffix or the first time to loop the one having the suffix.   
                     if ((0 == s_one_oname.compare("ArchivedMetadata"))||
-                       (0 == s_one_oname.compare("archivedmetadata")))
+                       (0 == s_one_oname.compare("archivedmetadata")) || 
+                       (0 == s_one_oname.compare("archivemetadata")) ||
+                       (0 == s_one_oname.compare("ArchiveMetadata")))
                         archmeta_no_suffix = false;
                     else archmeta_num_total++;
                 }

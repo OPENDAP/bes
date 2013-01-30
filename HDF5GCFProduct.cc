@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -85,17 +85,11 @@ H5GCFProduct check_product(hid_t file_id) {
             int acosl2s_flag = 2; // This is ACOSL2S
             if (true == check_smap_acosl2s(root_id,acosl2s_flag)) 
                 product_type =  ACOS_L2S;
-            else if (true == check_netcdf4_general(root_id)) 
-                product_type = NETCDF4_GENERAL;
                 
             // cerr <<" After checking acos, product type is " << product_type <<endl;
         }
-
        
     }
-
-    // netCDF-4 products
-    
 
     H5Gclose(root_id);
     return product_type;
@@ -526,12 +520,6 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
         throw InternalErr(__FILE__, __LINE__, msg);
     }
     return return_flag;
-}
-
-// Function to check if the product is NETCDF4_GENERAL
-bool check_netcdf4_general(hid_t root_id) {
-
-
 }
         
 void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_attr_value) {

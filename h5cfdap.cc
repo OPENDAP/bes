@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -41,6 +41,9 @@ void read_cfdds(DDS&,const string&);
 void read_cfdas(DAS&, const string&);
 
 void read_cfdds(DDS & dds, const string &filename) {
+
+    // Set the DDS name be the file name
+    dds.set_dataset_name(name_path(filename));
 
     hid_t fileid;
     H5CFModule moduletype;

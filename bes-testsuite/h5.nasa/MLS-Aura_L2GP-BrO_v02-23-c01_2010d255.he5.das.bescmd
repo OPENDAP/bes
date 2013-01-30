@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MLS-Aura_L2GP-BrO_v02-23-c01_2010d255" space="catalog">/data/MLS-Aura_L2GP-BrO_v02-23-c01_2010d255.he5</setContainer>
+    <define name="d">
+	<container name="MLS-Aura_L2GP-BrO_v02-23-c01_2010d255" />
+    </define>
+    <get type="das" definition="d" />
+</request>

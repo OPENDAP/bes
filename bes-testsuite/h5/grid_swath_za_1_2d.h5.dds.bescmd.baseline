@@ -10,4 +10,4 @@ Dataset {
     Float32 GRIDS_lat[GRIDS_lat = 4];
     Float32 SWATHS_Latitude[SWATHS_Latitude = 8];
     Float32 SWATHS_Pressure[SWATHS_Pressure = 4];
-} virtual;
+} grid_swath_za_1_2d.h5;

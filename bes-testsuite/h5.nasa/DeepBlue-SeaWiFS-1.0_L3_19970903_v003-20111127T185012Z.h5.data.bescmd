@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z" space="catalog">/data/DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5</setContainer>
+    <define name="d">
+	<container name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z">
+	     <constraint>latitude[0:90:179],longitude[0:180:359],aerosol_optical_thickness_550_count_land[0][0],aerosol_optical_thickness_550_land[179][359],aerosol_optical_thickness_550_land_ocean[0:90:179][359:359:359],aerosol_optical_thickness_550_ocean[0:90:179][0:1:359]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

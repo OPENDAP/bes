@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4" space="catalog">/data/matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5</setContainer>
+    <define name="d">
+	<container name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4" />
+    </define>
+    <get type="das" definition="d" />
+</request>

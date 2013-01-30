@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2012 The HDF Group
+/// Copyright (C) 2011-2013 The HDF Group
 ///
 /// All rights reserved.
 
@@ -646,9 +646,6 @@ throw(Exception)
     hid_t memtype_id = -1;
     hid_t aspace_id = -1;
 
-    char *temp_buf = NULL;
-    size_t *sect_newsize = NULL;
-
 
     try {
 
@@ -681,7 +678,6 @@ throw(Exception)
         if (H5VSTRING == attr->dtype) {
 
             // Variable length string attribute values only store pointers of the actual string value.
-            //temp_buf = new char[total_bytes];
             vector<char> temp_buf;
             temp_buf.resize(total_bytes);
 
@@ -758,7 +754,6 @@ if(attr->dtype == H5FSTRING) {
                 size_t sect_size = ty_size;
                 int num_sect = (total_bytes%sect_size==0)?(total_bytes/sect_size)
                                                      :(total_bytes/sect_size+1);
-          //      sect_newsize = new size_t[num_sect]; 
                 vector<size_t>sect_newsize;
                 sect_newsize.resize(num_sect);
 

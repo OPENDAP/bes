@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316" space="catalog">/data/MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5</setContainer>
+    <define name="d">
+	<container name="MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0" space="catalog">/data/Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5</setContainer>
+    <define name="d">
+	<container name="Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0">
+	     <constraint>_Navigation_sclat[0:2021:4041],_Navigation_sclon[0:2021:4041],_Navigation_scalt[0],_Navigation_scat_beam_clat[4041][2],_Navigation_scat_beam_clon[0:2021:4041][2:2:2],_Navigation_scat_latfoot[0:1:4041][0:1:2][3:3:3],_Navigation_scat_lonfoot[4041:4041:4041][0:1:2][0:1:3],_Aquarius_Flags_rad_rfi_flags[0][0][0][0],_Aquarius_Flags_radiometer_flags[4041][2][3],_Block_Attributes_scat_samples[0:2021:4041][0:1:2]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

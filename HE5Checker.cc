@@ -4,7 +4,9 @@
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //           MuQun Yang <myang6@hdfgroup.org>
 //
-// Copyright (c) 2007-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+///
+/// All rights reserved.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -31,11 +33,6 @@
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author MuQun Yang <myang6@hdfgroup.org>
-///
-/// Copyright (C) 2012 The HDF Group
-///
-/// All rights reserved.
-
 #include <map>
 #include <math.h>
 #include "HE5Checker.h"

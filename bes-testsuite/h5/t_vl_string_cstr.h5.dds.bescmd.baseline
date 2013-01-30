@@ -3,4 +3,4 @@ Dataset {
     String _array_2d[2][2];
     String _array_special_case[1][1];
     String _scalar;
-} virtual;
+} t_vl_string_cstr.h5;

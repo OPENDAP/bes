@@ -1,0 +1,2648 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>AIRS-CloudSat matchups for AIRS granule AIRS.2011.03.11.001.L2.RetStd.v5.2.2.0.G11070231943.hdf (AMSU vars)</value>
+        </Attribute>
+        <Attribute name="PRODUCTIONDATE" type="String">
+            <value>201201240753</value>
+        </Attribute>
+        <Attribute name="CloudSatGranules" type="String">
+            <value>2011069235024_25887_CS_2B-GEOPROF_GRANULE_P_R04_E04.hdf</value>
+        </Attribute>
+        <Attribute name="RANGEBEGINNINGDATE" type="String">
+            <value>2011-03-11</value>
+        </Attribute>
+        <Attribute name="RANGEBEGINNINGTIME" type="String">
+            <value>00:05:24</value>
+        </Attribute>
+        <Attribute name="RANGEENDINGDATE" type="String">
+            <value>2011-03-11</value>
+        </Attribute>
+        <Attribute name="RANGEENDINGTIME" type="String">
+            <value>00:11:24</value>
+        </Attribute>
+        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Float64">
+            <value>-53.327571868896499</value>
+        </Attribute>
+        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Float64">
+            <value>-78.086883544921903</value>
+        </Attribute>
+        <Attribute name="EASTBOUNDINGCOORDINATE" type="Float64">
+            <value>24.355131149291999</value>
+        </Attribute>
+        <Attribute name="WESTBOUNDINGCOORDINATE" type="Float64">
+            <value>-32.001251220703097</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="CloudSat" type="Container"/>
+    <Attribute name="CloudSat_GEOPROF" type="Container"/>
+    <Attribute name="CloudSat_GEOPROF_LIDAR" type="Container"/>
+    <Attribute name="CloudSat_CLDCLASS" type="Container"/>
+    <Attribute name="CloudSat_CWC_RO" type="Container"/>
+    <Attribute name="AIRS" type="Container"/>
+    <Attribute name="AIRS_RetStd" type="Container"/>
+    <Attribute name="AIRS_RetSup" type="Container"/>
+    <Array name="CloudSat_GEOPROF_Data_quality">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Data Quality</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>127</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Data_quality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Data_quality</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Spacecraft Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-180.00000000000000</value>
+            <value>180.00000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Data_status">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Data status flags</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>127</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Data_status</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Data_status</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Clutter_reduction_flag">
+        <Attribute name="long_name" type="String">
+            <value>Clutter_reduction_flag</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Clutter_reduction_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Clutter_reduction_flag</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_MODIS_scene_char">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>9</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS scene characterizations</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MODIS_scene_char</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/MODIS_scene_char</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Spacecraft Latitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-90.000000000000000</value>
+            <value>90.000000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Latitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Pitch_offset">
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Nominal satellite pitch angle offset from nadir</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-90.000000000000000</value>
+            <value>90.000000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Pitch_offset</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Pitch_offset</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Navigation_land_sea_flag">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Land Sea Flag</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>3</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Navigation_land_sea_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Navigation_land_sea_flag</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Profile_time">
+        <Attribute name="units" type="String">
+            <value>seconds</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Seconds since the start of the granule.</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>6000.0000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Profile_time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Profile_time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_nbin_2B_GEOPROF">
+        <Attribute name="origname" type="String">
+            <value>nbin:2B-GEOPROF</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/nbin:2B-GEOPROF</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Sigma_Zero">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-1000</value>
+            <value>4000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Sigma-Zero</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dB*100</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Sigma-Zero</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Sigma-Zero</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Height">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-5000</value>
+            <value>30000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Height of range bin in Reflectivity/Cloud Mask above reference surface (~ mean sea level).</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Height</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Height</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_MODIS_Cloud_Fraction">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>100</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS 250m Cloud Fraction</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MODIS_Cloud_Fraction</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/MODIS_Cloud_Fraction</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_Radar_Reflectivity">
+        <Attribute name="_FillValue" type="Int16">
+            <value>15360</value>
+        </Attribute>
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-8888</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>100.00000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-4000</value>
+            <value>5000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Radar Reflectivity Factor</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>dBZe</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Radar_Reflectivity</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/Radar_Reflectivity</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_UTC_start">
+        <Attribute name="units" type="String">
+            <value>seconds</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>UTC seconds since 00:00 Z of the first profile</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>86400.000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UTC_start</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/UTC_start</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_MODIS_cloud_flag">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>99</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>3</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MOD35_bit_2and3_cloud_flag</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>None</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MODIS_cloud_flag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/MODIS_cloud_flag</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_SurfaceHeightBin">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-1</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>1</value>
+            <value>125</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Location of Surface Bin as determined by 1B CPR algorithm.  The value here is shifted (as Height).</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceHeightBin</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/SurfaceHeightBin</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_SurfaceHeightBin_fraction">
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>SurfaceHeightBin_fraction</value>
+        </Attribute>
+        <Attribute name="missing" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceHeightBin_fraction</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/SurfaceHeightBin_fraction</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_CPR_Cloud_mask">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-99</value>
+        </Attribute>
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>40</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>CPR Cloud Mask</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CPR_Cloud_mask</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/CPR_Cloud_mask</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_MODIS_scene_var">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>MODIS scene variability</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MODIS_scene_var</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/MODIS_scene_var</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_GEOPROF_nray_2B_GEOPROF">
+        <Attribute name="origname" type="String">
+            <value>nray:2B-GEOPROF</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/GEOPROF/nray:2B-GEOPROF</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Data_quality">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Data Quality</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>127</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Data_quality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Data_quality</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Spacecraft Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-180.00000000000000</value>
+            <value>180.00000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Vertical_binsize">
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Vertical_binsize</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Vertical_binsize</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Data_status">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Data status flags</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>127</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Data_status</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Data_status</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_DEM_elevation">
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>9999</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-9999</value>
+            <value>8850</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Digital Elevation Map</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>meters</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>DEM_elevation</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/DEM_elevation</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Data_targetID">
+        <Attribute name="units" type="String">
+            <value>--</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>CPR bus orientation (target ID)</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>81</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Data_targetID</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Data_targetID</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_cloud_scenario">
+        <Attribute name="units" type="String">
+            <value>none</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud scenario</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>32767</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>cloud_scenario</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/cloud_scenario</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Spacecraft Latitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>-90.000000000000000</value>
+            <value>90.000000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Latitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_nray_2B_CLDCLASS">
+        <Attribute name="origname" type="String">
+            <value>nray:2B-CLDCLASS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/nray:2B-CLDCLASS</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_Height">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="missop" type="String">
+            <value>==</value>
+        </Attribute>
+        <Attribute name="missing" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-5000</value>
+            <value>30000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Height of range bin in Reflectivity/Cloud Mask above reference surface (~ mean sea level).</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Height</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/Height</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_UTC_start">
+        <Attribute name="units" type="String">
+            <value>seconds</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>UTC seconds since 00:00 Z of the first profile</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>86400.000000000000</value>
+        </Attribute>
+        <Attribute name="factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UTC_start</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/UTC_start</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="CloudSat_CLDCLASS_nbin_2B_CLDCLASS">
+        <Attribute name="origname" type="String">
+            <value>nbin:2B-CLDCLASS</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/CloudSat/CLDCLASS/nbin:2B-CLDCLASS</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_GP_Tropopause">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GP_Tropopause</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/GP_Tropopause</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Press_mid_top_bndry">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Press_mid_top_bndry</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Press_mid_top_bndry</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_totH2OStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totH2OStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totH2OStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_olr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>olr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/olr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TotCld_4_CCfinal">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TotCld_4_CCfinal</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TotCld_4_CCfinal</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Time">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TSurfStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TSurfStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TSurfStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_totCldH2OStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totCldH2OStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totCldH2OStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TAirStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TAirStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_totH2OMWOnlyStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totH2OMWOnlyStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totH2OMWOnlyStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TSurfStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TSurfStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TSurfStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_landFrac">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>landFrac</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/landFrac</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Longitude">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Longitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_Surf">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_Surf</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_Surf</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_Temp_Profile_Mid">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_Temp_Profile_Mid</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_Temp_Profile_Mid</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_CH4_verticality">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CH4_verticality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CH4_verticality</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_CH4Func" size="7"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_Cloud_OLR">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_Cloud_OLR</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_Cloud_OLR</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_glintlon">
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>glintlon</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/glintlon</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_track_idx" size="45"/>
+    </Array>
+    <Array name="AIRS_RetStd_nGoodStd">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nGoodStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/nGoodStd</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_olr_err">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>olr_err</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/olr_err</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_T_Tropopause">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>T_Tropopause</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/T_Tropopause</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_nSurfStd">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nSurfStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/nSurfStd</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_nStd_bot_mid_bndry">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nStd_bot_mid_bndry</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/nStd_bot_mid_bndry</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_PCldTopStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PCldTopStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PCldTopStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_Cloud" size="2"/>
+    </Array>
+    <Array name="AIRS_RetStd_emisIRStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>emisIRStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/emisIRStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2O_verticality">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2O_verticality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/H2O_verticality</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_H2OFunc" size="11"/>
+    </Array>
+    <Array name="AIRS_RetStd_nBestStd">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nBestStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/nBestStd</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_solazi">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>solazi</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/solazi</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TAirStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TAirStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_O3VMRStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3VMRStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/O3VMRStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_O3VMRStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3VMRStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/O3VMRStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_CO">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_CO</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_CO</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_totCldH2OStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totCldH2OStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totCldH2OStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_glintlat">
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>glintlat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/glintlat</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_track_idx" size="45"/>
+    </Array>
+    <Array name="AIRS_RetStd_TAirMWOnlyStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirMWOnlyStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TAirMWOnlyStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_H2O">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_H2O</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_H2O</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_VMR_eff">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_VMR_eff</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_VMR_eff</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_COFunc" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_dof">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_dof</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_dof</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_Temp_Profile_Top">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_Temp_Profile_Top</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_Temp_Profile_Top</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_clrolr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>clrolr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/clrolr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_clrolr_err">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>clrolr_err</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/clrolr_err</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_RetQAFlag">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RetQAFlag</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/RetQAFlag</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Latitude">
+        <Attribute name="_FillValue" type="Float64">
+            <value>-9999.0000000000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Latitude</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TCldTopStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TCldTopStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TCldTopStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_Cloud" size="2"/>
+    </Array>
+    <Array name="AIRS_RetStd_totO3StdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totO3StdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totO3StdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_retrieval_type">
+        <Attribute name="origname" type="String">
+            <value>retrieval_type</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/retrieval_type</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_eff_press">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_eff_press</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_eff_press</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_COFunc" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_TSurfAirErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TSurfAirErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TSurfAirErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OMMRStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OMMRStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/H2OMMRStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="AIRS_RetStd_PTropopause">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PTropopause</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PTropopause</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_totH2OStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totH2OStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totH2OStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_numCloud">
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>numCloud</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/numCloud</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Press_bot_mid_bndry">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Press_bot_mid_bndry</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Press_bot_mid_bndry</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OMMRSat_liquid">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OMMRSat_liquid</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/H2OMMRSat_liquid</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_Temp_Profile_Bot">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_Temp_Profile_Bot</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_Temp_Profile_Bot</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_PGood">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PGood</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PGood</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_nStd_mid_top_bndry">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nStd_mid_top_bndry</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/nStd_mid_top_bndry</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_totO3Std">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>totO3Std</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/totO3Std</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_satzen">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>satzen</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/satzen</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_Qual_clrolr">
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Qual_clrolr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Qual_clrolr</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_PBest">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PBest</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PBest</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_GP_Height">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GP_Height</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/GP_Height</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_CH4_total_column">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CH4_total_column</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CH4_total_column</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_num_clear_spectral_indicator">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>num_clear_spectral_indicator</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/num_clear_spectral_indicator</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_solzen">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>solzen</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/solzen</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_PSurfStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PSurfStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PSurfStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_satazi">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>satazi</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/satazi</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_verticality">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_verticality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_verticality</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_COFunc" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_numHingeSurf">
+        <Attribute name="_FillValue" type="Int16">
+            <value>-9999</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>numHingeSurf</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/numHingeSurf</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OMMRStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OMMRStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/H2OMMRStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_total_column">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_total_column</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_total_column</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_emisIRStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>emisIRStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/emisIRStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetStd_Cloud_Resid_Ratio">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Cloud_Resid_Ratio</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/Cloud_Resid_Ratio</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_O3_verticality">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3_verticality</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/O3_verticality</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_O3Func" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_freqEmis">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>freqEmis</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/freqEmis</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetStd_TSurfAir">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TSurfAir</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TSurfAir</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_TCldTopStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TCldTopStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/TCldTopStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_Cloud" size="2"/>
+    </Array>
+    <Array name="AIRS_RetStd_PCldTopStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>PCldTopStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/PCldTopStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_Cloud" size="2"/>
+    </Array>
+    <Array name="AIRS_RetStd_landFrac_err">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>landFrac_err</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/landFrac_err</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OMMRSat">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OMMRSat</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/H2OMMRSat</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="AIRS_RetStd_CO_VMR_eff_err">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CO_VMR_eff_err</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetStd/CO_VMR_eff_err</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_RetStd_COFunc" size="9"/>
+    </Array>
+    <Array name="AIRS_RetSup_TAirMWOnly">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirMWOnly</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/TAirMWOnly</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_tsurf_forecast">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>tsurf_forecast</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/tsurf_forecast</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="AIRS_RetSup_O3CDSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>O3CDSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/O3CDSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_TAirSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/TAirSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_COCDSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>COCDSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/COCDSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_lwCDSupErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lwCDSupErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/lwCDSupErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_lwCDSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>lwCDSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/lwCDSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_emisIRStdErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>emisIRStdErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/emisIRStdErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_H2OCDMWOnly">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OCDMWOnly</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/H2OCDMWOnly</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_Effective_Solar_Reflectance">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Effective_Solar_Reflectance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/Effective_Solar_Reflectance</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_H2OCDSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OCDSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/H2OCDSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_CH4CDSupErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CH4CDSupErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/CH4CDSupErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_COCDSupErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>COCDSupErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/COCDSupErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_TAirSupErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TAirSupErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/TAirSupErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_pressSupp">
+        <Attribute name="origname" type="String">
+            <value>pressSupp</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/pressSupp</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_emisIRStd">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>emisIRStd</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/emisIRStd</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_freqEmis">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>freqEmis</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/freqEmis</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_H2OCDSupErr">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>H2OCDSupErr</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/H2OCDSupErr</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetSup_CH4CDSup">
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CH4CDSup</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/AIRS/RetSup/CH4CDSup</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_HingeSurf">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.       100</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_HingeSurf" size="100"/>
+    </Array>
+    <Array name="AIRS_RetStd_CH4Func">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         7</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_CH4Func" size="7"/>
+    </Array>
+    <Array name="AIRS_RetStd_COFunc">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         9</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>3</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_COFunc" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_Cloud">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         2</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>7</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_Cloud" size="2"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OFunc">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        11</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>5</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_H2OFunc" size="11"/>
+    </Array>
+    <Array name="AIRS_RetStd_H2OPressureLay">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        14</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>6</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
+    </Array>
+    <Array name="AIRS_RetStd_O3Func">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.         9</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>2</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_O3Func" size="9"/>
+    </Array>
+    <Array name="AIRS_RetStd_StdPressureLay">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        28</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>4</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
+    </Array>
+    <Array name="AIRS_RetStd_StdPressureLev">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        28</value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <value>9</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    </Array>
+    <Array name="CloudSat_cs_idx">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        51</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="CloudSat_cs_idx" size="51"/>
+    </Array>
+    <Array name="CloudSat_cs_nbin">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.       125</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="CloudSat_cs_nbin" size="125"/>
+    </Array>
+    <Array name="amsu_idx">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        46</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_idx" size="46"/>
+    </Array>
+    <Array name="amsu_track_idx">
+        <Attribute name="CLASS" type="String">
+            <value>DIMENSION_SCALE</value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <value>This is a netCDF dimension but not a netCDF variable.        45</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="amsu_track_idx" size="45"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

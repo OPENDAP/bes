@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 2.1.0
+Updated for version 2.2.0
 
 -------------------------------------------------------------------------------
 REQUIREMENTS
@@ -8,11 +8,12 @@ INSTALLING RPM
 BUILDING RPM FROM THE SOURCE CODES
 BUILDING THE SOFTWARE FROM THE SOURCE CODES
 BUILDING FROM OUR SVN REPOSITORY
+OPTIONAL TESTING WITH NASA DATA
 NOTES
 -------------------------------------------------------------------------------
 
   This file is provided to give detailed instructions on how to build the
-HDF5 handler. One main goal of this BES module is to make OPeNDAP 
+HDF5 handler module. One of main goals of this BES module is to make OPeNDAP 
 visualization clients (e.g., GrADS and IDV) access the NASA HDF5/HDF-EOS5 data.
 To achieve this goal, the module is implemented by making the NASA 
 HDF5/HDF-EOS5 data follow CF conventions.
@@ -29,7 +30,7 @@ REQUIREMENTS
     See './configure --help' for more info.
 
     The latest release of HDF5 library is available from The HDF Group website:
-    http://www.hdfgroup.org/ftp/HDF5//current/
+    http://www.hdfgroup.org/ftp/HDF5/current/
 
   o If the build fails because of problems linking with the hdf5
     library, you may need to build the library from source and force the 
@@ -42,7 +43,7 @@ INSTALLING RPM
  user privilege, the easiest way to install the HDF5 handler is using RPMs 
  provided by OPeNDAP, Inc. and The HDF Group. 
 
-    Here are two basic commands for deleting and adding RPMs:
+   Here are two basic commands for deleting and adding RPMs:
 
   o Remove any existing RPM package using 'rpm -e <package_name>'. 
   o Install a new RPM package using 'rpm -i <package_name.rpm>'. 
@@ -68,8 +69,8 @@ INSTALLING RPM
 
 BUILDING RPM FROM THE SOURCE CODES
 
-1) Download and install the latest "libdap", "libdap-devel", "bes", and "bes-devel" RPMs
- first from
+1) Download and install the latest "libdap", "libdap-devel", "bes", and 
+ "bes-devel" RPMs first from
 
    http://opendap.org/download/hyrax
 
@@ -77,14 +78,14 @@ BUILDING RPM FROM THE SOURCE CODES
 
    http://www.hdfgroup.org/ftp/HDF5//current/bin/RPMS/       
 
-   Please note that CentOS 5 distributes hdf5-1.6.x RPM via yum. Therefore, you need
-   an hdf5-1.8.x RPM from The HDF group. The hdf5-1.6.x doesn't work with the 
-   current version of hdf5_handler any more.
+   Please note that CentOS 5 distributes hdf5-1.6.x RPM via yum. Therefore, 
+you need an hdf5-1.8.x RPM from The HDF group. The hdf5-1.6.x doesn't work 
+with the current version of hdf5_handler any more.
 
-   CentOS 6 distributes hdf5-1.8.5.patch1-7, which works fine. The HDF Group doesn't 
-   provide CentOS 6 hdf5 RPMs yet. If you want to build hdf5_handler RPM with the latest
-   version of HDF5 library in CentOS 6, you need to build and install the HDF5 library 
-   from the source package.
+   CentOS 6 distributes hdf5-1.8.5.patch1-7, which works fine. The HDF Group 
+doesn't  provide CentOS 6 hdf5 RPMs yet. If you want to build hdf5_handler RPM 
+with the latest version of HDF5 library in CentOS 6, you need to build and 
+install the HDF5 library from the source package.
 
 3) Download and install the latest "hdf5_handler" source code from
 
@@ -136,6 +137,52 @@ BUILDING FROM OUR SVN REPOSITORY
   and Makefile.in files, do ./configure; make; make install as
   outlined above.
 
+OPTIONAL TESTING WITH NASA DATA
+  
+ If you want to test real NASA sample files with the HDF5 handler, please 
+follow the steps below.
+
+1) Make sure that you have 1.2G of disk space and download files using
+
+   %cd data.nasa && ./download.sh
+
+   It will download all test data from The HDF Group FTP site and put it
+   under data.nasa/ directory.
+
+2) Edit the sample test.nasa.sh script under the top level 
+   source directory. You may need to adjust the following paths in the shell 
+   script.
+    
+  set path=(/hdfdap/hyrax-1.8.0/bin $path)
+  setenv LD_LIBRARY_PATH /hdfdap/hyrax-1.8.0/lib
+  setenv PKG_CONFIG_PATH /hdfdap/hyrax-1.8.0/lib/pkgconfig:/usr/lib/pkgconfig/
+  ./configure  --with-hdf5=/hdfdap/hyrax-1.8.0
+
+  The path should point to the Hyrax and HDF5 installation directory so that 
+  besstandalone program, OPeNDAP libraries, and HDF5 library can be found. 
+
+3) Run the (t)csh script.
+
+   %./test.nasa.sh
+
+   It configures, builds, tests and cleans up the source directory 
+   and will take up to 5 minutes.
+
+   It will create two log files at the end:
+
+   a) test.nasa.txt
+   b) test.nasa.log.txt   
+
+   If there is no test failure, you'll see a message
+
+   "All {number of tests} tests were successful."
+
+   at the end of log file a).
+
+   The a) will tell you which NASA product failed the test.
+   The b) will tell you the difference that caused the test failure.
+ 
+   Grep 'diff' line from b) and you can see the expected output.
 
 NOTES
 
@@ -204,8 +251,8 @@ NOTES
  
   o Testing with Hyrax-1.7.x
 
-    - The hdf5_handler will work fine with Hyrax-1.7.x but 'make check' will fail
-      in all DDX output tests due to the difference in the XML header:
+    - The hdf5_handler will work fine with Hyrax-1.7.x but 'make check' will 
+      fail in all DDX output tests due to the difference in the XML header:
   
         <?xml version="1.0" encoding="UTF-8"?>
 

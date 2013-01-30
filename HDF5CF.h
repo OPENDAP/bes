@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2012 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2013 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2012 The HDF Group
+/// Copyright (C) 2011-2013 The HDF Group
 ///
 /// All rights reserved.
 
@@ -50,8 +50,9 @@
 #include "HE5Parser.h"
 
 
-enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_MODIFY,CV_SPECIAL};
+enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL};
 enum EOS5Type {GRID,SWATH,ZA,OTHERVARS};
+enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,OTHERGMS};
 enum EOS5AuraName {OMI,MLS,HIRDLS,TES};
 static string FILE_ATTR_TABLE_NAME ="HDF5_GLOBAL";
 
@@ -642,7 +643,7 @@ namespace HDF5CF
     /// This class is a derived class of File. It includes methods applied to general HDF5 files only.
     class GMFile:public File {
         public:
-            GMFile(const char*path, hid_t file_id, H5GCFProduct product);
+            GMFile(const char*path, hid_t file_id, H5GCFProduct product,GMPattern gproduct_pattern);
             virtual ~GMFile(); 
         public:
             const H5GCFProduct getProductType() {
@@ -712,13 +713,19 @@ namespace HDF5CF
             void Add_Dim_Name_Aqu_L3()throw(Exception);
             void Add_Dim_Name_SMAP()throw(Exception);
             void Add_Dim_Name_ACOS_L2S()throw(Exception);
+
             void Add_Dim_Name_General_Product()throw(Exception);
+            void Check_General_Product_Pattern() throw(Exception);
+            void Add_Dim_Name_Dimscale_General_Product() throw(Exception);
+            void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) throw(Exception);
+            void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
 
             void Handle_CVar_Mea_SeaWiFS() throw(Exception);
             void Handle_CVar_Aqu_L3() throw(Exception);
             void Handle_CVar_SMAP() throw(Exception);
             void Handle_CVar_Mea_Ozone() throw(Exception);
             void Handle_SpVar_ACOS() throw(Exception);
+            void Handle_CVar_Dimscale_General_Product() throw(Exception);
 
             void Adjust_Mea_Ozone_Obj_Name() throw(Exception);
 
@@ -733,9 +740,11 @@ namespace HDF5CF
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
+            bool Is_netCDF_Dimension(Var *var) throw(Exception);
  
         private:
             H5GCFProduct product_type;
+            GMPattern gproduct_pattern;
             vector <GMCVar *>cvars;
             vector <GMSPVar *>spvars;
             bool iscoard;
