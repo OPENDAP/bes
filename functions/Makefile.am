@@ -37,7 +37,8 @@ lex.gse_.cc: gse.lex gse.tab.cc gse.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 gse.tab.cc gse.tab.hh: gse.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p gse_ -o gse.tab.cc $<
+	echo "YACC: "$(YACC)
+	bison $(YFLAGS) $(AM_YFLAGS) -p gse_ -o gse.tab.cc $<
 	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
 
 ce_functions.o: ce_functions.cc ce_functions

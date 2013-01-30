@@ -7,7 +7,7 @@ AC_PREREQ(2.61)
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.11.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
 PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`

@@ -7,7 +7,7 @@ AC_PREREQ(2.57)
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes_apache, 1.0.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_AUX_DIR(conf)
 
