@@ -116,7 +116,7 @@ void gse_delete_buffer(void *buffer);
 void *gse_string(const char *yy_str);
 
 namespace libdap {
-
+#if 0
 /** Is \e lhs equal to \e rhs? Use epsilon to determine equality. */
 inline bool double_eq(double lhs, double rhs, double epsilon = 1.0e-5)
 {
@@ -498,6 +498,7 @@ double extract_double_value(BaseType * arg)
                 "The argument list built by the CE parser contained an unsupported numeric type.");
     }
 }
+#endif
 
 /** This server-side function returns version information for the server-side
  functions. Note that this function takes no arguments and returns a

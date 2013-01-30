@@ -106,6 +106,57 @@ void BESServerFunctionsList::store_functions(ConstraintEvaluator &ce)
     }
 }
 
+/** @brief Find a Boolean function with a given name in the function list. */
+bool BESServerFunctionsList::find_function(const string &name, bool_func *f) const
+{
+    if (d_bool_func_list.empty())
+        return false;
+
+    map<string, bool_func>::const_iterator i = d_bool_func_list.begin();
+    while(i != d_bool_func_list.end()) {
+        if (name == (*i).first && (*f = (*i).second)) {
+            return true;
+        }
+        ++i;
+    }
+
+    return false;
+}
+
+/** @brief Find a BaseType function with a given name in the function list. */
+bool BESServerFunctionsList::find_function(const string &name, btp_func *f) const
+{
+    if (d_btp_func_list.empty())
+        return false;
+
+    map<string, btp_func>::const_iterator i = d_btp_func_list.begin();
+    while(i != d_btp_func_list.end()) {
+        if (name == (*i).first && (*f = (*i).second)) {
+            return true;
+        }
+        ++i;
+    }
+
+    return false;
+}
+
+/** @brief Find a projection function with a given name in the function list. */
+bool BESServerFunctionsList::find_function(const string &name, proj_func *f) const
+{
+    if (d_proj_func_list.empty())
+        return false;
+
+    map<string, proj_func>::const_iterator i = d_proj_func_list.begin();
+    while(i != d_proj_func_list.end()) {
+        if (name == (*i).first && (*f = (*i).second)) {
+            return true;
+        }
+        ++i;
+    }
+
+    return false;
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with information about

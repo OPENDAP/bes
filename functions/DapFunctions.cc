@@ -26,9 +26,6 @@
 
 using std::endl;
 
-#include "DapFunctions.h"
-#include "ce_functions.h"
-
 #if 0
 #include "BESDapRequestHandler.h"
 #include "BESRequestHandlerList.h"
@@ -53,9 +50,13 @@ using std::endl;
 #include "BESTransmitterNames.h"
 #endif
 
-#include "BESServerFunctionsList.h"
+#include <ServerFunctionsList.h>
+//#include "BESServerFunctionsList.h"
 
+#include "DapFunctions.h"
+#include "ce_functions.h"
 #include "BESDebug.h"
+
 #if 0
 #include "BESInternalFatalError.h"
 #include "BESExceptionManager.h"
@@ -66,10 +67,10 @@ void DapFunctions::initialize(const string &modname)
 {
     BESDEBUG( "dap_functions", "Initializing DAP Functions:" << endl );
 
-    BESServerFunctionsList::TheList()->add_function("grid", libdap::function_grid);
-    BESServerFunctionsList::TheList()->add_function("geogrid", libdap::function_geogrid);
-    BESServerFunctionsList::TheList()->add_function("linear_scale", libdap::function_linear_scale);
-    BESServerFunctionsList::TheList()->add_function("version", libdap::function_version);
+    libdap::ServerFunctionsList::TheList()->add_function("grid", libdap::function_grid);
+    libdap::ServerFunctionsList::TheList()->add_function("geogrid", libdap::function_geogrid);
+    libdap::ServerFunctionsList::TheList()->add_function("linear_scale", libdap::function_linear_scale);
+    libdap::ServerFunctionsList::TheList()->add_function("version", libdap::function_version);
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

@@ -43,13 +43,13 @@
 
 namespace libdap
 {
-
+#if 0
 // These functions are use by the code in GeoConstraint
 string extract_string_argument(BaseType *arg) ;
 double extract_double_value(BaseType *arg) ;
 double *extract_double_array(Array *a) ;
 void set_array_using_double(Array *dest, double *src, int src_len) ;
-
+#endif
 void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;

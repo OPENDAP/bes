@@ -57,6 +57,10 @@ public:
 
     virtual void store_functions(libdap::ConstraintEvaluator &ce);
 
+    virtual bool find_function(const std::string &name, libdap::bool_func *f) const;
+    virtual bool find_function(const std::string &name, libdap::btp_func *f) const;
+    virtual bool find_function(const std::string &name, libdap::proj_func *f) const;
+
     virtual void dump(ostream &strm) const;
 
     static BESServerFunctionsList * TheList();

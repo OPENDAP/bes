@@ -168,9 +168,11 @@ private:
         DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
 
+#if 0
         // Add functions to the CE instance.
+        // No longer used; CE now uses ServerFunctionsList directly
         BESServerFunctionsList::TheList()->store_functions(ce);
-
+#endif
         dhi.first_container();
         bool print_mime = get_print_mime();
 
@@ -202,6 +204,10 @@ private:
         }
         DataDDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
+#if 0
+        // Add functions to the CE instance.
+        BESServerFunctionsList::TheList()->store_functions(ce);
+#endif
         dhi.first_container();
         bool print_mime = get_print_mime();
 
@@ -233,6 +239,10 @@ private:
         }
         DDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
+#if 0
+        // Add functions to the CE instance.
+        BESServerFunctionsList::TheList()->store_functions(ce);
+#endif
         dhi.first_container();
         bool print_mime = get_print_mime();
 
@@ -264,6 +274,10 @@ private:
         }
         DataDDS *dds = bdds->get_dds();
         ConstraintEvaluator & ce = bdds->get_ce();
+#if 0
+        // Add functions to the CE instance.
+        BESServerFunctionsList::TheList()->store_functions(ce);
+#endif
         dhi.first_container();
         bool print_mime = get_print_mime();
 
