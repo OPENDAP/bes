@@ -57,7 +57,6 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
-#include "BESServerFunctionsList.h"
 #include "BESDebug.h"
 
 ///////////////////////////////////////////////////////////////////////////////
