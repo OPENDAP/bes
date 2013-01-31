@@ -26,42 +26,11 @@
 
 using std::endl;
 
-#if 0
-#include "BESDapRequestHandler.h"
-#include "BESRequestHandlerList.h"
-
-#include "BESDapNames.h"
-#include "BESResponseHandlerList.h"
-
-#include "BESDASResponseHandler.h"
-#include "BESDMRResponseHandler.h"
-#include "BESDDSResponseHandler.h"
-#include "BESDataResponseHandler.h"
-#include "BESDDXResponseHandler.h"
-#include "BESDataDDXResponseHandler.h"
-
-#include "BESCatalogResponseHandler.h"
-
-#include "BESServiceRegistry.h"
-
-#include "BESDapTransmit.h"
-#include "BESTransmitter.h"
-#include "BESReturnManager.h"
-#include "BESTransmitterNames.h"
-#endif
-
 #include <ServerFunctionsList.h>
-//#include "BESServerFunctionsList.h"
 
 #include "DapFunctions.h"
 #include "ce_functions.h"
 #include "BESDebug.h"
-
-#if 0
-#include "BESInternalFatalError.h"
-#include "BESExceptionManager.h"
-#include "BESDapError.h"
-#endif
 
 void DapFunctions::initialize(const string &modname)
 {
