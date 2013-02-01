@@ -15,7 +15,6 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-#EXTRA_DIST = gateway gateway_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
 EXTRA_DIST = besdap besdap_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf
@@ -23,7 +22,7 @@ DISTCLEANFILES = bes.conf
 bes.conf: bes.conf.in $(top_srcdir)/config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
+		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]libdir[@]%${libdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \

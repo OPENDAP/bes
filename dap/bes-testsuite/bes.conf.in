@@ -35,40 +35,12 @@ BES.LogVerbose=no
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-# Notes: 
-# 1. When the handlers are built, the handler's 'make' builds the
-# handler executable for Server3 and the shared object module for
-# Hyrax. The Hyrax shared object modules are installed (using 'make
-# install') in<prefix>/lib/bes. Make sure you point to the Hyrax
-# modules and not the Server3 'handlers'. The Hyrax modules all have
-# '_module' in their names.
-# 2. The commands that the BES responds to are also provided by modules,
-# so make sure that those are loaded in as well. Two modules are
-# required for use with Hyrax, the dap and cmd modules.
-# 3. If you want ascii, info, and html responses provided by the bes, just
-# as in the Server3 handlers, then include the ascii, usage, and www
-# modules.
-# 4. Order matters. Include the dap, cmd, ascii, usage, www first before
-# including handler modules like nc, hdf4, ff.
-# 
-# Here's an example of the configuration for three handlers (Netcdf,
-# hdf4 and FreeForm) and the DAP basic and command modules:
-#
-# BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
-# BES.module.dap=@modulesdir@/libdap_module.so
-# BES.module.cmd=@modulesdir@/libdap_cmd_module.so
-# BES.module.ascii=@modulesdir@/libascii_module.so
-# BES.module.usage=@modulesdir@/libusage_module.so
-# BES.module.www=@modulesdir@/libwww_module.so
-# BES.module.nc=@modulesdir@/libnc_module.so
-# BES.module.h4=@modulesdir@/libhdf4_module.so
-# BES.module.ff=@modulesdir@/libff_module.so
+BES.modules=dap,cmd,dapreader
 
-BES.modules=dap,cmd,dapreader,besdap
-BES.module.dap=@modulesdir@/libdap_module.so
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+
 BES.module.cmd=@modulesdir@/libdap_xml_module.so
 BES.module.dapreader=@modulesdir@/libdapreader_module.so
-BES.module.besdap=@abs_top_builddir@/.libs/libbesdap_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data location

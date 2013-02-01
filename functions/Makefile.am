@@ -41,11 +41,11 @@ gse.tab.cc gse.tab.hh: gse.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p gse_ -o gse.tab.cc $<
 	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
 
-ce_functions.o: ce_functions.cc ce_functions
+# ce_functions.o: ce_functions.cc ce_functions
+
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING functions_module.spec \
-    functions.conf.in OSX_Resources gse.y gse.lex
+EXTRA_DIST = functions.conf.in gse.y gse.lex
 
 CLEANFILES = *~ functions.conf
 

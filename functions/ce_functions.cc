@@ -69,7 +69,7 @@
 #include "RValue.h"
 #include "GSEClause.h"
 #include "GridGeoConstraint.h"
-#include "ArrayGeoConstraint.h"
+//#include "ArrayGeoConstraint.h"
 
 #include "ce_functions.h"
 #ifdef GRIDFIELDS

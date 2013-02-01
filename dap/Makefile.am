@@ -4,13 +4,13 @@
 # 01/22/2013 Hacked up by ndp
 #
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
+# AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
 
 AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = . bes-testsuite
+# SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_module.la
@@ -53,7 +53,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapService.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
-libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I../dispatch $(DAP_CFLAGS)
+libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module 
 libdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
@@ -63,10 +63,9 @@ pkginclude_HEADERS = $(BESDAP_HDRS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING besdsap_module.spec \
-    besdap.conf.in OSX_Resources
+EXTRA_DIST = dap.conf.in
 
-CLEANFILES = *~ besdap.conf
+CLEANFILES = *~ dap.conf
 
 install-data-local: dap.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
