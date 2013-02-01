@@ -15,7 +15,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = besdap besdap_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
+EXTRA_DIST = besdap_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf
 
