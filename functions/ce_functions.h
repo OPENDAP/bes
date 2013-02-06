@@ -40,6 +40,7 @@
 #include "Array.h"
 #include "Error.h"
 #include "ConstraintEvaluator.h"
+#include "AbstractFunction.h"
 
 namespace libdap
 {
@@ -50,10 +51,6 @@ double extract_double_value(BaseType *arg) ;
 double *extract_double_array(Array *a) ;
 void set_array_using_double(Array *dest, double *src, int src_len) ;
 #endif
-void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 #if 0
 void function_geoarray(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 void function_ugrid_demo(int argc, BaseType * argv[], DDS &dds, BaseType **btpp) ;
@@ -63,6 +60,94 @@ void function_dap(int argc, BaseType *argv[], DDS &dds, ConstraintEvaluator &ce)
 
 void register_functions(ConstraintEvaluator &ce);
 #endif
+
+
+
+void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+class GeoGridFunction: public AbstractFunction {
+public:
+	GeoGridFunction()
+    {
+		setName("geogrid");
+		setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
+		setUsageString("geogrid(...)");
+		setRole("http://services.opendap.org/dap4/server-side-function/geogrid");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#geogrid");
+		setFunction(libdap::function_geogrid);
+		setVersion("1.2");
+    }
+    virtual ~GeoGridFunction()
+    {
+    }
+
+};
+
+
+
+void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+class GridFunction: public AbstractFunction {
+public:
+	GridFunction()
+    {
+		setName("grid");
+		setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
+		setUsageString("grid(...)");
+		setRole("http://services.opendap.org/dap4/server-side-function/grid");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
+		setFunction(libdap::function_grid);
+		setVersion("1.0");
+ }
+    virtual ~GridFunction()
+    {
+    }
+
+};
+
+
+
+
+void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+class LinearScaleFunction: public AbstractFunction {
+public:
+	LinearScaleFunction()
+    {
+		setName("linear_scale");
+		setDescriptionString("The linear_scale() function applies the familiar y = mx + b equation to data.");
+		setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
+		setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
+		setFunction(libdap::function_linear_scale);
+		setVersion("1.0b1");
+    }
+    virtual ~LinearScaleFunction()
+    {
+    }
+
+};
+
+
+
+
+void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+class VersionFunction: public AbstractFunction {
+public:
+	VersionFunction()
+    {
+		setName("version");
+		setDescriptionString("The version function provides a list of the server-side processing functions available on a given server along with their versions.");
+		setUsageString("version()");
+		setRole("http://services.opendap.org/dap4/server-side-function/version");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#version");
+		setFunction(libdap::function_version);
+		setVersion("1.0");
+    }
+    virtual ~VersionFunction()
+    {
+    }
+
+};
+
+
 } // namespace libdap
 
 #endif // _ce_functions_h

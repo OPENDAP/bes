@@ -26,6 +26,9 @@
 #define A_DapFunctions_H 1
 
 #include "BESAbstractModule.h"
+#include "ce_functions.h"
+
+using namespace libdap;
 
 class DapFunctions: public BESAbstractModule {
 public:
@@ -40,5 +43,7 @@ public:
 
     virtual void dump(ostream &strm) const;
 };
+
+
 
 #endif // A_DapFunctions_H

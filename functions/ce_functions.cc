@@ -509,15 +509,18 @@ double extract_double_value(BaseType * arg)
 void
 function_version(int, BaseType *[], DDS &, BaseType **btpp)
 {
-    string
-            xml_value =
+    string xml_value =
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
                        <functions>\
                        <function name=\"geogrid\" version=\"1.2\"/>\
                        <function name=\"grid\" version=\"1.0\"/>\
                        <function name=\"linear_scale\" version=\"1.0b1\"/>\
-                       <function name=\"ugrid_demo\" version=\"0.1\"/>\
                        </functions>";
+
+
+
+
+
 
     Str *response = new Str("version");
 
