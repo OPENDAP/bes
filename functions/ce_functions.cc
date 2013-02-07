@@ -515,6 +515,7 @@ function_version(int, BaseType *[], DDS &, BaseType **btpp)
                        <function name=\"geogrid\" version=\"1.2\"/>\
                        <function name=\"grid\" version=\"1.0\"/>\
                        <function name=\"linear_scale\" version=\"1.0b1\"/>\
+//                       <function name=\"ugrid_demo\" version=\"0.1\"/>\
                        </functions>";
 
 

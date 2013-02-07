@@ -40,7 +40,8 @@
 #include "Array.h"
 #include "Error.h"
 #include "ConstraintEvaluator.h"
-#include "AbstractFunction.h"
+#include "ServerFunction.h"
+
 
 namespace libdap
 {
@@ -64,7 +65,7 @@ void register_functions(ConstraintEvaluator &ce);
 
 
 void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-class GeoGridFunction: public AbstractFunction {
+class GeoGridFunction: public libdap::ServerFunction {
 public:
 	GeoGridFunction()
     {
@@ -85,7 +86,7 @@ public:
 
 
 void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-class GridFunction: public AbstractFunction {
+class GridFunction: public libdap::ServerFunction {
 public:
 	GridFunction()
     {
@@ -105,9 +106,17 @@ public:
 
 
 
-
+/**
+ * The linear_scale() function applies the familiar y = mx + b equation to data.
+ */
 void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-class LinearScaleFunction: public AbstractFunction {
+
+
+/**
+ * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
+ * along with additional meta-data regarding its use and applicability.
+ */
+class LinearScaleFunction: public libdap::ServerFunction {
 public:
 	LinearScaleFunction()
     {
@@ -129,7 +138,7 @@ public:
 
 
 void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-class VersionFunction: public AbstractFunction {
+class VersionFunction: public libdap::ServerFunction {
 public:
 	VersionFunction()
     {
