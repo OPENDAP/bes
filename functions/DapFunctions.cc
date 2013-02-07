@@ -26,7 +26,8 @@
 
 using std::endl;
 
-#include <ServerFunctionsList.h>
+#include "ServerFunctionsList.h"
+#include "ServerFunction.h"
 
 #include "DapFunctions.h"
 #include "ce_functions.h"
@@ -40,11 +41,6 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new GeoGridFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new VersionFunction());
-
-    //libdap::ServerFunctionsList::TheList()->add_function("grid", libdap::function_grid);
-    //libdap::ServerFunctionsList::TheList()->add_function("geogrid", libdap::function_geogrid);
-    //libdap::ServerFunctionsList::TheList()->add_function("linear_scale", libdap::function_linear_scale);
-    //libdap::ServerFunctionsList::TheList()->add_function("version", libdap::function_version);
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

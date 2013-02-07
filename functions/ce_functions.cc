@@ -63,6 +63,7 @@
 #include "Structure.h"
 #include "Sequence.h"
 #include "Grid.h"
+#include "ServerFunctionsList.h"
 
 #include "Error.h"
 
@@ -505,23 +506,31 @@ double extract_double_value(BaseType * arg)
  String using the BaseType value/result parameter.
 
  @param btpp A pointer to the return value; caller must delete.
+ @TODO Change implementation to use libxml2 objects and NOT strings.
 */
 void
 function_version(int, BaseType *[], DDS &, BaseType **btpp)
 {
-    string xml_value =
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
-                       <functions>\
-                       <function name=\"geogrid\" version=\"1.2\"/>\
-                       <function name=\"grid\" version=\"1.0\"/>\
-                       <function name=\"linear_scale\" version=\"1.0b1\"/>\
-//                       <function name=\"ugrid_demo\" version=\"0.1\"/>\
-                       </functions>";
+    string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <functions>";
 
 
+    ServerFunction *sf;
+    string functionType;
 
+    ServerFunctionsList *sfList = libdap::ServerFunctionsList::TheList();
+    std::multimap<string,libdap::ServerFunction *>::iterator begin = sfList->begin();
+    std::multimap<string,libdap::ServerFunction *>::iterator end = sfList->end();
+    std::multimap<string,libdap::ServerFunction *>::iterator sfit;
 
+    for(sfit=begin; sfit!=end; sfit++){
+    	sf = sfList->getFunction(sfit);
+    	xml_value += "<function name=\"" + sf->getName() +"\""+
+    			     " version=\"" + sf->getVersion() + "\""+
+    			     " type=\"" + sf->getTypeString() + "\""+
+    			     " />";
+    }
 
+	xml_value += "</functions>";
 
     Str *response = new Str("version");
 

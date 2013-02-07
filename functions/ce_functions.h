@@ -111,7 +111,6 @@ public:
  */
 void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 
-
 /**
  * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
  * along with additional meta-data regarding its use and applicability.
