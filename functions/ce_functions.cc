@@ -65,7 +65,10 @@
 #include "Grid.h"
 #include "ServerFunctionsList.h"
 
+#include "BesDebug.h"
 #include "Error.h"
+
+#include "grid_utils.h"
 
 #include "RValue.h"
 #include "GSEClause.h"
@@ -501,6 +504,63 @@ double extract_double_value(BaseType * arg)
 }
 #endif
 
+
+
+
+/**
+ * The passed DDS parameter dds is evaluated to see if it contains Grid objects.
+ *
+ * @param dds The DDS to be evaluated.
+ */
+bool GridFunction::canOperateOn(DDS &dds){
+	BESDEBUG( "GridFunction","GridFunction::canOperateOn() - Checking DDS for suitable input variables." << endl);
+
+	vector<Grid *> *grids = new vector<Grid *>();
+
+	getGrids(dds,grids);
+
+    bool usable = !grids->empty();
+
+    delete grids;
+
+	return usable;
+}
+
+
+/**
+ * The passed DDS parameter dds is evaluated to see if it contains Grid objects whose semantics allow them
+ * to be operated on by function_geogrid()
+ *
+ * @param dds The DDS to be evaluated.
+ */
+bool GeoGridFunction::canOperateOn(DDS &dds){
+
+	BESDEBUG( "GeoGridFunction","GeoGridFunction::canOperateOn: Checking DDS for suitable input variables." << endl);
+
+    bool usable = false;
+
+    // Go find all the Grid variables.
+	vector<Grid *> *grids = new vector<Grid *>();
+	getGrids(dds,grids);
+
+	// Were there any?
+    if(!grids->empty()){
+    	// Apparently so...
+
+    	// See if any one of them looks like suitable GeoGrid
+    	vector<Grid *>::iterator git;
+    	for(git=grids->begin(); !usable && git!=grids->end() ; git++){
+    		Grid *grid = *git;
+    		usable = isGeoGrid(grid);
+    	}
+    }
+    delete grids;
+
+	return usable;
+}
+
+
+
 /** This server-side function returns version information for the server-side
  functions. Note that this function takes no arguments and returns a
  String using the BaseType value/result parameter.
@@ -509,9 +569,10 @@ double extract_double_value(BaseType * arg)
  @TODO Change implementation to use libxml2 objects and NOT strings.
 */
 void
-function_version(int, BaseType *[], DDS &, BaseType **btpp)
+function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
 {
-    string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <functions>";
+    string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
 
 
     ServerFunction *sf;
@@ -522,15 +583,20 @@ function_version(int, BaseType *[], DDS &, BaseType **btpp)
     std::multimap<string,libdap::ServerFunction *>::iterator end = sfList->end();
     std::multimap<string,libdap::ServerFunction *>::iterator sfit;
 
+    xml_value += "<ds:functions xmlns:ds=\"http://xml.opendap.org/ns/DAP/4.0/dataset-services#\">\n";
     for(sfit=begin; sfit!=end; sfit++){
     	sf = sfList->getFunction(sfit);
-    	xml_value += "<function name=\"" + sf->getName() +"\""+
-    			     " version=\"" + sf->getVersion() + "\""+
-    			     " type=\"" + sf->getTypeString() + "\""+
-    			     " />";
+    	if(sf->canOperateOn(dds)){
+			xml_value += "    <ds:function  name=\"" + sf->getName() +"\""+
+						 " version=\"" + sf->getVersion() + "\""+
+						 " type=\"" + sf->getTypeString() + "\""+
+						 " role=\"" + sf->getRole() + "\""+
+						 " >\n" ;
+			xml_value += "        <ds:Description href=\"" + sf->getDocUrl() + "\">" + sf->getDescriptionString() + "</ds:Description>\n";
+			xml_value += "    </ds:function>\n";
+    	}
     }
-
-	xml_value += "</functions>";
+	xml_value += "</functions>\n";
 
     Str *response = new Str("version");
 
@@ -540,7 +606,7 @@ function_version(int, BaseType *[], DDS &, BaseType **btpp)
 }
 
 void
-function_dap(int, BaseType *[], DDS &, ConstraintEvaluator &)
+function_dap(int, BaseType *[], DDS &dds, ConstraintEvaluator &ce)
 {
 #ifdef FUNCTION_DAP
     if (argc != 1) {
@@ -567,7 +633,7 @@ static void parse_gse_expression(gse_arg * arg, BaseType * expr)
         throw Error(malformed_expr, "Error parsing grid selection.");
 }
 
-static void apply_grid_selection_expr(Grid * grid, GSEClause * clause)
+static void apply_grid_selection_expr(Grid *grid, GSEClause *clause)
 {
     // Basic plan: For each map, look at each clause and set start and stop
     // to be the intersection of the ranges in those clauses.
@@ -626,7 +692,7 @@ static void apply_grid_selection_expressions(Grid * grid,
  * an error is returned.
  *
  */
-void function_miic_ex2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+void function_miic_ex2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
 {
     Array *l_lat = 0;
     Array *l_lon = 0;
@@ -716,7 +782,7 @@ void function_miic_ex2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
  @see geogrid() (func_geogrid_select) A function which has logic specific
  to longitude/latitude selection. */
 void
-function_grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+function_grid(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 {
     DBG(cerr << "Entering function_grid..." << endl);
 
@@ -827,7 +893,7 @@ function_grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 
  @return The constrained and read Grid, ready to be sent. */
 void
-function_geogrid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
 {
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +

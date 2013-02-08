@@ -40,6 +40,8 @@
 #include "Array.h"
 #include "Error.h"
 #include "ConstraintEvaluator.h"
+#include "Sequence.h"
+#include "Structure.h"
 #include "ServerFunction.h"
 
 
@@ -63,6 +65,7 @@ void register_functions(ConstraintEvaluator &ce);
 #endif
 
 
+// bool gridFinder(BaseType *bt);
 
 void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 class GeoGridFunction: public libdap::ServerFunction {
@@ -80,6 +83,8 @@ public:
     virtual ~GeoGridFunction()
     {
     }
+
+    bool canOperateOn(DDS &dds);
 
 };
 
@@ -101,6 +106,8 @@ public:
     virtual ~GridFunction()
     {
     }
+
+    bool canOperateOn(DDS &dds);
 
 };
 
