@@ -65,7 +65,7 @@
 #include "Grid.h"
 #include "ServerFunctionsList.h"
 
-#include "BesDebug.h"
+#include "BESDebug.h"
 #include "Error.h"
 
 #include "grid_utils.h"

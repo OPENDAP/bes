@@ -8,7 +8,7 @@
 #ifndef GRID_UTILS_H_
 #define GRID_UTILS_H_
 
-#include "Basetype.h"
+#include "BaseType.h"
 #include "Grid.h"
 
 namespace libdap {

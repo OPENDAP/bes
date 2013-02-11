@@ -11,8 +11,8 @@
 #include "Structure.h"
 #include "Sequence.h"
 #include "Grid.h"
-#include "Basetype.h"
-#include "BesDebug.h"
+#include "BaseType.h"
+#include "BESDebug.h"
 #include "GridGeoConstraint.h"
 
 using namespace libdap;
