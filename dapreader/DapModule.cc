@@ -28,7 +28,7 @@ DapModule::initialize( const string &modname )
     BESDEBUG( modname, "    adding dap request handler" << endl ) ;
     BESRequestHandlerList::TheList()->add_handler( modname, new DapRequestHandler( modname ) ) ;
 
-    BESDEBUG( "nc", "    adding " << DAP_CATALOG << " catalog" << endl ) ;
+    BESDEBUG( modname, "    adding " << DAP_CATALOG << " catalog" << endl ) ;
     if( !BESCatalogList::TheCatalogList()->ref_catalog( DAP_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
@@ -36,10 +36,10 @@ DapModule::initialize( const string &modname )
     }
     else
     {
-	BESDEBUG( "nc", "    catalog already exists, skipping" << endl ) ;
+	BESDEBUG( modname, "    catalog already exists, skipping" << endl ) ;
     }
 
-    BESDEBUG( "nc", "    adding catalog container storage " << DAP_CATALOG
+    BESDEBUG( modname, "    adding catalog container storage " << DAP_CATALOG
 		    << endl ) ;
     if( !BESContainerStorageList::TheList()->ref_persistence( DAP_CATALOG ) )
     {
@@ -49,7 +49,7 @@ DapModule::initialize( const string &modname )
     }
     else
     {
-	BESDEBUG( "nc", "    storage already exists, skipping" << endl ) ;
+	BESDEBUG( modname, "    storage already exists, skipping" << endl ) ;
     }
 
     BESDEBUG( modname, "    adding Dap debug context" << endl ) ;

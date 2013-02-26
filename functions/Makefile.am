@@ -29,7 +29,7 @@ libfunctions_module_la_LDFLAGS = -avoid-version -module
 libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # Don't install the headers for this kind of module.
-# pkginclude_HEADERS = $(HDRS) 
+pkginclude_HEADERS = $(HDRS) 
 
 # Build the grid selection sub_expression scanner and parser
 
