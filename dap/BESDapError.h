@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,7 +37,7 @@
 #include "Error.h"
 #include "BESDataHandlerInterface.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 /** @brief error object created from libdap error objects and can handle
  * those errors
@@ -48,36 +48,34 @@ using namespace libdap ;
  * The exception handling function handleException knows how to convert
  * libdap errors to dap error responses if the context is set to dap2
  */
-class BESDapError : public BESError
-{
+class BESDapError: public BESError {
 private:
-    ErrorCode		_error_code ;
+    ErrorCode _error_code;
 protected:
-      			BESDapError() {}
+    BESDapError()
+    {
+    }
 public:
-      			BESDapError( const string &s,
-				     bool fatal,
-				     ErrorCode ec,
-				     const string &file,
-				     int line )
-			: BESError( s, 0, file, line ),
-			  _error_code( ec )
-			{
-			    if( fatal )
-				set_error_type( BES_INTERNAL_FATAL_ERROR ) ;
-			    else
-				set_error_type( BES_INTERNAL_ERROR ) ;
-			}
-    virtual		~BESDapError() {}
-    virtual int		get_error_code() const { return _error_code ; }
+    BESDapError(const string &s, bool fatal, ErrorCode ec, const string &file, int line) :
+            BESError(s, 0, file, line), _error_code(ec)
+    {
+        if (fatal)
+            set_error_type(BES_INTERNAL_FATAL_ERROR);
+        else
+            set_error_type(BES_INTERNAL_ERROR);
+    }
+    virtual ~BESDapError()
+    {
+    }
+    virtual int get_error_code() const
+    {
+        return _error_code;
+    }
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static int	convert_error_code( int error_code,
-				    int current_error_type ) ;
-    static int	handleException( BESError &e,
-				 BESDataHandlerInterface &dhi ) ;
+    static int convert_error_code(int error_code, int current_error_type);
+    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 };
 
 #endif // BESDapError_h_ 
-

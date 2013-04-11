@@ -40,12 +40,12 @@
 
 #include "BESDebug.h"
 
-BESDDXResponseHandler::BESDDXResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESDDXResponseHandler::BESDDXResponseHandler(const string &name) :
+        BESResponseHandler(name)
 {
 }
 
-BESDDXResponseHandler::~BESDDXResponseHandler( )
+BESDDXResponseHandler::~BESDDXResponseHandler()
 {
 }
 
@@ -63,26 +63,23 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
  * @see BESDASResponse
  * @see BESRequestHandlerList
  */
-void
-BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl ) ;
+    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl );
 
-    dhi.action_name = DDX_RESPONSE_STR ;
+    dhi.action_name = DDX_RESPONSE_STR;
     // Create the DDS.
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    DDS *dds = new DDS( NULL, "virtual" ) ;
+    DDS *dds = new DDS(NULL, "virtual");
 
-    BESDDSResponse *bdds = new BESDDSResponse( dds ) ;
-    _response = bdds ;
-    _response_name = DDS_RESPONSE ;
-    dhi.action = DDS_RESPONSE ;
+    BESDDSResponse *bdds = new BESDDSResponse(dds);
+    _response = bdds;
+    _response_name = DDS_RESPONSE;
+    dhi.action = DDS_RESPONSE;
 
-    BESDEBUG( "bes", "about to set dap version to: "
-                << bdds->get_dap_client_protocol() << endl) ;
-    BESDEBUG( "bes", "about to set xml:base to: "
-                << bdds->get_request_xml_base() << endl) ;
+    BESDEBUG( "bes", "about to set dap version to: " << bdds->get_dap_client_protocol() << endl);
+    BESDEBUG( "bes", "about to set xml:base to: " << bdds->get_request_xml_base() << endl);
 
     // I added these two lines from BESDDXResponse. jhrg 10/05/09
     // Note that the get_dap_client_protocol(), ..., methods
@@ -97,25 +94,27 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
 
     if (dds->get_keywords().has_keyword("dap")) {
-	BESDEBUG("version", "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
-	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+        BESDEBUG("version",
+                "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
+        dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
     }
     else if (!bdds->get_dap_client_protocol().empty()) {
-	BESDEBUG("version", "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
-	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+        BESDEBUG("version",
+                "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
+        dds->set_dap_version(bdds->get_dap_client_protocol());
     }
     else {
-	BESDEBUG("version", "Has no clue about dap version, using default." << endl);
+        BESDEBUG("version", "Has no clue about dap version, using default." << endl);
     }
 
-    dds->set_request_xml_base( bdds->get_request_xml_base() );
+    dds->set_request_xml_base(bdds->get_request_xml_base());
 
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+    BESRequestHandlerList::TheList()->execute_each(dhi);
 
-    dhi.action = DDX_RESPONSE ;
-    _response = bdds ;
+    dhi.action = DDX_RESPONSE;
+    _response = bdds;
 
-    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl ) ;
+    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl);
 }
 
 /** @brief transmit the response object built by the execute command
@@ -130,13 +129,10 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDDXResponseHandler::transmit( BESTransmitter * transmitter,
-                                 BESDataHandlerInterface & dhi )
+void BESDDXResponseHandler::transmit(BESTransmitter * transmitter, BESDataHandlerInterface & dhi)
 {
-    if( _response )
-    {
-        transmitter->send_response( DDX_SERVICE, _response, dhi ) ;
+    if (_response) {
+        transmitter->send_response(DDX_SERVICE, _response, dhi);
     }
 }
 
@@ -146,19 +142,17 @@ BESDDXResponseHandler::transmit( BESTransmitter * transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDDXResponseHandler::dump( ostream &strm ) const
+void BESDDXResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDDXResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDDXResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDDXResponseHandler::DDXResponseBuilder( const string &name )
+BESDDXResponseHandler::DDXResponseBuilder(const string &name)
 {
-    return new BESDDXResponseHandler( name ) ;
+    return new BESDDXResponseHandler(name);
 }
 
