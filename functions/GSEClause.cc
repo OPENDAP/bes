@@ -77,7 +77,7 @@ GSEClause &GSEClause::operator=(GSEClause &)
     throw InternalErr(__FILE__, __LINE__, "assigment called for GSEClause");
 }
 
-// For the comparisions here, we should use an epsilon to catch issues
+// For the comparisons here, we should use an epsilon to catch issues
 // with floating point values. jhrg 01/12/06
 template<class T>
 static bool
