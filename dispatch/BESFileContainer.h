@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,8 +36,8 @@
 #include <list>
 #include <string>
 
-using std::list ;
-using std::string ;
+using std::list;
+using std::string;
 
 #include "BESContainer.h"
 
@@ -56,36 +56,36 @@ using std::string ;
  *
  * @see BESFileContainerStorage
  */
-class BESFileContainer : public BESContainer
-{
+class BESFileContainer: public BESContainer {
 private:
-    bool			_cached ;
-    string			_target ;
+    bool _cached;
+    string _target;
 
-				BESFileContainer() : BESContainer() {}
+    BESFileContainer() : BESContainer()
+    {
+    }
 protected:
-    virtual void		_duplicate( BESContainer &copy_to ) ;
+    virtual void _duplicate(BESContainer &copy_to);
 public:
-    				BESFileContainer( const string &sym_name,
-				                  const string &real_name,
-						  const string &type ) ;
+    BESFileContainer(const string &sym_name, const string &real_name, const string &type);
 
-				BESFileContainer( const BESFileContainer &copy_from ) ;
+    BESFileContainer(const BESFileContainer &copy_from);
 
-    virtual			~BESFileContainer() {}
+    virtual ~BESFileContainer()
+    {
+    }
 
-    virtual BESContainer *	ptr_duplicate( ) ;
+    virtual BESContainer * ptr_duplicate();
 
-    virtual string		access() ;
+    virtual string access();
 
-    virtual bool		release() ;
+    virtual bool release();
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESFileContainer_h_
-

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,19 +36,19 @@
 #include <string>
 #include <list>
 
-using std::string ;
-using std::list ;
+using std::string;
+using std::list;
 
 #include "BESObj.h"
 
-class BESContainer ;
-class BESInfo ;
+class BESContainer;
+class BESInfo;
 
 /** @brief provides persistent storage for data storage information
  * represented by a container.
  *
  * An implementation of the abstract interface BESContainerStorage
- * provides storage for information about accessing data of different date
+ * provides storage for information about accessing data of different data
  * types. The information is represented by a symbolic name. A user can
  * request a symbolic name that represents a certain container.
  *
@@ -66,14 +66,10 @@ class BESInfo ;
  * @see BESContainer
  * @see BESContainerStorageList
  */
-class BESContainerStorage : public BESObj
-{
+class BESContainerStorage: public BESObj {
 protected:
-    string		_my_name ;
-    virtual void	show_container( const string &sym_name,
-					const string &real_name,
-					const string &type,
-					BESInfo &info ) ;
+    string _my_name;
+    virtual void show_container(const string &sym_name, const string &real_name, const string &type, BESInfo &info);
 
 public:
     /** @brief create an instance of BESContainerStorage with the give
@@ -81,16 +77,23 @@ public:
      *
      * @param name name of this persistence store
      */
-    				BESContainerStorage( const string &name )
-				    : _my_name( name ) {} ;
+    BESContainerStorage(const string &name) :
+            _my_name(name)
+    {
+    }
 
-    virtual 			~BESContainerStorage() {} ;
+    virtual ~BESContainerStorage()
+    {
+    }
 
     /** @brief retrieve the name of this persistent store
      *
      * @return name of this persistent store.
      */
-    virtual const string &	get_name() const { return _my_name ; }
+    virtual const string & get_name() const
+    {
+        return _my_name;
+    }
 
     /** @brief looks for a container in this persistent store
      *
@@ -100,7 +103,7 @@ public:
      * @return If sym_name is found, the BESContainer instance representing
      * that symbolic name, else NULL is returned.
      */
-    virtual BESContainer * 	look_for( const string &sym_name ) = 0 ;
+    virtual BESContainer * look_for(const string &sym_name) = 0;
 
     /** @brief adds a container with the provided information
      *
@@ -111,9 +114,7 @@ public:
      * @param real_name real name for the container
      * @param type type of data represented by this container
      */
-    virtual void		add_container( const string &sym_name,
-					       const string &real_name,
-					       const string &type ) = 0 ;
+    virtual void add_container(const string &sym_name, const string &real_name, const string &type) = 0;
 
     /** @brief removes a container with the given symbolic name
      *
@@ -123,7 +124,7 @@ public:
      * @param s_name symbolic name for the container
      * @return true if successfully removed and false otherwise
      */
-    virtual bool		del_container( const string &s_name ) = 0 ;
+    virtual bool del_container(const string &s_name) = 0;
 
     /** @brief removes all container
      *
@@ -132,17 +133,16 @@ public:
      *
      * @return true if successfully removed and false otherwise
      */
-    virtual bool		del_containers( ) = 0 ;
+    virtual bool del_containers() = 0;
 
-    /** @brief determine if the given container is data and what servies
+    /** @brief determine if the given container is data and what services
      * are available for it
      *
      * @param inQuestion the container in question
      * @param provides an output parameter for storing the list of
      * services provided for this container
      */
-    virtual bool		isData( const string &inQuestion,
-    					list<string> &provides ) = 0 ;
+    virtual bool isData(const string &inQuestion, list<string> &provides) = 0;
 
     /** @brief show the containers stored in this persistent store
      *
@@ -154,14 +154,13 @@ public:
      *
      * @param info information object to store the information in
      */
-    virtual void		show_containers( BESInfo &info ) = 0 ;
+    virtual void show_containers(BESInfo &info) = 0;
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual void dump(ostream &strm) const = 0;
 };
 
 #endif // BESContainerStorage_h_
-

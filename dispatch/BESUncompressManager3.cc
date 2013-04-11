@@ -199,6 +199,8 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
         cache->unlock_cache();
         throw;
     }
+
+    return false;   // gcc warns without this
 }
 
 /** @brief dumps information about this object

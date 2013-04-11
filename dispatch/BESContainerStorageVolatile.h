@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,8 +36,8 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESContainerStorage.h"
 
@@ -54,35 +54,30 @@ using std::string ;
  * @see BESContainerStorage
  * @see BESContainer
  */
-class BESContainerStorageVolatile : public BESContainerStorage
-{
+class BESContainerStorageVolatile: public BESContainerStorage {
 private:
-    map< string, BESContainer * > _container_list ;
+    map<string, BESContainer *> _container_list;
 protected:
-    string			_root_dir ;
-    bool			_follow_sym_links ;
+    string _root_dir;
+    bool _follow_sym_links;
 
-    virtual void		add_container( BESContainer *c ) ;
+    virtual void add_container(BESContainer *c);
 public:
-    				BESContainerStorageVolatile( const string &n ) ;
-    virtual			~BESContainerStorageVolatile() ;
+    BESContainerStorageVolatile(const string &n);
+    virtual ~BESContainerStorageVolatile();
 
-    typedef map< string, BESContainer * >::const_iterator Container_citer ;
-    typedef map< string, BESContainer * >::iterator Container_iter ;
-    virtual BESContainer *	look_for( const string &sym_name ) ;
-    virtual void		add_container( const string &sym_name,
-					       const string &real_name,
-					       const string &type ) ;
-    virtual bool		del_container( const string &s_name ) ;
-    virtual bool		del_containers( ) ;
+    typedef map<string, BESContainer *>::const_iterator Container_citer;
+    typedef map<string, BESContainer *>::iterator Container_iter;
+    virtual BESContainer * look_for(const string &sym_name);
+    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
+    virtual bool del_container(const string &s_name);
+    virtual bool del_containers();
 
-    virtual bool		isData( const string &inQuestion,
-    					list<string> &provides ) ;
+    virtual bool isData(const string &inQuestion, list<string> &provides);
 
-    virtual void		show_containers( BESInfo &info ) ;
+    virtual void show_containers(BESInfo &info);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESContainerStorageVolatile_h_
-

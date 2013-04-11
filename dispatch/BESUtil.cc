@@ -286,9 +286,9 @@ void BESUtil::check_path(const string &path, const string &root,
 				if (s_err) {
 					error = error + s_err;
 				} else {
-					error = error + "unknow access error";
+					error = error + "unknown access error";
 				}
-				// ENOENT means that the node wasn't found. Otherise, access
+				// ENOENT means that the node wasn't found. Otherwise, access
 				// is denied for some reason
 				if (errsv == ENOENT) {
 					throw BESNotFoundError(error, __FILE__, __LINE__);
@@ -317,9 +317,9 @@ void BESUtil::check_path(const string &path, const string &root,
 				if (s_err) {
 					error = error + s_err;
 				} else {
-					error = error + "unknow access error";
+					error = error + "unknown access error";
 				}
-				// ENOENT means that the node wasn't found. Otherise, access
+				// ENOENT means that the node wasn't found. Otherwise, access
 				// is denied for some reason
 				if (errsv == ENOENT) {
 					throw BESNotFoundError(error, __FILE__, __LINE__);
