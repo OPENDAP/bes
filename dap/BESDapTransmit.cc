@@ -106,10 +106,9 @@ public:
     bool get_print_mime() const
     {
         bool found = false;
-        string context = "transmit_protocol";
-        string protocol = BESContextManager::TheManager()->get_context(context, found);
+        string protocol = BESContextManager::TheManager()->get_context("transmit_protocol", found);
         bool print_mime = false;
-        if (protocol == "HTTP") {
+        if (found && protocol == "HTTP") {
             print_mime = true;
         }
         return print_mime;

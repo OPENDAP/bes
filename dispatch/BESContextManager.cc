@@ -58,16 +58,15 @@ BESContextManager::set_context( const string &name, const string &value )
 string
 BESContextManager::get_context( const string &name, bool &found )
 {
-    string ret ;
-    found = false ;
-    BESContextManager::Context_iter i ;
-    i = _context_list.find( name ) ;
-    if( i != _context_list.end() )
-    {
-	ret = (*i).second;
-	found = true ;
+    string ret;
+    found = false;
+    BESContextManager::Context_iter i;
+    i = _context_list.find(name);
+    if (i != _context_list.end()) {
+        ret = (*i).second;
+        found = true;
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief Adds all context and their values to the given informational

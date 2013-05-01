@@ -33,9 +33,11 @@
 #ifndef BESResponseObject_h_
 #define BESResponseObject_h_ 1
 
+#if 0
 #include <string>
 
 using std::string ;
+#endif
 
 #include "BESObj.h"
 
@@ -49,10 +51,10 @@ using std::string ;
 class BESResponseObject : public BESObj
 {
 public:
-    				BESResponseObject() {} ;
-    virtual			~BESResponseObject() {} ;
+    BESResponseObject() {} ;
+    virtual ~BESResponseObject() {} ;
 
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual void dump( ostream &strm ) const = 0 ;
 };
 
 #endif //BESResponseObject_h_
