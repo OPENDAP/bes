@@ -11,8 +11,9 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 if LIBDAP
-LDADD += ../../dap/libbesdap_module.la
+LDADD += ../../dap/libdap_module.la
 endif
+
 
 # These are not used by automake but are often useful for certain types of
 # debugging. 
@@ -31,7 +32,7 @@ TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT
+		urlT BESCatalogListUnitTest
 
 # encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 
@@ -138,6 +139,7 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
+
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -152,3 +154,6 @@ endif
 BESCache3Test_SOURCES = BESCache3Test.cc
 BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 BESCache3Test_LDFLAGS = -lcrypto
+
+# Added Unit test for singleton class BESCatalogList.ndp 5/6/2013
+BESCatalogListUnitTest_SOURCES = BESCatalogListUnitTest.cc

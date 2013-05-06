@@ -73,12 +73,24 @@ private:
     map<string, BESCatalog *>	_catalogs ;
     string			_default_catalog ;
     static BESCatalogList *	_instance ;
+
+    static void initialize_instance();
+    static void delete_instance();
+
+    virtual ~BESCatalogList();
+
+    friend class BESCatalogListUnitTest;
+
+protected:
+    BESCatalogList();
+
+
 public:
     typedef map<string,BESCatalog *>::iterator catalog_iter ;
     typedef map<string,BESCatalog *>::const_iterator catalog_citer ;
 
-    				BESCatalogList() ;
-    virtual			~BESCatalogList() ;
+    static BESCatalogList * TheCatalogList() ;
+
 
     virtual int			num_catalogs() { return _catalogs.size() ; }
     virtual string		default_catalog() { return _default_catalog ; }
@@ -96,7 +108,6 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESCatalogList *	TheCatalogList() ;
 } ;
 
 #endif // BESCatalogList_h_

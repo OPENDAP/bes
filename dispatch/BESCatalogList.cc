@@ -42,7 +42,43 @@ using std::ostringstream ;
 #include "TheBESKeys.h"
 #include "BESNames.h"
 
+
+
+static pthread_once_t instance_control = PTHREAD_ONCE_INIT;
+
+
+
 BESCatalogList *BESCatalogList::_instance = 0 ;
+
+/** @brief returns the singleton BESCatalogList instance. The pthreads library insures that only one instance
+ * can be made in a process lifetime.
+ */
+BESCatalogList *
+BESCatalogList::TheCatalogList()
+{
+    pthread_once(&instance_control, initialize_instance);
+    return _instance;
+}
+
+/**
+ * private static that only get's called once by dint of...    EXPLAIN
+ */
+void BESCatalogList::initialize_instance() {
+    if (_instance == 0) {
+        _instance = new BESCatalogList;
+        atexit(delete_instance);
+    }
+}
+
+/**
+ * Private static function can only be called by friends andf pThreads code.
+ */
+void BESCatalogList::delete_instance() {
+    delete _instance;
+    _instance = 0;
+}
+
+
 
 /** @brief construct a catalog list
  *
@@ -66,6 +102,9 @@ BESCatalogList::BESCatalogList()
     }
 }
 
+
+
+
 /** @brief list destructor deletes all registered catalogs
  *
  * @see BESCatalog
@@ -80,6 +119,10 @@ BESCatalogList::~BESCatalogList()
 	if( catalog ) delete catalog ;
     }
 }
+
+
+
+
 
 /** @brief adds the speciifed catalog to the list
  *
@@ -226,17 +269,6 @@ BESCatalogList::show_catalogs( BESDataHandlerInterface &dhi,
     return myentry ;
 }
 
-/** @brief returns the singleton BESCatalogList instance
- */
-BESCatalogList *
-BESCatalogList::TheCatalogList()
-{
-    if( _instance == 0 )
-    {
-	_instance = new BESCatalogList ;
-    }
-    return _instance ;
-}
 
 /** @brief dumps information about this object
  *
