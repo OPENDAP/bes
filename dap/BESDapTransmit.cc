@@ -227,6 +227,9 @@ private:
     }
 };
 
+// FIXME
+// This is going to become send_data_dmr once we get that written.
+// Now it is a noop. 5/6/13
 class SendDataDDX: public Sender {
 private:
     virtual string get_request_type() const
@@ -249,8 +252,7 @@ private:
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-        rb.send_data_ddx(dhi.get_output_stream(), *dds, ce, dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
-                print_mime);
+        rb.send_data_ddx(dhi.get_output_stream(), *dds, ce, dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY], print_mime);
     }
 };
 
