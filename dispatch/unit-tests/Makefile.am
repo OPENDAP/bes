@@ -5,13 +5,13 @@ AUTOMAKE_OPTIONS = foreign
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch
-LDADD = ../libbes_dispatch.la $(XML2_LIBS)
+LDADD = $(top_srcdir)/dispatch/libbes_dispatch.la $(XML2_LIBS)
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 if LIBDAP
-LDADD += ../../dap/libdap_module.la
+LDADD += $(top_srcdir)/dap/libdap_module.la
 endif
 
 
@@ -156,4 +156,5 @@ BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 BESCache3Test_LDFLAGS = -lcrypto
 
 # Added Unit test for singleton class BESCatalogList.ndp 5/6/2013
-BESCatalogListUnitTest_SOURCES = BESCatalogListUnitTest.cc
+BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
+BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated

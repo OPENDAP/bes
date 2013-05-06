@@ -101,25 +101,25 @@ public:
     void bclut_test(){
 
         try {
-        d_debug = true;
-        DBG(cerr << endl);
-        DBG(cerr << "bclut_test() - BEGIN." << endl);
+            d_debug = true;
+            DBG(cerr << endl);
+            DBG(cerr << "bclut_test() - BEGIN." << endl);
 
-        DBG(cerr << "*****************************************" << endl);
-        DBG(cerr << "set the default catalog and test" << endl);
-        //TheBESKeys::TheKeys()->set_key( "BES.Catalog.Default=default" ) ;
-        string defcat = BESCatalogList::TheCatalogList()->default_catalog() ;
-        DBG(cerr << "Default catalog is '" << defcat << "'" << endl);
-        CPPUNIT_ASSERT( defcat == "catalog" ) ;
-
-
-        int numCat = BESCatalogList::TheCatalogList()->num_catalogs();
-        DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
-        CPPUNIT_ASSERT( numCat == 0);
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "set the default catalog and test" << endl);
+            //TheBESKeys::TheKeys()->set_key( "BES.Catalog.Default=default" ) ;
+            string defcat = BESCatalogList::TheCatalogList()->default_catalog() ;
+            DBG(cerr << "Default catalog is '" << defcat << "'" << endl);
+            CPPUNIT_ASSERT( defcat == "catalog" ) ;
 
 
-        DBG(cerr << "bclut_test() - END." << endl);
-        CPPUNIT_ASSERT(true);
+            int numCat = BESCatalogList::TheCatalogList()->num_catalogs();
+            DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
+            CPPUNIT_ASSERT( numCat == 0);
+
+
+            DBG(cerr << "bclut_test() - END." << endl);
+            CPPUNIT_ASSERT(true);
         }
         catch( BESError &e )
         {
