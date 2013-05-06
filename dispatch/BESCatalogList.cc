@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <stdlib.h>
 #include <sstream>
 
 using std::ostringstream ;
@@ -44,7 +45,6 @@ using std::ostringstream ;
 
 
 
-static pthread_once_t instance_control = PTHREAD_ONCE_INIT;
 
 
 
@@ -56,7 +56,7 @@ BESCatalogList *BESCatalogList::_instance = 0 ;
 BESCatalogList *
 BESCatalogList::TheCatalogList()
 {
-    pthread_once(&instance_control, initialize_instance);
+    initialize_instance();
     return _instance;
 }
 

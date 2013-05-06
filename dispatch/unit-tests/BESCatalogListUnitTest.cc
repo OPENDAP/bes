@@ -33,7 +33,7 @@
 
 #include "GetOpt.h"
 
-
+#include "TheBESKeys.h"
 #include "BESCatalogList.h"
 
 
@@ -99,19 +99,33 @@ public:
 
 
     void bclut_test(){
+
+        try {
         d_debug = true;
         DBG(cerr << endl);
         DBG(cerr << "bclut_test() - BEGIN." << endl);
 
+        DBG(cerr << "*****************************************" << endl);
+        DBG(cerr << "set the default catalog and test" << endl);
+        //TheBESKeys::TheKeys()->set_key( "BES.Catalog.Default=default" ) ;
+        string defcat = BESCatalogList::TheCatalogList()->default_catalog() ;
+        DBG(cerr << "Default catalog is '" << defcat << "'" << endl);
+        CPPUNIT_ASSERT( defcat == "catalog" ) ;
 
-        BESCatalogList *clist = BESCatalogList::TheCatalogList();
-        DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs():" << clist->num_catalogs() << endl);
 
-       cerr << "bclut_test() - TheCatalogList()->num_catalogs():" << clist->num_catalogs() << endl;
+        int numCat = BESCatalogList::TheCatalogList()->num_catalogs();
+        DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
+        CPPUNIT_ASSERT( numCat == 0);
 
 
-       DBG(cerr << "bclut_test() - END." << endl);
-       CPPUNIT_ASSERT(false);
+        DBG(cerr << "bclut_test() - END." << endl);
+        CPPUNIT_ASSERT(true);
+        }
+        catch( BESError &e )
+        {
+            cerr << "bclut_test() - ERROR: " << e.get_message() << endl ;
+            CPPUNIT_ASSERT(false);
+        }
 
 
 
@@ -164,16 +178,16 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    cerr << "argc=" << argc << endl;
+    //cerr << "argc=" << argc << endl;
 
-    int start = 1;
-    if(argc>0) {
+    int start = 0;
+    if(argc>1) {
         string first(argv[1]);
         cerr << "first=" << first << endl;
 
         if(first.compare("-d")==0){
-            d_debug = 1;  // debug is a static global
-            start = 2;
+            d_debug = true;  // debug is a static global
+            start = 1;
             DBG(cerr << "Debug Enabled" << endl);
         }
     }
@@ -186,10 +200,11 @@ int main(int argc, char*argv[]) {
         wasSuccessful = runner.run("");
     }
     else {
+        DBG(cerr << "Running Selected Tests" << endl);
 
         while (start < argc) {
             test = string("BESCatalogListUnitTest::") + argv[start++];
-            DBG(cerr << "Running Test: " << test << endl);
+            DBG(cerr << " Running Test: " << test << endl);
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
