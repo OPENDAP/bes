@@ -10,9 +10,6 @@ if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
-if LIBDAP
-LDADD += $(top_srcdir)/dap/libdap_module.la
-endif
 
 
 # These are not used by automake but are often useful for certain types of
