@@ -31,42 +31,31 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-
 #include "TheBESKeys.h"
 #include "BESCatalogList.h"
-
 
 static bool d_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (d_debug) (x); } while(false);
 
-
+using namespace std;
 
 class BESCatalogListUnitTest: public CppUnit::TestFixture {
 
 public:
 
     // Called once before everything gets tested
-    BESCatalogListUnitTest() {
-        //    DBG(cerr << " BindTest - Constructor" << endl);
-
-    }
+    BESCatalogListUnitTest() {}
 
     // Called at the end of the test
-    ~BESCatalogListUnitTest() {
-       //    DBG(cerr << " BindTest - Destructor" << endl);
-    }
+    ~BESCatalogListUnitTest() {}
 
     // Called before each test
-    void setup() {
-        //    DBG(cerr << " BindTest - setup()" << endl);
-    }
+    void setup() {}
 
     // Called after each test
-    void tearDown() {
-        //    DBG(cerr << " tearDown()" << endl);
-    }
+    void tearDown() {}
 
     CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
 
