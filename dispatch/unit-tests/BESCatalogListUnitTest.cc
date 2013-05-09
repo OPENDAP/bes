@@ -25,7 +25,7 @@
 //#include <cstdio>
 
 #include <pthread.h>
-#include <vector.h>
+#include <vector>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
