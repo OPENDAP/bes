@@ -31,7 +31,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "GetOpt.h"
 
 #include "TheBESKeys.h"
 #include "BESCatalogList.h"
@@ -135,44 +134,6 @@ public:
             cerr << "bclut_test() - ERROR: " << e.get_message() << endl ;
             CPPUNIT_ASSERT(false);
         }
-
-
-
-#if 0
-        SFLUT *ssf = new SFLUT();
-        ssf->setName("Server_Function_List_Unit_Test");
-
-        vector<string> names;
-        libdap::ServerFunctionsList::TheList()->getFunctionNames(&names);
-        printFunctionNames(&names);
-
-        CPPUNIT_ASSERT(names.size()==0);
-
-
-        DBG(cerr << "ServerFunctionsListUnitTest::sflut_test() - Adding function(): " << ssf->getName() << endl);
-        libdap::ServerFunctionsList::TheList()->add_function(ssf);
-
-        names.clear();
-        libdap::ServerFunctionsList::TheList()->getFunctionNames(&names);
-        printFunctionNames(&names);
-        CPPUNIT_ASSERT(names.size()==1);
-
-
-
-        DBG(cerr << "ServerFunctionsListUnitTest::sflut_test() - Deleting the List." << endl);
-        libdap::ServerFunctionsList::delete_instance();
-
-        // This is needed because we used pthread_once to ensure that
-        // initialize_instance() is called at most once. We manually call
-        // the delete method, so the object must be remade. This would never
-        // be done by non-test code. jhrg 5/2/13
-        libdap::ServerFunctionsList::initialize_instance();
-
-        names.clear();
-        libdap::ServerFunctionsList::TheList()->getFunctionNames(&names);
-        printFunctionNames(&names);
-        CPPUNIT_ASSERT(names.size()==0);
-#endif
 
     }
 
