@@ -46,16 +46,11 @@ BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 
 bool HDFEOS5CFSpecialCVArray::read(){
 
-    int* offset = NULL;
-    int* count = NULL ;
-    int* step = NULL;
-    int nelms;
 
-#if 0
-cerr<<"coming to read function"<<endl;
-cerr<<"file name " <<filename <<endl;
-cerr <<"var name "<<varname <<endl;
-#endif
+    vector<int> offset;
+    vector<int> count;
+    vector<int>step;
+    int nelms = 0;
 
     if (rank < 0) 
         throw InternalErr (__FILE__, __LINE__,
@@ -64,19 +59,11 @@ cerr <<"var name "<<varname <<endl;
     else if (rank == 0) 
         nelms = 1;
     else {
-        try {
-            offset = new int[rank];
-            count = new int[rank];
-            step = new int[rank];
-        }
+        offset.resize(rank);
+        count.resize(rank);
+        step.resize(rank);
 
-        catch (...) {
-            HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
-            throw InternalErr (__FILE__, __LINE__,
-                              "Cannot allocate the memory for offset,count and setp.");
-        }
-
-        nelms = format_constraint (offset, step, count);
+        nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
     }
 
@@ -84,7 +71,6 @@ cerr <<"var name "<<varname <<endl;
 
     if ((file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         ostringstream eherr;
         eherr << "HDF5 File " << filename 
               << " cannot be opened. "<<endl;
@@ -94,54 +80,41 @@ cerr <<"var name "<<varname <<endl;
     string cv_name = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if ("" == cv_name) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
 
     string group_name = varname.substr(0,varname.size()-cv_name.size());
-#if 0
-cerr<<"cv_name "<<cv_name <<endl;
-cerr<<"group_name "<<group_name <<endl;
-#endif
     
     size_t cv_name_sep_pos = cv_name.find_first_of('_',0);  
 
     if (string::npos == cv_name_sep_pos) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
     string cv_attr_name = cv_name.substr(0,cv_name_sep_pos);
-#if 0
-cerr<<"attr_name "<<cv_attr_name <<endl;
-#endif
 
     htri_t swath_link_exist = H5Lexists(file_id,group_name.c_str(),H5P_DEFAULT);
 
     if (swath_link_exist <= 0) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "The TES swath link doesn't exist");
     }
     
     htri_t swath_exist = H5Oexists_by_name(file_id,group_name.c_str(),H5P_DEFAULT); 
     if (swath_exist <= 0) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "The TES swath doesn't exist");
     }
 
     htri_t cv_attr_exist = H5Aexists_by_name(file_id,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
     if (cv_attr_exist <= 0) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "The TES swath CV attribute doesn't exist");
     }
 
     hid_t cv_attr_id = H5Aopen_by_name(file_id,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
     if (cv_attr_id <0) {
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain the TES CV attribute id");
     }
 
@@ -151,7 +124,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         msg += cv_attr_name;
         H5Aclose(cv_attr_id);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -162,7 +134,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -174,7 +145,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -185,7 +155,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -196,7 +165,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -206,7 +174,6 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         msg += cv_attr_name;
         H5Aclose(cv_attr_id);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -231,15 +198,9 @@ cerr<<"attr_name "<<cv_attr_name <<endl;
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         H5Fclose(file_id);
-        HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
  
-#if 0
-    float *orig_val_float =(float*)orig_val; 
-for (int i =0; i<attr_num_elm; i++)
-cerr<<"orig_val "<<orig_val_float[i] <<endl;
-#endif
     
     // Panoply cannot accept the same value for the coordinate variable.
     // So I have to create a unique value for the added value. 
@@ -259,21 +220,11 @@ cerr<<"orig_val "<<orig_val_float[i] <<endl;
     for (int i = 1; i < total_num_elm; i++)
         total_val[i] = orig_val[i-1];
 
-#if 0
-for (int i = 1; i < total_num_elm; i++)
-cerr<<"total_val "<< total_val[i] <<endl;
-#endif
- 
 	// FIXME offset and/or step can be null
 	for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];
-#if 0
-for (int i = 0; i <nelms; i++)
-cerr <<"val "<< val[i] <<endl;
-#endif
 
     set_value((dods_float32*)&val[0], nelms);
-    HDF5CFUtil::ClearMem(offset,count,step,NULL,NULL,NULL);
     H5Tclose(attr_type);
     H5Tclose(attr_mem_type);
     H5Aclose(cv_attr_id);

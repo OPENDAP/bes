@@ -1,4 +1,10 @@
-2013-01-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2013-05-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* HDF5CFArray.cc: cleaned up code.
+	* HDF5GMCFMissLLArray.cc: cleaned up code.
+	* HDF5GMSPCFArray.cc: cleaned up code.
+	* HDFEOS5CFSpecialCVArray.cc: cleaned up code.
+
+2013-01-22  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* NEWS
 	* configure.ac
 	* hdf5_handler.spec
@@ -8,19 +14,19 @@
 
 2013-01-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-	* data/swath_1_2d_xyzz.h5: file name is changed from 
+	* data/swath_1_2d_xyzz.h5: file name is changed from
 	swath_1_3d_xyzz.h5.testsuite is updated accordingly.
-	
+
 
 2013-01-03  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* INSTALL:added information about optional NASA data testing.
 	* test.nasa.sh:added for optional testing with real NASA data files.
-	* bes-testsuite/h5.nasa/:added for optional testing with real NASA 
+	* bes-testsuite/h5.nasa/:added for optional testing with real NASA
 	data files.
-	* bes-testsuite/hdf5_handlerTest.nasa.at:added for optional testing 
+	* bes-testsuite/hdf5_handlerTest.nasa.at:added for optional testing
 	with real NASA data files.
 
-2012-12-29  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>	
+2012-12-29  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* h5cfdap.cc: made DDS name be the file name.
 	* HDF5GMCF.cc: fixed dimension scale HDF5 dataset handling when CLASS
 	attribute is not DIMENSION_SCALE. This is fix for ICESat/GLAS product.

@@ -50,38 +50,34 @@ bool HDF5GMCFMissLLArray::read()
 {
     // For Aquarius level 3, we need to calculate the latitude and longitude
     if (product_type == Aqu_L3) {
+
         // Read File attributes
         // Latitude Step, SW Point Latitude, Number of Lines
         // Longitude Step, SW Point Longitude, Number of Columns
         
-        int* offset = NULL;
-        int* count = NULL ;
-        int* step = NULL;
-        hsize_t* hoffset = NULL;
-        hsize_t* hcount = NULL;
-        hsize_t* hstep = NULL;
-        int nelms = 0;
 
         if (1 != rank ) 
             throw InternalErr (__FILE__, __LINE__,
                           "The number of dimension for Aquarius Level 3 map data must be 1");
 
-        try {
-            offset = new int[rank];
-            count = new int[rank];
-            step = new int[rank];
-            hoffset = new hsize_t[rank];
-            hcount = new hsize_t[rank];
-            hstep = new hsize_t[rank];
-        }
+        // Here we still use vector just in case we need to tackle "rank>1" in the future.
+        // Also we would like to keep it consistent with other similar handlings.
 
-        catch (...) {
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-            throw InternalErr (__FILE__, __LINE__,
-                          "Cannot allocate the memory for offset,count and setp.");
-        }
+        vector<int>offset;
+        vector<int>count;
+        vector<int>step;
+        vector<hsize_t>hoffset;
+        vector<hsize_t>hcount;
+        vector<hsize_t>hstep;
 
-        nelms = format_constraint (offset, step, count);
+        offset.resize(rank);
+        count.resize(rank);
+        step.resize(rank);
+        hoffset.resize(rank);
+        hcount.resize(rank);
+        hstep.resize(rank);
+        
+        int nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
         for (int i = 0; i <rank; i++) {
             hoffset[i] = (hsize_t) offset[i];
@@ -92,7 +88,6 @@ bool HDF5GMCFMissLLArray::read()
         hid_t fileid = -1;
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
             ostringstream eherr;
             eherr << "HDF5 File " << filename
               << " cannot be opened. "<<endl;
@@ -102,7 +97,6 @@ bool HDF5GMCFMissLLArray::read()
         hid_t rootid = -1;
         if ((rootid = H5Gopen(fileid,"/",H5P_DEFAULT)) < 0) {
             H5Fclose(fileid);
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
             ostringstream eherr;
             eherr << "HDF5 dataset " << varname
                   << " cannot be opened. "<<endl;
@@ -128,7 +122,6 @@ bool HDF5GMCFMissLLArray::read()
             if (Num_lines <= 0) {
                 H5Gclose(rootid);
                 H5Fclose(fileid);
-                HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
                 throw InternalErr(__FILE__,__LINE__,"The number of line must be >0");
             }
 
@@ -152,7 +145,6 @@ bool HDF5GMCFMissLLArray::read()
             if (Num_cols <= 0) {
                 H5Gclose(rootid);
                 H5Fclose(fileid);
-                HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
                 throw InternalErr(__FILE__,__LINE__,"The number of line must be >0");
             }
 
@@ -162,6 +154,10 @@ bool HDF5GMCFMissLLArray::read()
             LL_total_num = Num_cols;
         }
 
+        vector<float>val;
+        val.resize(nelms);
+
+#if 0
         float *val = NULL;
          
         try {
@@ -170,32 +166,24 @@ bool HDF5GMCFMissLLArray::read()
         catch (...) {
             H5Gclose(rootid);
             H5Fclose(fileid);
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
             throw InternalErr (__FILE__, __LINE__,
                           "Cannot allocate the memory for total_val and val for Latitude or Longitude");
         }
+#endif
 
         if (nelms > LL_total_num) {
             H5Gclose(rootid);
             H5Fclose(fileid);
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-            delete[] val;
             throw InternalErr (__FILE__, __LINE__,
                           "The number of elements exceeds the total number of  Latitude or Longitude");
         }
 
         for (int i = 0; i < nelms; ++i)
             val[i] = LL_first_point + (offset[0] + i*step[0])*LL_step;
-#if 0
-for (int i = 0; i < nelms; ++i)
- cerr<<"lat/lon index= " << i << "and the value is " << val[i] <<endl;
-#endif
 
-        set_value ((dods_float32 *) val, nelms);
-        delete[] val;
+        set_value ((dods_float32 *) &val[0], nelms);
         H5Gclose(rootid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
     }
     return false;
 }

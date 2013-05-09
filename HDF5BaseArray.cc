@@ -118,48 +118,32 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
     if (rank != 1) 
         throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
     
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+    offset.resize(rank);
+    count.resize(rank);
+    step.resize(rank);
 
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-    int *val = 0;
 
-    int nelms;
+    int nelms = format_constraint(&offset[0], &step[0], &count[0]);
 
-    try {
+    // Since we always assign the the missing Z dimension as 32-bit
+    // integer, so no need to check the type. The missing Z-dim is always
+    // 1-D with natural number 1,2,3,....
+    vector<int>val;
+    val.resize(nelms);
 
-        // format_constraint throws on error;
-        nelms = format_constraint(offset, step, count);
-
-        // Since we always assign the the missing Z dimension as 32-bit
-        // integer, so no need to check the type. The missing Z-dim is always
-        // 1-D with natural number 1,2,3,....
-        val = new int[nelms];
-
-        if (nelms == tnumelm) {
-            for (int i = 0; i < nelms; i++)
-                val[i] = i;
-            set_value((dods_int32 *) val, nelms);
-        }
-        else {
-            for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
-            set_value((dods_int32 *) val, nelms);
-        }
+    if (nelms == tnumelm) {
+        for (int i = 0; i < nelms; i++)
+            val[i] = i;
+        set_value((dods_int32 *) &val[0], nelms);
     }
-    catch (...) {
-        delete[] offset;
-        delete[] count;
-        delete[] step;
-        delete[] val;
-        throw;
+    else {
+        for (int i = 0; i < count[0]; i++)
+            val[i] = offset[0] + step[0] * i;
+        set_value((dods_int32 *) &val[0], nelms);
     }
-
-    delete[] offset;
-    delete[] count;
-    delete[] step;
-    delete[] val;
-
 }
 
 

@@ -48,24 +48,19 @@ BaseType *HDF5GMSPCFArray::ptr_duplicate()
 bool HDF5GMSPCFArray::read()
 {
 
-    int* offset = NULL;
-    int* count = NULL ;
-    int* step = NULL;
-    hsize_t* hoffset = NULL;
-    hsize_t* hcount = NULL;
-    hsize_t* hstep = NULL;
+    vector<int>offset;
+    vector<int>count;
+    vector<int>step;
+    vector<hsize_t>hoffset;
+    vector<hsize_t>hcount;
+    vector<hsize_t>hstep;
+
     int nelms = 0;
 
     if((otype != H5INT64 && otype !=H5UINT64) 
        || (dtype !=H5INT32)) 
         throw InternalErr (__FILE__, __LINE__,
                           "The datatype of the special product is not right.");
-
-#if 0
-cerr<<"coming to read function"<<endl;
-cerr<<"file name " <<filename <<endl;
-cerr <<"var name "<<varname <<endl;
-#endif
 
     if (rank < 0) 
         throw InternalErr (__FILE__, __LINE__,
@@ -74,22 +69,16 @@ cerr <<"var name "<<varname <<endl;
     else if (rank == 0) 
         nelms = 1;
     else {
-        try {
-            offset = new int[rank];
-            count = new int[rank];
-            step = new int[rank];
-            hoffset = new hsize_t[rank];
-            hcount = new hsize_t[rank];
-            hstep = new hsize_t[rank];
-        }
 
-        catch (...) {
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-            throw InternalErr (__FILE__, __LINE__,
-                          "Cannot allocate the memory for offset,count and setp.");
-        }
+        offset.resize(rank);
+        count.resize(rank);
+        step.resize(rank);
+        hoffset.resize(rank);
+        hcount.resize(rank);
+        hstep.resize(rank);
+ 
 
-        nelms = format_constraint (offset, step, count);
+        nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
         for (int i = 0; i <rank; i++) {
             hoffset[i] = (hsize_t) offset[i];
@@ -107,7 +96,6 @@ cerr <<"var name "<<varname <<endl;
 
     if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "HDF5 File " << filename 
               << " cannot be opened. "<<endl;
@@ -117,7 +105,6 @@ cerr <<"var name "<<varname <<endl;
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
 
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "HDF5 dataset " << varname
               << " cannot be opened. "<<endl;
@@ -128,7 +115,6 @@ cerr <<"var name "<<varname <<endl;
 
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "Space id of the HDF5 dataset " << varname
               << " cannot be obtained. "<<endl;
@@ -138,25 +124,23 @@ cerr <<"var name "<<varname <<endl;
 
     if (rank > 0) {
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
-                           hoffset, hstep,
-                           hcount, NULL) < 0) {
+                           &hoffset[0], &hstep[0],
+                           &hcount[0], NULL) < 0) {
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
             H5Fclose(fileid);
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
             ostringstream eherr;
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
                   << " fails. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
-        mspace = H5Screate_simple(rank, hcount,NULL);
+        mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],NULL);
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid);
             H5Fclose(fileid);
-            HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
             ostringstream eherr;
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
                   << " fails. "<<endl;
@@ -172,7 +156,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "Obtaining the datatype of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -187,7 +170,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "Obtaining the memory type of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -205,7 +187,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "Obtaining the type class of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -221,7 +202,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "The type class of the HDF5 dataset " << varname
               << " is not H5T_INTEGER. "<<endl;
@@ -237,7 +217,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "The type size of the HDF5 dataset " << varname
               << " is not right. "<<endl;
@@ -266,7 +245,6 @@ cerr <<"var name "<<varname <<endl;
         H5Sclose(dspace);
         H5Dclose(dsetid);
         H5Fclose(fileid);
-        HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
         ostringstream eherr;
         eherr << "Cannot read the HDF5 dataset " << varname
               <<" with type of 64-bit integer"<<endl;
@@ -303,8 +281,6 @@ cerr <<"var name "<<varname <<endl;
     H5Sclose(dspace);
     H5Dclose(dsetid);
     H5Fclose(fileid);
-    HDF5CFUtil::ClearMem(offset,count,step,hoffset,hcount,hstep);
-    
     return false;
     
 }
