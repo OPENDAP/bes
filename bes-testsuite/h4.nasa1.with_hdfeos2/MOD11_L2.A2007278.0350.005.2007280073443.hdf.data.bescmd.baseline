@@ -1,5 +1,0 @@
-The data:
-Float32 Emis_32[Along_swath_lines_1km = 3][Cross_swath_pixels_1km = 3] = {{0.978, 0, 0.986},{0.984, 0, 0},{0, 0, 0}};
-Float32 Latitude[Along_swath_lines_1km = 3][Cross_swath_pixels_1km = 3] = {{34.8453, 33.6331, 31.3154},{25.8494, 24.6228, 22.5944},{16.853, 15.5846, 13.767}};
-Float32 Longitude[Along_swath_lines_1km = 3][Cross_swath_pixels_1km = 3] = {{92.8497, 105.325, 117.239},{91.5444, 103.003, 114.021},{90.1211, 100.908, 111.38}};
-

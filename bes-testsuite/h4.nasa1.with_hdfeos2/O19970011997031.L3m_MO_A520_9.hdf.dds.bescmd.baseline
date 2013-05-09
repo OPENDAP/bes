@@ -1,5 +1,0 @@
-Dataset {
-    Byte l3m_data[Number_of_Lines = 2160][Number_of_Columns = 4320];
-    Float32 Number_of_Lines[Number_of_Lines = 2160];
-    Float32 Number_of_Columns[Number_of_Columns = 4320];
-} O19970011997031.L3m_MO_A520_9.hdf;

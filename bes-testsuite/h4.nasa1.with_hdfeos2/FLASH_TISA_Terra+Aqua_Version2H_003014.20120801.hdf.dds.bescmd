@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="FLASH_TISA_Terra+Aqua_Version2H_003014.20120801.hdf" space="catalog">/data/FLASH_TISA_Terra+Aqua_Version2H_003014.20120801.hdf</setContainer>
-    <define name="d">
-	<container name="FLASH_TISA_Terra+Aqua_Version2H_003014.20120801.hdf" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

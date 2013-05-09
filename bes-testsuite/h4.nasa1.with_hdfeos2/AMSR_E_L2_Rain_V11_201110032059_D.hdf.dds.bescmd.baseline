@@ -1,9 +1,0 @@
-Dataset {
-    Int16 Rain_Status[nscan = 1994][npix = 392];
-    Int16 Rain_Rate[nscan = 1994][npix = 392];
-    Int32 Rain_Type[nscan = 1994][npix = 392];
-    Int32 Surface_Type[nscan = 1994][npix = 392];
-    Float64 Time[nscan = 1994];
-    Float32 Latitude[nscan = 1994][npix = 392];
-    Float32 Longitude[nscan = 1994][npix = 392];
-} AMSR_E_L2_Rain_V11_201110032059_D.hdf;

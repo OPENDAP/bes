@@ -1,5 +1,0 @@
-The data:
-Float32 Navigation_Data_longitude[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{49.8171, 44.1274},{14.1406, 5.97914}};
-Float32 Navigation_Data_latitude[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{-70.0162, -74.5489},{-59.3236, -62.0274}};
-Int16 Geophysical_Data_sst[Number_of_Scan_Lines = 2][Pixels_per_Scan_Line = 2] = {{-32767, -32767},{-1773, -4272}};
-

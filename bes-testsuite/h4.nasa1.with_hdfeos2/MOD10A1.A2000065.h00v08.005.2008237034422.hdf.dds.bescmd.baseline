@@ -1,8 +1,0 @@
-Dataset {
-    Byte Snow_Cover_Daily_Tile[YDim = 2400][XDim = 2400];
-    Byte Snow_Spatial_QA[YDim = 2400][XDim = 2400];
-    Byte Snow_Albedo_Daily_Tile[YDim = 2400][XDim = 2400];
-    Byte Fractional_Snow_Cover[YDim = 2400][XDim = 2400];
-    Float64 Latitude[YDim = 2400][XDim = 2400];
-    Float64 Longitude[YDim = 2400][XDim = 2400];
-} MOD10A1.A2000065.h00v08.005.2008237034422.hdf;

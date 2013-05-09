@@ -1,5 +1,0 @@
-The data:
-Float32 Latitude[Latitude = 2] = {-89.5, 89.5};
-Float32 Longitude[Longitude = 2] = {-179.5, 179.5};
-Float32 Retrieval_Averaging_Kernel_Matrix_Day[Latitude = 5][Longitude = 1][Pressure_Grid2 = 1][Pressure_Grid2 = 1] = {{{{0.0126911}}},{{{0.00553202}}},{{{0.00344597}}},{{{0.00502663}}},{{{0.00849314}}}};
-

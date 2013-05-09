@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf" space="catalog">/data/MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf</setContainer>
-    <define name="d">
-	<container name="MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf" />
-    </define>
-    <get type="ddx" definition="d" />
-</request>

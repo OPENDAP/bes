@@ -1,8 +1,0 @@
-Dataset {
-    Float32 Black_Sky_Albedo[Latitude = 3600][Longitude = 7200][Num_Albedo_Bands = 10];
-    Float32 White_Sky_Albedo[Latitude = 3600][Longitude = 7200][Num_Albedo_Bands = 10];
-    UInt32 Albedo_Quality[Latitude = 3600][Longitude = 7200];
-    Int32 Num_Albedo_Bands[Num_Albedo_Bands = 10];
-    Float64 Latitude[Latitude = 3600];
-    Float64 Longitude[Longitude = 7200];
-} MCD43C1.A2006353.004.2007012185705.hdf;

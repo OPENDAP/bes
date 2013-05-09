@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" space="catalog">/data/MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf</setContainer>
-    <define name="d">
-	<container name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" />
-    </define>
-    <get type="ddx" definition="d" />
-</request>

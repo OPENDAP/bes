@@ -1,5 +1,0 @@
-Dataset {
-    UInt16 bsst[lat = 4096][lon = 8192];
-    Float64 lat[lat = 4096];
-    Float64 lon[lon = 8192];
-} 2006001-2006005.s0454pfrt-bsst.hdf;

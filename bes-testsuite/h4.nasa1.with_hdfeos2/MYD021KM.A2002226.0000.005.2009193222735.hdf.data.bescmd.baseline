@@ -1,7 +1,0 @@
-The data:
-Float32 EV_1KM_RefSB[Band_1KM_RefSB = 1][_10_nscans = 1][Max_EV_frames = 1] = {{{65535}}};
-Byte EV_1KM_RefSB_Uncert_Indexes[Band_1KM_RefSB = 2][_10_nscans = 2][Max_EV_frames = 2] = {{{255, 255},{255, 255}},{{255, 255},{255, 255}}};
-Int16 Height[_10_nscans = 2][Max_EV_frames = 2] = {{809, 3},{613, 1084}};
-Float32 Latitude[_10_nscans = 2][Max_EV_frames = 2] = {{23.1415, 19.9164},{5.16393, 2.15728}};
-Float32 Longitude[_10_nscans = 2][Max_EV_frames = 2] = {{15.5466, 37.8014},{12.4016, 33.1457}};
-

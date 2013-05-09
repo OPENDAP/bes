@@ -1,5 +1,0 @@
-The data:
-Float32 l3m_data[Number_of_Lines = 2][Number_of_Columns = 2] = {{-32767, -32767},{-32767, -32767}};
-Float32 Number_of_Lines[Number_of_Lines = 2] = {89.9583, -89.9583};
-Float32 Number_of_Columns[Number_of_Columns = 2] = {-179.958, 179.958};
-

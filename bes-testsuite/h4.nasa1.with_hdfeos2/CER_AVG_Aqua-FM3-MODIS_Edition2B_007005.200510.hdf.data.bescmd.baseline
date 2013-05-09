@@ -1,6 +1,0 @@
-The data:
-Float32 Region_Number[_1_0_deg__regional_colat__zones = 2][_1_0_deg__regional_long__zones = 2] = {{1, 360},{64441, 64800}};
-Float32 Colatitude[_1_0_deg__regional_colat__zones = 3][_1_0_deg__regional_long__zones = 3] = {{90, 90, 90},{0.499985, 0.499985, 0.499985},{-88.4445, -88.4445, -88.4445}};
-Float32 Longitude[_1_0_deg__regional_colat__zones = 3][_1_0_deg__regional_long__zones = 3] = {{0, 0, 0},{-179.5, -0.5, 178.5},{-176, 0, 176}};
-Float32 SW_Surface_Flux___Down___Pristine_Sky___Corrected_1[Stats = 2][Monthly_Avg = 1][_1_0_deg__regional_colat__zones = 2][_1_0_deg__regional_long__zones = 2] = {{{{0, 0},{173.915, 173.915}}},{{{0, 0},{10.4836, 10.4836}}}};
-

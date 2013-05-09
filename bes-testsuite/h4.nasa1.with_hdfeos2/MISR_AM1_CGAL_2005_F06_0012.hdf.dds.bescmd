@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="MISR_AM1_CGAL_2005_F06_0012.hdf" space="catalog">/data/MISR_AM1_CGAL_2005_F06_0012.hdf</setContainer>
-    <define name="d">
-	<container name="MISR_AM1_CGAL_2005_F06_0012.hdf" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

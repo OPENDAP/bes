@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf" space="catalog">/data/CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf</setContainer>
-    <define name="d">
-	<container name="CER_ES4_Aqua-FM3_Edition1-CV_024032.200908.hdf" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

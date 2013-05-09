@@ -1,5 +1,0 @@
-The data:
-Float32 Cloud_Fraction[Cell_Along_Swath_5km = 2][Cell_Across_Swath_5km = 2] = {{127, 1},{127, 127}};
-Float32 Latitude[Cell_Along_Swath_5km = 2][Cell_Across_Swath_5km = 2] = {{66.98, 60.41},{84.39, 70.77}};
-Float32 Longitude[Cell_Along_Swath_5km = 2][Cell_Across_Swath_5km = 2] = {{-11.03, -57.13},{6.21, -94.71}};
-

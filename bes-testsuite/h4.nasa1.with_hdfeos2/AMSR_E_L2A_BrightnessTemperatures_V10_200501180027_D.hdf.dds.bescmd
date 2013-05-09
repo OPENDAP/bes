@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf" space="catalog">/data/AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf</setContainer>
-    <define name="d">
-	<container name="AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

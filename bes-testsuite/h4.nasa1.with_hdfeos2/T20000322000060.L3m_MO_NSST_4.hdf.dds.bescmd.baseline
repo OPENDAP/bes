@@ -1,6 +1,0 @@
-Dataset {
-    UInt16 l3m_data[Number_of_Lines = 4320][Number_of_Columns = 8640];
-    Byte l3m_qual[Number_of_Lines = 4320][Number_of_Columns = 8640];
-    Float32 Number_of_Lines[Number_of_Lines = 4320];
-    Float32 Number_of_Columns[Number_of_Columns = 8640];
-} T20000322000060.L3m_MO_NSST_4.hdf;

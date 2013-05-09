@@ -1,5 +1,0 @@
-The data:
-Float32 CMG_0_05_Deg_Monthly_NDVI[Latitude = 1][Longitude = 1] = {{0.1469}};
-Float64 Latitude[Latitude = 3] = {89.975, 0.0249999999999915, -89.925};
-Float64 Longitude[Longitude = 3] = {-179.975, -0.0249999999999773, 179.925};
-

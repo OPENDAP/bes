@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="MOD35_L2.A2012213.2355.005.2012214073640.hdf" space="catalog">/data/MOD35_L2.A2012213.2355.005.2012214073640.hdf</setContainer>
-    <define name="d">
-	<container name="MOD35_L2.A2012213.2355.005.2012214073640.hdf" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

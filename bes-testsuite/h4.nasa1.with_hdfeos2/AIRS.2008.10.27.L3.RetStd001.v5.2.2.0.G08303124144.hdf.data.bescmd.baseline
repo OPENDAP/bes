@@ -1,9 +1,0 @@
-The data:
-Int16 EmisIR_A_ct[EmisLvls = 2][Latitude = 3][Longitude = 3] = {{{0, 0, 0},{0, 0, 2},{0, 1, 0}},{{0, 0, 0},{0, 0, 2},{0, 1, 0}}};
-Float32 GPHeight_A[TempPrsLvls = 3][Latitude = 3][Longitude = 3] = {{{-9999, -9999, -9999},{-9999, 99, 89},{-9999, -9999, -9999}},{{-9999, -9999, -9999},{-9999, 16565, 16590},{-9999, 14587, -9999}},{{-9999, -9999, -9999},{-9999, 44699, 44734},{-9999, 44698, -9999}}};
-Int32 TempPrsLvls[TempPrsLvls = 3] = {0, 11, 22};
-Int32 CO_Layers_1[CO_Layers_1 = 3] = {0, 3, 6};
-Int16 EmisMW_MW_A_ct[MWEmisLvls = 3][Latitude = 3][Longitude = 3] = {{{0, 0, 0},{0, 2, 5},{0, 1, 0}},{{0, 0, 0},{0, 2, 5},{0, 1, 0}},{{0, 0, 0},{0, 2, 5},{0, 1, 0}}};
-Float32 Latitude[Latitude = 3] = {89.5, 0.5, -88.5};
-Float32 Longitude[Longitude = 3] = {-179.5, -0.5, 178.5};
-
