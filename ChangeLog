@@ -1,4 +1,6 @@
 2013-05-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* test.nasa.sh: added comments and removed hyrax version number.
+	* HDF5BaseArray.cc: cleaned up code.
 	* HDF5CFArray.cc: cleaned up code.
 	* HDF5GMCFMissLLArray.cc: cleaned up code.
 	* HDF5GMSPCFArray.cc: cleaned up code.
