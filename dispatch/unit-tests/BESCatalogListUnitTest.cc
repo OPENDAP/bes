@@ -154,7 +154,7 @@ int main(int argc, char*argv[]) {
 
     bool wasSuccessful = true;
     string test = "";
-    if (start <= 1 ) {
+    if (start==0 || (start==1 && d_debug) ) {
         DBG(cerr << "Running All Tests" << endl);
         wasSuccessful = runner.run("");
     }
