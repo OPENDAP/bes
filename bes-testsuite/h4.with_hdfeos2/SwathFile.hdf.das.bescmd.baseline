@@ -40,7 +40,6 @@ Attributes {
         String long_name "Spectra";
     }
     Count {
-        String units "level";
         String long_name "Count";
     }
     StructMetadata {

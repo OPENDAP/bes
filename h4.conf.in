@@ -112,3 +112,5 @@ H4.DisableVdataNameclashingCheck=true
 #  will not appear in the attribute for that Vdata although the key is true.
 #     The attribute container of the Vdata will always appear regardless of this key.
 H4.EnableVdataDescAttr=false
+
+H4.EnableCheckMODISGeoFile=false

@@ -273,7 +273,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                 //newval = new int32[nelms];
                 for (int counter = 0; counter < nelms; counter++)
-                    newval[counter] = (int32) (newval[counter]);
+                    newval[counter] = (int32) (val[counter]);
 
                 set_value ((dods_int32 *) &newval[0], nelms);
                 //delete[](int8 *) val;

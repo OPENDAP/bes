@@ -16,6 +16,7 @@
 #include <debug.h>
 #include "InternalErr.h"
 #include "BESDebug.h"
+#include <BESLog.h>
 #include "HDFEOS2ArraySwathDimMapField.h"
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -23,24 +24,32 @@
 bool
 HDFEOS2ArraySwathDimMapField::read ()
 {
+
+    vector<int>offset;
+    offset.resize(rank);
+
+    vector<int>count;
+    count.resize(rank);
+
+    vector<int>step;
+    step.resize(rank);
+
+#if 0
     int *offset = new int[rank];
     int *count = new int[rank];
     int *step = new int[rank];
-    int nelms;
+#endif
 
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
+    vector<int32>offset32;
+    offset32.resize(rank);
+
+    vector<int32>count32;
+    count32.resize(rank);
+
+    vector<int32>step32;
+    step32.resize(rank);
 
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
@@ -76,7 +85,6 @@ HDFEOS2ArraySwathDimMapField::read ()
         datasetname = swathname;
     }
     else {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
     }
 
@@ -87,7 +95,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
     if (sfid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -97,7 +104,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     swathid = attachfunc (sfid, const_cast < char *>(datasetname.c_str ()));
 
     if (swathid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (sfid);
         ostringstream eherr;
 
@@ -105,6 +111,50 @@ HDFEOS2ArraySwathDimMapField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    if(true == dimmaps.empty()) {
+//cerr<<"dimmaps is empty "<<endl;
+    
+        int32 nummaps = 0;
+        int32 bufsize = 0;
+
+        // Obtain number of dimension maps and the buffer size.
+        if ((nummaps = SWnentries(swathid, HDFE_NENTMAP, &bufsize)) == -1)
+            throw InternalErr (__FILE__, __LINE__, "cannot obtain the number of dimmaps");
+
+        if (nummaps <= 0)
+            throw InternalErr (__FILE__,__LINE__,"Number of dimension maps should be greater than 0");
+
+        vector<char> namelist;
+        vector<int32> offset, increment;
+
+        namelist.resize(bufsize + 1);
+        offset.resize(nummaps);
+        increment.resize(nummaps);
+        if (SWinqmaps(swathid, &namelist[0], &offset[0], &increment[0])
+            == -1)
+            throw InternalErr (__FILE__,__LINE__,"fail to inquiry dimension maps");
+
+        vector<std::string> mapnames;
+        HDFCFUtil::Split(&namelist[0], bufsize, ',', mapnames);
+        int count = 0;
+        for (std::vector<std::string>::const_iterator i = mapnames.begin();
+            i != mapnames.end(); ++i) {
+            vector<std::string> parts;
+            HDFCFUtil::Split(i->c_str(), '/', parts);
+            if (parts.size() != 2)
+                throw InternalErr (__FILE__,__LINE__,"the dimmaps should only include two parts");
+
+            struct dimmap_entry tempdimmap;
+            tempdimmap.geodim = parts[0];
+            tempdimmap.datadim = parts[1];
+            tempdimmap.offset = offset[count];
+            tempdimmap.inc    = increment[count];
+
+            dimmaps.push_back(tempdimmap);
+            ++count;
+        }
+
+    }
     int32 tmp_rank, tmp_dims[rank]; //[LD Comment 11/13/2012]
     char tmp_dimlist[1024];
     int32 type; //[LD Comment 11/13/2012]
@@ -450,10 +500,45 @@ HDFEOS2ArraySwathDimMapField::read ()
         SDend(sdfileid);
     }
 
+    // According to our observations, it seems that MODIS products ALWAYS use the "scale" factor to 
+    // make bigger values smaller.
+    // So for MODIS_MUL_SCALE products, if the scale of some variable is greater than 1, 
+    // it means that for this variable, the MODIS type for this variable may be MODIS_DIV_SCALE.
+    // For the similar logic, we may need to change MODIS_DIV_SCALE to MODIS_MUL_SCALE and MODIS_EQ_SCALE
+    // to MODIS_DIV_SCALE.
+    // We indeed find such a case. HDF-EOS2 Grid MODIS_Grid_1km_2D of MOD(or MYD)09GA is a MODIS_EQ_SCALE.
+    // However,
+    // the scale_factor of the variable Range_1 in the MOD09GA product is 25. According to our observation,
+    // this variable should be MODIS_DIV_SCALE.We verify this is true according to MODIS 09 product document
+    // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
+    // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
+    // the similar cases so that we can verify with the corresponding product documents to see if this is true.
+    // 
+    // 
+
+    if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+        if (scale > 1) {
+            sotype = MODIS_DIV_SCALE;
+            (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "<< scale << endl
+                               << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
+                               << " Now change it to MODIS_DIV_SCALE. "<<endl;
+        }
+    }
+    
+    if (MODIS_DIV_SCALE == sotype) {
+        if (scale < 1) {
+            sotype = MODIS_MUL_SCALE;
+            (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "<< scale << endl
+                               << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
+                               << " Now change it to MODIS_MUL_SCALE. "<<endl;
+        }
+    }
+    
+
+
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
                        &tmp_rank, tmp_dims, &type, tmp_dimlist);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         detachfunc (swathid);
         closefunc (sfid);
         ostringstream eherr;
@@ -526,7 +611,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     { \
         set_value ((DODS_CAST)VAL, nelms); \
     } \
-    delete[](CAST) VAL; \
 }
 
     // int32 majordimsize, minordimsize;
@@ -543,7 +627,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < int8 > total_val8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val8, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -553,27 +636,26 @@ HDFEOS2ArraySwathDimMapField::read ()
             }
 
             //cerr<<"coming to 8-bit integer "<<endl;
-            int8* val8 = new int8[nelms];
-            FieldSubset (val8, newdims, &total_val8[0], offset32, count32, step32);
+            //int8* val8 = new int8[nelms];
+            vector<int8>val8;
+            val8.resize(nelms);
+            FieldSubset (&val8[0], newdims, &total_val8[0], &offset32[0], &count32[0], &step32[0]);
 
 
 #ifndef SIGNED_BYTE_TO_INT32
-            RECALCULATE(int8*, dods_byte*, val8);
+            RECALCULATE(int8*, dods_byte*, &val8[0]);
             //set_value ((dods_byte *) val, nelms);
             //delete[](int8 *) val;
 #else
-            int32 *newval; //[LD Comment 11/13/2012]
-            int8 *newval8;
+            vector<int32>newval;
+            newval.resize(nelms);
 
-            newval = new int32[nelms];
-            newval8 = val8;
             for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (int32) (newval8[counter]);
+                newval[counter] = (int32) (val8[counter]);
 
-            RECALCULATE(int32*, dods_int32*, newval);
+            RECALCULATE(int32*, dods_int32*, &newval[0]);
             //set_value ((dods_int32 *) newval, nelms);
             //delete[](int8 *) val;
-            delete[]val8;
             //delete[]newval;
 #endif
         }
@@ -586,7 +668,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < uint8 > total_val_u8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u8, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -595,14 +676,14 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            uint8* val_u8 = new uint8[nelms];
+            //uint8* val_u8 = new uint8[nelms];
+            vector<uint8>val_u8;
+            val_u8.resize(nelms);
 
-            FieldSubset (val_u8, newdims, &total_val_u8[0], offset32, count32, step32);
-            RECALCULATE(uint8*, dods_byte*, val_u8);
+            FieldSubset (&val_u8[0], newdims, &total_val_u8[0], &offset32[0], &count32[0], &step32[0]);
+            RECALCULATE(uint8*, dods_byte*, &val_u8[0]);
             //set_value ((dods_byte *) val, nelms);
             //delete[](int8 *) val;
-
-
         }
             break;
         case DFNT_INT16:
@@ -611,7 +692,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < int16 > total_val16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val16, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -620,11 +700,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }  
 
-            int16* val16 = new int16[nelms];
+            //int16* val16 = new int16[nelms];
+            vector<int16>val16;
+            val16.resize(nelms);
 
-            FieldSubset (val16, newdims, &total_val16[0], offset32, count32, step32);
+            FieldSubset (&val16[0], newdims, &total_val16[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(int16*, dods_int16*, val16);
+            RECALCULATE(int16*, dods_int16*, &val16[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
         }
@@ -635,7 +717,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < uint16 > total_val_u16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u16, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -644,11 +725,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            uint16* val_u16 = new uint16[nelms];
+            //uint16* val_u16 = new uint16[nelms];
+            vector<uint16>val_u16;
+            val_u16.resize(nelms);
 
-            FieldSubset (val_u16, newdims, &total_val_u16[0], offset32, count32, step32);
+            FieldSubset (&val_u16[0], newdims, &total_val_u16[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(uint16*, dods_uint16*, val_u16);
+            RECALCULATE(uint16*, dods_uint16*, &val_u16[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
  
@@ -661,7 +744,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < int32 > total_val32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val32, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -670,11 +752,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            int32* val32 = new int32[nelms];
+            //int32* val32 = new int32[nelms];
+            vector<int32> val32;
+            val32.resize(nelms);
 
-            FieldSubset (val32, newdims, &total_val32[0], offset32, count32, step32);
+            FieldSubset (&val32[0], newdims, &total_val32[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(int32*, dods_int32*, val32);
+            RECALCULATE(int32*, dods_int32*, &val32[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
  
@@ -684,10 +768,10 @@ HDFEOS2ArraySwathDimMapField::read ()
         case DFNT_UINT32:
         {
             // Obtaining the total value and interpolating the data according to dimension map
+            // Notice the total_val_u32 is allocated inside the GetFieldValue.
             std::vector < uint32 > total_val_u32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u32, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -696,11 +780,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            uint32* val_u32 = new uint32[nelms];
+            //uint32* val_u32 = new uint32[nelms];
+            vector<uint32>val_u32;
+            val_u32.resize(nelms);
 
-            FieldSubset (val_u32, newdims, &total_val_u32[0], offset32, count32, step32);
+            FieldSubset (&val_u32[0], newdims, &total_val_u32[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(uint32*, dods_uint32*, val_u32);
+            RECALCULATE(uint32*, dods_uint32*, &val_u32[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
  
@@ -712,7 +798,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < float32 > total_val_f32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f32, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -721,11 +806,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            float32* val_f32 = new float32[nelms];
+            //float32* val_f32 = new float32[nelms];
+            vector<float32>val_f32;
+            val_f32.resize(nelms);
 
-            FieldSubset (val_f32, newdims, &total_val_f32[0], offset32, count32, step32);
+            FieldSubset (&val_f32[0], newdims, &total_val_f32[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(float32*, dods_float32*, val_f32);
+            RECALCULATE(float32*, dods_float32*, &val_f32[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
  
@@ -738,7 +825,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             std::vector < float64 > total_val_f64;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f64, newdims);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset,count,step);
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
@@ -747,11 +833,13 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            float64* val_f64 = new float64[nelms];
+            //float64* val_f64 = new float64[nelms];
+            vector<float64>val_f64;
+            val_f64.resize(nelms);
 
-            FieldSubset (val_f64, newdims, &total_val_f64[0], offset32, count32, step32);
+            FieldSubset (&val_f64[0], newdims, &total_val_f64[0], &offset32[0], &count32[0], &step32[0]);
 
-            RECALCULATE(float64*, dods_float64*, val_f64);
+            RECALCULATE(float64*, dods_float64*, &val_f64[0]);
             //set_value ((dods_int16 *) val, nelms);
             //delete[](int16 *) val;
  
@@ -759,7 +847,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             break;
         default:
         {
-            HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,step);
             detachfunc (swathid);
             closefunc (sfid);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
@@ -768,7 +855,6 @@ HDFEOS2ArraySwathDimMapField::read ()
 
     r = detachfunc (swathid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc(sfid);
         ostringstream eherr;
 
@@ -779,7 +865,6 @@ HDFEOS2ArraySwathDimMapField::read ()
 
     r = closefunc (sfid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
@@ -787,7 +872,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     }
 
 
-    HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
     return false; //[LD Comment 11/13/2012]
 }
 

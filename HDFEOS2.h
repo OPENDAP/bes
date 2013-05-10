@@ -281,8 +281,13 @@ namespace HDFEOS2
     class Field
     {
         public:
+#if 0
             Field ()
                 :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialcoard(false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)
+#endif
+            Field ()
+                :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)
+
             {
             }
             virtual ~ Field ();
@@ -295,11 +300,13 @@ namespace HDFEOS2
                 return this->name;
             }
 
+#if 0
             /// Get the name of this field for the third dimension field to match the special COARD request
             const std::string & getName_specialcoard () const
             {
                 return this->oriname;
             }
+#endif
 
             /// Get the new name of this field
             const std::string & getNewName () const
@@ -431,11 +438,13 @@ namespace HDFEOS2
                 return this->dmap;
             }
 
+#if 0
             /// Get special COARD flag that may change the field name  
             const bool getSpecialCoard () const
             {
                 return this->specialcoard;
             }
+#endif
 
             /// Set and get the special flag for adjustment
             void set_adjustment (int num_map)
@@ -460,7 +469,7 @@ namespace HDFEOS2
             std::string coordinates;
             std::string newname;
 
-            std::string oriname;
+//            std::string oriname;
 
             // This flag will specify the fieldtype.
             // 0 means this field is general field.
@@ -475,12 +484,14 @@ namespace HDFEOS2
             bool ydimmajor;
             bool speciallon;
 
+#if 0
             // To make IDV and Panoply work, the third dimension field name needs to
             // be different than the dimension name. So we have to remember the
             // original dimension field name when retrieving the third dimension data.
             // This flag is used to detect that.
             // This rule may be lifted up, need to check in the next release. KY 2012-09-20
             bool specialcoard;
+#endif
 
             // This flag specifies the special latitude/longitude coordinate format
             // 0 means normal 
@@ -614,7 +625,7 @@ namespace HDFEOS2
                 std::vector < Attribute * >&attrs)
                 throw (Exception);
  
-            void SetScaleType(const string EOS2ObjName) throw(Exception);
+            void SetScaleType(const std::string EOS2ObjName) throw(Exception);
 
         protected:
             int32 datasetid;

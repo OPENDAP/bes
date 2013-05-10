@@ -1,30 +1,20 @@
 Attributes {
     pressure {
-        String units "level";
         String long_name "pressure";
     }
     time {
-        String units "level";
         String long_name "time";
     }
-    latitude {
-        String coordinates "xtrack ytrack";
-        String long_name "latitude";
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
     }
-    longitude {
-        String coordinates "xtrack ytrack";
-        String long_name "longitude";
-    }
-    xtrack {
-        String units "level";
-        String long_name "xtrack(fake)";
-    }
-    ytrack {
-        String units "level";
-        String long_name "ytrack(fake)";
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
     }
     temperature {
-        String coordinates "time pressure xtrack ytrack";
+        String coordinates "time pressure Latitude Longitude";
         Float32 _FillValue -9999.000000;
         String long_name "temperature";
     }
@@ -66,12 +56,12 @@ Attributes {
                         String DimList "TDim";
                     }
                     GeoField_3 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
                     GeoField_4 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }

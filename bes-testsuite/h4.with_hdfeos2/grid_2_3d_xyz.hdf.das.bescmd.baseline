@@ -1,23 +1,4 @@
 Attributes {
-    lat {
-        String coordinates "Latitude";
-        String long_name "GeoGrid1:lat";
-        String units "degrees_north";
-    }
-    lon {
-        String coordinates "Longitude";
-        String long_name "GeoGrid1:lon";
-        String units "degrees_east";
-    }
-    pressure {
-        String long_name "GeoGrid1:pressure";
-        String units "level";
-    }
-    temperature {
-        String coordinates "pressure Latitude Longitude";
-        String long_name "GeoGrid1:temperature";
-        String units "degrees_north";
-    }
     Latitude {
         String long_name "GeoGrid1:Latitude";
         String units "degrees_north";
@@ -26,22 +7,13 @@ Attributes {
         String long_name "GeoGrid1:Longitude";
         String units "degrees_east";
     }
-    lat_1 {
-        String coordinates "Latitude_1";
-        String long_name "GeoGrid2:lat";
-        String units "degrees_east";
+    pressure {
+        String long_name "GeoGrid1:pressure";
     }
-    lon_1 {
-        String coordinates "Longitude_1";
-        String long_name "GeoGrid2:lon";
-    }
-    pressure_1 {
-        String long_name "GeoGrid2:pressure";
-        String units "level";
-    }
-    temperature_1 {
-        String coordinates "pressure_1 Latitude_1 Longitude_1";
-        String long_name "GeoGrid2:temperature";
+    temperature {
+        String coordinates "pressure Latitude Longitude";
+        String long_name "GeoGrid1:temperature";
+        String units "degrees_north";
     }
     Latitude_1 {
         String long_name "GeoGrid2:Latitude";
@@ -50,6 +22,13 @@ Attributes {
     Longitude_1 {
         String long_name "GeoGrid2:Longitude";
         String units "degrees_east";
+    }
+    pressure_1 {
+        String long_name "GeoGrid2:pressure";
+    }
+    temperature_1 {
+        String coordinates "pressure_1 Latitude_1 Longitude_1";
+        String long_name "GeoGrid2:temperature";
     }
     StructMetadata {
         SwathStructure {
@@ -71,12 +50,12 @@ Attributes {
                 }
                 DataField {
                     DataField_1 {
-                        String DataFieldName "lat";
+                        String DataFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "YDim";
                     }
                     DataField_2 {
-                        String DataFieldName "lon";
+                        String DataFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "XDim";
                     }
@@ -110,12 +89,12 @@ Attributes {
                 }
                 DataField {
                     DataField_1 {
-                        String DataFieldName "lat";
+                        String DataFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "YDim";
                     }
                     DataField_2 {
-                        String DataFieldName "lon";
+                        String DataFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "XDim";
                     }

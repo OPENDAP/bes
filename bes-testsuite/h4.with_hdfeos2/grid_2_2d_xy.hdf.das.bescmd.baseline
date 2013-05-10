@@ -1,18 +1,4 @@
 Attributes {
-    lat {
-        String coordinates "Latitude";
-        String long_name "GeoGrid1:lat";
-        String units "degrees_north";
-    }
-    lon {
-        String coordinates "Longitude";
-        String long_name "GeoGrid1:lon";
-        String units "degrees_east";
-    }
-    temperature {
-        String coordinates "Latitude Longitude";
-        String long_name "GeoGrid1:temperature";
-    }
     Latitude {
         String long_name "GeoGrid1:Latitude";
         String units "degrees_north";
@@ -20,6 +6,10 @@ Attributes {
     Longitude {
         String long_name "GeoGrid1:Longitude";
         String units "degrees_east";
+    }
+    temperature {
+        String coordinates "Latitude Longitude";
+        String long_name "GeoGrid1:temperature";
     }
     temperature_1 {
         String coordinates "Latitude_1 Longitude_1";
@@ -49,12 +39,12 @@ Attributes {
                 }
                 DataField {
                     DataField_1 {
-                        String DataFieldName "lat";
+                        String DataFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "YDim";
                     }
                     DataField_2 {
-                        String DataFieldName "lon";
+                        String DataFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "XDim";
                     }

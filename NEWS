@@ -1,3 +1,10 @@
+Version 3.11.0
+  This version fixed several bugs in handling MODIS (including version 6) and 
+MEaSUREs VIP products. It also improved the CF attributes handling such as 
+valid_range and scale/offset and the archive metadata handling. It provides a 
+new testsuite that users can download and test sample NASA files. The codes
+ are cleaned up as well to improve readibility.
+
 Version 3.10.1
   This version changes the _FillValue datatype to be consistent with the 
 variable datatype. This is not required by CF, however, netCDF-3 has this 

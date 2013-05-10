@@ -382,7 +382,7 @@ namespace HDFSP
             }
 
 
-            const string getSpecFullPath() const 
+            const std::string getSpecFullPath() const 
             {
                 return special_product_fullpath;
             }
@@ -391,7 +391,7 @@ namespace HDFSP
             std::vector < Dimension * >dims;
             std::vector < Dimension * >correcteddims;
 
-            vector<AttrContainer *>dims_info;
+            std::vector<AttrContainer *>dims_info;
             std::string coordinates;
 
             // This flag will specify the fieldtype.
@@ -491,7 +491,7 @@ namespace HDFSP
             }
 
             /// Obtain SDS path, this is like a clone of obtain_path in File class, except the Vdata and some minor parts.
-            void obtain_sds_path(int32,int32,char*,int32) throw(Exception);
+            void obtain_sds_path(int32,char*,int32) throw(Exception);
 
 
             ~SD ();
@@ -680,14 +680,22 @@ namespace HDFSP
             /// We still provide a hook for other HDF data product although no CF compliant is followed.
             void PrepareOTHERHDF () throw (Exception);
 
-            /// Handle non-attribute vdatas.
-            void ReadVdatas(File*) throw(Exception);
+            /// Handle non-attribute lone vdatas.
+            void ReadLoneVdatas(File*) throw(Exception);
+
+            /// Handle non-attribute non-lone vdatas. Note: this function is only used for
+            /// handling hybrid Vdata functions.
+            void ReadHybridNonLoneVdatas(File*) throw(Exception);
+
 
             /// The full path of SDS and Vdata will be obtained.
             void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
 
             /// The internal function used by InsertOrigFieldPath_ReadVgVdata.
             void obtain_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref) throw (Exception);
+
+            /// The internal function used to obtain the path for hybrid non-lone vdata.
+            void obtain_vdata_path(int32 file_id, char *full_path, int32 pobj_ref) throw (Exception);
 
             /// Obtain special HDF4 product type
             SPType getSPType () const
@@ -723,7 +731,7 @@ namespace HDFSP
 
         protected:
             File (const char *path)
-                : path (path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false)
+                : path (path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
             {
             }
 
@@ -741,6 +749,7 @@ namespace HDFSP
             int32 fileid;// H interface ID
             SPType sptype;// Special HDF4 file type
             bool OTHERHDF_Has_Dim_NoScale_Field;
+            bool EOS2Swathflag;
     };
 
 }

@@ -40,7 +40,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -51,7 +51,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -115,7 +115,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -126,7 +126,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -163,7 +163,7 @@
     </Attribute>
     <Array name="temperature">
         <Attribute name="coordinates" type="String">
-            <value>pressure latitude</value>
+            <value>pressure Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
@@ -176,38 +176,35 @@
         <dimension name="NDim" size="8"/>
     </Array>
     <Array name="pressure">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Swath1:pressure</value>
         </Attribute>
         <Float32/>
         <dimension name="ZDim" size="4"/>
     </Array>
-    <Array name="latitude">
+    <Array name="Latitude">
         <Attribute name="units" type="String">
-            <value>level</value>
+            <value>degrees_north</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>Swath1:latitude</value>
+            <value>Swath1:Latitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim" size="8"/>
     </Array>
-    <Array name="longitude">
+    <Array name="Longitude">
         <Attribute name="coordinates" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>Swath1:longitude</value>
+            <value>Swath1:Longitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim" size="8"/>
     </Array>
     <Array name="temperature_1">
         <Attribute name="coordinates" type="String">
-            <value>pressure_1 latitude_1</value>
+            <value>pressure_1 Latitude_1</value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
@@ -220,31 +217,28 @@
         <dimension name="NDim_1" size="16"/>
     </Array>
     <Array name="pressure_1">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>Swath2:pressure</value>
         </Attribute>
         <Float32/>
         <dimension name="ZDim_1" size="8"/>
     </Array>
-    <Array name="latitude_1">
+    <Array name="Latitude_1">
         <Attribute name="units" type="String">
-            <value>level</value>
+            <value>degrees_north</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>Swath2:latitude</value>
+            <value>Swath2:Latitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim_1" size="16"/>
     </Array>
-    <Array name="longitude_1">
+    <Array name="Longitude_1">
         <Attribute name="coordinates" type="String">
-            <value>latitude_1</value>
+            <value>Latitude_1</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>Swath2:longitude</value>
+            <value>Swath2:Longitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim_1" size="16"/>

@@ -1,3 +1,20 @@
+2013-05-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* hdf4_handler.spec: changed version.
+	* README: changed the planned release date from 9/30/13 to 5/30/13.
+	* INSTALL: changed version and updated HDF4 version.
+	* configure.ac: changed version to 3.11.0
+	* NEWS:updated what's new.
+	* Makefile.am: added DIST_SBUDIRS.
+
+2013-01-24  MuQun Yang <myang6@hdfgroup.org>
+
+	Support special scale and offset for NASA MEaSuRES VIP products and
+	AMSR_E level 2 products.
+        Also changing the conventions for renaming scale and offset attributes
+	if the file doesn't follow the CF conventions. The attribute name
+	scale_factor will be renamed to "orig_scale_factor" instead of
+	"scale_factor_modis". The simliar conventions applies to add_offset.
+
 2012-11-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS2.cc
@@ -9,7 +26,7 @@
 	* HDFEOS*.cc
 	* HDFSP*.cc:
 	formatted indentation.
-	
+
 
 2012-10-26  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* NEWS
@@ -43,7 +60,7 @@
 
 	* HE2CF.cc (print_attr): fixed bug for uint16/uint32 type handling.
 	* hdfdesc.cc (print_attr): fixed bug for uint16/uint32 type handling.
-	* data.local/src/: created for small test file generation programs.
+
 
 2012-01-11  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
@@ -88,10 +105,12 @@
 	* HE2CFUniqName.cc (set_uniq_name): removed exit(-1) function.
 
 2011-12-22  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+	* HDFSP.cc (File::prepare): Replaced map[key]=val assignments for
+	string:string map.
+	* HDFEOS2.cc (insert_map): is added. Replaced map[key]=val assignments
+	for string:string map.
 
-	* HDFSP.cc (File::prepare): Replaced map[key]=val assignments
-	* for string:string map. HDFEOS2.cc (insert_map): is added.
-	* Replaced map[key]=val assignments for string:string map.
+2011-08-18  James Gallagher <jgallagher@opendap.org>
 
 2010-03-18  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 

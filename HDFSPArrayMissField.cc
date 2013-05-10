@@ -28,53 +28,37 @@ HDFSPArrayMissGeoField::read ()
 {
 
 
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
+    vector<int>offset;
+    offset.resize(rank);
 
-    int nelms;
+    vector<int>count;
+    count.resize(rank);
 
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
+    vector<int>step;
+    step.resize(rank);
+
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]); 
+
 
     // Since we always assign the the missing Z dimension as 32-bit integer, so need
     // to check the type.
-    int *val = new int[nelms];
+    vector<int>val;
+    val.resize(nelms);
 
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
-        set_value ((dods_int32 *) val, nelms);
+        set_value ((dods_int32 *) &val[0], nelms);
     }
     else {
         if (rank != 1) {
-            delete[]val;
-            delete[]offset;
-            delete[]step;
-            delete[]count;
             throw InternalErr (__FILE__, __LINE__,
                 "Currently the rank of the missing field should be 1");
         }
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value ((dods_int32 *) val, nelms);
+        set_value ((dods_int32 *) &val[0], nelms);
     }
-
-    if (val !=NULL) 
-        delete[]val;
-    if (offset != NULL)
-        delete[]offset;
-    if (count != NULL)
-        delete[]count;
-    if (step != NULL)
-        delete[]step;
 
     return false;
 }

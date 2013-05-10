@@ -22,24 +22,33 @@ bool
 HDFSPArray_RealField::read ()
 {
 
+#if 0
     int *offset = new int[rank];
     int *count = new int[rank];
     int *step = new int[rank];
-    int nelms;
+#endif
 
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
+    vector<int>offset;
+    offset.resize(rank);
+    vector<int>count;
+    count.resize(rank);
+    vector<int>step;
+    step.resize(rank);
 
+    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+
+    vector<int32>offset32;
+    offset32.resize(rank);
+    vector<int32>count32;
+    count32.resize(rank);
+    vector<int32>step32;
+    step32.resize(rank);
+
+#if 0
     int32 *offset32 = new int32[rank];
     int32 *count32 = new int32[rank];
     int32 *step32 = new int32[rank];
+#endif
 
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
@@ -54,7 +63,6 @@ HDFSPArray_RealField::read ()
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
     if (sdid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -63,7 +71,6 @@ HDFSPArray_RealField::read ()
     int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
 
     if (sdsindex == -1) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         SDend (sdid);
         ostringstream eherr;
 
@@ -74,27 +81,26 @@ HDFSPArray_RealField::read ()
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         SDend (sdid);
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "SDselect failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    void *val = NULL;
+    //void *val = NULL;
     int32 r = 0;
 
     switch (dtype) {
 
         case DFNT_INT8:
         {
-            val = new int8[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+            vector<int8>val;
+            val.resize(nelms);
+            //val = new int8[nelms];
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int8 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed.";
@@ -102,20 +108,15 @@ HDFSPArray_RealField::read ()
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) val, nelms);
-            delete[](int8 *) val;
+            set_value ((dods_byte *) &val[0], nelms);
 #else
-            int32 *newval;
-            int8 *newval8;
+            vector<int32>newval;
+            newval.resize(nelms);
 
-            newval = new int32[nelms];
-            newval8 = (int8 *) val;
             for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (int32) (newval8[counter]);
+                newval[counter] = (int32) (val[counter]);
 
-            set_value ((dods_int32 *) newval, nelms);
-            delete[](int8 *) val;
-            delete[]newval;
+            set_value ((dods_int32 *) &newval[0], nelms);
 #endif
         }
 
@@ -123,31 +124,31 @@ HDFSPArray_RealField::read ()
         case DFNT_UINT8:
         case DFNT_UCHAR8:
         case DFNT_CHAR8:
-            val = new uint8[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<uint8>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint8 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_byte *) val, nelms);
-            delete[](uint8 *) val;
+            set_value ((dods_byte *) &val[0], nelms);
+        }
             break;
 
         case DFNT_INT16:
-            val = new int16[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<int16>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int16 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -165,105 +166,103 @@ HDFSPArray_RealField::read ()
             // OBPGL2: 16-bit signed integer, (8-bit signed integer or 32-bit signed integer)
             // If slope = 1 and intercept = 0 no need to do conversion
 
-            set_value ((dods_int16 *) val, nelms);
-            delete[](int16 *) val;
+            set_value ((dods_int16 *) &val[0], nelms);
+        }
             break;
 
         case DFNT_UINT16:
-            val = new uint16[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<uint16>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint16 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint16 *) val, nelms);
-            delete[](uint16 *) val;
+            set_value ((dods_uint16 *) &val[0], nelms);
+        }
             break;
         case DFNT_INT32:
-            val = new int32[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<int32>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int32 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int32 *) val, nelms);
-            delete[](int32 *) val;
+            set_value ((dods_int32 *) &val[0], nelms);
+        }
             break;
         case DFNT_UINT32:
-            val = new uint32[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<uint32>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint32 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_uint32 *) val, nelms);
-            delete[](uint32 *) val;
+            set_value ((dods_uint32 *) &val[0], nelms);
+        }
             break;
         case DFNT_FLOAT32:
-            val = new float32[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<float32>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](float32 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float32 *) val, nelms);
-            delete[](float32 *) val;
+            set_value ((dods_float32 *) &val[0], nelms);
+        }
             break;
         case DFNT_FLOAT64:
-            val = new float64[nelms];
-            r = SDreaddata (sdsid, offset32, step32, count32, val);
+        {
+            vector<float64>val;
+            val.resize(nelms);
+            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
                 SDend (sdid);
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](float64 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float64 *) val, nelms);
-            delete[](float64 *) val;
+            set_value ((dods_float64 *) &val[0], nelms);
+        }
             break;
         default:
             SDendaccess (sdsid);
             SDend (sdid);
-            HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     r = SDendaccess (sdsid);
     if (r != 0) {
         SDend (sdid);
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "SDendaccess failed.";
@@ -274,22 +273,11 @@ HDFSPArray_RealField::read ()
     r = SDend (sdid);
     if (r != 0) {
 
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "SDend failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
-
-    delete[]offset;
-    delete[]count;
-    delete[]step;
-
-    delete[]offset32;
-    delete[]count32;
-    delete[]step32;
-
 
     return false;
 }

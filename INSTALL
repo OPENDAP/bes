@@ -1,6 +1,6 @@
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.10.1
+Updated for 3.11.0
 
 ---------------------------------------------------------------------------
 
@@ -126,14 +126,14 @@ please follow the steps below.
 7.2 If you want to test real NASA sample files with the hdfeos2 handler, please 
 follow the steps below.
 
-7.2.1 Make sure that you have 8.5G of disk space and download files using
+7.2.1 Make sure that you have 1.0G of disk space and download files using
 
-   %cd data.nasa1 && ./download.sh
+   %cd data.nasa && ./download.sh
 
    It will download all test data from The HDF Group FTP site and put it
-   under data.nasa1/ directory.
+   under data.nasa/ directory.
 
-7.2.2 Edit the sample test.nasa1.with_hdfeos2.sh script under the top level 
+7.2.2 Edit the sample test.nasa.with_hdfeos2.sh script under the top level 
     source directory. You may need to adjust the paths in the shell script.
     
     set path=(/hdfdap/hyrax-1.8.0/bin $path)
@@ -145,15 +145,15 @@ follow the steps below.
 
 7.2.3 Run the (t)csh script.
 
-   %./test.nasa1_with_hdfeos2.sh
+   %./test.nasa.with_hdfeos2.sh
 
    It configures, builds, tests and cleans up the source directory 
    and will take up to 5 minutes.
 
    It will create two log files at the end:
 
-   1) check_test.nasa1.with_hdfeos2.txt
-   2) check_test.nasa1.with_hdfeos2.log.txt   
+   1) test.nasa.with_hdfeos2.txt
+   2) test.nasa.with_hdfeos2.log.txt   
 
    If there is no test failure, you'll see a message
 
@@ -179,8 +179,8 @@ REQUIREMENTS
     first.
 
   o You also need a recent copy of HDF4. We've tested this server with
-    version 4.2r6, although any recent version should work fine. 
-    In order to link with 4.2r6 on Linux (and maybe other platforms) I had to
+    version 4.2.9, although any recent version should work fine. 
+    In order to link with 4.2.9 on Linux (and maybe other platforms) I had to
     compile HDF4 using --without-fortran --with-pic and I also used 
     --without-netcdf (because some sites need their HDF4 libraries built that
     way and I wanted to be sure the handler would build with that 

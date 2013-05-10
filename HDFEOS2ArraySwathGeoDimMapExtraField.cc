@@ -27,24 +27,26 @@ bool
 HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 {
 
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-    int nelms;
+    vector<int>offset;
+    offset.resize(rank);
 
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
+    vector<int>count;
+    count.resize(rank);
 
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
+    vector<int>step;
+    step.resize(rank);
+
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
+
+    vector<int32>offset32;
+    offset32.resize(rank);
+
+    vector<int32>count32;
+    count32.resize(rank);
+
+    vector<int32>step32;
+    step32.resize(rank);
+
 
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
@@ -75,7 +77,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
     if (fileid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -89,7 +90,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                         &swathnamesize);
 
     if (numswath == -1) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -98,7 +98,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     }
 
     if (numswath != 1) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -112,7 +111,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                         &swathnamesize);
     if (numswath == -1) {
         delete[]swathname;
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -122,7 +120,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     swathid = attachfunc (fileid, swathname);
     if (swathid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -140,7 +137,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
                        &tmp_rank, tmp_dims, &type, tmp_dimlist);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         detachfunc (swathid);
         closefunc (fileid);
         ostringstream eherr;
@@ -149,40 +145,32 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    void *val; //[LD Comment 11/13/2012]
 
     switch (type) {
 
         case DFNT_INT8:
         {
-            val = new int8[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<int8>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int8 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) val, nelms);
-            delete[](int8 *) val;
+            set_value ((dods_byte *) &val[0], nelms);
 #else
-            int32 *newval; //[LD Comment 11/13/2012]
-            int8 *newval8;
 
-            newval = new int32[nelms];
-            newval8 = (int8 *) val;
+            vector<int32>newval;
+            newval.resize(nelms);
             for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (int32) (newval8[counter]);
+                newval[counter] = (int32) (val[counter]);
 
-            set_value ((dods_int32 *) newval, nelms);
-            delete[](int8 *) val;
-            delete[]newval;
+            set_value ((dods_int32 *) &newval[0], nelms);
 #endif
         }
 
@@ -191,11 +179,11 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         case DFNT_UCHAR8:
         case DFNT_CHAR8:
         {
-            val = new uint8[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<uint>val;
+            val.resize(nelms);
+
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint8 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -204,19 +192,16 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_byte *) val, nelms);
-            delete[](uint8 *) val;
+            set_value ((dods_byte *) &val[0], nelms);
         }
             break;
 
         case DFNT_INT16:
         {
-            val = new int16[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
-
+            vector<int16>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int16 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -225,17 +210,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int16 *) val, nelms);
-            delete[](int16 *) val;
+            set_value ((dods_int16 *) &val[0], nelms);
         }
             break;
         case DFNT_UINT16:
         {
-            val = new uint16[nelms];
-	    r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<uint16>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint16 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -244,17 +227,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint16 *) val, nelms);
-            delete[](uint16 *) val;
+            set_value ((dods_uint16 *) &val[0], nelms);
         }
             break;
         case DFNT_INT32:
         {
-            val = new int32[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<int32>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](int32 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -263,17 +244,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int32 *) val, nelms);
-            delete[](int32 *) val;
+            set_value ((dods_int32 *) &val[0], nelms);
         }
             break;
         case DFNT_UINT32:
         {
-            val = new uint32[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<uint32>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](uint32 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -282,17 +261,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint32 *) val, nelms);
-            delete[](uint32 *) val;
+            set_value ((dods_uint32 *) &val[0], nelms);
         }
             break;
         case DFNT_FLOAT32:
         {
-            val = new float32[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<float32>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](float32 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -301,17 +278,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float32 *) val, nelms);
-            delete[](float32 *) val;
+            set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
         case DFNT_FLOAT64:
         {
-            val = new float64[nelms];
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32, step32, count32, val);
+            vector<float64>val;
+            val.resize(nelms);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
-                delete[](float64 *) val;
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -319,8 +294,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_float64 *) val, nelms);
-            delete[](float64 *) val;
+            set_value ((dods_float64 *) &val[0], nelms);
         }
             break;
         default:
@@ -329,7 +303,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     r = detachfunc (swathid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         throw InternalErr (__FILE__, __LINE__, "The swath cannot be detached.");
     }
@@ -337,14 +310,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     r = closefunc (fileid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
     return false;
 }
 

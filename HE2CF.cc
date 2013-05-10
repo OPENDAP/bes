@@ -183,7 +183,7 @@ HE2CF::open_sd(const string& _filename)
     }
     
     if(SDfileinfo(sd_id, &num_datasets, &num_global_attributes)
-       == FAIL){
+        == FAIL){
 
         if(file_id != -1) {
             Vend(file_id);
@@ -323,9 +323,9 @@ HE2CF::print_type(int32 type)
     static const char UNKNOWN[]="Unknown";    
     static const char BYTE[]="Byte";
     static const char INT16[]="Int16";
-    static const char UINT16[]="Uint16";        
+    static const char UINT16[]="UInt16";        
     static const char INT32[]="Int32";
-    static const char UINT32[]="Uint32";
+    static const char UINT32[]="UInt32";
     static const char FLOAT32[]="Float32";
     static const char FLOAT64[]="Float64";    
     static const char STRING[]="String";
@@ -378,80 +378,81 @@ void HE2CF::set_DAS(DAS* _das)
 
 bool HE2CF::set_non_ecsmetadata_attrs() {
 
-        for(int i = 0; i < num_global_attributes; i++){
+    for(int i = 0; i < num_global_attributes; i++){
 
-            // H4_MAX_NC_NAME is from the user guide example. It's 256.
-            char temp_name[H4_MAX_NC_NAME];     
-            int32 attr_type=0;
-            int32 attr_count = 0;
-            if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                ostringstream error;
-                error <<  "Fail to obtain SDS global attribute info."  << endl;
-                write_error(error.str());
-            }
+        // H4_MAX_NC_NAME is from the user guide example. It's 256.
+        char temp_name[H4_MAX_NC_NAME];     
+        int32 attr_type=0;
+        int32 attr_count = 0;
+        if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
+            Vend(file_id);
+            Hclose(file_id);
+            SDend(sd_id);
+            ostringstream error;
+            error <<  "Fail to obtain SDS global attribute info."  << endl;
+            write_error(error.str());
+        }
        
-            string attr_namestr(temp_name);
+        string attr_namestr(temp_name);
 //cerr<<"namestr "<<attr_namestr <<endl;
 
-            // Check if this attribute is an HDF-EOS2 metadata(coremeta etc. ) attribute  
-            // If yes, ignore this attribute.
-            if (true == is_eosmetadata(attr_namestr)) 
-                continue;
+        // Check if this attribute is an HDF-EOS2 metadata(coremeta etc. ) attribute  
+        // If yes, ignore this attribute.
+        if (true == is_eosmetadata(attr_namestr)) 
+            continue;
             
 
-            char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
-            if(attr_data == NULL){
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                ostringstream error;
-                error <<  "Fail to calloc memory"  << endl;
-                write_error(error.str());
-            }
+        char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
+        if(attr_data == NULL){
+            Vend(file_id);
+            Hclose(file_id);
+            SDend(sd_id);
+            ostringstream error;
+            error <<  "Fail to calloc memory"  << endl;
+            write_error(error.str());
+        }
 
-            if(SDreadattr(sd_id, i, attr_data) == FAIL){
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                delete[] attr_data;
-                ostringstream error;
-                error <<  "Fail to read SDS global attributes"  << endl;
-                write_error(error.str());
+        if(SDreadattr(sd_id, i, attr_data) == FAIL){
+            Vend(file_id);
+            Hclose(file_id);
+            SDend(sd_id);
+            delete[] attr_data;
+            ostringstream error;
+            error <<  "Fail to read SDS global attributes"  << endl;
+            write_error(error.str());
 
-            }
+        }
             
-            attr_data[attr_count] = '\0';
+        attr_data[attr_count] = '\0';
              
-            AttrTable *at = das->get_table("HDF_GLOBAL");
-            if (!at)
-                at = das->add_table("HDF_GLOBAL", new AttrTable);
+        AttrTable *at = das->get_table("HDF_GLOBAL");
+        if (!at)
+            at = das->add_table("HDF_GLOBAL", new AttrTable);
 
-            attr_namestr = HDFCFUtil::get_CF_string(attr_namestr);
+        attr_namestr = HDFCFUtil::get_CF_string(attr_namestr);
 
-            if(attr_type == DFNT_UCHAR || attr_type == DFNT_CHAR){
-                string tempstring2(attr_data);
-                string tempfinalstr= string(tempstring2.c_str());
-                at->append_attr(attr_namestr, "String" , tempfinalstr);
-            }
+        if(attr_type == DFNT_UCHAR || attr_type == DFNT_CHAR){
+            string tempstring2(attr_data);
+            string tempfinalstr= string(tempstring2.c_str());
+            tempfinalstr=escattr(tempfinalstr);
+            at->append_attr(attr_namestr, "String" , tempfinalstr);
+        }
     
-            else {
-              for (int loc=0; loc < attr_count ; loc++) {
-                 string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)attr_data );
-                 at->append_attr(attr_namestr, HDFCFUtil::print_type(attr_type), print_rep);
-              }
-
+        else {
+            for (int loc=0; loc < attr_count ; loc++) {
+                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)attr_data );
+                at->append_attr(attr_namestr, HDFCFUtil::print_type(attr_type), print_rep);
             }
-
-
-            delete[] attr_data;                    
-            attr_data = NULL;
 
         }
 
-        return true;
+
+        delete[] attr_data;                    
+        attr_data = NULL;
+
+    }
+
+    return true;
 }
 
 
@@ -475,36 +476,36 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
     
     for(int i = 0; i < num_global_attributes; i++){
 
-             // H4_MAX_NC_NAME is from the user guide example. It's 256.
-            char temp_name[H4_MAX_NC_NAME];     
-            int32 attr_type=0;
-            int32 attr_count = 0;
-            if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                ostringstream error;
-                error <<  "Fail to obtain SDS global attribute info."  << endl;
-                write_error(error.str());
-            }
+        // H4_MAX_NC_NAME is from the user guide example. It's 256.
+        char temp_name[H4_MAX_NC_NAME];     
+        int32 attr_type=0;
+        int32 attr_count = 0;
+        if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
+            Vend(file_id);
+            Hclose(file_id);
+            SDend(sd_id);
+            ostringstream error;
+            error <<  "Fail to obtain SDS global attribute info."  << endl;
+            write_error(error.str());
+        }
 
         string temp_name_str(temp_name);
 
         // Find the basename, arrange the metadata name list.
         if(temp_name_str.find(metadata_basename)==0) {
 //cerr<<"ECS metadata name "<<temp_name_str <<endl;
-           arrange_list(one_dot_names,two_dots_names,non_number_names,temp_name_str,list_flag);
+            arrange_list(one_dot_names,two_dots_names,non_number_names,temp_name_str,list_flag);
         }
-     }
+    }
 
-     list<string>::const_iterator lit;
+    list<string>::const_iterator lit;
  
-     // list_flag = 0, no suffix
-     // list_flag = 1, only .0, coremetadata.0
-     // list_flag = 2, coremetadata.0, coremetadata.1 etc
-     // list_flag = 3, coremeatadata.0, coremetadata.0.1 etc
+    // list_flag = 0, no suffix
+    // list_flag = 1, only .0, coremetadata.0
+    // list_flag = 2, coremetadata.0, coremetadata.1 etc
+    // list_flag = 3, coremeatadata.0, coremetadata.0.1 etc
 //cerr<<"list_flag "<<list_flag <<endl;
-     if ( list_flag >= 0 && list_flag <=2) {
+    if ( list_flag >= 0 && list_flag <=2) {
         for (lit = one_dot_names.begin();lit!=one_dot_names.end();++lit) {
             set_eosmetadata_namelist(*lit);
             string cur_data;
@@ -512,26 +513,26 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 //cerr<<"metadata "<<cur_data <<endl;
             metadata.append(cur_data);
         }
-     }
+    }
 
-     if( 3== list_flag) {
+    if( 3== list_flag) {
         for (lit = two_dots_names.begin();lit!=two_dots_names.end();++lit){
             set_eosmetadata_namelist(*lit);
             string cur_data;
             obtain_SD_attr_value(*lit,cur_data);
             metadata.append(cur_data);
         }
-     }
+    }
 
-     if(non_number_names.size() >0) {
+    if(non_number_names.size() >0) {
         suffix_is_num_or_null = false;
         no_num_data.resize(non_number_names.size());
-     }
+    }
 
-     for (unsigned int i =0; i<non_number_names.size();i++) {
-            set_eosmetadata_namelist(non_number_names[i]);
-            obtain_SD_attr_value(non_number_names[i],no_num_data[i]);
-     }
+    for (unsigned int i =0; i<non_number_names.size();i++) {
+        set_eosmetadata_namelist(non_number_names[i]);
+        obtain_SD_attr_value(non_number_names[i],no_num_data[i]);
+    }
 
     return suffix_is_num_or_null;
     
@@ -543,102 +544,100 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag) {
 
   
-  if(name.find(".") == string::npos) {
-    sl1.push_front(name);
-    sl2.push_front(name);
-    flag = 0;
-  }
-  else if (name.find_first_of(".") == name.find_last_of(".")) {
-    size_t dot_pos = name.find_first_of(".");
-
-    if((dot_pos+1)==name.size()) 
-          throw InternalErr(__FILE__, __LINE__,"Should have characters or numbers after ." );
-
-    string str_after_dot = name.substr(dot_pos+1);
-    stringstream sstr(str_after_dot);
-    int number_after_dot;
-    sstr >> number_after_dot;
-    if (!sstr) 
-        v1.push_back(name);
-
-    else if(0 == number_after_dot) {
-           sl1.push_back(name);
-           sl2.push_back(name);
-           // For only .0 case, set flag to 1.
-           if(flag!=1)
-             flag =1; 
+    if(name.find(".") == string::npos) {
+        sl1.push_front(name);
+        sl2.push_front(name);
+        flag = 0;
     }
-    else { 
-       sl1.push_back(name);
-       if (3 == flag)
-          throw InternalErr(__FILE__, __LINE__,"ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
-       if (flag !=2)
-          flag = 2;
-    }
-  }
+    else if (name.find_first_of(".") == name.find_last_of(".")) {
 
-  else {// We don't distinguish if .0.1 and .0.0.1 will appear.
-    sl2.push_back(name);
-    if (2 == flag)
-        throw InternalErr(__FILE__, __LINE__,"ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
-    if (flag !=3)
-       flag = 3;
-  }
+        size_t dot_pos = name.find_first_of(".");
+
+        if((dot_pos+1)==name.size()) 
+            throw InternalErr(__FILE__, __LINE__,"Should have characters or numbers after ." );
+
+        string str_after_dot = name.substr(dot_pos+1);
+        stringstream sstr(str_after_dot);
+        int number_after_dot;
+        sstr >> number_after_dot;
+        if (!sstr) 
+            v1.push_back(name);
+        else if(0 == number_after_dot) {
+            sl1.push_back(name);
+            sl2.push_back(name);
+            // For only .0 case, set flag to 1.
+            if(flag!=1)
+                flag =1; 
+        }
+        else { 
+            sl1.push_back(name);
+            if (3 == flag)
+                throw InternalErr(__FILE__, __LINE__,
+                      "ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
+            if (flag !=2)
+                flag = 2;
+        }
+    }
+
+    else {// We don't distinguish if .0.1 and .0.0.1 will appear.
+        sl2.push_back(name);
+        if (2 == flag)
+            throw InternalErr(__FILE__, __LINE__,"ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
+        if (flag !=3)
+            flag = 3;
+    }
 
 }
 
 void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
 
-        int32 sds_index = SDfindattr(sd_id, attrname.c_str());
+    int32 sds_index = SDfindattr(sd_id, attrname.c_str());
         
-        if(sds_index == FAIL){
-            Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
-            ostringstream error;
-            error <<  "Failed to obtain the SDS global attribute"  << attrname << endl;
-            throw InternalErr(__FILE__, __LINE__,error.str());
-        }
+    if(sds_index == FAIL){
+        Vend(file_id);
+        Hclose(file_id);
+        SDend(sd_id);
+        ostringstream error;
+        error <<  "Failed to obtain the SDS global attribute"  << attrname << endl;
+        throw InternalErr(__FILE__, __LINE__,error.str());
+    }
 
-        // H4_MAX_NC_NAME is from the user guide example. It's 256.
-        char temp_name[H4_MAX_NC_NAME];
-        int32 type = 0;
-        int32 count = 0;
+    // H4_MAX_NC_NAME is from the user guide example. It's 256.
+    char temp_name[H4_MAX_NC_NAME];
+    int32 type = 0;
+    int32 count = 0;
 
-        if(SDattrinfo(sd_id, sds_index, temp_name, &type, &count) == FAIL) {
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                ostringstream error;
-             error <<  "Failed to obtain the SDS global attribute"  << attrname << "information" << endl;
-            throw InternalErr(__FILE__, __LINE__,error.str());
-        }
+    if(SDattrinfo(sd_id, sds_index, temp_name, &type, &count) == FAIL) {
+        Vend(file_id);
+        Hclose(file_id);
+        SDend(sd_id);
+        ostringstream error;
+        error <<  "Failed to obtain the SDS global attribute"  << attrname << "information" << endl;
+        throw InternalErr(__FILE__, __LINE__,error.str());
+    }
 
-        vector<char> attrvalue;
-        attrvalue.resize((count+1)*DFKNTsize(type));
+    vector<char> attrvalue;
+    attrvalue.resize((count+1)*DFKNTsize(type));
 
-        if(SDreadattr(sd_id, sds_index, &attrvalue[0]) == FAIL){
-                Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
-                ostringstream error;
-                error <<  "Failed to read the SDS global attribute"  << attrname << endl;
-                throw InternalErr(__FILE__, __LINE__,error.str());
+    if(SDreadattr(sd_id, sds_index, &attrvalue[0]) == FAIL){
+        Vend(file_id);
+        Hclose(file_id);
+        SDend(sd_id);
+        ostringstream error;
+        error <<  "Failed to read the SDS global attribute"  << attrname << endl;
+        throw InternalErr(__FILE__, __LINE__,error.str());
 
-        }
-        // Remove the last NULL character
-//        string temp_data(attrvalue.begin(),attrvalue.end()-1);
- //       cur_data = temp_data;
-        if(attrvalue[count] != '\0') 
-            throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be NULL");
-        cur_data.resize(attrvalue.size()-1);
-        copy(attrvalue.begin(),attrvalue.end()-1,cur_data.begin());
+    }
+    // Remove the last NULL character
+    //        string temp_data(attrvalue.begin(),attrvalue.end()-1);
+    //       cur_data = temp_data;
+
+    if(attrvalue[count] != '\0') 
+        throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be NULL");
+
+    cur_data.resize(attrvalue.size()-1);
+    copy(attrvalue.begin(),attrvalue.end()-1,cur_data.begin());
 }
-
-
-
-
-
 
 
 bool HE2CF::set_vgroup_map(int32 _refid)
@@ -738,6 +737,7 @@ bool HE2CF::set_vgroup_map(int32 _refid)
         }
         
         if(tag2 == DFTAG_VH){
+
             int vid;
             if ((vid = VSattach(file_id, ref2, "r")) < 0) {
 
@@ -840,20 +840,22 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 
     if (FAIL == status) {
 
-       Vend(file_id);
-       Hclose(file_id);
-       SDendaccess(_sds_id);
-       SDend(sd_id);
-       ostringstream error;
-       error <<  "Cannot obtain the SDS info. ";
-                write_error(error.str());
+        Vend(file_id);
+        Hclose(file_id);
+        SDendaccess(_sds_id);
+        SDend(sd_id);
+        ostringstream error;
+        error <<  "Cannot obtain the SDS info. ";
+        write_error(error.str());
 
     }
 //cerr<<"datatype "<<datatype <<endl;
 //cerr<<"attribute name " << _newfname <<endl;
     
     for (int j=0; j < num_attrs; j++){
+
         status = SDattrinfo(_sds_id, j, buf_attr, &datatype, &n_values);
+
         if (status < 0){
 
             Vend(file_id);
@@ -869,6 +871,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 
         // AttrTable *at = das->get_table(buf_var);
         AttrTable *at = das->get_table(_newfname);
+
         if (!at){
             // at = das->add_table(buf_var, new AttrTable);
             at = das->add_table(_newfname, new AttrTable);
@@ -877,17 +880,19 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
         //char* value = new char [(n_values+1) * sizeof(datatype)];
         char* value = new char [(n_values+1) * DFKNTsize(datatype)];
         status = SDreadattr(_sds_id, j, value);
+
         if (status < 0){
 
-             Vend(file_id);
-             Hclose(file_id);
-             SDendaccess(_sds_id);
-             SDend(sd_id);
+            Vend(file_id);
+            Hclose(file_id);
+            SDendaccess(_sds_id);
+            SDend(sd_id);
 
             ostringstream error;
             error << "SDreadattr() failed on " << buf_attr << endl;
             write_error(error.str());
         }
+
         // Handle character type attribute as a string.
 	if (datatype == DFNT_CHAR || datatype == DFNT_UCHAR) {
 	    *(value + n_values) = '\0';
@@ -902,16 +907,17 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)value);
 
             // Override any existing _FillValue attribute.
-//            if(!strncmp(buf_attr, "_FillValue", H4_MAX_NC_NAME)){
+            // if(!strncmp(buf_attr, "_FillValue", H4_MAX_NC_NAME)){
                //at->del_attr(buf_attr);      
             if (attr_cf_name == "_FillValue") {
-               at->del_attr(attr_cf_name);
+                at->del_attr(attr_cf_name);
             }
             // Override any existing long_name attribute.
-//            if(!strncmp(buf_attr, "long_name", H4_MAX_NC_NAME)){
-               //at->del_attr(buf_attr);      
+            // if(!strncmp(buf_attr, "long_name", H4_MAX_NC_NAME)){
+            // at->del_attr(buf_attr);      
+
             if (attr_cf_name == "long_name") {
-               at->del_attr(attr_cf_name);
+                at->del_attr(attr_cf_name);
             }
 	    //at->append_attr(buf_attr, print_type(datatype), print_rep);
 	    at->append_attr(attr_cf_name, HDFCFUtil::print_type(datatype), print_rep);
@@ -978,46 +984,48 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
 
         try {
 
-        data = new char [(count_v+1) * DFKNTsize(number_type)];
-        if (VSgetattr(vid, _HDF_VDATA, i, data) < 0) {
-            // problem: clean up and throw an exception
+            data = new char [(count_v+1) * DFKNTsize(number_type)];
+            if (VSgetattr(vid, _HDF_VDATA, i, data) < 0) {
 
-            VSdetach(vid);
-            Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
-            ostringstream error;            
-            error << "VSgetattr failed.";
-            write_error(error.str());
-        }
-        // Handle character type attribute as a string.
-	if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
-	    *(data + count_v) = '\0';
-	    count_v = 1;
-	}
+                // problem: clean up and throw an exception
+
+                VSdetach(vid);
+                Vend(file_id);
+                Hclose(file_id);
+                SDend(sd_id);
+                ostringstream error;            
+                error << "VSgetattr failed.";
+                write_error(error.str());
+            }
+            // Handle character type attribute as a string.
+	    if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
+	        *(data + count_v) = '\0';
+	        count_v = 1;
+	    }
         
         
-        for(int j=0; j < count_v ; j++){
-	    string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data);
+            for(int j=0; j < count_v ; j++){
 
-            // Override any existing _FillValue attribute.
-            if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
-               at->del_attr(buf);      
+	        string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data);
+
+                // Override any existing _FillValue attribute.
+                if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
+                    at->del_attr(buf);      
+                }
+                // Override any existing long_name attribute.
+                if(!strncmp(buf, "long_name", H4_MAX_NC_NAME)){
+                    at->del_attr(buf);      
+                }
+
+                string vdataname(buf);
+	        at->append_attr(HDFCFUtil::get_CF_string(buf), HDFCFUtil::print_type(number_type), print_rep);
+
             }
-            // Override any existing long_name attribute.
-            if(!strncmp(buf, "long_name", H4_MAX_NC_NAME)){
-               at->del_attr(buf);      
-            }
-
-            string vdataname(buf);
-	    at->append_attr(HDFCFUtil::get_CF_string(buf), HDFCFUtil::print_type(number_type), print_rep);
-
-        }
         }
 
         catch (...) {
             if (data != NULL) 
-               delete[] data;
+                delete[] data;
             write_error("Cannot allocate enough memory for the data buffer");
         }
         
@@ -1186,43 +1194,43 @@ HE2CF::write_attribute_FillValue(const string& _varname,
     // Cast the value depending on the type.
     switch (_type) {
         
-    case DFNT_UINT8:
-    case DFNT_INT8:        
+        case DFNT_UINT8:
+        case DFNT_INT8:        
         {
             int8 val = (int8) value;
             v_ptr = (void*)&val;
             
         }
         break;
-    case DFNT_INT16:
-    case DFNT_UINT16:        
+        case DFNT_INT16:
+        case DFNT_UINT16:        
         {
             int16 val = (int16) value;
             v_ptr = (void*)&val;
         }
         break;
-    case DFNT_INT32:
-    case DFNT_UINT32:        
+        case DFNT_INT32:
+        case DFNT_UINT32:        
         {
             int32 val = (int32) value;
             v_ptr = (void*)&val;
 
         }
         break;
-    case DFNT_FLOAT:
+        case DFNT_FLOAT:
         {
             v_ptr = (void*)&value;
         }
         break;
-    case DFNT_DOUBLE:
+        case DFNT_DOUBLE:
         {
             float64 val = (float64) value;
             v_ptr = (void*)&val;
 
         }
         break;
-    default:
-        write_error("Invalid FillValue Type - ");
+        default:
+            write_error("Invalid FillValue Type - ");
         break;
     }
 

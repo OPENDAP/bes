@@ -12,6 +12,7 @@ AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
 SUBDIRS = hdfclass bes-testsuite
+DIST_SUBDIRS = hdfclass bes-testsuite
 
 noinst_PROGRAMS = eosdas_test
 
@@ -28,7 +29,7 @@ libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) \
                             $(HDF4_LIBS) $(BES_DAP_LIBS) 
 
 eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
-		      $(HDFTYPE_HDR)
+	      $(HDFTYPE_HDR)
 eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
 eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
 eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
@@ -77,10 +78,10 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-EXTRA_DIST = data bes-testsuite hdf-testfiles \
-	hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
-	OSX_Resources h4.conf.in
+EXTRA_DIST = data data.nasa hdf-testfiles \
+		hdfeos.y hdfeos.lex \
+		COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
+		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 

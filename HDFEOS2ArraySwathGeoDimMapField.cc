@@ -34,26 +34,32 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     if (rank > 2) 
         throw InternalErr (__FILE__, __LINE__, "Currently doesn't support rank >2 with the dimension map");
 
+#if 0
     int *offset = new int[rank];
     int *count = new int[rank];
     int *step = new int[rank];
+#endif
 
+    vector<int>offset;
+    offset.resize(rank);
 
-    int nelms; //[LD Comment 11/13/2012]
+    vector<int>count;
+    count.resize(rank);
 
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
+    vector<int>step;
+    step.resize(rank);
 
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
+
+    vector<int32>offset32;
+    offset32.resize(rank);
+
+    vector<int32>count32;
+    count32.resize(rank);
+
+    vector<int32>step32;
+    step32.resize(rank);
+
 
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
@@ -84,7 +90,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
     if (fileid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -94,7 +99,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     swathid = attachfunc (fileid, const_cast < char *>(datasetname.c_str ()));
 
     if (swathid < 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -117,7 +121,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
         case DFNT_UINT32:
 
         {
-            HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
             detachfunc (swathid);
             closefunc (fileid);
             ostringstream eherr;
@@ -133,7 +136,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
             r = GetLatLon (swathid, fieldname, dimmaps, latlon32,
                            &majordimsize, &minordimsize);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
                detachfunc (swathid);
                closefunc (fileid);
                ostringstream eherr;
@@ -142,12 +144,14 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
                throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            float32 *outlatlon32 = new float32[nelms];
+            //float32 *outlatlon32 = new float32[nelms];
+            vector<float32>outlatlon32;
+            outlatlon32.resize(nelms);
 
-            LatLonSubset (outlatlon32, majordimsize, minordimsize,
-                &latlon32[0], offset32, count32, step32);
-            set_value ((dods_float32 *) outlatlon32, nelms);
-            delete[]outlatlon32;
+            LatLonSubset (&outlatlon32[0], majordimsize, minordimsize,
+                &latlon32[0], &offset32[0], &count32[0], &step32[0]);
+            set_value ((dods_float32 *) &outlatlon32[0], nelms);
+            //delete[]outlatlon32;
         }
             break;
 	case DFNT_FLOAT64:
@@ -157,7 +161,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
             r = GetLatLon (swathid, fieldname, dimmaps, latlon64,
                 &majordimsize, &minordimsize);
             if (r != 0) {
-                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
@@ -166,17 +169,18 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            float64 *outlatlon64 = new float64[nelms];
+            //float64 *outlatlon64 = new float64[nelms];
+            vector<float64>outlatlon64;
+            outlatlon64.resize(nelms);
 
-            LatLonSubset (outlatlon64, majordimsize, minordimsize,
-                &latlon64[0], offset32, count32, step32);
-            set_value ((dods_float64 *) outlatlon64, nelms);
-            delete[]outlatlon64;
+            LatLonSubset (&outlatlon64[0], majordimsize, minordimsize,
+                &latlon64[0], &offset32[0], &count32[0], &step32[0]);
+            set_value ((dods_float64 *) &outlatlon64[0], nelms);
+            //delete[]outlatlon64;
         }
             break;
         default:
         {
-            HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
             detachfunc (swathid);
             closefunc (fileid);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
@@ -185,7 +189,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
     r = detachfunc (swathid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         closefunc (fileid);
         ostringstream eherr;
 
@@ -196,7 +199,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
     r = closefunc (fileid);
     if (r != 0) {
-        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
         ostringstream eherr;
 
         eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
@@ -204,7 +206,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     }
 
 
-    HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 
     return false;
 }

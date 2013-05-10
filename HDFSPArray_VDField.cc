@@ -25,6 +25,19 @@ bool
 HDFSPArray_VDField::read ()
 {
 
+    vector<int>offset;
+    offset.resize(rank);
+
+    vector<int>count;
+    count.resize(rank);
+
+    vector<int>step;
+    step.resize(rank);
+
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
+
+
+#if 0
     int *offset = new int[rank];
     int *count = new int[rank];
     int *step = new int[rank];
@@ -39,6 +52,7 @@ HDFSPArray_VDField::read ()
         delete[]count;
         throw;
     }
+#endif
 
 
     int32 file_id = 0;
@@ -47,9 +61,7 @@ HDFSPArray_VDField::read ()
     // Open the file
     file_id = Hopen (filename.c_str (), DFACC_READ, 0);
     if (file_id < 0) {
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -57,9 +69,7 @@ HDFSPArray_VDField::read ()
     // Start the Vdata interface
     if (Vstart (file_id) < 0) {
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -69,9 +79,7 @@ HDFSPArray_VDField::read ()
     if (vdata_id == -1) {
         Vend (file_id);
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
-
         eherr << "Vdata cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -83,9 +91,7 @@ HDFSPArray_VDField::read ()
         VSdetach (vdata_id);
         Vend (file_id);
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
-
         eherr << "VSseek failed at " << offset[0];
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -95,9 +101,7 @@ HDFSPArray_VDField::read ()
         VSdetach (vdata_id);
         Vend (file_id);
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
-
         eherr << "VSsetfields failed with the name " << fdname;
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -108,22 +112,21 @@ HDFSPArray_VDField::read ()
     switch (dtype) {
         case DFNT_INT8:
         {
-            int8 *val = new int8[nelms];
-            int8 *orival = new int8[vdfelms];
+            vector<int8> val;
+            val.resize(nelms);
+
+            vector<int8>orival;
+            orival.resize(vdfelms);
 
             // Read the data
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
 
             if (r == -1) {
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -142,23 +145,16 @@ HDFSPArray_VDField::read ()
 
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_byte *) &val[0], nelms);
 #else
-            int32 *newval;
-            int8 *newval8;
+            vector<int32>newval;
+            newval.resize(nelms);
 
-            newval = new int32[nelms];
-            newval8 = (int8 *) val;
             for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (int32) (newval8[counter]);
+                newval[counter] = (int32) (val[counter]);
 
-            set_value ((dods_int32 *) newval, nelms);
+            set_value ((dods_int32 *) &newval[0], nelms);
 
-            delete[]val;
-            delete[]newval;
-            delete[]orival;
 #endif
         }
 
@@ -167,19 +163,19 @@ HDFSPArray_VDField::read ()
         case DFNT_UCHAR8:
         case DFNT_CHAR8:
         {
-            uint8 *val = new uint8[nelms];
-            uint8 *orival = new uint8[vdfelms];
 
-            r = VSread (vdata_id, orival, 1+(count[0] -1)* step[0], FULL_INTERLACE);
+            vector<uint8>val;
+            val.resize(nelms);
+          
+            vector<uint8>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, &orival[0], 1+(count[0] -1)* step[0], FULL_INTERLACE);
             if (r == -1) {
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -194,31 +190,25 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_byte *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_byte *) &val[0], nelms);
         }
 
             break;
 
         case DFNT_INT16:
         {
-            int16 *val = new int16[nelms];
-            int16 *orival = new int16[vdfelms];
+            vector<int16>val;
+            val.resize(nelms);
+            vector<int16>orival;
+            orival.resize(vdfelms);
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
                 VSdetach (vdata_id);
-
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -233,31 +223,26 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_int16 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_int16 *) &val[0], nelms);
         }
             break;
 
         case DFNT_UINT16:
 
         {
-            uint16 *val = new uint16[nelms];
-            uint16 *orival = new uint16[vdfelms];
+            vector<uint16>val;
+            val.resize(nelms);
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            vector<uint16>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
-
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -272,30 +257,23 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_uint16 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_uint16 *) &val[0], nelms);
         }
-
             break;
         case DFNT_INT32:
         {
-            int32 *val = new int32[nelms];
-            int32 *orival = new int32[vdfelms];
+            vector<int32>val;
+            val.resize(nelms);
+            vector<int32>orival;
+            orival.resize(vdfelms);
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
-
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -310,31 +288,27 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_int32 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_int32 *) &val[0], nelms);
         }
             break;
 
         case DFNT_UINT32:
-
         {
-            uint32 *val = new uint32[nelms];
-            uint32 *orival = new uint32[vdfelms];
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            vector<uint32>val;
+            val.resize(nelms);
+
+            vector<uint32>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
 
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -349,29 +323,23 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_uint32 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_uint32 *) &val[0], nelms);
         }
             break;
         case DFNT_FLOAT32:
         {
-            float32 *val = new float32[nelms];
-            float32 *orival = new float32[vdfelms];
+            vector<float32>val;
+            val.resize(nelms);
+            vector<float32>orival;
+            orival.resize(vdfelms);
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
-
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -386,29 +354,25 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_float32 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_float32 *) &val[0], nelms);
         }
             break;
         case DFNT_FLOAT64:
         {
-            float64 *val = new float64[nelms];
-            float64 *orival = new float64[vdfelms];
 
-            r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
+            vector<float64>val;
+            val.resize(nelms);
+
+            vector<float64>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
             if (r == -1) {
-
                 VSdetach (vdata_id);
                 Vend (file_id);
                 Hclose (file_id);
-                HDFCFUtil::ClearMem3 (offset, count, step);
-                delete[]val;
-                delete[]orival;
-
                 ostringstream eherr;
-
                 eherr << "VSread failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -423,16 +387,13 @@ HDFSPArray_VDField::read ()
                     val[i] = orival[i * step[0]];
             }
 
-            set_value ((dods_float64 *) val, nelms);
-            delete[]val;
-            delete[]orival;
+            set_value ((dods_float64 *) &val[0], nelms);
         }
             break;
         default:
             VSdetach (vdata_id);
             Vend (file_id);
             Hclose (file_id);
-            HDFCFUtil::ClearMem3 (offset, count, step);
 
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
@@ -440,7 +401,6 @@ HDFSPArray_VDField::read ()
     if (VSdetach (vdata_id) == -1) {
         Vend (file_id);
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
 
         ostringstream eherr;
 
@@ -450,7 +410,6 @@ HDFSPArray_VDField::read ()
 
     if (Vend (file_id) == -1) {
         Hclose (file_id);
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
 
         eherr << "VSdetach failed.";
@@ -459,16 +418,11 @@ HDFSPArray_VDField::read ()
 
     if (Hclose (file_id) == -1) {
 
-        HDFCFUtil::ClearMem3 (offset, count, step);
         ostringstream eherr;
 
         eherr << "VSdetach failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
-    delete[]offset;
-    delete[]count;
-    delete[]step;
 
     return false;
 }

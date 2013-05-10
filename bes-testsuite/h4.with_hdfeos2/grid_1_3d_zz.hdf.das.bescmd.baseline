@@ -1,7 +1,6 @@
 Attributes {
     pressure {
         String long_name "pressure";
-        String units "level";
     }
     level {
         String coordinates "pressure";

@@ -1,51 +1,33 @@
 Attributes {
     pressure {
-        String units "level";
         String long_name "Swath1:pressure";
     }
-    latitude {
-        String coordinates "xtrack ytrack";
-        String long_name "Swath1:latitude";
+    Latitude {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude";
     }
-    longitude {
-        String coordinates "xtrack ytrack";
-        String long_name "Swath1:longitude";
-    }
-    xtrack {
-        String units "level";
-        String long_name "Swath1:xtrack(fake)";
-    }
-    ytrack {
-        String units "level";
-        String long_name "Swath1:ytrack(fake)";
+    Longitude {
+        String units "degrees_east";
+        String long_name "Swath1:Longitude";
     }
     temperature {
-        String coordinates "pressure xtrack ytrack";
+        String coordinates "pressure Latitude Longitude";
         Float32 _FillValue -9999.000000;
         String long_name "Swath1:temperature";
     }
     pressure_1 {
-        String units "level";
         String long_name "Swath2:pressure";
     }
-    latitude_1 {
-        String coordinates "xtrack_1 ytrack_1";
-        String long_name "Swath2:latitude";
+    Latitude_1 {
+        String units "degrees_north";
+        String long_name "Swath2:Latitude";
     }
-    longitude_1 {
-        String coordinates "xtrack_1 ytrack_1";
-        String long_name "Swath2:longitude";
-    }
-    xtrack_1 {
-        String units "level";
-        String long_name "Swath2:xtrack(fake)";
-    }
-    ytrack_1 {
-        String units "level";
-        String long_name "Swath2:ytrack(fake)";
+    Longitude_1 {
+        String units "degrees_east";
+        String long_name "Swath2:Longitude";
     }
     temperature_1 {
-        String coordinates "pressure_1 xtrack_1 ytrack_1";
+        String coordinates "pressure_1 Latitude_1 Longitude_1";
         Float32 _FillValue -9999.000000;
         String long_name "Swath2:temperature";
     }
@@ -78,12 +60,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
@@ -125,12 +107,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }

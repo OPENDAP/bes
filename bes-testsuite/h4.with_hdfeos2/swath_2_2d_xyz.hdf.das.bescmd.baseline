@@ -1,35 +1,33 @@
 Attributes {
     pressure {
-        String units "level";
         String long_name "Swath1:pressure";
     }
-    latitude {
-        String units "level";
-        String long_name "Swath1:latitude";
+    Latitude {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude";
     }
-    longitude {
-        String coordinates "latitude";
-        String long_name "Swath1:longitude";
+    Longitude {
+        String coordinates "Latitude";
+        String long_name "Swath1:Longitude";
     }
     temperature {
-        String coordinates "pressure latitude";
+        String coordinates "pressure Latitude";
         Float32 _FillValue -9999.000000;
         String long_name "Swath1:temperature";
     }
     pressure_1 {
-        String units "level";
         String long_name "Swath2:pressure";
     }
-    latitude_1 {
-        String units "level";
-        String long_name "Swath2:latitude";
+    Latitude_1 {
+        String units "degrees_north";
+        String long_name "Swath2:Latitude";
     }
-    longitude_1 {
-        String coordinates "latitude_1";
-        String long_name "Swath2:longitude";
+    Longitude_1 {
+        String coordinates "Latitude_1";
+        String long_name "Swath2:Longitude";
     }
     temperature_1 {
-        String coordinates "pressure_1 latitude_1";
+        String coordinates "pressure_1 Latitude_1";
         Float32 _FillValue -9999.000000;
         String long_name "Swath2:temperature";
     }
@@ -58,12 +56,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }
@@ -101,12 +99,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }

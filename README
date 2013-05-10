@@ -1,3 +1,9 @@
+Updated for version 3.11.0 (30 May 2013)
+
+ Limitation of handling MOD14 product is documented under USAGE. MOD14 is not
+ an HDF-EOS2 product so having MOD03 geo-location file will not change the 
+ output of the HDF4 handler.
+
 Updated for version 3.10.1 (27 Nov 2012)
 
  This version fixes a bug for reading Int16 type dataset from NASA MODIS 09 
@@ -279,7 +285,6 @@ array.
 
   Byte vdata_PerBlockMetadataTime_vdf_BlockCenterTime[VDFDim0_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 2][VDFDim1_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 28] = {{50, 48, 48, 54, 45, 49, 48, 45, 48, 49, 84, 49, 54, 58, 49, 55, 58, 49, 50, 46, 54, 57, 51, 51, 49, 48, 90, 0},{50, 48, 48, 54, 45, 49, 48, 45, 48, 49, 84, 49, 54, 58, 49, 55, 58, 51, 51, 46, 52, 51, 56, 57, 50, 54, 90, 0}};
 
-  
 
 7. Known Issues
 
@@ -494,8 +499,8 @@ any more.
 
 Since some netCDF visualization tools will apply the linear scale and offset 
 equation to the data value if the CF "scale_factor" and "add_offset" attributes
- appear, these two attributes are renamed as "scale_factor_modis" and 
-"add_offset_modis" respectively to prevent the second adjustment. 
+ appear, these two attributes are renamed as "orig_scale_factor" and 
+"orig_add_offset" respectively to prevent the second adjustment. 
 
 
 2.2 Latitude and longitude are provided for HDF-EOS2 grid files that use 

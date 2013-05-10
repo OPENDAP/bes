@@ -29,7 +29,7 @@
                 <Attribute name="GeoField" type="Container">
                     <Attribute name="GeoField_1" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -40,7 +40,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -77,7 +77,7 @@
     </Attribute>
     <Array name="temperature">
         <Attribute name="coordinates" type="String">
-            <value>latitude </value>
+            <value>Latitude </value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
@@ -89,41 +89,41 @@
         <dimension name="NDim" size="8"/>
         <dimension size="4"/>
     </Array>
-    <Array name="latitude">
+    <Array name="Latitude">
         <Attribute name="units" type="String">
-            <value>level</value>
+            <value>degrees_north</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim" size="8"/>
     </Array>
-    <Array name="longitude">
+    <Array name="Longitude">
         <Attribute name="coordinates" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>longitude</value>
+            <value>Longitude</value>
         </Attribute>
         <Float32/>
         <dimension name="NDim" size="8"/>
     </Array>
     <Array>
-        <Attribute name="latitude" type="Container">
+        <Attribute name="Latitude" type="Container">
             <Attribute name="units" type="String">
-                <value>level</value>
+                <value>degrees_north</value>
             </Attribute>
             <Attribute name="long_name" type="String">
-                <value>latitude</value>
+                <value>Latitude</value>
             </Attribute>
         </Attribute>
-        <Attribute name="longitude" type="Container">
+        <Attribute name="Longitude" type="Container">
             <Attribute name="coordinates" type="String">
-                <value>latitude</value>
+                <value>Latitude</value>
             </Attribute>
             <Attribute name="long_name" type="String">
-                <value>longitude</value>
+                <value>Longitude</value>
             </Attribute>
         </Attribute>
         <Attribute name="units" type="String">
@@ -134,7 +134,7 @@
         </Attribute>
         <Attribute name="temperature" type="Container">
             <Attribute name="coordinates" type="String">
-                <value>latitude </value>
+                <value>Latitude </value>
             </Attribute>
             <Attribute name="_FillValue" type="Float32">
                 <value>-9999.000000</value>
@@ -172,7 +172,7 @@
                     <Attribute name="GeoField" type="Container">
                         <Attribute name="GeoField_1" type="Container">
                             <Attribute name="GeoFieldName" type="String">
-                                <value>&quot;latitude&quot;</value>
+                                <value>&quot;Latitude&quot;</value>
                             </Attribute>
                             <Attribute name="DataType" type="String">
                                 <value>DFNT_FLOAT32</value>
@@ -183,7 +183,7 @@
                         </Attribute>
                         <Attribute name="GeoField_2" type="Container">
                             <Attribute name="GeoFieldName" type="String">
-                                <value>&quot;longitude&quot;</value>
+                                <value>&quot;Longitude&quot;</value>
                             </Attribute>
                             <Attribute name="DataType" type="String">
                                 <value>DFNT_FLOAT32</value>

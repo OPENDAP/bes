@@ -1,12 +1,10 @@
 Attributes {
-    lat {
-        String coordinates "Latitude";
-        String long_name "lat";
+    Latitude {
+        String long_name "Latitude";
         String units "degrees_north";
     }
-    lon {
-        String coordinates "Longitude";
-        String long_name "lon";
+    Longitude {
+        String long_name "Longitude";
         String units "degrees_east";
     }
     temperature {
@@ -15,15 +13,6 @@ Attributes {
     }
     pressure {
         String long_name "pressure";
-        String units "level";
-    }
-    Latitude {
-        String long_name "Latitude";
-        String units "degrees_north";
-    }
-    Longitude {
-        String long_name "Longitude";
-        String units "degrees_east";
     }
     StructMetadata {
         SwathStructure {
@@ -45,12 +34,12 @@ Attributes {
                 }
                 DataField {
                     DataField_1 {
-                        String DataFieldName "lat";
+                        String DataFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "YDim";
                     }
                     DataField_2 {
-                        String DataFieldName "lon";
+                        String DataFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "XDim";
                     }

@@ -19,9 +19,16 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in \
-	   $(srcdir)/package.m4 h4 bes.conf.in \
-	   generate_metadata_baseline.sh.in
+EXTRA_DIST = hdf4_handlerTest.at \
+	 hdf4_handlerTest.with_hdfeos2.at \
+	 hdf4_handlerTest.nasa.with_hdfeos2.at \
+	 h4 h4.with_hdfeos2 h4.nasa.with_hdfeos2 \
+	 $(TESTSUITE) \
+	 $(srcdir)/package.m4 \
+	 atlocal.in \
+	 bes.conf.in \
+	 bes.conf.with_hdfeos2.in \
+	 generate_metadata_baseline.sh.in
 
 # bes-testsuite h4 besstandalone.h4 
 
@@ -45,7 +52,7 @@ endif
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/hdf4_handlerTest
 
 check-local: atconfig atlocal $(TESTSUITE)

@@ -48,7 +48,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -60,7 +60,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -99,7 +99,7 @@
     </Attribute>
     <Array name="temperature">
         <Attribute name="coordinates" type="String">
-            <value>pressure xtrack ytrack</value>
+            <value>pressure Latitude Longitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
             <value>-9999.000000</value>
@@ -113,55 +113,32 @@
         <dimension name="ytrack" size="8"/>
     </Array>
     <Array name="pressure">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <value>pressure</value>
         </Attribute>
         <Float32/>
         <dimension name="ZDim" size="4"/>
     </Array>
-    <Array name="latitude">
-        <Attribute name="coordinates" type="String">
-            <value>xtrack ytrack</value>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Float32/>
         <dimension name="xtrack" size="4"/>
         <dimension name="ytrack" size="8"/>
     </Array>
-    <Array name="longitude">
-        <Attribute name="coordinates" type="String">
-            <value>xtrack ytrack</value>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>longitude</value>
+            <value>Longitude</value>
         </Attribute>
         <Float32/>
         <dimension name="xtrack" size="4"/>
-        <dimension name="ytrack" size="8"/>
-    </Array>
-    <Array name="xtrack">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <value>xtrack(fake)</value>
-        </Attribute>
-        <Int32/>
-        <dimension name="xtrack" size="4"/>
-    </Array>
-    <Array name="ytrack">
-        <Attribute name="units" type="String">
-            <value>level</value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <value>ytrack(fake)</value>
-        </Attribute>
-        <Int32/>
         <dimension name="ytrack" size="8"/>
     </Array>
     <dataBLOB href=""/>

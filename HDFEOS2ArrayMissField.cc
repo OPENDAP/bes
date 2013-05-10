@@ -22,112 +22,45 @@
 #include "HDFEOS2.h"
 
 // Here's a new implementation; memory leak warnings addressed. jhrg 3/16/11
+// Now we use the vector to replace new []. KY 2012-12-30
 
 bool HDFEOS2ArrayMissGeoField::read()
 {
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-    int *val = NULL;
 
-    int nelms;
+    vector<int> offset;
+    offset.resize(rank);
+    vector<int> count;
+    count.resize(rank);
+    vector<int> step;
+    step.resize(rank);
 
-    try {
-        // format_constraint throws on error;
-        nelms = format_constraint(offset, step, count);
+    int nelms = -1;
 
-        // Since we always assign the the missing Z dimension as 32-bit
-        // integer, so no need to check the type. The missing Z-dim is always
-        // 1-D with natural number 1,2,3,....
-        val = new int[nelms];
+    // format_constraint throws on error;
+    nelms = format_constraint(&offset[0], &step[0], &count[0]);
 
-        if (nelms == tnumelm) {
-            for (int i = 0; i < nelms; i++)
-                val[i] = i;
-            set_value((dods_int32 *) val, nelms);
-        }
-        else {
-            if (rank != 1) {
-                throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
-            }
-            for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
-            set_value((dods_int32 *) val, nelms);
-        }
-    }
-    catch (...) {
-        delete[] offset;
-        delete[] count;
-        delete[] step;
-        delete[] val;
-        throw;
-    }
+    vector<int> val;
+    val.resize(nelms);
 
-    if (offset != NULL)
-        delete[] offset;
-    if (count != NULL)
-        delete[] count;
-    if (step != NULL)
-        delete[] step;
-    if (val != NULL) 
-        delete[] val;
-
-    return false;
-}
-
-#if 0
-bool
-HDFEOS2ArrayMissGeoField::read ()
-{
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-
-    int nelms;
-
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
-
-    // Since we always assign the the missing Z dimension as 32-bit integer, so no need
-    // to check the type.
-    // The missing Z-dim is always 1-D with natural number 1,2,3,....
-    int *val = new int[nelms];
-
+    // Since we always assign the the missing Z dimension as 32-bit
+    // integer, so no need to check the type. The missing Z-dim is always
+    // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
-        set_value ((dods_int32 *) val, nelms);
+        set_value((dods_int32 *) &val[0], nelms);
     }
     else {
         if (rank != 1) {
-            delete[]val;
-            delete[]offset;
-            delete[]count;
-            delete[]step;
-
-            throw InternalErr (__FILE__, __LINE__,
-                "Currently the rank of the missing field should be 1");
+            throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
         }
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value ((dods_int32 *) val, nelms);
+        set_value((dods_int32 *) &val[0], nelms);
     }
-
-    delete[]val;
-    delete[]offset;
-    delete[]count;
-    delete[]step;
-
+ 
     return false;
 }
-#endif
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 

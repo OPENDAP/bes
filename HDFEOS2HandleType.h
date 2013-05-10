@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 
 // Don't like to handle this way. Seem this is the only doable solution for now.
 // KY 2012-07-31
@@ -15,6 +13,6 @@ using namespace std;
 // The current handling is not ideal. It is because of added HDF-EOS2 attributes by HDF4 APIs
 // To change the current handling may be a huge task.  KY 2012-8-1
 
-vector <string> ctype_field_namelist;
+std::vector <std::string> ctype_field_namelist;
 
 #endif

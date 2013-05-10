@@ -40,7 +40,7 @@
                 <Attribute name="DataField" type="Container">
                     <Attribute name="DataField_1" type="Container">
                         <Attribute name="DataFieldName" type="String">
-                            <value>&quot;lat&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -51,7 +51,7 @@
                     </Attribute>
                     <Attribute name="DataField_2" type="Container">
                         <Attribute name="DataFieldName" type="String">
-                            <value>&quot;lon&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -124,7 +124,7 @@
                 <Attribute name="DataField" type="Container">
                     <Attribute name="DataField_1" type="Container">
                         <Attribute name="DataFieldName" type="String">
-                            <value>&quot;lat&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -135,7 +135,7 @@
                     </Attribute>
                     <Attribute name="DataField_2" type="Container">
                         <Attribute name="DataFieldName" type="String">
-                            <value>&quot;lon&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -179,12 +179,9 @@
             <value>HDFEOS_V2.18</value>
         </Attribute>
     </Attribute>
-    <Array name="lat">
-        <Attribute name="coordinates" type="String">
-            <value>Latitude</value>
-        </Attribute>
+    <Array name="Latitude">
         <Attribute name="long_name" type="String">
-            <value>GeoGrid1:lat</value>
+            <value>GeoGrid1:Latitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
@@ -192,12 +189,9 @@
         <Float32/>
         <dimension name="Latitude" size="8"/>
     </Array>
-    <Array name="lon">
-        <Attribute name="coordinates" type="String">
-            <value>Longitude</value>
-        </Attribute>
+    <Array name="Longitude">
         <Attribute name="long_name" type="String">
-            <value>GeoGrid1:lon</value>
+            <value>GeoGrid1:Longitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>
@@ -208,9 +202,6 @@
     <Array name="pressure">
         <Attribute name="long_name" type="String">
             <value>GeoGrid1:pressure</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>level</value>
         </Attribute>
         <Float32/>
         <dimension name="pressure" size="2"/>
@@ -230,45 +221,22 @@
         <dimension name="Latitude" size="8"/>
         <dimension name="Longitude" size="16"/>
     </Array>
-    <Array name="Latitude">
+    <Array name="Latitude_1">
         <Attribute name="long_name" type="String">
-            <value>GeoGrid1:Latitude</value>
+            <value>GeoGrid2:Latitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
         </Attribute>
-        <Float64/>
-        <dimension name="Latitude" size="8"/>
-    </Array>
-    <Array name="Longitude">
-        <Attribute name="long_name" type="String">
-            <value>GeoGrid1:Longitude</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Float64/>
-        <dimension name="Longitude" size="16"/>
-    </Array>
-    <Array name="lat_1">
-        <Attribute name="coordinates" type="String">
-            <value>Latitude_1</value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <value>GeoGrid2:lat</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
         <Float32/>
         <dimension name="Latitude_1" size="4"/>
     </Array>
-    <Array name="lon_1">
-        <Attribute name="coordinates" type="String">
-            <value>Longitude_1</value>
-        </Attribute>
+    <Array name="Longitude_1">
         <Attribute name="long_name" type="String">
-            <value>GeoGrid2:lon</value>
+            <value>GeoGrid2:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
         </Attribute>
         <Float32/>
         <dimension name="Longitude_1" size="8"/>
@@ -276,9 +244,6 @@
     <Array name="pressure_1">
         <Attribute name="long_name" type="String">
             <value>GeoGrid2:pressure</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>level</value>
         </Attribute>
         <Float32/>
         <dimension name="pressure_1" size="2"/>
@@ -293,26 +258,6 @@
         <Float32/>
         <dimension name="pressure_1" size="2"/>
         <dimension name="Latitude_1" size="4"/>
-        <dimension name="Longitude_1" size="8"/>
-    </Array>
-    <Array name="Latitude_1">
-        <Attribute name="long_name" type="String">
-            <value>GeoGrid2:Latitude</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_north</value>
-        </Attribute>
-        <Float64/>
-        <dimension name="Latitude_1" size="4"/>
-    </Array>
-    <Array name="Longitude_1">
-        <Attribute name="long_name" type="String">
-            <value>GeoGrid2:Longitude</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
-        </Attribute>
-        <Float64/>
         <dimension name="Longitude_1" size="8"/>
     </Array>
     <dataBLOB href=""/>

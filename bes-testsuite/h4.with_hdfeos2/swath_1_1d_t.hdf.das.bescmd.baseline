@@ -1,6 +1,5 @@
 Attributes {
     Time {
-        String units "level";
         String long_name "Time";
     }
     temperature {
