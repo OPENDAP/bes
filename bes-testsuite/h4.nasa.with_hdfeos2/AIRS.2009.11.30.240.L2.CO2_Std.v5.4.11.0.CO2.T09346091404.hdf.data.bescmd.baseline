@@ -1,0 +1,9 @@
+The data:
+Int32 Minute[Track = 2][XTrack = 2] = {{59, -9999},{-9999, -9999}};
+Float32 Seconds[Track = 2][XTrack = 2] = {{37.116, -9999},{-9999, -9999}};
+Float32 AvgKern[Track = 2][XTrack = 2][AvgKernDim = 2] = {{{0.000162536, 0},{-9999, -9999}},{{-9999, -9999},{-9999, -9999}}};
+Float32 Latitude[Track = 2][XTrack = 2] = {{4.93, -9999},{-9999, -9999}};
+Float32 Longitude[Track = 2][XTrack = 2] = {{-163.47, -9999},{-9999, -9999}};
+Float32 Time[Track = 2][XTrack = 2] = {{5.33779e+08, -9999},{-9999, -9999}};
+Int32 AvgKernDim[AvgKernDim = 2] = {0, 99};
+

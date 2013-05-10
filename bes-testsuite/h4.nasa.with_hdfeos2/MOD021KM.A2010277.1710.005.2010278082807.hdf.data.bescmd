@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MOD021KM.A2010277.1710.005.2010278082807" space="catalog">/data/MOD021KM.A2010277.1710.005.2010278082807.hdf</setContainer>
+    <define name="d">
+	<container name="MOD021KM.A2010277.1710.005.2010278082807" />
+        <constraint>EV_1KM_RefSB[9][1868][22],EV_1KM_RefSB_Uncert_Indexes[0:14:14][0:2029:2029][0:1353:1353],Height[0:2029:2029][0:1353:1353],Latitude[0:2029:2029][0:1353:1353],Longitude[0:2029:2029][0:1353:1353]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

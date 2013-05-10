@@ -1,0 +1,7 @@
+Dataset {
+    Float32 DATA_GRANULE_PlanetaryGrid_precipitation[scan = 1][longitude = 1440][latitude = 400];
+    Float32 DATA_GRANULE_PlanetaryGrid_relativeError[scan = 1][longitude = 1440][latitude = 400];
+    Float32 latitude[latitude = 400];
+    Float32 longitude[longitude = 1440];
+    Int32 scan[scan = 1];
+} 3B43.070901.6A.hdf;

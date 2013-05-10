@@ -1,0 +1,17 @@
+Dataset {
+    Int32 Year[Track = 22][XTrack = 15];
+    Int32 Month[Track = 22][XTrack = 15];
+    Int32 Day[Track = 22][XTrack = 15];
+    Int32 Hour[Track = 22][XTrack = 15];
+    Int32 Minute[Track = 22][XTrack = 15];
+    Float32 Seconds[Track = 22][XTrack = 15];
+    Float32 LandFrac[Track = 22][XTrack = 15];
+    Float32 CO2ret[Track = 22][XTrack = 15];
+    Float32 CO2std[Track = 22][XTrack = 15];
+    Float32 Solzen[Track = 22][XTrack = 15];
+    Float32 AvgKern[Track = 22][XTrack = 15][AvgKernDim = 100];
+    Float32 Latitude[Track = 22][XTrack = 15];
+    Float32 Longitude[Track = 22][XTrack = 15];
+    Float32 Time[Track = 22][XTrack = 15];
+    Int32 AvgKernDim[AvgKernDim = 100];
+} AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404.hdf;
