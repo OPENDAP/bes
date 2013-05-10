@@ -37,7 +37,7 @@ intn write_attr(char *fname)
         return -1;
     }
 
-    /* Get the identifier for the data set "lat". */
+    /* Get the identifier for the data set "Latitude". */
     sds_id = SDselect(sd_id, 0);
     if (sds_id == FAIL) {
 	fprintf(stderr, "SDselect() failed.\n");
@@ -56,7 +56,7 @@ intn write_attr(char *fname)
      */
     status = SDendaccess (sds_id);
 
-    /* Get the identifier for the data set "lon". */
+    /* Get the identifier for the data set "Longitude". */
     sds_id = SDselect(sd_id, 1);
     if (sds_id == FAIL) {
         fprintf(stderr, "SDselect() failed.\n");
@@ -108,8 +108,8 @@ intn write_field_2d(int32 gdid, char* field_name)
     edge[1] = 8;
 
     /* Create a field. */
-    GDdeffield(gdid, "lat", "YDim", DFNT_FLOAT32, 0);
-    GDdeffield(gdid, "lon", "XDim", DFNT_FLOAT32, 0);
+    GDdeffield(gdid, "Latitude", "YDim", DFNT_FLOAT32, 0);
+    GDdeffield(gdid, "Longitude", "XDim", DFNT_FLOAT32, 0);
     GDdeffield(gdid, field_name, dim_name, DFNT_FLOAT32, 0); 
 
     status = GDwritefield(gdid, field_name, NULL, NULL, NULL, temp); 
@@ -118,13 +118,13 @@ intn write_field_2d(int32 gdid, char* field_name)
 	return -1;        
     }
 
-    status = GDwritefield(gdid, "lat", NULL, NULL, NULL, temp1);
+    status = GDwritefield(gdid, "Latitude", NULL, NULL, NULL, temp1);
     if(status == -1){
         fprintf(stderr, "GDwritefield(...,\"lat\",...) failed.\n");
         return -1;
     }
 
-    status = GDwritefield(gdid, "lon", NULL, NULL, NULL, temp2);
+    status = GDwritefield(gdid, "Longitude", NULL, NULL, NULL, temp2);
     if(status == -1){
         fprintf(stderr, "GDwritefield(...,\"lon\",...) failed.\n");
         return -1;

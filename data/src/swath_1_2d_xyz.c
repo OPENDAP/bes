@@ -129,8 +129,8 @@ intn write_swath(int32 swfid, char* sname)
     char field_name[]= "temperature";
     char field_dim_name[]= "ZDim,NDim";
     char geo_name[]= "pressure";
-    char geo_name_lon[]= "longitude";
-    char geo_name_lat[]= "latitude";
+    char geo_name_lon[]= "Longitude";
+    char geo_name_lat[]= "Latitude";
     char geo_dim_name[]= "ZDim";
     char geo_dim_name2[]= "NDim";
 

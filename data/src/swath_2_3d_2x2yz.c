@@ -47,7 +47,7 @@ intn write_attr(char *fname)
         return -1;
     }
 
-    /* Get the identifier for the data set "lat". */
+    /* Get the identifier for the data set "Latitude". */
     sds_id = SDselect(sd_id, 0);
     if (sds_id == FAIL) {
         fprintf(stderr, "SDselect() failed.\n");
@@ -66,7 +66,7 @@ intn write_attr(char *fname)
      */
     status = SDendaccess (sds_id);
 
-    /* Get the identifier for the data set "lat". */
+    /* Get the identifier for the data set "Latitude". */
     sds_id = SDselect(sd_id, 3);
     if (sds_id == FAIL) {
         fprintf(stderr, "SDselect() failed.\n");
@@ -85,7 +85,7 @@ intn write_attr(char *fname)
      */
     status = SDendaccess (sds_id);
 
-    /* Get the identifier for the data set "lon". */
+    /* Get the identifier for the data set "Longitude". */
     sds_id = SDselect(sd_id, 1);
     if (sds_id == FAIL) {
         fprintf(stderr, "SDselect() failed.\n");
@@ -104,7 +104,7 @@ intn write_attr(char *fname)
      */
     status = SDendaccess (sds_id);
 
-    /* Get the identifier for the data set "lon". */
+    /* Get the identifier for the data set "Longitude". */
     sds_id = SDselect(sd_id, 4);
     if (sds_id == FAIL) {
         fprintf(stderr, "SDselect() failed.\n");
@@ -272,8 +272,8 @@ intn write_swath(int32 swfid, char* sname, int xdim, int ydim, int zdim)
     char field_name[]= "temperature";
     char field_dim_name[]= "ZDim,xtrack,ytrack";
     char geo_name[]= "pressure";
-    char geo_name_lon[]= "longitude";
-    char geo_name_lat[]= "latitude";
+    char geo_name_lon[]= "Longitude";
+    char geo_name_lat[]= "Latitude";
     char geo_dim_name[]= "ZDim";
     char geo_dim_name2[]= "xtrack,ytrack";
 

@@ -137,17 +137,17 @@ intn write_field_1d(int32 gdid, int xdim, int ydim)
 	temp2[i] = i+1;
 
     /* Create a field. */
-    GDdeffield(gdid, "lat", "YDim", DFNT_FLOAT32, 0);
-    GDdeffield(gdid, "lon", "XDim", DFNT_FLOAT32, 0);
+    GDdeffield(gdid, "Latitude", "YDim", DFNT_FLOAT32, 0);
+    GDdeffield(gdid, "Longitude", "XDim", DFNT_FLOAT32, 0);
     GDdeffield(gdid, "pressure", "ZDim", DFNT_FLOAT32, 0);
 
-    status = GDwritefield(gdid, "lat", NULL, NULL, NULL, temp2);
+    status = GDwritefield(gdid, "Latitude", NULL, NULL, NULL, temp2);
     if(status == -1){
         fprintf(stderr, "GDwritefield(...,\"lat\",...) failed.\n");
         return -1;
     }
 
-    status = GDwritefield(gdid, "lon", NULL, NULL, NULL, temp1);
+    status = GDwritefield(gdid, "Longitude", NULL, NULL, NULL, temp1);
     if(status == -1){
         fprintf(stderr, "GDwritefield(...,\"lon\",...) failed.\n");
         return -1;
