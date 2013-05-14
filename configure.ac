@@ -19,6 +19,10 @@ AC_SUBST(PACKAGE_MAJOR_VERSION)
 AC_SUBST(PACKAGE_MINOR_VERSION)
 AC_SUBST(PACKAGE_SUBMINOR_VERSION)
 
+dnl Add valgrind options
+DODS_GCOV_VALGRIND
+
+
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -31,7 +35,6 @@ dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [.])
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
 dnl to default values otherwise.
-
 AC_CANONICAL_HOST
 AC_SUBST(host)
 
@@ -103,7 +106,7 @@ AC_TYPE_SIZE_T
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(strdup strftime timegm mktime)
+AC_CHECK_FUNCS(strdup strftime timegm mktime atexit)
 AC_SYS_LARGEFILE
 
 BES_OLD_LIBS=$LIBS
@@ -242,6 +245,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_dap.pc
 		 bes_xml_command.pc
 		 functions/Makefile
+		 functions/unit-tests/Makefile
 ])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])

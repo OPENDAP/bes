@@ -10,7 +10,8 @@ AM_LFLAGS = -8
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-# SUBDIRS = . tests
+SUBDIRS =  . unit-tests 
+DIST_SUBDIRS = unit-tests 
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfunctions_module.la

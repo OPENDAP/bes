@@ -30,7 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+
+#include <pthread.h>
+
 #include <sstream>
 
 using std::ostringstream ;
@@ -47,6 +54,8 @@ using std::ostringstream ;
 
 
 
+static pthread_once_t BESCatalogList_instance_control = PTHREAD_ONCE_INIT;
+
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
 
@@ -56,7 +65,7 @@ BESCatalogList *BESCatalogList::_instance = 0 ;
 BESCatalogList *
 BESCatalogList::TheCatalogList()
 {
-    initialize_instance();
+    pthread_once(&BESCatalogList_instance_control, initialize_instance);
     return _instance;
 }
 
@@ -66,7 +75,9 @@ BESCatalogList::TheCatalogList()
 void BESCatalogList::initialize_instance() {
     if (_instance == 0) {
         _instance = new BESCatalogList;
-        atexit(delete_instance);
+        #if HAVE_ATEXIT
+            atexit(delete_instance);
+        #endif
     }
 }
 
