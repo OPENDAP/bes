@@ -45,18 +45,20 @@ BoundingBox.h wcsUtil.h DAP_Dataset.h reproj_functions.h
 
 if CPPUNIT
 UNIT_TESTS = s2gTest
+	
 else
 UNIT_TESTS =
+
 check-local:
-    @echo ""
-    @echo "**********************************************************"
-    @echo "You must have cppunit 1.12.x or greater installed to run *"
-    @echo "check target in unit-tests directory                     *"
-    @echo "**********************************************************"
-    @echo ""
+	@echo ""
+	@echo "**********************************************************"
+	@echo "You must have cppunit 1.12.x or greater installed to run *"
+	@echo "check target in unit-tests directory                     *"
+	@echo "**********************************************************"
+	@echo ""
 endif
 
 
 s2gTest_SOURCES = s2gTest.cc
-s2gTest_LDADD = ../libdap.la ../tests/libtest-types.a libswath2grid.la $(AM_LDADD)
+s2gTest_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types libswath2grid.la $(AM_LDADD)
 

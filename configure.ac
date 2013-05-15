@@ -246,6 +246,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_xml_command.pc
 		 functions/Makefile
 		 functions/unit-tests/Makefile
+		 functions/swath2grid/Makefile
 ])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
