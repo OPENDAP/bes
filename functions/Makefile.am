@@ -19,10 +19,10 @@ lib_bes_LTLIBRARIES = libfunctions_module.la
 BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
 
 SRCS = ce_functions.cc grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
-gse.tab.cc lex.gse_.cc GSEClause.cc
+gse.tab.cc lex.gse_.cc GSEClause.cc ArrayGeoConstraint.cc
 
 HDRS = ce_functions.h grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
-gse.tab.hh gse_parser.h GSEClause.h
+gse.tab.hh gse_parser.h GSEClause.h ArrayGeoConstraint.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

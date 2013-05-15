@@ -42,11 +42,11 @@
 #include "DDS.h"
 #include "DAS.h"
 
-#include "../tests/TestArray.h"
+#include "test/TestArray.h"
 #include "ArrayGeoConstraint.h"
 #include "ce_functions.h"
 
-#include "../tests/TestTypeFactory.h"
+#include "test/TestTypeFactory.h"
 
 #include "debug.h"
 

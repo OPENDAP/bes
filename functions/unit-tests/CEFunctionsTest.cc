@@ -42,7 +42,7 @@
 #include "ce_functions.h"
 #include <test_config.h>
 
-#include "../tests/TestTypeFactory.h"
+#include "test/TestTypeFactory.h"
 
 #include "debug.h"
 

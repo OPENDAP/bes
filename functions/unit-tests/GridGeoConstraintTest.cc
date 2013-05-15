@@ -42,7 +42,7 @@
 #include "GridGeoConstraint.h"
 #include "ce_functions.h"
 
-#include "../tests/TestTypeFactory.h"
+#include "test/TestTypeFactory.h"
 
 #include "debug.h"
 #include <test_config.h>
