@@ -1,0 +1,28 @@
+Dataset {
+    Grid {
+      Array:
+        Byte a[first=10];
+      Maps:
+        Float64 first[10];
+    } a;
+    
+    # Use this grid to look at Maps with values that go from big to small,
+    # which should not be an issue, but...
+    Grid {
+      Array:
+        Byte b[first=10];
+      Maps:
+        Float64 first[10];
+    } b;
+    
+    Grid {
+      Array:
+        Byte val[lon=14][lat=14];
+      Maps:
+        Float32 lon[14];
+        Float32 lat[14];
+    } values;
+    
+    Float32 lat[14];
+    Float32 lon[14];
+} two_grids;
