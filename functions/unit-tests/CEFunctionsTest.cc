@@ -31,17 +31,21 @@
 
 //#define DODS_DEBUG
 
-#include "GetOpt.h"
-#include "BaseType.h"
-#include "Int32.h"
-#include "Float64.h"
-#include "Str.h"
-#include "Array.h"
-#include "Grid.h"
-#include "DDS.h"
-#include "DAS.h"
+#include <GetOpt.h>
+#include <BaseType.h>
+#include <Int32.h>
+#include <Float64.h>
+#include <Str.h>
+#include <Array.h>
+#include <Grid.h>
+#include <DDS.h>
+#include <DAS.h>
+
+#include <util.h>
+#include <debug.h>
+
 #include "ce_functions.h"
-#include <test_config.h>
+#include "test_config.h"
 
 #include "test/TestTypeFactory.h"
 
@@ -516,7 +520,7 @@ public:
         }
     }
 
-
+#if 0
     void function_dap_1_test() {
         try {
             Int32 *i = new Int32("function_dap_1_test_int32");
@@ -570,7 +574,7 @@ public:
             CPPUNIT_ASSERT("Pass: Caught exception");
         }
     }
-
+#endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);

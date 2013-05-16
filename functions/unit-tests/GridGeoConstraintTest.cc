@@ -29,22 +29,24 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <BaseType.h>
+#include <Int32.h>
+#include <Float64.h>
+#include <Str.h>
+#include <Array.h>
+#include <Grid.h>
+#include <DDS.h>
+#include <DAS.h>
+#include <GetOpt.h>
+#include <GridGeoConstraint.h>
+#include <util.h>
+#include <debug.h>
 
-#include "BaseType.h"
-#include "Int32.h"
-#include "Float64.h"
-#include "Str.h"
-#include "Array.h"
-#include "Grid.h"
-#include "DDS.h"
-#include "DAS.h"
-#include "GetOpt.h"
-#include "GridGeoConstraint.h"
+
 #include "ce_functions.h"
 
 #include "test/TestTypeFactory.h"
 
-#include "debug.h"
 #include <test_config.h>
 
 using namespace CppUnit;

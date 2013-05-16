@@ -605,6 +605,7 @@ function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
     return;
 }
 
+#if 0
 void
 function_dap(int, BaseType *[], DDS &dds, ConstraintEvaluator &ce)
 {
@@ -621,6 +622,7 @@ function_dap(int, BaseType *[], DDS &dds, ConstraintEvaluator &ce)
 see http://docs.opendap.org/index.php/Server_Side_Processing_Functions#keywords");
 #endif
 }
+#endif
 
 static void parse_gse_expression(gse_arg * arg, BaseType * expr)
 {
