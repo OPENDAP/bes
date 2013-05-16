@@ -51,8 +51,8 @@ AC_DEFUN([AX_LIB_GDAL],
         [ac_gdal_config_path=$withval],
         [gdal_config_system=check])
     
-    echo "gdal_config_system:  " $gdal_config_system
-    echo "ac_gdal_config_path: " $ac_gdal_config_path
+    #echo "gdal_config_system:  " $gdal_config_system
+    #echo "ac_gdal_config_path: " $ac_gdal_config_path
 
     dnl if gdal-config is present in the system, fill the ac_gdal_config_path variable with it full path
     AS_IF([test "x$gdal_config_system" = xcheck],
@@ -60,9 +60,8 @@ AC_DEFUN([AX_LIB_GDAL],
           [AC_PATH_PROG([GDAL_CONFIG], [gdal-config], [no], [`dirname $ac_gdal_config_path 2> /dev/null`])]
     )
     
-    echo "dirname $ac_gdal_config_path: " `dirname $ac_gdal_config_path 2> /dev/null`
-  
-	echo "GDAL_CONFIG: " $GDAL_CONFIG
+    #echo "dirname $ac_gdal_config_path: " `dirname $ac_gdal_config_path 2> /dev/null`
+	#echo "GDAL_CONFIG: " $GDAL_CONFIG
         
 
     if test ! -x "$GDAL_CONFIG"; then

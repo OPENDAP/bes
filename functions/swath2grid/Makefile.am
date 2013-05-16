@@ -3,14 +3,37 @@
 
 AUTOMAKE_OPTIONS = foreign
  
-AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  $(XML2_CFLAGS) $(CURL_CFLAGS) 
+AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  -I$(top_srcdir)/dispatch $(XML2_CFLAGS) $(CURL_CFLAGS) 
 AM_LDADD = 
+
+if  LIBDAP
+check-dap:
+	@echo ""
+	@echo "**********************************************************"
+	@echo "USING DAP "
+	@echo "DAP_CLIENT_CFLAGS:  " $(DAP_CLIENT_CFLAGS)
+	@echo "DAP_SERVER_CFLAGS:  " $(DAP_SERVER_CFLAGS)
+	@echo "DAP_CLIENT_LIBS:    " $(DAP_CLIENT_LIBS)
+	@echo "DAP_SERVER_LIBS:    " $(DAP_SERVER_LIBS)
+	@echo "**********************************************************"
+	@echo ""
+else
+check-dap:
+	@echo ""
+	@echo "**********************************************************"
+	@echo " Unable to locate DAP libraries!"
+	@echo "**********************************************************"
+	@echo ""
+endif
+
 
 if  GDAL_FOUND
 check-gdal:
 	@echo ""
 	@echo "**********************************************************"
-	@echo "Using gdal " $(GDAL_VERSION)
+	@echo "Using gdal. "
+	@echo "GDAL_CFLAGS:  " $(GDAL_CFLAGS)
+	@echo "GDAL_LDFLAGS: " $(GDAL_LDFLAGS)
 	@echo "**********************************************************"
 	@echo ""
 else
@@ -51,9 +74,9 @@ check_PROGRAMS = $(UNIT_TESTS)
 noinst_LTLIBRARIES = libswath2grid.la
 
 libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
-libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)  -I$(prefix)/deps/gdal-12.15.12/include
+libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)   $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS)
 libswath2grid_la_LDFLAGS = 
-libswath2grid_la_LIBADD = $(GDAL_LIBS) -l$(prefix)/deps/gdal-12.15.12/lib
+libswath2grid_la_LIBADD = $(GDAL_LIBS)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 SRCS = AbstractDataset.cpp wcs_error.cpp    \
 BoundingBox.cpp wcsUtil.cpp DAP_Dataset.cpp  reproj_functions.cc
@@ -80,6 +103,6 @@ endif
 
 
 s2gTest_SOURCES = s2gTest.cc
-s2gTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(prefix)/deps/gdal-12.15.12/include 
-s2gTest_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types libswath2grid.la $(AM_LDADD)  
+s2gTest_CPPFLAGS = $(AM_CPPFLAGS) 
+s2gTest_LDADD = -ltest-types libswath2grid.la $(AM_LDADD)  
 

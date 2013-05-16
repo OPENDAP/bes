@@ -132,24 +132,72 @@ dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
 
 
-dnl Check for GDAL library.
-AX_LIB_GDAL()
-if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-    GDAL_FOUND="yes"        
+##########################################################################################
+
+#dnl Check for GDAL library.
+#AX_LIB_GDAL()
+#if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
+#    GDAL_FOUND="yes"        
+#fi
+#
+#AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
+#
+#if test -z "$GDAL_FOUND"
+#then
+#    AC_MSG_WARN([*************************************************************])
+#    AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
+#    AC_MSG_WARN([*************************************************************])
+#else 
+#    AC_MSG_NOTICE([*************************************************************])
+#    AC_MSG_NOTICE([Found GDAL library.])
+#    AC_MSG_NOTICE([*************************************************************])
+#fi
+
+
+
+
+##########################################################################################
+# Which copy of GDAL should be used for the build?
+AC_MSG_NOTICE([********************** GDAL *****************************])
+GDAL_FOUND=
+
+AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
+            with_gdal_prefix="$withval", with_gdal_prefix="")
+
+if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
+then
+    AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
+    GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs`"
+    GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
+    GDAL_FOUND="yes"
+elif test -n "$with_gdal_prefix"
+then
+    AC_MSG_ERROR([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there.])
+fi
+
+if test -z "$GDAL_FOUND"
+then
+    AX_LIB_GDAL([1.7.2])
+    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
+        GDAL_FOUND="yes"
+    fi
 fi
 
 AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
 
 if test -z "$GDAL_FOUND"
 then
-    AC_MSG_WARN([*************************************************************])
     AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
-    AC_MSG_WARN([*************************************************************])
 else 
-    AC_MSG_NOTICE([*************************************************************])
-    AC_MSG_NOTICE([Found GDAL library.])
-    AC_MSG_NOTICE([*************************************************************])
+    AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
+    AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
 fi
+AC_MSG_NOTICE([********************** GDAL *****************************])
+
+##########################################################################################
+
+
+
 
 
 # check for readline

@@ -202,10 +202,8 @@ void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     return;
 }
 
-void register_reproj_functions(ConstraintEvaluator & ce)
-{
-    ce.add_function("swath2array", function_swath2array);
-    ce.add_function("swath2grid", function_swath2grid);
-}
+
+
+
 
 } // namespace libdap

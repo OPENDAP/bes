@@ -36,35 +36,73 @@
 #ifndef _reproj_functions_h
 #define _reproj_functions_h
 
-#include "BaseType.h"
-#include "Array.h"
-#include "Error.h"
-#include "ConstraintEvaluator.h"
+#include "BESAbstractModule.h"
+#include "ServerFunction.h"
+#include "ServerFunctionsList.h"
 
-namespace libdap
-{
-
-// These functions are used by the code in GeoConstraint
-string extract_string_argument(BaseType *arg) ;
-double extract_double_value(BaseType *arg) ;
-double *extract_double_array(Array *a) ;
-void set_array_using_double(Array *dest, double *src, int src_len) ;
+namespace libdap {
 
 void function_swath2array(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 void function_swath2grid(int argc, BaseType * argv[], DDS &, BaseType **btpp);
 
-#if 0
-void func_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_geoarray(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 
-// Projection function used to pass DAP version information
-void function_dap(int argc, BaseType *argv[], DDS &dds, ConstraintEvaluator &ce);
-#endif
+class SwathToGrid: public libdap::ServerFunction {
+public:
+    SwathToGrid()
+    {
+        setName("swath2grid");
+        setDescriptionString("This function echos back it's arguments as DAP data.");
+        setUsageString("swath2grid(dataArray, latitudeArray, longitudeArray)");
+        setRole("http://services.opendap.org/dap4/server-side-function/swath2grid");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2grid");
+        setFunction(libdap::function_swath2grid);
+        setVersion("1.0");
+    }
+    virtual ~SwathToGrid()
+    {
+    }
 
-void register_reproj_functions(ConstraintEvaluator & ce);
+};
+
+class SwathToArray: public libdap::ServerFunction {
+public:
+    SwathToArray()
+    {
+        setName("swath2array");
+        setDescriptionString("This function echos back it's arguments as DAP data.");
+        setUsageString("swath2array(dataArray, latitudeArray, longitudeArray)");
+        setRole("http://services.opendap.org/dap4/server-side-function/swath2array");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#swath2array");
+        setFunction(libdap::function_swath2array);
+        setVersion("1.0");
+    }
+    virtual ~SwathToArray()
+    {
+    }
+
+};
+
+
+class ReProjectionFunctions: public BESAbstractModule {
+public:
+    ReProjectionFunctions()
+    {
+        libdap::ServerFunctionsList::TheList()->add_function(new libdap::SwathToGrid());
+
+        libdap::ServerFunctionsList::TheList()->add_function(new libdap::SwathToArray());
+
+    }
+    virtual ~ReProjectionFunctions()
+    {
+    }
+    virtual void initialize(const string &modname);
+    virtual void terminate(const string &modname);
+
+    virtual void dump(ostream &strm) const;
+};
+
+
+
 
 } // namespace libdap
 
