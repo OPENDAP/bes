@@ -3,22 +3,24 @@
 
 AUTOMAKE_OPTIONS = foreign
  
-AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  $(XML2_CFLAGS) $(CURL_CFLAGS)
-AM_LDADD =
+AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  $(XML2_CFLAGS) $(CURL_CFLAGS) 
+AM_LDADD = 
 
 if  GDAL_FOUND
-check-gdal-success:
+check-gdal:
 	@echo ""
 	@echo "**********************************************************"
 	@echo "Using gdal " $(GDAL_VERSION)
 	@echo "**********************************************************"
 	@echo ""
 else
-check-gdal-fail:
+check-gdal:
 	@echo ""
 	@echo "**********************************************************"
-	@echo "You must have gdal 12.15.12 or greater installed to run *"
-	@echo "check target in unit-tests directory                     *"
+	@echo "You must have gdal 12.15.12 or greater installed to run"
+	@echo "check target in unit-tests directory                   "
+	@echo "GDAL_VERSION: '$(GDAL_VERSION)'"
+	@echo "prefix: '$(prefix)'"
 	@echo "**********************************************************"
 	@echo ""
 endif
@@ -49,9 +51,9 @@ check_PROGRAMS = $(UNIT_TESTS)
 noinst_LTLIBRARIES = libswath2grid.la
 
 libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
-libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)
+libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)  -I$(prefix)/deps/gdal-12.15.12/include
 libswath2grid_la_LDFLAGS = 
-libswath2grid_la_LIBADD = $(GDAL_LIBS)
+libswath2grid_la_LIBADD = $(GDAL_LIBS) -l$(prefix)/deps/gdal-12.15.12/lib
 
 SRCS = AbstractDataset.cpp wcs_error.cpp    \
 BoundingBox.cpp wcsUtil.cpp DAP_Dataset.cpp  reproj_functions.cc
@@ -78,5 +80,6 @@ endif
 
 
 s2gTest_SOURCES = s2gTest.cc
-s2gTest_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types libswath2grid.la $(AM_LDADD)
+s2gTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(prefix)/deps/gdal-12.15.12/include 
+s2gTest_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types libswath2grid.la $(AM_LDADD)  
 
