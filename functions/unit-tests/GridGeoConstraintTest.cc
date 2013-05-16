@@ -29,7 +29,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-// #define DODS_DEBUG
 
 #include "BaseType.h"
 #include "Int32.h"
@@ -39,6 +38,7 @@
 #include "Grid.h"
 #include "DDS.h"
 #include "DAS.h"
+#include "GetOpt.h"
 #include "GridGeoConstraint.h"
 #include "ce_functions.h"
 
@@ -52,6 +52,10 @@ using namespace libdap;
 using namespace std;
 
 int test_variable_sleep_interval = 0;
+
+static bool debug = false;
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 namespace libdap
 {
@@ -323,7 +327,7 @@ public:
             CPPUNIT_ASSERT(gc4.d_longitude == *(g->map_begin()+1));
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"build_lat_lon_maps_test() failed");
         }
     }
@@ -346,7 +350,7 @@ public:
             CPPUNIT_ASSERT(gc3.is_longitude_rightmost() == true);
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"lat_lon_dimensions_ok_test() failed");
         }
     }
@@ -374,7 +378,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"transform_map_to_pos_notation_test() failed");
         }
     }
@@ -551,7 +555,7 @@ public:
             CPPUNIT_ASSERT(extract_double_value(a->var(9)) == ten_values[9]);
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in set_array_using_double_test.");
         }
     }
@@ -615,7 +619,7 @@ public:
             CPPUNIT_ASSERT(tmp_data2[99] == 94);
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in reorder_data_longitude_axis_test.");
         }
     }
@@ -640,7 +644,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in set_bounding_box_test.");
         }
     }
@@ -661,7 +665,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in set_bounding_box_test.");
         }
     }
@@ -682,7 +686,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in set_bounding_box_test.");
         }
     }
@@ -701,7 +705,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT("Caught Error.");
         }
     }
@@ -720,7 +724,7 @@ public:
 
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Should not throw Error.");
         }
     }
@@ -938,14 +942,13 @@ public:
             gc.d_longitude->buf2val((void**)lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 200.0);
             CPPUNIT_ASSERT(lons[2] == 280.0);
-#ifdef DODS_DEBUG
-            gc.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+
+            DBG(gc.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"apply_constriant_to_data_test caught Error");
         }
     }
@@ -1007,14 +1010,13 @@ public:
             gc.d_longitude->buf2val((void**)lons_ptr);
             CPPUNIT_ASSERT(lons[0] == 200.0);
             CPPUNIT_ASSERT(lons[2] == 280.0);
-#ifdef DODS_DEBUG
-            gc.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+
+            DBG(gc.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
-            cerr << "Error: " << e.get_error_message() << endl;
+            DBG(cerr << "Error: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"apply_constriant_to_data_test caught Error");
         }
     }
@@ -1074,11 +1076,10 @@ public:
 
             CPPUNIT_ASSERT(lons[0] == 300.0);
             CPPUNIT_ASSERT(lons[4] == 60.0);
-#ifdef DODS_DEBUG
-            gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc2.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+
+            DBG(gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc2.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -1145,11 +1146,9 @@ public:
 
             CPPUNIT_ASSERT(lons[0] == 300.0);
             CPPUNIT_ASSERT(lons[4] == 60.0);
-#ifdef DODS_DEBUG
-            gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc2.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+            DBG(gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc2.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -1212,11 +1211,10 @@ public:
 
             CPPUNIT_ASSERT(lons[0] == 280.0);
             CPPUNIT_ASSERT(lons[4] == 40.0);
-#ifdef DODS_DEBUG
-            gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc2.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+
+            DBG(gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc2.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -1283,11 +1281,10 @@ public:
 
             CPPUNIT_ASSERT(lons[0] == 280.0);
             CPPUNIT_ASSERT(lons[4] == 40.0);
-#ifdef DODS_DEBUG
-            gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true);
-            gc2.get_constrained_grid()->print_val(cerr, "    ", false);
-            cerr << endl << endl;
-#endif
+
+            DBG(gc2.get_constrained_grid()->print_decl(cerr, "    ", true, false, true));
+            DBG(gc2.get_constrained_grid()->print_val(cerr, "    ", false));
+            DBG(cerr << endl << endl);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -1300,6 +1297,41 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GridGeoConstraintTest);
 
 } // namespace libdap
 
+int main(int argc, char*argv[]) {
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    GetOpt getopt(argc, argv, "d");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("ugrid::BindTest::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
+}
+
+
+#if 0
 int
 main( int, char** )
 {
@@ -1310,3 +1342,4 @@ main( int, char** )
 
     return wasSuccessful ? 0 : 1;
 }
+#endif

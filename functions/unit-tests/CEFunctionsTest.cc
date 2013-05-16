@@ -31,6 +31,7 @@
 
 //#define DODS_DEBUG
 
+#include "GetOpt.h"
 #include "BaseType.h"
 #include "Int32.h"
 #include "Float64.h"
@@ -59,6 +60,10 @@ using namespace libdap;
 using namespace std;
 
 int test_variable_sleep_interval = 0;
+
+static bool debug = false;
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
 
 class CEFunctionsTest:public TestFixture
 {
@@ -570,6 +575,44 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);
 
+
+
+
+int main(int argc, char*argv[]) {
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+
+    GetOpt getopt(argc, argv, "d");
+    char option_char;
+    while ((option_char = getopt()) != EOF)
+        switch (option_char) {
+        case 'd':
+            debug = 1;  // debug is a static global
+            break;
+        default:
+            break;
+        }
+
+    bool wasSuccessful = true;
+    string test = "";
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    }
+    else {
+        while (i < argc) {
+            test = string("ugrid::BindTest::") + argv[i++];
+
+            wasSuccessful = wasSuccessful && runner.run(test);
+        }
+    }
+
+    return wasSuccessful ? 0 : 1;
+}
+
+
+#if 0
 int
 main( int, char** )
 {
@@ -580,3 +623,4 @@ main( int, char** )
 
     return wasSuccessful ? 0 : 1;
 }
+#endif

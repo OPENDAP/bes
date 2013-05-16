@@ -6,6 +6,24 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  $(XML2_CFLAGS) $(CURL_CFLAGS)
 AM_LDADD =
 
+if  GDAL_FOUND
+check-gdal-success:
+	@echo ""
+	@echo "**********************************************************"
+	@echo "Using gdal " $(GDAL_VERSION)
+	@echo "**********************************************************"
+	@echo ""
+else
+check-gdal-fail:
+	@echo ""
+	@echo "**********************************************************"
+	@echo "You must have gdal 12.15.12 or greater installed to run *"
+	@echo "check target in unit-tests directory                     *"
+	@echo "**********************************************************"
+	@echo ""
+endif
+
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 AM_LDADD += $(CPPUNIT_LIBS)

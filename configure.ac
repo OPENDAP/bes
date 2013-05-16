@@ -131,6 +131,33 @@ AC_SUBST(BES_BZ2_LIBS)
 dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
 
+
+dnl Check for GDAL library.
+if test -z "$GDAL_FOUND"
+then
+    AX_LIB_GDAL()
+    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
+        GDAL_FOUND="yes"        
+    fi
+fi
+
+ AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
+
+if test -z "$GDAL_FOUND"
+then
+dnl    AM_CONDITIONAL (GDAL_FOUND, FALSE)
+ 	   
+    AC_MSG_WARN([*************************************************************])
+    AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
+    AC_MSG_WARN([*************************************************************])
+else 
+dnl    AM_CONDITIONAL (GDAL_FOUND, TRUE)
+    AC_MSG_NOTICE([*************************************************************])
+    AC_MSG_NOTICE([Found GDAL library.])
+    AC_MSG_NOTICE([*************************************************************])
+fi
+
+
 # check for readline
 VL_LIB_READLINE
 if test "$vl_cv_lib_readline" = "no"; then
