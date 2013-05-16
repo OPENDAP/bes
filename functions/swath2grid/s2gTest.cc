@@ -38,7 +38,7 @@
 
 #include "reproj_functions.h"
 
-#include "../tests/TestTypeFactory.h"
+#include "test/TestTypeFactory.h"
 
 #include "util.h"
 #include "debug.h"
@@ -80,7 +80,7 @@ private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
 public:
-    s2gTest()
+    s2gTest():dds(0)
     {}
     ~s2gTest()
     {}

@@ -15,7 +15,7 @@ DIST_SUBDIRS = unit-tests
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 
-DIST_SUBDIRS = swath2grid 
+DIST_SUBDIRS += swath2grid 
 endif
 
 lib_besdir=$(libdir)/bes
