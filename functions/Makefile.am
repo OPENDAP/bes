@@ -13,6 +13,11 @@ AUTOMAKE_OPTIONS = foreign check-news
 SUBDIRS =  . unit-tests 
 DIST_SUBDIRS = unit-tests 
 
+if GDAL_FOUND
+SUBDIRS +=  swath2grid 
+DIST_SUBDIRS = swath2grid 
+endif
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfunctions_module.la
 

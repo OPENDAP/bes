@@ -71,10 +71,11 @@ check_PROGRAMS = $(UNIT_TESTS)
 # Now (12/20/12) this fails; don't run until it works.
 # TESTS = $(UNIT_TESTS)
 
+
 noinst_LTLIBRARIES = libswath2grid.la
 
 libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
-libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)   $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS)
+libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS)   $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) -I$(top_srcdir)/dispatch
 libswath2grid_la_LDFLAGS = 
 libswath2grid_la_LIBADD = $(GDAL_LIBS)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 

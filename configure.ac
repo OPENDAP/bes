@@ -133,31 +133,9 @@ dnl AC_CHECK_LIB(termcap, main)
 
 
 ##########################################################################################
-
-#dnl Check for GDAL library.
-#AX_LIB_GDAL()
-#if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-#    GDAL_FOUND="yes"        
-#fi
+#                    Locate GDAL libraries if possible
 #
-#AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
-#
-#if test -z "$GDAL_FOUND"
-#then
-#    AC_MSG_WARN([*************************************************************])
-#    AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
-#    AC_MSG_WARN([*************************************************************])
-#else 
-#    AC_MSG_NOTICE([*************************************************************])
-#    AC_MSG_NOTICE([Found GDAL library.])
-#    AC_MSG_NOTICE([*************************************************************])
-#fi
 
-
-
-
-##########################################################################################
-# Which copy of GDAL should be used for the build?
 AC_MSG_NOTICE([********************** GDAL *****************************])
 GDAL_FOUND=
 
