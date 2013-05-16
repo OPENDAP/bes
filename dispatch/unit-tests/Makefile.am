@@ -11,7 +11,6 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 
-
 # These are not used by automake but are often useful for certain types of
 # debugging. 
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
