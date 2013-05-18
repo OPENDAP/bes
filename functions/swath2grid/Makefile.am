@@ -59,17 +59,9 @@ check-local:
 	@echo ""
 endif
 
-
 s2gTest_SOURCES = s2gTest.cc
 s2gTest_CPPFLAGS = $(AM_CPPFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) $(GDAL_CFLAGS)
 s2gTest_LDADD = -ltest-types libswath2grid.la $(AM_LDADD)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LIBS) 
-
-
-
-
-
-
-
 
 if  LIBDAP
 check-dap:

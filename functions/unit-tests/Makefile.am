@@ -8,12 +8,11 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
-AM_LDADD =  $(GF_LIBS) ../libfunctions_module.la  $(top_srcdir)/dispatch/libbes_dispatch.la
+AM_LDADD =  $(GF_LIBS) ../libfunctions_module.la  $(top_builddir)/dispatch/libbes_dispatch.la
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 AM_LDADD += $(CPPUNIT_LIBS)
 endif
-
 
 if USE_VALGRIND
 TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1  --dsymutil=yes --leak-check=yes
@@ -34,14 +33,17 @@ noinst_HEADERS = test_config.h
 
 DIRS_EXTRA = 
 
-EXTRA_DIST = 
+EXTRA_DIST = test_config.h.in ce-functions-testsuite
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
 DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 
+# TODO Check if this sed command to filter out the ../ from the value of 
+# ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
 test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
+	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
 ############################################################################
 # Unit Tests
@@ -63,7 +65,6 @@ check-local:
 endif
 
 TEST_SRC = testFile.cc testFile.h
-
 
 ArrayGeoConstraintTest_SOURCES = ArrayGeoConstraintTest.cc
 ArrayGeoConstraintTest_LDADD =  $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types

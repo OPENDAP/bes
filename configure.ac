@@ -136,7 +136,7 @@ dnl AC_CHECK_LIB(termcap, main)
 #                    Locate GDAL libraries if possible
 #
 
-AC_MSG_NOTICE([********************** GDAL *****************************])
+dnl AC_MSG_NOTICE([********************** GDAL *****************************])
 GDAL_FOUND=
 
 AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
@@ -170,13 +170,9 @@ else
     AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
     AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
 fi
-AC_MSG_NOTICE([********************** GDAL *****************************])
+dnl AC_MSG_NOTICE([********************** GDAL *****************************])
 
 ##########################################################################################
-
-
-
-
 
 # check for readline
 VL_LIB_READLINE
@@ -292,9 +288,12 @@ AC_CONFIG_FILES([Makefile
 		 bes_dap.pc
 		 bes_xml_command.pc
 		 functions/Makefile
-		 functions/unit-tests/Makefile
-		 functions/swath2grid/Makefile
-])
+		 functions/unit-tests/Makefile])
+
+if test -n "$GDAL_FOUND"
+then
+    AC_CONFIG_FILES([functions/swath2grid/Makefile])
+fi
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
 AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
