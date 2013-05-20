@@ -34,7 +34,7 @@ noinst_LTLIBRARIES = libswath2grid.la
 libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
 libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) -I$(top_srcdir)/dispatch
 libswath2grid_la_LDFLAGS = 
-libswath2grid_la_LIBADD = $(GDAL_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libswath2grid_la_LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 SRCS = AbstractDataset.cpp wcs_error.cpp    \
 BoundingBox.cpp wcsUtil.cpp DAP_Dataset.cpp  reproj_functions.cc
@@ -61,7 +61,7 @@ endif
 
 s2gTest_SOURCES = s2gTest.cc
 s2gTest_CPPFLAGS = $(AM_CPPFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) $(GDAL_CFLAGS)
-s2gTest_LDADD = -ltest-types libswath2grid.la $(AM_LDADD)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LIBS) 
+s2gTest_LDADD = -ltest-types libswath2grid.la $(AM_LDADD)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
 
 if  LIBDAP
 check-dap:
