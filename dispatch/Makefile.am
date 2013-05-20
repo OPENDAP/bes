@@ -31,7 +31,7 @@ endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
+libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
 #libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 #libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
@@ -45,7 +45,7 @@ libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 
 besregtest_SOURCES = besregtest.cc
 besregtest_CPPFLAGS = $(AM_CPPFLAGS)
-besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS)
+besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
 
 # pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 pkginclude_HEADERS = $(HDRS) 
