@@ -160,7 +160,7 @@ fi
 
 if test -z "$GDAL_FOUND"
 then
-    AX_LIB_GDAL([1.7.2])
+    AX_LIB_GDAL([1.10.0])
     if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
         GDAL_FOUND="yes"
     fi
