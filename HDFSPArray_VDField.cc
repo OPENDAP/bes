@@ -36,25 +36,6 @@ HDFSPArray_VDField::read ()
 
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
-
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-    int nelms;
-
-    try {
-        nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
-#endif
-
-
     int32 file_id = 0;
     int32 vdata_id = 0;
 
@@ -84,7 +65,7 @@ HDFSPArray_VDField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    int32 r;
+    int32 r = -1;
 
     // Seek the position of the starting point
     if (VSseek (vdata_id, (int32) offset[0]) == -1) {

@@ -21,13 +21,6 @@
 bool
 HDFSPArray_RealField::read ()
 {
-
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-#endif
-
     vector<int>offset;
     offset.resize(rank);
     vector<int>count;
@@ -43,12 +36,6 @@ HDFSPArray_RealField::read ()
     count32.resize(rank);
     vector<int32>step32;
     step32.resize(rank);
-
-#if 0
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
-#endif
 
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
@@ -87,7 +74,6 @@ HDFSPArray_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    //void *val = NULL;
     int32 r = 0;
 
     switch (dtype) {
@@ -96,7 +82,6 @@ HDFSPArray_RealField::read ()
         {
             vector<int8>val;
             val.resize(nelms);
-            //val = new int8[nelms];
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);

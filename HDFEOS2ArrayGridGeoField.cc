@@ -45,12 +45,6 @@ HDFEOS2ArrayGridGeoField::read ()
     else 
         newrank = rank;
 
-    // Replace these with vector<int>. jhrg 
-    // These have been replaced. Keep these for the time being as an example for  modification in other files.
-    //int *offset = new int[newrank];
-    //int *count = new int[newrank];
-    //int *step = new int[newrank];
-
     vector<int> offset;
     offset.resize(newrank);
     vector<int> count;
@@ -62,16 +56,6 @@ HDFEOS2ArrayGridGeoField::read ()
 
     // Obtain the number of the subsetted elements
     nelms = format_constraint (&offset[0], &step[0], &count[0]);
-
-#if 0
-    catch (...) {
-        delete[]offset;
-        delete[]step;
-        delete[]count;
-        throw;
-    }
-#endif
-
 
     // Define function pointers to handle both grid and swath Note: in
     // this code, we only handle grid, implementing this way is to
@@ -120,10 +104,6 @@ HDFEOS2ArrayGridGeoField::read ()
         CalculateSOMLatLon(gridid, &offset[0], &count[0], &step[0], nelms);
         return false;
     }
-    // vector<int32>
-    //  int32 *offset32 = new int32[rank];
-    //  int32 *count32 = new int32[rank];
-    // int32 *step32 = new int32[rank];
 
     vector<int32>offset32;
     offset32.resize(rank);
@@ -142,7 +122,6 @@ HDFEOS2ArrayGridGeoField::read ()
     // The following case handles when the lat/lon is not provided.
     if (llflag == false) {		// We have to calculate the lat/lon
 
-    //	float64 *latlon = new float64[nelms];
         vector<float64>latlon;
         latlon.resize(nelms);
 
@@ -267,17 +246,13 @@ HDFEOS2ArrayGridGeoField::read ()
 #ifndef SIGNED_BYTE_TO_INT32
                 set_value ((dods_byte *) &val[0], nelms);
 #else
-                //int32 *newval;
                 vector<int32>newval;
                 newval.resize(nelms);
 
-                //newval = new int32[nelms];
                 for (int counter = 0; counter < nelms; counter++)
                     newval[counter] = (int32) (val[counter]);
 
                 set_value ((dods_int32 *) &newval[0], nelms);
-                //delete[](int8 *) val;
-                //delete[]newval;
 #endif
 
             }
@@ -287,7 +262,6 @@ HDFEOS2ArrayGridGeoField::read ()
         case DFNT_CHAR8:
 
             {
-                //val = new uint8[nelms];
                 vector<uint8> val;
                 val.resize(nelms);
                 r = readfieldfunc (gridid,
@@ -1058,9 +1032,9 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     }
 
     // Retrieve all GCTP projection information 
-    int32 projcode; //[LD Comment 11/12/2012]
-    int32 zone; 
-    int32 sphere;
+    int32 projcode = 0; 
+    int32 zone = 0; 
+    int32 sphere = 0;
     float64 params[16];
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
@@ -1072,7 +1046,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     }
 
     // Retrieve pixel registration information 
-    int32 pixreg; //[LD Comment 11/12/2012]
+    int32 pixreg = 0; 
 
     r = GDpixreginfo (gridid, &pixreg);
     if (r != 0) {
@@ -1084,7 +1058,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 
 
     //Retrieve grid pixel origin 
-    int32 origin; //[LD Comment 11/12/2012]
+    int32 origin = 0; 
 
     r = GDorigininfo (gridid, &origin);
     if (r != 0) {
@@ -1094,7 +1068,16 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    vector<int32>rows;
+    vector<int32>cols;
+    vector<float64>lon;
+    vector<float64>lat;
+    rows.resize(xdim*ydim);
+    cols.resize(xdim*ydim);
+    lon.resize(xdim*ydim);
+    lat.resize(xdim*ydim);
 
+#if 0
     int32*rows = NULL;
     int32 *cols = NULL;
     float64*lon = NULL;
@@ -1116,10 +1099,10 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 
         throw;
     }
+#endif
 
-    int i, j, k; //[LD Comment 11/12/2012]
+    int i = 0, j = 0, k = 0; 
 
-// cerr<<"before subsetting 2"<<endl;
     if (ydimmajor) {
         /* Fill two arguments, rows and columns */
         // rows             cols
@@ -1156,11 +1139,10 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
-                 xdim * ydim, rows, cols, lon, lat, pixreg, origin);
+                 xdim * ydim, &rows[0], &cols[0], &lon[0], &lat[0], pixreg, origin);
 
     if (r != 0) {
         ostringstream eherr;
-
         eherr << "cannot calculate grid latitude and longitude";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -1168,32 +1150,34 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     // 2-D Lat/Lon, need to decompose the data for subsetting.
     if (nelms == (xdim * ydim)) {	// no subsetting return all, for the performance reason.
         if (fieldtype == 1)
-            memcpy (outlatlon, lat, xdim * ydim * sizeof (double));
+            memcpy (outlatlon, &lat[0], xdim * ydim * sizeof (double));
         else
-            memcpy (outlatlon, lon, xdim * ydim * sizeof (double));
+            memcpy (outlatlon, &lon[0], xdim * ydim * sizeof (double));
     }
     else {						// Messy subsetting case, needs to know the major dimension
         if (ydimmajor) {
             if (fieldtype == 1) // Lat 
-                LatLon2DSubset (outlatlon, ydim, xdim, lat, offset, count,
+                LatLon2DSubset (outlatlon, ydim, xdim, &lat[0], offset, count,
                                 step);
             else // Lon
-                LatLon2DSubset (outlatlon, ydim, xdim, lon, offset, count,
+                LatLon2DSubset (outlatlon, ydim, xdim, &lon[0], offset, count,
                                 step);
         }
         else {
             if (fieldtype == 1) // Lat
-                LatLon2DSubset (outlatlon, xdim, ydim, lat, offset, count,
+                LatLon2DSubset (outlatlon, xdim, ydim, &lat[0], offset, count,
                                 step);
             else // Lon
-                LatLon2DSubset (outlatlon, xdim, ydim, lon, offset, count,
+                LatLon2DSubset (outlatlon, xdim, ydim, &lon[0], offset, count,
                     step);
         }
     }
+#if 0
     delete[]rows;
     delete[]cols;
     delete[]lon;
     delete[]lat;
+#endif
 }
 
 
@@ -1688,14 +1672,19 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
     float64 lowright[2];
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
 
-    float64 *tmp1 = new float64[xdim*ydim];
+//    float64 *tmp1 = new float64[xdim*ydim];
+    vector<float64> tmp1;
+    tmp1.resize(xdim*ydim);
     int32 tmp2[] = {0, 0};
     int32 tmp3[] = {xdim, ydim};
     int32 tmp4[] = {1, 1};
 	
-    CalculateLatLon (gridid, fieldtype, specialformat, tmp1, tmp2, tmp3, tmp4, xdim*ydim);
+    CalculateLatLon (gridid, fieldtype, specialformat, &tmp1[0], tmp2, tmp3, tmp4, xdim*ydim);
 	
-    float64 *tmp5 = new float64[xdim*ydim];
+//    float64 *tmp5 = new float64[xdim*ydim];
+    vector<float64> tmp5;
+    tmp5.resize(xdim*ydim);
+
     for(int w=0; w < xdim*ydim; w++)
         tmp5[w] = tmp1[w];
 
@@ -1704,24 +1693,24 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
                     if(isundef_lat(tmp1[i*xdim+j]))
-                        tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
+                        tmp1[i*xdim+j]=nearestNeighborLatVal(&tmp5[0], i, j, ydim, xdim);
         } else if(fieldtype==2){ // Lon.
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
                     if(isundef_lon(tmp1[i*xdim+j]))
-                        tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
+                        tmp1[i*xdim+j]=nearestNeighborLonVal(&tmp5[0], i, j, ydim, xdim);
         }
     } else { // end if(ydimmajor)
         if(fieldtype==1) {
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
                     if(isundef_lat(tmp1[i*xdim+j]))
-                        tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
+                        tmp1[i*xdim+j]=nearestNeighborLatVal(&tmp5[0], i, j, ydim, xdim);
             } else if(fieldtype==2) {
                 for(int i=0; i<xdim; i++)
                     for(int j=0; j<ydim; j++)
                         if(isundef_lon(tmp1[i*xdim+j]))
-                            tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
+                            tmp1[i*xdim+j]=nearestNeighborLonVal(&tmp5[0], i, j, ydim, xdim);
             }
     }
 
@@ -1729,8 +1718,10 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
         for(int j=start[1]; j<start[1]+count[1]*step[1]; j+= step[1])
             latlon[k++] = tmp1[i*ydim+j];
 
+#if 0
     delete[] tmp1;
     delete[] tmp5;
+#endif
 }
 #endif
 

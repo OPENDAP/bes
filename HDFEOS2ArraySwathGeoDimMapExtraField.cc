@@ -72,7 +72,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     inqfunc = SWinqswath;
 
     //Swath 
-    int32 fileid, swathid; //[LD Comment 11/13/2012]
+    int32 fileid = -1, swathid = -1; 
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -84,8 +84,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     }
 
     // Check if this file only contains one swath
-    int numswath; //LD Comment 11/13/2012]
-    int32 swathnamesize; //[LD Comment 11/13/2012]
+    int numswath = 0;
+    int32 swathnamesize = 0; 
     numswath = inqfunc (const_cast < char *>(filename.c_str ()), NULL,
                         &swathnamesize);
 
@@ -130,10 +130,10 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     delete[]swathname;
 
-    int32 tmp_rank, tmp_dims[rank]; //[LD Comment 11/13/2012]
+    int32 tmp_rank = 0, tmp_dims[rank];
     char tmp_dimlist[1024];
-    int32 type;
-    intn r;
+    int32 type = 0;
+    intn r = -1;
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
                        &tmp_rank, tmp_dims, &type, tmp_dimlist);
     if (r != 0) {

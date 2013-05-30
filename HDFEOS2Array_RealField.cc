@@ -23,13 +23,6 @@
 bool
 HDFEOS2Array_RealField::read ()
 {
-//cerr<<"coming to HDF real array read" <<endl;
-
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-#endif
 
     vector<int>offset;
     offset.resize(rank);
@@ -41,12 +34,6 @@ HDFEOS2Array_RealField::read ()
     int nelms = 0;
 
     nelms = format_constraint (&offset[0], &step[0], &count[0]);
-
-#if 0
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
-#endif
 
     vector<int32>offset32;
     offset32.resize(rank);
@@ -519,8 +506,6 @@ HDFEOS2Array_RealField::read ()
 #undef GET_FILLVALUE_ATTR_VALUE
             }
 
-//#if 0
-
             attrindex = SDfindattr(sdsid, "valid_range");
             if(attrindex!=FAIL)
             {
@@ -606,6 +591,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT8 type.");
+
                         unsigned char* temp_valid_range = (unsigned char *)&attrbuf[0]; 
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -616,6 +602,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT16 type.");
+
                         short* temp_valid_range = (short *)&attrbuf[0]; 
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -626,6 +613,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT16 type.");
+
                         unsigned short* temp_valid_range = (unsigned short *)&attrbuf[0]; 
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -636,6 +624,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT32 type.");
+
                         int* temp_valid_range = (int *)&attrbuf[0]; 
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -646,6 +635,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT32 type.");
+
                         unsigned int* temp_valid_range = (unsigned int *)&attrbuf[0]; 
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -656,6 +646,7 @@ HDFEOS2Array_RealField::read ()
                     {
                         if (attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
+
                         float* temp_valid_range = (float *)&attrbuf[0]; 
                         orig_valid_min = temp_valid_range[0];
                         orig_valid_max = temp_valid_range[1];
@@ -667,6 +658,7 @@ HDFEOS2Array_RealField::read ()
                         if (attrcount != 2)
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
                         double* temp_valid_range = (double *)&attrbuf[0];
+
                         // Notice: this approach will lose precision and possibly overflow. Fortunately it is not a problem for MODIS data.
                         // This part of code may not be called. If it is called, mostly the value is within the floating-point range.
                         // KY 2013-01-29
@@ -678,12 +670,10 @@ HDFEOS2Array_RealField::read ()
                         throw InternalErr(__FILE__,__LINE__,"Unsupported data type.");
                 }
             }
-//#endif
 
             // Check if the data has the "Key" attribute. We found that some NSIDC MODIS data(MOD29) used "Key" to identify some special values.
             // To get the values that are within the range identified by the "Key", scale offset rules also need to be applied to those values
             // outside the original valid range. KY 2013-02-25
-
             int32 attrindex3 = SUCCEED;
             attrindex3 = SDfindattr(sdsid, "Key");
             if(attrindex3 !=FAIL) 
@@ -712,7 +702,6 @@ HDFEOS2Array_RealField::read ()
     // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
     // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
     // the similar cases so that we can verify with the corresponding product documents to see if this is true.
-    // 
     // 
 
     if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
@@ -748,7 +737,6 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    //void *val; //[LD Comment 11/12/2012]
 
     // We need to loop through all datatpes to allocate the memory buffer for the data.
 // It is hard to add comments to the macro. We may need to change them to general routines in the future.
@@ -869,7 +857,6 @@ HDFEOS2Array_RealField::read ()
 
             vector<int8>val;
             val.resize(nelms);
-            //val = new int8[nelms];
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
@@ -883,8 +870,6 @@ HDFEOS2Array_RealField::read ()
 
 #ifndef SIGNED_BYTE_TO_INT32
             RECALCULATE(int8*, dods_byte*, &val[0]);
-            //set_value ((dods_byte *) val, nelms);
-            //delete[](int8 *) val;
 #else
 
             vector<int32>newval;
@@ -894,9 +879,6 @@ HDFEOS2Array_RealField::read ()
                 newval[counter] = (int32) (val[counter]);
 
             RECALCULATE(int32*, dods_int32*, &newval[0]);
-            //delete[](int8 *) val;
-            //set_value ((dods_int32 *) newval, nelms);
-            //delete[]newval;
 #endif
         }
             break;
@@ -920,8 +902,6 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint8*, dods_byte*, &val[0]);
-            //set_value ((dods_byte *) val, nelms);
-            //delete[](uint8 *) val;
         }
             break;
 
@@ -942,8 +922,6 @@ HDFEOS2Array_RealField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
             RECALCULATE(int16*, dods_int16*, &val[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
         }
             break;
         case DFNT_UINT16:
@@ -963,8 +941,6 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint16*, dods_uint16*, &val[0]);
-            //set_value ((dods_uint16 *) val, nelms);
-            //delete[](uint16 *) val;
         }
             break;
         case DFNT_INT32:
@@ -984,8 +960,6 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(int32*, dods_int32*, &val[0]);
-            //set_value ((dods_int32 *) val, nelms);
-            //delete[](int32 *) val;
         }
             break;
         case DFNT_UINT32:
@@ -1005,8 +979,6 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint32*, dods_uint32*, &val[0]);
-            //set_value ((dods_uint32 *) val, nelms);
-            //delete[](uint32 *) val;
         }
             break;
         case DFNT_FLOAT32:
@@ -1027,13 +999,10 @@ HDFEOS2Array_RealField::read ()
 
             // Recalculate seems not necessary.
             RECALCULATE(float32*, dods_float32*, &val[0]);
-            //set_value ((dods_float32 *) &val[0], nelms);
-            //delete[](float32 *) val;
         }
             break;
         case DFNT_FLOAT64:
         {
-            //val = new float64[nelms];
             vector<float64>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
@@ -1047,9 +1016,7 @@ HDFEOS2Array_RealField::read ()
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            //RECALCULATE(float32*, dods_float32*, &val[0]);
             set_value ((dods_float64 *) &val[0], nelms);
-            //delete[](float64 *) val;
         }
             break;
         default:

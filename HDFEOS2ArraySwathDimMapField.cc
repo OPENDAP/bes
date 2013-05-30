@@ -34,12 +34,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     vector<int>step;
     step.resize(rank);
 
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-#endif
-
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
     vector<int32>offset32;
@@ -89,14 +83,13 @@ HDFEOS2ArraySwathDimMapField::read ()
     }
 
     // Swath ID, swathid is actually in this case only the id of latitude and longitude.
-    int32 sfid, swathid; //[LD Comment 11/13/2012]
+    int32 sfid = -1, swathid = -1; 
 
     // Open, attach and obtain datatype information based on HDF-EOS2 APIs.
     sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
     if (sfid < 0) {
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -106,13 +99,11 @@ HDFEOS2ArraySwathDimMapField::read ()
     if (swathid < 0) {
         closefunc (sfid);
         ostringstream eherr;
-
         eherr << "Grid/Swath " << datasetname.c_str () << " cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
     if(true == dimmaps.empty()) {
-//cerr<<"dimmaps is empty "<<endl;
     
         int32 nummaps = 0;
         int32 bufsize = 0;
@@ -155,10 +146,10 @@ HDFEOS2ArraySwathDimMapField::read ()
         }
 
     }
-    int32 tmp_rank, tmp_dims[rank]; //[LD Comment 11/13/2012]
+    int32 tmp_rank = -1, tmp_dims[rank]; 
     char tmp_dimlist[1024];
-    int32 type; //[LD Comment 11/13/2012]
-    intn r;
+    int32 type = -1;
+    intn r = -1;
 
     // All the following variables are used by the RECALCULATE macro. So 
     // ideally they should not be here. 
@@ -174,7 +165,7 @@ HDFEOS2ArraySwathDimMapField::read ()
     if (sotype!=DEFAULT_CF_EQU) {
 
         // Obtain attribute values.
-        int32 sdfileid;
+        int32 sdfileid = -1;
         sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (FAIL == sdfileid) {
             detachfunc(swathid);
@@ -183,9 +174,7 @@ HDFEOS2ArraySwathDimMapField::read ()
             eherr << "Cannot Start the SD interface for the file " << filename <<endl;
         }
 
-
-
-        int32 sdsindex, sdsid; //[LD Comment 11/13/2012]
+        int32 sdsindex = -1, sdsid = -1; 
         sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
         if (FAIL == sdsindex) {
             detachfunc (swathid);
@@ -195,7 +184,6 @@ HDFEOS2ArraySwathDimMapField::read ()
             eherr << "Cannot obtain the index of " << fieldname;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-
 
         sdsid = SDselect(sdfileid, sdsindex);
         if (FAIL == sdsid) {
@@ -207,20 +195,14 @@ HDFEOS2ArraySwathDimMapField::read ()
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
-
         char attrname[H4_MAX_NC_NAME + 1];
-        // int32 attrtype, attrcount, attrcounts=0, attrindex, attrindex2;
-        // int32 scale_factor_attr_index, add_offset_attr_index;
         vector<char> attrbuf, attrbuf2;
-        // float scale=1, offset2=0, fillvalue;
-        // float *reflectance_offsets=NULL, *reflectance_scales=NULL;
-        // float *radiance_offsets=NULL, *radiance_scales=NULL;
 
         attrindex = SDfindattr(sdsid, "radiance_scales");
         attrindex2 = SDfindattr(sdsid, "radiance_offsets");
         if(attrindex!=FAIL && attrindex2!=FAIL)
         {
-            intn ret;
+            intn ret = 0;
             ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
             if (ret==FAIL)
             {
@@ -285,7 +267,7 @@ HDFEOS2ArraySwathDimMapField::read ()
         attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
         if(attrindex!=FAIL && attrindex2!=FAIL)
         {
-            intn ret;
+            intn ret = 0;
             ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
             if (ret==FAIL)
             {
@@ -360,7 +342,7 @@ HDFEOS2ArraySwathDimMapField::read ()
         scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
         if(sotype!=DEFAULT_CF_EQU && scale_factor_attr_index!=FAIL)
         {
-            intn ret;
+            intn ret = 0;
             ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
             if (ret==FAIL)
             {
@@ -403,7 +385,7 @@ HDFEOS2ArraySwathDimMapField::read ()
         add_offset_attr_index = SDfindattr(sdsid, "add_offset");
         if(sotype!=DEFAULT_CF_EQU && add_offset_attr_index!=FAIL)
         {
-            intn ret; //[LD Comment 11/13/2012]
+            intn ret = 0;
             ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
             if (ret==FAIL)
             {
@@ -446,7 +428,7 @@ HDFEOS2ArraySwathDimMapField::read ()
         attrindex = SDfindattr(sdsid, "_FillValue");
         if(sotype!=DEFAULT_CF_EQU && attrindex!=FAIL)
         {
-            intn ret;
+            intn ret = 0;
             ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
             if (ret==FAIL)
             {
@@ -533,8 +515,6 @@ HDFEOS2ArraySwathDimMapField::read ()
                                << " Now change it to MODIS_MUL_SCALE. "<<endl;
         }
     }
-    
-
 
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
                        &tmp_rank, tmp_dims, &type, tmp_dimlist);
@@ -542,7 +522,6 @@ HDFEOS2ArraySwathDimMapField::read ()
         detachfunc (swathid);
         closefunc (sfid);
         ostringstream eherr;
-
         eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -622,7 +601,6 @@ HDFEOS2ArraySwathDimMapField::read ()
 
         case DFNT_INT8:
         {
-            //cerr<<"before coming to GetFieldValue 8-bit integer "<<endl;
             // Obtaining the total value and interpolating the data according to dimension map
             std::vector < int8 > total_val8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val8, newdims);
@@ -635,8 +613,6 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //cerr<<"coming to 8-bit integer "<<endl;
-            //int8* val8 = new int8[nelms];
             vector<int8>val8;
             val8.resize(nelms);
             FieldSubset (&val8[0], newdims, &total_val8[0], &offset32[0], &count32[0], &step32[0]);
@@ -644,8 +620,6 @@ HDFEOS2ArraySwathDimMapField::read ()
 
 #ifndef SIGNED_BYTE_TO_INT32
             RECALCULATE(int8*, dods_byte*, &val8[0]);
-            //set_value ((dods_byte *) val, nelms);
-            //delete[](int8 *) val;
 #else
             vector<int32>newval;
             newval.resize(nelms);
@@ -654,9 +628,6 @@ HDFEOS2ArraySwathDimMapField::read ()
                 newval[counter] = (int32) (val8[counter]);
 
             RECALCULATE(int32*, dods_int32*, &newval[0]);
-            //set_value ((dods_int32 *) newval, nelms);
-            //delete[](int8 *) val;
-            //delete[]newval;
 #endif
         }
             break;
@@ -671,19 +642,15 @@ HDFEOS2ArraySwathDimMapField::read ()
                 detachfunc (swathid);
                 closefunc (sfid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //uint8* val_u8 = new uint8[nelms];
             vector<uint8>val_u8;
             val_u8.resize(nelms);
 
             FieldSubset (&val_u8[0], newdims, &total_val_u8[0], &offset32[0], &count32[0], &step32[0]);
             RECALCULATE(uint8*, dods_byte*, &val_u8[0]);
-            //set_value ((dods_byte *) val, nelms);
-            //delete[](int8 *) val;
         }
             break;
         case DFNT_INT16:
@@ -700,15 +667,12 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }  
 
-            //int16* val16 = new int16[nelms];
             vector<int16>val16;
             val16.resize(nelms);
 
             FieldSubset (&val16[0], newdims, &total_val16[0], &offset32[0], &count32[0], &step32[0]);
 
             RECALCULATE(int16*, dods_int16*, &val16[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
         }
             break;
         case DFNT_UINT16:
@@ -725,16 +689,11 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //uint16* val_u16 = new uint16[nelms];
             vector<uint16>val_u16;
             val_u16.resize(nelms);
 
             FieldSubset (&val_u16[0], newdims, &total_val_u16[0], &offset32[0], &count32[0], &step32[0]);
-
             RECALCULATE(uint16*, dods_uint16*, &val_u16[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
- 
 
         }
             break;
@@ -752,17 +711,12 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //int32* val32 = new int32[nelms];
             vector<int32> val32;
             val32.resize(nelms);
 
             FieldSubset (&val32[0], newdims, &total_val32[0], &offset32[0], &count32[0], &step32[0]);
 
             RECALCULATE(int32*, dods_int32*, &val32[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
- 
-
         }
             break;
         case DFNT_UINT32:
@@ -780,15 +734,11 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //uint32* val_u32 = new uint32[nelms];
             vector<uint32>val_u32;
             val_u32.resize(nelms);
 
             FieldSubset (&val_u32[0], newdims, &total_val_u32[0], &offset32[0], &count32[0], &step32[0]);
-
             RECALCULATE(uint32*, dods_uint32*, &val_u32[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
  
         }
             break;
@@ -806,17 +756,12 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //float32* val_f32 = new float32[nelms];
             vector<float32>val_f32;
             val_f32.resize(nelms);
 
             FieldSubset (&val_f32[0], newdims, &total_val_f32[0], &offset32[0], &count32[0], &step32[0]);
 
             RECALCULATE(float32*, dods_float32*, &val_f32[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
- 
-
         }
             break;
         case DFNT_FLOAT64:
@@ -833,15 +778,10 @@ HDFEOS2ArraySwathDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //float64* val_f64 = new float64[nelms];
             vector<float64>val_f64;
             val_f64.resize(nelms);
-
             FieldSubset (&val_f64[0], newdims, &total_val_f64[0], &offset32[0], &count32[0], &step32[0]);
-
             RECALCULATE(float64*, dods_float64*, &val_f64[0]);
-            //set_value ((dods_int16 *) val, nelms);
-            //delete[](int16 *) val;
  
         }
             break;
@@ -872,7 +812,7 @@ HDFEOS2ArraySwathDimMapField::read ()
     }
 
 
-    return false; //[LD Comment 11/13/2012]
+    return false;
 }
 
 // parse constraint expr. and make hdf5 coordinate point location.
@@ -935,9 +875,9 @@ GetFieldValue (int32 swathid, const std::string & geofieldname,
     std::vector < T > &vals, std::vector<int32>&newdims)
 {
 
-    int32 ret; //[LD Comment 11/13/2012]
-    int32 size;
-    int32 rank, dims[130], type;
+    int32 ret = -1; 
+    int32 size = -1;
+    int32 rank = -1, dims[130], type = -1;
 
     // Two dimensions for lat/lon; each dimension name is < 64 characters,
     // The dimension names are separated by a comma.
@@ -979,8 +919,6 @@ GetFieldValue (int32 swathid, const std::string & geofieldname,
     }
 
     // dims[] are expanded already.
-
-        
     for (int i = 0; i < rank; i++) { 
         //cerr<<"i "<< i << " "<< dims[i] <<endl;
         if (dims[i] < 0)
@@ -1140,7 +1078,7 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
 
     // float64 templatlon[majordim][minordim];
     T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-    int	i, j, k; //[LD Comment 11/13/2012]
+    int	i = 0, j =0, k = 0; 
 
     // do subsetting
     // Find the correct index
@@ -1183,7 +1121,6 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
     if (newdims.size() !=3) 
         throw InternalErr(__FILE__, __LINE__,
                           "the rank must be 3 to call this function");
-    //cerr<<"coming to Field3DSubset "<<endl;
 
     T (*templatlonptr)[newdims[0]][newdims[1]][newdims[2]] = (typeof templatlonptr) latlon;
     int i,j,k,l;
@@ -1196,8 +1133,6 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
 
     int dim0index[dim0count], dim1index[dim1count],dim2index[dim2count];
 
-        
-
     for (i = 0; i < count[0]; i++) // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
 
@@ -1207,7 +1142,6 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
 
     for (k = 0; k < count[2]; k++)
         dim2index[k] = offset[2] + k * step[2];
-
 
     // Now assign the subsetting data
     l = 0;

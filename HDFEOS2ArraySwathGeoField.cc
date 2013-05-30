@@ -22,15 +22,6 @@
 bool
 HDFEOS2ArraySwathGeoField::read ()
 {
-
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-    int nelms;
-#endif
-
-
     vector<int>offset;
     offset.resize(rank);
     vector<int>count;
@@ -39,13 +30,6 @@ HDFEOS2ArraySwathGeoField::read ()
     step.resize(rank);
 
     int  nelms = format_constraint (&offset[0], &step[0], &count[0]);
-    
-
-#if 0
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
-#endif
 
     vector<int32>offset32;
     offset32.resize(rank);
@@ -77,8 +61,7 @@ HDFEOS2ArraySwathGeoField::read ()
     readfieldfunc = SWreadfield;
     datasetname = swathname;
 
-    int32 sfid, swathid; //[LD Comment 11/14/2012]
-
+    int32 sfid = -1, swathid = -1;
 
     sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -115,8 +98,6 @@ HDFEOS2ArraySwathGeoField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
-    // void *val = NULL;
 
     switch (type) {
         case DFNT_INT8:

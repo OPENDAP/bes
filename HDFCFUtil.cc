@@ -24,48 +24,6 @@ HDFCFUtil::check_beskeys(const string key) {
 
 }
 
-// These memory clearing functions are not useful. May remove later.  KY 2013-02-13 
-#if 0
-void
-HDFCFUtil::ClearMem (int32 * offset32, int32 * count32, int32 * step32, int *offset, int *count, int *step)
-{
-    if(offset32 != NULL)
-        delete[]offset32;
-    if(count32 != NULL) 
-        delete[]count32;
-    if(step32 != NULL) 
-        delete[]step32;
-    if(offset != NULL) 
-        delete[]offset;
-    if(count != NULL) 
-        delete[]count;
-    if(step != NULL) 
-        delete[]step;
-}
-
-void
-HDFCFUtil::ClearMem2 (int32 * offset32, int32 * count32, int32 * step32)
-{
-    if(offset32 != NULL)
-        delete[]offset32;
-    if(count32 != NULL) 
-        delete[]count32;
-    if(step32 != NULL)
-        delete[]step32;
-}
-
-void
-HDFCFUtil::ClearMem3 (int *offset, int *count, int *step)
-{
-    if (offset != NULL)
-        delete[]offset;
-    if (count != NULL)
-        delete[]count;
-    if (step != NULL)
-        delete[]step;
-}
-#endif
-
 void 
 HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
 {
@@ -396,9 +354,7 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
             string fillvalue_type ="";
             fillvalue =  (*at->get_attr_vector(it)->begin());
             fillvalue_type = at->get_type(it);
-//cerr<<"fillvalue type is "<<fillvalue_type <<endl;
             string var_type = HDFCFUtil::print_type(dtype);
-//cerr<<"var type is "<<var_type <<endl;
             if(fillvalue_type != var_type){ 
                 at->del_attr("_FillValue");
                 at->append_attr("_FillValue",var_type,fillvalue);               
@@ -512,7 +468,6 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_n
 		
         if(scale_factor_value.length()!=0) 
         {
-            // using == to compare the double values is dangerous. May improve this when we redo this function.  KY 2012-6-14
             if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
                 return true;
         }
@@ -527,7 +482,6 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
 
         HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
         const vector<HDFEOS2::SwathDataset::DimensionMap*>& origdimmaps = sw->getDimensionMaps();
-//cerr<<"origdimmaps size is "<<origdimmaps.size() <<endl;
         vector<HDFEOS2::SwathDataset::DimensionMap*>::const_iterator it_dmap;
         struct dimmap_entry tempdimmap;
 
@@ -662,431 +616,392 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
 
 void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname, SOType sotype,  bool gridname_change_valid_range, bool changedtype, bool & change_fvtype){
 
-                string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
-                string  scale_factor_value=""; 
-                float   orig_scale_value = 1;
-                string  add_offset_value="0"; 
-                float   orig_offset_value = 0;
-                bool add_offset_found = false;
+    string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
+    string  scale_factor_value=""; 
+    float   orig_scale_value = 1;
+    string  add_offset_value="0"; 
+    float   orig_offset_value = 0;
+    bool add_offset_found = false;
 
-                string  fillvalue="";
+    string  fillvalue="";
 
-                string  valid_range_value="";
-                bool has_valid_range = false;
-                float orig_valid_min = 0;
-                float orig_valid_max = 0;
+    string  valid_range_value="";
+    bool has_valid_range = false;
+    float orig_valid_min = 0;
+    float orig_valid_max = 0;
 
-                string number_type_value="";
-                string number_type_dap_type="";
+    string number_type_value="";
+    string number_type_dap_type="";
 
+    AttrTable::Attr_iter it = at->attr_begin();
+    while (it!=at->attr_end())
+    {
+        if(at->get_name(it)=="scale_factor")
+        {
+            scale_factor_value = (*at->get_attr_vector(it)->begin());
+            orig_scale_value = atof(scale_factor_value.c_str());
+            scale_factor_type = at->get_type(it);
+        }
 
-                AttrTable::Attr_iter it = at->attr_begin();
+        if(at->get_name(it)=="add_offset")
+        {
+            add_offset_value = (*at->get_attr_vector(it)->begin());
+            orig_offset_value = atof(add_offset_value.c_str());
+            add_offset_type = at->get_type(it);
+            add_offset_found = true;
+        }
 
- 		while (it!=at->attr_end())
-                {
-                    if(at->get_name(it)=="scale_factor")
-                    {
-                        scale_factor_value = (*at->get_attr_vector(it)->begin());
-                        orig_scale_value = atof(scale_factor_value.c_str());
-                        scale_factor_type = at->get_type(it);
-                    }
-                    if(at->get_name(it)=="add_offset")
-                    {
-                        add_offset_value = (*at->get_attr_vector(it)->begin());
-                        orig_offset_value = atof(add_offset_value.c_str());
-                        add_offset_type = at->get_type(it);
-                        add_offset_found = true;
-                    }
-                    if(at->get_name(it)=="_FillValue")
-                    {
-                        fillvalue =  (*at->get_attr_vector(it)->begin());
-                        fillvalue_type = at->get_type(it);
-                    }
-                    if(at->get_name(it)=="valid_range")
-                    {
+        if(at->get_name(it)=="_FillValue")
+        {
+            fillvalue =  (*at->get_attr_vector(it)->begin());
+            fillvalue_type = at->get_type(it);
+        }
+
+        if(at->get_name(it)=="valid_range")
+        {
+            vector<string> *avalue = at->get_attr_vector(it);
+            vector<string>::iterator ait = avalue->begin();
+            while(ait!=avalue->end())
+            {
+                valid_range_value += *ait;
+                ait++;	
+                if(ait!=avalue->end())
+                    valid_range_value += ", ";
+            }
+            valid_range_type = at->get_type(it);
+            if (false == gridname_change_valid_range) {
+                orig_valid_min = (float)(atof((avalue->at(0)).c_str()));
+                orig_valid_max = (float)(atof((avalue->at(1)).c_str()));
+            }
+            has_valid_range = true;
+        }
+
+        if(true == changedtype && (at->get_name(it)=="Number_Type"))
+        {
+            number_type_value = (*at->get_attr_vector(it)->begin());
+            number_type_dap_type= at->get_type(it);
+        }
+
+        it++;
+    } 
+
+    // Change scale and offset values
+    if(scale_factor_value.length()!=0)
+    {
+        if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
+        {
+            at->del_attr("scale_factor");
+            at->append_attr("orig_scale_factor", scale_factor_type, scale_factor_value);
+            if(add_offset_found)
+            {
+                at->del_attr("add_offset");
+                at->append_attr("orig_add_offset", add_offset_type, add_offset_value);
+            }
+        }
+    }
+
+    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
+    {
+        change_fvtype = true;
+        at->del_attr("_FillValue");
+        at->append_attr("_FillValue", "Float32", fillvalue);
+    }
+ 
+    float valid_max = 0;
+    float valid_min = 0;
+
+    it = at->attr_begin();
+    bool handle_modis_l1b = false;
+    if (sotype == MODIS_MUL_SCALE && true ==changedtype) {
+
+        // Emissive should be at the end of the field name such as "..._Emissive"
+        string emissive_str = "Emissive";
+        string RefSB_str = "RefSB";
+        bool is_emissive_field = false;
+        bool is_refsb_field = false;
+        if(newfname.find(emissive_str)!=string::npos) {
+            if(0 == newfname.compare(newfname.size()-emissive_str.size(),emissive_str.size(),emissive_str))
+                is_emissive_field = true;
+        }
+
+        if(newfname.find(RefSB_str)!=string::npos) {
+            if(0 == newfname.compare(newfname.size()-RefSB_str.size(),RefSB_str.size(),RefSB_str))
+                is_refsb_field = true;
+        }
+
+        if ((true == is_emissive_field) || (true== is_refsb_field)){
+
+            float scale_max = 0;
+            float scale_min = 100000;
+
+            float offset_max = 0;
+            float offset_min = 0;
+
+            float temp_var_val = 0;
+
+            string orig_long_name_value;
+            string modify_long_name_value;
+            string str_removed_from_long_name=" Scaled Integers";
+            string radiance_units_value;
+                        
+            while (it!=at->attr_end()) 
+	    {
+                // Radiance field(Emissive field)
+                if(true == is_emissive_field) {
+
+                    if ("radiance_scales" == (at->get_name(it))) {
                         vector<string> *avalue = at->get_attr_vector(it);
-                        vector<string>::iterator ait = avalue->begin();
-                        while(ait!=avalue->end())
-                        {
-                            valid_range_value += *ait;
-                            ait++;	
-                            if(ait!=avalue->end())
-                                valid_range_value += ", ";
-                        }
-                        valid_range_type = at->get_type(it);
-                        if (false == gridname_change_valid_range) {
-                            orig_valid_min = (float)(atof((avalue->at(0)).c_str()));
-                            orig_valid_max = (float)(atof((avalue->at(1)).c_str()));
-                        }
-                        has_valid_range = true;
-                    }
-
-                    if(true == changedtype && (at->get_name(it)=="Number_Type"))
-                    {
-                        number_type_value = (*at->get_attr_vector(it)->begin());
-                        number_type_dap_type= at->get_type(it);
-                    }
-
-                    it++;
-                }
-
-                // Change scale and offset values
-                if(scale_factor_value.length()!=0)
-                {
-                    if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
-                    {
-                        at->del_attr("scale_factor");
-                        at->append_attr("orig_scale_factor", scale_factor_type, scale_factor_value);
-                        if(add_offset_found)
-                        {
-                            at->del_attr("add_offset");
-                            at->append_attr("orig_add_offset", add_offset_type, add_offset_value);
+                        for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
+                            temp_var_val = (float)(atof((*ait).c_str())); 
+                            if (temp_var_val > scale_max) 
+                                scale_max = temp_var_val;
+                            if (temp_var_val < scale_min)
+                                scale_min = temp_var_val;
                         }
                     }
 
-                }
-                if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
-                {
-                    change_fvtype = true;
-                    at->del_attr("_FillValue");
-                    at->append_attr("_FillValue", "Float32", fillvalue);
-                }
-
- 
-                float valid_max = 0;
-                float valid_min = 0;
-
-                it = at->attr_begin();
-                bool handle_modis_l1b = false;
-                if (sotype == MODIS_MUL_SCALE && true ==changedtype) {
-
-                    // Emissive should be at the end of the field name such as "..._Emissive"
-                    string emissive_str = "Emissive";
-                    string RefSB_str = "RefSB";
-                    bool is_emissive_field = false;
-                    bool is_refsb_field = false;
-                    if(newfname.find(emissive_str)!=string::npos) {
-                        if(0 == newfname.compare(newfname.size()-emissive_str.size(),emissive_str.size(),emissive_str))
-                            is_emissive_field = true;
+                    if ("radiance_offsets" == (at->get_name(it))) {
+                        vector<string> *avalue = at->get_attr_vector(it);
+                        for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
+                            temp_var_val = (float)(atof((*ait).c_str())); 
+                            if (temp_var_val > offset_max) 
+                                offset_max = temp_var_val;
+                            if (temp_var_val < scale_min)
+                                offset_min = temp_var_val;
+                        }
                     }
 
-                    if(newfname.find(RefSB_str)!=string::npos) {
-                        if(0 == newfname.compare(newfname.size()-RefSB_str.size(),RefSB_str.size(),RefSB_str))
-                            is_refsb_field = true;
-                    }
+                    if ("long_name" == (at->get_name(it))) {
+                        orig_long_name_value = (*at->get_attr_vector(it)->begin());
+                        if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
+                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
 
-                    if ((true == is_emissive_field) || (true== is_refsb_field)){
-
-                        float scale_max = 0;
-                        float scale_min = 100000;
-
-                        float offset_max = 0;
-                        float offset_min = 0;
-
-                        float temp_var_val = 0;
-
-                        string orig_long_name_value;
-                        string modify_long_name_value;
-                        string str_removed_from_long_name=" Scaled Integers";
-                        string radiance_units_value;
-                        
-                        while (it!=at->attr_end()) 
-		        {
-                            // Radiance field(Emissive field)
-                            if(true == is_emissive_field) {
-                           
-                                if ("radiance_scales" == (at->get_name(it))) {
-
-                                    vector<string> *avalue = at->get_attr_vector(it);
-                                    for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
-                                        temp_var_val = (float)(atof((*ait).c_str())); 
-                                        if (temp_var_val > scale_max) 
-                                            scale_max = temp_var_val;
-                                        if (temp_var_val < scale_min)
-                                            scale_min = temp_var_val;
-                                    }
-                                }
-
-                                if ("radiance_offsets" == (at->get_name(it))) {
-
-                                    vector<string> *avalue = at->get_attr_vector(it);
-                                    for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
-                                        temp_var_val = (float)(atof((*ait).c_str())); 
-                                        if (temp_var_val > offset_max) 
-                                            offset_max = temp_var_val;
-                                        if (temp_var_val < scale_min)
-                                            offset_min = temp_var_val;
-                                    }
-                                }
-
-                                if ("long_name" == (at->get_name(it))) {
-                                    orig_long_name_value = (*at->get_attr_vector(it)->begin());
-                                    if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
-
-                                            modify_long_name_value = 
+                                modify_long_name_value = 
                                                 orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
-                                            at->del_attr("long_name");
-                                            at->append_attr("long_name","String",modify_long_name_value);
-                                            at->append_attr("orig_long_name","String",orig_long_name_value);
-                                        }
-                                    }
-                                }
-                                if ("radiance_units" == (at->get_name(it))) 
-                                    radiance_units_value = (*at->get_attr_vector(it)->begin());
-
+                                at->del_attr("long_name");
+                                at->append_attr("long_name","String",modify_long_name_value);
+                                at->append_attr("orig_long_name","String",orig_long_name_value);
                             }
-
-                            if (true == is_refsb_field) {
-                                if ("reflectance_scales" == (at->get_name(it))) {
-
-                                    vector<string> *avalue = at->get_attr_vector(it);
-                                    for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
-                                        temp_var_val = (float)(atof((*ait).c_str())); 
-                                        if (temp_var_val > scale_max) 
-                                            scale_max = temp_var_val;
-                                        if (temp_var_val < scale_min)
-                                            scale_min = temp_var_val;
-                                    }
-                                }
-
-                                if ("reflectance_offsets" == (at->get_name(it))) {
-
-                                    vector<string> *avalue = at->get_attr_vector(it);
-                                    for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
-                                        temp_var_val = (float)(atof((*ait).c_str())); 
-                                        if (temp_var_val > offset_max) 
-                                            offset_max = temp_var_val;
-                                        if (temp_var_val < scale_min)
-                                            offset_min = temp_var_val;
-                                    }
-                                }
-
-                                if ("long_name" == (at->get_name(it))) {
-                                    orig_long_name_value = (*at->get_attr_vector(it)->begin());
-                                    if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                                        if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
-
-                                            modify_long_name_value = 
-                                                orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
-                                            at->del_attr("long_name");
-                                            at->append_attr("long_name","String",modify_long_name_value);
-                                            at->append_attr("orig_long_name","String",orig_long_name_value);
-                                        }
-                                    }
-                                }
- 
-                            }
-                            it++;
                         }
-                        // Calculate the final valid_max and valid_min.
-                        if (scale_min <= 0)
-                            throw InternalErr(__FILE__,__LINE__,"the scale factor should always be greater than 0.");
+                    }
 
-                        if (orig_valid_max > offset_min) 
-                            valid_max = (orig_valid_max-offset_min)*scale_max;
-                        else 
-                            valid_max = (orig_valid_max-offset_min)*scale_min;
+                    if ("radiance_units" == (at->get_name(it))) 
+                        radiance_units_value = (*at->get_attr_vector(it)->begin());
+                }
 
-                        if (orig_valid_min > offset_max)
-                            valid_min = (orig_valid_min-offset_max)*scale_min;
-                        else 
-                            valid_min = (orig_valid_min -offset_max)*scale_max;
+                if (true == is_refsb_field) {
+                    if ("reflectance_scales" == (at->get_name(it))) {
+                        vector<string> *avalue = at->get_attr_vector(it);
+                        for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
+                            temp_var_val = (float)(atof((*ait).c_str())); 
+                            if (temp_var_val > scale_max) 
+                                scale_max = temp_var_val;
+                            if (temp_var_val < scale_min)
+                                scale_min = temp_var_val;
+                        }
+                    }
 
-                        // These physical variables should be greater than 0
-                        if (valid_min < 0)
-                            valid_min = 0;
-                        string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_min));
-                        at->append_attr("valid_min","Float32",print_rep);
-                        print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_max));
-                        at->append_attr("valid_max","Float32",print_rep);
+                    if ("reflectance_offsets" == (at->get_name(it))) {
 
-                        at->del_attr("valid_range");  
+                        vector<string> *avalue = at->get_attr_vector(it);
+                        for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
+                            temp_var_val = (float)(atof((*ait).c_str())); 
+                            if (temp_var_val > offset_max) 
+                                offset_max = temp_var_val;
+                            if (temp_var_val < scale_min)
+                                offset_min = temp_var_val;
+                        }
+                    }
 
-                        handle_modis_l1b = true;
+                    if ("long_name" == (at->get_name(it))) {
+                        orig_long_name_value = (*at->get_attr_vector(it)->begin());
+                        if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
+                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
+
+                                modify_long_name_value = 
+                                    orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
+                                at->del_attr("long_name");
+                                at->append_attr("long_name","String",modify_long_name_value);
+                                at->append_attr("orig_long_name","String",orig_long_name_value);
+                            }
+                        }
+                    }
+                }
+                it++;
+            }
+
+            // Calculate the final valid_max and valid_min.
+            if (scale_min <= 0)
+                throw InternalErr(__FILE__,__LINE__,"the scale factor should always be greater than 0.");
+
+            if (orig_valid_max > offset_min) 
+                valid_max = (orig_valid_max-offset_min)*scale_max;
+            else 
+                valid_max = (orig_valid_max-offset_min)*scale_min;
+
+            if (orig_valid_min > offset_max)
+                valid_min = (orig_valid_min-offset_max)*scale_min;
+            else 
+                valid_min = (orig_valid_min -offset_max)*scale_max;
+
+            // These physical variables should be greater than 0
+            if (valid_min < 0)
+                valid_min = 0;
+
+            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_min));
+            at->append_attr("valid_min","Float32",print_rep);
+            print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_max));
+            at->append_attr("valid_max","Float32",print_rep);
+            at->del_attr("valid_range");  
+            handle_modis_l1b = true;
                         
-                        // Change the units for the emissive field
-                        if (true == is_emissive_field && radiance_units_value.size() >0) {
-                            at->del_attr("units");
-                            at->append_attr("units","String",radiance_units_value);
-                        }  
-                    }
+            // Change the units for the emissive field
+            if (true == is_emissive_field && radiance_units_value.size() >0) {
+                at->del_attr("units");
+                at->append_attr("units","String",radiance_units_value);
+            }  
+        }
+    }
+
+    // Handle other valid_range attributes
+    if(true == changedtype && true == has_valid_range && false == handle_modis_l1b) {
+
+        if (true == gridname_change_valid_range) 
+            HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
+        else if(scale_factor_value.length()!=0) {
+            if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+                if (orig_scale_value > 1) {
+                    sotype = MODIS_DIV_SCALE;
+                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
+                                 << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
+                                 << " Now change it to MODIS_DIV_SCALE. "<<endl;
                 }
+            }
 
-                // Handle other valid_range attributes
-                if(true == changedtype && true == has_valid_range && false == handle_modis_l1b) {
-cerr<<"coming to generate valid_min and valid_max "<<endl;
-                    if (true == gridname_change_valid_range) 
-                        HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
-
-
-                    else if(scale_factor_value.length()!=0) {
-
-                    if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
-                        if (orig_scale_value > 1) {
-                            sotype = MODIS_DIV_SCALE;
-                            (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
-                               << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
-                               << " Now change it to MODIS_DIV_SCALE. "<<endl;
-                        }
-                    }
-
-                    if (MODIS_DIV_SCALE == sotype) {
-                        if (orig_scale_value < 1) {
-                            sotype = MODIS_MUL_SCALE;
-                            (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
-                               << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
-                               << " Now change it to MODIS_MUL_SCALE. "<<endl;
-                        }
-                    }
-
-
-                        if(sotype == MODIS_MUL_SCALE) {
-                            valid_min = (orig_valid_min - orig_offset_value)*orig_scale_value;
-                            valid_max = (orig_valid_max - orig_offset_value)*orig_scale_value;
-                        }
-                        else if (sotype == MODIS_DIV_SCALE) {
-                            valid_min = (orig_valid_min - orig_offset_value)/orig_scale_value;
-                            valid_max = (orig_valid_max - orig_offset_value)/orig_scale_value;
-                        }
-                        else if (sotype == MODIS_EQ_SCALE) {
-                            valid_min = orig_valid_min * orig_scale_value + orig_offset_value;
-                            valid_max = orig_valid_max * orig_scale_value + orig_offset_value;
-                        }
-                    }
-                    else {
-                        if (MODIS_MUL_SCALE == sotype || MODIS_DIV_SCALE == sotype) {
-                            valid_min = orig_valid_min - orig_offset_value;
-                            valid_max = orig_valid_max - orig_offset_value;
-                        }
-                        else if (MODIS_EQ_SCALE == sotype) {
-                            valid_min = orig_valid_min + orig_offset_value;
-                            valid_max = orig_valid_max + orig_offset_value;
-                        }
-                    }
-                    
-
-
-                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_min));
-                    at->append_attr("valid_min","Float32",print_rep);
-                    print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_max));
-                    at->append_attr("valid_max","Float32",print_rep);
-
-                    at->del_attr("valid_range");
+            if (MODIS_DIV_SCALE == sotype) {
+                if (orig_scale_value < 1) {
+                    sotype = MODIS_MUL_SCALE;
+                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
+                                 << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
+                                 << " Now change it to MODIS_MUL_SCALE. "<<endl;
                 }
+            }
 
-#if 0
-                // Change scale and offset values
-                if(scale_factor_value.length()!=0)
-                {
-                    if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
-                    {
-                        at->del_attr("scale_factor");
-                        at->append_attr("orig_scale_factor", scale_factor_type, scale_factor_value);
-                        if(add_offset_found)
-                        {
-                            at->del_attr("add_offset");
-                            at->append_attr("orig_add_offset", add_offset_type, add_offset_value);
-                        }
-                    }
+            if(sotype == MODIS_MUL_SCALE) {
+                valid_min = (orig_valid_min - orig_offset_value)*orig_scale_value;
+                valid_max = (orig_valid_max - orig_offset_value)*orig_scale_value;
+            }
+            else if (sotype == MODIS_DIV_SCALE) {
+                valid_min = (orig_valid_min - orig_offset_value)/orig_scale_value;
+                valid_max = (orig_valid_max - orig_offset_value)/orig_scale_value;
+            }
+            else if (sotype == MODIS_EQ_SCALE) {
+                valid_min = orig_valid_min * orig_scale_value + orig_offset_value;
+                valid_max = orig_valid_max * orig_scale_value + orig_offset_value;
+            }
+        }
+        else {// This is our current assumption.
+            if (MODIS_MUL_SCALE == sotype || MODIS_DIV_SCALE == sotype) {
+                valid_min = orig_valid_min - orig_offset_value;
+                valid_max = orig_valid_max - orig_offset_value;
+            }
+            else if (MODIS_EQ_SCALE == sotype) {
+                valid_min = orig_valid_min + orig_offset_value;
+                valid_max = orig_valid_max + orig_offset_value;
+            }
+        }
 
-                }
-                if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
-                {
-                    change_fvtype = true;
-                    at->del_attr("_FillValue");
-                    at->append_attr("_FillValue", "Float32", fillvalue);
-                }
-#endif
+        string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_min));
+        at->append_attr("valid_min","Float32",print_rep);
+        print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_max));
+        at->append_attr("valid_max","Float32",print_rep);
+        at->del_attr("valid_range");
+    }
 
-                // We also find that there is an attribute called "Number_Type" that will stores the original attribute
-                // datatype. If the datatype gets changed, the attribute is confusion. here we can change the attribute
-                // name to "Number_Type_Orig"
-                if(true == changedtype && number_type_dap_type !="" ) {
-                    at->del_attr("Number_Type");
-                    at->append_attr("Number_Type_Orig",number_type_dap_type,number_type_value);
-
-                }
-
-
-
+    // We also find that there is an attribute called "Number_Type" that will stores the original attribute
+    // datatype. If the datatype gets changed, the attribute is confusion. here we can change the attribute
+    // name to "Number_Type_Orig"
+    if(true == changedtype && number_type_dap_type !="" ) {
+        at->del_attr("Number_Type");
+        at->append_attr("Number_Type_Orig",number_type_dap_type,number_type_value);
+    }
 }
 
 void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_value, const std::string& scale_factor_value,float& valid_min, float &valid_max) {
 
-                        int16 vip_orig_valid_min = 0;
-                        int16 vip_orig_valid_max = 0;
+    int16 vip_orig_valid_min = 0;
+    int16 vip_orig_valid_max = 0;
 
-                        size_t found = valid_range_value.find_first_of(",");
-                        size_t found_from_end = valid_range_value.find_last_of(",");
-                        if (string::npos == found) 
-                            throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
-                        if (found != found_from_end)
-                            throw InternalErr(__FILE__,__LINE__,"There should be only one separator.");
+    size_t found = valid_range_value.find_first_of(",");
+    size_t found_from_end = valid_range_value.find_last_of(",");
+    if (string::npos == found) 
+        throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
+    if (found != found_from_end)
+        throw InternalErr(__FILE__,__LINE__,"There should be only one separator.");
                         
-                        //istringstream(valid_range_value.substr(0,found))>>orig_valid_min;
-                        //istringstream(valid_range_value.substr(found+1))>>orig_valid_max;
+    //istringstream(valid_range_value.substr(0,found))>>orig_valid_min;
+    //istringstream(valid_range_value.substr(found+1))>>orig_valid_max;
 
-                        vip_orig_valid_min = atoi((valid_range_value.substr(0,found)).c_str());
-                        vip_orig_valid_max = atoi((valid_range_value.substr(found+1)).c_str());
+    vip_orig_valid_min = atoi((valid_range_value.substr(0,found)).c_str());
+    vip_orig_valid_max = atoi((valid_range_value.substr(found+1)).c_str());
 
-                        int16 scale_factor_number = 1;
-                        //istringstream(scale_factor_value)>>scale_factor_number;
-                        scale_factor_number = atoi(scale_factor_value.c_str());
+    int16 scale_factor_number = 1;
 
-                        valid_min = (float)(vip_orig_valid_min/scale_factor_number);
-                        valid_max = (float)(vip_orig_valid_max/scale_factor_number);
- 
+    //istringstream(scale_factor_value)>>scale_factor_number;
+    scale_factor_number = atoi(scale_factor_value.c_str());
 
+    valid_min = (float)(vip_orig_valid_min/scale_factor_number);
+    valid_max = (float)(vip_orig_valid_max/scale_factor_number);
 }
 
 void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 
-                    AttrTable::Attr_iter it = at->attr_begin();
-                string scale_factor_value="", add_offset_value="0";
-                string scale_factor_type, add_offset_type;
-                bool OFFSET_found = false;
-                bool Scale_found = false;
-                bool SCALE_FACTOR_found = false;
-                while (it!=at->attr_end()) 
-                {
-                    if(at->get_name(it)=="SCALE_FACTOR")
-                    {
-                        scale_factor_value = (*at->get_attr_vector(it)->begin());
-                        scale_factor_type = at->get_type(it);
-                        SCALE_FACTOR_found = true;
-                    }
+    AttrTable::Attr_iter it = at->attr_begin();
+    string scale_factor_value="", add_offset_value="0";
+    string scale_factor_type, add_offset_type;
+    bool OFFSET_found = false;
+    bool Scale_found = false;
+    bool SCALE_FACTOR_found = false;
 
-                    if(at->get_name(it)=="Scale")
-                    {
-                        scale_factor_value = (*at->get_attr_vector(it)->begin());
-                        scale_factor_type = at->get_type(it);
-                        Scale_found = true;
-                    }
-                    if(at->get_name(it)=="OFFSET")
-                    {
-                        add_offset_value = (*at->get_attr_vector(it)->begin());
-                        add_offset_type = at->get_type(it);
-                        OFFSET_found = true;
-                    }
-                    it++;
-                }
+    while (it!=at->attr_end()) 
+    {
+        if(at->get_name(it)=="SCALE_FACTOR")
+        {
+            scale_factor_value = (*at->get_attr_vector(it)->begin());
+            scale_factor_type = at->get_type(it);
+            SCALE_FACTOR_found = true;
+        }
 
-                if (true == SCALE_FACTOR_found) {
-                    at->del_attr("SCALE_FACTOR");
-                    at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
-                }
+        if(at->get_name(it)=="Scale")
+        {
+            scale_factor_value = (*at->get_attr_vector(it)->begin());
+            scale_factor_type = at->get_type(it);
+            Scale_found = true;
+        }
 
-                if (true == Scale_found) {
-                    at->del_attr("Scale");
-                    at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
-                }
+        if(at->get_name(it)=="OFFSET")
+        {
+            add_offset_value = (*at->get_attr_vector(it)->begin());
+            add_offset_type = at->get_type(it);
+            OFFSET_found = true;
+        }
+        it++;
+    }
 
+    if (true == SCALE_FACTOR_found) {
+        at->del_attr("SCALE_FACTOR");
+        at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
+    }
 
-                if (true == OFFSET_found) {
-                    at->del_attr("OFFSET");
-                    at->append_attr("add_offset",add_offset_type,add_offset_value);
-                }
+    if (true == Scale_found) {
+        at->del_attr("Scale");
+        at->append_attr("scale_factor",scale_factor_type,scale_factor_value);
+    }
+
+    if (true == OFFSET_found) {
+        at->del_attr("OFFSET");
+        at->append_attr("add_offset",add_offset_type,add_offset_value);
+    }
 
 }
 
@@ -1166,29 +1081,28 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *on
 //    vector<HDFSP::SDField *>::const_iterator it_g;
  //   for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
 
-        // Ignore ALL coordinate variables if this is "OTHERHDF" case and some dimensions 
-        // don't have dimension scale data.
+    // Ignore ALL coordinate variables if this is "OTHERHDF" case and some dimensions 
+    // don't have dimension scale data.
     
-        AttrTable *at = das.get_table(onespsds->getNewName());
-        if (!at)
-            at = das.add_table(onespsds->getNewName(), new AttrTable);
+    AttrTable *at = das.get_table(onespsds->getNewName());
+    if (!at)
+        at = das.add_table(onespsds->getNewName(), new AttrTable);
 
+    //For OBPG L2 and L3 only.Some OBPG products put "slope" and "Intercept" etc. in the field attributes
+    // We still need to handle the scale and offset here.
+    bool scale_factor_flag = false;
+    bool add_offset_flag = false;
+    bool slope_flag = false;
+    bool intercept_flag = false;
 
-        //For OBPG L2 and L3 only.Some OBPG products put "slope" and "Intercept" etc. in the field attributes
-        // We still need to handle the scale and offset here.
-        bool scale_factor_flag = false;
-        bool add_offset_flag = false;
-        bool slope_flag = false;
-        bool intercept_flag = false;
-
-        if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) {// Begin OPBG CF attribute handling(Checking "slope" and "intercept") 
-            for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
-                if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
-                {
-                    slope_flag = true;
+    if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) {// Begin OPBG CF attribute handling(Checking "slope" and "intercept") 
+        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
+            if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
+            {
+                slope_flag = true;
 			
-                    switch((*i)->getType())
-                    {
+                switch((*i)->getType())
+                {
 #define GET_SLOPE(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
@@ -1197,19 +1111,19 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *on
     } \
     break;
 
-                        GET_SLOPE(INT16,   int16);
-                        GET_SLOPE(INT32,   int32);
-                        GET_SLOPE(FLOAT32, float);
-                        GET_SLOPE(FLOAT64, double);
+                GET_SLOPE(INT16,   int16);
+                GET_SLOPE(INT32,   int32);
+                GET_SLOPE(FLOAT32, float);
+                GET_SLOPE(FLOAT64, double);
 #undef GET_SLOPE
-                    } ;
+                } ;
                     //slope = *(float*)&((*i)->getValue()[0]);
-                }
-                if(global_intercept_flag != true && ((*i)->getName()=="Intercept" || (*i)->getName()=="intercept"))
-                {	
-                    intercept_flag = true;
-                    switch((*i)->getType())
-                    {
+            }
+            if(global_intercept_flag != true && ((*i)->getName()=="Intercept" || (*i)->getName()=="intercept"))
+            {	
+                intercept_flag = true;
+                switch((*i)->getType())
+                {
 #define GET_INTERCEPT(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
@@ -1217,71 +1131,71 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *on
         intercept = (float)tmpvalue; \
     } \
     break;
-                        GET_INTERCEPT(INT16,   int16);
-                        GET_INTERCEPT(INT32,   int32);
-                        GET_INTERCEPT(FLOAT32, float);
-                        GET_INTERCEPT(FLOAT64, double);
+                GET_INTERCEPT(INT16,   int16);
+                GET_INTERCEPT(INT32,   int32);
+                GET_INTERCEPT(FLOAT32, float);
+                GET_INTERCEPT(FLOAT64, double);
 #undef GET_INTERCEPT
-                    } ;
+                } ;
                     //intercept = *(float*)&((*i)->getValue()[0]);
-                }
             }
-        } // End of checking "slope" and "intercept"
-
-        // Checking if OBPG has "scale_factor" ,"add_offset", generally checking for "long_name" attributes.
-        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {       
-
-            if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && (*i)->getName()=="scale_factor")
-                scale_factor_flag = true;		
-
-            if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && (*i)->getName()=="add_offset")
-                add_offset_flag = true;
         }
+    } // End of checking "slope" and "intercept"
+
+    // Checking if OBPG has "scale_factor" ,"add_offset", generally checking for "long_name" attributes.
+    for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {       
+
+        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && (*i)->getName()=="scale_factor")
+            scale_factor_flag = true;		
+
+        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && (*i)->getName()=="add_offset")
+            add_offset_flag = true;
+    }
         
-        // Checking if the scale and offset equation is linear, this is only for OBPG level 3.
-        // Also checking if having the fill value and adding fill value if not having one for some OBPG data type
-        if((f->getSPType() == OBPGL2 || f->getSPType()==OBPGL3 )&& onespsds->getFieldType()==0)
-        {
+    // Checking if the scale and offset equation is linear, this is only for OBPG level 3.
+    // Also checking if having the fill value and adding fill value if not having one for some OBPG data type
+    if((f->getSPType() == OBPGL2 || f->getSPType()==OBPGL3 )&& onespsds->getFieldType()==0)
+    {
             
-            if((OBPGL3 == f->getSPType() && (scaling.find("linear")!=string::npos)) || OBPGL2 == f->getSPType() ) {
+        if((OBPGL3 == f->getSPType() && (scaling.find("linear")!=string::npos)) || OBPGL2 == f->getSPType() ) {
 
-                if(false == scale_factor_flag && (true == slope_flag || true == global_slope_flag))
-                {
-                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(slope));
-                    at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-                }
-
-                if(false == add_offset_flag && (true == intercept_flag || true == global_intercept_flag))
-                {
-                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(intercept));
-                    at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
-                }
+            if(false == scale_factor_flag && (true == slope_flag || true == global_slope_flag))
+            {
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(slope));
+                at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
             }
 
-            bool has_fill_value = false;
-            for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
-                if ("_FillValue" == (*i)->getNewName()){
-                    has_fill_value = true; 
-                    break;
-                }
+            if(false == add_offset_flag && (true == intercept_flag || true == global_intercept_flag))
+            {
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(intercept));
+                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
             }
+        }
+
+        bool has_fill_value = false;
+        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
+            if ("_FillValue" == (*i)->getNewName()){
+                has_fill_value = true; 
+                break;
+            }
+        }
          
 
-            // Add fill value to some type of OBPG data. 16-bit integer, fill value = -32767, unsigned 16-bit integer fill value = 65535
-            // This is based on the evaluation of the example files. KY 2012-09-06
-            if ((false == has_fill_value) &&(DFNT_INT16 == onespsds->getType())) {
-                short fill_value = -32767;
-                string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&(fill_value));
-                at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
-            }
+        // Add fill value to some type of OBPG data. 16-bit integer, fill value = -32767, unsigned 16-bit integer fill value = 65535
+        // This is based on the evaluation of the example files. KY 2012-09-06
+        if ((false == has_fill_value) &&(DFNT_INT16 == onespsds->getType())) {
+            short fill_value = -32767;
+            string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&(fill_value));
+            at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
+        }
 
-            if ((false == has_fill_value) &&(DFNT_UINT16 == onespsds->getType())) {
-                unsigned short fill_value = 65535;
-                string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&(fill_value));
-                at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_UINT16),print_rep);
-            }
+        if ((false == has_fill_value) &&(DFNT_UINT16 == onespsds->getType())) {
+            unsigned short fill_value = 65535;
+            string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&(fill_value));
+            at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_UINT16),print_rep);
+        }
 
-        }// Finish OBPG handling
+    }// Finish OBPG handling
 
 }
 
@@ -1378,15 +1292,15 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
 
 }
 
-    //
-    // Many CERES products compose of multiple groups
-    // There are many fields in CERES data(a few hundred) and the full name(with the additional path)
-    // is very long. It causes Java clients choken since Java clients append names in the URL
-    // To improve the performance and to make Java clients access the data, we will ignore 
-    // the path of these fields. Users can turn off this feature by commenting out the line: H4.EnableCERESMERRAShortName=true
-    // or can set the H4.EnableCERESMERRAShortName=false
-    // We still preserve the full path as an attribute in case users need to check them. 
-    // Kent 2012-6-29
+//
+// Many CERES products compose of multiple groups
+// There are many fields in CERES data(a few hundred) and the full name(with the additional path)
+// is very long. It causes Java clients choken since Java clients append names in the URL
+// To improve the performance and to make Java clients access the data, we will ignore 
+// the path of these fields. Users can turn off this feature by commenting out the line: H4.EnableCERESMERRAShortName=true
+// or can set the H4.EnableCERESMERRAShortName=false
+// We still preserve the full path as an attribute in case users need to check them. 
+// Kent 2012-6-29
  
 void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,string filename) {
 
@@ -1514,7 +1428,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
             else {
 
                 for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
-           
  
                     if((*j)->getFieldOrder() == 1) {
                         if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){

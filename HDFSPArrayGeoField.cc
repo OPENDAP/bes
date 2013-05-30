@@ -32,11 +32,6 @@
 
 bool HDFSPArrayGeoField::read ()
 {
-#if 0
-    int* offset = new int[rank];
-    int* count  = new int[rank];
-    int* step   = new int[rank];
-#endif
 
     vector<int> offset;
     offset.resize(rank);
@@ -49,12 +44,6 @@ bool HDFSPArrayGeoField::read ()
     int nelms = -1;
 
     nelms = format_constraint (&offset[0], &step[0], &count[0]);
-
-#if 0
-    int32* offset32 = new int32[rank];
-    int32* count32 = new int32[rank];
-    int32* step32 = new int32[rank];
-#endif
 
     vector<int32>offset32;
     offset32.resize(rank);
@@ -169,11 +158,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 
     int32 sdid = 0;
     int32 sdsid = 0;
-#if 0
-    int32 *geooffset32 = new int32[rank + 1];
-    int32 *geocount32 = new int32[rank + 1];
-    int32 *geostep32 = new int32[rank + 1];
-#endif
     
     vector<int32>geooffset32;
     geooffset32.resize(rank+1);
@@ -227,21 +211,18 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    //void *val = NULL;
     int32 r = 0;
 
     switch (dtype) {
 
         case DFNT_INT8:
         {
-            //val = new int8[nelms];
             vector <int8> val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
-                // delete[](int8 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed.";
@@ -250,20 +231,13 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 
 #ifndef SIGNED_BYTE_TO_INT32
             set_value ((dods_byte *) &val[0], nelms);
-            // delete[](int8 *) val;
 #else
-            // int32 *newval;
-            //int8 *newval8;
             vector<int32>newval;
             newval.resize(nelms);
 
-            //newval = new int32[nelms];
-            //newval8 = (int8 *) val;
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
             set_value ((dods_int32 *) &newval[0], nelms);
-                //delete[](int8 *) val;
-                //delete[]newval;
 #endif
         }
 
@@ -274,13 +248,11 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
         {
             vector<uint8> val;
             val.resize(nelms);
-//            val = new uint8[nelms];
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
 
-                // delete[](uint8 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -288,13 +260,11 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_byte *) &val[0], nelms);
-//            delete[](uint8 *) val;
         }
             break;
 
         case DFNT_INT16:
         {
-//            val = new int16[nelms];
             vector<int16> val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
@@ -302,7 +272,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 
                 SDend (sdid);
                 SDendaccess (sdsid);
-//                delete[](int16 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -310,20 +279,17 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_int16 *) &val[0], nelms);
-        //  delete[](int16 *) val;
         }
             break;
 
         case DFNT_UINT16:
         {
-//            val = new uint16[nelms];
             vector<uint16>val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
-//                delete[](uint16 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -331,12 +297,10 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_uint16 *) &val[0], nelms);
-//            delete[](uint16 *) val;
         }
 	    break;
         case DFNT_INT32:
         {
-//            val = new int32[nelms];
             vector<int32>val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
@@ -344,7 +308,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
                 SDend (sdid);
 	        SDendaccess (sdsid);
 
-//              delete[](int32 *) val;
 	       	ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -352,37 +315,31 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_int32 *) &val[0], nelms);
-//            delete[](int32 *) val;
         }
             break;
 	case DFNT_UINT32:
         {
-//            val = new uint32[nelms];
             vector<uint32>val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
-//                delete[](uint32 *) val;
                 ostringstream eherr;
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
             set_value ((dods_uint32 *) &val[0], nelms);
-//            delete[](uint32 *) val;
         }
             break;
         case DFNT_FLOAT32:
         {
-//            val = new float32[nelms];
             vector<float32>val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
-//                delete[](float32 *) val;
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -390,26 +347,22 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_float32 *) &val[0], nelms);
-//            delete[](float32 *) val;
         }
             break;
         case DFNT_FLOAT64:
         {
-//            val = new float64[nelms];
             vector<float64>val;
             val.resize(nelms);
             r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
             if (r != 0) {
                 SDend (sdid);
                 SDendaccess (sdsid);
-//                delete[](float64 *) val;
                 ostringstream eherr;
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
             set_value ((dods_float64 *) &val[0], nelms);
-//            delete[](float64 *) val;
         }
             break;
         default:
@@ -447,8 +400,6 @@ HDFSPArrayGeoField::readtrmml3 (int32 * offset32, int32 * count32,
 
     const float slat = -49.875; // jhrg 3/16/11; Added const, rm step
     const float slon = -179.875;
-    // float step = 0.25;
-//    float *val = new float[nelms];
     vector<float> val;
     val.resize(nelms);
 
@@ -472,7 +423,6 @@ HDFSPArrayGeoField::readtrmml3 (int32 * offset32, int32 * count32,
         }
     }
     set_value ((dods_float32 *) &val[0], nelms);
-    // delete[]val;
 }
 
 // OBPG Level 2 lat/lon including CZCS, MODISA, MODIST, OCTS and SewWIFS.
@@ -488,8 +438,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
 
-    int32 sd_id, sdsid;
-    intn status;
+    int32 sd_id = -1, sdsid = -1;
+    intn status = 0;
 
     sd_id = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -500,11 +450,10 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
     }
 
     // Read File attributes to otain the segment
-
-    int32 attr_index, attr_dtype, n_values;
-    int32 num_pixel_data;
-    int32 num_point_data;
-    int32 num_scan_data;
+    int32 attr_index = 0, attr_dtype = 0, n_values = 0;
+    int32 num_pixel_data = 0;
+    int32 num_point_data = 0;
+    int32 num_scan_data = 0;
 
     attr_index = SDfindattr (sd_id, NUM_PIXEL_NAME);
     if (attr_index == FAIL) {
@@ -613,7 +562,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    int32 r;
+    int32 r = 0;
 
     switch (dtype) {
         case DFNT_INT8:
@@ -631,7 +580,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
             break;
         case DFNT_FLOAT32:
         {
-//            float32 *val = new float32[nelms];
             vector<float32> val;
             val.resize(nelms);
             if (compmapflag) {
@@ -646,7 +594,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
             }
             else {
                 int total_elm = num_scan_data * num_point_data;
-                // float32 *orival = new float32[total_elm];
                 vector<float32>orival;
                 orival.resize(total_elm); 
                 int32 all_start[2],all_edges[2];
@@ -667,10 +614,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 }
                 int interpolate_elm = num_scan_data *num_pixel_data;
 
-                //float32 * interp_val = new float[interpolate_elm];
                 vector<float32> interp_val;
                 interp_val.resize(interpolate_elm);
-//                float32 * interp_val = new float[interpolate_elm];
 
                 // Number of scan line doesn't change, so just interpolate according to the fast changing dimension
                 int tempseg = 0;
@@ -718,7 +663,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
                 LatLon2DSubset(&val[0],num_scan_data,num_pixel_data,&interp_val[0],offset32,count32,step32);
 
-                // delete[] interp_val;
             }
             // Leave the following comments until the next release
 #if 0
@@ -794,8 +738,8 @@ void
 HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 {
 
-    int32 sd_id;
-    intn status;
+    int32 sd_id = 0;
+    intn status = 0;
 
     sd_id = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -971,7 +915,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 
     if (fieldtype == 1) {
 
-        //float32 *allval = new float32[num_lat_data];
         vector<float32> allval;
         allval.resize(num_lat_data);
 
@@ -980,7 +923,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
         for (int j = 0; j < num_lat_data; j++)
             allval[j] = (num_lat_data - j - 1) * lat_step + swp_lat;
 
-        //float32 *val = new float32[nelms];
         vector<float32>val;
         val.resize(nelms);
 
@@ -988,27 +930,21 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
             val[k] = allval[(int) (offset[0] + step[0] * k)];
 
         set_value ((dods_float32 *) &val[0], nelms);
-//        delete[](float32 *) val;
-//        delete[](float32 *) allval;
     }
 
     if (fieldtype == 2) {
 
-        //float32 *allval = new float32[num_lon_data];
         vector<float32>allval;
         allval.resize(num_lon_data);
         for (int j = 0; j < num_lon_data; j++)
             allval[j] = swp_lon + j * lon_step;
 
-        //float32 *val = new float32[nelms];
         vector<float32>val;
         val.resize(nelms);
         for (int k = 0; k < nelms; k++)
             val[k] = allval[(int) (offset[0] + step[0] * k)];
 
         set_value ((dods_float32 *) &val[0], nelms);
-        //delete[](float32 *) val;
-        //delete[](float32 *) allval;
 
     }
 
@@ -1241,13 +1177,10 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                                "datatype is not float, unsupported.");
         case DFNT_FLOAT32:
         {
-            //float32 *val = new float32[nelms];
             vector<float32>val;
             val.resize(nelms);
-            //float32 *val = new float32[nelms];
             r = SDreaddata (sdsid, offset32, step32, count32, &val[0]);
             if (r != 0) {
-                //delete[](float32 *) val;
                 SDendaccess (sdsid);
                 SDend (sdid);
                 ostringstream eherr;
@@ -1266,19 +1199,15 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
             }
 
             set_value ((dods_float32 *) &val[0], nelms);
-            //delete[](float32 *) val;
             break;
         }
         case DFNT_FLOAT64:
         {
-            //float64 *val = new float64[nelms];
             vector<float64>val;
             val.resize(nelms);
-            //float64 *val = new float64[nelms];
 
             r = SDreaddata (sdsid, offset32, step32, count32, &val[0]);
             if (r != 0) {
-                //delete[](float64 *) val;
                 SDendaccess (sdsid);
                 SDend (sdid);
                 ostringstream eherr;
@@ -1296,7 +1225,6 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                         val[i] = val[i] - 360.0;
             }
             set_value ((dods_float64 *) &val[0], nelms);
-//            delete[](float64 *) val;
             break;
         }
         default:
@@ -1375,12 +1303,6 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
     orioffset32.resize(sdsrank);
     oricount32.resize(sdsrank);
     oristep32.resize(sdsrank);
-
-#if 0
-    int32 *orioffset32 = new int32[sdsrank];
-    int32 *oricount32 = new int32[sdsrank];
-    int32 *oristep32 = new int32[sdsrank];
-#endif
 
     int32 r;
 
@@ -1492,7 +1414,6 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
             if (fieldtype == 2) {
                 // Since Panoply cannot handle the case when the longitude is jumped from 180 to -180
                 // So turn it off and see if it works with other clients,change my mind, should contact Panoply developer to solve this
-
                 for (int i = 0; i < nelms; i++)
                     if (val[i] > 180.0)
                         val[i] = val[i] - 360.0;
@@ -1524,12 +1445,6 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
         eherr << "SDend failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
-#if 0
-    delete[]orioffset32;
-    delete[]oricount32;
-    delete[]oristep32;
-#endif
 
 }
 

@@ -34,12 +34,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     if (rank > 2) 
         throw InternalErr (__FILE__, __LINE__, "Currently doesn't support rank >2 with the dimension map");
 
-#if 0
-    int *offset = new int[rank];
-    int *count = new int[rank];
-    int *step = new int[rank];
-#endif
-
     vector<int>offset;
     offset.resize(rank);
 
@@ -85,7 +79,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
     datasetname = swathname;
 
     // Declare file ID and swath ID
-    int32 fileid, swathid; //[LD Comment 11/13/2012]
+    int32 fileid = -1, swathid = -1; 
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -106,8 +100,8 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    intn r;
-    int32 majordimsize, minordimsize; //[LD Comment 11/13/2012]
+    intn r = -1;
+    int32 majordimsize = 0, minordimsize = 0; 
 
 
     switch (dtype) {
@@ -144,14 +138,12 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
                throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //float32 *outlatlon32 = new float32[nelms];
             vector<float32>outlatlon32;
             outlatlon32.resize(nelms);
 
             LatLonSubset (&outlatlon32[0], majordimsize, minordimsize,
                 &latlon32[0], &offset32[0], &count32[0], &step32[0]);
             set_value ((dods_float32 *) &outlatlon32[0], nelms);
-            //delete[]outlatlon32;
         }
             break;
 	case DFNT_FLOAT64:
@@ -169,14 +161,12 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //float64 *outlatlon64 = new float64[nelms];
             vector<float64>outlatlon64;
             outlatlon64.resize(nelms);
 
             LatLonSubset (&outlatlon64[0], majordimsize, minordimsize,
                 &latlon64[0], &offset32[0], &count32[0], &step32[0]);
             set_value ((dods_float64 *) &outlatlon64[0], nelms);
-            //delete[]outlatlon64;
         }
             break;
         default:
@@ -204,8 +194,6 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
         eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
-
 
     return false;
 }
@@ -306,7 +294,7 @@ GetLatLon (int32 swathid, const std::string & geofieldname,
                 int32 ddimsize = SWdiminfo (swathid, (char *) it->datadim.c_str ());
                 if (ddimsize == -1)
                     return -1;
-                int r; //[LD Comment 11/14/2012]
+                int r = -1; 
 
                 r = _expand_dimmap_field (&vals, rank, dims, i, ddimsize, it->offset, it->inc);
                 if (r != 0)
