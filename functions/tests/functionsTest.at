@@ -3,3 +3,6 @@
 m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_TEST(bescmd/versionFunction.dds.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/versionFunction.dods.bescmd)
+
+AT_BESCMD_PATTERN_DATA_RESPONSE_TEST(bescmd/versionFunction.dods_2.bescmd)

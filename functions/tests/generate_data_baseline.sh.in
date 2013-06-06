@@ -7,11 +7,4 @@
 # Note: This function is coupled to the naming scheme used in
 # hdf4_handlerTest.at
 
-src=$2
-if test -z "$src"
-then
-        src=bescmd
-fi
-
-besstandalone -c @abs_builddir@/bes.conf \
--i @abs_srcdir@/$src/$1 | getdap -M - > @abs_srcdir@/$src/$1.baseline
+besstandalone -c @abs_builddir@/bes.conf -i @abs_srcdir@/$1 | getdap -M - > @abs_srcdir@/$1.baseline
