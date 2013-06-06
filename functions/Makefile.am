@@ -10,8 +10,8 @@ AM_LFLAGS = -8
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS =  . unit-tests 
-DIST_SUBDIRS = unit-tests 
+SUBDIRS =  . unit-tests tests
+DIST_SUBDIRS = unit-tests tests
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 
