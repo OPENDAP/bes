@@ -9,7 +9,9 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <bes:constraint>version()</bes:constraint>
+      <!-- %22 is a double quote and %3E is greater than -->
+      <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
+      <bes:constraint>grid(SST,%2245%3ECOADSY%3E35%22,%22140%3ECOADSX%3E120%22,%22TIME=366%22)</bes:constraint>
     </bes:container>
   </bes:define>
   
