@@ -44,29 +44,12 @@
 #include "Structure.h"
 #include "ServerFunction.h"
 
+#include "GeoGridFunction.H"
 
 namespace libdap
 {
+
 #if 0
-// These functions are use by the code in GeoConstraint
-string extract_string_argument(BaseType *arg) ;
-double extract_double_value(BaseType *arg) ;
-double *extract_double_array(Array *a) ;
-void set_array_using_double(Array *dest, double *src, int src_len) ;
-#endif
-#if 0
-void function_geoarray(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-void function_ugrid_demo(int argc, BaseType * argv[], DDS &dds, BaseType **btpp) ;
-
-// Projection function used to pass DAP version information
-void function_dap(int argc, BaseType *argv[], DDS &dds, ConstraintEvaluator &ce);
-
-void register_functions(ConstraintEvaluator &ce);
-#endif
-
-
-// bool gridFinder(BaseType *bt);
-
 void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 class GeoGridFunction: public libdap::ServerFunction {
 public:
@@ -87,7 +70,7 @@ public:
     bool canOperateOn(DDS &dds);
 
 };
-
+#endif
 
 
 void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;

@@ -526,7 +526,7 @@ bool GridFunction::canOperateOn(DDS &dds){
 	return usable;
 }
 
-
+#if 0
 /**
  * The passed DDS parameter dds is evaluated to see if it contains Grid objects whose semantics allow them
  * to be operated on by function_geogrid()
@@ -558,7 +558,7 @@ bool GeoGridFunction::canOperateOn(DDS &dds){
 
 	return usable;
 }
-
+#endif
 
 
 /** This server-side function returns version information for the server-side
@@ -624,6 +624,7 @@ see http://docs.opendap.org/index.php/Server_Side_Processing_Functions#keywords"
 }
 #endif
 
+#if 0
 static void parse_gse_expression(gse_arg * arg, BaseType * expr)
 {
     gse_restart(0); // Restart the scanner.
@@ -684,7 +685,9 @@ static void apply_grid_selection_expressions(Grid * grid,
 
     grid->set_read_p(false);
 }
+#endif
 
+#if 0
 /** This is an example function for use by the MIIC project team. The first version
  * of this function simply looked for the Latitude and Longitude arrays of a MODIS
  * granule and returned them if found. This version, miic_ex2, takes two optional
@@ -746,7 +749,7 @@ void function_miic_ex2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
 
     *btpp = dest;
 }
-
+#endif
 /** The grid function uses a set of relational expressions to form a selection
  within a Grid variable based on the values in the Grid's map vectors.
  Thus, if a Grid has a 'temperature' map which ranges from 0.0 to 32.0
@@ -860,6 +863,7 @@ function_grid(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     return;
 }
 
+#if 0
 /** The geogrid function returns the part of a Grid which includes a
  geographically specified rectangle. The arguments to the function are the
  name of a Grid, the left-top and right-bottom points of the rectangle and
@@ -1016,7 +1020,7 @@ function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
                 + e.what());
     }
 }
-
+#endif
 // These static functions could be moved to a class that provides a more
 // general interface for COARDS/CF someday. Assume each BaseType comes bundled
 // with an attribute table.

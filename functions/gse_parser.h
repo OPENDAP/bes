@@ -23,7 +23,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #ifndef _gseclause_h
-#include "GSEClause.h"
+//#include "GSEClause.h"
 #endif
 
 #define YYDEBUG 1
@@ -39,6 +39,8 @@
 
 namespace libdap
 {
+
+class GSEClause;
 
 /** Argument to the GSE parser. Assumes all errors will be signaled by
     throws; Error objects are not returned. */
