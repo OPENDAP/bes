@@ -44,6 +44,7 @@
 #include <util.h>
 #include <debug.h>
 
+#include "GridFunction.h"
 #include "ce_functions.h"
 #include "test_config.h"
 

@@ -506,7 +506,7 @@ double extract_double_value(BaseType * arg)
 
 
 
-
+#if 0
 /**
  * The passed DDS parameter dds is evaluated to see if it contains Grid objects.
  *
@@ -525,7 +525,7 @@ bool GridFunction::canOperateOn(DDS &dds){
 
 	return usable;
 }
-
+#endif
 #if 0
 /**
  * The passed DDS parameter dds is evaluated to see if it contains Grid objects whose semantics allow them
@@ -750,6 +750,8 @@ void function_miic_ex2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
     *btpp = dest;
 }
 #endif
+
+#if 0
 /** The grid function uses a set of relational expressions to form a selection
  within a Grid variable based on the values in the Grid's map vectors.
  Thus, if a Grid has a 'temperature' map which ranges from 0.0 to 32.0
@@ -862,7 +864,7 @@ function_grid(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     *btpp = l_grid;
     return;
 }
-
+#endif
 #if 0
 /** The geogrid function returns the part of a Grid which includes a
  geographically specified rectangle. The arguments to the function are the

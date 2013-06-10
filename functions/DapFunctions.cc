@@ -22,12 +22,16 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <iostream>
 
 using std::endl;
 
 #include "ServerFunctionsList.h"
 #include "ServerFunction.h"
+#include "GeoGridFunction.h"
+#include "GridFunction.h"
 
 #include "DapFunctions.h"
 #include "ce_functions.h"

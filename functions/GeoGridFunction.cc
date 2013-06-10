@@ -30,7 +30,7 @@
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
-#include <Structure.h>
+//#include <Structure.h>
 #include <Error.h>
 #include <DDS.h>
 

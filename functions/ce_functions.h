@@ -44,7 +44,7 @@
 #include "Structure.h"
 #include "ServerFunction.h"
 
-#include "GeoGridFunction.H"
+//#include "GeoGridFunction.h"
 
 namespace libdap
 {
@@ -72,7 +72,7 @@ public:
 };
 #endif
 
-
+#if 0
 void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 class GridFunction: public libdap::ServerFunction {
 public:
@@ -93,7 +93,7 @@ public:
     bool canOperateOn(DDS &dds);
 
 };
-
+#endif
 
 
 /**
