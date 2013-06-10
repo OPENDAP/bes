@@ -1023,6 +1023,8 @@ function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
     }
 }
 #endif
+
+#if 0
 // These static functions could be moved to a class that provides a more
 // general interface for COARDS/CF someday. Assume each BaseType comes bundled
 // with an attribute table.
@@ -1382,6 +1384,7 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     *btpp = dest;
     return;
 }
+#endif
 
 #if 0
 /** Perform a selection on the array using geographical coordinates. This

@@ -4,7 +4,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Copyright (c) 2003,2013 OPeNDAP, Inc.
 // Authors: Nathan Potter <npotter@opendap.org>
 //         James Gallagher <jgallagher@opendap.org>
 //

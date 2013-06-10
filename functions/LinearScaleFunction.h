@@ -5,7 +5,7 @@
 // Access Protocol.
 
 // Copyright (c) 2013 OPeNDAP, Inc.
-// Author:  Nathan Potter <npotter@opendap.org>
+// Authors: Nathan Potter <npotter@opendap.org>
 //		James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -31,25 +31,30 @@ namespace libdap {
 class BaseType;
 class DDS;
 
-void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+/**
+ * The linear_scale() function applies the familiar y = mx + b equation to data.
+ */
+void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 
-class GridFunction: public libdap::ServerFunction {
+/**
+ * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
+ * along with additional meta-data regarding its use and applicability.
+ */
+class LinearScaleFunction: public libdap::ServerFunction {
 public:
-	GridFunction()
+	LinearScaleFunction()
     {
-		setName("grid");
-		setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
-		setUsageString("grid(...)");
-		setRole("http://services.opendap.org/dap4/server-side-function/grid");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
-		setFunction(libdap::function_grid);
-		setVersion("1.0");
+		setName("linear_scale");
+		setDescriptionString("The linear_scale() function applies the familiar y = mx + b equation to data.");
+		setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
+		setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
+		setFunction(libdap::function_linear_scale);
+		setVersion("1.0b1");
     }
-    virtual ~GridFunction()
+    virtual ~LinearScaleFunction()
     {
     }
-
-    bool canOperateOn(DDS &dds);
 };
 
 } // libdap namespace

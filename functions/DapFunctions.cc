@@ -32,6 +32,7 @@ using std::endl;
 #include "ServerFunction.h"
 #include "GeoGridFunction.h"
 #include "GridFunction.h"
+#include "LinearScaleFunction.h"
 
 #include "DapFunctions.h"
 #include "ce_functions.h"

@@ -95,7 +95,7 @@ public:
 };
 #endif
 
-
+#if 0
 /**
  * The linear_scale() function applies the familiar y = mx + b equation to data.
  */
@@ -122,7 +122,7 @@ public:
     }
 
 };
-
+#endif
 
 
 
