@@ -30,15 +30,14 @@
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
-//#include <Structure.h>
 #include <Error.h>
 #include <DDS.h>
+#include <debug.h>
+#include <util.h>
 
 #include "GridFunction.h"
 #include "gse_parser.h"
 #include "grid_utils.h"
-#include "debug.h"
-#include "util.h"
 
 namespace libdap {
 

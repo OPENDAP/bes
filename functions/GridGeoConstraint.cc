@@ -35,15 +35,14 @@
 
 //#define DODS_DEBUG
 
-#include "debug.h"
-#include "dods-datatypes.h"
-#include "GridGeoConstraint.h"
-#include "Float64.h"
+#include <Float64.h>
+#include <dods-datatypes.h>
+#include <Error.h>
+#include <InternalErr.h>
+#include <util.h>
+#include <debug.h>
 
-#include "Error.h"
-#include "InternalErr.h"
-#include "ce_functions.h"
-#include "util.h"
+#include "GridGeoConstraint.h"
 
 using namespace std;
 

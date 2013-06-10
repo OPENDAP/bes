@@ -37,26 +37,16 @@
 #include <iostream>
 #include <sstream>
 
-#include "dods-datatypes.h"
-#include "Error.h"
-#include "InternalErr.h"
+#include <dods-datatypes.h>
+#include <Error.h>
+#include <InternalErr.h>
+#include <debug.h>
 
-#include "debug.h"
 #include "GSEClause.h"
 #include "parser.h"
 #include "gse.tab.hh"
 
 using namespace std;
-
-#if 0
-int gse_parse(void *arg);
-void gse_restart(FILE *in);
-
-// Glue routines declared in gse.lex
-void gse_switch_to_buffer(void *new_buffer);
-void gse_delete_buffer(void * buffer);
-void *gse_string(const char *yy_str);
-#endif
 
 namespace libdap {
 

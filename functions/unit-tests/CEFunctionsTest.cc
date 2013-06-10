@@ -47,7 +47,7 @@
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
 
-#include "ce_functions.h"
+//#include "ce_functions.h"
 #include "test_config.h"
 
 #include "test/TestTypeFactory.h"

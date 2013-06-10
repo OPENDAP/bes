@@ -22,10 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _gseclause_h
-//#include "GSEClause.h"
-#endif
-
 #define YYDEBUG 1
 #undef YYERROR_VERBOSE
 #define YY_NO_UNPUT 1

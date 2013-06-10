@@ -125,7 +125,7 @@ public:
 #endif
 
 
-
+#if 0
 void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 class VersionFunction: public libdap::ServerFunction {
 public:
@@ -144,7 +144,7 @@ public:
     }
 
 };
-
+#endif
 
 } // namespace libdap
 

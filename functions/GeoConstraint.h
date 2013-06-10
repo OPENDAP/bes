@@ -30,17 +30,9 @@
 #include <sstream>
 #include <set>
 
-#ifndef _basetype_h
-#include "BaseType.h"
-#endif
-
-#ifndef _array_h
-#include "Array.h"
-#endif
-
-#ifndef _grid_h
-#include "Grid.h"
-#endif
+#include <BaseType.h>
+#include <Array.h>
+#include <Grid.h>
 
 namespace libdap
 {

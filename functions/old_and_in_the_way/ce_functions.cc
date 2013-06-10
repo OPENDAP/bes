@@ -560,7 +560,7 @@ bool GeoGridFunction::canOperateOn(DDS &dds){
 }
 #endif
 
-
+#if 0
 /** This server-side function returns version information for the server-side
  functions. Note that this function takes no arguments and returns a
  String using the BaseType value/result parameter.
@@ -604,7 +604,7 @@ function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
     *btpp = response;
     return;
 }
-
+#endif
 #if 0
 void
 function_dap(int, BaseType *[], DDS &dds, ConstraintEvaluator &ce)

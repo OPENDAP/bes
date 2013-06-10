@@ -50,7 +50,7 @@ test_config.h: test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = ArrayGeoConstraintTest CEFunctionsTest GridGeoConstraintTest
+UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest
 	
 else
 UNIT_TESTS =
@@ -65,9 +65,6 @@ check-local:
 endif
 
 TEST_SRC = testFile.cc testFile.h
-
-ArrayGeoConstraintTest_SOURCES = ArrayGeoConstraintTest.cc
-ArrayGeoConstraintTest_LDADD =  $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
 CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types

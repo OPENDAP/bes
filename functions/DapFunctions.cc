@@ -28,15 +28,15 @@
 
 using std::endl;
 
-#include "ServerFunctionsList.h"
-#include "ServerFunction.h"
+#include <ServerFunctionsList.h>
+#include <BESDebug.h>
+
 #include "GeoGridFunction.h"
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
+#include "VersionFunction.h"
 
 #include "DapFunctions.h"
-#include "ce_functions.h"
-#include "BESDebug.h"
 
 void DapFunctions::initialize(const string &modname)
 {
