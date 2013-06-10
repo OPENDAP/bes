@@ -111,6 +111,7 @@ double w32strtod(const char *, char **);
 
 using namespace std;
 
+#if 0
 int gse_parse(void *arg);
 void gse_restart(FILE * in);
 
@@ -118,6 +119,7 @@ void gse_restart(FILE * in);
 // void gse_switch_to_buffer(void *new_buffer);
 void gse_delete_buffer(void *buffer);
 void *gse_string(const char *yy_str);
+#endif
 
 namespace libdap {
 #if 0
