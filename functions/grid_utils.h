@@ -39,7 +39,6 @@ void getGrids(DDS &dds, vector<Grid *> *grids);
 bool isGeoGrid(Grid *d_grid);
 
 void parse_gse_expression(gse_arg *arg, BaseType * expr);
-void apply_grid_selection_expr(Grid *grid, GSEClause *clause);
 void apply_grid_selection_expressions(Grid * grid, vector < GSEClause * >clauses);
 }
 
