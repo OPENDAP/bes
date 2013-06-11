@@ -30,19 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <sstream>
-
-using std::ostringstream;
-
-//#define USE_DODSFILTER 1
-#undef DODSFILTER
-
-#ifdef USE_DODSFILTER
-#include <DODSFilter.h>
-#include <mime_util.h>
-#endif
-
-#include <ResponseBuilder.h>
+#include <DDS.h>
+#include <DAS.h>
+#include <ConstraintEvaluator.h>
 #include <Error.h>
 
 #include "BESDapTransmit.h"
@@ -58,6 +48,8 @@ using std::ostringstream;
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
 #include "BESDebug.h"
+
+#include "ResponseBuilder.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Helpers
