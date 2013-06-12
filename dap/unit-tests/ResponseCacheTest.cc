@@ -42,8 +42,8 @@
 
 #include <test/TestTypeFactory.h>
 
-#include "ResponseCache.h"
-#include "ResponseBuilder.h"
+#include "BESDapResponseCache.h"
+#include "BESDapResponseBuilder.h"
 #include "testFile.h"
 #include "test_config.h"
 
@@ -67,10 +67,10 @@ private:
 	//DDS test_06_dds;
 	DDXParser dp;
 	ConstraintEvaluator eval;
-	ResponseBuilder rb;
+	BESDapResponseBuilder rb;
 
     string d_response_cache;
-    ResponseCache *cache;
+    BESDapResponseCache *cache;
 
 public:
     ResponseCacheTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
@@ -130,7 +130,7 @@ public:
     // so is_available() should be false
     void ctor_test_1() {
 
-    	cache = new ResponseCache(string(TEST_SRC_DIR) + "/never", "rc", 1000);
+    	cache = new BESDapResponseCache(string(TEST_SRC_DIR) + "/never", "rc", 1000);
     	CPPUNIT_ASSERT(!cache->is_available());
     }
 
@@ -138,7 +138,7 @@ public:
     // true.
     void ctor_test_2() {
     	//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-    	cache = new ResponseCache(d_response_cache, "rc", 1000);
+    	cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
     	CPPUNIT_ASSERT(cache->is_available());
     }
 
@@ -148,7 +148,7 @@ public:
 	void cache_a_response()
 	{
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new ResponseCache(d_response_cache, "rc", 1000);
+		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
@@ -171,7 +171,7 @@ public:
 	void cache_and_read_a_response()
 	{
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new ResponseCache(d_response_cache, "rc", 1000);
+		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			DDS *cache_dds = cache->read_cached_dataset(*test_05_dds, "", &rb, &eval, token);
@@ -222,7 +222,7 @@ public:
 	void cache_and_read_a_response2()
 	{
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new ResponseCache(d_response_cache, "rc", 1000);
+		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
@@ -267,7 +267,7 @@ public:
 	void cache_and_read_a_response3()
 	{
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new ResponseCache(d_response_cache, "rc", 1000);
+		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.

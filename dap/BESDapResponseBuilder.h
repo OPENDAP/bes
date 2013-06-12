@@ -28,7 +28,7 @@
 
 #include <string>
 
-class ResponseCache;
+class BESDapResponseCache;
 
 class libdap::ConstraintEvaluator;
 class libdap::DDS;
@@ -41,7 +41,7 @@ class libdap::DAS;
  * @author jhrg 1/28/2011
  */
 
-class ResponseBuilder
+class BESDapResponseBuilder
 {
 public:
     friend class ResponseBuilderTest;
@@ -53,7 +53,7 @@ protected:
     int d_timeout;  		/// Response timeout after N seconds
     std::string d_default_protocol;	/// Version std::string for the library's default protocol version
 
-    ResponseCache *d_response_cache;
+    BESDapResponseCache *d_response_cache;
 
     void initialize();
 
@@ -62,11 +62,11 @@ public:
     /** Make an empty instance. Use the set_*() methods to load with needed
         values. You must call at least set_dataset_name() or be requesting
         version information. */
-    ResponseBuilder() {
+    BESDapResponseBuilder() {
         initialize();
     }
 
-    virtual ~ResponseBuilder();
+    virtual ~BESDapResponseBuilder();
 
     virtual std::string get_ce() const;
     virtual void set_ce(std::string _ce);
@@ -84,7 +84,7 @@ public:
 
     virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
-    virtual ResponseCache *responseCache();
+    virtual BESDapResponseCache *responseCache();
 
     virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
     virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,

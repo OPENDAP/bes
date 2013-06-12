@@ -42,8 +42,8 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
 
-#include "ResponseCache.h"
-#include "ResponseBuilder.h"
+#include "BESDapResponseCache.h"
+#include "BESDapResponseBuilder.h"
 #include "BESDAPCache.h"
 
 #include "BESUtil.h"
@@ -60,7 +60,7 @@ using namespace libdap;
 
 /** Called when initializing a ResponseCache that's not going to be passed
  command line arguments. */
-void ResponseCache::initialize(const string &cache_path, const string &prefix, unsigned long size_in_megabytes)
+void BESDapResponseCache::initialize(const string &cache_path, const string &prefix, unsigned long size_in_megabytes)
 {
     // The directory is a low-budget config param since
     // the cache will only be used if the directory exists.
@@ -70,7 +70,7 @@ void ResponseCache::initialize(const string &cache_path, const string &prefix, u
     }
 }
 
-ResponseCache::ResponseCache() : d_cache(0)
+BESDapResponseCache::BESDapResponseCache() : d_cache(0)
 {
 	DBG(cerr << "In ResponseCache::ResponseCache" << endl);
 	bool found;
@@ -138,7 +138,7 @@ build_cache_file_name(const string &dataset, const string &ce)
  * @param cache_file_name File name of the cached entry
  * @return True if the thing is valid, false otherwise.
  */
-bool ResponseCache::is_valid(const string &cache_file_name, const string &dataset)
+bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &dataset)
 {
     // If the cached response is zero bytes in size, it's not valid.
     // (hmmm...)
@@ -184,7 +184,7 @@ bool ResponseCache::is_valid(const string &cache_file_name, const string &datase
  * @parma fdds Load this DDS object with the variables, attributes and
  * data values from the cached DDS.
  */
-void ResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
+void BESDapResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
 {
     // Rip off the MIME headers from the response if they are present
     string mime = get_next_mime_header(data);
@@ -232,7 +232,7 @@ void ResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
  * property set. Other code might set this or depend on it not being set.
  */
 DDS *
-ResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 {
     DBG(cerr << "Reading cache for " << cache_file_name << endl);
 
@@ -275,7 +275,7 @@ ResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactor
  * @return The DDS that resulted from calling the server functions
  * in the original CE.
  */
-DDS *ResponseCache::read_cached_dataset(DDS &dds, const string &constraint, ResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
+DDS *BESDapResponseCache::read_cached_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
@@ -327,7 +327,7 @@ DDS *ResponseCache::read_cached_dataset(DDS &dds, const string &constraint, Resp
 
             // This is a bit of a hack, but it effectively uses ResponseBuilder to write the
             // cached object/response without calling the machinery in one of the send_*()
-            // methods. Those methods assume they need to evaluate the ResponseBuilder's
+            // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
             // CE, which is not necessary and will alter the values of the send_p property
             // of the DDS's variables.
 			set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
@@ -380,7 +380,7 @@ DDS *ResponseCache::read_cached_dataset(DDS &dds, const string &constraint, Resp
  * @param cache_token Opaque token used by the cache.
  */
 void
-ResponseCache::unlock_and_close(const string &cache_token)
+BESDapResponseCache::unlock_and_close(const string &cache_token)
 {
 	d_cache->unlock_and_close(cache_token);
 }

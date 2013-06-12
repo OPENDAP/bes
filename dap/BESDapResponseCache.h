@@ -23,13 +23,13 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _response_cache_h
-#define _response_cache_h
+#ifndef _bes_dap_response_cache_h
+#define _bes_dap_response_cache_h
 
 #include <string>
 
 class BESDAPCache;
-class ResponseBuilder;
+class BESDapResponseBuilder;
 
 class libdap::DDS;
 class libdap::ConstraintEvaluator;
@@ -40,10 +40,10 @@ class libdap::BaseTypeFactory;
  * @author jhrg 5/3/13
  */
 
-class ResponseCache
+class BESDapResponseCache
 {
 private:
-	ResponseCache(const ResponseCache &src);
+	BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_data_from_cache(FILE *data, libdap::DDS *fdds);
@@ -57,7 +57,7 @@ private:
 
 public:
     /** Initialize the cache using the default values for the cache. */
-    ResponseCache();
+    BESDapResponseCache();
 
     /** Initialize the cache.
      *
@@ -71,12 +71,12 @@ public:
      * cache entries from other entries if other things are cached in the same pathame.
      * @param size_in_megabytes Cache size.
      */
-    ResponseCache(const std::string &cache_path, const std::string &prefix,
+    BESDapResponseCache(const std::string &cache_path, const std::string &prefix,
     		unsigned long size_in_megabytes) : d_cache(0) {
     	initialize(cache_path, prefix, size_in_megabytes);
     }
 
-    virtual ~ResponseCache() {}
+    virtual ~BESDapResponseCache() {}
 
     /** Is the ResponseCache configured to cache objects? It is possible
      * to make a ResponseCache object even though the underlying cache
@@ -86,10 +86,10 @@ public:
      */
     bool is_available() { return d_cache != 0; }
 
-    virtual libdap::DDS *read_cached_dataset(libdap::DDS &dds, const std::string &constraint, ResponseBuilder *rb,
+    virtual libdap::DDS *read_cached_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
     virtual void unlock_and_close(const std::string &cache_token);
 };
 
-#endif // _response_cache_h
+#endif // _bes_dap_response_cache_h

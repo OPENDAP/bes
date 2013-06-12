@@ -63,7 +63,7 @@
 #include <test/TestByte.h>
 
 #include "TheBESKeys.h"
-#include "ResponseBuilder.h"
+#include "BESDapResponseBuilder.h"
 #include "testFile.h"
 #include "test_config.h"
 
@@ -120,7 +120,7 @@ parse_datadds_response(istream &in, string &prolog, vector<char> &blob)
 
 class ResponseBuilderTest: public TestFixture {
 private:
-    ResponseBuilder *df, *df3, *df5, *df6;
+    BESDapResponseBuilder *df, *df3, *df5, *df6;
 
     AttrTable *cont_a;
     DAS *das;
@@ -168,23 +168,23 @@ public:
 
     void setUp() {
         // Test pathname
-        df = new ResponseBuilder();
+        df = new BESDapResponseBuilder();
 
         // This file has an ancillary DAS in the input-files dir.
         // df3 is also used to test escaping stuff in URLs. 5/4/2001 jhrg
-        df3 = new ResponseBuilder();
+        df3 = new BESDapResponseBuilder();
         df3->set_dataset_name((string)TEST_SRC_DIR + "/input-files/coads.data");
         df3->set_ce("u,x,z[0]&grid(u,\"lat<10.0\")");
         df3->set_timeout(1);
 
         // Test escaping stuff. 5/4/2001 jhrg
-        df5 = new ResponseBuilder();
+        df5 = new BESDapResponseBuilder();
         df5->set_dataset_name("nowhere%5Bmydisk%5Dmyfile");
         df5->set_ce("u%5B0%5D");
 
         // Try a server side function call.
         // loadServerSideFunction(); NB: This is called by the test's ctor
-        df6 = new ResponseBuilder();
+        df6 = new BESDapResponseBuilder();
         df6->set_dataset_name((string)TEST_SRC_DIR + "/input-files/bears.data");
         //df6->set_ce("rbFuncTest()");
         df6->set_timeout(1);

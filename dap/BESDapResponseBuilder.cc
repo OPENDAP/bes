@@ -64,8 +64,8 @@
 #include <AlarmHandler.h>
 #endif
 
-#include "ResponseCache.h"
-#include "ResponseBuilder.h"
+#include "BESDapResponseCache.h"
+#include "BESDapResponseBuilder.h"
 #include "BESDebug.h"
 
 #define CRLF "\r\n"             // Change here, expr-test.cc
@@ -76,7 +76,7 @@ using namespace libdap;
 
 /** Called when initializing a ResponseBuilder that's not going to be passed
  command line arguments. */
-void ResponseBuilder::initialize()
+void BESDapResponseBuilder::initialize()
 {
     // Set default values. Don't use the C++ constructor initialization so
     // that a subclass can have more control over this process.
@@ -91,14 +91,14 @@ void ResponseBuilder::initialize()
 }
 
 /** Lazy getter for the ResponseCache. */
-ResponseCache *
-ResponseBuilder::responseCache()
+BESDapResponseCache *
+BESDapResponseBuilder::responseCache()
 {
-	if (!d_response_cache) d_response_cache = new ResponseCache();
+	if (!d_response_cache) d_response_cache = new BESDapResponseCache();
 	return d_response_cache->is_available() ? d_response_cache: 0;
 }
 
-ResponseBuilder::~ResponseBuilder()
+BESDapResponseBuilder::~BESDapResponseBuilder()
 {
 	if (d_response_cache) delete d_response_cache;
 
@@ -114,7 +114,7 @@ ResponseBuilder::~ResponseBuilder()
 
  @brief Get the constraint expression.
  @return A string object that contains the constraint expression. */
-string ResponseBuilder::get_ce() const
+string BESDapResponseBuilder::get_ce() const
 {
     return d_ce;
 }
@@ -129,7 +129,7 @@ string ResponseBuilder::get_ce() const
  * @@brief Set the CE
  * @param _ce The constraint expression
  */
-void ResponseBuilder::set_ce(string _ce)
+void BESDapResponseBuilder::set_ce(string _ce)
 {
     d_ce = www2id(_ce, "%", "%20");
 }
@@ -142,7 +142,7 @@ void ResponseBuilder::set_ce(string _ce)
 
  @brief Get the dataset name.
  @return A string object that contains the name of the dataset. */
-string ResponseBuilder::get_dataset_name() const
+string BESDapResponseBuilder::get_dataset_name() const
 {
     return d_dataset;
 }
@@ -157,7 +157,7 @@ string ResponseBuilder::get_dataset_name() const
  * @brief Set the dataset pathname.
  * @param ds The pathname (or equivalent) to the dataset.
  */
-void ResponseBuilder::set_dataset_name(const string ds)
+void BESDapResponseBuilder::set_dataset_name(const string ds)
 {
     d_dataset = www2id(ds, "%", "%20");
 }
@@ -167,13 +167,13 @@ void ResponseBuilder::set_dataset_name(const string ds)
 
  @see To establish a timeout, call establish_timeout(ostream &)
  @param t Server timeout in seconds. Default is zero (no timeout). */
-void ResponseBuilder::set_timeout(int t)
+void BESDapResponseBuilder::set_timeout(int t)
 {
     d_timeout = t;
 }
 
 /** Get the server's timeout value. */
-int ResponseBuilder::get_timeout() const
+int BESDapResponseBuilder::get_timeout() const
 {
     return d_timeout;
 }
@@ -181,7 +181,7 @@ int ResponseBuilder::get_timeout() const
 /** Use values of this instance to establish a timeout alarm for the server.
  If the timeout value is zero, do nothing.
 */
-void ResponseBuilder::establish_timeout(ostream &stream) const
+void BESDapResponseBuilder::establish_timeout(ostream &stream) const
 {
 #ifndef WIN32
     if (d_timeout > 0) {
@@ -200,7 +200,7 @@ void ResponseBuilder::establish_timeout(ostream &stream) const
  *  as well as other types of function calls).
  */
 void
-ResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
+BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
 {
 	DBG(cerr << "Entering ResponseBuilder::split_ce" << endl);
     string ce;
@@ -262,7 +262,7 @@ ResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
  @return void
  @see DAS
  @deprecated */
-void ResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_headers) const
+void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_headers) const
 {
     if (with_mime_headers)
         set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
@@ -289,7 +289,7 @@ void ResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_headers) c
  * @param constrained Should the result be constrained
  * @param with_mime_headers Should MIME headers be sent to out?
  */
-void ResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained, bool with_mime_headers)
+void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained, bool with_mime_headers)
 {
     // Set up the alarm.
     establish_timeout(out);
@@ -366,7 +366,7 @@ void ResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval
  @param with_mime_headers If true (default) send MIME headers.
  @return void
  @see DDS */
-void ResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
+void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
         bool with_mime_headers)
 {
     if (!constrained) {
@@ -438,7 +438,7 @@ void ResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval
 /**
  * Build/return the BLOB part of the DAP2 data response.
  */
-void ResponseBuilder::dataset_constraint(ostream &out, DDS & dds, ConstraintEvaluator & eval, bool ce_eval)
+void BESDapResponseBuilder::dataset_constraint(ostream &out, DDS & dds, ConstraintEvaluator & eval, bool ce_eval)
 {
     // send constrained DDS
     DBG(cerr << "Inside dataset_constraint" << endl);
@@ -467,7 +467,7 @@ void ResponseBuilder::dataset_constraint(ostream &out, DDS & dds, ConstraintEval
  * been used to cache responses for some of the OPULS unstructured
  * grid work. It was originally intended to be used for DAP4.
  */
-void ResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
+void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
         const string &boundary, const string &start, bool ce_eval)
 {
     // Write the MPM headers for the DDX (text/xml) part of the response
@@ -517,7 +517,7 @@ void ResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, ConstraintE
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
-void ResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
     // Set up the alarm.
     establish_timeout(data_stream);
@@ -611,7 +611,7 @@ void ResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvalua
  @param out Destination
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true. */
-void ResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
     if (d_ce.empty()) {
         if (with_mime_headers)
@@ -698,7 +698,7 @@ void ResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
-void ResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, ConstraintEvaluator & eval, const string &start,
+void BESDapResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, ConstraintEvaluator & eval, const string &start,
         const string &boundary, bool with_mime_headers)
 {
 	// Set up the alarm.

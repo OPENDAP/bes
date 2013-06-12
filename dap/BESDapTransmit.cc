@@ -49,7 +49,7 @@
 #include "BESInternalFatalError.h"
 #include "BESDebug.h"
 
-#include "ResponseBuilder.h"
+#include "BESDapResponseBuilder.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Helpers
@@ -132,7 +132,7 @@ private:
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-        ResponseBuilder rb;
+        BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.send_das(dhi.get_output_stream(), *das, print_mime);
 
@@ -160,7 +160,7 @@ private:
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-        ResponseBuilder rb;
+        BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_dds(dhi.get_output_stream(), *dds, ce, true, print_mime);
@@ -186,7 +186,7 @@ private:
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-        ResponseBuilder rb;
+        BESDapResponseBuilder rb;
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_data(dhi.get_output_stream(), *dds, ce, print_mime);
@@ -212,7 +212,7 @@ private:
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-        ResponseBuilder rb;
+        BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         rb.send_ddx(dhi.get_output_stream(), *dds, ce, print_mime);
@@ -240,7 +240,7 @@ private:
         dhi.first_container();
         bool print_mime = get_print_mime();
 
-        ResponseBuilder rb;
+        BESDapResponseBuilder rb;
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
         BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
