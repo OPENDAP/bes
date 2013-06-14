@@ -2319,39 +2319,11 @@ throw (Exception)
     free (cfull_path);
 
 }
-// This is the main function that make the HDF SDS objects follow the CF convention.
+
 void
-File::Prepare() throw(Exception)
-{
+File::handle_sds_fakedim_names() throw(Exception) {
 
     File *file = this;
-
-    // 1. Obtain the original SDS and Vdata path,
-    // Start with the lone vgroup they belong to and add the path
-    // This also add Vdata objects that belong to lone vgroup
-    file->InsertOrigFieldPath_ReadVgVdata ();
-
-    // 2. Check the SDS special type(CERES special type has been checked at the Read function)
-    file->CheckSDType ();
-
-    // 2.1 Remove AttrContainer from the Dimension list for non-OTHERHDF products
-    if (file->sptype != OTHERHDF) {
-
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            for (vector<AttrContainer *>::iterator j = (*i)->dims_info.begin();
-                j!= (*i)->dims_info.end(); ++j) { 
-                delete (*j);
-                (*i)->dims_info.erase(j);
-                j--;
-            }
-            if ((*i)->dims_info.size() != 0) 
-                throw1("Not totally erase the dimension container ");
-        }
-    }
-
-
-
     // 3. Build Dimension name list
     // We have to assume that NASA HDF4 SDSs provide unique dimension names under each vgroup
 
@@ -2426,128 +2398,12 @@ File::Prepare() throw(Exception)
             }
         }
     }
+}
 
-    // 4. Prepare the latitude/longitude "coordinate variable" list for each special NASA HDF product
-    switch (file->sptype) {
-        case TRMML2:
-        {
-            file->PrepareTRMML2 ();
-            break;
-        }
-	case TRMML3:
-        {
-            file->PrepareTRMML3 ();
-            break;
-        }
-	case CER_AVG:
-        {
-            file->PrepareCERAVGSYN ();
-            break;
-        }
-	case CER_ES4:
-        {
-            file->PrepareCERES4IG ();
-            break;
-        }
-	case CER_CDAY:
-        {
-            file->PrepareCERSAVGID ();
-            break;
-        }
-        case CER_CGEO:
-        {
-            file->PrepareCERES4IG ();
-            break;
-        }
-        case CER_SRB:
-        {
-            file->PrepareCERSAVGID ();
-            break;
-        }
-        case CER_SYN:
-        {
-            file->PrepareCERAVGSYN ();
-            break;
-        }
-        case CER_ZAVG:
-        {
-            file->PrepareCERZAVG ();
-            break;
-        }
-        case OBPGL2:
-        {
-            file->PrepareOBPGL2 ();
-            break;
-        }
-        case OBPGL3:
-        {
-            file->PrepareOBPGL3 ();
-            break;
-        }
+void File::create_sds_dim_name_list() {
 
-        case MODISARNSS:
-        {
-            file->PrepareMODISARNSS ();
-            break;
-        }
-
-        case OTHERHDF:
-        {
-            file->PrepareOTHERHDF ();
-            break;
-        }
-        default:
-        {
-            throw3 ("No such SP datatype ", "sptype is ", sptype);
-            break;
-        }
-    }
-
-
-#if 0
-// Leave this for the time being.
-// 5. Build Dimension name list
-	// We have to assume that NASA HDF4 SDSs provide unique dimension names under each vgroup
-
-	// Find unique dimension name list
-	// Build a map from unique dimension name list to the original dimension name list
-	// Don't count fakeDim ......
-	// Based on the new dimension name list, we will build a coordinate field for each dimension 
-	// for each product we support. If dimension scale data are found, that dimension scale data will
-	// be retrieved.
-	// The unique dimension name is the dimension name plus the full path
-	// We should build a map to obtain the final coordinate fields of each field
-	std::string tempdimname;
-	std::pair < std::set < std::string >::iterator, bool > ret;
-	std::string temppath;
-	for (std::vector < SDField * >::const_iterator i =
-		 file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-		temppath = (*i)->newname.substr ((*i)->name.size ());
-		for (std::vector < Dimension * >::const_iterator j =
-			 (*i)->getDimensions ().begin ();
-			 j != (*i)->getDimensions ().end (); ++j) {
-			if (file->sptype != OTHERHDF)
-				tempdimname = (*j)->getName ();
-			else
-				tempdimname = (*j)->getName () + temppath;
-
-			Dimension *dim =
-				new Dimension (tempdimname, (*j)->getSize (),
-							   (*j)->getType ());
-			(*i)->correcteddims.push_back (dim);
-		  if (tempdimname.find ("fakeDim") == std::string:npos) {
-				ret = file->sd->fulldimnamelist.insert (tempdimname);
-				// NEED TO CREATE ANOTHER LIST that  DIMTYPE is not 0 for handling dimension scale.
-				// Map from unique dimension name to the original dimension name
-				if (ret.second == true)
-					file->sd->n1dimnamelist[tempdimname] = (*j);
-			}
-		}
-	}
-#endif
-
-
-    // 5. Create the new dimension name set and the dimension name to size map.
+    File *file = this;
+ // 5. Create the new dimension name set and the dimension name to size map.
 
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
@@ -2563,6 +2419,12 @@ File::Prepare() throw(Exception)
         }
     }
 
+}
+
+
+void File::handle_sds_missing_fields() {
+
+    File *file = this;
     // 6. Adding the missing coordinate variables based on the corrected dimension name list
     // For some CERES products, there are so many vgroups, so there are potentially many missing fields.
 
@@ -2594,7 +2456,11 @@ File::Prepare() throw(Exception)
             file->sd->sdfields.push_back (missingfield);
         }
     }
+}
 
+void File::handle_sds_final_dim_names() throw(Exception) {
+
+    File * file = this;
     /// Handle dimension name clashings
     // We will create the final unique dimension name list(erasing special characters etc.) 
     // After erasing special characters, the nameclashing for dimension name is still possible. 
@@ -2635,6 +2501,13 @@ File::Prepare() throw(Exception)
         }
     }
 
+}
+
+void 
+File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2) throw(Exception) 
+{
+
+    File * file = this;
 
     // 7. Handle name clashings
 
@@ -2689,9 +2562,13 @@ File::Prepare() throw(Exception)
     int total_latlon_counter = 0;
     int total_nollcv_counter = 0;
 
-    bool COARDFLAG = false;
-    string lldimname1;
-    string lldimname2;
+    //bool COARDFLAG = false;
+    //string lldimname1;
+    //string lldimname2;
+
+    // change the corrected dimension name list for each SDS field
+    std::map < std::string, std::string >::iterator tempmapit;
+
 
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
@@ -2801,7 +2678,656 @@ File::Prepare() throw(Exception)
             }
         }
     }
+}
 
+void
+File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string & lldimname2) throw(Exception) {
+
+    File *file = this;
+
+    // 9. Generate "coordinates " attribute
+
+    std::map < std::string, std::string >::iterator tempmapit;
+    int tempcount;
+
+    std::string tempcoordinates, tempfieldname;
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        if ((*i)->fieldtype == 0) {
+            tempcount = 0;
+            tempcoordinates = "";
+            tempfieldname = "";
+
+            for (std::vector < Dimension * >::const_iterator j =
+                (*i)->getCorrectedDimensions ().begin ();
+                j != (*i)->getCorrectedDimensions ().end (); ++j) {
+                tempmapit = (file->sd->dimcvarlist).find ((*j)->getName ());
+                if (tempmapit != (file->sd->dimcvarlist).end ())
+                    tempfieldname = tempmapit->second;
+                else
+                    throw3 ("The dimension with the name ", (*j)->getName (),
+                            "must have corresponding coordinate variables.");
+                if (tempcount == 0)
+                    tempcoordinates = tempfieldname;
+                else
+                    tempcoordinates = tempcoordinates + " " + tempfieldname;
+                tempcount++;
+            }
+            (*i)->setCoordinates (tempcoordinates);
+        }
+
+        // Add units for latitude and longitude
+        if ((*i)->fieldtype == 1) {	// latitude,adding the "units" attribute  degrees_east.
+            std::string tempunits = "degrees_north";
+            (*i)->setUnits (tempunits);
+        }
+
+        if ((*i)->fieldtype == 2) {	// longitude, adding the units of
+            std::string tempunits = "degrees_east";
+            (*i)->setUnits (tempunits);
+        }
+
+        // Add units for Z-dimension, now it is always "level"
+        if (((*i)->fieldtype == 3) || ((*i)->fieldtype == 4)) {
+            std::string tempunits = "level";
+            (*i)->setUnits (tempunits);
+        }
+    }
+
+    // 9.5 Remove some coordinates attribute for some variables. This happens when a field just share one dimension name with 
+    // latitude/longitude that have 2 dimensions. For example, temp[latlondim1][otherdim] with lat[latlondim1][otherdim]; the
+    // "coordinates" attribute may become "lat ???", which is not correct. Remove the coordinates for this case.
+
+    if (false == COARDFLAG) {
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+            if ((*i)->fieldtype == 0) {
+                bool has_lldim1 = false;
+                bool has_lldim2 = false;
+                for (std::vector < Dimension * >::const_iterator j =
+                    (*i)->getCorrectedDimensions ().begin ();
+                    j != (*i)->getCorrectedDimensions ().end (); ++j) {
+                    if(lldimname1 == (*j)->name)
+                        has_lldim1 = true;
+                    else if(lldimname2 == (*j)->name)
+                        has_lldim2 = true;
+                }
+
+                // Currently we don't remove the "coordinates" attribute if no lat/lon dimension names are used.
+                if (has_lldim1^has_lldim2)
+                    (*i)->coordinates = "";
+            }
+        }
+    }
+}
+
+void 
+File::handle_vdata() throw(Exception) {
+
+    // Define File 
+    File *file = this;
+
+    // 10. Handle vdata, only need to check name clashings and special characters for vdata field names 
+    // 
+    // Check name clashings, the chance for the nameclashing between SDS and Vdata fields are almost 0. Not
+    // to add performance burden, I won't consider the nameclashing check between SDS and Vdata fields. KY 2012-6-28
+    // 
+
+    string check_disable_vdata_nameclashing_key="H4.DisableVdataNameclashingCheck";
+    bool turn_on_disable_vdata_nameclashing_key = false;
+
+    turn_on_disable_vdata_nameclashing_key = HDFCFUtil::check_beskeys(check_disable_vdata_nameclashing_key);
+
+    if (false == turn_on_disable_vdata_nameclashing_key) {
+
+        vector<string> tempvdatafieldnamelist;
+
+	for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
+	    i != file->vds.end (); ++i) {
+	    for (std::vector < VDField * >::const_iterator j =
+                (*i)->getFields ().begin (); j != (*i)->getFields ().end ();
+                ++j) 
+                tempvdatafieldnamelist.push_back((*j)->newname);
+        }
+	
+        HDFCFUtil::Handle_NameClashing(tempvdatafieldnamelist);	
+
+        int total_vfd_counter = 0;
+
+        for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
+            i != file->vds.end (); ++i) {
+            for (std::vector < VDField * >::const_iterator j =
+                (*i)->getFields ().begin (); j != (*i)->getFields ().end ();
+                ++j) {
+                (*j)->newname = tempvdatafieldnamelist[total_vfd_counter];
+                total_vfd_counter++;
+            }
+        }
+    }
+
+
+}
+
+// This is the main function that make the HDF SDS objects follow the CF convention.
+void
+File::Prepare() throw(Exception)
+{
+
+    File *file = this;
+
+    // 1. Obtain the original SDS and Vdata path,
+    // Start with the lone vgroup they belong to and add the path
+    // This also add Vdata objects that belong to lone vgroup
+    file->InsertOrigFieldPath_ReadVgVdata ();
+
+    // 2. Check the SDS special type(CERES special type has been checked at the Read function)
+    file->CheckSDType ();
+
+    // 2.1 Remove AttrContainer from the Dimension list for non-OTHERHDF products
+    if (file->sptype != OTHERHDF) {
+
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+            for (vector<AttrContainer *>::iterator j = (*i)->dims_info.begin();
+                j!= (*i)->dims_info.end(); ++j) { 
+                delete (*j);
+                (*i)->dims_info.erase(j);
+                j--;
+            }
+            if ((*i)->dims_info.size() != 0) 
+                throw1("Not totally erase the dimension container ");
+        }
+    }
+
+    handle_sds_fakedim_names();
+
+#if 0
+    create_sds_dim_name_list();
+//#if 0
+    handle_sds_missing_fields();
+//#if 0
+    handle_sds_final_dim_names();
+
+    bool COARDFLAG = false;
+    string lldimname1;
+    string lldimname2;
+
+    handle_sds_names(COARDFLAG, lldimname1, lldimname2);
+    handle_sds_coords(COARDFLAG, lldimname1,lldimname2);
+#endif
+
+#if 0
+
+    // 3. Build Dimension name list
+    // We have to assume that NASA HDF4 SDSs provide unique dimension names under each vgroup
+
+    // Find unique dimension name list
+    // Build a map from unique dimension name list to the original dimension name list
+    // Don't count fakeDim ......
+    // Based on the new dimension name list, we will build a coordinate field for each dimension 
+	// for each product we support. If dimension scale data are found, that dimension scale data will
+    // be retrieved according to our knowledge to the data product. 
+    // The unique dimension name is the dimension name plus the full path
+    // We should build a map to obtain the final coordinate fields of each field
+
+    std::string tempdimname;
+    std::pair < std::set < std::string >::iterator, bool > ret;
+    std::string temppath;
+    std::set < int32 > fakedimsizeset;
+    std::pair < std::set < int32 >::iterator, bool > fakedimsizeit;
+    std::map < int32, std::string > fakedimsizenamelist;
+    std::map < int32, std::string >::iterator fakedimsizenamelistit;
+
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+        for (std::vector < Dimension * >::const_iterator j =
+            (*i)->getDimensions ().begin ();
+            j != (*i)->getDimensions ().end (); ++j) {
+            //May treat corrected dimension names as the original dimension names the SAME, CORRECT it in the future.
+            if (file->sptype != OTHERHDF)
+                tempdimname = (*j)->getName ();
+            else
+                tempdimname = (*j)->getName () + temppath;
+
+            Dimension *dim =
+                new Dimension (tempdimname, (*j)->getSize (),
+                               (*j)->getType ());
+            (*i)->correcteddims.push_back (dim);
+            if (tempdimname.find ("fakeDim") != std::string::npos) {
+                fakedimsizeit = fakedimsizeset.insert ((*j)->getSize ());
+                if (fakedimsizeit.second == true) {
+                    fakedimsizenamelist[(*j)->getSize ()] = (*j)->getName ();	//Here we just need the original name since fakeDim is globally generated.
+                }
+            }
+        }
+    }
+
+    // TODO Get rid of the 'fakeDim' code - then this won't be needed.
+    // jhrg 8/17/11
+    // ***
+    // Cannot get rid of fakeDim code 
+    // since the CF conventions can not be followed for products(TRMM etc.) that don't use dimensions if doing so . KY 2012-6-26
+    //
+    // Sequeeze "fakeDim" names according to fakeDim size. For example, if fakeDim1, fakeDim3, fakeDim5 all shares the same size,
+    // we use one name(fakeDim1) to be the dimension name. This will reduce the number of fakeDim names. 
+
+        
+    if (file->sptype != OTHERHDF) {
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+            for (std::vector < Dimension * >::const_iterator j =
+                (*i)->getCorrectedDimensions ().begin ();
+                j != (*i)->getCorrectedDimensions ().end (); ++j) {
+                if ((*j)->getName ().find ("fakeDim") != std::string::npos) {
+                    if (fakedimsizenamelist.find ((*j)->getSize ()) !=
+                        fakedimsizenamelist.end ()) {
+                        (*j)->name = fakedimsizenamelist[(*j)->getSize ()];	//sequeeze the redundant fakeDim with the same size
+                    }
+                    else
+                        throw5 ("The fakeDim name ", (*j)->getName (),
+                                "with the size", (*j)->getSize (),
+                                "does not in the fakedimsize list");
+                }
+            }
+        }
+    }
+#endif
+
+    // 4. Prepare the latitude/longitude "coordinate variable" list for each special NASA HDF product
+    switch (file->sptype) {
+        case TRMML2:
+        {
+            file->PrepareTRMML2 ();
+            break;
+        }
+	case TRMML3:
+        {
+            file->PrepareTRMML3 ();
+            break;
+        }
+	case CER_AVG:
+        {
+            file->PrepareCERAVGSYN ();
+            break;
+        }
+	case CER_ES4:
+        {
+            file->PrepareCERES4IG ();
+            break;
+        }
+	case CER_CDAY:
+        {
+            file->PrepareCERSAVGID ();
+            break;
+        }
+        case CER_CGEO:
+        {
+            file->PrepareCERES4IG ();
+            break;
+        }
+        case CER_SRB:
+        {
+            file->PrepareCERSAVGID ();
+            break;
+        }
+        case CER_SYN:
+        {
+            file->PrepareCERAVGSYN ();
+            break;
+        }
+        case CER_ZAVG:
+        {
+            file->PrepareCERZAVG ();
+            break;
+        }
+        case OBPGL2:
+        {
+            file->PrepareOBPGL2 ();
+            break;
+        }
+        case OBPGL3:
+        {
+            file->PrepareOBPGL3 ();
+            break;
+        }
+
+        case MODISARNSS:
+        {
+            file->PrepareMODISARNSS ();
+            break;
+        }
+
+        case OTHERHDF:
+        {
+            file->PrepareOTHERHDF ();
+            break;
+        }
+        default:
+        {
+            throw3 ("No such SP datatype ", "sptype is ", sptype);
+            break;
+        }
+    }
+
+
+//#if 0
+    create_sds_dim_name_list();
+//#if 0
+    handle_sds_missing_fields();
+//#if 0
+    handle_sds_final_dim_names();
+
+    bool COARDFLAG = false;
+    string lldimname1;
+    string lldimname2;
+
+    handle_sds_names(COARDFLAG, lldimname1, lldimname2);
+    handle_sds_coords(COARDFLAG, lldimname1,lldimname2);
+
+    handle_vdata();
+#if 0
+// Leave this for the time being.
+// 5. Build Dimension name list
+	// We have to assume that NASA HDF4 SDSs provide unique dimension names under each vgroup
+
+	// Find unique dimension name list
+	// Build a map from unique dimension name list to the original dimension name list
+	// Don't count fakeDim ......
+	// Based on the new dimension name list, we will build a coordinate field for each dimension 
+	// for each product we support. If dimension scale data are found, that dimension scale data will
+	// be retrieved.
+	// The unique dimension name is the dimension name plus the full path
+	// We should build a map to obtain the final coordinate fields of each field
+	std::string tempdimname;
+	std::pair < std::set < std::string >::iterator, bool > ret;
+	std::string temppath;
+	for (std::vector < SDField * >::const_iterator i =
+		 file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+		temppath = (*i)->newname.substr ((*i)->name.size ());
+		for (std::vector < Dimension * >::const_iterator j =
+			 (*i)->getDimensions ().begin ();
+			 j != (*i)->getDimensions ().end (); ++j) {
+			if (file->sptype != OTHERHDF)
+				tempdimname = (*j)->getName ();
+			else
+				tempdimname = (*j)->getName () + temppath;
+
+			Dimension *dim =
+				new Dimension (tempdimname, (*j)->getSize (),
+							   (*j)->getType ());
+			(*i)->correcteddims.push_back (dim);
+		  if (tempdimname.find ("fakeDim") == std::string:npos) {
+				ret = file->sd->fulldimnamelist.insert (tempdimname);
+				// NEED TO CREATE ANOTHER LIST that  DIMTYPE is not 0 for handling dimension scale.
+				// Map from unique dimension name to the original dimension name
+				if (ret.second == true)
+					file->sd->n1dimnamelist[tempdimname] = (*j);
+			}
+		}
+	}
+
+#endif
+#if 0
+    // 5. Create the new dimension name set and the dimension name to size map.
+
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (std::vector < Dimension * >::const_iterator j =
+            (*i)->getCorrectedDimensions ().begin ();
+            j != (*i)->getCorrectedDimensions ().end (); ++j) {
+            std::pair < std::set < std::string >::iterator, bool > ret;
+            ret = file->sd->fulldimnamelist.insert ((*j)->getName ());
+            // Map from the unique dimension name to its size
+            if (ret.second == true) {
+                file->sd->n1dimnamelist[(*j)->getName ()] = (*j)->getSize ();
+            }
+        }
+    }
+
+    // 6. Adding the missing coordinate variables based on the corrected dimension name list
+    // For some CERES products, there are so many vgroups, so there are potentially many missing fields.
+
+
+    // Go through the n1dimnamelist and check the map dimcvarlist; if no dimcvarlist[dimname], then this dimension namelist must be a missing field
+    // Create the missing field and insert the missing field to the SDField list. 
+
+    for (std::map < std::string, int32 >::const_iterator i =
+         file->sd->n1dimnamelist.begin ();
+         i != file->sd->n1dimnamelist.end (); ++i) {
+
+        if (file->sd->nonmisscvdimnamelist.find ((*i).first) == file->sd->nonmisscvdimnamelist.end ()) {// Create a missing Z-dimension field  
+
+            SDField *missingfield = new SDField ();
+
+            // The name of the missingfield is not necessary.
+            // We only keep here for consistency.
+
+            missingfield->type = DFNT_INT32;
+            missingfield->name = (*i).first;
+            missingfield->newname = (*i).first;
+            missingfield->rank = 1;
+            missingfield->fieldtype = 4;
+            Dimension *dim = new Dimension ((*i).first, (*i).second, 0);
+
+            missingfield->dims.push_back (dim);
+            dim = new Dimension ((*i).first, (*i).second, 0);
+            missingfield->correcteddims.push_back (dim);
+            file->sd->sdfields.push_back (missingfield);
+        }
+    }
+//#endif
+
+    /// Handle dimension name clashings
+    // We will create the final unique dimension name list(erasing special characters etc.) 
+    // After erasing special characters, the nameclashing for dimension name is still possible. 
+    // So still handle the name clashings.
+
+    vector<string>tempfulldimnamelist;
+    for (std::set < std::string >::const_iterator i =
+        file->sd->fulldimnamelist.begin ();
+        i != file->sd->fulldimnamelist.end (); ++i) 
+        tempfulldimnamelist.push_back(HDFCFUtil::get_CF_string(*i));
+
+    HDFCFUtil::Handle_NameClashing(tempfulldimnamelist);
+
+    // Not the most efficient way, but to keep the original code structure,KY 2012-6-27
+    int total_dcounter = 0;
+    for (std::set < std::string >::const_iterator i =
+        file->sd->fulldimnamelist.begin ();
+        i != file->sd->fulldimnamelist.end (); ++i) {
+        HDFCFUtil::insert_map(file->sd->n2dimnamelist, (*i), tempfulldimnamelist[total_dcounter]);
+        total_dcounter++;
+    }
+
+    // change the corrected dimension name list for each SDS field
+    std::map < std::string, std::string >::iterator tempmapit;
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (std::vector < Dimension * >::const_iterator j =
+            (*i)->getCorrectedDimensions ().begin ();
+            j != (*i)->getCorrectedDimensions ().end (); ++j) {
+            tempmapit = file->sd->n2dimnamelist.find ((*j)->getName ());
+            if (tempmapit != file->sd->n2dimnamelist.end ())
+                (*j)->name = tempmapit->second;
+            else {	//When the dimension name is fakeDim***, we will ignore. this dimension will not have the corresponding coordinate variable. 
+                throw5 ("This dimension with the name ", (*j)->name,
+                        "and the field name ", (*i)->name,
+                        " is not found in the dimension list.");
+            }
+        }
+    }
+
+
+//#endif 
+    // 7. Handle name clashings
+
+    // There are many fields in CERES data(a few hundred) and the full name(with the additional path)
+    // is very long. It causes Java clients choken since Java clients append names in the URL
+    // To improve the performance and to make Java clients access the data, simply use the field names for
+    // these fields. Users can turn off this feature by commenting out the line: H4.EnableCERESMERRAShortName=true
+    // or set the H4.EnableCERESMERRAShortName=false
+    // KY 2012-6-27
+
+    string check_ceres_short_name_key="H4.EnableCERESMERRAShortName";
+    bool turn_on_ceres_short_name_key= false;
+        
+    turn_on_ceres_short_name_key = HDFCFUtil::check_beskeys(check_ceres_short_name_key);
+
+    if (true == turn_on_ceres_short_name_key && (file->sptype == CER_ES4 || file->sptype == CER_SRB
+        || file->sptype == CER_CDAY || file->sptype == CER_CGEO
+        || file->sptype == CER_SYN || file->sptype == CER_ZAVG
+        || file->sptype == CER_AVG)) {
+        
+        for (unsigned int i = 0; i < file->sd->sdfields.size (); ++i) {
+            file->sd->sdfields[i]->special_product_fullpath = file->sd->sdfields[i]->newname;
+            file->sd->sdfields[i]->newname = file->sd->sdfields[i]->name;
+        }    
+    }
+
+        
+    vector<string>sd_data_fieldnamelist;
+    vector<string>sd_latlon_fieldnamelist;
+    vector<string>sd_nollcv_fieldnamelist;
+
+    set<string>sd_fieldnamelist;
+
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        if ((*i)->fieldtype ==0)  
+            sd_data_fieldnamelist.push_back(HDFCFUtil::get_CF_string((*i)->newname));
+        else if ((*i)->fieldtype == 1 || (*i)->fieldtype == 2)
+            sd_latlon_fieldnamelist.push_back(HDFCFUtil::get_CF_string((*i)->newname));
+        else 
+            sd_nollcv_fieldnamelist.push_back(HDFCFUtil::get_CF_string((*i)->newname));
+    }
+
+    HDFCFUtil::Handle_NameClashing(sd_data_fieldnamelist,sd_fieldnamelist);
+    HDFCFUtil::Handle_NameClashing(sd_latlon_fieldnamelist,sd_fieldnamelist);
+    HDFCFUtil::Handle_NameClashing(sd_nollcv_fieldnamelist,sd_fieldnamelist);
+
+    // 8. Check the special characters and change those characters to _ for field namelist
+    //    Also create dimension name to coordinate variable name list
+
+    int total_data_counter = 0;
+    int total_latlon_counter = 0;
+    int total_nollcv_counter = 0;
+
+    bool COARDFLAG = false;
+    string lldimname1;
+    string lldimname2;
+
+//std::map < std::string, std::string >::iterator tempmapit;
+
+    for (std::vector < SDField * >::const_iterator i =
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+        // Handle dimension name to coordinate variable map 
+        // Currently there is a backward compatibility  issue in the CF conventions,
+        // If a field temp[ydim = 10][xdim =5][zdim=2], the
+        // coordinate variables are lat[ydim=10][xdim=5],
+        // lon[ydim =10][xdim=5], zdim[zdim =2]. Panoply and IDV will 
+        // not display these properly because they think the field is
+        // following COARD conventions based on zdim[zdim =2].
+        // To make the IDV and Panoply work, we have to change zdim[zdim=2]
+        // to something like zdim_v[zdim=2] to distinguish the dimension name
+        // from the variable name. 
+        // KY 2010-7-21
+        // set a flag
+
+        if ((*i)->fieldtype != 0) {
+            if ((*i)->fieldtype == 1 || (*i)->fieldtype == 2) {
+
+                (*i)->newname = sd_latlon_fieldnamelist[total_latlon_counter];
+                total_latlon_counter++;
+
+                if ((*i)->getRank () > 2)
+                    throw3 ("the lat/lon rank should NOT be greater than 2",
+                            (*i)->name, (*i)->getRank ());
+                else if ((*i)->getRank () == 2) {// Each lat/lon must be 2-D under the same group.
+                    for (std::vector < Dimension * >::const_iterator j =
+                        (*i)->getCorrectedDimensions ().begin ();
+                        j != (*i)->getCorrectedDimensions ().end (); ++j) {
+                        tempmapit =
+                            file->sd->dimcvarlist.find ((*j)->getName ());
+                        if (tempmapit == file->sd->dimcvarlist.end ()) {
+                            HDFCFUtil::insert_map(file->sd->dimcvarlist, (*j)->name, (*i)->newname);
+
+                            // Save this dim. to lldims
+                            if (lldimname1 =="") 
+                                lldimname1 =(*j)->name;
+                            else 
+                                lldimname2 = (*j)->name;
+                            break;
+                        }
+                    }
+                }
+
+                else {	
+                    // When rank = 1, must follow COARD conventions. 
+                    // Here we don't check name clashing for the performance
+                    // reason, the chance of clashing is very,very rare.
+                    (*i)->newname =
+                        (*i)->getCorrectedDimensions ()[0]->getName ();
+                    HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+                    COARDFLAG = true;
+
+                }
+            }
+        }
+        else {
+            (*i)->newname = sd_data_fieldnamelist[total_data_counter];
+            total_data_counter++;
+        }
+    }
+
+
+    for (std::vector < SDField * >::const_iterator i =
+         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+
+        // Handle dimension name to coordinate variable map 
+        // Currently there is a backward compatibility  issue in the CF conventions,
+        // If a field temp[ydim = 10][xdim =5][zdim=2], the
+        // coordinate variables are lat[ydim=10][xdim=5],
+        // lon[ydim =10][xdim=5], zdim[zdim =2]. Panoply and IDV will 
+        // not display these properly because they think the field is
+        // following COARD conventions based on zdim[zdim =2].
+        // To make the IDV and Panoply work, we have to change zdim[zdim=2]
+        // to something like zdim_v[zdim=2] to distinguish the dimension name
+        // from the variable name. 
+        // KY 2010-7-21
+        // set a flag
+
+        if ((*i)->fieldtype != 0) {
+            if ((*i)->fieldtype != 1 && (*i)->fieldtype != 2) {	
+            // "Missing" coordinate variables or coordinate variables having dimensional scale data
+
+                (*i)->newname = sd_nollcv_fieldnamelist[total_nollcv_counter];
+                total_nollcv_counter++;
+
+                if ((*i)->getRank () > 1)
+                    throw3 ("The lat/lon rank should be 1", (*i)->name,
+                            (*i)->getRank ());
+
+                // The current OTHERHDF case we support(MERRA and SDS dimension scale)
+                // follow COARDS conventions. Panoply fail to display the data,
+                // if we just follow CF conventions. So following COARD. KY-2011-3-4
+                if (COARDFLAG || file->sptype == OTHERHDF)//  Follow COARD Conventions
+                    (*i)->newname =
+                        (*i)->getCorrectedDimensions ()[0]->getName ();
+	        else 
+                // It seems that netCDF Java stricts following COARDS conventions, so change the dimension name back. KY 2012-5-4
+                    (*i)->newname =
+                                   (*i)->getCorrectedDimensions ()[0]->getName ();
+//				(*i)->newname =
+//				(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
+                HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+
+            }
+        }
+    }
+#endif
 //DEBUGGING dimcvarlist map
 // Leave the debugging for a while, we may want to use BESDEBUG to generate output in the future. KY 2012-09-19
 
@@ -2813,7 +3339,10 @@ cerr <<"co. variable name is "<< tempmapit->second <<endl;
 }
 #endif
 
+#if 0
     // 9. Generate "coordinates " attribute
+
+    //std::map < std::string, std::string >::iterator tempmapit;
     int tempcount;
 
     std::string tempcoordinates, tempfieldname;
@@ -2925,6 +3454,7 @@ cerr <<"co. variable name is "<< tempmapit->second <<endl;
             }
         }
     }
+#endif
 }
 
 /// Special method to prepare TRMM Level 2 latitude and longitude information.

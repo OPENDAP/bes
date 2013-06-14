@@ -744,6 +744,19 @@ namespace HDFSP
             // Check name clashing for fields. Borrowed from HDFEOS.cc 
             bool check_field_name_clashing (bool bUseDimNameMatching) const;
 
+            void handle_sds_fakedim_names() throw(Exception);
+
+            void create_sds_dim_name_list();
+
+            void handle_sds_missing_fields();
+
+            void handle_sds_final_dim_names() throw(Exception);
+
+            void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2) throw(Exception);
+
+            void handle_sds_coords(bool & COARDFLAG, std::string &lldimname1,std::string &lldimname2) throw(Exception);
+
+            void handle_vdata() throw(Exception);
         private:
             int32 sdfd;	// SD interface ID
             int32 fileid;// H interface ID

@@ -1239,6 +1239,7 @@ namespace HDFEOS2
                  * of the geo grid.
                  */
                 std::string get_geogrid_name ();
+
                 // Internal funcion and variables for the above function.
                 // These are not intended to be used outside the above function.
                 void _find_geogrid_name ();
@@ -1246,6 +1247,19 @@ namespace HDFEOS2
                 std::string _geogrid_name;
                 static const char *_geogrid_names[];
 
+                void check_onelatlon_grids();                
+                void handle_one_grid_zdim(GridDataset*);
+                void handle_one_grid_latlon(GridDataset*) throw(Exception);
+                void handle_onelatlon_grids() throw (Exception);
+                void handle_grid_dim_cvar_maps() throw(Exception);
+                void handle_grid_coards() throw(Exception);
+                void handle_grid_cf_attrs() throw(Exception);
+                void handle_grid_SOM_projection() throw(Exception);
+                int  obtain_dimmap_num(int numswath) throw(Exception);
+                void create_swath_latlon_dim_cvar_map(int numdm) throw(Exception);
+                void create_swath_nonll_dim_cvar_map() throw(Exception);
+                void handle_swath_dim_cvar_maps(int tempnumdm) throw(Exception);
+                void handle_swath_cf_attrs() throw(Exception);
 
              private:
                 int32 gridfd;
