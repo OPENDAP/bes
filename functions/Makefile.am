@@ -25,11 +25,13 @@ BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
 
 SRCS = grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
 gse.tab.cc lex.gse_.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
-LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc
+LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
+BindNameFunction.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
-GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h
+GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
+BindNameFunction.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

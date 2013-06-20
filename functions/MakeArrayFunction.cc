@@ -115,20 +115,20 @@ read_values(int argc, BaseType *argv[], Array *dest)
     dest->set_value(values, values.size());
 }
 
-/** Given a BaseType, scale it using 'y = mx + b'. Either provide the
- constants 'm' and 'b' or the function will look for the COARDS attributes
- 'scale_factor' and 'add_offset'.
-
- @param argc A count of the arguments
- @param argv An array of pointers to each argument, wrapped in a child of BaseType
- @param btpp A pointer to the return value; caller must delete.
-
- @return The scaled variable, represented using Float64
- @exception Error Thrown if scale_factor is not given and the COARDS
- attributes cannot be found OR if the source variable is not a
- numeric scalar, Array or Grid. */
+/** Build a new DAP Array variable. Read the type, shape and values from the
+ * arg list. The variable will be named anon<number> and is guaranteed not
+ * to shadow the name of an existing variable in the DDS.
+ *
+ * @see function_bind_name
+ *
+ * @param argc A count of the arguments
+ * @param argv An array of pointers to each argument, wrapped in a child of BaseType
+ * @param btpp A pointer to the return value; caller must delete.
+ * @return The new DAP Array variable.
+ * @exception Error Thrown for a variety of errors.
+ */
 void
-function_make_array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+function_make_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 {
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
@@ -162,8 +162,11 @@ function_make_array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     // use an istringstream to read the integer sizes and build an Array
     vector<int> dims = parse_dims(shape);	// throws on parse error
 
-    static int counter = 1;
-    string name = "anon" + long_to_string(counter++);
+    static unsigned long counter = 1;
+    string name;
+    do {
+    	name = "anon" + long_to_string(counter++);
+    } while (dds.var(name));
 
     Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
