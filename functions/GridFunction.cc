@@ -78,7 +78,7 @@ namespace libdap {
  @see geogrid() (func_geogrid_select) A function which has logic specific
  to longitude/latitude selection. */
 void
-function_grid(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
     DBG(cerr << "Entering function_grid..." << endl);
 

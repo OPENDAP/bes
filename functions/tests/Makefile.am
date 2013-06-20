@@ -33,6 +33,7 @@ bes.conf: bes.conf.in ${abs_top_srcdir}/config.status
 		-e "s%[@]libdir[@]%${libdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
+		-e "s%[@]top_builddir[@]%${top_builddir}%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 

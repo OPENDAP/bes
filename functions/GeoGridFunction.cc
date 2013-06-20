@@ -77,7 +77,7 @@ namespace libdap {
 
  @return The constrained and read Grid, ready to be sent. */
 void
-function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
+function_geogrid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
     string info =
     string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +

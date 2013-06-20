@@ -35,22 +35,24 @@ using std::endl;
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
 #include "VersionFunction.h"
+#include "MakeArrayFunction.h"
 
 #include "DapFunctions.h"
 
-void DapFunctions::initialize(const string &modname)
+void DapFunctions::initialize(const string &)
 {
     BESDEBUG( "dap_functions", "Initializing DAP Functions:" << endl );
 
     libdap::ServerFunctionsList::TheList()->add_function(new GridFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new GeoGridFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new VersionFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
 
-void DapFunctions::terminate(const string &modname)
+void DapFunctions::terminate(const string &)
 {
     BESDEBUG( "dap_functions", "Removing DAP Modules (this does nothing)." << endl );
 }

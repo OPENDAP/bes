@@ -6,10 +6,13 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 BES.modules=dap,cmd,functions,nc
-BES.module.dap=@modulesdir@/libdap_module.so
-BES.module.cmd=@modulesdir@/libdap_xml_module.so
 
-BES.module.functions=@modulesdir@/libfunctions_module.so
+# Load BES modules from the source dirs
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
+
+# Load this from the installed stuff
 BES.module.nc=@modulesdir@/libnc_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
@@ -62,4 +65,8 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
+
+DAP.FunctionCache.path=/tmp/dap_cache
+DAP.FunctionCache.prefix=func
+DAP.FunctionCache.size=20000
 
