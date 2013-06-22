@@ -79,14 +79,23 @@ function_bind_name(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     if (argc != 2)
     	throw Error(malformed_expr, "bind_name(name,variable) requires two arguments.");
 
+    // Don't allow renaming that will introduce namespace collisions.
+    //
+    // Testing dds.var(argv[0]->name()) does a look up of the variable name. If it's
+    // a DAP String, then the name of the variable will be 'dummy' and the _value_ will
+    // the string passed in as the first argument to bind_name()
+    if (dds.var(argv[0]->name()))
+    	throw Error(malformed_expr, "The name '" + argv[0]->name() + "' is already in use.");
+
     string name = extract_string_argument(argv[0]);
     BESDEBUG("functions", "name: " << name << endl);
 
-    // Don't allow renaming that will introduce namespace collisions, but do allow
-    // a no-op where the new name and the old name of the variable are the same.
-    if (dds.var(name) && name != argv[1]->name())
-    	throw Error(malformed_expr, "The name '" + name + "' is already in use.");
+    if (!argv[1]->read_p()) {
+    	argv[1]->read();
+    	argv[1]->set_read_p(true);
+    }
 
+    argv[1]->set_send_p(true);
     argv[1]->set_name(name);
 
     // set_send_p and set_read_p intentionally not called

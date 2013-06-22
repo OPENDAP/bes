@@ -44,11 +44,11 @@ class BindNameFunction: public libdap::ServerFunction {
 public:
 	BindNameFunction()
     {
-		setName("band_name");
-		setDescriptionString("The band_name() function (re)names a DAP variable.");
-		setUsageString("band_name(name,variable)");
-		setRole("http://services.opendap.org/dap4/server-side-function/band_name");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#band_name");
+		setName("bind_name");
+		setDescriptionString("The bind_name() function (re)names a DAP variable.");
+		setUsageString("bind_name(name,variable)");
+		setRole("http://services.opendap.org/dap4/server-side-function/bind_name");
+		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name");
 		setFunction(libdap::function_bind_name);
 		setVersion("1.0");
     }
