@@ -5,8 +5,7 @@
 // Access Protocol.
 
 // Copyright (c) 2013 OPeNDAP, Inc.
-// Authors: Nathan Potter <npotter@opendap.org>
-//         James Gallagher <jgallagher@opendap.org>
+// Authors:  James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -46,13 +45,12 @@
 
 namespace libdap {
 
-/** Bind a new name to a variable.
- *
- * @note Unlike most server functions, this does not set send_p or read_p.
- * If this is used u=in an expression like bind_name(make_array(...)) make_array()
- * will set send_p & read_p. This means bind_name() can be used to change the name
- * of a variable in a DDS and pass a reference to it into a function where the
- * second function will decide if the value needs to be read and/or sent.
+/** Bind a new name to a variable. The first argument to the function is
+ * the new name and the second argument is the BaseType* to (re)name. This
+ * function can be used to assign a name to an anonymous variable or change
+ * the name of a variable. If the variable is already part of the dataset,
+ * this function will make a copy and operate on that. In that case, the
+ * function will also read values into the variable.
  *
  * @param argc A count of the arguments
  * @param argv An array of pointers to each argument, wrapped in a child of BaseType
@@ -81,27 +79,37 @@ function_bind_name(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 
     // Don't allow renaming that will introduce namespace collisions.
     //
-    // Testing dds.var(argv[0]->name()) does a look up of the variable name. If it's
-    // a DAP String, then the name of the variable will be 'dummy' and the _value_ will
-    // the string passed in as the first argument to bind_name()
+    // Check the DDS to see if a variable with name given as argv[0] already exists. If
+    // so, return an error. This is complicated somewhat because the CE Evaluator will
+    // have already looked and, if the string passed into the function matches a variable,
+    // replaced that string with a BaseType* to the (already existing) variable. If not,
+    // the CE Evaluator will make a DAP String variable with a value that is the string
+    // passed into the function. So, either way argv[0] is a BaseType*. However, if it's
+    // a variable in the dataset, its name() will be found by DDS::var().
     if (dds.var(argv[0]->name()))
     	throw Error(malformed_expr, "The name '" + argv[0]->name() + "' is already in use.");
 
     string name = extract_string_argument(argv[0]);
-    BESDEBUG("functions", "name: " << name << endl);
 
-    if (!argv[1]->read_p()) {
-    	argv[1]->read();
-    	argv[1]->set_read_p(true);
+    // If the variable is the return value of a function, just pass it back. If it is
+    // a variable in the dataset (i.e., present in the DDS), copy it because DDS deletes
+    // all its variables and the function processing code also deletes all it's variables.
+    // NB: Could use reference counting pointers to eliminate this copy... jhrg 6/24/13
+    if (dds.var(argv[1]->name())) {
+    	*btpp = argv[1]->ptr_duplicate();
+    	if (!(*btpp)->read_p()) {
+    		(*btpp)->read();
+    		(*btpp)->set_read_p(true);
+    	}
+    	(*btpp)->set_send_p(true);
+    	(*btpp)->set_name(name);
+    }
+    else {
+    	argv[1]->set_name(name);
+
+    	*btpp = argv[1];
     }
 
-    argv[1]->set_send_p(true);
-    argv[1]->set_name(name);
-
-    // set_send_p and set_read_p intentionally not called
-
-    // return the array
-    *btpp = argv[1];
     return;
 }
 
