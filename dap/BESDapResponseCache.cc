@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-#define DODS_DEBUG
+//#define DODS_DEBUG
 
 #include <sys/stat.h>
 
@@ -37,7 +37,8 @@
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
-#include <XDRFileUnMarshaller.h>
+#include <XDRStreamUnMarshaller.h>
+//<XDRFileUnMarshaller.h>
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
@@ -184,8 +185,11 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
  * @parma fdds Load this DDS object with the variables, attributes and
  * data values from the cached DDS.
  */
-void BESDapResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
+void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DDS *fdds)
 {
+	BESDEBUG("DAP", "Opening cache file: " << cache_file_name << endl);
+	ifstream data(cache_file_name.c_str());
+
     // Rip off the MIME headers from the response if they are present
     string mime = get_next_mime_header(data);
     while (!mime.empty()) {
@@ -197,19 +201,28 @@ void BESDapResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
 
     // Read the MPM boundary and then read the subsequent headers
     string boundary = read_multipart_boundary(data);
-    DBG(cerr << "MPM Boundary: " << boundary << endl);
+    BESDEBUG("DAP", "MPM Boundary: " << boundary << endl);
 
     read_multipart_headers(data, "text/xml", dap4_ddx);
+
+    BESDEBUG("DAP", "Read the multipart haeaders" << endl);
 
     // Parse the DDX, reading up to and including the next boundary.
     // Return the CID for the matching data part
     string data_cid;
-    ddx_parser.intern_stream(data, fdds, data_cid, boundary);
+    try {
+    	ddx_parser.intern_stream(data, fdds, data_cid, boundary);
+    	BESDEBUG("DAP", "Dataset name: " << fdds->get_dataset_name() << endl);
+    }
+    catch(Error &e) {
+    	BESDEBUG("DAP", "DDX Parser Error: " << e.get_error_message() << endl);
+    	throw;
+    }
 
     // Munge the CID into something we can work with
-    DBG(cerr << "Data CID (before): " << data_cid << endl);
+    BESDEBUG("DAP", "Data CID (before): " << data_cid << endl);
     data_cid = cid_to_header_value(data_cid);
-    DBG(cerr << "Data CID (after): " << data_cid << endl);
+    BESDEBUG("DAP", "Data CID (after): " << data_cid << endl);
 
     // Read the data part's MPM part headers (boundary was read by
     // DDXParse::intern)
@@ -217,7 +230,8 @@ void BESDapResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
 
     // Now read the data
 
-    XDRFileUnMarshaller um(data);
+    // XDRFileUnMarshaller um(data);
+    XDRStreamUnMarshaller um(data);
     for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
         (*i)->deserialize(um, fdds);
     }
@@ -226,30 +240,26 @@ void BESDapResponseCache::read_data_from_cache(FILE *data, DDS *fdds)
 /**
  * Read data from cache. Allocates a new DDS using the given factory.
  *
- * @todo Does this need the name of the dataset? Could read it from the
- * DDS.
- * @todo Check that the objects read from the cache really need the send
- * property set. Other code might set this or depend on it not being set.
  */
 DDS *
-BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
 {
-    DBG(cerr << "Reading cache for " << cache_file_name << endl);
+    BESDEBUG("DAP", "Reading cache for " << cache_file_name << endl);
 
     DDS *fdds = new DDS(factory);
 
-    fdds->filename(dataset) ;
-    fdds->set_dataset_name( "function_result_" + name_path(dataset) ) ;
+    fdds->filename(filename) ;
+    //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
-    // fstream data(cache_file_name.c_str());
-    FILE *data = fopen( cache_file_name.c_str(), "r" );
-    read_data_from_cache(data, fdds);
-    fclose(data);
+    read_data_from_cache(cache_file_name, fdds);
+
+    BESDEBUG("DAP", "DDS Filename: " << fdds->filename() << endl);
+    BESDEBUG("DAP", "DDS Dataset name: " << fdds->get_dataset_name() << endl);
 
     fdds->set_factory( 0 ) ;
 
     // mark everything as read. and send. That is, make sure that when a response
-    // is retrieved from teh cache all of the variables are marked as to be sent
+    // is retrieved from the cache, all of the variables are marked as to be sent
     DDS::Vars_iter i = fdds->var_begin();
     while(i != fdds->var_end()) {
         (*i)->set_read_p( true );
@@ -258,6 +268,40 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
 
     return fdds;
 }
+
+/**
+ * Get the cached DDS object if it's valid.
+ *
+ * @return The DDS that resulted from calling the server functions
+ * in the original CE.
+ */
+DDS *BESDapResponseCache::read_dataset(const string &filename, const string &constraint, string &cache_token)
+{
+    // These are used for the cached or newly created DDS object
+    BaseTypeFactory factory;
+    DDS *fdds;
+
+    // Get the cache filename for this thing. Do not use the default
+    // name mangling; instead use what build_cache_file_name() does.
+    string cache_file_name = d_cache->get_cache_file_name(build_cache_file_name(filename, constraint), /*mangle*/false);
+    int fd;
+    try {
+        if (d_cache->get_read_lock(cache_file_name, fd) && is_valid(cache_file_name, filename)) {
+            BESDEBUG("DAP", "function ce (change)- cached hit: " << cache_file_name << endl);
+            fdds = get_cached_data_ddx(cache_file_name, &factory, filename);
+        }
+    }
+    catch (...) {
+        BESDEBUG("DAP", "caught exception, unlocking cache and re-throw." << endl );
+        // I think this call is not needed. jhrg 10/23/12
+        d_cache->unlock_cache();
+        throw;
+    }
+
+    cache_token = cache_file_name;  // Set this value-result parameter
+    return fdds;
+}
+
 
 /**
  * Get the cached DDS object. Unlike the DAP2 DDS response, this is a C++
@@ -272,10 +316,18 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
  * cached, locked and returned. In both cases, the cache-token is used to
  * unlock the entry.
  *
+ * @note The method read_dataset() looks in the cache and returns a valid
+ * entry if it's found. This method first looks at the cache because another
+ * process might have added an entry in the time between the two calls.
+ *
+ * @todo This code is designed just for server function result caching. find
+ * a way to expand it to be general caching software for arbitrary DAP
+ * responses.
+ *
  * @return The DDS that resulted from calling the server functions
  * in the original CE.
  */
-DDS *BESDapResponseCache::read_cached_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
+DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
@@ -283,19 +335,19 @@ DDS *BESDapResponseCache::read_cached_dataset(DDS &dds, const string &constraint
 
     // Get the cache filename for this thing. Do not use the default
     // name mangling; instead use what build_cache_file_name() does.
-    string cache_file_name = d_cache->get_cache_file_name(build_cache_file_name(dds.get_dataset_name(), constraint), false);
+    string cache_file_name = d_cache->get_cache_file_name(build_cache_file_name(dds.filename(), constraint), /*mangle*/false);
     int fd;
     try {
         // If the object in the cache is not valid, remove it. The read_lock will
         // then fail and the code will drop down to the create_and_lock() call.
         // is_valid() tests for a non-zero object and for d_dateset newer than
         // the cached object.
-        if (!is_valid(cache_file_name, dds.get_dataset_name()))
+        if (!is_valid(cache_file_name, dds.filename()))
             d_cache->purge_file(cache_file_name);
 
         if (d_cache->get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("DAP", "function ce - cached hit: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
+            BESDEBUG("DAP", "function ce (change)- cached hit: " << cache_file_name << endl);
+            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
         }
         else if (d_cache->create_and_lock(cache_file_name, fd)) {
             // If here, the cache_file_name could not be locked for read access;

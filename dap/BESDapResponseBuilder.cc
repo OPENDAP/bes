@@ -45,7 +45,7 @@
 #include <cstring>
 #include <ctime>
 
-#define DODS_DEBUG
+//#define DODS_DEBUG
 
 #include <DAS.h>
 #include <DDS.h>
@@ -193,6 +193,28 @@ void BESDapResponseBuilder::establish_timeout(ostream &stream) const
 #endif
 }
 
+static string::size_type
+find_closing_paren(const string &ce, string::size_type pos)
+{
+	// Iterate over the string finding all ( or ) characters until the matching ) is found.
+	// For each ( found, increment count. When a ) is found and count is zero, it is the
+	// matching closing paren, otherwise, decrement count and keep looking.
+	int count = 1;
+	do {
+		pos = ce.find_first_of("()", pos + 1);
+		if (pos == string::npos)
+			throw Error(malformed_expr, "Expected to find a matching closing parenthesis in " + ce);
+
+		if (ce[pos] == '(')
+			++count;
+		else
+			--count;	// must be ')'
+
+	} while (count > 0);
+
+	return pos;
+}
+
 /**
  *  Split the CE so that the server functions that compute new values are
  *  separated into their own string and can be evaluated separately from
@@ -213,8 +235,14 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
     string::size_type pos = 0;
     DBG(cerr << "ce: " << ce << endl);
 
+    // This hack assumes that the functions are listed first. Look for the first
+    // open paren and the last closing paren to accommodate nested function calls
+    // FIXME Nested calls are broken
+    // jhrg 6/21/13
     string::size_type first_paren = ce.find("(", pos);
-    string::size_type closing_paren = ce.find(")", pos);
+    string::size_type closing_paren = find_closing_paren(ce, first_paren); //ce.find(")", pos);
+
+
     while (first_paren != string::npos && closing_paren != string::npos) {
         // Maybe a BTP function; get the name of the potential function
         string name = ce.substr(pos, first_paren-pos);
@@ -316,7 +344,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
 
         if (responseCache()) {
             DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdds = responseCache()->read_cached_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
+            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
             DBG(cerr << "Cache not found; (re)calculating" << endl);
@@ -394,7 +422,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 
         if (responseCache()) {
             DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdds = responseCache()->read_cached_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
+            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
             DBG(cerr << "Cache not found; (re)calculating" << endl);
@@ -536,7 +564,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
 
         if (responseCache()) {
             DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdds = responseCache()->read_cached_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
+            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
             DBG(cerr << "Cache not found; (re)calculating" << endl);
@@ -639,7 +667,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 
         if (responseCache()) {
             DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdds = responseCache()->read_cached_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
+            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
             DBG(cerr << "Cache not found; (re)calculating" << endl);

@@ -59,7 +59,7 @@ endif
 TEST_SRC = testFile.cc testFile.h
 
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
-ResponseBuilderTest_LDADD = $(AM_LDADD) -L.. -ldap_module
+ResponseBuilderTest_LDADD = $(AM_LDADD) ../BESDapResponseBuilder.o ../BESDapResponseCache.o ../BESDAPCache.o
 
 ResponseCacheTest_SOURCES = ResponseCacheTest.cc
-ResponseCacheTest_LDADD = $(AM_LDADD) -L.. -ldap_module
+ResponseCacheTest_LDADD = $(AM_LDADD)  ../BESDapResponseBuilder.o ../BESDapResponseCache.o ../BESDAPCache.o

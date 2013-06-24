@@ -46,7 +46,7 @@ private:
 	BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_data_from_cache(FILE *data, libdap::DDS *fdds);
+    void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
 
     BESDAPCache *d_cache;
@@ -68,7 +68,7 @@ public:
      * @param cache_path The pathname where responses are stored. If this does not exist, the cache is not
      * initialized
      * @param prefix Use this to prefix each entry in the cache. This is used to differentiate the response
-     * cache entries from other entries if other things are cached in the same pathame.
+     * cache entries from other entries if other things are cached in the same pathname.
      * @param size_in_megabytes Cache size.
      */
     BESDapResponseCache(const std::string &cache_path, const std::string &prefix,
@@ -86,7 +86,11 @@ public:
      */
     bool is_available() { return d_cache != 0; }
 
-    virtual libdap::DDS *read_cached_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
+    // If the DDS is in the cache and valid, return it
+    virtual libdap::DDS *read_dataset(const std::string &filename, const std::string &constraint, std::string &cache_token);
+
+    // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
+    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
     virtual void unlock_and_close(const std::string &cache_token);
