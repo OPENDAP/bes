@@ -29,6 +29,7 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
 AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [.])
+AC_CONFIG_TESTDIR(functions/tests, [.])
 
 dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [.])
 
@@ -270,7 +271,6 @@ AM_PATH_CPPUNIT(1.12.0,
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
-		 dap/Makefile
 		 docs/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
@@ -285,14 +285,23 @@ AC_CONFIG_FILES([Makefile
 		 server/test/Makefile
 		 bin/Makefile
 		 templates/Makefile
-		 dapreader/Makefile
-		 dapreader/bes-testsuite/Makefile
-		 dapreader/bes-testsuite/atlocal
 		 bes_dispatch.pc
 		 bes_ppt.pc
 		 bes_dap.pc
 		 bes_xml_command.pc
+
+		 dapreader/Makefile
+		 dapreader/bes-testsuite/Makefile
+		 dapreader/bes-testsuite/atlocal
+
+		 dap/Makefile
+		 dap/unit-tests/Makefile
+		 dap/unit-tests/test_config.h
+
 		 functions/Makefile
+		 functions/tests/Makefile
+		 functions/tests/atlocal
+ 		 functions/tests/package.m4
 		 functions/unit-tests/Makefile])
 
 if test -n "$GDAL_FOUND"
@@ -302,6 +311,10 @@ fi
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
 AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
+
+AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh], [chmod +x functions/tests/generate_data_baseline.sh])
+AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh], [chmod +x functions/tests/generate_metadata_baseline.sh])
+
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
