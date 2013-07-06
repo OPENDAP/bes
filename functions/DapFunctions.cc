@@ -37,6 +37,7 @@ using std::endl;
 #include "VersionFunction.h"
 #include "MakeArrayFunction.h"
 #include "BindNameFunction.h"
+#include "BindShapeFunction.h"
 
 #include "DapFunctions.h"
 
@@ -46,9 +47,12 @@ void DapFunctions::initialize(const string &)
 
     libdap::ServerFunctionsList::TheList()->add_function(new GridFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new GeoGridFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
+
     libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindNameFunction());
-    libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new BindShapeFunction());
+
     libdap::ServerFunctionsList::TheList()->add_function(new VersionFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );

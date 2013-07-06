@@ -237,10 +237,10 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
 
     // This hack assumes that the functions are listed first. Look for the first
     // open paren and the last closing paren to accommodate nested function calls
-    // FIXME Nested calls are broken
-    // jhrg 6/21/13
     string::size_type first_paren = ce.find("(", pos);
-    string::size_type closing_paren = find_closing_paren(ce, first_paren); //ce.find(")", pos);
+    string::size_type closing_paren = string::npos;
+    if (first_paren != string::npos)
+    	closing_paren = find_closing_paren(ce, first_paren); //ce.find(")", pos);
 
 
     while (first_paren != string::npos && closing_paren != string::npos) {

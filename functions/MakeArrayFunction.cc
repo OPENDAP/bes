@@ -59,9 +59,10 @@
 namespace libdap {
 
 /** Parse the shape 'expression'. The form of the expression is '[' size ']'
+ * @note Also used by bind_shape()
  * @return A vector of ints
  */
-static vector<int>
+vector<int>
 parse_dims(const string &shape)
 {
 	vector<int> dims;
@@ -72,8 +73,6 @@ parse_dims(const string &shape)
 		iss >> brace;
 		++pos;
 		// EOF is only found by reading past the last character
-		// TODO Replace with a real parser? Find a better scanner/parser tool than flex/bison
-		// or use the C++ versions?
 		if (iss.eof())
 			return dims;
 
@@ -165,7 +164,7 @@ function_make_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     static unsigned long counter = 1;
     string name;
     do {
-    	name = "anon" + long_to_string(counter++);
+    	name = "g" + long_to_string(counter++);
     } while (dds.var(name));
 
     Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
