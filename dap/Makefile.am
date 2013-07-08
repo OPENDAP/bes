@@ -36,7 +36,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDAPCache.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc
-	
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -71,7 +70,7 @@ pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in
+EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
@@ -88,7 +87,7 @@ uninstall-local:
 # dap.conf: dap.conf.in ../config.status
 #	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
 
-dap.conf: dap.conf.in ../config.status
+dap.conf: dap.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \

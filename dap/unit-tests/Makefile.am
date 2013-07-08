@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I.. -I../../dispatch $(DAP_CFLAGS) 
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
 AM_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types -L$(top_builddir)/dispatch -lbes_dispatch
 
 if CPPUNIT
@@ -43,7 +43,6 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ResponseCacheTest
-	
 else
 UNIT_TESTS =
 

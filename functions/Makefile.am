@@ -69,7 +69,7 @@ install-data-local: functions.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
 
-functions.conf: functions.conf.in ../config.status
+functions.conf: functions.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \

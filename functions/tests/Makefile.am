@@ -25,7 +25,7 @@ EXTRA_DIST = data bescmd functionsTest.at $(TESTSUITE) \
 
 DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in ${abs_top_srcdir}/config.status
+bes.conf: bes.conf.in $(top_builddir)/config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
