@@ -135,6 +135,7 @@ exit 0
 %dir %{_sysconfdir}/bes/modules
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt
