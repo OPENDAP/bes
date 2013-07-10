@@ -1,0 +1,15 @@
+HTTP/1.0 200 OK.*
+XDODS-Server:.*
+XOPeNDAP-Server:.*
+XDAP:.*
+Date:.*
+Last-Modified:.*
+Content-Type: text/plain.*
+Content-Description: dods_das.*
+.*
+Attributes \{
+    a \{
+        Int32 size 7;
+        String type "cars";
+    \}
+\}.*

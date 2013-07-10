@@ -25,7 +25,7 @@
 #ifndef A_DapFunctions_H
 #define A_DapFunctions_H 1
 
-#include "BESAbstractModule.h"
+#include <BESAbstractModule.h>
 
 using namespace libdap;
 

@@ -10,7 +10,8 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-# SUBDIRS = . bes-testsuite
+SUBDIRS = . unit-tests 
+# tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_module.la
@@ -31,7 +32,10 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDMRResponse.cc \
 	BESDapError.cc \
 	BESDapErrorInfo.cc \
-	BESDapService.cc
+	BESDapService.cc \
+	BESDAPCache.cc \
+	BESDapResponseBuilder.cc \
+	BESDapResponseCache.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -50,7 +54,10 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDataDDSResponse.h \
 	BESDapError.h \
 	BESDapErrorInfo.h \
-	BESDapService.h
+	BESDapService.h \
+	BESDAPCache.h \
+	BESDapResponseBuilder.h \
+	BESDapResponseCache.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -59,11 +66,11 @@ libdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 pkginclude_HEADERS = $(BESDAP_HDRS) 
 
-# jhrg 1/25/13 $(BES_DAP_LIBS) $(DAP_LIBS)
+pkgdata_DATA = dap_help.html dap_help.txt dap_help.xml
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dap.conf.in
+EXTRA_DIST = dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
@@ -80,7 +87,7 @@ uninstall-local:
 # dap.conf: dap.conf.in ../config.status
 #	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
 
-dap.conf: dap.conf.in ../config.status
+dap.conf: dap.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \

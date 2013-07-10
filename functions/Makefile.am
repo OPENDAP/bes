@@ -10,8 +10,8 @@ AM_LFLAGS = -8
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS =  . unit-tests 
-DIST_SUBDIRS = unit-tests 
+SUBDIRS =  . unit-tests tests
+DIST_SUBDIRS = unit-tests tests
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 
@@ -23,11 +23,15 @@ lib_bes_LTLIBRARIES = libfunctions_module.la
 
 BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
 
-SRCS = ce_functions.cc grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
-gse.tab.cc lex.gse_.cc GSEClause.cc ArrayGeoConstraint.cc
+SRCS = grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
+gse.tab.cc lex.gse_.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
+LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
+BindNameFunction.cc BindShapeFunction.cc
 
-HDRS = ce_functions.h grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
-gse.tab.hh gse_parser.h GSEClause.h ArrayGeoConstraint.h
+HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
+gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
+GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
+BindNameFunction.h BindShapeFunction.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -65,7 +69,7 @@ install-data-local: functions.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
 
-functions.conf: functions.conf.in ../config.status
+functions.conf: functions.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \

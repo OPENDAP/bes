@@ -36,3 +36,14 @@ BES.Catalog.catalog.FollowSymLinks=No
 DAP.Help.TXT=@pkgdatadir@/dap_help.txt
 DAP.Help.HTML=@pkgdatadir@/dap_help.html
 DAP.Help.XML=@pkgdatadir@/dap_help.xml
+
+#-----------------------------------------------------------------------#
+# Function cache parameters                                             #
+#-----------------------------------------------------------------------#
+
+DAP.FunctionCache.path="/tmp/dap_cache"
+DAP.FunctionCache.prefix="f"
+
+# This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
+DAP.FunctionCache.size=20000
+

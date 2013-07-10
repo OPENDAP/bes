@@ -34,9 +34,10 @@
 #define I_BESDapTransmit_h 1
 
 #include "BESBasicTransmitter.h"
-#include "BESDataHandlerInterface.h"
+//#include "BESDataHandlerInterface.h"
 
 class BESResponseObject ;
+class BESDataHandlerInterface ;
 
 class BESDapTransmit : public BESBasicTransmitter
 {

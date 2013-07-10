@@ -52,13 +52,15 @@ pkginclude_HEADERS = $(HDRS)
 
 #nobase_sysconf_DATA = bes/bes.conf
 
-pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml \
-	bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
+pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml
+	
+# bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
-	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in \
-	bes/dap_help.html bes/dap_help.txt \
-	bes/dap_help.xml
+	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in
+
+#	bes/dap_help.html bes/dap_help.txt
+#	bes/dap_help.xml
 
 # bes/dap.conf.in 
 

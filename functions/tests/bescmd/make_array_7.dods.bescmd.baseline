@@ -1,0 +1,5 @@
+The data:
+String g1[1] = {"1.0"};
+String g2[2][3] = {{"1.0", "test", "test and set"},{"2.0", "TEST", "TEST and SET"}};
+Url g3[2] = {"http://opendap.org", "http::/google.com"};
+
