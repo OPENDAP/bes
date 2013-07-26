@@ -67,7 +67,7 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid)
                     + "' does not have identifiable latitude/longitude map vectors.");
 
     if (!lat_lon_dimensions_ok())
-        throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude\nmaps are the rightmost dimensions.");
+        throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude maps are the rightmost dimensions (grid: " + grid->name() + ", 1).");
 }
 
 GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
@@ -84,7 +84,7 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
 
 
     if (!lat_lon_dimensions_ok())
-        throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude\nmaps are the rightmost dimensions.");
+        throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude maps are the rightmost dimensions (grid: " + grid->name() + ", 2).");
 }
 
 /** A private method called by the constructor that searches for latitude

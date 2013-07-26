@@ -8,7 +8,9 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
-AM_LDADD =  $(GF_LIBS) ../libfunctions_module.la  $(top_builddir)/dispatch/libbes_dispatch.la
+AM_LDADD =  $(GF_LIBS) -L.. -lfunctions_module  $(top_builddir)/dispatch/libbes_dispatch.la
+# ../libfunctions_module.la
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 AM_LDADD += $(CPPUNIT_LIBS)
@@ -44,6 +46,7 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 test_config.h: test_config.h.in Makefile
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
+
 
 ############################################################################
 # Unit Tests

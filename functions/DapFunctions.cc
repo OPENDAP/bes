@@ -47,7 +47,7 @@ void DapFunctions::initialize(const string &)
 
     libdap::ServerFunctionsList::TheList()->add_function(new GridFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new GeoGridFunction());
-    libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindNameFunction());

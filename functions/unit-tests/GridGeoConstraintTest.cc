@@ -56,8 +56,12 @@ using namespace std;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static bool debug2 = false;
+
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#undef DBG2
+#define DBG2(x) do { if (debug2) (x); } while(false);
 
 namespace libdap
 {
@@ -141,13 +145,11 @@ public:
             Grid & sst2 = dynamic_cast < Grid & >(*geo_dds->var("SST2"));
 
             Array & lon2 = dynamic_cast < Array & >(**sst2.map_begin());
-            dods_float64 tmp_lon2[10] =
+            dods_float64 tmp_lon2[10] = { 0, 40, 80, 120, 160, -160, -120, -80, -40, -1};
             //    { -180, -120, -80, -40, 0, 40, 80, 120, 160, 179 };
-		{ 0, 40, 80, 120, 160, -160, -120, -80, -40, -1};
             lon2.val2buf(tmp_lon2);
             lon2.set_read_p(true);
-            //unused BaseType *btp = lon2.var(0);
-            DBG2(cerr << "lon2[0]: " << dynamic_cast<Float64*>(btp)->value() << endl);
+            DBG2(cerr << "lon2[0]: " << dynamic_cast<Float64*>(lon2.var(0))->value() << endl);
 
             Array & lat2 = dynamic_cast < Array & >(**(sst2.map_begin() + 1));
             dods_float64 tmp_lat2[10] =
@@ -308,6 +310,8 @@ public:
         try {
             Grid *g = dynamic_cast<Grid*>(geo_dds->var("SST1"));
             CPPUNIT_ASSERT(g);
+            DBG(cerr << "Grid: " << g->name());
+            DBG(g->print_decl(cerr, "    ", true));
             GridGeoConstraint gc1(g);
             CPPUNIT_ASSERT(gc1.build_lat_lon_maps());
 
@@ -315,6 +319,8 @@ public:
             CPPUNIT_ASSERT(g);
             GridGeoConstraint gc2(g);
             CPPUNIT_ASSERT(gc2.build_lat_lon_maps());
+
+			DBG(cerr << "geoconstraint_build_lat_lon_maps_test midpoint" << endl);
 
             g = dynamic_cast<Grid*>(geo_dds->var("SST3"));
             CPPUNIT_ASSERT(g);
@@ -1303,12 +1309,15 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dD");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
+            break;
+        case 'D':
+            debug2 = 1;
             break;
         default:
             break;
@@ -1317,13 +1326,13 @@ int main(int argc, char*argv[]) {
     bool wasSuccessful = true;
     string test = "";
     int i = getopt.optind;
-    if (i == argc) {
+     if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            test = string("ugrid::BindTest::") + argv[i++];
+            test = string("libdap::GridGeoConstraintTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
