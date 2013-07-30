@@ -24,7 +24,10 @@ class HDFSPArray_RealField:public Array
             Array (n, v),
             rank (rank),
             filename (filename),
-            sdsref (sdsref), dtype (dtype), sptype (sptype), name (fieldname) {
+            sdsref (sdsref), 
+            dtype (dtype), 
+            sptype (sptype), 
+            name (fieldname) {
         }
         virtual ~ HDFSPArray_RealField ()
         {

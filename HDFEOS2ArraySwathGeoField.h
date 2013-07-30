@@ -23,11 +23,15 @@ class HDFEOS2ArraySwathGeoField:public Array
         HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const std::string & swathname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
-            filename (filename), swathname (swathname), fieldname (fieldname) {
+            filename (filename), 
+            swathname (swathname), 
+            fieldname (fieldname) {
         }
         virtual ~ HDFEOS2ArraySwathGeoField ()
         {
         }
+
+        // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -35,11 +39,22 @@ class HDFEOS2ArraySwathGeoField:public Array
             return new HDFEOS2ArraySwathGeoField (*this);
         }
 
+        // Read the data 
         virtual bool read ();
 
     private:
+
+        // Field array rank
         int rank;
-        std::string filename, swathname, fieldname;
+
+        // HDF-EOS2 file name 
+        std::string filename;
+
+        // HDF-EOS2 swath name
+        std::string swathname;
+
+        // HDF-EOS2 field name
+        std::string fieldname;
 };
 
 

@@ -64,7 +64,17 @@ H4.EnableCF=true
 #  Metadta" in LAADS MYD021KM product will not be processed and visible 
 #  in the DAS/DDS output. Those additional Vdatas are added directly using 
 #  HDF4 APIs and HDF-EOS2 APIs cannot access them.
-H4.EnableMODISMISRVdata=true
+H4.EnableHybridVdata=true
+
+# Some CERES products(CER_AVG,CER_ES4,CER_SRB and CER_ZAVG, see description
+# in the HDFSP.h) have  many SDS fields and some Vdata fields. Correspondingly,
+# the DDS and DAS page may be very long. The performance of accessing such
+# products with visualization clients may be greatly affected. 
+# It may potentially  even choke netCDF java clients.
+# To avoid such cases, we will not map vdata to DAP in such products by default.
+# Users can turn on this key to check vdata information of some CERES products.
+# This key will not affect the access of other products.
+H4.EnableCERESVdata=false
 
 #   If this key's value is false, small Vdata datasets will be mapped to 
 # arrays in DDS output instead of attributes in DAS. 

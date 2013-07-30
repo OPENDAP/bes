@@ -61,39 +61,66 @@ class HE2CF
 
         DAS* das;
 
-        // SDStart return value
+        // SDStart ID
         int32 sd_id;
-        // Hopen return value
+
+        // Hopen ID 
         int32 file_id;
+
+        // Number of global attributes
         int32 num_global_attributes;
 
+        // ECS metadata 
         string metadata;
+
+        // group name
         string gname;
 
         // Store all metadata names.
         // Not an ideal approach, need to re-visit later. KY 2012-6-11
         vector<string>  eosmetadata_namelist;
     
+        // SDS name to SDS id 
         map < string, int32 > vg_sd_map;
+
+        // vdata name to vdata id
         map < string, int32 > vg_vd_map;
 
+        // Add metadata_name to the metadata name list.
         void set_eosmetadata_namelist(const string &metadata_name)
         {
             eosmetadata_namelist.push_back(metadata_name);
         }
 
+        // Is this EOS metadata
         bool is_eosmetadata(const string& metadata_name) {
             return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
         }
          
+        // Get HDF-EOS2 "Data Fields" and "Geolocation Fields" group object tag and object reference numbers.
         bool get_vgroup_field_refids(const string&  _gname, int32* _ref_df, int32* _ref_gf);
+
+        // Open SD 
         bool open_sd(const string& filename);
+
+        // Open vgroup
         bool open_vgroup(const string& filename);
+
+        // Combine ECS metadata coremetadata.0, coremetadata.1 etc. into one string.
         bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
+
+        // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
+        // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
+        // Should watch if there are any outliers. 
         void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
+
+        // Obtain SD attribute value
         void obtain_SD_attr_value(const string &,string&);
 
+        // Create SDS name to SDS ID and Vdata name to vdata ID maps.
         bool set_vgroup_map(int32 refid);
+
+        // Write the long_name attribute.
         bool write_attr_long_name(const string& long_name, 
             const string& varname,
             int fieldtype);
@@ -101,7 +128,11 @@ class HE2CF
             const string& long_name, 
             const string& varname,
             int fieldtype);
+
+        // Write the SD attribute.
         bool write_attr_sd(int32 sds_id, const string& newfname);
+
+        // Write the Vdata attribute.
         bool write_attr_vdata(int32 vd_id, const string& newfname);
         void write_error(string _error);
     

@@ -40,6 +40,7 @@
 using namespace HDFSP;
 using namespace std;
 
+// Convenient function to handle exceptions
 template < typename T, typename U, typename V, typename W, typename X > static void
 _throw5 (const char *fname, int line, int numarg,
 		 const T & a1, const U & a2, const V & a3, const W & a4, const X & a5)
@@ -83,9 +84,7 @@ _throw5 (const char *fname, int line, int numarg,
 #define assert_range_throw0(e, ge, l)  assert_throw0((ge) <= (e) && (e) < (l))
 
 
-using namespace HDFSP;
-using namespace std;
-
+// Convenient function to release resources.
 struct delete_elem
 {
     template < typename T > void operator () (T * ptr)
@@ -94,11 +93,12 @@ struct delete_elem
     }
 };
 
-//extern bool HDFCFUtil::insert_map(std::map<std::string,std::string>& m, string key, string val);
 
+// Class File destructor
 File::~File ()
 {
 
+    // Close SD interface ID and release SD resources
     if (this->sdfd != -1) {
 
         if (sd != NULL)
@@ -106,9 +106,10 @@ File::~File ()
         SDend (this->sdfd);
     }
 
+    // Close V and H interface IDs and release vdata resources
     if (this->fileid != -1) {
 
-        for (std::vector < VDATA * >::const_iterator i = this->vds.begin ();
+        for (vector < VDATA * >::const_iterator i = this->vds.begin ();
 	     i != this->vds.end (); ++i) {
              delete *i;
         }
@@ -117,38 +118,59 @@ File::~File ()
     }
 }
 
+// Destructor to release vdata resources
 VDATA::~VDATA ()
 {
+    // Release vdata field pointers
     std::for_each (this->vdfields.begin (), this->vdfields.end (),
         delete_elem ());
+
+   // Release vdata attributes
     std::for_each (this->attrs.begin (), this->attrs.end (), delete_elem ());
 }
 
+// Destructor to release SD resources
 SD::~SD ()
 {
+    // Release vdata attributes
     std::for_each (this->attrs.begin (), this->attrs.end (), delete_elem ());
+
+    // Release SD field pointers
     std::for_each (this->sdfields.begin (), this->sdfields.end (),
         delete_elem ());
 
 }
 
+// Destructor to release SD field resources
 SDField::~SDField ()
 {
+    // Release dimension resources
     std::for_each (this->dims.begin (), this->dims.end (), delete_elem ());
+
+    // Release corrected dimension resources 
     std::for_each (this->correcteddims.begin (), this->correcteddims.end (),
         delete_elem ());
+
+    // Release attribute container dims_info resources(Only apply for the OTHERHDF case)
     std::for_each (this->dims_info.begin (), this->dims_info.end (), delete_elem ());
 }
+
+// Vdata field constructors, nothing needs to do here. We don't provide vdata dimensions.
+// Only when mapping to DDS (at hdfdesc.cc,search VDFDim0), we add the dimension info. to DDS. The addition
+// may not be in a good place, however, the good part is that we don't need to allocate dimension resources
+//  for vdata.
 
 VDField::~VDField ()
 {
 }
 
+// We only need to release attributes since that's shared for both Vdata fields and SDS fields.
 Field::~Field ()
 {
     std::for_each (this->attrs.begin (), this->attrs.end (), delete_elem ());
 }
 
+// Release attribute container resources. This should only apply to the OTHERHDF case.
 AttrContainer::~AttrContainer() 
 {
     std::for_each (this->attrs.begin (), this->attrs.end (), delete_elem ());
@@ -162,9 +184,12 @@ File::Read (const char *path, int32 myfileid)
 throw (Exception)
 {
 
+    // Allocate a new file object.
     File *file = new File (path);
 
-    int32 mysdid;
+    int32 mysdid = -1;
+
+    // Obtain the SD ID.
     if ((mysdid =
         SDstart (const_cast < char *>(file->path.c_str ()),
                  DFACC_READ)) == -1) {
@@ -178,10 +203,11 @@ throw (Exception)
     file->sdfd = mysdid;
     file->fileid = myfileid;
 
-    // Handle SDS 
+    // Read SDS info.
     file->sd = SD::Read (file->sdfd, file->fileid);
 
     // Handle lone vdatas, non-lone vdatas will be handled in Prepare().
+    // Read lone vdata.
     file->ReadLoneVdatas(file);
 
     return file;
@@ -193,9 +219,11 @@ File *
 File::Read_Hybrid (const char *path, int32 myfileid)
 throw (Exception)
 {
+    // New File 
     File *file = new File (path);
 
-    int32 mysdid;
+    // Obtain SD interface
+    int32 mysdid = -1;
     if ((mysdid =
         SDstart (const_cast < char *>(file->path.c_str ()),
 		  DFACC_READ)) == -1) {
@@ -209,34 +237,43 @@ throw (Exception)
     file->sdfd = mysdid;
     file->fileid = myfileid;
 
-    // Handle vlone data here
+    // Start V interface
     int status = Vstart (file->fileid);
 
     if (status == FAIL)
         throw2 ("Cannot start vdata/vgroup interface", path);
 
-    // Handle SDS 
+    // Retrieve extra SDS info.
     file->sd = SD::Read_Hybrid(file->sdfd, file->fileid);
+
+    // Retrieve lone vdata info.(HDF-EOS2 doesn't support any lone vdata)
     file->ReadLoneVdatas(file);
+
+    // Retrieve extra non-lone vdata in the hybrid HDF-EOS2 file
     file->ReadHybridNonLoneVdatas(file);
          
     return file;
 }
 
+// Retrieve lone vdata info.
 void
 File::ReadLoneVdatas(File *file) throw(Exception) {
 
-    // Handle vlone data here
+    // Start V interface
     int status = Vstart (file->fileid);
     if (status == FAIL)
         throw2 ("Cannot start vdata/vgroup interface", path);
 
+    // Obtain number of lone vdata.
     int num_lone_vdata = VSlone (file->fileid, NULL, 0);
 
     if (num_lone_vdata == FAIL)
         throw2 ("Fail to obtain lone vdata number", path);
 
     // Currently the vdata name buffer has to be static allocated according to HDF4 reference manual. KY 2010-7-14
+    // Now HDF4 provides a dynamic way to allocate the length of vdata_class, should update to use that in the future.
+    // Documented in a jira ticket HFRHANDLER-168.
+    // KY 2013-07-11
     char vdata_class[VSNAMELENMAX], vdata_name[VSNAMELENMAX];
 
     if (num_lone_vdata > 0) {
@@ -253,7 +290,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
         for (int i = 0; i < num_lone_vdata; i++) {
 
-            int32 vdata_id;
+            int32 vdata_id = -1;
 
             vdata_id = VSattach (file->fileid, ref_array[i], "r");
             if (vdata_id == FAIL) {
@@ -265,7 +302,6 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                 VSdetach (vdata_id);
                 free (ref_array);
                 throw2 ("Fail to obtain Vdata class", path);
-
             }
 
             if (VSgetname (vdata_id, vdata_name) == FAIL) {
@@ -274,6 +310,8 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                 throw3 ("Fail to obtain Vdata name", path, vdata_name);
             }
 
+            // Ignore any vdata that is either an HDF4 attribute or is used 
+            // to store internal data structures.
             if (VSisattr (vdata_id) == TRUE
                 || !strncmp (vdata_class, _HDF_CHK_TBL_CLASS,
                 strlen (_HDF_CHK_TBL_CLASS))
@@ -293,6 +331,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
             else {
 
+                // Read vdata information
                 VDATA *vdataobj = VDATA::Read (vdata_id, ref_array[i]);
 
                 // We want to map fields of vdata with more than 10 records to DAP variables
@@ -312,26 +351,35 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                         (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
                     }
                 }
+
+                // Save this vdata info. in the file instance.
                 file->vds.push_back (vdataobj);
 
                 // THe following code should be replaced by using the VDField member functions in the future
                 // The code has largely overlapped with VDField member functions, but not for this release.
                 // KY 2010-8-11
+              
                 // To know if the data product is CERES, we need to check Vdata CERE_metadata(CERE_META_NAME).
                 //  One field name LOCALGRANULEID(CERE_META_FIELD_NAME) includes the product name. 
+                //  We want to assign the filetype of this CERES file based on the LOCALGRANULEID.
+                //  Please note that CERES products we support to follow CF are pure HDF4 files. 
+                //  For hybrid HDF-EOS2 files, this if loop is simply skipped.
 
-                if (!strncmp
+                //  When the vdata name indicates this is a CERES product, we need to do the following:
+                if (false == strncmp
                     (vdata_name, CERE_META_NAME, strlen (CERE_META_NAME))) {
 
-                    char *fieldname;
-                    int num_field = VFnfields (vdata_id);
+                    char *fieldname = NULL;
 
+                    // Obtain number of vdata fields
+                    int num_field = VFnfields (vdata_id);
                     if (num_field == FAIL) {
                         free (ref_array);
                         VSdetach (vdata_id);
                         throw3 ("number of fields at Vdata ", vdata_name," is -1");
                     }
 
+                    // Search through the number of vdata fields
                     for (int j = 0; j < num_field; j++) {
 
                         fieldname = VFfieldname (vdata_id, j);
@@ -342,10 +390,13 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 									" field name is NULL.");
                         }
 
+                        // If the field name matches CERES's specific field name"LOCALGRANULEID"
                         if (!strcmp (fieldname, CERE_META_FIELD_NAME)) {
 
-                            int32 fieldsize, nelms;
+                            int32 fieldsize = -1; 
+                            int32 nelms = -1;
 
+                            // Obtain field size
                             fieldsize = VFfieldesize (vdata_id, j);
                             if (fieldsize == FAIL) {
                                 free (ref_array);
@@ -353,6 +404,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                 throw5 ("vdata ", vdata_name, " field ",fieldname, " size is wrong.");
                             }
 
+                            // Obtain number of elements
                             nelms = VSelts (vdata_id);
                             if (nelms == FAIL) {
                                 free (ref_array);
@@ -361,6 +413,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                         " number of field record ", nelms," is wrong.");
                             }
 
+                            // Allocate data buf
                             char *databuf = (char *) malloc (fieldsize * nelms);
                             if (databuf == NULL) {
                                 free (ref_array);
@@ -368,6 +421,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                 throw1("no enough memory to allocate buffer.");
                             }
 
+                            // Initialize the seeking process
                             if (VSseek (vdata_id, 0) == FAIL) {
                                 VSdetach (vdata_id);
                                 free (ref_array);
@@ -376,6 +430,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                          CERE_META_FIELD_NAME," VSseek failed.");
                             }
 
+                            // The field to seek is CERE_META_FIELD_NAME
                             if (VSsetfields (vdata_id, CERE_META_FIELD_NAME) == FAIL) {
                                 VSdetach (vdata_id);
                                 free (ref_array);
@@ -384,6 +439,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                          CERE_META_FIELD_NAME," VSsetfields failed.");
                             }
 
+                            // Read this vdata field value
                             if (VSread(vdata_id, (uint8 *) databuf, 1,FULL_INTERLACE) 
                                 == FAIL) {
 
@@ -394,6 +450,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                          CERE_META_FIELD_NAME," VSread failed.");
                             }
 
+                            // Assign the corresponding special product indicator we supported for CF
                             if (!strncmp(databuf, CER_AVG_NAME,strlen (CER_AVG_NAME)))
                                 file->sptype = CER_AVG;
                             else if (!strncmp
@@ -428,35 +485,44 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
     }
 }
 
+// Handle non-attribute non-lone vdata for Hybrid HDF-EOS2 files.
 void
 File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
 
-    int32  status = -1;
-    int32 file_id   = -1;
-    int32 vgroup_id = -1;
-    int32 vdata_id  = -1;
-    int32 vgroup_ref = -1;
-    int32 obj_index = -1;
+    int32 status         = -1;
+    int32 file_id        = -1;
+    int32 vgroup_id      = -1;
+    int32 vdata_id       = -1;
+    int32 vgroup_ref     = -1;
+    int32 obj_index      = -1;
     int32 num_of_vg_objs = -1;
-    int32 obj_tag = -1;
-    int32 obj_ref = -1;
+    int32 obj_tag        = -1;
+    int32 obj_ref        = -1;
 
     int32 lone_vg_number = 0;
-    int32 num_of_lones = -1;
-    int32 *ref_array;
-    int32 num_gobjects = 0;
+    int32 num_of_lones   = -1;
+    int32 *ref_array     = NULL;
+    int32 num_gobjects   = 0;
 
+    // This can be updated in the future with new HDF4 APIs that can provide the actual length of an object name.
+    // Documented in a jira ticket HFRHANDLER-168.
+    // KY 2013-07-11
     char vdata_name[VSNAMELENMAX];
     char vdata_class[VSNAMELENMAX];
     char vgroup_name[VGNAMELENMAX*4];
     char vgroup_class[VGNAMELENMAX*4];
 
-    char *full_path;
-    char *cfull_path;
+    // Full path of this vgroup
+    char *full_path      = NULL;
 
+    // Copy of a full path of this vgroup 
+    char *cfull_path     = NULL;
+
+    // Obtain H interface ID
     file_id = file->fileid;
 
+    // Start V interface
     status = Vstart (file_id);
     if (status == FAIL) 
         throw2 ("Cannot start vdata/vgroup interface", path);
@@ -470,13 +536,14 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
     // if there are any lone vgroups,
     if (num_of_lones > 0) {
-        // use the num_of_lones returned to allocate sufficient space for the
+
+        // Use the num_of_lones returned to allocate sufficient space for the
         // buffer ref_array to hold the reference numbers of all lone vgroups,
         ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
         if (ref_array == NULL)
             throw1 ("no enough memory to allocate buffer.");
 
-        // and call Vlone again to retrieve the reference numbers into
+        // Call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
         num_of_lones = Vlone (file_id, ref_array, num_of_lones);
         if (num_of_lones == FAIL) {
@@ -485,8 +552,10 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     "file id is ", file_id);
         }
 
+        // Loop the lone vgroups.
         for (lone_vg_number = 0; lone_vg_number < num_of_lones;
              lone_vg_number++) {
+
             // Attach to the current vgroup 
             vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
@@ -495,6 +564,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                          ref_array[lone_vg_number]);
             }
 
+            // Obtain the vgroup name.
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
@@ -502,6 +572,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
+            // Obtain the vgroup_class name.
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
@@ -520,6 +591,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 continue;
             }
 
+            // Obtain number of objects under this vgroup
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
                 Vdetach (vgroup_id);
@@ -528,17 +600,29 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             }
 
             full_path = NULL;
+
+            // Allocate enough buffer for the full path
+            // MAX_FULL_PATH_LEN(1024) is long enough
+            // to cover any HDF4 object path for all NASA HDF4 products.
+            // So using strcpy and strcat is safe in a practical sense.
+            // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+            // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+            // Documented in a jira ticket HFRHANDLER-168. 
+            // KY 2013-07-12
+
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
                 free (ref_array);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-
+            
+            // Obtain the full path of this vgroup
             strcpy (full_path, "/");
             strcat (full_path, vgroup_name);
             strcat(full_path,"/");
 
+            // Make a copy the current vgroup full path since full path may be passed to a recursive routine
             cfull_path = NULL;
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
@@ -551,6 +635,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
             // Loop all vgroup objects
             for (int i = 0; i < num_gobjects; i++) {
+
+                // Obtain the object tag/ref pair of an object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
                     Vdetach (vgroup_id);
                     free (ref_array);
@@ -560,13 +646,17 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                              vgroup_name, " reference number is ", obj_ref);
                 }
 
+                // If the object is a vgroup,always pass the original full path to its decendant vgroup
+                // The reason to use a copy is because the full_path will change to its decendant vgroup name.
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
                     strcpy (full_path, cfull_path);
                     obtain_vdata_path (file_id,  full_path, obj_ref);
                 }
 
+                // If this object is vdata
                 else if (Visvs (vgroup_id, obj_ref)) {
 
+                    // Obtain vdata ID
                     vdata_id = VSattach (file_id, obj_ref, "r");
                     if (vdata_id == FAIL) {
                         Vdetach (vgroup_id);
@@ -577,6 +667,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                                  vgroup_name, " reference number is ",
                                  obj_ref);
                     }
+                  
+                    // Obtain vdata name
                     status = VSgetname (vdata_id, vdata_name);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
@@ -588,6 +680,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                                  obj_ref);
                     }
 
+                    // Obtain vdata class name
                     status = VSgetclass (vdata_id, vdata_class);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
@@ -599,6 +692,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                                  obj_ref);
                     }
 
+                    // Ignore the vdata to store internal HDF structure and the vdata used as an attribute
                     if (VSisattr (vdata_id) == TRUE
                         || !strncmp (vdata_class, _HDF_CHK_TBL_CLASS,
                             strlen (_HDF_CHK_TBL_CLASS))
@@ -625,6 +719,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                         }
 
                     }
+                    // Now user-defined vdata
                     else {
 
                         VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
@@ -651,8 +746,10 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
                         }
                 
+                        // Make sure the name is following CF
                         vdataobj->newname = HDFCFUtil::get_CF_string(vdataobj->newname);
 
+                        // Save back this vdata
                         this->vds.push_back (vdataobj);
 
                         status = VSdetach (vdata_id);
@@ -679,12 +776,13 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
         }//end of the for loop
+
         if (ref_array != NULL)
             free (ref_array);
     }// end of the if loop
 
-
 }
+
 //  This method will check if the HDF4 file is one of TRMM or OBPG products or MODISARNSS we supported.
 void
 File::CheckSDType ()
@@ -692,6 +790,7 @@ throw (Exception)
 {
 
     // check the TRMM and MODARNSS/MYDARNSS cases
+    // The default sptype is OTHERHDF.
     if (this->sptype == OTHERHDF) {
 
         int metadataflag = 0;
@@ -711,7 +810,9 @@ throw (Exception)
         }
 
         // This is a very special MODIS product. It includes StructMetadata.0 
-        // but it is not an HDF-EOS2 file.
+        // but it is not an HDF-EOS2 file. We use metadata name "SubsettingMethod" as an indicator.
+        // We find this metadata name is uniquely applied to this MODIS product.
+        // We need to change the way if HDF-EOS MODIS files also use this metadata name. 
         if (metadataflag == 4)	 
             this->sptype = MODISARNSS;
 
@@ -770,22 +871,43 @@ throw (Exception)
     // One attribute "Product Name" includes unique information for each product,
     // For example, SeaWIFS L2 data' "Product Name" is S2003006001857.L2_MLAC 
     // Since we only support Level 2 and Level 3m data, we just check if those characters exist inside the attribute.
-    // The reason we cannot support L1A data is lat/lon consists of fill values.
+    // The reason we cannot support L1A data is that lat/lon consists of fill values.
 
     if (this->sptype == OTHERHDF) {
 
+        // MODISA level 2 product flag
         int modisal2flag = 0;
+
+        // MODIST level 2 product flag
         int modistl2flag = 0;
+
+        // OCTS level 2 product flag
         int octsl2flag = 0;
+
+        // SeaWiFS level 2 product flag
         int seawifsl2flag = 0;
+
+        // CZCS level 2 product flag
         int czcsl2flag = 0;
 
+        // MODISA level 3m product flag
         int modisal3mflag = 0;
+
+        // MODIST level 3m product flag
         int modistl3mflag = 0;
+
+        // OCTS level 3m product flag
         int octsl3mflag = 0;
+
+        // SeaWIFS level 3m product flag
         int seawifsl3mflag = 0;
+
+        // CZCS level 3m product flag
         int czcsl3mflag = 0;
 
+        // Loop the global attributes and find the attribute called "Product Name"
+        // and the attribute called "Sensor Name",
+        // then identify different products.
         for (std::vector < Attribute * >::const_iterator i =
             this->sd->getAttributes ().begin ();
             i != this->sd->getAttributes ().end (); ++i) {
@@ -862,6 +984,8 @@ throw (Exception)
             break;
 
         }
+        // Only when both the sensor name and the product name match, we can
+        // be sure the products are OBPGL2 or OBPGL3m.
         if ((modisal2flag == 2) || (modistl2flag == 2) ||
             (octsl2flag == 2) || (seawifsl2flag == 2) || (czcsl2flag == 2))
             this->sptype = OBPGL2;
@@ -880,36 +1004,78 @@ SD::Read (int32 sdfd, int32 fileid)
 throw (Exception)
 {
 
-    int32 status = 0;
-    int32 n_sds = 0;
-    int32 n_sd_attrs = 0;
-    int index = 0;
-    int32 sds_id = 0;
-    int32 dim_sizes[H4_MAX_VAR_DIMS];
-    int32 n_sds_attrs = 0;
-    char sds_name[H4_MAX_NC_NAME];
-    char dim_name[H4_MAX_NC_NAME];
-    char attr_name[H4_MAX_NC_NAME];
-    int32 dim_size, sds_ref, dim_type, num_dim_attrs;
-    int32 attr_value_count;
+    // Indicator of status
+    int32  status        = 0;
 
+    // Number of SDS objects in this file
+    int32  n_sds         = 0;
+
+    // Number of SDS attributes in this file
+    int32  n_sd_attrs    = 0;
+
+    // Object index 
+    int    sds_index     = 0;
+
+    // SDS ID
+    int32  sds_id        = 0;
+
+    // Dimension sizes
+    int32  dim_sizes[H4_MAX_VAR_DIMS];
+
+    // number of SDS attributes
+    int32  n_sds_attrs   = 0;
+
+    // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168.
+
+    // SDS name
+    char   sds_name[H4_MAX_NC_NAME];
+
+    // SDS dimension names
+    char   dim_name[H4_MAX_NC_NAME];
+
+    // SDS attribute names
+    char   attr_name[H4_MAX_NC_NAME];
+
+    // Dimension size
+    int32  dim_size      = 0;
+
+    // SDS reference number
+    int32  sds_ref       = 0;
+
+    // Dimension type(if dimension type is 0, this dimension doesn't have dimension scales)
+    // Otherwise, this dimension type is the datatype of this dimension scale.
+    int32  dim_type      = 0; 
+
+    // Number of dimension attributes(This is almost never used)
+    int32  num_dim_attrs = 0;
+
+    // Attribute value count
+    int32  attr_value_count = 0;
+
+    // Obtain a SD instance
     SD *sd = new SD (sdfd, fileid);
 
+    // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL)
         throw2 ("SDfileinfo failed ", sdfd);
 
-    for (index = 0; index < n_sds; index++) {
+    // Go through the SDS object
+    for (sds_index = 0; sds_index < n_sds; sds_index++) {
 
+        // New SDField instance
         SDField *field = new SDField ();
 
-        sds_id = SDselect (sdfd, index);
+        // Obtain SDS ID.
+        sds_id = SDselect (sdfd, sds_index);
         if (sds_id == FAIL) {
 
             // We only need to close SDS ID. SD ID will be closed when the destructor is called.
             SDendaccess (sds_id);
-            throw3 ("SDselect Failed ", "SDS index ", index);
+            throw3 ("SDselect Failed ", "SDS index ", sds_index);
         }
 
+        // Obtain SDS reference number
         sds_ref = SDidtoref (sds_id);
         if (sds_ref == FAIL) {
             SDendaccess (sds_id);
@@ -924,12 +1090,16 @@ throw (Exception)
             SDendaccess (sds_id);
             throw2 ("SDgetinfo failed ", sds_name);
         }
+
+        //Assign SDS field info. to class field instance.
         string tempname (sds_name);
         field->name = tempname;
         field->newname = field->name;
         field->sdsref = sds_ref;
-        sd->refindexlist[sds_ref] = index;
+        // This will be used to obtain the SDS full path later.
+        sd->refindexlist[sds_ref] = sds_index;
 
+        // Handle dimension scale
         bool dim_no_dimscale = false;
         vector <int> dimids;
         if (field->rank >0) 
@@ -938,13 +1108,15 @@ throw (Exception)
         // Handle dimensions with original dimension names
         for (int dimindex = 0; dimindex < field->rank; dimindex++)  {
 
+            // Obtain dimension ID.
             int dimid = SDgetdimid (sds_id, dimindex);
-
             if (dimid == FAIL) {
                 SDendaccess (sds_id);
                 throw5 ("SDgetdimid failed ", "SDS name ", sds_name,
                          "dim index= ", dimindex);
             }	
+
+            // Obtain dimension info.: dim_name, dim_size,dim_type and num of dim. attrs.
             status =
                 SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
                            &num_dim_attrs);
@@ -978,17 +1150,17 @@ throw (Exception)
             Dimension *dim =
                 new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
 
+            // Save this dimension
             field->dims.push_back (dim);
 
             // First check if there are dimensions in this field that 
             // don't have dimension scales.
-
             dimids[dimindex] = dimid;
             if (0 == dim_type) {
                 if (false == dim_no_dimscale) 
                     dim_no_dimscale = true;
                 if ((dim_name_str == field->name) && (1 == field->rank))
-                    field->is_dim_noscale = true;
+                    field->is_noscale_dim = true;
             }
         }
                       
@@ -996,13 +1168,14 @@ throw (Exception)
         // add attribute for this whole field ???_dim0, ???_dim1 etc.
 
         if( true == dim_no_dimscale) {
+
             for (int dimindex = 0; dimindex < field->rank; dimindex++) {
 
                 string dim_name_str = (field->dims)[dimindex]->name;
                 AttrContainer *dim_info = new AttrContainer ();
                 string index_str;
                 stringstream out_index;
-                out_index  <<dimindex;
+                out_index  << dimindex;
                 index_str = out_index.str();
                 dim_info->name = "_dim_" + index_str;
 
@@ -1013,6 +1186,7 @@ throw (Exception)
                 int32 dummy_type = 0;
                 int32 dummy_value_count = 0;
 
+                // Loop through to check if an attribute called "name" exists and set a flag.
                 for (int attrindex = 0; attrindex < num_dim_attrs; attrindex++) {
 
                     status = SDattrinfo(dimids[dimindex],attrindex,attr_name,
@@ -1029,6 +1203,7 @@ throw (Exception)
                     }
                 }
                                    
+                // Loop through to obtain the dimension attributes and save the corresponding attributes to dim_info.
                 for (int attrindex = 0; attrindex < num_dim_attrs; attrindex++) {
 
                     Attribute *attr = new Attribute();
@@ -1055,6 +1230,8 @@ throw (Exception)
 	
                 }
                             
+                // If no attribute called "name", we create an attribute "name" and save the name of the attribute
+                // as the attribute value.
                 if (false == dimname_flag) { 
 
                     Attribute *attr = new Attribute();
@@ -1071,7 +1248,7 @@ throw (Exception)
             }
         }
 
-        // Handle SDS attributes
+        // Loop through all the SDS attributes and save them to the class field instance.
         for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
             Attribute *attr = new Attribute ();
             status =
@@ -1101,7 +1278,7 @@ throw (Exception)
         sd->sdfields.push_back (field);
     }
 
-    // Handle SD attributes
+    // Loop through all SD(file) attributes and save them to the class sd instance.
     for (int attrindex = 0; attrindex < n_sd_attrs; attrindex++) {
 
         Attribute *attr = new Attribute ();
@@ -1127,61 +1304,115 @@ throw (Exception)
 
 }
 
-// Read SDS information from the HDF4 file
+// Retrieve the extra SDS object info. from a hybrid HDF-EOS2 file
 SD *
 SD::Read_Hybrid (int32 sdfd, int32 fileid)
 throw (Exception)
 {
-    int32 status = 0;
-    int32 n_sds = 0;
-    int32 n_sd_attrs = 0;
-    int index = 0;
-    int32 sds_index = 0;
-    int32 sds_id = 0;
-    int32 dim_sizes[H4_MAX_VAR_DIMS];
-    int32 n_sds_attrs;
-    char sds_name[H4_MAX_NC_NAME];
-    char dim_name[H4_MAX_NC_NAME];
-    char attr_name[H4_MAX_NC_NAME];
-    int32 dim_size, sds_ref, dim_type, num_dim_attrs;
-    int32 attr_value_count;
+    // Indicator of status
+    int32  status        = 0;
+
+    // Number of SDS objects in this file
+    int32  n_sds         = 0;
+
+    // Number of SDS attributes in this file
+    int32  n_sd_attrs    = 0;
+
+    // SDS Object index 
+    int    sds_index     = 0;
+
+    // Extra SDS object index
+    int extra_sds_index = 0;
+
+    // SDS ID
+    int32  sds_id        = 0;
+
+    // Dimension sizes
+    int32  dim_sizes[H4_MAX_VAR_DIMS];
+
+    // number of SDS attributes
+    int32  n_sds_attrs   = 0;
+
+    // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168.
+
+    // SDS name
+    char   sds_name[H4_MAX_NC_NAME];
+
+    // SDS dimension names
+    char   dim_name[H4_MAX_NC_NAME];
+
+    // SDS attribute names
+    char   attr_name[H4_MAX_NC_NAME];
+
+    // Dimension size
+    int32  dim_size      = 0;
+
+    // SDS reference number
+    int32  sds_ref       = 0;
+
+    // Dimension type(if dimension type is 0, this dimension doesn't have dimension scales)
+    // Otherwise, this dimension type is the datatype of this dimension scale.
+    int32  dim_type      = 0; 
+
+    // Number of dimension attributes(This is almost never used)
+    int32  num_dim_attrs = 0;
+
+    // Attribute value count
+    int32  attr_value_count = 0;
+
 
     // TO OBTAIN the full path of the SDS objects 
     int32 vgroup_id = 0; 
 
     // lone vgroup index
-    int32 lone_vg_number =0; 
+    int32 lone_vg_number =  0; 
 
     // number of lone vgroups
-    int32 num_of_lones = -1; 
+    int32 num_of_lones =  -1; 
 
     // buffer to hold the ref numbers of lone vgroups
     int32 *ref_array;			   
     int32 num_gobjects;
-    int32 obj_ref, obj_tag;
+
+    // Object reference and tag pair. Key to find an HDF4 object
+    int32 obj_ref = 0;
+    int32 obj_tag = 0;
+
+    // Temporary index.
     int i;
 
+    // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168.
     char vgroup_name[VGNAMELENMAX*4];
     char vgroup_class[VGNAMELENMAX*4];
 
     //std::string full_path;
+
+    // full path of an object
     char *full_path;
+
+    // copy of the full path
     char *cfull_path;
 
+    // Obtain a SD instance
     SD *sd = new SD (sdfd, fileid);
 
+    // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL)
         throw2 ("SDfileinfo failed ", sdfd);
 
-    for (index = 0; index < n_sds; index++) {
-        sds_id = SDselect (sdfd, index);
+    // Loop through all SDS objects to obtain the SDS reference numbers.
+    // Then save the reference numbers into the SD instance sd.
+    for (sds_index = 0; sds_index < n_sds; sds_index++) {
+        sds_id = SDselect (sdfd, sds_index);
 
         if (sds_id == FAIL) {
 
             // We only need to close SDS ID. SD ID will be closed when 
             // the destructor is called.
             SDendaccess (sds_id);
-            throw3 ("SDselect Failed ", "SDS index ", index);
+            throw3 ("SDselect Failed ", "SDS index ", sds_index);
         }
 
         sds_ref = SDidtoref (sds_id);
@@ -1222,6 +1453,7 @@ throw (Exception)
                     "file id is ", fileid);
         }
 
+        // loop through all the lone vgroup objects
         for (lone_vg_number = 0; lone_vg_number < num_of_lones;
              lone_vg_number++) {
 
@@ -1258,6 +1490,7 @@ throw (Exception)
                 continue;
             }
 
+            // Obtain the number of objects of this vgroup
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
                 Vdetach (vgroup_id);
@@ -1265,6 +1498,15 @@ throw (Exception)
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
+            // Obtain the vgroup full path and the copied vgroup full path
+            // MAX_FULL_PATH_LEN(1024) is long enough
+            // to cover any HDF4 object path for all NASA HDF4 products.
+            // So using strcpy and strcat is safe in a practical sense.
+            // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+            // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+            // Documented in a jira ticket HFRHANDLER-168. 
+            // KY 2013-07-12
+            
             full_path = NULL;
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
@@ -1286,8 +1528,10 @@ throw (Exception)
             }
             strcpy (cfull_path, full_path);
 
-            // Loop all vgroup objects
+            // Loop all objects in this vgroup
             for (i = 0; i < num_gobjects; i++) {
+
+                // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
                     Vdetach (vgroup_id);
                     free (ref_array);
@@ -1297,32 +1541,34 @@ throw (Exception)
                              vgroup_name, " reference number is ", obj_ref);
                 }
 
+                // If this object is a vgroup, will call recursively to obtain the SDS path.
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
                     strcpy (full_path, cfull_path);
-                    sd->obtain_sds_path (fileid, full_path, obj_ref);
+                    sd->obtain_noneos2_sds_path (fileid, full_path, obj_ref);
                 }
 
                 // These are SDS objects
                 else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
                          || obj_tag == DFTAG_SD) {
 
-                // Here we need to check if the SDS is an EOS object by checking
-                // if the the path includes "Data Fields" or "Geolocation Fields".
-                // If the object is an EOS object, we will remove the sds 
-                // reference number from the list.
-
-                string temp_str = string(full_path);
-                if((temp_str.find("Data Fields") != std::string::npos)||
-                    (temp_str.find("Geolocation Fields") != std::string::npos))                                   
-                    sd->sds_ref_list.remove(obj_ref);
+                    // Here we need to check if the SDS is an EOS object by checking
+                    // if the the path includes "Data Fields" or "Geolocation Fields".
+                    // If the object is an EOS object, we will remove the sds 
+                    // reference number from the list.
+                    string temp_str = string(full_path);
+                    if((temp_str.find("Data Fields") != std::string::npos)||
+                        (temp_str.find("Geolocation Fields") != std::string::npos))                                   
+                        sd->sds_ref_list.remove(obj_ref);
 
                 }
+                // Do nothing for other objects
                 else;
             }
             free (full_path);
             free (cfull_path);
 
             status = Vdetach (vgroup_id);
+
             if (status == FAIL) {
                 free (ref_array);
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
@@ -1337,16 +1583,16 @@ throw (Exception)
     for(std::list<int32>::iterator sds_ref_it = sd->sds_ref_list.begin(); 
         sds_ref_it!=sd->sds_ref_list.end();++sds_ref_it) {
 
-        sds_index = SDreftoindex(sdfd,*sds_ref_it);
-        if(sds_index == FAIL) 
+        extra_sds_index = SDreftoindex(sdfd,*sds_ref_it);
+        if(extra_sds_index == FAIL) 
             throw3("SDreftoindex Failed ","SDS reference number ", *sds_ref_it);
 
         SDField *field = new SDField ();
-        sds_id = SDselect (sdfd, sds_index);
+        sds_id = SDselect (sdfd, extra_sds_index);
        	if (sds_id == FAIL) {
             // We only need to close SDS ID. SD ID will be closed when the destructor is called.
             SDendaccess (sds_id);
-            throw3 ("SDselect Failed ", "SDS index ", sds_index);
+            throw3 ("SDselect Failed ", "SDS index ", extra_sds_index);
         }
 
         // Obtain object name, rank, size, field type and number of SDS attributes
@@ -1363,7 +1609,7 @@ throw (Exception)
         tempname = HDFCFUtil::get_CF_string(tempname);
         field->newname = tempname+"_"+"NONEOS";
         field->sdsref = *sds_ref_it;
-        sd->refindexlist[*sds_ref_it] = sds_index;
+        sd->refindexlist[*sds_ref_it] = extra_sds_index;
 
         // Handle dimensions with original dimension names
         for (int dimindex = 0; dimindex < field->rank; dimindex++) {
@@ -1405,6 +1651,7 @@ throw (Exception)
             // This will make the tools
             // automatically treat them as latitude or longitude.
             //  Need to double check. KY 2011-2-17
+            // So far we don't meet the above case. KY 2013-07-12
 
             string cfdimname =  HDFCFUtil::get_CF_string(dim_name_str);
             Dimension *correcteddim =
@@ -1414,7 +1661,7 @@ throw (Exception)
                        
         }
 
-        // Handle SDS attributes
+        // Loop through all SDS attributes and save them to field.
         for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
 
             Attribute *attr = new Attribute ();
@@ -1453,10 +1700,20 @@ VDATA::Read (int32 vdata_id, int32 obj_ref)
 throw (Exception)
 {
 
-    int32 fieldsize;
-    int32 fieldtype;
-    int32 fieldorder;
-    char *fieldname;
+    // Vdata field size 
+    int32 fieldsize   = 0;
+
+    // Vdata field datatype
+    int32 fieldtype   = 0;
+
+    // Vdata field order
+    int32 fieldorder  = 0;
+
+    // Vdata field name
+    char *fieldname   = NULL;
+
+     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168. 
     char vdata_name[VSNAMELENMAX];
 
     VDATA *vdata = new VDATA (vdata_id, obj_ref);
@@ -1565,11 +1822,21 @@ void
 VDATA::ReadAttributes (int32 vdata_id)
 throw (Exception)
 {
+    // Vdata attribute name
+     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168. 
     char attr_name[H4_MAX_NC_NAME];
+
+    // Number of attributes
     int32 nattrs = 0;
+
+    // Number of attribute size
     int32 attrsize = 0;
+
+    // API status indicator
     int32 status = 0;
 
+    // Number of vdata attributes
     nattrs = VSfnattrs (vdata_id, _HDF_VDATA);
 
 //  This is just to check if the weird MacOS portability issue go away.KY 2011-3-31
@@ -1579,6 +1846,8 @@ throw (Exception)
 #endif
 
     if (nattrs > 0) {
+
+        // Obtain number of vdata attributes 
         for (int i = 0; i < nattrs; i++) {
 
             Attribute *attr = new Attribute ();
@@ -1604,15 +1873,26 @@ throw (Exception)
 
 
 // Retrieve VD field attributes from the HDF4 file.
+// Input parameters are vdata ID and vdata field index
 void
 VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
 throw (Exception)
 {
+    // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // Documented in a jira ticket HFRHANDLER-168. 
+    // vdata field attribute name
     char attr_name[H4_MAX_NC_NAME];
+
+    // Number of vdata field attributes
     int32 nattrs = 0;
+
+    // Vdata attribute size
     int32 attrsize = 0;
+
+    // Indicator of vdata field APIs
     int32 status = 0;
 
+    // Obtain 
     nattrs = VSfnattrs (vdata_id, fieldindex);
 
 // This is just to check if the weird MacOS portability issue go away.KY 2011-3-9
@@ -1624,6 +1904,7 @@ throw (Exception)
 
     if (nattrs > 0) {
 
+        // Obtain vdata field attributes
         for (int i = 0; i < nattrs; i++) {
 
             Attribute *attr = new Attribute ();
@@ -1650,79 +1931,6 @@ throw (Exception)
     }
 }
 
-void 
-SD::obtain_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
-throw (Exception)
-{
-
-    int32 vgroup_cid = 0;
-    int32 status = 0;
-    int i = 0;
-    int num_gobjects = 0;
-    char cvgroup_name[VGNAMELENMAX*4];
-    int32 obj_tag, obj_ref;
-    char *cfull_path;
-
-    cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-    if (cfull_path == NULL)
-        throw1 ("No enough memory to allocate the buffer");
-
-    vgroup_cid = Vattach (file_id, pobj_ref, "r");
-    if (vgroup_cid == FAIL) {
-        free (cfull_path);
-        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
-    }
-
-    if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
-    }
-    num_gobjects = Vntagrefs (vgroup_cid);
-    if (num_gobjects < 0) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
-    }
-
-    strcpy (cfull_path, full_path);
-    strcat (cfull_path, "/");
-    strcat (cfull_path, cvgroup_name);
-
-    for (i = 0; i < num_gobjects; i++) {
-
-        if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
-            Vdetach (vgroup_cid);
-            free (cfull_path);
-            throw3 ("Vgettagref failed ", "object index is ", i);
-        }
-
-        if (Visvg (vgroup_cid, obj_ref) == TRUE) {
-            strcpy (full_path, cfull_path);
-            obtain_sds_path (file_id, full_path, obj_ref);
-        }
-        else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
-                 || obj_tag == DFTAG_SD) {
-
-            // Here we need to check if the SDS is an EOS object by checking
-            // if the the path includes "Data Fields" or "Geolocation Fields".
-            // If the object is an EOS object, we will remove it from the list.
-
-            string temp_str = string(cfull_path);
-            if((temp_str.find("Data Fields") != std::string::npos)||
-               (temp_str.find("Geolocation Fields") != std::string::npos))
-                sds_ref_list.remove(obj_ref);
-            }
-            else;
-        }
-        status = Vdetach (vgroup_cid);
-        if (status == FAIL) {
-            free (cfull_path);
-	    throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
-        }
-        free (cfull_path);
-
-}
 // This code is used to obtain the full path of SDS and vdata.
 // Since it uses HDF4 library a lot, we keep the C style. KY 2010-7-13
 void
@@ -1731,27 +1939,60 @@ throw (Exception)
 {
     /************************* Variable declaration **************************/
 
-    int32 status_32 = 0;			// returned status for functions returning an int32 
-    int32 file_id = 0;
-    int32 vgroup_id = 0;
-    int32 vdata_id = 0;
-    int32 lone_vg_number =0;		// lone vgroup index 
-    int32 num_of_lones = -1;		// number of lone vgroups 
-    int32 *ref_array;			// buffer to hold the ref numbers of lone vgroups   
-    int32 num_gobjects = 0;
-    int32 obj_ref, obj_tag;
+    // Status indicator of HDF4 APIs
+    int32 status = 0;			
 
+    // H interface ID
+    int32 file_id = 0;
+
+    // vgroup ID
+    int32 vgroup_id = 0;
+
+    // Vdata ID
+    int32 vdata_id = 0;
+
+    // Lone vgroup index 
+    int32 lone_vg_number = 0;		 
+
+    // Number of lone vgroups
+    int32 num_of_lones = -1;		
+
+    // Buffer to hold the reference numbers of lone vgroups
+    int32 *ref_array;			
+
+    // Number of vgroup objects
+    int32 num_gobjects = 0;
+
+    // Object reference number and tag(The pair is a key to identify an HDF4 object)
+    int32 obj_ref = 0;
+    int32 obj_tag = 0;
+
+    // We may use new HDF4 APIs to obtain the length of the following object names and then
+    // allocate a buffer to store the names dynamically.  Documented in a jira ticket HFRHANDLER-168.
+
+    // Vdata name 
     char vdata_name[VSNAMELENMAX];
+
+    // Vdata class  
     char vdata_class[VSNAMELENMAX];
+
+    // Vgroup name
     char vgroup_name[VGNAMELENMAX*4];
+
+    // Vgroup class 
     char vgroup_class[VGNAMELENMAX*4];
 
+    // Full path of an object
     char *full_path;
+
+    // Copy of a full path of an object
     char *cfull_path;
+
+    // SD interface ID
     int32 sd_id;
 
     file_id = this->fileid;
-    sd_id = this->sdfd;
+    sd_id   = this->sdfd;
 
     // No NASA HDF4 files have the vgroup that forms a ring; so ignore this case.
     // First, call Vlone with num_of_lones set to 0 to get the number of
@@ -1762,13 +2003,14 @@ throw (Exception)
 
     // if there are any lone vgroups,
     if (num_of_lones > 0) {
-        // use the num_of_lones returned to allocate sufficient space for the
+
+        // Use the num_of_lones returned to allocate sufficient space for the
         // buffer ref_array to hold the reference numbers of all lone vgroups,
         ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
         if (ref_array == NULL)
             throw1 ("no enough memory to allocate buffer.");
 
-        // and call Vlone again to retrieve the reference numbers into
+        // And call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
         num_of_lones = Vlone (file_id, ref_array, num_of_lones);
         if (num_of_lones == FAIL) {
@@ -1777,8 +2019,10 @@ throw (Exception)
                     "file id is ", file_id);
         }
 
+        // Loop through all lone vgroups
         for (lone_vg_number = 0; lone_vg_number < num_of_lones;
              lone_vg_number++) {
+
             // Attach to the current vgroup 
             vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
@@ -1787,15 +2031,15 @@ throw (Exception)
                          ref_array[lone_vg_number]);
             }
 
-            status_32 = Vgetname (vgroup_id, vgroup_name);
-            if (status_32 == FAIL) {
+            status = Vgetname (vgroup_id, vgroup_name);
+            if (status == FAIL) {
                 Vdetach (vgroup_id);
                 free (ref_array);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
-            status_32 = Vgetclass (vgroup_id, vgroup_class);
-            if (status_32 == FAIL) {
+            status = Vgetclass (vgroup_id, vgroup_class);
+            if (status == FAIL) {
                 Vdetach (vgroup_id);
                 free (ref_array);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
@@ -1819,6 +2063,14 @@ throw (Exception)
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
+            // Obtain full path and cfull_path. 
+            // MAX_FULL_PATH_LEN(1024) is long enough
+            // to cover any HDF4 object path for all NASA HDF4 products.
+            // So using strcpy and strcat is safe in a practical sense.
+            // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+            // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+            // Documented in a jira ticket HFRHANDLER-168. 
+            // KY 2013-07-12
             full_path = NULL;
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
@@ -1852,11 +2104,13 @@ throw (Exception)
                              vgroup_name, " reference number is ", obj_ref);
                 }
 
+                // If this is a vgroup, recursively obtain information
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
                     strcpy (full_path, cfull_path);
                     obtain_path (file_id, sd_id, full_path, obj_ref);
                 }
 
+                // This is a vdata
                 else if (Visvs (vgroup_id, obj_ref)) {
 
                     vdata_id = VSattach (file_id, obj_ref, "r");
@@ -1869,8 +2123,8 @@ throw (Exception)
                                  vgroup_name, " reference number is ",
                                  obj_ref);
                     }
-                    status_32 = VSgetname (vdata_id, vdata_name);
-                    if (status_32 == FAIL) {
+                    status = VSgetname (vdata_id, vdata_name);
+                    if (status == FAIL) {
                         Vdetach (vgroup_id);
                         free (ref_array);
                         free (full_path);
@@ -1880,8 +2134,8 @@ throw (Exception)
                                  obj_ref);
                     }
 
-                    status_32 = VSgetclass (vdata_id, vdata_class);
-                    if (status_32 == FAIL) {
+                    status = VSgetclass (vdata_id, vdata_class);
+                    if (status == FAIL) {
                         Vdetach (vgroup_id);
                         free (ref_array);
                         free (full_path);
@@ -1900,6 +2154,8 @@ throw (Exception)
                     // Since currently the information has be preserved by the handler,
                     // so we don't have to handle this. It needs to be reported to the
                     // HDF4 developer. 2010-6-25 ky
+
+                    // Vdata that is either used to store attributes or internal HDF4 classes. ignore.
                     if (VSisattr (vdata_id) == TRUE
                         || !strncmp (vdata_class, _HDF_CHK_TBL_CLASS,
                             strlen (_HDF_CHK_TBL_CLASS))
@@ -1915,8 +2171,8 @@ throw (Exception)
                         || !strncmp (vdata_name, RIGATTRNAME,
                             strlen (RIGATTRNAME))) {
 
-                        status_32 = VSdetach (vdata_id);
-                        if (status_32 == FAIL) {
+                        status = VSdetach (vdata_id);
+                        if (status == FAIL) {
                             Vdetach (vgroup_id);
                             free (ref_array);
                             free (full_path);
@@ -1926,6 +2182,7 @@ throw (Exception)
                         }
 
                     }
+                    // Real vdata 
                     else {
 
                         VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
@@ -1956,8 +2213,8 @@ throw (Exception)
 
                         this->vds.push_back (vdataobj);
 
-                        status_32 = VSdetach (vdata_id);
-                        if (status_32 == FAIL) {
+                        status = VSdetach (vdata_id);
+                        if (status == FAIL) {
                             Vdetach (vgroup_id);
                             free (ref_array);
                             free (full_path);
@@ -1971,6 +2228,7 @@ throw (Exception)
                 // These are SDS objects
                 else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
                          || obj_tag == DFTAG_SD) {
+
                     // We need to obtain the SDS index; also need to store the new name(object name + full_path).
                     if (this->sd->refindexlist.find (obj_ref) !=
                     sd->refindexlist.end ())
@@ -1991,8 +2249,8 @@ throw (Exception)
             free (full_path);
             free (cfull_path);
 
-            status_32 = Vdetach (vgroup_id);
-            if (status_32 == FAIL) {
+            status = Vdetach (vgroup_id);
+            if (status == FAIL) {
                 free (ref_array);
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
@@ -2004,40 +2262,76 @@ throw (Exception)
 }
 
 // This fuction is called recursively to obtain the full path of an HDF4 object.
+// obtain_path, obtain_noneos2_sds_path,obtain_vdata_path are very similar.
+// We may combine them in the future. Documented at HFRHANDLER-166.
 void
 File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
 				   int32 pobj_ref)
 throw (Exception)
 {
+    // Vgroup parent ID
+    int32 vgroup_pid = 0;
 
-    int32 vgroup_cid;
-    int32 status;
-    int i, num_gobjects;
+    // Indicator of status
+    int32 status     = 0;
+
+    // Index i
+    int i            = 0;
+
+    // Number of group objects
+    int num_gobjects = 0;
+
+    // The following names are statically allocated.
+    // This can be updated in the future with new HDF4 APIs that can provide the actual length of an object name.
+    // Documented in a jira ticket HFRHANDLER-168.
+    // KY 2013-07-11
+
+    // Child vgroup name 
     char cvgroup_name[VGNAMELENMAX*4];
+
+    // Vdata name
     char vdata_name[VSNAMELENMAX];
+
+    // Vdata class name
     char vdata_class[VSNAMELENMAX];
-    int32 vdata_id;
-    int32 obj_tag, obj_ref;
+
+    // Vdata ID
+    int32 vdata_id = -1;
+
+    // Object tag
+    int32 obj_tag = 0; 
+
+    // Object reference
+    int32 obj_ref = 0;
+
+    // full path of the child group
     char *cfull_path;
 
+    // MAX_FULL_PATH_LEN(1024) is long enough
+    // to cover any HDF4 object path for all NASA HDF4 products.
+    // So using strcpy and strcat is safe in a practical sense.
+    // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+    // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+    // Documented in a jira ticket HFRHANDLER-168. 
+    // KY 2013-07-12
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
 
-    vgroup_cid = Vattach (file_id, pobj_ref, "r");
-    if (vgroup_cid == FAIL) {
+    vgroup_pid = Vattach (file_id, pobj_ref, "r");
+    if (vgroup_pid == FAIL) {
         free (cfull_path);
         throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
     }
 
-    if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
-        Vdetach (vgroup_cid);
+    if (Vgetname (vgroup_pid, cvgroup_name) == FAIL) {
+        Vdetach (vgroup_pid);
         free (cfull_path);
         throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
     }
-    num_gobjects = Vntagrefs (vgroup_cid);
+    num_gobjects = Vntagrefs (vgroup_pid);
     if (num_gobjects < 0) {
-        Vdetach (vgroup_cid);
+        Vdetach (vgroup_pid);
         free (cfull_path);
         throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
     }
@@ -2048,21 +2342,21 @@ throw (Exception)
 
     for (i = 0; i < num_gobjects; i++) {
 
-        if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
-            Vdetach (vgroup_cid);
+        if (Vgettagref (vgroup_pid, i, &obj_tag, &obj_ref) == FAIL) {
+            Vdetach (vgroup_pid);
             free (cfull_path);
             throw3 ("Vgettagref failed ", "object index is ", i);
         }
 
-        if (Visvg (vgroup_cid, obj_ref) == TRUE) {
+        if (Visvg (vgroup_pid, obj_ref) == TRUE) {
             strcpy (full_path, cfull_path);
             obtain_path (file_id, sd_id, full_path, obj_ref);
         }
-        else if (Visvs (vgroup_cid, obj_ref)) {
+        else if (Visvs (vgroup_pid, obj_ref)) {
 
             vdata_id = VSattach (file_id, obj_ref, "r");
             if (vdata_id == FAIL) {
-                Vdetach (vgroup_cid);
+                Vdetach (vgroup_pid);
                 free (cfull_path);
                 throw3 ("VSattach failed ", "object index is ", i);
             }
@@ -2070,14 +2364,14 @@ throw (Exception)
 
             status = VSQueryname (vdata_id, vdata_name);
             if (status == FAIL) {
-                Vdetach (vgroup_cid);
+                Vdetach (vgroup_pid);
                 free (cfull_path);
                 throw3 ("VSgetclass failed ", "object index is ", i);
             }
 
             status = VSgetclass (vdata_id, vdata_class);
             if (status == FAIL) {
-                Vdetach (vgroup_cid);
+                Vdetach (vgroup_pid);
                 free (cfull_path);
                 throw3 ("VSgetclass failed ", "object index is ", i);
             }
@@ -2125,7 +2419,7 @@ throw (Exception)
                 // New name conventions require the path to be prefixed before the object name
                     cfull_path + this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
             else {
-                Vdetach (vgroup_cid);
+                Vdetach (vgroup_pid);
                 free (cfull_path);
                 throw3 ("SDS with the reference number ", obj_ref,
                         " is not found");;
@@ -2133,7 +2427,7 @@ throw (Exception)
         }
         else;
     }
-    status = Vdetach (vgroup_cid);
+    status = Vdetach (vgroup_pid);
     if (status == FAIL) {
         free (cfull_path);
         throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
@@ -2142,8 +2436,104 @@ throw (Exception)
 
 }
 
+// This fuction is called recursively to obtain the full path of an HDF4 SDS path for extra SDS objects
+// in a hybrid HDF-EOS2 file.
+// obtain_path, obtain_noneos2_sds_path,obtain_vdata_path are very similar.
+// We may combine them in the future. Documented at HFRHANDLER-166.
+// Also we only add minimum comments since this code may be removed in the future.
+void 
+SD::obtain_noneos2_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
+throw (Exception)
+{
+
+    int32 vgroup_cid = 0;
+    int32 status = 0;
+    int i = 0;
+    int num_gobjects = 0;
+
+    // Now HDF4 provides a dynamic way to allocate the length of an HDF4 object name, should update to use that in the future.
+    // Documented in a jira ticket HFRHANDLER-168.
+    // KY 2013-07-11 
+    char cvgroup_name[VGNAMELENMAX*4];
+
+    int32 obj_tag, obj_ref;
+    char *cfull_path;
+
+    // MAX_FULL_PATH_LEN(1024) is long enough
+    // to cover any HDF4 object path for all NASA HDF4 products.
+    // So using strcpy and strcat is safe in a practical sense.
+    // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+    // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+    // Documented in a jira ticket HFRHANDLER-168. 
+    // KY 2013-07-12
+
+    cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
+    if (cfull_path == NULL)
+        throw1 ("No enough memory to allocate the buffer");
+
+    vgroup_cid = Vattach (file_id, pobj_ref, "r");
+    if (vgroup_cid == FAIL) {
+        free (cfull_path);
+        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
+    }
+
+    if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
+        Vdetach (vgroup_cid);
+        free (cfull_path);
+        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
+    }
+    num_gobjects = Vntagrefs (vgroup_cid);
+    if (num_gobjects < 0) {
+        Vdetach (vgroup_cid);
+        free (cfull_path);
+        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
+    }
+
+    strcpy (cfull_path, full_path);
+    strcat (cfull_path, "/");
+    strcat (cfull_path, cvgroup_name);
+
+    for (i = 0; i < num_gobjects; i++) {
+
+        if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
+            Vdetach (vgroup_cid);
+            free (cfull_path);
+            throw3 ("Vgettagref failed ", "object index is ", i);
+        }
+
+        if (Visvg (vgroup_cid, obj_ref) == TRUE) {
+            strcpy (full_path, cfull_path);
+            obtain_noneos2_sds_path (file_id, full_path, obj_ref);
+        }
+        else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
+                 || obj_tag == DFTAG_SD) {
+
+            // Here we need to check if the SDS is an EOS object by checking
+            // if the the path includes "Data Fields" or "Geolocation Fields".
+            // If the object is an EOS object, we will remove it from the list.
+
+            string temp_str = string(cfull_path);
+            if((temp_str.find("Data Fields") != std::string::npos)||
+               (temp_str.find("Geolocation Fields") != std::string::npos))
+                sds_ref_list.remove(obj_ref);
+            }
+            else;
+        }
+        status = Vdetach (vgroup_cid);
+        if (status == FAIL) {
+            free (cfull_path);
+	    throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
+        }
+        free (cfull_path);
+
+}
+
+
 // This fuction is called recursively to obtain the full path of the HDF4 vgroup.
 // This function is especially used when obtaining non-lone vdata objects for a hybrid file.
+// obtain_path, obtain_noneos2_sds_path,obtain_vdata_path are very similar.
+// We may combine them in the future. Documented at HFRHANDLER-166.
+
 void
 File::obtain_vdata_path (int32 file_id,  char *full_path,
 				   int32 pobj_ref)
@@ -2154,6 +2544,10 @@ throw (Exception)
     int32 status = -1;
     int i = -1;
     int num_gobjects = -1;
+
+    // Now HDF4 provides  dynamic ways to allocate the length of object names, should update to use that in the future.
+    // Documented in a jira ticket HFRHANDLER-168.
+    // KY 2013-07-11 
     char cvgroup_name[VGNAMELENMAX*4];
     char vdata_name[VSNAMELENMAX];
     char vdata_class[VSNAMELENMAX];
@@ -2162,6 +2556,13 @@ throw (Exception)
     int32 obj_ref = -1;
     char *cfull_path;
 
+    // MAX_FULL_PATH_LEN(1024) is long enough
+    // to cover any HDF4 object path for all NASA HDF4 products.
+    // So using strcpy and strcat is safe in a practical sense.
+    // However, in the future, we should update the code to  use HDF4 APIs to obtain vgroup_name length dynamically.
+    // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
+    // Documented in a jira ticket HFRHANDLER-168. 
+    // KY 2013-07-12
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
@@ -2403,7 +2804,7 @@ File::handle_sds_fakedim_names() throw(Exception) {
 void File::create_sds_dim_name_list() {
 
     File *file = this;
- // 5. Create the new dimension name set and the dimension name to size map.
+    // 5. Create the new dimension name set and the dimension name to size map.
 
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {

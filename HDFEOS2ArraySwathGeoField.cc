@@ -22,6 +22,7 @@
 bool
 HDFEOS2ArraySwathGeoField::read ()
 {
+    // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
     vector<int>count;
@@ -29,8 +30,10 @@ HDFEOS2ArraySwathGeoField::read ()
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int  nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
     vector<int32>count32;
@@ -38,8 +41,8 @@ HDFEOS2ArraySwathGeoField::read ()
     vector<int32>step32;
     step32.resize(rank);
 
+    // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
-
         offset32[i] = (int32) offset[i];
         count32[i] = (int32) count[i];
         step32[i] = (int32) step[i];
@@ -52,6 +55,7 @@ HDFEOS2ArraySwathGeoField::read ()
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
+    // Define function pointers to handle the swath
     std::string datasetname;
     openfunc = SWopen;
     closefunc = SWclose;
@@ -61,6 +65,9 @@ HDFEOS2ArraySwathGeoField::read ()
     readfieldfunc = SWreadfield;
     datasetname = swathname;
 
+    // We may eventually combine the following code with other code, so
+    // we don't add many comments from here to the end of the file. 
+    // The jira ticket about combining code is HFRHANDLER-166.
     int32 sfid = -1, swathid = -1;
 
     sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -297,8 +304,8 @@ HDFEOS2ArraySwathGeoField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFEOS2ArraySwathGeoField::format_constraint (int *offset, int *step, int *count)
 {

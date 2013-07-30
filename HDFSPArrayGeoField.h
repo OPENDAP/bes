@@ -25,11 +25,16 @@ class HDFSPArrayGeoField:public Array
             filename (filename),
             sdsref (sdsref),
             dtype (dtype),
-            sptype (sptype), fieldtype (fieldtype), name (fieldname) {
+            sptype (sptype), 
+            fieldtype (fieldtype), 
+            name (fieldname) {
         }
         virtual ~ HDFSPArrayGeoField ()
         {
         }
+
+        // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+        // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -70,13 +75,33 @@ class HDFSPArrayGeoField:public Array
 
 
     private:
+
+        /// Field array rank
         int32 rank;
-        string filename;
+
+        /// File name
+        std::string filename;
+
+        /// SDS reference number
         int32 sdsref;
+
+        /// Data type
         int32 dtype;
+
+        /// Special HDF4 products we support(TRMML2,TRMML3,OBPG etc.)
         SPType sptype;
+
+        /// This flag will specify the fieldtype.
+        /// 0 means this field is general field.
+        /// 1 means this field is lat.
+        /// 2 means this field is lon.
+        /// 3 means this field is other dimension coordinate variable.
+        /// 4 means this field is added other dimension coordinate variable with nature number.
+        /// In this file, field type is either 1 or 2(lat or lon).
         int fieldtype;
-        string name;
+
+        /// Field name(latitude or longitude)
+        std::string name;
 
 };
 

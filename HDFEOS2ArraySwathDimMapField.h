@@ -28,11 +28,16 @@ class HDFEOS2ArraySwathDimMapField:public Array
         rank (rank),
         filename (filename),
         gridname (gridname),
-        swathname (swathname), fieldname (fieldname), dimmaps (dimmaps) ,sotype(sotype){
+        swathname (swathname), 
+        fieldname (fieldname), 
+        dimmaps(dimmaps),
+        sotype(sotype){
         }
         virtual ~ HDFEOS2ArraySwathDimMapField ()
         {
         }
+
+        // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
         // Obtain Field value
@@ -56,12 +61,32 @@ class HDFEOS2ArraySwathDimMapField:public Array
             return new HDFEOS2ArraySwathDimMapField (*this);
         }
 
+       // Read the data
        virtual bool read ();
 
     private:
+
+        // Field array rank
         int rank;
-        std::string filename, gridname, swathname, fieldname;
+
+        // HDF-EOS2 file name
+        std::string filename;
+
+        // HDF-EOS2 grid name
+        std::string gridname;
+
+        // HDF-EOS2 swath name
+        std::string swathname;
+
+        // HDF-EOS2 field name
+        std::string fieldname;
+
+        // Swath dimmap info.
         std::vector < struct dimmap_entry >dimmaps;
+
+        // MODIS scale and offset type
+        // Some MODIS files don't use the CF linear equation y = scale * x + offset,
+        // the scaletype distinguishs products following different scale and offset rules. 
         SOType sotype;
 };
 

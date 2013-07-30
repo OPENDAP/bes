@@ -19,6 +19,8 @@
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
+
+// The following macros provide names of latitude and longitude for specific HDF4 products.
 #define NUM_PIXEL_NAME "Pixels per Scan Line"
 #define NUM_POINTS_LINE_NAME "Number of Pixel Control Points"
 #define NUM_SCAN_LINE_NAME "Number of Scan Lines"
@@ -33,6 +35,7 @@
 bool HDFSPArrayGeoField::read ()
 {
 
+    // Declare offset, count and step
     vector<int> offset;
     offset.resize(rank);
     vector<int> count;
@@ -40,91 +43,115 @@ bool HDFSPArrayGeoField::read ()
     vector<int> step;
     step.resize(rank);
 
-
+    // Obtain offset, step and count from the client expression constraint
     int nelms = -1;
-
     nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
-
     vector<int32>count32;
     count32.resize(rank);
-
     vector<int32>step32;
     step32.resize(rank);
 
 
+    // Just obtain the offset,count and step in the int32 type.
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
         count32[i] = (int32) count[i];
         step32[i] = (int32) step[i];
     }
 
+    // Loop through the functions to obtain lat/lon for the specific HDF4 products the handler 
+    // supports.
     switch (sptype) {
+   
+        // TRMM swath 
         case TRMML2:
         {
             readtrmml2 (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // TRMM grid
         case TRMML3:
         {
             readtrmml3 (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // CERES CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS products
         case CER_AVG:
         {
-            
             readceravgsyn (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // CERES CER_ES4_??? products
         case CER_ES4:
         {
             readceres4ig (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // CERES CER_ISCCP-D2like-Day product
         case CER_CDAY:
         {
             readcersavgid2 (&offset[0], &count[0], &step[0], nelms);
             break;
         }
 
+        // CERES CER_ISCCP-D2like-GEO product
         case CER_CGEO:
         {
             readceres4ig (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
 
+        // CERES CER_SRBAVG3_Aqua product
         case CER_SRB:
         {
+            // When longitude is fixed
             if (rank == 1) {
                 readcersavgid1 (&offset[0], &count[0], &step[0], nelms);
             }
+            // When longitude is not fixed
             else if (rank == 2) {
                 readcersavgid2 (&offset[0], &count[0], &step[0], nelms);
             }
             break;
         }
+
+        // CERES SYN Aqua products
 	case CER_SYN:
         {
             readceravgsyn (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // CERES Zonal Average products
         case CER_ZAVG:
         {
             readcerzavg (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // OBPG level 2 products
         case OBPGL2:
         {
             readobpgl2 (&offset32[0], &count32[0], &step32[0], nelms);
             break;
         }
+
+        // OBPG level 3 products
         case OBPGL3:
         {
             readobpgl3 (&offset[0], &count[0], &step[0], nelms);
             break;
         }
+
+        // We don't handle any OtherHDF products
         case OTHERHDF:
         {
             throw
@@ -187,7 +214,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
     }
 
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (sdid < 0) {
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -224,7 +250,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
                 SDend (sdid);
                 SDendaccess (sdsid);
                 ostringstream eherr;
-
                 eherr << "SDreaddata failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -398,12 +423,13 @@ HDFSPArrayGeoField::readtrmml3 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
 
-    const float slat = -49.875; // jhrg 3/16/11; Added const, rm step
+    const float slat = -49.875; 
     const float slon = -179.875;
     vector<float> val;
     val.resize(nelms);
 
     if (fieldtype == 1) {//latitude 
+
         int icount = 0;
         float sval = slat + 0.25 * (int) (offset32[0]);
 
@@ -438,11 +464,11 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
 
-    int32 sd_id = -1, sdsid = -1;
-    intn status = 0;
+    int32 sd_id = -1;
+    int32 sdsid = -1;
+    intn  status = 0;
 
     sd_id = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (sd_id < 0) {
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -450,7 +476,9 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
     }
 
     // Read File attributes to otain the segment
-    int32 attr_index = 0, attr_dtype = 0, n_values = 0;
+    int32 attr_index = 0;
+    int32 attr_dtype = 0;
+    int32 n_values = 0;
     int32 num_pixel_data = 0;
     int32 num_point_data = 0;
     int32 num_scan_data = 0;
@@ -546,7 +574,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         compmapflag = true;
 
     int32 sdsindex = SDreftoindex (sd_id, (int32) sdsref);
-
     if (sdsindex == -1) {
         SDend (sd_id);
         ostringstream eherr;
@@ -593,6 +620,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 }
             }
             else {
+
                 int total_elm = num_scan_data * num_point_data;
                 vector<float32>orival;
                 orival.resize(total_elm); 
@@ -723,7 +751,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
     r = SDend (sd_id);
     if (r != 0) {
-
         ostringstream eherr;
         eherr << "SDend failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -742,7 +769,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
     intn status = 0;
 
     sd_id = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (sd_id < 0) {
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot be open.";
@@ -906,7 +932,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
     }
 
     status = SDreadattr (sd_id, attr_index, &swp_lon);
-
     if (status == FAIL) {
         SDend (sd_id);
         throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
@@ -988,9 +1013,22 @@ HDFSPArrayGeoField::readcersavgid2 (int *offset, int *count, int *step,
 
     if (fieldtype == 2) {// Calculate the longitude
 
-        int i, j, k;
+        int i = 0;
+        int j = 0;
+        int k = 0;
+
+        // Longitude extent
         int lonextent;
-        int latindex_south, latindex_north, latrange;
+
+        // Latitude index
+        int latindex_south;
+
+        // Latitude index
+        int latindex_north;
+
+        // Latitude range
+        int latrange;
+
 
         //latitude 89-90 (both south and north) 1 value each part
         for (j = 0; j < dimsize1; j++) {
@@ -1093,7 +1131,6 @@ HDFSPArrayGeoField::readcersavgid1 (int *offset, int *count, int *step,
 									int nelms)
 {
 
-
     // Following CERES Nested grid
     // URL http://eosweb.larc.nasa.gov/PRODOCS/ceres/SRBAVG/Quality_Summaries/srbavg_ed2d/nestedgrid.html
     if (fieldtype == 1) {		// Calculate the latitude
@@ -1131,8 +1168,9 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                                    int32 * step32, int nelms)
 {
 
-    int i;
-    int32 sdid, sdsid;
+    int i = 0;
+    int32 sdid = 0; 
+    int32 sdsid = 0;
 
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -1283,7 +1321,9 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    int32 sdsrank, sds_dtype, n_attrs;
+    int32 sdsrank = 0;
+    int32 sds_dtype = 0;
+    int32 n_attrs = 0;
     char sdsname[H4_MAX_NC_NAME];
     int32 dim_sizes[H4_MAX_VAR_DIMS];
 
@@ -1448,6 +1488,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 
 }
 
+// Read CERES Zonal average latitude field
 void
 HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
                                  int32 * step32, int nelms)
@@ -1471,14 +1512,15 @@ HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
             throw InternalErr (__FILE__, __LINE__,
                                "Longitude should only have one value for zonal mean");
 
+        // We don't need to specify the longitude value.
         float32 val = 0.;// our convention
         set_value ((dods_float32 *) & val, nelms);
     }
 }
 
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 {
@@ -1540,7 +1582,9 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
 
     // float64 templatlon[majordim][minordim];
     T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-    int i, j, k;
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
     // do subsetting
     // Find the correct index

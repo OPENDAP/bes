@@ -30,6 +30,8 @@ class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
         virtual ~ HDFEOS2ArraySwathGeoDimMapExtraField ()
         {
         }
+
+        // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -37,11 +39,19 @@ class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
             return new HDFEOS2ArraySwathGeoDimMapExtraField (*this);
         }
 
+        // Read the data
         virtual bool read ();
 
     private:
+
+        // Field array rank
         int rank;
-        std::string filename, fieldname;
+
+        // HDF-EOS2 file name
+        std::string filename;
+
+        // HDF-EOS2 field name
+        std::string fieldname;
 };
 
 

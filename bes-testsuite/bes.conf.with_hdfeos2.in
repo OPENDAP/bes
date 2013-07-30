@@ -283,7 +283,9 @@ HDF4.CacheDir=
 # EnableCF is set to be true, KY 2012-6-5
 #
 H4.EnableCF=true
-H4.EnableMODISMISRVdata=true
+H4.EnableHybridVdata=true
+H4.EnableCERESVdata=false
+#H4.EnableMODISMISRVdata=true
 H4.EnableVdata_to_Attr=true
 H4.EnableCERESMERRAShortName=true
 H4.DisableVdataNameclashingCheck=true

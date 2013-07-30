@@ -27,24 +27,24 @@ bool
 HDFSPArrayMissGeoField::read ()
 {
 
-
+    // Declaration of offset,count and step
     vector<int>offset;
     offset.resize(rank);
-
     vector<int>count;
     count.resize(rank);
-
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(&offset[0],&step[0],&count[0]); 
 
 
-    // Since we always assign the the missing Z dimension as 32-bit integer, so need
-    // to check the type.
     vector<int>val;
     val.resize(nelms);
 
+    // Since we always assign the the missing Z dimension as 32-bit
+    // integer, so no need to check the type. The missing Z-dim is always
+    // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
@@ -63,8 +63,8 @@ HDFSPArrayMissGeoField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFSPArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 {

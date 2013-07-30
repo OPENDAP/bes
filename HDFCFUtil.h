@@ -33,21 +33,27 @@
 #include <DDS.h>
 #include <DAS.h>
 #include <InternalErr.h>
-//#include <dodsutil.h>
-
 
 #include "escaping.h" // for escattr
 
+// This is the maximum number of MODIS special values.
 #define MAX_NON_SCALE_SPECIAL_VALUE 65535
+
+// This is the minimum number of MODIS special values.
 #define MIN_NON_SCALE_SPECIAL_VALUE 65500
 
-//using namespace std;
-//using namespace libdap;
 
+// This is used to retrieve dimension map info. when retrieving the data values of HDF-EOS swath that 
+// has swath dimension maps.
 struct dimmap_entry
 {
+    // geo dimension name
     std::string geodim;
+
+    // data dimension name
     std::string datadim;
+    
+    // offset and increment of a dimension map
     int32 offset, inc;
 };
 
@@ -56,6 +62,12 @@ struct HDFCFUtil
 {
 
     /// Check the BES key. 
+    /// This function will check a BES key specified at the file h4.conf.in.
+    /// If the key's value is either true or yes. The handler claims to find
+    /// a key and will do some operations. Otherwise, will do different operations.
+    /// For example, One may find a line H4.EnableCF=true at h4.conf.in.
+    /// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
+
     static bool check_beskeys(const std::string key);
 
     /// From a string separated by a separator to a list of string,
@@ -67,15 +79,7 @@ struct HDFCFUtil
     static void Split (const char *sz, char sep,
                             std::vector < std::string > &names);
 
-    /// Clear memory, No need anymore. Will remove it. KY 2013-02-13
-#if 0
-    static void ClearMem (int32 * offset32, int32 * count32, int32 * step32,
-						  int *offset, int *count, int *step);
-    static void ClearMem2 (int32 * offset32, int32 * count32, int32 * step32);
-    static void ClearMem3 (int *offset, int *count, int *step);
-#endif
-
-    /// This is a safer way to insert and update map item than map[key]=val style string assignment.
+    /// This is a safer way to insert and update a c++ map value.
     /// Otherwise, the local testsuite at The HDF Group will fail for HDF-EOS2 data
     ///  under iMac machine platform.
     static bool insert_map(std::map<std::string,std::string>& m, std::string key, std::string val);
@@ -86,31 +90,71 @@ struct HDFCFUtil
     /// Obtain the unique name for the clashed names and save it to set namelist.
     static void gen_unique_name(std::string &str,std::set<std::string>& namelist, int&clash_index);
 
+    /// General routines to handle name clashings
     static void Handle_NameClashing(std::vector<std::string>&newobjnamelist);
     static void Handle_NameClashing(std::vector<std::string>&newobjnamelist,std::set<std::string>&objnameset);
 
+    /// Print attribute values in string
     static std::string print_attr(int32, int, void*);
+
+    /// Print datatype in string
     static std::string print_type(int32);
 
     // Subsetting the 2-D fields
     template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
 
+    /// CF requires the _FillValue attribute datatype is the same as the corresponding field datatype. For some NASA files, this is not true.
+    /// So we need to check if the _FillValue's datatype is the same as the attribute's. If not, we need to correct them.
     static void correct_fvalue_type(libdap::AttrTable *at,int32 dtype);
+
 #ifdef USE_HDFEOS2_LIB
-    // Handle MODIS data products
+
+    /// The following routines change_data_type,is_special_value, check_geofile_dimmap, is_modis_dimmap_nonll_field, obtain_dimmap_info,
+    /// handle_modis_special_attrs,handle_modis_vip_special_attrs are all routines for handling MODIS data products. 
+
+    /// Check if we need to change the datatype for MODIS fields. The datatype needs to be changed
+    /// mainly because of non-CF scale and offset rules. To avoid violating CF conventions, we apply
+    /// the non-CF MODIS scale and offset rule to MODIS data. So the final data type may be different
+    /// than the original one due to this operation. For example, the original datatype may be int16.
+    /// After applying the scale/offset rule, the datatype may become float32.
     static bool change_data_type(libdap::DAS & das, SOType scaletype, std::string new_field_name);
+
+    /// For MODIS (confirmed by level 1B) products, values between 65500(MIN_NON_SCALE_SPECIAL_VALUE)  
+    /// and 65535(MAX_NON_SCALE_SPECIAL_VALUE) are treated as
+    /// special values. These values represent non-physical data values caused by various failures.
+    /// For example, 65533 represents "when Detector is saturated".
     static bool is_special_value(int32 dtype,float fillvalue, float realvalue);
 
+    /// Check if the MODIS file has dimension map and return the number of dimension maps
     static int check_geofile_dimmap(const std::string & geofilename);
+
+    /// This is for the case that the separate MODIS geo-location file is used.
+    /// Some geolocation names at the MODIS data file are not consistent with
+    /// the names in the MODIS geo-location file. So need to correct them.
     static bool is_modis_dimmap_nonll_field(std::string & fieldname);
+
+    /// Obtain the MODIS swath dimension map info.
     static void obtain_dimmap_info(const std::string& filename, HDFEOS2::Dataset*dataset,std::vector<struct dimmap_entry>& dimmaps, std::string & modis_geofilename,bool &geofile_nas_dimmap);
+
+    /// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
+    /// For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed
+    /// to orig_scale_factor and orig_add_offset to keep the original field info.
     static void handle_modis_special_attrs(libdap::AttrTable *at,const std::string newfname, SOType scaletype, bool gridname_change_valid_range, bool changedtype, bool &change_fvtype);
+
+    /// This routine makes the MeaSUREs VIP attributes follow CF.
     static void handle_modis_vip_special_attrs(const std::string& valid_range_value,const std::string& scale_factor_value, float& valid_min, float & valid_max);
+
+    /// Make AMSR-E attributes follow CF.
     static void handle_amsr_attrs(libdap::AttrTable *at);
 #endif 
 
-    // Handle HDF4 OBPG products
+    // Check OBPG attributes. Specifically, check if slope and intercept can be obtained from the file level. 
+    // If having global slope and intercept,  obtain OBPG scaling, slope and intercept values.
     static void check_obpg_global_attrs(HDFSP::File*f,std::string & scaling, float & slope,bool &global_slope_flag,float & intercept, bool & global_intercept_flag);
+
+    // For some OBPG files that only provide slope and intercept at the file level, 
+    // global slope and intercept are needed to add to all fields and their names are needed to be changed to scale_factor and add_offset.
+    // For OBPG files that provide slope and intercept at the field level,  slope and intercept are needed to rename to scale_factor and add_offset.
     static void add_obpg_special_attrs(HDFSP::File*f,libdap::DAS &das,  HDFSP::SDField* spsds,std::string & scaling, float&slope,bool &global_slope_flag,float& intercept,bool &global_intercept_flag);
 
     // Handle HDF4 OTHERHDF products that follow SDS dimension scale model. 
@@ -124,6 +168,7 @@ struct HDFCFUtil
     static void handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das);
 };
 
+/// This inline routine will translate N dimensions into 1 dimension.
 inline int32
 INDEX_nD_TO_1D (const std::vector < int32 > &dims,
                                 const std::vector < int32 > &pos)

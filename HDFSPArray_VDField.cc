@@ -25,15 +25,15 @@ bool
 HDFSPArray_VDField::read ()
 {
 
+    // Declaration of offset,count and step
     vector<int>offset;
     offset.resize(rank);
-
     vector<int>count;
     count.resize(rank);
-
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
     int32 file_id = 0;
@@ -408,8 +408,8 @@ HDFSPArray_VDField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFSPArray_VDField::format_constraint (int *offset, int *step, int *count)
 {

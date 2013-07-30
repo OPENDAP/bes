@@ -25,6 +25,8 @@ class HDFEOS2ArrayMissGeoField:public Array
         virtual ~ HDFEOS2ArrayMissGeoField ()
         {
         }
+
+        // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -36,7 +38,11 @@ class HDFEOS2ArrayMissGeoField:public Array
 
     private:
 
-        int rank, tnumelm;
+        // Field array rank
+        int rank;
+
+        // Total number of elements
+        int tnumelm;
 };
 
 

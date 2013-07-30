@@ -26,11 +26,16 @@ class HDFEOS2Array_RealField:public Array
         Array (n, v),
         rank (rank),
         filename (filename),
-        gridname (gridname), swathname (swathname), fieldname (fieldname),sotype(sotype) {
+        gridname (gridname), 
+        swathname (swathname), 
+        fieldname (fieldname),
+        sotype(sotype) {
         }
         virtual ~ HDFEOS2Array_RealField ()
         {
         }
+
+        // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -38,11 +43,29 @@ class HDFEOS2Array_RealField:public Array
             return new HDFEOS2Array_RealField (*this);
         }
 
+        // Read the data.
         virtual bool read ();
 
     private:
+
+        // Field array rank
         int rank;
-        std::string filename, gridname, swathname, fieldname;
+
+        // HDF-EOS2 file name
+        std::string filename;
+
+        // HDF-EOS2 grid name
+        std::string gridname;
+
+        // HDF-EOS2 swath name
+        std::string swathname; 
+
+        // HDF-EOS2 field name
+        std::string fieldname;
+
+        // MODIS scale and offset type
+        // Some MODIS files don't use the CF linear equation y = scale * x + offset,
+        // the scaletype distinguishs products following different scale and offset rules. 
         SOType sotype;
 };
 

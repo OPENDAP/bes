@@ -6,6 +6,12 @@
 using namespace std;
 using namespace libdap;
 
+// Check the BES key. 
+// This function will check a BES key specified at the file h4.conf.in.
+// If the key's value is either true or yes. The handler claims to find
+// a key and will do some operations. Otherwise, will do different operations.
+// For example, One may find a line H4.EnableCF=true at h4.conf.in.
+// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
 bool 
 HDFCFUtil::check_beskeys(const string key) {
 
@@ -24,6 +30,8 @@ HDFCFUtil::check_beskeys(const string key) {
 
 }
 
+// From a string separated by a separator to a list of string,
+// for example, split "ab,c" to {"ab","c"}
 void 
 HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
 {
@@ -38,12 +46,18 @@ HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &nam
     }
 }
 
+// Assume sz is Null terminated string.
 void 
 HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
 {
     Split(sz, (int)strlen(sz), sep, names);
 }
 
+// This is a safer way to insert and update a c++ map value.
+// Otherwise, the local testsuite at The HDF Group will fail for HDF-EOS2 data
+//  under iMac machine platform.
+// The implementation replaces the element even if the key exists.
+// This function is equivalent to map[key]=value
 bool
 HDFCFUtil::insert_map(std::map<std::string,std::string>& m, string key, string val)
 {
@@ -59,11 +73,13 @@ HDFCFUtil::insert_map(std::map<std::string,std::string>& m, string key, string v
     return ret.second;
 }
 
+// Obtain CF string
 string
 HDFCFUtil::get_CF_string(string s)
 {
 
-    if(""==s) return s;
+    if(""==s) 
+        return s;
     string insertString(1,'_');
 
     // Always start with _ if the first character is not a letter
@@ -82,6 +98,12 @@ HDFCFUtil::get_CF_string(string s)
 
 }
 
+// Obtain the unique name for the clashed names and save it to set namelist.
+// This is a recursive call. A unique name list is represented as a set.
+// If we find that a name already exists in the nameset, we will add a number 
+// at the end of the name to form a new name. If the new name still exists
+// in the nameset, we will increase the index number and check again until 
+// a unique name is generated.
 void 
 HDFCFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_index) {
 
@@ -100,16 +122,20 @@ HDFCFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_index) {
         str = newstr;
 }
 
+// General routine to handle the name clashing
+// The input parameters include:
+// name vector -> newobjnamelist(The name vector is changed to a unique name list
+// a pre-allocated object name set ->objnameset(can be used to determine if a name exists)
 void
 HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objnameset) {
 
-    //set<string> objnameset;
     pair<set<string>::iterator,bool> setret;
     set<string>::iterator iss;
 
     vector<string> clashnamelist;
     vector<string>::iterator ivs;
 
+    // clash index to original index mapping
     map<int,int> cl_to_ol;
     int ol_index = 0;
     int cl_index = 0;
@@ -141,6 +167,9 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
 
 }
 
+// General routine to handle the name clashing
+// The input parameter just includes:
+// name vector -> newobjnamelist(The name vector is changed to a unique name list
 void
 HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist) {
 
@@ -166,6 +195,8 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
 
     switch (type) {
 
+    // Mapping both DFNT_UINT8 and DFNT_INT8 to unsigned char 
+    // may cause overflow. Documented at jira ticket HFRHANDLER-169.
     case DFNT_UINT8:
     case DFNT_INT8:
         {
@@ -240,6 +271,7 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
 
 }
 
+// Print datatype in string. This is used to generate DAS.
 string
 HDFCFUtil::print_type(int32 type)
 {
@@ -342,6 +374,10 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
     }
 }
 
+// CF requires the _FillValue attribute datatype is the same as the corresponding field datatype. 
+// For some NASA files, this is not true.
+// So we need to check if the _FillValue's datatype is the same as the attribute's. 
+// If not, we need to correct them.
 void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
     AttrTable::Attr_iter it = at->attr_begin();
@@ -364,8 +400,13 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
     }
 
 }
+
 #ifdef USE_HDFEOS2_LIB
 
+// For MODIS (confirmed by level 1B) products, values between 65500(MIN_NON_SCALE_SPECIAL_VALUE)  
+// and 65535(MAX_NON_SCALE_SPECIAL_VALUE) are treated as
+// special values. These values represent non-physical data values caused by various failures.
+// For example, 65533 represents "when Detector is saturated".
 bool HDFCFUtil::is_special_value(int32 dtype, float fillvalue, float realvalue) {
 
     bool ret_value = false;
@@ -383,6 +424,8 @@ bool HDFCFUtil::is_special_value(int32 dtype, float fillvalue, float realvalue) 
     return ret_value;
 
 }
+
+/// Check if the MODIS file has dimension map and return the number of dimension maps
 int HDFCFUtil::check_geofile_dimmap(const string & geofilename) {
 
     int32 fileid = SWopen(const_cast<char*>(geofilename.c_str()),DFACC_READ);
@@ -411,7 +454,12 @@ int HDFCFUtil::check_geofile_dimmap(const string & geofilename) {
 
 }
 
-// MODIS SCALE OFFSET HANDLING
+// Check if we need to change the datatype for MODIS fields. The datatype needs to be changed
+// mainly because of non-CF scale and offset rules. To avoid violating CF conventions, we apply
+// the non-CF MODIS scale and offset rule to MODIS data. So the final data type may be different
+// than the original one due to this operation. For example, the original datatype may be int16.
+// After applying the scale/offset rule, the datatype may become float32.
+// The following are useful notes about MODIS SCALE OFFSET HANDLING
 // Note: MODIS Scale and offset handling needs to re-organized. But it may take big efforts.
 // Instead, I remove the global variable mtype, and _das; move the old calculate_dtype code
 // back to HDFEOS2.cc. The code is a little better organized. If possible, we may think to overhaul
@@ -476,100 +524,99 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_n
     return false;
 }
 
-// Put the dim. map info. here
+// Obtain the MODIS swath dimension map info.
 void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*dataset,  vector<struct dimmap_entry> & dimmaps, string & modis_geofilename, bool& geofile_has_dimmap) {
 
 
-        HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
-        const vector<HDFEOS2::SwathDataset::DimensionMap*>& origdimmaps = sw->getDimensionMaps();
-        vector<HDFEOS2::SwathDataset::DimensionMap*>::const_iterator it_dmap;
-        struct dimmap_entry tempdimmap;
+    HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
+    const vector<HDFEOS2::SwathDataset::DimensionMap*>& origdimmaps = sw->getDimensionMaps();
+    vector<HDFEOS2::SwathDataset::DimensionMap*>::const_iterator it_dmap;
+    struct dimmap_entry tempdimmap;
 
-        // if having dimension maps, we need to retrieve the dimension map info.
-        for(size_t i=0;i<origdimmaps.size();i++){
-            tempdimmap.geodim = origdimmaps[i]->getGeoDimension();
-            tempdimmap.datadim = origdimmaps[i]->getDataDimension();
-            tempdimmap.offset = origdimmaps[i]->getOffset();
-            tempdimmap.inc    = origdimmaps[i]->getIncrement();
-            dimmaps.push_back(tempdimmap);
+    // if having dimension maps, we need to retrieve the dimension map info.
+    for(size_t i=0;i<origdimmaps.size();i++){
+        tempdimmap.geodim = origdimmaps[i]->getGeoDimension();
+        tempdimmap.datadim = origdimmaps[i]->getDataDimension();
+        tempdimmap.offset = origdimmaps[i]->getOffset();
+        tempdimmap.inc    = origdimmaps[i]->getIncrement();
+        dimmaps.push_back(tempdimmap);
+    }
+
+    string check_modis_geofile_key ="H4.EnableCheckMODISGeoFile";
+    bool check_geofile_key = false;
+    check_geofile_key = HDFCFUtil::check_beskeys(check_modis_geofile_key);
+
+    // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
+    // Will check if the check modis_geo_location file key is turned on.
+    if((origdimmaps.size() != 0) && (true == check_geofile_key) ) {
+
+        // Has to use C-style since basename and dirname are not C++ routines.
+        char*tempcstr;
+        tempcstr = new char [filename.size()+1];
+        strncpy (tempcstr,filename.c_str(),filename.size());
+        string basefilename = basename(tempcstr);
+        string dirfilename = dirname(tempcstr);
+        delete [] tempcstr;
+
+        // If the current file is a MOD03 or a MYD03 file, we don't need to check the extra MODIS geolocation file at all.
+        bool is_modis_geofile = false;
+        if(basefilename.size() >5) {
+            if((0 == basefilename.compare(0,5,"MOD03")) || (0 == basefilename.compare(0,5,"MYD03"))) 
+                is_modis_geofile = true;
         }
 
-        string check_modis_geofile_key ="H4.EnableCheckMODISGeoFile";
-        bool check_geofile_key = false;
-        check_geofile_key = HDFCFUtil::check_beskeys(check_modis_geofile_key);
-
-        // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
-        // Will check if the check modis_geo_location file key is turned on.
-        if((origdimmaps.size() != 0) && (true == check_geofile_key) ) {
-
-            // Has to use C-style since basename and dirname are not C++ routines.
-            char*tempcstr;
-            tempcstr = new char [filename.size()+1];
-            strncpy (tempcstr,filename.c_str(),filename.size());
-            string basefilename = basename(tempcstr);
-            string dirfilename = dirname(tempcstr);
-            delete [] tempcstr;
-
-            // If the current file is a MOD03 or a MYD03 file, we don't need to check the extra MODIS geolocation file at all.
-            bool is_modis_geofile = false;
-            if(basefilename.size() >5) {
-                if((0 == basefilename.compare(0,5,"MOD03")) || (0 == basefilename.compare(0,5,"MYD03"))) 
-                    is_modis_geofile = true;
-            }
-
-            // This part is implemented specifically for supporting MODIS dimension map data.
-            // MODIS Aqua Swath dimension map geolocation file always starts with MYD03
-            // MODIS Terra Swath dimension map geolocation file always starts with MOD03
-            // We will check the first three characters to see if the dimension map geolocation file exists.
-            // An example MODIS swath filename is MOD05_L2.A2008120.0000.005.2008121182723.hdf
-            // An example MODIS geo-location file name is MOD03.A2008120.0000.005.2010003235220.hdf
-            // Notice that the "A2008120.0000" in the middle of the name is the "Acquistion Date" of the data
-            // So the geo-location file name should have exactly the same string. We will use this
-            // string to identify if a MODIS geo-location file exists or not.
-            // Note the string size is 14(.A2008120.0000).
-            // More information of naming convention, check http://modis-atmos.gsfc.nasa.gov/products_filename.html
-            // KY 2010-5-10
+        // This part is implemented specifically for supporting MODIS dimension map data.
+        // MODIS Aqua Swath dimension map geolocation file always starts with MYD03
+        // MODIS Terra Swath dimension map geolocation file always starts with MOD03
+        // We will check the first three characters to see if the dimension map geolocation file exists.
+        // An example MODIS swath filename is MOD05_L2.A2008120.0000.005.2008121182723.hdf
+        // An example MODIS geo-location file name is MOD03.A2008120.0000.005.2010003235220.hdf
+        // Notice that the "A2008120.0000" in the middle of the name is the "Acquistion Date" of the data
+        // So the geo-location file name should have exactly the same string. We will use this
+        // string to identify if a MODIS geo-location file exists or not.
+        // Note the string size is 14(.A2008120.0000).
+        // More information of naming convention, check http://modis-atmos.gsfc.nasa.gov/products_filename.html
+        // KY 2010-5-10
 
 
-            // Obtain string "MYD" or "MOD"
-            // Here we need to consider when MOD03 or MYD03 use the dimension map. 
+        // Obtain string "MYD" or "MOD"
+        // Here we need to consider when MOD03 or MYD03 use the dimension map. 
+        if ((false == is_modis_geofile) && (basefilename.size() >3)) {
 
-            if ((false == is_modis_geofile) && (basefilename.size() >3)) {
+            string fnameprefix = basefilename.substr(0,3);
 
-                string fnameprefix = basefilename.substr(0,3);
-
-                if(fnameprefix == "MYD" || fnameprefix =="MOD") {
-                    size_t fnamemidpos = basefilename.find(".A");
-                    if(fnamemidpos != string::npos) {
-       	                string fnamemiddle = basefilename.substr(fnamemidpos,14);
-                        if(fnamemiddle.size()==14) {
-                            string geofnameprefix = fnameprefix+"03";
-
-                            // geofnamefp will be something like "MOD03.A2008120.0000"
-                            string geofnamefp = geofnameprefix + fnamemiddle;
-                            DIR *dirp;
-                            struct dirent* dirs;
+            if(fnameprefix == "MYD" || fnameprefix =="MOD") {
+                size_t fnamemidpos = basefilename.find(".A");
+                if(fnamemidpos != string::npos) {
+       	            string fnamemiddle = basefilename.substr(fnamemidpos,14);
+                    if(fnamemiddle.size()==14) {
+                        string geofnameprefix = fnameprefix+"03";
+                        // geofnamefp will be something like "MOD03.A2008120.0000"
+                        string geofnamefp = geofnameprefix + fnamemiddle;
+                        DIR *dirp;
+                        struct dirent* dirs;
     
-                            dirp = opendir(dirfilename.c_str());
-                            if (NULL == dirp) 
-                                throw InternalErr(__FILE__,__LINE__,"opendir fails.");
+                        // Go through the directory to see if we have the corresponding MODIS geolocation file
+                        dirp = opendir(dirfilename.c_str());
+                        if (NULL == dirp) 
+                            throw InternalErr(__FILE__,__LINE__,"opendir fails.");
 
-                            while ((dirs = readdir(dirp))!= NULL){
-                                if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
-                                    modis_geofilename = dirfilename + "/"+ dirs->d_name;
-                                    int num_dimmap = HDFCFUtil::check_geofile_dimmap(modis_geofilename);
-                                    if (num_dimmap < 0) 
-                                        throw InternalErr(__FILE__,__LINE__,"this file is not a MODIS geolocation file.");
-                                    geofile_has_dimmap = (num_dimmap >0)?true:false;
-                                    closedir(dirp);
-                                    break;
-                                }
+                        while ((dirs = readdir(dirp))!= NULL){
+                            if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
+                                modis_geofilename = dirfilename + "/"+ dirs->d_name;
+                                int num_dimmap = HDFCFUtil::check_geofile_dimmap(modis_geofilename);
+                                if (num_dimmap < 0) 
+                                    throw InternalErr(__FILE__,__LINE__,"this file is not a MODIS geolocation file.");
+                                geofile_has_dimmap = (num_dimmap >0)?true:false;
+                                closedir(dirp);
+                                break;
                             }
                         }
                     }
                 }
             }
         }
+    }
 }
 
 // This is for the case that the separate MODIS geo-location file is used.
@@ -614,25 +661,53 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
     return modis_dimmap_nonll_field;
 }
 
+
+// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
+// For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed
+// to orig_scale_factor and orig_add_offset to keep the original field info.
+// Note: This routine should only be called when MODIS Scale and offset rules don't follow CF.
+// Input parameters:
+// AttrTable at - DAS attribute table
+// string newfname - field name: this is used to identify special MODIS level 1B emissive and refSB fields
+// SOType sotype - MODIS scale and offset type
+// bool gridname_change_valid_range - Flag to check if this is the special MODIS VIP product
+// bool changedtype - Flag to check if the datatype of this field needs to be changed
+// bool change_fvtype - Flag to check if the attribute _FillValue needs to change to data type
+
 void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname, SOType sotype,  bool gridname_change_valid_range, bool changedtype, bool & change_fvtype){
 
-    string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
-    string  scale_factor_value=""; 
-    float   orig_scale_value = 1;
-    string  add_offset_value="0"; 
-    float   orig_offset_value = 0;
-    bool add_offset_found = false;
+    // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.
+    string scale_factor_type;
+    string add_offset_type;
+    string fillvalue_type;
+    string valid_range_type;
 
-    string  fillvalue="";
 
-    string  valid_range_value="";
+    // Scale and offset values
+    string scale_factor_value=""; 
+    float  orig_scale_value = 1;
+    string add_offset_value="0"; 
+    float  orig_offset_value = 0;
+    bool   add_offset_found = false;
+
+    // Fillvalue
+    string fillvalue="";
+
+    // Valid range value
+    string valid_range_value="";
+
     bool has_valid_range = false;
+
+    // We may need to change valid_range to valid_min and valid_max. Initialize them here.
     float orig_valid_min = 0;
     float orig_valid_max = 0;
 
+    // Number_Type also needs to be adjusted when datatype is changed
     string number_type_value="";
     string number_type_dap_type="";
 
+    // Go through all attributes to find scale_factor,add_offset,_FillValue,valid_range
+    // Number_Type information
     AttrTable::Attr_iter it = at->attr_begin();
     while (it!=at->attr_end())
     {
@@ -685,7 +760,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
         it++;
     } 
 
-    // Change scale and offset values
+    // Rename scale_factor and add_offset attribute names. Otherwise, they will be 
+    // misused by CF tools to generate wrong data values based on the CF scale and offset rule.
     if(scale_factor_value.length()!=0)
     {
         if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
@@ -700,7 +776,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
         }
     }
 
-    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
+    // Change _FillValue datatype
+    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") 
     {
         change_fvtype = true;
         at->del_attr("_FillValue");
@@ -712,6 +789,10 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
 
     it = at->attr_begin();
     bool handle_modis_l1b = false;
+
+    // MODIS level 1B's Emissive and RefSB fields' scale_factor and add_offset 
+    // get changed according to different vertical levels.
+    // So we need to handle them specifically.
     if (sotype == MODIS_MUL_SCALE && true ==changedtype) {
 
         // Emissive should be at the end of the field name such as "..._Emissive"
@@ -728,7 +809,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
             if(0 == newfname.compare(newfname.size()-RefSB_str.size(),RefSB_str.size(),RefSB_str))
                 is_refsb_field = true;
         }
-
+  
+        // We will calculate the maximum and minimum scales and offsets within all the vertical levels.
         if ((true == is_emissive_field) || (true== is_refsb_field)){
 
             float scale_max = 0;
@@ -866,9 +948,15 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
     // Handle other valid_range attributes
     if(true == changedtype && true == has_valid_range && false == handle_modis_l1b) {
 
+        // If the gridname_change_valid_range is true, call a special function to handle this.
         if (true == gridname_change_valid_range) 
             HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
         else if(scale_factor_value.length()!=0) {
+
+            // We found MODIS products always scale to a smaller value. If somehow the original scale factor
+            // is smaller than 1, the scale/offset should be the multiplication rule.(new_data =scale*(old_data-offset))
+            // If the original scale factor is greater than 1, the scale/offset rule should be division rule.
+            // New_data = (old_data-offset)/scale.
             if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
                 if (orig_scale_value > 1) {
                     sotype = MODIS_DIV_SCALE;
@@ -911,6 +999,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
             }
         }
 
+        // Append the corrected valid_min and valid_max. (valid_min,valid_max) is equivalent to valid_range.
         string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_min));
         at->append_attr("valid_min","Float32",print_rep);
         print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&valid_max));
@@ -927,6 +1016,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
     }
 }
 
+ // This routine makes the MeaSUREs VIP attributes follow CF.
+// valid_range attribute uses char type instead of the raw data's datatype.
 void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_value, const std::string& scale_factor_value,float& valid_min, float &valid_max) {
 
     int16 vip_orig_valid_min = 0;
@@ -954,6 +1045,8 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     valid_max = (float)(vip_orig_valid_max/scale_factor_number);
 }
 
+// Make AMSR-E attributes follow CF.
+// Change SCALE_FACTOR and OFFSET to CF names: scale_factor and add_offset.
 void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 
     AttrTable::Attr_iter it = at->attr_begin();
@@ -1005,10 +1098,10 @@ void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 
 }
 
-
-
 #endif
 
+ // Check OBPG attributes. Specifically, check if slope and intercept can be obtained from the file level. 
+ // If having global slope and intercept,  obtain OBPG scaling, slope and intercept values.
 void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, float & slope,bool &global_slope_flag,float & intercept, bool & global_intercept_flag){
 
     HDFSP::SD* spsd = f->getSD();
@@ -1040,7 +1133,6 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, f
         slope = (float)tmpvalue; \
     } \
     break;
-
                     GET_SLOPE(INT16,   int16);
                     GET_SLOPE(INT32,   int32);
                     GET_SLOPE(FLOAT32, float);
@@ -1073,17 +1165,11 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, f
     }
 }
 
+// For some OBPG files that only provide slope and intercept at the file level, 
+// global slope and intercept are needed to add to all fields and their names are needed to be changed to scale_factor and add_offset.
+// For OBPG files that provide slope and intercept at the field level,  slope and intercept are needed to rename to scale_factor and add_offset.
 void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *onespsds, string& scaling, float& slope, bool& global_slope_flag, float& intercept,bool & global_intercept_flag) {
 
-    // The following code checks the special handling of scale and offset of the OBPG products. 
-
-
-//    vector<HDFSP::SDField *>::const_iterator it_g;
- //   for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-
-    // Ignore ALL coordinate variables if this is "OTHERHDF" case and some dimensions 
-    // don't have dimension scale data.
-    
     AttrTable *at = das.get_table(onespsds->getNewName());
     if (!at)
         at = das.add_table(onespsds->getNewName(), new AttrTable);
@@ -1199,6 +1285,8 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *on
 
 }
 
+// Handle HDF4 OTHERHDF products that follow SDS dimension scale model. 
+// The special handling of AVHRR data is also included.
 void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
 
     // For some HDF4 files that follow HDF4 dimension scales, P.O. DAAC's AVHRR files.
@@ -1207,7 +1295,6 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
     // I have to correct the name to follow CF conventions(using "units"). I won't check
     // the latitude and longitude values since latitude and longitude values for some files(LISO files)   
     // are not in the standard range(0-360 for lon and 0-180 for lat). KY 2011-3-3
-
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
     vector<HDFSP::SDField *>::const_iterator it_g;
 
@@ -1333,6 +1420,7 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
 }
 
 
+// Handle the attributes when the BES key EnableVdataDescAttr is enabled..
 void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das) {
 
     // Check the EnableVdataDescAttr key. If this key is turned on, the handler-added attribute VDdescname and
@@ -1350,8 +1438,21 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
     string VDattrprefix = "Vdata_attr_";
     string VDfieldattrprefix ="Vdata_field_attr_";
 
+    // To speed up the performance for handling CERES data, we turn off some CERES vdata fields, this should be resumed in the future version with BESKeys.
+    string check_ceres_vdata_key="H4.EnableCERESVdata";
+    bool turn_on_ceres_vdata_key= false;
+    turn_on_ceres_vdata_key = HDFCFUtil::check_beskeys(check_ceres_vdata_key);
+                
+    bool output_vdata_flag = true;
+    if (false == turn_on_ceres_vdata_key && 
+        (CER_AVG == f->getSPType() || 
+         CER_ES4 == f->getSPType() ||   
+         CER_SRB == f->getSPType() ||
+         CER_ZAVG == f->getSPType()))
+        output_vdata_flag = false;
 
-    if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
+    //if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
+    if (true == output_vdata_flag) {
 
         for(vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
 

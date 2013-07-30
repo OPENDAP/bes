@@ -21,6 +21,7 @@
 
 #define SIGNED_BYTE_TO_INT32 1
 
+// These two functions are used to handle MISR products with the SOM projections.
 extern "C" {
     int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
     int sominv(double y, double x, double *lon, double *lat);
@@ -35,22 +36,22 @@ HDFEOS2ArrayGridGeoField::read ()
         throw InternalErr (__FILE__, __LINE__, "The rank of geo field is greater than 2, currently we don't support 3-D lat/lon cases.");
     }
 
-    // the DDS output of latitude/longitude rank is 3. 
-    int newrank = -1;
+    // MISR SOM file's final rank is 3. So declare a new variable. 
+    int final_rank = -1;
 
-    if (condenseddim)
-        newrank = 1;
+    if (true == condenseddim)
+        final_rank = 1;
     else if(4 == specialformat)// For the SOM projection, the final output of latitude/longitude rank should be 3.
-        newrank = 3;
+        final_rank = 3;
     else 
-        newrank = rank;
+        final_rank = rank;
 
     vector<int> offset;
-    offset.resize(newrank);
+    offset.resize(final_rank);
     vector<int> count;
-    count.resize(newrank);
+    count.resize(final_rank);
     vector<int> step;
-    step.resize(newrank);
+    step.resize(final_rank);
 
     int nelms = -1;
 
@@ -68,17 +69,16 @@ HDFEOS2ArrayGridGeoField::read ()
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
     std::string datasetname;
-    openfunc = GDopen;
-    closefunc = GDclose;
-    attachfunc = GDattach;
-    detachfunc = GDdetach;
+    openfunc      = GDopen;
+    closefunc     = GDclose;
+    attachfunc    = GDattach;
+    detachfunc    = GDdetach;
     fieldinfofunc = GDfieldinfo;
     readfieldfunc = GDreadfield;
-    datasetname = gridname;
+    datasetname   = gridname;
 
-    int32 gfid;
-    int32 gridid;
-
+    int32 gfid   = -1;
+    int32 gridid = -1;
 
     // Obtain the grid id
     gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -90,7 +90,6 @@ HDFEOS2ArrayGridGeoField::read ()
 
     // Attach the grid id; make the grid valid.
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
-
     if (gridid < 0) {
         // Can use std::string here. jhrg
         closefunc(gfid);
@@ -105,6 +104,7 @@ HDFEOS2ArrayGridGeoField::read ()
         return false;
     }
 
+    // We define offset,count and step in int32 datatype.
     vector<int32>offset32;
     offset32.resize(rank);
 
@@ -125,9 +125,11 @@ HDFEOS2ArrayGridGeoField::read ()
         vector<float64>latlon;
         latlon.resize(nelms);
 
-        int32 projcode, zone, sphere;
+        int32 projcode = -1; 
+        int32 zone     = -1;
+        int32 sphere   = -1;
         float64 params[16];
-        intn r;
+        intn r = -1;
 
         r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
         if (r!=0) {
@@ -162,6 +164,7 @@ HDFEOS2ArrayGridGeoField::read ()
             CalculateLatLon (gridid, fieldtype, specialformat, &latlon[0],
                              &offset32[0], &count32[0], &step32[0], nelms);
 
+        // Some longitude values need to be corrected.
         if (speciallon && fieldtype == 2) {
             CorSpeLon (&latlon[0], nelms);
         }
@@ -171,10 +174,13 @@ HDFEOS2ArrayGridGeoField::read ()
         return false;
     }
 
-    int32 tmp_rank, tmp_dims[rank];
+
+    // Now lat and lon are stored as HDF-EOS2 fields. We need to read the lat and lon values from the fields.
+    int32 tmp_rank = -1;
+    int32 tmp_dims[rank];
     char tmp_dimlist[1024];
-    int32 type;
-    intn r;
+    int32 type     = -1;
+    intn r         = -1;
 
     // Obtain field info.
     r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
@@ -188,11 +194,10 @@ HDFEOS2ArrayGridGeoField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
-
     // Retrieve dimensions and X-Y coordinates of corners
-    int32 xdim;
-    int32 ydim;
+    int32 xdim = 0;
+    int32 ydim = 0;
+
     float64 upleft[2];
     float64 lowright[2];
 
@@ -207,16 +212,15 @@ HDFEOS2ArrayGridGeoField::read ()
     }
 
     // Retrieve all GCTP projection information
-    int32 projcode;
-    int32 zone;
-    int32 sphere;
+    int32 projcode = -1;
+    int32 zone     = -1;
+    int32 sphere   = -1;
     float64 params[16];
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     if (r != 0) {
         detachfunc(gridid);
         closefunc(gfid);
-
         ostringstream eherr;
         eherr << "Grid " << datasetname.c_str () << " projection info. cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -421,6 +425,8 @@ HDFEOS2ArrayGridGeoField::read ()
         // We find that lat/lon of the geographic projection in some
         // files include fill values. So we recalculate lat/lon based
         // on starting value,step values and number of steps.
+        // GDgetfillvalue will return 0 if having fill values. 
+        // The other returned value indicates no fillvalue is found inside the lat or lon.
         switch (type) {
         case DFNT_INT8:
             {
@@ -454,6 +460,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
                     }
 
+                    // Recalculate lat/lon for the geographic projection lat/lon that has fill values
                     HandleFillLatLon(temp_total_val, (int8*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
 
                 }
@@ -934,8 +941,8 @@ HDFEOS2ArrayGridGeoField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFEOS2ArrayGridGeoField::format_constraint (int *offset, int *step,
                                              int *count)
@@ -987,6 +994,7 @@ HDFEOS2ArrayGridGeoField::format_constraint (int *offset, int *step,
     return nels;
 }
 
+// Calculate lat/lon based on HDF-EOS2 APIs.
 void
 HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                                            int specialformat,
@@ -996,9 +1004,9 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 {
 
     // Retrieve dimensions and X-Y coordinates of corners 
-    int32 xdim; // [LD Comment 11/12/2012]
-    int32 ydim; 
-    int r; // [LD Comment 11/12/2012]
+    int32 xdim = 0;
+    int32 ydim = 0; 
+    int r = -1;
     float64 upleft[2];
     float64 lowright[2];
 
@@ -1077,29 +1085,6 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     lon.resize(xdim*ydim);
     lat.resize(xdim*ydim);
 
-#if 0
-    int32*rows = NULL;
-    int32 *cols = NULL;
-    float64*lon = NULL;
-    float64*lat = NULL;
-
-
-    try {
-        rows = new int32[xdim * ydim];
-        cols = new int32[xdim * ydim];
-        lon = new float64[xdim * ydim];
-        lat = new float64[xdim * ydim];
-    }
-
-    catch(...) {
-        if(rows !=NULL) delete[] rows;
-        if(cols !=NULL) delete[] cols;
-        if(lon !=NULL) delete[] lon;
-        if(lat !=NULL) delete[]lat;
-
-        throw;
-    }
-#endif
 
     int i = 0, j = 0, k = 0; 
 
@@ -1172,22 +1157,16 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                     step);
         }
     }
-#if 0
-    delete[]rows;
-    delete[]cols;
-    delete[]lon;
-    delete[]lat;
-#endif
 }
 
 
+// Map the subset of the lat/lon buffer to the corresponding 2D array.
 template<class T> void
 HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
                                           int minordim, T * latlon,
                                           int32 * offset, int32 * count,
                                           int32 * step)
 {
-
 
     // float64 templatlon[majordim][minordim];
     T (*templatlonptr)[majordim][minordim] =
@@ -1219,6 +1198,9 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
     }
 }
 
+// Some HDF-EOS2 geographic projection lat/lon fields have fill values. 
+// This routine is used to replace those fill values by using the formula to calculate
+// the lat/lon of the geographic projection.
 template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
                                                                int fieldtype,
                                                                int elms,
@@ -1245,7 +1227,6 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
         if ((int) (latlon[i]) == fv)
             return false;
 
-
     if ((int) (latlon[elms - 1]) != fv)
         return true;
 
@@ -1262,11 +1243,14 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
     }
 
     for (int i = index; i < elms; i++) {
+
         latlon[i] = latlon[i - 1] + increment;
+
         // The latitude must be within (-90,90)
         if (i != (elms - 1) && (fieldtype == 1) &&
             ((float) (latlon[i]) < -90.0 || (float) (latlon[i]) > 90.0))
             return false;
+
         // For longitude, since some files use (0,360)
         // some files use (-180,180), for simple check
         // we just choose (-180,360). 
@@ -1283,8 +1267,6 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
     }
 
     if (fieldtype == 2) {
-        // Added casts to (T) for the assignments (compiler warnings).
-        // jhrg 3/25/11
         if ((float) (latlon[elms - 1]) < -180.0)
             latlon[elms - 1] = (T)-180.0;
         if ((float) (latlon[elms - 1]) > 360.0)
@@ -1293,12 +1275,15 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
     return true;
 }
 
+// Make longitude (0-360) to (-180 - 180)
 template < class T > void
 HDFEOS2ArrayGridGeoField::CorSpeLon (T * lon, int xdim)
 {
     int i;
     float64 accuracy = 1e-3;	// in case there is a lon value = 180.0 in the middle, make the error to be less than 1e-3.
     float64 temp = 0;
+
+    // Check if this lon. field falls to the (0-360) case.
     int speindex = -1;
 
     for (i = 0; i < xdim; i++) {
@@ -1306,6 +1291,7 @@ HDFEOS2ArrayGridGeoField::CorSpeLon (T * lon, int xdim)
             temp = 180.0 - (double) lon[i];
         if ((double) lon[i] > 180.0)
             temp = (double) lon[i] - 180.0;
+
         if (temp < accuracy) {
             speindex = i;
             break;
@@ -1328,6 +1314,7 @@ HDFEOS2ArrayGridGeoField::CorSpeLon (T * lon, int xdim)
     return;
 }
 
+// Get correct subsetting indexes. This is especially useful when 2D lat/lon can be condensed to 1D.
 void
 HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
                                             int *step, int32 * offset32,
@@ -1453,9 +1440,6 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
     }
 }
             
-        
-
-     
 // A helper recursive function to find the first filled value index.
 template < class T > int
 HDFEOS2ArrayGridGeoField::findfirstfv (T * array, int start, int end,
@@ -1478,6 +1462,13 @@ HDFEOS2ArrayGridGeoField::findfirstfv (T * array, int start, int end,
     }
 }
 
+// Calculate Special Latitude and Longitude.
+//One MOD13C2 file doesn't provide projection code
+// The upperleft and lowerright coordinates are all -1
+// We have to calculate lat/lon by ourselves.
+// Since it doesn't provide the project code, we double check their information
+// and find that it covers the whole globe with 0.05 degree resolution.
+// Lat. is from 90 to -90 and Lon is from -180 to 180.
 void
 HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
                                               float64 * outlatlon,
@@ -1487,16 +1478,15 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
 {
 
     // Retrieve dimensions and X-Y coordinates of corners 
-    int32 xdim;
-    int32 ydim;
-    int r;
+    int32 xdim = 0;
+    int32 ydim = 0;
+    int r = -1;
     float64 upleft[2];
     float64 lowright[2];
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
         ostringstream eherr;
-
         eherr << "cannot obtain grid information.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -1525,20 +1515,33 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
     }
 }
 
+// Calculate latitude and longitude for the MISR SOM projection HDF-EOS2 product.
+// since the latitude and longitude of the SOM projection are 3-D, so we need to handle this projection in a special way. 
+// Based on our current understanding, the third dimension size is always 180. 
+// This is according to the MISR Lat/lon calculation document 
+// at http://eosweb.larc.nasa.gov/PRODOCS/misr/DPS/DPS_v50_RevS.pdf
 void
 HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *count, int *step, int nelms)
 {
-    int32 projcode, zone, sphere;
+    int32 projcode = -1;
+    int32 zone = -1; 
+    int32 sphere = -1;
     float64 params[NPROJ];
-    intn r;
+    intn r = -1;
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
-    if (r!=0) ERROR("GDprojinfo");
+    if (r!=0)
+        throw InternalErr (__FILE__, __LINE__, "GDprojinfo doesn't return the correct values");
 
     int MAXNDIM = 10;
     int32 dim[MAXNDIM];
     char dimlist[STRLEN];
     r = GDinqdims(gridid, dimlist, dim);
+    // r is the number of dims. or 0.
+    // So the valid returned value can be greater than 0. Only throw error when r is less than 0.
+    if (r<0)
+        throw InternalErr (__FILE__, __LINE__, "GDinqdims doesn't return the correct values");
+
     bool is_block_180 = false;
     for(int i=0; i<MAXNDIM; i++)
     {
@@ -1548,33 +1551,50 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
             break;
         }
     }
-    if(!is_block_180) ERROR("GDinqdims");
+    if(false == is_block_180) {
+        ostringstream eherr;
+        eherr <<"Number of Block is not " << NBLOCK ;
+        throw InternalErr(__FILE__,__LINE__,eherr.str());
+    }
 
-    int32 xdim; 
-    int32 ydim;
+    int32 xdim = 0; 
+    int32 ydim = 0;
     float64 ulc[2];
     float64 lrc[2];
 
     r = GDgridinfo (gridid, &xdim, &ydim, ulc, lrc);
-    if (r!=0) ERROR("GDgridinfo");
+    if (r!=0) 
+        throw InternalErr(__FILE__,__LINE__,"GDgridinfo doesn't return the correct values");
+
 
     float32 offset[NOFFSET]; 
     r = GDblkSOMoffset(gridid, offset, NOFFSET, "r");
-    if(r!=0) ERROR("GDblkSOMoffset");
+    if(r!=0) 
+        throw InternalErr(__FILE__,__LINE__,"GDblkSOMoffset doesn't return the correct values");
 
     int status = misr_init(NBLOCK, xdim, ydim, offset, ulc, lrc);
-    if(status!=0) ERROR("misr_init");
+    if(status!=0) 
+        throw InternalErr(__FILE__,__LINE__,"misr_init doesn't return the correct values");
 
     long iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
     inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
-    if(iflg) ERROR("inv_init");
+    if(iflg) 
+        throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
     // Change to vector in the future. KY 2012-09-20
     double *latlon = NULL;
-    double somx, somy, lat_r, lon_r; //[LD Comment 11/12/2012
-    int i, j, k, b, npts=0; //[LD Comment 11/12/2012]
-    float l, s; //[LD Comment 11/12/2012]
+    double somx = 0.;
+    double somy = 0.;
+    double lat_r = 0.;
+    double lon_r = 0.;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    int b = 0;
+    int npts=0; 
+    float l = 0;
+    float s = 0;
 
     // Seems setting blockdim = 0 always, need to understand this more. KY 2012-09-20
     int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
@@ -1604,11 +1624,17 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
     if (latlon != NULL)
         delete [] latlon;
 }
+
+// The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
+// These MODIS MCD files don't follow standard format for lat/lon (DDDMMMSSS);
+// they simply represent lat/lon as -180.0000000 or -90.000000.
+// HDF-EOS2 library won't give the correct value based on these value.
+// We need to calculate the latitude and longitude values.
 void
 HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
 {
 
-    int32 xdim =0;
+    int32 xdim = 0;
     int32 ydim = 0;
     float64 upleft[2];
     float64 lowright[2];
@@ -1662,17 +1688,21 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int
 }
 
 
+// Calculate latitude and longitude for LAMAZ projection lat/lon products.
+// GDij2ll returns infinite numbers over the north pole or the south pole.
 void
 HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
 {
-    int32 xdim;
-    int32 ydim;
-    intn r;
+    int32 xdim = 0;
+    int32 ydim = 0;
+    intn r = 0;
     float64 upleft[2];
     float64 lowright[2];
-    r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
 
-//    float64 *tmp1 = new float64[xdim*ydim];
+    r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
+    if (r != 0)
+        throw InternalErr(__FILE__,__LINE__,"GDgridinfo failed");
+
     vector<float64> tmp1;
     tmp1.resize(xdim*ydim);
     int32 tmp2[] = {0, 0};
@@ -1680,14 +1710,14 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
     int32 tmp4[] = {1, 1};
 	
     CalculateLatLon (gridid, fieldtype, specialformat, &tmp1[0], tmp2, tmp3, tmp4, xdim*ydim);
-	
-//    float64 *tmp5 = new float64[xdim*ydim];
+
     vector<float64> tmp5;
     tmp5.resize(xdim*ydim);
 
     for(int w=0; w < xdim*ydim; w++)
         tmp5[w] = tmp1[w];
 
+    // If we find infinite number among lat or lon values, we use the nearest neighbor method to calculate lat or lon.
     if(ydimmajor) {
         if(fieldtype==1) {// Lat.
             for(int i=0; i<ydim; i++)
@@ -1718,10 +1748,6 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
         for(int j=start[1]; j<start[1]+count[1]*step[1]; j+= step[1])
             latlon[k++] = tmp1[i*ydim+j];
 
-#if 0
-    delete[] tmp1;
-    delete[] tmp5;
-#endif
 }
 #endif
 

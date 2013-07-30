@@ -30,16 +30,6 @@
 //#include "InternalErr.h"
 #ifndef _HDFSP_H
 #define _HDFSP_H
-/*
-#ifdef USE_HDFEOS2_LIB
-#ifdef _WIN32
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
-#endif
-*/
 
 #include <iostream>
 #include <sstream>
@@ -52,14 +42,6 @@
 #include "hdf.h"
 
 #include "HDFSPEnumType.h"
-
-/*
-#ifdef _WIN32
-#ifdef _MSC_VER
-#pragma warning(disable:4290)
-#endif
-#endif
-*/
 
 #define MAX_FULL_PATH_LEN 1024
 //#define EOS_DATA_PATH "Data Fields"
@@ -105,22 +87,25 @@ namespace HDFSP
     class Exception:public std::exception
     {
          public:
+
             /// Constructor
             Exception (const std::string & msg)
                 : message (msg)
             {
             }
 
+            /// Destructor
             virtual ~ Exception () throw ()
             {
             }
 
+            /// Return exception message 
             virtual const char *what () const throw ()
             {
                 return this->message.c_str ();
             }
 
-
+            /// Set exception message.
             virtual void setException (std::string message)
             {
                 this->message = message;
@@ -128,6 +113,7 @@ namespace HDFSP
 
 
         protected:
+            /// Exception message
             std::string message;
     };
 
@@ -137,14 +123,21 @@ namespace HDFSP
     class Dimension
     {
         public:
+
+            /// Get dimension name
             const std::string & getName () const
             {
                 return this->name;
             }
+
+            /// Get dimension size
             int32 getSize () const
             {
                 return this->dimsize;
             }
+
+            /// If the SDS dimension scale is available, the returned value is dim. scale datatype.
+            /// If there is no dimension scale, the returned value is 0.
             int32 getType () const
             {
                 return this->dimtype;
@@ -157,8 +150,14 @@ namespace HDFSP
             }
 
         protected:
+
+            // dimension name
             std::string name;
+
+            // dimension size
             int32 dimsize;
+
+            /// dimension scale datatype or 0 if no dimension scale.
             int32 dimtype;
 
         friend class SD;
@@ -170,32 +169,52 @@ namespace HDFSP
     class Attribute
     {
         public:
+
+            /// Get the attribute name.
             const std::string & getName () const
             {
                 return this->name;
             }
+
+            /// Get the CF attribute name(special characters are replaced by underscores)
             const std::string & getNewName () const
             {
                 return this->newname;
             }
+
+            /// Get the attribute datatype
             int32 getType () const
             {
                 return this->type;
             }
+
+            /// Get the number of elements of this attribute
             int32 getCount () const
             {
                 return this->count;
             }
+
+            /// Get the attribute value
             const std::vector < char >&getValue () const
             {
                 return this->value;
             }
 
         protected:
+
+            /// Original attribute name
             std::string name;
+
+            /// CF attribute name(special characters are replaced by underscores)
             std::string newname;
+
+            /// Attribute type
             int32 type;
+
+            /// The number of elements 
             int32 count;
+
+            /// Attribute values
             std::vector < char >value;
 
         friend class SD;
@@ -205,6 +224,10 @@ namespace HDFSP
         friend class VDField;
     };
 
+    /// This class only applies to the OTHERHDF products when there are dimensions but not dimension scales.
+    /// To remember the dimension names, we follow the mapping of the default HDF4 OPeNDAP hander. 
+    /// In DAP DAS, AttrContainers are used to create attribute containers for each dimension.
+    /// For each dimension, the attribute container is variable_name_dim_0 (string name "longitude")
     class AttrContainer {
         public:
             AttrContainer()
@@ -214,12 +237,13 @@ namespace HDFSP
 
         public:
 
-            /// Get the name of this field
+            /// Get the name of this attribute container
             const std::string & getName () const
             {
                 return this->name;
             }
 
+            /// No need to have the newname since we will make the name follow CF conventions
             /// Get the new name of this field
             // const std::string & getNewName () const
             //{
@@ -233,7 +257,11 @@ namespace HDFSP
 
         protected:
             //  std:: string newname;
+
+            // The name of this attribute container(an attribute container is a DAP DAS table)
             std:: string name;
+
+            // The attributes in this attribute container
             std::vector < Attribute * >attrs;
         friend class SD;
         friend class File;
@@ -241,6 +269,7 @@ namespace HDFSP
     };
 
 
+    // This field class describes SDS or Vdata fields. 
     class Field
     {
         public:
@@ -257,7 +286,7 @@ namespace HDFSP
                 return this->name;
             }
 
-            /// Get the new name of this field
+            /// Get the CF name(special characters replaced by underscores) of this field
             const std::string & getNewName () const
             {
                 return this->newname;
@@ -275,6 +304,7 @@ namespace HDFSP
                 return this->type;
             }
 
+            /// Get the attributes of this field
             const std::vector < Attribute * >&getAttributes () const
             {
                 return this->attrs;
@@ -283,12 +313,19 @@ namespace HDFSP
 
         protected:
 
+            /// The  CF full path(special characters replaced by underscores) of this field
             std::string newname;
 
+            /// The original name of this field
             std::string name;
+
+            /// The datatype of this field
             int32 type;
+
+            /// The rank of this field
             int32 rank;
 
+            /// The attributes of this field
             std::vector < Attribute * >attrs;
 
         friend class SD;
@@ -302,7 +339,7 @@ namespace HDFSP
     {
          public:
             SDField ()
-                :fieldtype (0), sdsref (-1), condenseddim (false),is_dim_noscale(false),is_dim_scale(false)
+                :fieldtype (0), sdsref (-1), condenseddim (false),is_noscale_dim(false),is_dim_scale(false)
             {
             }
             ~SDField ();
@@ -310,12 +347,13 @@ namespace HDFSP
         public:
 
 
-            /// Get the list of the corrected dimensions 
+            /// Get the list of the corrected dimensions
             const std::vector < Dimension * >&getCorrectedDimensions () const
             {
                 return this->correcteddims;
             }
 
+            /// Get the list of the corrected dimension ptrs
             std::vector < Dimension * >*getCorrectedDimensionsPtr ()
             {
                 return &(this->correcteddims);
@@ -327,6 +365,7 @@ namespace HDFSP
                 correcteddims = dims;
             }
 
+            /// Get the "coordinates" attribute
             const std::string getCoordinate () const
             {
                 return this->coordinates;
@@ -338,22 +377,25 @@ namespace HDFSP
                 coordinates = coor;
             }
 
+            /// Get the "units" attribute
             const std::string getUnits () const
             {
                 return this->units;
             }
 
-            // Set units
+            // Set the "units" attribute
             void setUnits (std::string uni)
             {
                 units = uni;
             }
 
+            // Get the field type
             const int getFieldType () const
             {
                 return this->fieldtype;
             }
-
+        
+            // Get the SDS reference number
             int32 getSDSref () const
             {
                 return this->sdsref;
@@ -365,51 +407,81 @@ namespace HDFSP
                 return this->dims;
             }
 
-            /// Get the list of dimension information
+            /// Get the list of attribute container information
             const std::vector < AttrContainer * >&getDimInfo () const
             {
                 return this->dims_info;
             }
 
+            /// Is this field a dimension without dimension scale(or empty[no data]dimension variable)
             bool IsDimNoScale() const
             {
-                return is_dim_noscale;
+                return is_noscale_dim;
             }
 
+            /// Is this field a dimension scale field?
             bool IsDimScale() const
             {
                 return is_dim_scale;
             }
 
-
+            /// This function returns the full path of some special products that have a very long path
             const std::string getSpecFullPath() const 
             {
                 return special_product_fullpath;
             }
         protected:
 
+            /// Dimensions of this field
             std::vector < Dimension * >dims;
+
+            /// Corrected dimensions of this field. The only difference between the correcteddims and dims
+            /// is the correcteddims uses the CF form of the dimension names whereas the dims uses the original 
+            /// dimension names. 
             std::vector < Dimension * >correcteddims;
 
+            ///  Attribute container information. See the description of the class AttrContainer.
             std::vector<AttrContainer *>dims_info;
             std::string coordinates;
 
-            // This flag will specify the fieldtype.
-            // 0 means this field is general field.
-            // 1 means this field is lat.
-            // 2 means this field is lon.
-            // 3 means this field is other dimension variable.
-            // 4 means this field is added other dimension variable with nature number.
+            /// This flag will specify the fieldtype.
+            /// 0 means this field is general field.
+            /// 1 means this field is lat.
+            /// 2 means this field is lon.
+            /// 3 means this field is other dimension coordinate variable.
+            /// 4 means this field is added other dimension coordinate variable with nature number.
             int fieldtype;
 
+            /// The "units" attribute
             std::string units;
+
+            /// This string provides the full path of a field for some products that have long path.
+            /// The reasons we provide this string is as follows:
+            /// 1) Some products(CERES) contain many variables and some field paths may be very long.
+            ///    For example,a path in a CERES file is 
+            ///    "/Monthly 3-Hourly Averages/D2-like 9 Cloud Types/Deep Convection     (High, Thick)/Ice Water Path - Deep Convection - MH". 
+            ///    There are almost a 100 variables like this long path in this file. This will make DDS and DAS containers very huge and choke netCDF Java clients.
+            ///    So to avoid such cases, we provide a BES key so that by default only short names are provided. However, we still want to 
+            ///    preserve the original path. So we include this special_product_fullpath to record this and output to DAS.
+            /// 2) We decide not to use newname since as shown above, the CF form of the path is very different than the original path.
+            /// KY 2013-07-02
             std::string special_product_fullpath;
 
+            /// SDS reference number. This and the object tag are a key to identify a SDS object.
             int32 sdsref;
+
+            /// condenseddim is to condense 2-D lat/lon to 1-D lat/lon for geographic projections. This can greatly reduce the access time of visualization clients.
             bool condenseddim;
-            bool is_dim_noscale;
+
+            /// Some fields have dimensions but don't have dimension scales. In HDF4, such dimension appears as a field but no data. So this kind of field
+            /// needs special treatments. This flag is to identify such a field.
+            bool is_noscale_dim;
+
+            /// This is a SDS dimension scale.
             bool is_dim_scale;
 
+            /// In some TRMM versions, latitude and longitude are combined into one field geolocation.
+            /// This variable is to remember the root field for latitude and longitude.
             std::string rootfieldname;
 
         friend class File;
@@ -445,16 +517,27 @@ namespace HDFSP
                 return this->numrec;
             }
 
+            /// Get the vdata field values.
             const std::vector < char >&getValue () const
             {
                 return this->value;
             }
+ 
+            /// Read vdata field attributes.
             void ReadAttributes (int32 vdata_id, int32 fieldindex) throw (Exception);
 
         protected:
+
+            /// Vdata field order
             int32 order;
+
+            /// Number of record of the vdata field
             int32 numrec;
+
+            /// Vdata field size
             int32 size;
+
+            /// Vdata field value
             std::vector < char >value;
 
         friend class File;
@@ -491,9 +574,10 @@ namespace HDFSP
             }
 
             /// Obtain SDS path, this is like a clone of obtain_path in File class, except the Vdata and some minor parts.
-            void obtain_sds_path(int32,char*,int32) throw(Exception);
+            void obtain_noneos2_sds_path(int32,char*,int32) throw(Exception);
 
 
+            /// Destructor
             ~SD ();
 
         protected:
@@ -538,7 +622,11 @@ namespace HDFSP
             std::map < std::string, std::string > dimcvarlist;
 
         private:
-            int32 sdfd, fileid;
+
+            /// SD ID
+            int32 sdfd;
+            /// HDF4 file ID. We need to use this ID to retrieve the absolute path
+            int32 fileid;
         friend class File;
     };
 
@@ -602,6 +690,8 @@ namespace HDFSP
 
             /// New name with path and CF compliant(no special characters and name clashing).
             std::string newname;
+
+            /// Original vdata name
             std::string name;
 
             /// Vdata field vectors.
@@ -617,8 +707,9 @@ namespace HDFSP
             bool TreatAsAttrFlag;
 
         private:
-            int32 vdata_id;
 
+            /// Vdata ID
+            int32 vdata_id;
 
         friend class File;
     };
@@ -640,7 +731,6 @@ namespace HDFSP
             /// The main step to make HDF4 SDS objects CF-complaint. 
             /// All dimension(coordinate variables) information need to be ready.
             /// All special arrangements need to be done in this step.
-
             void Prepare() throw(Exception);
 
             ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
@@ -703,11 +793,14 @@ namespace HDFSP
                 return this->sptype;
             }
 
+            /// This file has a field that is a SDS dimension but no dimension scale
+
             bool Has_Dim_NoScale_Field() const
             {
                 return this->OTHERHDF_Has_Dim_NoScale_Field;
             }
 
+            // Destructor
             ~File ();
 
             /// Obtain the path of the file
@@ -736,32 +829,57 @@ namespace HDFSP
             }
 
         protected:
+
+            /// The absolute path of the file
             std::string path;
+
+            /// Pointer to the SD instance. There is only one SD instance in an HDF4 file.
             SD *sd;
 
+            /// Vdata objects in this file
             std::vector < VDATA * >vds;
 
-            // Check name clashing for fields. Borrowed from HDFEOS.cc 
-            bool check_field_name_clashing (bool bUseDimNameMatching) const;
-
+            /// Check name clashing for fields. Borrowed from HDFEOS.cc, unused.
+            ///bool check_field_name_clashing (bool bUseDimNameMatching) const;
+          
+            /// Handle SDS fakedim names: make the dimensions with the same dimension size 
+            /// share the same dimension name. In this way, we can reduce many fakedims.
             void handle_sds_fakedim_names() throw(Exception);
 
+            /// Create the new dimension name set and the dimension name to size map.
             void create_sds_dim_name_list();
 
+            /// Add the missing coordinate variables based on the corrected dimension name list
             void handle_sds_missing_fields();
 
+            /// Create the final CF-compliant dimension name list for each field
             void handle_sds_final_dim_names() throw(Exception);
 
+            /// Create the final CF-compliant field name list
             void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2) throw(Exception);
 
+            /// Create "coordinates", "units" CF attributes
             void handle_sds_coords(bool & COARDFLAG, std::string &lldimname1,std::string &lldimname2) throw(Exception);
 
+            /// Handle Vdata
             void handle_vdata() throw(Exception);
+
         private:
-            int32 sdfd;	// SD interface ID
-            int32 fileid;// H interface ID
-            SPType sptype;// Special HDF4 file type
+
+            /// HDF4 SD interface ID
+            int32 sdfd;	
+
+            /// HDF4 H interfance ID 
+            int32 fileid;
+
+            /// Special NASA HDF4 file types supported by this package
+            SPType sptype;
+
+            /// For the OTHERHDF files, this flag provides whether there is a non-dimension scale dimension field.
             bool OTHERHDF_Has_Dim_NoScale_Field;
+
+            /// For a hybrid file, under some cases, we need to distinguish between an EOS2 grid from an EOS2 swath only by
+            /// HDF4 APIs. If this flag is true, this object is an EOS2 swath. Otherwise, this should be an EOS2 grid or others.
             bool EOS2Swathflag;
     };
 

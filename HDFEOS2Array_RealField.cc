@@ -24,6 +24,7 @@ bool
 HDFEOS2Array_RealField::read ()
 {
 
+    // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
     vector<int>count;
@@ -31,17 +32,17 @@ HDFEOS2Array_RealField::read ()
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = 0;
-
     nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
     vector<int32>count32;
     count32.resize(rank);
     vector<int32>step32;
     step32.resize(rank);
-
 
     // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
@@ -103,7 +104,6 @@ HDFEOS2Array_RealField::read ()
 
     // Attach the EOS object ID
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
-
     if (gridid < 0) {
         closefunc(gfid);
         ostringstream eherr;
@@ -111,32 +111,80 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // tmp_rank and tmp_dimlist are two dummy variables that are only used when calling fieldinfo.
     int32 tmp_rank = 0;
+    char  tmp_dimlist[1024];
+
+    // field dimension sizes
     int32 tmp_dims[rank];
-    char tmp_dimlist[1024];
-    int32 type = 0;
-    intn r = 0;
 
-    // All the following variables are used by the RECALCULATE macro. So 
-    // ideally they should not be here. 
-    float *reflectance_offsets=NULL, *reflectance_scales=NULL;
-    float *radiance_offsets=NULL, *radiance_scales=NULL;
+    // field data type
+    int32 field_dtype = 0;
 
-    int32 attrtype, attrcount, attrcounts=0, attrindex = 0, attrindex2 = 0;
-    int32 scale_factor_attr_index = 0, add_offset_attr_index = 0;
-    float scale=1, offset2=0, fillvalue = 0;
+    // returned value of HDF4 and HDF-EOS2 APIs
+    intn  r = 0;
+    
+    // MODIS level 1B reflectance and radiance fields have scale/offset arrays rather than one scale/offset value.
+    // So we need to handle these fields specially.
+    float *reflectance_offsets =NULL;
+    float *reflectance_scales  =NULL;
+    float *radiance_offsets    =NULL;
+    float *radiance_scales     =NULL;
+
+    // Attribute datatype, reused for several attributes
+    int32 attr_dtype = 0; 
+
+    // Number of elements for an attribute, reused 
+    int32 temp_attrcount  = 0;
+
+    // Number of elements in an attribute
+    int32 num_eles_of_an_attr = 0; 
+
+    // Attribute(radiance_scales) index 
+    int32 cf_general_attrindex  = 0; 
+
+    // Attribute (radiance_offsets) index
+    int32 cf_general_attrindex2 = 0;
+
+    // Scale factor attribute index
+    int32 scale_factor_attr_index = 0;
+
+    // Add offset attribute index
+    int32 add_offset_attr_index = 0;
+
+    // Initialize scale
+    float scale = 1;
+
+    // Intialize field_offset
+    float field_offset = 0;
+
+    // Initialize fillvalue
+    float fillvalue = 0;
+
+    // Initialize the original valid_min
     float orig_valid_min = 0;
+
+    // Initialize the original valid_max
     float orig_valid_max = 0;
+
+    // Some NSIDC products use the "Key" attribute to identify 
+    // the discrete valid values(land, cloud etc).
+    // Since the valid_range attribute in these products may treat values identified in the Key attribute
+    // as invalid, we need to handle them in a special way.So set a flag here.
     bool  has_Key_attr = false;
 
     if(sotype!=DEFAULT_CF_EQU) {
 
         bool field_is_vdata = false;
 
+        // HDF-EOS2 swath maps 1-D field as vdata. So we need to check if this field is vdata or SDS.
+        // Essentially we only call SDS attribute routines to retrieve MODIS scale,offset and fillvalue attributes since we don't
+        // find 1-D MODIS field has scale,offset and fillvalue attributes. We may need to visit this again in the future to see
+        // if we also need to support the handling of scale,offset,fillvalue via vdata routines. KY 2013-07-15
         if (""==gridname) {
 
             r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                &tmp_rank, tmp_dims, &type, tmp_dimlist);
+                &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
             if (r != 0) {
                 detachfunc(gridid);
                 closefunc(gfid);
@@ -157,9 +205,8 @@ HDFEOS2Array_RealField::read ()
         if( false == field_is_vdata) {
 
             // Obtain attribute values.
-            int32 sdfileid;
+            int32 sdfileid = -1;
             sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
-
             if (FAIL == sdfileid) {
 
                 detachfunc(gridid);
@@ -168,7 +215,8 @@ HDFEOS2Array_RealField::read ()
                 eherr << "Cannot Start the SD interface for the file " << filename <<endl;
             }
 
-	    int32 sdsindex, sdsid;
+	    int32 sdsindex = -1;
+            int32 sdsid;
 	    sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
             if (FAIL == sdsindex) {
                 detachfunc(gridid);
@@ -197,12 +245,14 @@ HDFEOS2Array_RealField::read ()
             // The correct way is to use SDgetinfo and SDattrinfo to check if attributes "radiance_scales" etc exist.
             // For the time being, I won't do this, due to the performance reason and code simplity and also the
             // very small chance of real FAIL for SDfindattr.
-            attrindex = SDfindattr(sdsid, "radiance_scales");
-            attrindex2 = SDfindattr(sdsid, "radiance_offsets");
-            if(attrindex!=FAIL && attrindex2!=FAIL)
+            cf_general_attrindex = SDfindattr(sdsid, "radiance_scales");
+            cf_general_attrindex2 = SDfindattr(sdsid, "radiance_offsets");
+
+            // Obtain the values of radiance_scales and radiance_offsets if they are available.
+            if(cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
             {
-                intn ret;
-                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                intn ret = -1;
+                ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -214,8 +264,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -227,7 +277,7 @@ HDFEOS2Array_RealField::read ()
                     eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
-                ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
+                ret = SDattrinfo(sdsid, cf_general_attrindex2, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -239,8 +289,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf2.clear();
-                attrbuf2.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
+                attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -251,16 +301,19 @@ HDFEOS2Array_RealField::read ()
                     eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
-		switch(attrtype)
+
+                // The following macro will obtain radiance_scales and radiance_offsets.
+                // Although the code is compact, it may not be easy to follow. The similar macro can also be found later.
+		switch(attr_dtype)
                 {
 #define GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
             CAST *ptr = (CAST*)&attrbuf[0]; \
             CAST *ptr2 = (CAST*)&attrbuf2[0]; \
-            radiance_scales = new float[attrcount]; \
-            radiance_offsets = new float[attrcount]; \
-            for(int l=0; l<attrcount; l++) \
+            radiance_scales = new float[temp_attrcount]; \
+            radiance_offsets = new float[temp_attrcount]; \
+            for(int l=0; l<temp_attrcount; l++) \
             { \
                 radiance_scales[l] = ptr[l]; \
                 radiance_offsets[l] = ptr2[l]; \
@@ -271,15 +324,16 @@ HDFEOS2Array_RealField::read ()
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
                 };
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
-                attrcounts = attrcount; // Store the count of attributes.
+                num_eles_of_an_attr = temp_attrcount; // Store the count of attributes.
             }
 
-            attrindex = SDfindattr(sdsid, "reflectance_scales");
-            attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
-            if(attrindex!=FAIL && attrindex2!=FAIL)
+            // Obtain attribute values of reflectance_scales and reflectance_offsets if they are available.
+            cf_general_attrindex = SDfindattr(sdsid, "reflectance_scales");
+            cf_general_attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
+            if(cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
             {
-                intn ret;
-                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                intn ret = -1;
+                ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -291,8 +345,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -304,7 +358,7 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 		
-                ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
+                ret = SDattrinfo(sdsid, cf_general_attrindex2, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -316,8 +370,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf2.clear();
-                attrbuf2.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
+                attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -328,16 +382,16 @@ HDFEOS2Array_RealField::read ()
                     eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
-		switch(attrtype)
+		switch(attr_dtype)
                 {
 #define GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
             CAST *ptr = (CAST*)&attrbuf[0]; \
             CAST *ptr2 = (CAST*)&attrbuf2[0]; \
-            reflectance_scales = new float[attrcount]; \
-            reflectance_offsets = new float[attrcount]; \
-            for(int l=0; l<attrcount; l++) \
+            reflectance_scales = new float[temp_attrcount]; \
+            reflectance_offsets = new float[temp_attrcount]; \
+            for(int l=0; l<temp_attrcount; l++) \
             { \
                 reflectance_scales[l] = ptr[l]; \
                 reflectance_offsets[l] = ptr2[l]; \
@@ -348,14 +402,15 @@ HDFEOS2Array_RealField::read ()
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
                 };
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
-                attrcounts = attrcount; // Store the count of attributes. 
+                num_eles_of_an_attr = temp_attrcount; // Store the count of attributes. 
             }
 
+            // Obtain the value of attribute scale_factor.
             scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
             if(scale_factor_attr_index!=FAIL)
             {
-                intn ret;
-                ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
+                intn ret = -1;
+                ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL) 
                 {
                     detachfunc(gridid);
@@ -367,7 +422,7 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
                 ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL) 
                 {
@@ -380,7 +435,7 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
  
-                switch(attrtype)
+                switch(attr_dtype)
                 {
 #define GET_SCALE_FACTOR_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
@@ -404,11 +459,12 @@ HDFEOS2Array_RealField::read ()
 #undef GET_SCALE_FACTOR_ATTR_VALUE
             }
 
+            // Obtain the value of attribute add_offset
             add_offset_attr_index = SDfindattr(sdsid, "add_offset");
             if(add_offset_attr_index!=FAIL)
             {
                 intn ret;
-                ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
+                ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL) 
                 {
                     detachfunc(gridid);
@@ -420,7 +476,7 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
                 ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL) 
                 {
@@ -433,13 +489,13 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                switch(attrtype)
+                switch(attr_dtype)
                 {
 #define GET_ADD_OFFSET_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
             CAST tmpvalue = *(CAST*)&attrbuf[0]; \
-            offset2 = (float)tmpvalue; \
+            field_offset = (float)tmpvalue; \
         } \
         break;
                     GET_ADD_OFFSET_ATTR_VALUE(INT8, int8);
@@ -456,11 +512,12 @@ HDFEOS2Array_RealField::read ()
 #undef GET_ADD_OFFSET_ATTR_VALUE
             }
 
-            attrindex = SDfindattr(sdsid, "_FillValue");
-            if(attrindex!=FAIL)
+            // Obtain the value of the attribute _FillValue
+            cf_general_attrindex = SDfindattr(sdsid, "_FillValue");
+            if(cf_general_attrindex!=FAIL)
             {
                 intn ret;
-                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -472,8 +529,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -485,7 +542,7 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                switch(attrtype)
+                switch(attr_dtype)
                 {
 #define GET_FILLVALUE_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
@@ -506,11 +563,14 @@ HDFEOS2Array_RealField::read ()
 #undef GET_FILLVALUE_ATTR_VALUE
             }
 
-            attrindex = SDfindattr(sdsid, "valid_range");
-            if(attrindex!=FAIL)
+            // Retrieve valid_range,valid_range is normally represented as (valid_min,valid_max)
+            // for non-CF scale and offset rules, the data is always float. So we only
+            // need to change the data type to float.
+            cf_general_attrindex = SDfindattr(sdsid, "valid_range");
+            if(cf_general_attrindex!=FAIL)
             {
                 intn ret;
-                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -522,8 +582,8 @@ HDFEOS2Array_RealField::read ()
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
                 attrbuf.clear();
-                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
-                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
                     detachfunc(gridid);
@@ -537,10 +597,12 @@ HDFEOS2Array_RealField::read ()
 
                 string attrbuf_str(attrbuf.begin(),attrbuf.end());
 
-                switch(attrtype) {
+                switch(attr_dtype) {
                 
                     case DFNT_CHAR:
                     {                   
+                        // We need to treat the attribute data as characters or string.
+                        // So find the separator.
                         size_t found = attrbuf_str.find_first_of(",");
                         size_t found_from_end = attrbuf_str.find_last_of(",");
                         
@@ -559,7 +621,11 @@ HDFEOS2Array_RealField::read ()
                     break;
                     case DFNT_INT8:
                     {
-                        if (attrcount >2) {
+                        // We find a special case that even valid_range is logically interpreted as two elements,
+                        // but the count of attribute elements is more than 2. The count actually is the number of
+                        // characters stored as the attribute value. So we need to find the separator "," and then
+                        // change the string before and after the separator into float numbers.
+                        if (temp_attrcount >2) {
 
                             size_t found = attrbuf_str.find_first_of(",");
                             size_t found_from_end = attrbuf_str.find_last_of(",");
@@ -576,7 +642,7 @@ HDFEOS2Array_RealField::read ()
                             orig_valid_max = atof((attrbuf_str.substr(found+1)).c_str());
 
                         }
-                        else if (2 == attrcount) {
+                        else if (2 == temp_attrcount) {
                             orig_valid_min = (float)attrbuf[0];
                             orig_valid_max = (float)attrbuf[1]; 
                         }
@@ -589,7 +655,7 @@ HDFEOS2Array_RealField::read ()
                     case DFNT_UINT8:
                     case DFNT_UCHAR:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT8 type.");
 
                         unsigned char* temp_valid_range = (unsigned char *)&attrbuf[0]; 
@@ -600,7 +666,7 @@ HDFEOS2Array_RealField::read ()
 
                     case DFNT_INT16:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT16 type.");
 
                         short* temp_valid_range = (short *)&attrbuf[0]; 
@@ -611,7 +677,7 @@ HDFEOS2Array_RealField::read ()
 
                     case DFNT_UINT16:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT16 type.");
 
                         unsigned short* temp_valid_range = (unsigned short *)&attrbuf[0]; 
@@ -622,7 +688,7 @@ HDFEOS2Array_RealField::read ()
  
                     case DFNT_INT32:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT32 type.");
 
                         int* temp_valid_range = (int *)&attrbuf[0]; 
@@ -633,7 +699,7 @@ HDFEOS2Array_RealField::read ()
 
                     case DFNT_UINT32:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT32 type.");
 
                         unsigned int* temp_valid_range = (unsigned int *)&attrbuf[0]; 
@@ -644,7 +710,7 @@ HDFEOS2Array_RealField::read ()
 
                     case DFNT_FLOAT32:
                     {
-                        if (attrcount != 2) 
+                        if (temp_attrcount != 2) 
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
 
                         float* temp_valid_range = (float *)&attrbuf[0]; 
@@ -655,7 +721,7 @@ HDFEOS2Array_RealField::read ()
 
                     case DFNT_FLOAT64:
                     {
-                        if (attrcount != 2)
+                        if (temp_attrcount != 2)
                             throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
                         double* temp_valid_range = (double *)&attrbuf[0];
 
@@ -674,14 +740,15 @@ HDFEOS2Array_RealField::read ()
             // Check if the data has the "Key" attribute. We found that some NSIDC MODIS data(MOD29) used "Key" to identify some special values.
             // To get the values that are within the range identified by the "Key", scale offset rules also need to be applied to those values
             // outside the original valid range. KY 2013-02-25
-            int32 attrindex3 = SUCCEED;
-            attrindex3 = SDfindattr(sdsid, "Key");
-            if(attrindex3 !=FAIL) 
+            int32 cf_general_attrindex3 = SUCCEED;
+            cf_general_attrindex3 = SDfindattr(sdsid, "Key");
+            if(cf_general_attrindex3 !=FAIL) {
                 has_Key_attr = true;
+            }
 
             // For testing only. Use BESDEBUG later. 
             //cerr << "scale=" << scale << endl;	
-            //cerr << "offset=" << offset2 << endl;
+            //cerr << "offset=" << field_offset << endl;
             //cerr << "fillvalue=" << fillvalue << endl;
 
             SDendaccess(sdsid);
@@ -727,7 +794,7 @@ HDFEOS2Array_RealField::read ()
     // Obtain the field info. We mainly need the datatype information 
     // to allocate the buffer to store the data
     r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &type, tmp_dimlist);
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
         detachfunc(gridid);
         closefunc(gfid);   
@@ -746,15 +813,15 @@ HDFEOS2Array_RealField::read ()
 //**************************************************************************************
 //****    if((float)tmptr[l] != fillvalue ) \
 //                    { \
-//                        if(false == HDFCFUtil::is_special_value(type,fillvalue,tmptr[l]))\
+//                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
  //                       { \
 //                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
 //                            if(sotype==MODIS_MUL_SCALE) \
-//                                tmpval[l] = (tmptr[l]-offset2)*scale; \
+//                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
 //                            else if(sotype==MODIS_EQ_SCALE) \
-//                                tmpval[l] = tmptr[l]*scale + offset2; \
+//                                tmpval[l] = tmptr[l]*scale + field_offset; \
 //                            else if(sotype==MODIS_DIV_SCALE) \
-//                                tmpval[l] = (tmptr[l]-offset2)/scale; \
+//                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
 //*******************************************************************************
 
@@ -769,31 +836,31 @@ HDFEOS2Array_RealField::read ()
             tmpval[l] = (float)tmptr[l]; \
         bool special_case = false; \
         if(scale_factor_attr_index==FAIL) \
-            if(attrcounts==1) \
+            if(num_eles_of_an_attr==1) \
                 if(radiance_scales!=NULL && radiance_offsets!=NULL) \
                 { \
                     scale = radiance_scales[0]; \
-                    offset2 = radiance_offsets[0];\
+                    field_offset = radiance_offsets[0];\
                     special_case = true; \
                 } \
-        if((scale_factor_attr_index!=FAIL && !(scale==1 && offset2==0)) || special_case)  \
+        if((scale_factor_attr_index!=FAIL && !(scale==1 && field_offset==0)) || special_case)  \
         { \
             for(int l=0; l<nelms; l++) \
             { \
-                if(attrindex!=FAIL) \
+                if(cf_general_attrindex!=FAIL) \
                 { \
                     if((float)tmptr[l] != fillvalue ) \
                     { \
-                        if(false == HDFCFUtil::is_special_value(type,fillvalue,tmptr[l]))\
+                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
                         { \
                             if ((orig_valid_min<=tmpval[l] && orig_valid_max>=tmpval[l]) || (true==has_Key_attr))\
                             { \
                                 if(sotype==MODIS_MUL_SCALE) \
-                                        tmpval[l] = (tmptr[l]-offset2)*scale; \
+                                        tmpval[l] = (tmptr[l]-field_offset)*scale; \
                                 else if(sotype==MODIS_EQ_SCALE) \
-                                        tmpval[l] = tmptr[l]*scale + offset2; \
+                                        tmpval[l] = tmptr[l]*scale + field_offset; \
                                 else if(sotype==MODIS_DIV_SCALE) \
-                                        tmpval[l] = (tmptr[l]-offset2)/scale;\
+                                        tmpval[l] = (tmptr[l]-field_offset)/scale;\
                            } \
                         } \
                     } \
@@ -802,10 +869,10 @@ HDFEOS2Array_RealField::read ()
             change_data_value = true; \
             set_value((dods_float32 *)tmpval, nelms); \
             delete[] tmpval; \
-        } else 	if(attrcounts>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
+        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
         { \
             size_t dimindex=0; \
-            if( attrcounts!=tmp_dims[dimindex]) \
+            if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
             { \
                 ostringstream eherr; \
                 eherr << "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in " << fieldname.c_str() << ". These two values must be equal."; \
@@ -822,11 +889,11 @@ HDFEOS2Array_RealField::read ()
                 float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
                 for(size_t l=0; l<nr_elems; l++) \
                 { \
-                    if(attrindex!=FAIL) \
+                    if(cf_general_attrindex!=FAIL) \
                     { \
                         if(((float)tmptr[index])!=fillvalue) \
                         { \
-                            if(false == HDFCFUtil::is_special_value(type,fillvalue,tmptr[index]))\
+                            if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
                             { \
                                 if(sotype==MODIS_MUL_SCALE) \
                                     tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
@@ -851,7 +918,7 @@ HDFEOS2Array_RealField::read ()
     } \
 }
 
-    switch (type) {
+    switch (field_dtype) {
         case DFNT_INT8:
         {
 
@@ -1060,8 +1127,8 @@ HDFEOS2Array_RealField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way to pass the coordinates of the subsetted region from the client to the handlers
+// Return the number of elements to read.
 int
 HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 {

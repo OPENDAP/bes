@@ -25,11 +25,16 @@ class HDFSPArray_VDField:public Array
             rank (vdrank),
             filename (filename),
             vdref (objref),
-            dtype (dtype), fdorder (fieldorder), fdname (fieldname) {
+            dtype (dtype), 
+            fdorder (fieldorder), 
+            fdname (fieldname) {
         }
         virtual ~ HDFSPArray_VDField ()
         {
         }
+       
+        // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+        // Return the number of elements to read.  
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -40,12 +45,24 @@ class HDFSPArray_VDField:public Array
         virtual bool read ();
 
     private:
+
+        // Field array rank
         int rank;
-        string filename;
+
+        // file name
+        std::string filename;
+
+        // Vdata reference number
         int32 vdref;
+
+        // data type
         int32 dtype;
+
+        // field order
         int32 fdorder;
-        string fdname;
+
+        // field name
+        std::string fdname;
 };
 
 

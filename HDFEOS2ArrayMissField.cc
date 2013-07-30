@@ -21,12 +21,11 @@
 
 #include "HDFEOS2.h"
 
-// Here's a new implementation; memory leak warnings addressed. jhrg 3/16/11
 // Now we use the vector to replace new []. KY 2012-12-30
-
 bool HDFEOS2ArrayMissGeoField::read()
 {
 
+    // Declaration of offset,count and step
     vector<int> offset;
     offset.resize(rank);
     vector<int> count;
@@ -34,9 +33,8 @@ bool HDFEOS2ArrayMissGeoField::read()
     vector<int> step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = -1;
-
-    // format_constraint throws on error;
     nelms = format_constraint(&offset[0], &step[0], &count[0]);
 
     vector<int> val;
@@ -62,8 +60,8 @@ bool HDFEOS2ArrayMissGeoField::read()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFEOS2ArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 {

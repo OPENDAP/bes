@@ -1,3 +1,14 @@
+2013-07-30    <hyoklee@hdfgroup.org>
+	* HDFSP*.cc|h, HE2*.cc|h, HDFEOS2.cc|h, HDFCF*.cc|h
+	improved code readability.
+	improved archivemetadata handling in CERES.
+	corrected NSIDC MOD29 product handling.
+	* h4.conf.in, bes-testsuite/bes.conf.with_hdfeos2.in:
+	EnableCERESVdata key is added.
+	EnableMODISMISRVdata key is renamed to EnableHybridVdata.
+	* Makefile.am:removed two redundant source code files
+	HDFEOS2ArraySwathGeoDimMapField.cc(.h)
+
 2013-05-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* hdf4_handler.spec: changed version.
 	* README: changed the planned release date from 9/30/13 to 5/30/13.

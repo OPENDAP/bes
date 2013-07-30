@@ -457,7 +457,7 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 
 
 
-
+// Combine ECS metadata coremetadata.0,coremetadata.1 etc. into one string.
 bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_number_names, vector<string>& no_num_data)
 {
     bool suffix_is_num_or_null = true;
@@ -539,7 +539,7 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 }
 
 // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
-// Since the ECS metadata is always written(sorted) in increasing numeric order, we don't performance this now.
+// Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
 // Should watch if there are any outliers. KY 2012-08-31
 void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag) {
 
@@ -589,10 +589,10 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
 
 }
 
+// Obtain SD attribute value
 void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
 
     int32 sds_index = SDfindattr(sd_id, attrname.c_str());
-        
     if(sds_index == FAIL){
         Vend(file_id);
         Hclose(file_id);
@@ -1184,6 +1184,7 @@ HE2CF::write_attribute(const string& _gname,
     return true;
 }
 
+// The application will make sure the fill value falls in the valid range of the datatype values.
 bool
 HE2CF::write_attribute_FillValue(const string& _varname, 
                                  int _type,
@@ -1195,6 +1196,12 @@ HE2CF::write_attribute_FillValue(const string& _varname,
     switch (_type) {
         
         case DFNT_UINT8:
+        {
+            uint8 val = (uint8) value;
+            v_ptr = (void*)&val;
+        }
+
+        break;
         case DFNT_INT8:        
         {
             int8 val = (int8) value;
@@ -1203,16 +1210,29 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         }
         break;
         case DFNT_INT16:
-        case DFNT_UINT16:        
         {
             int16 val = (int16) value;
             v_ptr = (void*)&val;
         }
         break;
+
+        case DFNT_UINT16:        
+        {
+            uint16 val = (uint16) value;
+            v_ptr = (void*)&val;
+        }
+        break;
+
         case DFNT_INT32:
+         {
+            int32 val = (int32) value;
+            v_ptr = (void*)&val;
+
+        }
+        break;
         case DFNT_UINT32:        
         {
-            int32 val = (int32) value;
+            uint32 val = (uint32) value;
             v_ptr = (void*)&val;
 
         }

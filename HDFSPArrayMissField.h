@@ -27,6 +27,9 @@ class HDFSPArrayMissGeoField:public Array
         virtual ~ HDFSPArrayMissGeoField ()
         {
         }
+
+        // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+        // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -38,7 +41,8 @@ class HDFSPArrayMissGeoField:public Array
 
     private:
 
-        int rank, tnumelm;
+        int rank;
+        int tnumelm;
 };
 
 

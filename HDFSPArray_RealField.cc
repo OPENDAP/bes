@@ -21,6 +21,7 @@
 bool
 HDFSPArray_RealField::read ()
 {
+    // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
     vector<int>count;
@@ -28,8 +29,10 @@ HDFSPArray_RealField::read ()
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint (&offset[0], &step[0], &count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
     vector<int32>count32;
@@ -37,45 +40,47 @@ HDFSPArray_RealField::read ()
     vector<int32>step32;
     step32.resize(rank);
 
+    // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
         count32[i] = (int32) count[i];
         step32[i] = (int32) step[i];
     }
 
-    //Obtain SDS IDs. 
+    // Initialize SD ID and SDS ID. 
     int32 sdid = 0;
     int32 sdsid = 0;
 
+    // Obtain SD ID.
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (sdid < 0) {
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // Obtain the SDS index based on the input sds reference number.
     int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
-
     if (sdsindex == -1) {
         SDend (sdid);
         ostringstream eherr;
-
         eherr << "SDS index " << sdsindex << " is not right.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // Obtain this SDS ID.
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         SDend (sdid);
         ostringstream eherr;
-
         eherr << "SDselect failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // Initialize the temp. returned value.
     int32 r = 0;
 
+    // Loop through all the possible SDS datatype and then read the data.
     switch (dtype) {
 
         case DFNT_INT8:
@@ -87,7 +92,6 @@ HDFSPArray_RealField::read ()
                 SDendaccess (sdsid);
                 SDend (sdid);
                 ostringstream eherr;
-
                 eherr << "SDreaddata failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -97,7 +101,6 @@ HDFSPArray_RealField::read ()
 #else
             vector<int32>newval;
             newval.resize(nelms);
-
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
@@ -164,7 +167,6 @@ HDFSPArray_RealField::read ()
                 SDendaccess (sdsid);
                 SDend (sdid);
                 ostringstream eherr;
-
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -172,6 +174,7 @@ HDFSPArray_RealField::read ()
             set_value ((dods_uint16 *) &val[0], nelms);
         }
             break;
+
         case DFNT_INT32:
         {
             vector<int32>val;
@@ -245,21 +248,19 @@ HDFSPArray_RealField::read ()
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
+    // Close the SDS interface
     r = SDendaccess (sdsid);
     if (r != 0) {
         SDend (sdid);
         ostringstream eherr;
-
         eherr << "SDendaccess failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
+    // Close the SD interface
     r = SDend (sdid);
     if (r != 0) {
-
         ostringstream eherr;
-
         eherr << "SDend failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -267,8 +268,8 @@ HDFSPArray_RealField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way to pass the coordinates of the subsetted region from the client to the handlers
+// Returns the number of elements 
 int
 HDFSPArray_RealField::format_constraint (int *offset, int *step, int *count)
 {

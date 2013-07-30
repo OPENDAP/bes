@@ -7,8 +7,9 @@
 // swaths using dimension map. The files are still HDF-EOS2 files.
 // The file name is determined at the hdfdesc.cc.
 // Since the latitude and longitude fields are stored as 
-// the real data fields in an HDF-EOS2 file, this file is just
-// like the HDFEOS_RealField.cc.
+// the real data fields in an HDF-EOS2 file, 
+// The read function is essentially the same as retrieving the data value of a
+// general HDF-EOS2 field. 
 
 #ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2ArraySwathGeoDimMapExtraField.h"
@@ -27,27 +28,26 @@ bool
 HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 {
 
+    // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
-
     vector<int>count;
     count.resize(rank);
-
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
-
     vector<int32>count32;
     count32.resize(rank);
-
     vector<int32>step32;
     step32.resize(rank);
 
-
+    // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
         count32[i] = (int32) count[i];
@@ -63,6 +63,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     int32 (*inqfunc) (char *, char *, int32 *);
 
 
+    // Define function pointers to handle the swath
     openfunc = SWopen;
     closefunc = SWclose;
     attachfunc = SWattach;
@@ -71,7 +72,9 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     readfieldfunc = SWreadfield;
     inqfunc = SWinqswath;
 
-    //Swath 
+    // We may eventually combine the following code with other code, so
+    // we don't add many comments from here to the end of the file. 
+    // The jira ticket about combining code is HFRHANDLER-166.
     int32 fileid = -1, swathid = -1; 
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -319,8 +322,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFEOS2ArraySwathGeoDimMapExtraField::format_constraint (int *offset, int *step, int *count)
 {

@@ -36,7 +36,9 @@ class HDFEOS2ArrayGridGeoField:public Array
             condenseddim (condenseddim),
             speciallon (speciallon),
             specialformat (specialformat),
-            filename (filename), gridname (gridname), fieldname (fieldname) {
+            filename (filename), 
+            gridname (gridname), 
+            fieldname (fieldname) {
         }
         virtual ~ HDFEOS2ArrayGridGeoField ()
         {
@@ -52,6 +54,12 @@ class HDFEOS2ArrayGridGeoField:public Array
         void CalculateLatLon (int32 gfid, int fieldtype, int specialformat, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
         // Calculate Special Latitude and Longitude.
+        //One MOD13C2 file doesn't provide projection code
+        // The upperleft and lowerright coordinates are all -1
+        // We have to calculate lat/lon by ourselves.
+        // Since it doesn't provide the project code, we double check their information
+        // and find that it covers the whole globe with 0.05 degree resolution.
+        // Lat. is from 90 to -90 and Lon is from -180 to 180.
         void CalculateSpeLatLon (int32 gfid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
         // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
@@ -171,6 +179,10 @@ class HDFEOS2ArrayGridGeoField:public Array
         } // end
 
         // Calculate Latitude and Longitude for SOM Projection.
+        // since the latitude and longitude of the SOM projection are 3-D, so we need to handle this projection in a special way. 
+        // Based on our current understanding, the third dimension size is always 180. 
+        // This is according to the MISR Lat/lon calculation document 
+        // at http://eosweb.larc.nasa.gov/PRODOCS/misr/DPS/DPS_v50_RevS.pdf
         void CalculateSOMLatLon(int32, int*, int*, int*, int);
 
         // Calculate Latitude and Longitude for LAMAZ Projection.
@@ -199,10 +211,70 @@ class HDFEOS2ArrayGridGeoField:public Array
         virtual bool read ();
 
     private:
-        int rank,fieldtype;
-        bool llflag, ydimmajor, condenseddim, speciallon;
-        int specialformat;
-        std::string filename, gridname, fieldname;
+
+        // Field array rank
+        int  rank;
+       
+        // Distinguish coordinate variables from general variables.
+        // For fieldtype values:
+        // 0 the field is a general field
+        // 1 the field is latitude.
+        // 2 the field is longtitude.    
+        // 3 the field is a coordinate variable defined as level.
+        // 4 the field is an inserted natural number.
+        // 5 the field is time.
+        int  fieldtype;
+       
+        // The flag to indicate if lat/lon is an existing field in the file or needs to be calculated.
+        bool llflag;
+
+        // Flag to check if this lat/lon field is YDim major(YDim,XDim). This is necessary to use GDij2ll
+        bool ydimmajor;
+
+        // Flag to check if this 2-D lat/lon can be condensed to 1-D lat/lon
+        bool condenseddim;
+
+        // Flag to check if this file's longitude needs to be handled specially.
+        // Note: longitude values range from 0 to 360 for some fields. We need to map the values to -180 to 180.
+        bool speciallon;
+
+        // Latitude and longitude values of some HDF-EOS2 grids need to be handled in special ways.
+        // There are four cases that we need to calculate lat/lon differently.
+        // This number is used to distinguish them.      
+        // 1) specialformat = 1 
+        // Projection: Geographic
+        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
+        // Instead, they simply represent lat/lon values as -180.0 or -90.0.
+        // Products: mostly MODIS MCD Grid
+
+        // 2) specialformat = 2
+        // Projection: Geographic
+        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
+        // Instead, their upleft or lowright are simply represented as default(-1).
+        // Products: mostly TRMM CERES Grid
+
+        // 3) specialformat = 3
+        // One MOD13C2 doesn't provide project code 
+        // The upperleft and lowerright coordinates are all -1
+        // We have to calculate lat/lon by ourselves.
+        // Since it doesn't provide the project code, we double check their information
+        // and find that it covers the whole globe with 0.05 degree resolution.
+        // Lat. is from 90 to -90 and Lon is from -180 to 180.
+
+        // 4) specialformat = 4
+        // Projection: Space Oblique Mercator(SOM) 
+        // The lat/lon needs to be handled differently for the SOM projection
+        // Products: MISR
+        int  specialformat;
+
+        // HDF-EOS2 file name
+        std::string filename;
+
+        // HDF-EOS2 grid name
+        std::string gridname; 
+
+        // HDF-EOS2 field name
+        std::string fieldname;
 };
 #endif
 #endif

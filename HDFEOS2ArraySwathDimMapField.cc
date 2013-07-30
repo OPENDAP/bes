@@ -25,6 +25,7 @@ bool
 HDFEOS2ArraySwathDimMapField::read ()
 {
 
+    // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
 
@@ -34,8 +35,10 @@ HDFEOS2ArraySwathDimMapField::read ()
     vector<int>step;
     step.resize(rank);
 
+    // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
+    // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
     offset32.resize(rank);
 
@@ -45,12 +48,14 @@ HDFEOS2ArraySwathDimMapField::read ()
     vector<int32>step32;
     step32.resize(rank);
 
+    // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
         offset32[i] = (int32) offset[i];
         count32[i] = (int32) count[i];
         step32[i] = (int32) step[i];
     }
 
+    // Define function pointers to handle both grid and swath
     int32 (*openfunc) (char *, intn);
     intn (*closefunc) (int32);
     int32 (*attachfunc) (int32, char *);
@@ -83,7 +88,8 @@ HDFEOS2ArraySwathDimMapField::read ()
     }
 
     // Swath ID, swathid is actually in this case only the id of latitude and longitude.
-    int32 sfid = -1, swathid = -1; 
+    int32 sfid = -1;
+    int32 swathid = -1; 
 
     // Open, attach and obtain datatype information based on HDF-EOS2 APIs.
     sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -103,6 +109,10 @@ HDFEOS2ArraySwathDimMapField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // dimmaps was set to be empty in hdfdesc.cc if the extra geolocation file also uses the dimension map
+    // This is because the dimmaps may be different in the MODIS geolocation file. So we cannot just pass
+    // the dimmaps to this class.
+    // Here we then obtain the dimension map info. in the geolocation file.
     if(true == dimmaps.empty()) {
     
         int32 nummaps = 0;
@@ -146,8 +156,16 @@ HDFEOS2ArraySwathDimMapField::read ()
         }
 
     }
-    int32 tmp_rank = -1, tmp_dims[rank]; 
+
+    // The code that handles the MODIS scale/offset/valid_range is very similar with the code
+    // in HDFEOS2Array_Realfield.cc. They may be combined in the future(jira ticket HFRHANDLER-166).
+    // So don't revise comments in the following code. KY 2013-07-15
+    // tmp_rank and tmp_dimlist are two dummy variables that are only used when calling fieldinfo.
+    int32 tmp_rank = -1;
     char tmp_dimlist[1024];
+
+    // field dimension sizes
+    int32 tmp_dims[rank]; 
     int32 type = -1;
     intn r = -1;
 
@@ -815,8 +833,8 @@ HDFEOS2ArraySwathDimMapField::read ()
     return false;
 }
 
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
+// Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
+// Return the number of elements to read. 
 int
 HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step, int *count)
 {
