@@ -1,4 +1,8 @@
-2013-07-30    <hyoklee@hdfgroup.org>
+2013-08-15 Hyo-Kyung Lee   <hyoklee@hdfgroup.org>
+
+	* HDFCFUtil.cc: changed the way to output DAP string attributes.
+
+2013-07-30 Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* HDFSP*.cc|h, HE2*.cc|h, HDFEOS2.cc|h, HDFCF*.cc|h
 	improved code readability.
 	improved archivemetadata handling in CERES.

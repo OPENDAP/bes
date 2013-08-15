@@ -1532,8 +1532,8 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
  
                     if((*j)->getFieldOrder() == 1) {
                         if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-                            string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
-                            string tempfinalstr= string(tempstring2.c_str());
+                            string tempfinalstr;
+                            copy((*j)->getValue().begin(),(*j)->getValue().end(),tempfinalstr.begin());
                             at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
                         }
                         else {
