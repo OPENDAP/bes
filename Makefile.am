@@ -94,21 +94,38 @@ cccc:
 
 # Build the HDF-EOS DAS scanner
 lex.he5das.cc: he5das.lex he5das.tab.cc he5das.tab.hh
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+	$(LEX) $(LFLAGS) $<
 
 # Build the HDF-EOS DAS parser
-he5das.tab.cc he5das.tab.hh: he5das.y h5cfdap.cc
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5das -o he5das.tab.cc $<
-	if test -e he5das.tab.cc.h; then mv he5das.tab.cc.h he5das.tab.hh; fi
+he5das.tab.cc: he5das.yy h5cfdap.cc
+	$(YACC) $(YFLAGS) $<
 
 # Build the HDF-EOS DDS scanner
-lex.he5dds.cc: he5dds.lex #he5dds.tab.cc he5dds.tab.hh 
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+lex.he5dds.cc: he5dds.lex
+	$(LEX) $(LFLAGS) $<
 
 # Build the HDF-EOS DDS parser
-he5dds.tab.cc he5dds.tab.hh: he5dds.y he5dds.lex
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5dds -o he5dds.tab.cc $<
-	if test -e he5dds.tab.cc.h; then mv he5dds.tab.cc.h he5dds.tab.hh; fi
+he5dds.tab.cc: he5dds.yy he5dds.lex
+	$(YACC) $(YFLAGS) $<
+
+# Build the HDF-EOS DAS scanner
+#lex.he5das.cc: he5das.lex he5das.tab.cc he5das.tab.hh
+#	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+
+# Build the HDF-EOS DAS parser
+#he5das.tab.cc he5das.tab.hh: he5das.y h5cfdap.cc
+#	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5das -o he5das.tab.cc $<
+#	if test -e he5das.tab.cc.h; then mv he5das.tab.cc.h he5das.tab.hh; fi
+
+# Build the HDF-EOS DDS scanner
+#lex.he5dds.cc: he5dds.lex #he5dds.tab.cc he5dds.tab.hh 
+#	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+
+# Build the HDF-EOS DDS parser
+#he5dds.tab.cc he5dds.tab.hh: he5dds.y he5dds.lex
+#	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5dds -o he5dds.tab.cc $<
+#	if test -e he5dds.tab.cc.h; then mv he5dds.tab.cc.h he5dds.tab.hh; fi
+
 
 
 

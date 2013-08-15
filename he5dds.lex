@@ -22,6 +22,8 @@ static int start_line;		/* used in quote and comment error handlers */
 %option noyywrap
 %option prefix="he5dds"
 %option outfile="lex.he5dds.cc"
+%option 8bit
+
 %x quote
 %x comment
 

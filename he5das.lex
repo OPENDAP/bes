@@ -77,6 +77,7 @@ static int start_line;		/* used in quote and comment error handlers */
 %option noyywrap
 %option prefix="he5das"
 %option outfile="lex.he5das.cc"
+%option 8bit
 
 %x quote
 %x comment

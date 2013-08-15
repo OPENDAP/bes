@@ -28,10 +28,10 @@
    jeh 6/19/1998
 */
 
-%{
+%code requires {
 #define YYSTYPE char *
 #define YYDEBUG 1
-#define YYPARSE_PARAM arg
+// #define YYPARSE_PARAM arg
 /* 
  These macros are used to access the `arguments' passed to the parser. A
  pointer to an error object and a pointer to an integer status variable are
@@ -63,6 +63,10 @@
 using namespace std;
 using namespace libdap;
 
+} // code requires
+
+%code {
+
 static string name;             /* holds name in attr_pair rule */
 static string type;             /* holds type in attr_pair rule */
 static int commentnum=0;        /* number of current comment */
@@ -73,13 +77,19 @@ static string NO_DAS_MSG =
 Check that the URL is correct.";
 
 int he5daslex(void);
-void he5daserror(char *s);
+void he5daserror(parser_arg *arg, char *s);
 static void process_group(parser_arg *arg, const string &s);
 
-%}
+} // code
 
-/* Commented because bison 1.28 does not support this option */
-/* %debug */ 
+%require "2.5"
+
+%parse-param {parser_arg *arg}
+%name-prefix "he5das"
+%defines
+%debug
+%verbose
+
 %expect 10
 
 %token DAS_GROUP
@@ -371,7 +381,7 @@ strs:		DAS_STR
 
 */
 void
-he5daserror(char *s)
+he5daserror(parser_arg *, char *s)
 {
   cerr << s << endl;
 }

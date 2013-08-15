@@ -24,12 +24,14 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 1800 South Oak Street, Champaign, 
 // IL 61821
-%{
+
+%code requires {
+
 #define YYSTYPE char *
 #define YYDEBUG 1
 // Uncomment the following line for debugging.
 //#define VERBOSE 
-#define YYPARSE_PARAM he5parser
+// #define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,18 +50,27 @@ using namespace std;
 // It's defined in he5dds.lex.
 //extern int yy_line_num;	
 
+} // code requires
+
+%code {
 // This is a flag to indicate if parser is reading geolocatoin or data
 // variable.
 // This should be changed to a enum type parser state variable later.
 bool swath_is_geo_field = false;
 string dimension_name = "";
 
-void he5ddserror(char *s);
+void he5ddserror(HE5Parser *he5parser, char *s);
 int  he5ddslex(void);
 
+} //code
 
-%}
+%require "2.5"
 
+%parse-param {HE5Parser *he5parser}
+%name-prefix "he5dds"
+%defines
+%debug
+%verbose
 
 %token GROUP
 %token END_GROUP
@@ -663,7 +674,7 @@ attribute_lowerright: LOWERRIGHTPT '(' FLOAT ',' FLOAT ')'
 //  This function is required for linking, but DODS uses its own error
 // reporting mechanism.
 void
-he5ddserror(char *s)
+he5ddserror(HE5Parser *, char *s)
 {
     cerr << "he5dds.y ERROR: " << s << endl;
 }

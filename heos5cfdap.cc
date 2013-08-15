@@ -61,8 +61,8 @@
 struct yy_buffer_state;
 
 yy_buffer_state *he5dds_scan_string(const char *str);
-int he5ddsparse(void *arg);
-int he5dasparse(void *arg);
+int he5ddsparse(HE5Parser *he5parser);
+int he5dasparse(libdap::parser_arg *arg);
 
 /// Buffer state for NASA EOS metadata scanner
 yy_buffer_state *he5das_scan_string(const char *str);
@@ -102,7 +102,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // Parse the structmetadata
         HE5Parser p;
         HE5Checker c;
-        he5dds_scan_string((const char*) st_str.c_str());
+        he5dds_scan_string(st_str.c_str());
         he5ddsparse(&p);
 //        p.print();
 // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
@@ -236,7 +236,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
         HE5Parser p;
         HE5Checker c;
-        he5dds_scan_string((const char*) st_str.c_str());
+        he5dds_scan_string(st_str.c_str());
         he5ddsparse(&p);
 //      p.print();
 // cerr<<"main loop  p.za_list.size() = "<<p.za_list.size() <<endl;
@@ -608,7 +608,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
             parser_arg arg(at);
 
             he5das_scan_string((const char*) st_str.c_str());
-            if (he5dasparse(static_cast < void *>(&arg)) != 0
+            if (he5dasparse(&arg) != 0
                 || false == arg.status()){
                 cerr << "HDF-EOS StructMetdata parse error!\n";
             }
@@ -622,7 +622,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
             at = das.add_table("CoreMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) core_str.c_str());
-        if (he5dasparse(static_cast < void *>(&arg)) != 0
+        if (he5dasparse(&arg) != 0
                 || false == arg.status()){
             cerr << "HDF-EOS CoreMetadata parse error!\n";
         }
@@ -633,7 +633,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
             at = das.add_table("ArchiveMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) arch_str.c_str());
-        if (he5dasparse(static_cast < void *>(&arg)) != 0
+        if (he5dasparse(&arg) != 0
             || false == arg.status()){
                 cerr << "HDF-EOS ArchiveMetdata parse error!\n";
         }
@@ -659,7 +659,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
             at = das.add_table("SubsetMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) subset_str.c_str());
-        if (he5dasparse(static_cast < void *>(&arg)) != 0
+        if (he5dasparse(&arg) != 0
                 || false == arg.status()) {
             cerr << "HDF-EOS SubsetMetadata parse error!\n";
         }
@@ -670,7 +670,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
             at = das.add_table("ProductMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) product_str.c_str());
-        if (he5dasparse(static_cast < void *>(&arg)) != 0
+        if (he5dasparse(&arg) != 0
                 || false == arg.status()){
             cerr << "HDF-EOS ProductMetadata parse error!\n";
         }
