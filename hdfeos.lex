@@ -50,8 +50,6 @@
 %{
 #include "config_hdf.h"
 
-static char rcsid[] not_used ={"$Id$"};
-
 #include <string.h>
 #include <assert.h>
 
@@ -72,6 +70,11 @@ static int start_line;		/* used in quote and comment error handlers */
 %}
     
 %option noyywrap
+%option nounput
+%option 8bit
+%option prefix="hdfeos"
+%option outfile="lex.hdfeos.cc"
+
 %x quote
 %x comment
 

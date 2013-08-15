@@ -28,7 +28,7 @@
    jeh 6/19/1998
 */
 
-%{
+%code requires {
 
 #define YYSTYPE char *
 #define YYDEBUG 1
@@ -67,9 +67,13 @@ using namespace libdap ;
 #define ERROR_OBJ(arg) ((parser_arg *)(arg))->_error
 #define STATUS(arg) ((parser_arg *)(arg))->_status
 
-#define YYPARSE_PARAM arg
+// #define YYPARSE_PARAM arg
 
 extern int hdfeos_line_num;	/* defined in hdfeos.lex */
+
+} // code requires
+
+%code {
 
 static string name;	/* holds name in attr_pair rule */
 static string type;	/* holds type in attr_pair rule */
@@ -91,16 +95,26 @@ static vector<AttrTable *> *attr_tab_stack;
 
 #define TYPE_NAME_VALUE(x) type << " " << name << " " << (x)
 
+#if 0
 static const char *NO_DAS_MSG =
 "The attribute object returned from the dataset was null\n\
 Check that the URL is correct.";
+#endif
 
 void mem_list_report();
 int hdfeoslex(void);
-void hdfeoserror(const char *s);
+void hdfeoserror(parser_arg *arg, const char *s);
 static void process_group(parser_arg *arg, const string &s);
 
-%}
+} //code
+
+%require "2.5"
+
+%parse-param {parser_arg *arg}
+%name-prefix "hdfeos"
+%defines
+%debug
+%verbose
 
 %expect 10
 
@@ -417,7 +431,7 @@ strs:		STR
 // reporting mechanism.
 
 void
-hdfeoserror(const char *s)
+hdfeoserror(parser_arg *, const char *)
 {
 }
 

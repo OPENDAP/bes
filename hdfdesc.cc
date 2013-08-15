@@ -157,7 +157,7 @@ void *hdfeos_string(const char *yy_str);
 
 struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
-extern int hdfeosparse(void *arg);      // defined in hdfeos.tab.c
+extern int hdfeosparse(libdap::parser_arg *arg);      // defined in hdfeos.tab.c
 
 // Functions for the default option
 void AddHDFAttr(DAS & das, const string & varname,
@@ -890,7 +890,7 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     void *buf = hdfeos_string(metadata.c_str());
     parser_arg arg(at);
 
-    if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+    if (hdfeosparse(&arg) != 0)
         throw Error("HDF-EOS parse error while processing a " + metadata + " HDFEOS attribute.");
 
     if (arg.status() == false) {
@@ -1428,7 +1428,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         void *buf = hdfeos_string(core_metadata.c_str());
         parser_arg arg(at);
 
-        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        if (hdfeosparse(&arg) != 0)
             throw Error("Parse error while processing a CoreMetadata attribute.");
 
         // Errors returned from here are ignored.
@@ -1448,7 +1448,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(archive_metadata.c_str());
         parser_arg arg(at);
-        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        if (hdfeosparse(&arg) != 0)
             throw Error("Parse error while processing an ArchiveMetadata attribute.");
 
         // Errors returned from here are ignored.
@@ -1468,7 +1468,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(struct_metadata.c_str());
         parser_arg arg(at);
-        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        if (hdfeosparse(&arg) != 0)
             throw Error("Parse error while processing a StructMetadata attribute.");
 
         // Errors returned from here are ignored.
@@ -2282,7 +2282,7 @@ BESDEBUG("h4","Testing Debug message "<<endl);
                 // features and not this older parser. jhrg 8/18/11
                 //
                 // TODO: How to log (as opposed to using BESDEBUG)?
-                if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+                if (hdfeosparse(&arg) != 0)
                     throw Error("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute.");
 
                 if (arg.status() == false) {

@@ -145,16 +145,20 @@ rpm: dist
 
 # Build the HDF-EOS parser
 
-hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc $<
-	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
+hdfeos.tab.cc: hdfeos.yy
+	$(YACC) $(YFLAGS) $<
 
+# hdfeos.tab.hh
+#  $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc
+#	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 
 # Build the HDF-EOS scanner
 
 lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
-	mv lex.hdfeos.c lex.hdfeos.cc
+	$(LEX) $(LFLAGS) $<
+
+# $(AM_LFLAGS) -Phdfeos
+#	mv lex.hdfeos.c lex.hdfeos.cc
 
 ###########################################################################
 

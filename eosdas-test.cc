@@ -52,7 +52,7 @@ using namespace std;
 using namespace libdap;
 #include <BESLog.h>
 
-extern int hdfeosparse(void *arg);      // defined in hdfeos.tab.c
+extern int hdfeosparse(parser_arg *arg);      // defined in hdfeos.tab.c
 
 void parser_driver(DAS & das);
 void test_scanner();
@@ -165,7 +165,9 @@ void test_scanner()
 
         default:
             cout << "Error: Unrecognized input" << endl;
+            break;
         }
+
         cout << prompt << flush;        // print prompt after output
     }
 }
@@ -177,7 +179,7 @@ void parser_driver(DAS & das)
         at = das.add_table("test", new AttrTable);
 
     parser_arg arg(at);
-    if (hdfeosparse((void *) &arg) != 0)
+    if (hdfeosparse(&arg) != 0)
         (*BESLog::TheLog()) << "HDF-EOS parse error !" <<endl;
 
     das.print(stdout);
