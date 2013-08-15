@@ -5,8 +5,8 @@
 #
 
 # AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap
-AM_YFLAGS = -d -v
-AM_LFLAGS = -8
+# AM_YFLAGS = -d -v
+# AM_LFLAGS = -8
 
 AUTOMAKE_OPTIONS = foreign check-news
 
@@ -43,13 +43,17 @@ pkginclude_HEADERS = $(HDRS)
 
 # Build the grid selection sub_expression scanner and parser
 
-lex.gse_.cc: gse.lex gse.tab.cc gse.tab.hh
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+lex.gse.cc: gse.lex gse.tab.cc gse.tab.hh
+	$(LEX) $(LFLAGS) $<
 
-gse.tab.cc gse.tab.hh: gse.y
-	echo "YACC: "$(YACC)
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p gse_ -o gse.tab.cc $<
-	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
+# $(AM_LFLAGS) 
+
+gse.tab.cc: gse.yy
+	$(YACC) $(YFLAGS) $<
+
+# gse.tab.hh
+#	if test -e gse.tab.cc.h; then mv gse.tab.cc.h gse.tab.hh; fi
+# $(AM_YFLAGS) -p gse_ -o gse.tab.cc 
 
 # ce_functions.o: ce_functions.cc ce_functions
 

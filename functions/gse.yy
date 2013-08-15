@@ -32,7 +32,7 @@
 // Parse a Grid selection expression. This parser is a little different than
 // the other parsers and uses its own argument class. See parser.h.
 
-%{
+%code requires {
 
 #include "config.h"
 
@@ -52,10 +52,14 @@ using namespace libdap;
 #define gse_arg(arg) ((gse_arg *)(arg))
 
 // Assume bison 1.25
-#define YYPARSE_PARAM arg
+//#define YYPARSE_PARAM arg
+
+} // code requires
+
+%code {
 
 int gse_lex(void);
-void gse_error(const char *str);
+void gse_error(gse_arg *arg, const char *str);
 GSEClause *build_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val);
 GSEClause *build_rev_gse_clause(gse_arg *arg, char id[ID_MAX], int op,
 				double val);
@@ -63,7 +67,15 @@ GSEClause *
 build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, 
 		      int op2, double val2);
 
-%}
+} // code
+
+%require "2.5"
+
+%parse-param {gse_arg *arg}
+%name-prefix "gse_"
+%defines
+%debug
+%verbose
 
 %union {
     bool boolean;
@@ -132,7 +144,7 @@ relop:		SCAN_EQUAL
 %%
 
 void
-gse_error(const char *)
+gse_error(gse_arg *, const char *)
 {
     throw Error(
 "An expression passed to the grid() function could not be parsed.\n\

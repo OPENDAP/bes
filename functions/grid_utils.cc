@@ -36,7 +36,7 @@
 #include "GSEClause.h"
 #include "GridGeoConstraint.h"
 
-int gse_parse(void *arg);
+int gse_parse(libdap::gse_arg *arg);
 void gse_restart(FILE * in);
 
 // Glue routines declared in gse.lex
@@ -118,7 +118,7 @@ void parse_gse_expression(gse_arg *arg, BaseType *expr)
     gse_restart(0); // Restart the scanner.
     void *cls = gse_string(extract_string_argument(expr).c_str());
     // gse_switch_to_buffer(cls); // Get set to scan the string.
-    bool status = gse_parse((void *) arg) == 0;
+    bool status = gse_parse(arg) == 0;
     gse_delete_buffer(cls);
     if (!status)
         throw Error(malformed_expr, "Error parsing grid selection.");

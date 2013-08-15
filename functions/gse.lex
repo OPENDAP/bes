@@ -75,8 +75,9 @@ static void store_op(int op);
 
 %option noyywrap
 %option nounput
+%option 8bit
 %option prefix="gse_"
-%option outfile="lex.gse_.cc"
+%option outfile="lex.gse.cc"
 
 NAN     [Nn][Aa][Nn]
 INF     [Ii][Nn][Ff]
