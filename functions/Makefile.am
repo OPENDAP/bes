@@ -21,10 +21,10 @@ endif
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfunctions_module.la
 
-BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse_.cc
+BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse.cc
 
 SRCS = grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
-gse.tab.cc lex.gse_.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
+gse.tab.cc lex.gse.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
 LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc
 
@@ -83,7 +83,7 @@ functions.conf: functions.conf.in $(top_builddir)/config.status
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > functions.conf
 
 distclean-local:
-	-rm gse.tab.cc gse.tab.hh lex.gse_.cc
+	-rm gse.tab.cc gse.tab.hh lex.gse.cc
 
 # Not nearly as clean as it could be, but this removes .svn directories
 # in subdirs.

@@ -52,6 +52,8 @@ namespace libdap {
 
 // Private methods
 
+#if 0
+// No need to actually define these; declaring them as private is good enough. jhrg 8/20/13
 GSEClause::GSEClause()
 {
     throw InternalErr(__FILE__, __LINE__, "default ctor called for GSEClause");
@@ -66,6 +68,7 @@ GSEClause &GSEClause::operator=(GSEClause &)
 {
     throw InternalErr(__FILE__, __LINE__, "assigment called for GSEClause");
 }
+#endif
 
 // For the comparisons here, we should use an epsilon to catch issues
 // with floating point values. jhrg 01/12/06
