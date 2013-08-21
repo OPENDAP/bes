@@ -48,7 +48,7 @@ lex.gse.cc: gse.lex gse.tab.cc gse.tab.hh
 
 # $(AM_LFLAGS) 
 
-gse.tab.cc: gse.yy
+gse.tab.cc gse.tab.hh: gse.yy
 	$(YACC) $(YFLAGS) $<
 
 # gse.tab.hh
