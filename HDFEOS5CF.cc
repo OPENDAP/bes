@@ -740,7 +740,7 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
 
     // Actually the newname is used to check if the we have the existing
     // third dimension coordinate variable. To avoid the check of
-    // fullpath again. We will make newname to have the path and remove
+    // fullpath again, we will make newname to have the path and remove
      // the grid and grid name before passing to DDS downstream. KY 2012-1-20
     switch (vartype) {
         case GRID:  
@@ -760,6 +760,7 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
 //            var->newname = ((1 == num_swaths)?var->name:
   //                         eos5typestr + eos5_groupname + fslash_str + var->name);
               var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
+//cerr <<"var newname "<<var->newname <<endl;
         }
         break;
         case ZA:  
@@ -1970,6 +1971,7 @@ void EOS5File::Handle_Swath_CVar(bool isaugmented) throw(Exception){
             this->eos5cfswaths.erase(irs);
             irs--;
         }
+//cerr<<"eos5 cf swath name "<<(*irs)->name <<endl;
     } // for (vector <EOS5CFSwath *>::iterator irs = this->eos5cfswaths.begin();
 }
 
@@ -1988,6 +1990,7 @@ cerr<<"Dimension name befor latitude " << *its << endl;
 #endif
 
     // Find latitude and assign to the coordinate variable
+    // (*irv)->fullpath.size() > THIS_EOS5SWATHPATH.size() is necessary to handle the augmented variables. 
     for (vector<Var *>::iterator irv = this->vars.begin();
          irv != this->vars.end(); ++irv) {
         if (SWATH == Get_Var_EOS5_Type(*irv) &&
@@ -2018,6 +2021,7 @@ cerr<<"Dimension name befor latitude " << *its << endl;
         } // if (SWATH == Get_Var_EOS5_Type(*irv) &&
     } // for (vector<Var *>::iterator irv = this->vars.begin() ...
      
+    // Finish this variable, remove it from the list.
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
@@ -2040,14 +2044,22 @@ cerr<<"Dimension name afte latitude " << *its << endl;
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
-            if (SWATH == Get_Var_EOS5_Type(*irv) &&
-                        ((*irv)->fullpath.size() > THIS_EOS5SWATHPATH.size())) {
-                string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
-//cerr<<"var_path_after_swathname "<<var_path_after_swathname <<endl;
-                if (var_path_after_swathname == (*irv)->name) {
-                    delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+            if (SWATH == Get_Var_EOS5_Type(*irv)) {
+#if 0
+                string my_swath_short_path = (*irv)->fullpath.substr(EOS5SWATHPATH.size());
+                size_t first_fslash_pos = my_swath_short_path.find_first_of("/");
+                string my_swath_name = my_swath_short_path.substr(0,first_fslash_pos);
+#endif
+                // Need to find the swath for this variable
+                string my_swath_name = Obtain_Var_EOS5Type_GroupName(*irv,SWATH);
+
+                if (my_swath_name == cfswath->name) {
+                    string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
+                    if (var_path_after_swathname == (*irv)->name) {
+                        delete(*irv);
+                        this->vars.erase(irv);
+                        irv--;
+                    }
                 }
             }
         }
@@ -2156,13 +2168,16 @@ cerr<<"Dimension name afte latitude " << *its << endl;
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
-            if (SWATH == Get_Var_EOS5_Type(*irv) &&
-                        ((*irv)->fullpath.size() > THIS_EOS5SWATHPATH.size())) {
-                string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
-                if (var_path_after_swathname == (*irv)->name) {
-                    delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+            if (SWATH == Get_Var_EOS5_Type(*irv)) { 
+
+                string my_swath_name = Obtain_Var_EOS5Type_GroupName(*irv,SWATH);
+                if (my_swath_name == cfswath->name) {
+                    string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
+                    if (var_path_after_swathname == (*irv)->name) {
+                        delete(*irv);
+                        this->vars.erase(irv);
+                        irv--;
+                    }
                 }
             }
         }
@@ -2453,6 +2468,7 @@ throw(Exception) {
             if (false == mixed_eos5type) {
                 var->newname = ((1 == num_swaths)?var->name:
                                     var->newname.substr(eos5typestr.size()));
+//cerr<<"var->newname "<<var->newname <<endl;
                 if (num_swaths > 1) {
                     for (vector<Dimension *> ::iterator ird = var->dims.begin();
                             ird !=var->dims.end();ird++) {

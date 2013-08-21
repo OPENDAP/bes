@@ -235,6 +235,8 @@ throw(Exception) {
                     var->name = temp_oname.substr(0,temp_oname.size()-1);
                     var->fullpath = full_path_name;
                     var->newname = full_path_name;
+//cerr<<"variable path" <<var->fullpath <<endl;
+
                     cdset = H5Dopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
                     if (cdset < 0)
                         throw2( "Error opening the HDF5 dataset ",full_path_name);
@@ -914,6 +916,7 @@ void File::Flatten_Obj_Name(bool include_attr) throw(Exception) {
     for (vector<Var *>::iterator irv = this->vars.begin();
          irv != this->vars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
+//cerr<<"CF variable new name "<< (*irv)->newname <<endl;
 
         for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
              ird != (*irv)->dims.end(); ++ird) {

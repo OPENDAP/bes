@@ -1,3 +1,7 @@
+2013-08-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HDFEOS5CF.cc|HDFEOS5CF.cc: fixed bug for MLS L2GP DGG v03 products.
+
 2013-05-09  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 	* test.nasa.sh: added comments and removed hyrax version number.
 	* HDF5BaseArray.cc: cleaned up code.
