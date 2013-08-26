@@ -97,7 +97,7 @@ lex.he5das.cc: he5das.lex he5das.tab.cc he5das.tab.hh
 	$(LEX) $(LFLAGS) $<
 
 # Build the HDF-EOS DAS parser
-he5das.tab.cc: he5das.yy h5cfdap.cc
+he5das.tab.cc he5das.tab.hh: he5das.yy h5cfdap.cc
 	$(YACC) $(YFLAGS) $<
 
 # Build the HDF-EOS DDS scanner
@@ -105,7 +105,7 @@ lex.he5dds.cc: he5dds.lex
 	$(LEX) $(LFLAGS) $<
 
 # Build the HDF-EOS DDS parser
-he5dds.tab.cc: he5dds.yy he5dds.lex
+he5dds.tab.cc he5dds.tab.hh: he5dds.yy he5dds.lex
 	$(YACC) $(YFLAGS) $<
 
 # Build the HDF-EOS DAS scanner
