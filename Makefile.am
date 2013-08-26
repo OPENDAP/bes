@@ -79,7 +79,7 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 EXTRA_DIST = data data.nasa hdf-testfiles \
-		hdfeos.y hdfeos.lex \
+		hdfeos.yy hdfeos.lex \
 		COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
 		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh
 
