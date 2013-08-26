@@ -57,7 +57,7 @@ libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libhdf5_module_la_LDFLAGS = -avoid-version -module 
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
-EXTRA_DIST = he5das.y he5dds.y he5das.lex he5dds.lex OSX_Resources \
+EXTRA_DIST = he5das.yy he5dds.yy he5das.lex he5dds.lex OSX_Resources \
 	data data.nasa COPYING hdf5_handler.spec h5.conf.in test.nasa.sh
 
 CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
