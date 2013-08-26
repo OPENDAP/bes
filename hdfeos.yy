@@ -50,7 +50,7 @@ using namespace std;
 #include "Error.h"
 #include "BESDebug.h"
 #include "parser.h"
-#include "hdfeos.tab.hh"
+//#include "hdfeos.tab.hh"
 
 #ifdef TRACE_NEW
 #include "trace_new.h"
@@ -108,7 +108,7 @@ static void process_group(parser_arg *arg, const string &s);
 
 } //code
 
-%require "2.5"
+%require "2.4"
 
 %parse-param {parser_arg *arg}
 %name-prefix "hdfeos"
