@@ -42,7 +42,7 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "he5dds.tab.hh"
+//#include "he5dds.tab.hh"
 #include "HE5Parser.h"
  
 using namespace std;
@@ -64,7 +64,7 @@ int  he5ddslex(void);
 
 } //code
 
-%require "2.5"
+%require "2.4"
 
 %parse-param {HE5Parser *he5parser}
 %name-prefix "he5dds"

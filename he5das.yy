@@ -58,7 +58,7 @@
 #include "Error.h"
 #include "debug.h"
 #include "parser.h"
-#include "he5das.tab.hh"
+//#include "he5das.tab.hh"
 
 using namespace std;
 using namespace libdap;
@@ -82,7 +82,7 @@ static void process_group(parser_arg *arg, const string &s);
 
 } // code
 
-%require "2.5"
+%require "2.4"
 
 %parse-param {parser_arg *arg}
 %name-prefix "he5das"
