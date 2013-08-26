@@ -69,7 +69,7 @@ build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1,
 
 } // code
 
-%require "2.5"
+%require "2.4"
 
 %parse-param {gse_arg *arg}
 %name-prefix "gse_"
