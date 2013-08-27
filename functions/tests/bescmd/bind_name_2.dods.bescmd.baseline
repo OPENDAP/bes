@@ -5,10 +5,6 @@
             <Type>3</Type>
             <Message>libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: bind_name(name,variable) requires two arguments.</Message>
             <Administrator>support@opendap.org</Administrator>
-            <Location>
-                <File>BESDapTransmit.cc</File>
-                <Line>79</Line>
-            </Location>
         </BESError>
     </getDODS>
 </response>

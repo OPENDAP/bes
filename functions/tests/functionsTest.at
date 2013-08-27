@@ -37,8 +37,9 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_7.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_8.dods.bescmd)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name.dods.bescmd)
-AT_BESCMD_RESPONSE_TEST(bescmd/bind_name_2.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_3.dods.bescmd)
+# These tests fail when using developer mode
+AT_BESCMD_RESPONSE_TEST(bescmd/bind_name_2.dods.bescmd)
 AT_BESCMD_RESPONSE_TEST(bescmd/bind_name_4.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_5.dods.bescmd)
 

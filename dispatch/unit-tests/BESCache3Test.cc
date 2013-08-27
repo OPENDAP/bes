@@ -107,25 +107,31 @@ string get_md5(const string &file)
     if (fd == -1)
         throw BESInternalError("Can't open for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
-    struct stat buf;
-    int statret = stat(file.c_str(), &buf);
-    if (statret != 0)
-        throw BESInternalError("Can't stat for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
+    try {
+    	struct stat buf;
+    	int statret = stat(file.c_str(), &buf);
+    	if (statret != 0)
+	    throw BESInternalError("Can't stat for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
-    vector<unsigned char> data(buf.st_size);
-    if (read(fd, &data[0], buf.st_size) != buf.st_size)
-        throw BESInternalError("Can't read for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
+    	vector<unsigned char> data(buf.st_size);
+    	if (read(fd, &data[0], buf.st_size) != buf.st_size)
+	    throw BESInternalError("Can't read for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
-    close(fd);
+	close(fd);
 
-    unsigned char *result = MD5(&data[0], buf.st_size, 0);
-    ostringstream oss;
-    oss.setf ( ios::hex, ios::basefield );
-    for (int i = 0; i < MD5_DIGEST_LENGTH; ++i) {
-        oss << setfill('0') << setw(2) << (unsigned int)result[i];
+	unsigned char *result = MD5(&data[0], buf.st_size, 0);
+	ostringstream oss;
+	oss.setf ( ios::hex, ios::basefield );
+	for (int i = 0; i < MD5_DIGEST_LENGTH; ++i) {
+	    oss << setfill('0') << setw(2) << (unsigned int)result[i];
+	}
+
+	return oss.str();
     }
-
-    return oss.str();
+    catch (...) {
+    	close(fd);
+    	throw;
+    }
 }
 
 bool dot_file(const string &file) {
