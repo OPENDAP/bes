@@ -73,15 +73,15 @@ cccc:
 
 .PHONY: fortify
 fortify:
-	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE))
-	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE))
-	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE))
-	(cd cmdln && $(MAKE))
-	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE))
-	(cd standalone && $(MAKE))
-	(cd docs && $(MAKE))
-	(cd bin && $(MAKE))
-	(cd templates && $(MAKE))
+	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd cmdln && $(MAKE) $(MFLAGS))
+	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd standalone && $(MAKE) $(MFLAGS))
+	(cd docs && $(MAKE) $(MFLAGS))
+	(cd bin && $(MAKE) $(MFLAGS))
+	(cd templates && $(MAKE) $(MFLAGS))
 	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
 # Use this to clean the fortify project.

@@ -40,7 +40,7 @@
 
 // left in for now... It would be better to not use an env var
 // since these are easily hacked. jhrg 10/12/11
-#define BES_CONF getenv("BES_CONF")
+// Removed 8/28/13 jhrg #define BES_CONF getenv("BES_CONF")
 
 BESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";

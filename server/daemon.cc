@@ -886,7 +886,13 @@ int main(int argc, char *argv[])
     cerr << "Developer Mode: Not testing if BES is run by root" << endl;
 #endif
 
+#if 0
     daemon_name = argv[0];
+#else
+    // I made this change because argv[0] is too easy to manipulate.
+    // jhrg 8/28/13
+    daemon_name = "besdaemon";
+#endif
 
     string install_dir;
     string pid_dir;
