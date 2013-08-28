@@ -37,6 +37,8 @@
 #include "HDFCFUtil.h"
 #include "HDFSP.h"
 
+const char *_BACK_SLASH= "/";
+
 using namespace HDFSP;
 using namespace std;
 
@@ -279,12 +281,16 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
     if (num_lone_vdata > 0) {
 
         // Since HDF4 is a C library, here we use the "C" way to handle the data, use "calloc" and "free".
-        int32 *ref_array = (int32 *) calloc (num_lone_vdata, sizeof (int32));
+        //int32 *ref_array = (int32 *) calloc (num_lone_vdata, sizeof (int32));
+        vector<int32>ref_array;
+        ref_array.resize(num_lone_vdata);
+#if 0
         if (ref_array == NULL)
             throw1 ("no enough memory to allocate the buffer.");
+#endif
 
-        if (VSlone (file->fileid, ref_array, num_lone_vdata) == FAIL) {
-            free (ref_array);
+        if (VSlone (file->fileid, &ref_array[0], num_lone_vdata) == FAIL) {
+//            free (ref_array);
             throw2 ("cannot obtain lone vdata reference arrays", path);
         }
 
@@ -294,19 +300,19 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
             vdata_id = VSattach (file->fileid, ref_array[i], "r");
             if (vdata_id == FAIL) {
-                free (ref_array);
+ //               free (ref_array);
                 throw2 ("Fail to attach Vdata", path);
             }
             status = VSgetclass (vdata_id, vdata_class);
             if (status == FAIL) {
                 VSdetach (vdata_id);
-                free (ref_array);
+  //              free (ref_array);
                 throw2 ("Fail to obtain Vdata class", path);
             }
 
             if (VSgetname (vdata_id, vdata_name) == FAIL) {
                 VSdetach (vdata_id);
-                free (ref_array);
+   //             free (ref_array);
                 throw3 ("Fail to obtain Vdata name", path, vdata_name);
             }
 
@@ -324,7 +330,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
                 status = VSdetach (vdata_id);
                 if (status == FAIL) {
-                    free (ref_array);
+    //                free (ref_array);
                     throw3 ("VSdetach failed ", "Vdata name ", vdata_name);
                 }
             }	
@@ -374,7 +380,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                     // Obtain number of vdata fields
                     int num_field = VFnfields (vdata_id);
                     if (num_field == FAIL) {
-                        free (ref_array);
+     //                   free (ref_array);
                         VSdetach (vdata_id);
                         throw3 ("number of fields at Vdata ", vdata_name," is -1");
                     }
@@ -384,7 +390,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
                         fieldname = VFfieldname (vdata_id, j);
                         if (fieldname == NULL) {
-                            free (ref_array);
+      //                      free (ref_array);
                             VSdetach (vdata_id);
                             throw5 ("vdata ", vdata_name, " field index ", j,
 									" field name is NULL.");
@@ -399,7 +405,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             // Obtain field size
                             fieldsize = VFfieldesize (vdata_id, j);
                             if (fieldsize == FAIL) {
-                                free (ref_array);
+       //                         free (ref_array);
                                 VSdetach (vdata_id);
                                 throw5 ("vdata ", vdata_name, " field ",fieldname, " size is wrong.");
                             }
@@ -407,7 +413,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             // Obtain number of elements
                             nelms = VSelts (vdata_id);
                             if (nelms == FAIL) {
-                                free (ref_array);
+        //                        free (ref_array);
                                 VSdetach (vdata_id);
                                 throw5 ("vdata ", vdata_name,
                                         " number of field record ", nelms," is wrong.");
@@ -416,7 +422,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             // Allocate data buf
                             char *databuf = (char *) malloc (fieldsize * nelms);
                             if (databuf == NULL) {
-                                free (ref_array);
+         //                       free (ref_array);
                                 VSdetach (vdata_id);
                                 throw1("no enough memory to allocate buffer.");
                             }
@@ -424,7 +430,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             // Initialize the seeking process
                             if (VSseek (vdata_id, 0) == FAIL) {
                                 VSdetach (vdata_id);
-                                free (ref_array);
+           //                     free (ref_array);
                                 free (databuf);
                                 throw5 ("vdata ", vdata_name, "field ",
                                          CERE_META_FIELD_NAME," VSseek failed.");
@@ -433,7 +439,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             // The field to seek is CERE_META_FIELD_NAME
                             if (VSsetfields (vdata_id, CERE_META_FIELD_NAME) == FAIL) {
                                 VSdetach (vdata_id);
-                                free (ref_array);
+             //                   free (ref_array);
                                 free (databuf);
                                 throw5 ("vdata ", vdata_name, "field ",
                                          CERE_META_FIELD_NAME," VSsetfields failed.");
@@ -444,7 +450,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                 == FAIL) {
 
                                 VSdetach (vdata_id);
-                                free (ref_array);
+               //                 free (ref_array);
                                 free (databuf);
                                 throw5 ("vdata ", vdata_name, "field ",
                                          CERE_META_FIELD_NAME," VSread failed.");
@@ -481,7 +487,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
             VSdetach (vdata_id);
         }
-        free (ref_array);
+     //   free (ref_array);
     }
 }
 
@@ -514,6 +520,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
     char vgroup_class[VGNAMELENMAX*4];
 
     // Full path of this vgroup
+//    char full_path[MAX_FULL_PATH_LEN];
+//    char cfull_path[MAX_FULL_PATH_LEN];
     char *full_path      = NULL;
 
     // Copy of a full path of this vgroup 
@@ -539,15 +547,20 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
         // Use the num_of_lones returned to allocate sufficient space for the
         // buffer ref_array to hold the reference numbers of all lone vgroups,
+#if 0
         ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
         if (ref_array == NULL)
             throw1 ("no enough memory to allocate buffer.");
+#endif
+
+        vector<int32>ref_array;
+        ref_array.resize(num_of_lones);
 
         // Call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (file_id, ref_array, num_of_lones);
+        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
         if (num_of_lones == FAIL) {
-            free (ref_array);
+//            free (ref_array);
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", file_id);
         }
@@ -559,7 +572,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             // Attach to the current vgroup 
             vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
             }
@@ -568,7 +581,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
@@ -576,7 +589,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
             }
 
@@ -595,11 +608,11 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+ //               free (ref_array);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
-            full_path = NULL;
+ //           full_path = NULL;
 
             // Allocate enough buffer for the full path
             // MAX_FULL_PATH_LEN(1024) is long enough
@@ -609,29 +622,40 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
             // Documented in a jira ticket HFRHANDLER-168. 
             // KY 2013-07-12
-
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+  //              free (ref_array);
                 throw1 ("No enough memory to allocate the buffer.");
             }
+ //           char full_path[MAX_FULL_PATH_LEN];
+
+            memset(full_path,'\0',MAX_FULL_PATH_LEN);
             
             // Obtain the full path of this vgroup
-            strcpy (full_path, "/");
-            strcat (full_path, vgroup_name);
-            strcat(full_path,"/");
+//            strcpy (full_path, "/");
+//cerr<<"length of BACK_SLASH is "<<strlen(_BACK_SLASH) <<endl;
+//cerr<<"length of BACK_SLASH in siz "<<sizeof(BACK_SLASH) <<endl;
+            strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
+//cerr<<"full_path is "<<full_path <<endl;
+            strncat(full_path,vgroup_name,strlen(vgroup_name));
+            strncat(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
+//            strcat (full_path, vgroup_name);
+//            strcat(full_path,"/");
 
             // Make a copy the current vgroup full path since full path may be passed to a recursive routine
-            cfull_path = NULL;
+  //          cfull_path = NULL;
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
-                free (full_path);
+                //free (ref_array);
+            //    free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            strcpy (cfull_path, full_path);
+            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+
+            strncpy(cfull_path,full_path,strlen(full_path));
+//            strcpy (cfull_path, full_path);
 
             // Loop all vgroup objects
             for (int i = 0; i < num_gobjects; i++) {
@@ -639,7 +663,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 // Obtain the object tag/ref pair of an object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
                     Vdetach (vgroup_id);
-                    free (ref_array);
+                 //   free (ref_array);
                     free (full_path);
                     free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
@@ -649,8 +673,11 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 // If the object is a vgroup,always pass the original full path to its decendant vgroup
                 // The reason to use a copy is because the full_path will change to its decendant vgroup name.
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
-                    strcpy (full_path, cfull_path);
+                    strncpy(full_path,cfull_path,strlen(cfull_path)+1);
+                    full_path[strlen(cfull_path)]='\0';
+                    //strcpy (full_path, cfull_path);
                     obtain_vdata_path (file_id,  full_path, obj_ref);
+//cerr<<"full path " << full_path <<endl;
                 }
 
                 // If this object is vdata
@@ -660,7 +687,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     vdata_id = VSattach (file_id, obj_ref, "r");
                     if (vdata_id == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                  //      free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSattach failed ", "vgroup_name is ",
@@ -672,7 +699,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     status = VSgetname (vdata_id, vdata_name);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                   //     free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSgetclass failed ", "vgroup_name is ",
@@ -684,7 +711,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     status = VSgetclass (vdata_id, vdata_class);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                    //    free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSgetclass failed ", "vgroup_name is ",
@@ -711,7 +738,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
                             Vdetach (vgroup_id);
-                            free (ref_array);
+                     //       free (ref_array);
                             free (full_path);
                             free (cfull_path);
                             throw3 ("VSdetach failed ",
@@ -755,7 +782,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
                             Vdetach (vgroup_id);
-                            free (ref_array);
+                      //      free (ref_array);
                             free (full_path);
                             free (cfull_path);
                             throw3 ("VSdetach failed ",
@@ -772,13 +799,13 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
-                free (ref_array);
+             //   free (ref_array);
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
         }//end of the for loop
 
-        if (ref_array != NULL)
-            free (ref_array);
+      //  if (ref_array != NULL)
+       //     free (ref_array);
     }// end of the if loop
 
 }
@@ -1372,7 +1399,7 @@ throw (Exception)
     int32 num_of_lones =  -1; 
 
     // buffer to hold the ref numbers of lone vgroups
-    int32 *ref_array;			   
+//    int32 *ref_array;			   
     int32 num_gobjects;
 
     // Object reference and tag pair. Key to find an HDF4 object
@@ -1391,9 +1418,11 @@ throw (Exception)
 
     // full path of an object
     char *full_path;
+   // char full_path[MAX_FULL_PATH_LEN];
 
     // copy of the full path
     char *cfull_path;
+//    char cfull_path[MAX_FULL_PATH_LEN];
 
     // Obtain a SD instance
     SD *sd = new SD (sdfd, fileid);
@@ -1440,15 +1469,17 @@ throw (Exception)
 
         // use the num_of_lones returned to allocate sufficient space for the
         // buffer ref_array to hold the reference numbers of all lone vgroups,
-        ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
-        if (ref_array == NULL)
-            throw1 ("no enough memory to allocate buffer.");
+        vector<int32>ref_array;
+        ref_array.resize(num_of_lones);
+//        ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
+//        if (ref_array == NULL)
+//            throw1 ("no enough memory to allocate buffer.");
 
         // and call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (fileid, ref_array, num_of_lones);
+        num_of_lones = Vlone (fileid, &ref_array[0], num_of_lones);
         if (num_of_lones == FAIL) {
-            free (ref_array);
+ //           free (ref_array);
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", fileid);
         }
@@ -1460,7 +1491,7 @@ throw (Exception)
             // Attach to the current vgroup 
             vgroup_id = Vattach (fileid, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
             }
@@ -1468,14 +1499,14 @@ throw (Exception)
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
             }
 
@@ -1494,7 +1525,7 @@ throw (Exception)
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
@@ -1507,26 +1538,30 @@ throw (Exception)
             // Documented in a jira ticket HFRHANDLER-168. 
             // KY 2013-07-12
             
-            full_path = NULL;
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 throw1 ("No enough memory to allocate the buffer.");
             }
 
-            strcpy (full_path, "/");
-            strcat (full_path, vgroup_name);
+            memset(full_path,'\0',MAX_FULL_PATH_LEN);
+            strncpy(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
+//            strcpy (full_path, "/");
+            //strcat (full_path, vgroup_name);
+            strncat (full_path, vgroup_name,strlen(vgroup_name));
 
-            cfull_path = NULL;
+//            cfull_path = NULL;
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+//                free (ref_array);
                 free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            strcpy (cfull_path, full_path);
+            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+//            strcpy (cfull_path, full_path);
+            strncpy (cfull_path, full_path,strlen(full_path));
 
             // Loop all objects in this vgroup
             for (i = 0; i < num_gobjects; i++) {
@@ -1534,7 +1569,7 @@ throw (Exception)
                 // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
                     Vdetach (vgroup_id);
-                    free (ref_array);
+//                    free (ref_array);
                     free (full_path);
                     free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
@@ -1543,7 +1578,9 @@ throw (Exception)
 
                 // If this object is a vgroup, will call recursively to obtain the SDS path.
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
-                    strcpy (full_path, cfull_path);
+//                    strcpy (full_path, cfull_path);
+                    strncpy(full_path,cfull_path,strlen(cfull_path)+1);
+                    full_path[strlen(cfull_path)]='\0';
                     sd->obtain_noneos2_sds_path (fileid, full_path, obj_ref);
                 }
 
@@ -1570,13 +1607,13 @@ throw (Exception)
             status = Vdetach (vgroup_id);
 
             if (status == FAIL) {
-                free (ref_array);
+//                free (ref_array);
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
         }//end of the for loop
 
-        if (ref_array != NULL)
-            free (ref_array);
+       // if (ref_array != NULL)
+        //    free (ref_array);
     }// end of the if loop
 
     // Loop through the sds reference list; now the list should only include non-EOS SDS objects.
@@ -1958,7 +1995,7 @@ throw (Exception)
     int32 num_of_lones = -1;		
 
     // Buffer to hold the reference numbers of lone vgroups
-    int32 *ref_array;			
+//    int32 *ref_array;			
 
     // Number of vgroup objects
     int32 num_gobjects = 0;
@@ -2006,15 +2043,17 @@ throw (Exception)
 
         // Use the num_of_lones returned to allocate sufficient space for the
         // buffer ref_array to hold the reference numbers of all lone vgroups,
-        ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
-        if (ref_array == NULL)
-            throw1 ("no enough memory to allocate buffer.");
+        vector<int32>ref_array;
+        ref_array.resize(num_of_lones);
+//        ref_array = (int32 *) malloc (sizeof (int32) * num_of_lones);
+//        if (ref_array == NULL)
+//            throw1 ("no enough memory to allocate buffer.");
 
         // And call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (file_id, ref_array, num_of_lones);
+        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
         if (num_of_lones == FAIL) {
-            free (ref_array);
+            //free (ref_array);
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", file_id);
         }
@@ -2026,7 +2065,7 @@ throw (Exception)
             // Attach to the current vgroup 
             vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                free (ref_array);
+                //free (ref_array);
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
             }
@@ -2034,14 +2073,14 @@ throw (Exception)
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+                //free (ref_array);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
             }
 
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+                //free (ref_array);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
             }
 
@@ -2059,7 +2098,7 @@ throw (Exception)
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+                //free (ref_array);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
@@ -2071,33 +2110,39 @@ throw (Exception)
             // At that time, we will use strncpy and strncat instead. We may even think to use C++ vector <char>.
             // Documented in a jira ticket HFRHANDLER-168. 
             // KY 2013-07-12
-            full_path = NULL;
+            //full_path = NULL;
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+                //free (ref_array);
                 throw1 ("No enough memory to allocate the buffer.");
             }
 
-            strcpy (full_path, "/");
-            strcat (full_path, vgroup_name);
-            strcat(full_path,"/");
+            memset(full_path,'\0',MAX_FULL_PATH_LEN);
+            strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
+            strncat(full_path,vgroup_name,strlen(vgroup_name));
+            strncat(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
 
-            cfull_path = NULL;
+            //strcpy (full_path, "/");
+            //strcat (full_path, vgroup_name);
+            //strcat(full_path,"/");
+
+            //cfull_path = NULL;
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
-                free (ref_array);
+                //free (ref_array);
                 free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
-            strcpy (cfull_path, full_path);
+            memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+            strncpy (cfull_path, full_path,strlen(full_path));
 
             // Loop all vgroup objects
             for (int i = 0; i < num_gobjects; i++) {
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
                     Vdetach (vgroup_id);
-                    free (ref_array);
+                    //free (ref_array);
                     free (full_path);
                     free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
@@ -2106,7 +2151,11 @@ throw (Exception)
 
                 // If this is a vgroup, recursively obtain information
                 if (Visvg (vgroup_id, obj_ref) == TRUE) {
-                    strcpy (full_path, cfull_path);
+//                    memset(full_path,'\0',strlen(full_path));
+                    strncpy (full_path, cfull_path,strlen(cfull_path)+1);
+                    full_path[strlen(cfull_path)]='\0';
+cerr<<"cfull path main loop "<<cfull_path <<endl;
+cerr<<"full path main loop " <<full_path <<endl;
                     obtain_path (file_id, sd_id, full_path, obj_ref);
                 }
 
@@ -2116,7 +2165,7 @@ throw (Exception)
                     vdata_id = VSattach (file_id, obj_ref, "r");
                     if (vdata_id == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                        //free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSattach failed ", "vgroup_name is ",
@@ -2126,7 +2175,7 @@ throw (Exception)
                     status = VSgetname (vdata_id, vdata_name);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+      //                  free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSgetclass failed ", "vgroup_name is ",
@@ -2137,7 +2186,7 @@ throw (Exception)
                     status = VSgetclass (vdata_id, vdata_class);
                     if (status == FAIL) {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                        //free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw5 ("VSgetclass failed ", "vgroup_name is ",
@@ -2174,7 +2223,7 @@ throw (Exception)
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
                             Vdetach (vgroup_id);
-                            free (ref_array);
+                         //   free (ref_array);
                             free (full_path);
                             free (cfull_path);
                             throw3 ("VSdetach failed ",
@@ -2184,6 +2233,7 @@ throw (Exception)
                     }
                     // Real vdata 
                     else {
+//cerr<<"full_path is "<<full_path <<endl;
 
                         VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
 
@@ -2216,7 +2266,7 @@ throw (Exception)
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
                             Vdetach (vgroup_id);
-                            free (ref_array);
+                          //  free (ref_array);
                             free (full_path);
                             free (cfull_path);
                             throw3 ("VSdetach failed ",
@@ -2237,7 +2287,7 @@ throw (Exception)
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
                     else {
                         Vdetach (vgroup_id);
-                        free (ref_array);
+                  //      free (ref_array);
                         free (full_path);
                         free (cfull_path);
                         throw3 ("SDS with the reference number ", obj_ref,
@@ -2251,12 +2301,12 @@ throw (Exception)
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
-                free (ref_array);
+               // free (ref_array);
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
         }//end of the for loop
-        if (ref_array != NULL)
-            free (ref_array);
+       // if (ref_array != NULL)
+        //    free (ref_array);
     }// end of the if loop
 
 }
@@ -2318,6 +2368,7 @@ throw (Exception)
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
 
+    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
     vgroup_pid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_pid == FAIL) {
         free (cfull_path);
@@ -2336,9 +2387,16 @@ throw (Exception)
         throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
     }
 
-    strcpy (cfull_path, full_path);
-    strcat (cfull_path, cvgroup_name);
-    strcat (cfull_path, "/");
+cerr<<"full_path 1 "<<full_path <<endl;
+    strncpy(cfull_path,full_path,strlen(full_path));
+    strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
+    strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
+cerr<<"cfull_path 1 "<<cfull_path <<endl;
+
+
+//    strcpy (cfull_path, full_path);
+//    strcat (cfull_path, cvgroup_name);
+//    strcat (cfull_path, "/");
 
     for (i = 0; i < num_gobjects; i++) {
 
@@ -2349,7 +2407,9 @@ throw (Exception)
         }
 
         if (Visvg (vgroup_pid, obj_ref) == TRUE) {
-            strcpy (full_path, cfull_path);
+            strncpy(full_path,cfull_path,strlen(cfull_path)+1);
+            full_path[strlen(cfull_path)]='\0';
+//            strcpy (full_path, cfull_path);
             obtain_path (file_id, sd_id, full_path, obj_ref);
         }
         else if (Visvs (vgroup_pid, obj_ref)) {
@@ -2383,6 +2443,7 @@ throw (Exception)
 
                     VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
 
+cerr<<"cfull_path "<<cfull_path <<endl;
                     // The new name conventions require the path prefixed before the object name.
                     vdataobj->newname = cfull_path + vdataobj->name;
                     // We want to map fields of vdata with more than 10 records to DAP variables
@@ -2471,6 +2532,8 @@ throw (Exception)
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
 
+    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
+
     vgroup_cid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_cid == FAIL) {
         free (cfull_path);
@@ -2489,9 +2552,16 @@ throw (Exception)
         throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
     }
 
+#if 0
     strcpy (cfull_path, full_path);
     strcat (cfull_path, "/");
     strcat (cfull_path, cvgroup_name);
+#endif
+ // NOTE: The order of cat gets changed.
+    strncpy(cfull_path,full_path,strlen(full_path));
+    strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
+    strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
+
 
     for (i = 0; i < num_gobjects; i++) {
 
@@ -2566,6 +2636,7 @@ throw (Exception)
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
     if (cfull_path == NULL)
         throw1 ("No enough memory to allocate the buffer");
+    memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
     vgroup_cid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_cid == FAIL) {
@@ -2585,9 +2656,16 @@ throw (Exception)
         throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
     }
 
+#if 0
     strcpy (cfull_path, full_path);
     strcat (cfull_path, cvgroup_name);
     strcat (cfull_path, "/");
+#endif
+
+    strncpy(cfull_path,full_path,strlen(full_path));
+    strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
+    strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
+
 
     // If having a vgroup "Geolocation Fields", we would like to set the EOS2Swath flag.
     std::string temp_str = std::string(cfull_path);
@@ -2606,7 +2684,9 @@ throw (Exception)
         }
 
         if (Visvg (vgroup_cid, obj_ref) == TRUE) {
-            strcpy (full_path, cfull_path);
+            strncpy(full_path,cfull_path,strlen(cfull_path)+1);
+            full_path[strlen(cfull_path)] = '\0';
+            //strcpy (full_path, cfull_path);
             obtain_vdata_path (file_id, full_path, obj_ref);
         }
         else if (Visvs (vgroup_cid, obj_ref)) {

@@ -991,8 +991,8 @@ HDFSPArrayGeoField::readcersavgid2 (int *offset, int *count, int *step,
                                     int nelms)
 {
 
-    int dimsize0 = 180;
-    int dimsize1 = 360;
+    const int dimsize0 = 180;
+    const int dimsize1 = 360;
     float32 val[count[0]][count[1]];
     float32 orival[dimsize0][dimsize1];
 
@@ -1134,7 +1134,7 @@ HDFSPArrayGeoField::readcersavgid1 (int *offset, int *count, int *step,
     // Following CERES Nested grid
     // URL http://eosweb.larc.nasa.gov/PRODOCS/ceres/SRBAVG/Quality_Summaries/srbavg_ed2d/nestedgrid.html
     if (fieldtype == 1) {		// Calculate the latitude
-        int dimsize0 = 180;
+        const int dimsize0 = 180;
         float32 val[count[0]];
         float32 orival[dimsize0];
 
@@ -1588,8 +1588,8 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
 
     // do subsetting
     // Find the correct index
-    int dim0count = count[0];
-    int dim1count = count[1]; 
+    const int dim0count = count[0];
+    const int dim1count = count[1]; 
     int dim0index[dim0count], dim1index[dim1count];
 
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 

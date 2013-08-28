@@ -485,7 +485,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 {
 
     // load data into primary array
-    HDFArray & primary_array = dynamic_cast < HDFArray & >(*gr->array_var());
+    HDFArray & primary_array = static_cast < HDFArray & >(*gr->array_var());
     if (primary_array.send_p()) {
         LoadArrayFromSDS(&primary_array, sds);
         primary_array.set_read_p(true);
@@ -524,7 +524,7 @@ void LoadSequenceFromVdata(HDFSequence * seq, hdf_vdata & vd, int row)
 {
     Constructor::Vars_iter p;
     for (p = seq->var_begin(); p != seq->var_end(); ++p) {
-        HDFStructure & stru = dynamic_cast < HDFStructure & >(**p);
+        HDFStructure & stru = static_cast < HDFStructure & >(**p);
 
         // find corresponding field in vd
         vector < hdf_field >::iterator vf =

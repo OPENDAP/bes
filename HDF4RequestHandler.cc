@@ -137,19 +137,16 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
         throw;
     } 
     catch (InternalErr & e) {
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
 				__FILE__, __LINE__);
-        throw ex;
     } 
     catch (Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
 				__FILE__, __LINE__);
-        throw ex;
     } 
     catch (...) {
         string s = "unknown exception caught building HDF4 DAS";
-	BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-	throw ex;
+	throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
     return true;
@@ -230,19 +227,16 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
         throw;
     } 
     catch (InternalErr & e) {
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
 				__FILE__, __LINE__);
-        throw ex;
     } 
     catch (Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
 				__FILE__, __LINE__);
-        throw ex;
     } 
     catch (...) {
         string s = "unknown exception caught building HDF4 DDS";
-        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-        throw ex;
+        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
     return true;
@@ -328,19 +322,16 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         throw;
     }
     catch (InternalErr & e) {
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                                 __FILE__, __LINE__);
-        throw ex;
     }
     catch (Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                                 __FILE__, __LINE__);
-        throw ex;
     }
     catch (...) {
         string s = "unknown exception caught building HDF4 DataDDS";
-        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
-        throw ex;
+        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
     return true;

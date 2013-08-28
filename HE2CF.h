@@ -134,7 +134,7 @@ class HE2CF
 
         // Write the Vdata attribute.
         bool write_attr_vdata(int32 vd_id, const string& newfname);
-        void write_error(string _error);
+        void throw_error(string _error);
     
     public:
         HE2CF();

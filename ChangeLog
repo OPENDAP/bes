@@ -1,8 +1,27 @@
-2013-08-15 Hyo-Kyung Lee   <hyoklee@hdfgroup.org>
+2013-08-28  MuQun Yang <myang6@hdfgroup.org>
+
+	* HDFSP.cc,hc2dap.cc,HDFSPArrayGeoField.cc,HE2CF.cc|h
+	* HDF4RequestHandler.cc,HDFGrid.cc
+	improved code to address security audit result.
+
+2013-08-26 James Gallagher   <jgallagher@opendap.org>
+
+	* hdfeos.yy: removed an include that intoruced a loop.
+	* Makefile.am: fixed distcheck.
+
+2013-08-15 James Gallagher   <jgallagher@opendap.org>
+
+	* eosdas-test.cc
+	* hdfdesc.cc
+	* hdfeos.lex
+	fixed the bison/flex parser/scanner code so that it works with a 
+	modern version (2.5++) of bison.
+
+2013-08-15 MuQun Yang <myang6@hdfgroup.org>
 
 	* HDFCFUtil.cc: changed the way to output DAP string attributes.
 
-2013-07-30 Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+2013-07-30 MuQun Yang <myang6@hdfgroup.org>
 	* HDFSP*.cc|h, HE2*.cc|h, HDFEOS2.cc|h, HDFCF*.cc|h
 	improved code readability.
 	improved archivemetadata handling in CERES.

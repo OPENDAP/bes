@@ -79,7 +79,7 @@ vector<array_ce> HDFGrid::get_map_constraints() {
 
 	// Load the array_ce vector with info about each map vector.
 	for (Grid::Map_iter p = map_begin(); p != map_end(); ++p) {
-		Array & a = dynamic_cast<Array &> (**p);
+		Array & a = static_cast<Array &> (**p);
 		Array::Dim_iter q = a.dim_begin(); // maps have only one dimension.
 		int start = a.dimension_start(q, true);
 		int stop = a.dimension_stop(q, true);
@@ -116,7 +116,7 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 	hdfistream_sds sdsin(hdf_file.c_str());
 	try {
 		vector<int> start, edge, stride;
-		HDFArray *primary_array = dynamic_cast<HDFArray *> (array_var());
+		HDFArray *primary_array = static_cast<HDFArray *> (array_var());
 		if (!primary_array)
 			throw InternalErr(__FILE__, __LINE__, "Expected an HDFArray.");
 
@@ -236,7 +236,7 @@ void HDFGrid::transfer_attributes(AttrTable *at) {
 				// Note that the maps are HDFArray instances, so we use that
 				// for the actual copy operation.
 				BESDEBUG("h4",  "Inside HDFGrid::transfer_attreibutes: n = " << n << endl);
-				dynamic_cast<HDFArray&> (*(*(map_begin() + n))).transfer_dimension_attribute(dim);
+				static_cast<HDFArray&> (*(*(map_begin() + n))).transfer_dimension_attribute(dim);
 			}
 
 			a_p++;
