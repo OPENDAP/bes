@@ -1,3 +1,11 @@
+2013-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	* he5das.y, he5dds.y, he5das.lex, he5das.yy, he5dds.yy, he5dds.lex
+	* heos5cfdap.cc,Makefile.am
+	fixed the bison/flex parser/scanner code so that it works with a 
+	modern version (2.5++) of bison.
+	
+
 2013-08-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS5CF.cc|HDFEOS5CF.cc: fixed bug for MLS L2GP DGG v03 products.
