@@ -66,7 +66,7 @@ gse.tab.cc gse.tab.hh: gse.yy
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = functions.conf.in gse.y gse.lex
+EXTRA_DIST = functions.conf.in gse.yy gse.lex
 
 CLEANFILES = *~ functions.conf
 
