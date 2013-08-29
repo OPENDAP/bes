@@ -10,7 +10,14 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS =  . unit-tests tests
+SUBDIRS =  . unit-tests
+# I've removed the tests because they break distcheck and fresh
+# builds. The best fix is to move this out of the BES OR to use
+# dapreader and *.dods files instead of the netcdf_handler (or both
+# ;-) jhrg 8/28/13
+#
+# tests
+
 DIST_SUBDIRS = unit-tests tests
 
 if GDAL_FOUND

@@ -58,8 +58,14 @@ public:
 
     void setUp()
     {
+
+#if 0
+	// env vars are too easy to abuse... removed from bes keys and
+	// these tests. jhrg 8/28/13
+
 	string env_var = (string)TEST_SRC_DIR + "/persistence_cgi_test.ini" ;
 	setenv( "BES_CONF", env_var.c_str(), 1 ) ;
+#endif
     } 
 
     void tearDown()
@@ -96,7 +102,7 @@ public:
 		     << endl ;
 	    }
 	}
-
+#if 0
 	cout << "*****************************************" << endl;
 	cout << "no file set" << endl;
 	setenv( "BES_CONF", "", 1 ) ;
@@ -123,7 +129,7 @@ public:
 	{
 	    cout << "unable to create BESKeys, good, because:" << endl ;
 	}
-
+#endif
 	cout << "*****************************************" << endl;
 	cout << "bad keys, not enough equal signs" << endl;
 	string bes_conf = (string)TEST_SRC_DIR + "/bad_keys1.ini" ;
