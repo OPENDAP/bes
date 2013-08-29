@@ -49,6 +49,8 @@ using std::ostringstream ;
 #include "BuildTCmd1.h"
 #include "BuildTCmd2.h"
 #include "BESError.h"
+#include "TheBESKeys.h"
+
 #include <test_config.h>
 
 int what_test = 0 ;
@@ -76,7 +78,10 @@ public:
 
     void do_test()
     {
+    	TheBESKeys::ConfigFile = "./bes.conf";
+
 	cout << endl << "*****************************************" << endl;
+	cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;
 	cout << "Entered buildT::run" << endl;
 
 	try
