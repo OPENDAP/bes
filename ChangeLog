@@ -1,7 +1,12 @@
+2013-09-06 MuQun Yang <myang6@hdfgroup.org>
+
+	* hdfdesc.cc, HDFSP.cc
+	cleaned up codes after addressing security audit issues.
+
 2013-08-28  MuQun Yang <myang6@hdfgroup.org>
 
-	* HDFSP.cc,hc2dap.cc,HDFSPArrayGeoField.cc,HE2CF.cc|h
-	* HDF4RequestHandler.cc,HDFGrid.cc
+	* HDFSP.cc, hc2dap.cc, HDFSPArrayGeoField.cc, HE2CF.cc|h
+	* HDF4RequestHandler.cc, HDFGrid.cc
 	improved code to address security audit result.
 
 2013-08-26 James Gallagher   <jgallagher@opendap.org>
@@ -14,7 +19,7 @@
 	* eosdas-test.cc
 	* hdfdesc.cc
 	* hdfeos.lex
-	fixed the bison/flex parser/scanner code so that it works with a 
+	fixed the bison/flex parser/scanner code so that it works with a
 	modern version (2.5++) of bison.
 
 2013-08-15 MuQun Yang <myang6@hdfgroup.org>

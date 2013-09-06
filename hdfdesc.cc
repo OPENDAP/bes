@@ -327,6 +327,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                     dds.add_var(ar);
+                    delete bt;
                     delete ar;
                 }
                 // swath, the third-dimension field can be either under "geolocation fields" or "data fields"
@@ -358,6 +359,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                                     dds.add_var(ar);
+                                    delete bt;
                                     delete ar;
                                 }
                                 else {// Use dimension maps in the dimension map file
@@ -382,6 +384,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                                     dds.add_var(ar);
+                                    delete bt;
                                     delete ar;
                                 }
                             }
@@ -401,6 +404,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
+                            delete bt;
                             delete ar;
                         }
                     }
@@ -419,6 +423,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                             ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                         dds.add_var(ar);
+                        delete bt;
                         delete ar;
                     }
                 }
@@ -457,7 +462,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                     dds.add_var(ar);
-
+                    delete bt;
                     delete ar;
                 }
 
@@ -487,6 +492,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                                 dds.add_var(ar);
+                                delete bt;
                                 delete ar;
                             }
                             else {
@@ -511,6 +517,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
 
                                 dds.add_var(ar);
+                                delete bt;
                                 delete ar;
                             }
                         }
@@ -532,6 +539,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
 
                                 dds.add_var(ar);
+                                delete bt;
                                 delete ar;
                         }
                     }
@@ -549,6 +557,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                             ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                         dds.add_var(ar);
+                        delete bt;
                         delete ar;
                     }
                 }
@@ -574,6 +583,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
         }
@@ -1702,6 +1712,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
             dds.add_var(ar);
+            delete bt;
             delete ar;
         }
 
@@ -1724,6 +1735,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
 
             }
@@ -1744,7 +1756,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                 dds.add_var(ar);
-
+                delete bt;
                 delete ar;
             }
         }
@@ -1767,7 +1779,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
             dds.add_var(ar);
-
+            delete bt;
             delete ar;
         }
                    
@@ -1833,6 +1845,7 @@ void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numr
             ar->append_dim(numrec,dimname1);
 
         dds.add_var(ar);
+        delete bt;
         delete ar;
     }
 
