@@ -1,10 +1,29 @@
+2013-09-06  MuQun Yang <myang6@hdfgroup.org>
+
+	* HDF5UInt32.cc
+	* HDF5UInt16.cc
+	* h5gmcfdap.cc
+	* h5das.cc
+	* h5dds.cc
+	* HDF5Float32.cc
+	* HDF5Array.cc
+	* HDF5Str.cc
+	* h5commoncfdap.cc
+	* HDF5Int32.cc
+	* HDF5Int16.cc
+	* HDF5Byte.cc
+	* heos5cfdap.cc
+	* HDF5Float64.cc
+	* HDF5Structure.cc
+	improved code to address issues that security audit has found.
+
 2013-08-28  James Gallagher  <jgallagher@opendap.org>
 
 	* he5das.y, he5dds.y, he5das.lex, he5das.yy, he5dds.yy, he5dds.lex
 	* heos5cfdap.cc,Makefile.am
-	fixed the bison/flex parser/scanner code so that it works with a 
+	fixed the bison/flex parser/scanner code so that it works with a
 	modern version (2.5++) of bison.
-	
+
 
 2013-08-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 

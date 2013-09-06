@@ -389,6 +389,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const string
                 }
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
             break;
@@ -422,6 +423,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const string
                 }
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
 
 
@@ -451,7 +453,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const string
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
-
+                delete bt;
                 delete ar;
 
 
@@ -483,12 +485,13 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const string
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
-
+                delete bt;
                 delete ar;
             }
             break;
             case CV_MODIFY:
             default: 
+                    delete bt;
                     throw InternalErr(__FILE__,__LINE__,"Unsupported coordinate variable type.");
         }
 

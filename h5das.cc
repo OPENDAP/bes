@@ -285,7 +285,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 /// \todo Due to the priority of the handler work, this function will not be 
 /// \todo re-written in this re-engineering process. KY 2011-Nov. 14th
 ///////////////////////////////////////////////////////////////////////////////
-static char *print_attr(hid_t type, int loc, void *sm_buf) {
+string print_attr(hid_t type, int loc, void *sm_buf) {
+//static char *print_attr(hid_t type, int loc, void *sm_buf) {
     union {
         char *tcp;
         short *tsp;
@@ -296,16 +297,19 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         double *tdp;
     } gp;
 
-    char *rep = NULL;		// This holds the return value
-    try {
+    //char *rep = NULL;		// This holds the return value
+    vector<char> rep;
+
+    //try {
 	switch (H5Tget_class(type)) {
 
         case H5T_INTEGER: {
             // change void pointer into the corresponding integer datatype.
             // 32 should be long enough to hold one integer and one
             // floating point number.
-            rep = new char[32];
-            memset(rep, 0, 32);
+            //rep = new char[32];
+            //memset(rep, 0, 32);
+             rep.resize(32);
 
             if (H5Tequal(type, H5T_STD_U8BE) || H5Tequal(type, H5T_STD_U8LE)
                 || H5Tequal(type, H5T_NATIVE_UCHAR)) {
@@ -314,14 +318,14 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 // represent uchar with numerical form since for NASA aura
                 // files, type of missing value is unsigned char. ky
                 // 2007-5-4
-                snprintf(rep, 32, "%u", tuchar);
+                snprintf(&rep[0], 32, "%u", tuchar);
             }
 
             else if (H5Tequal(type, H5T_STD_U16BE)
                      || H5Tequal(type, H5T_STD_U16LE)
                      || H5Tequal(type, H5T_NATIVE_USHORT)) {
                 gp.tusp = (unsigned short *) sm_buf;
-                snprintf(rep, 32, "%hu", *(gp.tusp + loc));
+                snprintf(&rep[0], 32, "%hu", *(gp.tusp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_U32BE)
@@ -329,7 +333,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                      || H5Tequal(type, H5T_NATIVE_UINT)) {
 
                 gp.tip = (int *) sm_buf;
-                snprintf(rep, 32, "%u", *(gp.tip + loc));
+                snprintf(&rep[0], 32, "%u", *(gp.tip + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_U64BE)
@@ -338,7 +342,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                      || H5Tequal(type, H5T_NATIVE_ULLONG)) {
 
                 gp.tlp = (long *) sm_buf;
-                snprintf(rep, 32, "%lu", *(gp.tlp + loc));
+                snprintf(&rep[0], 32, "%lu", *(gp.tlp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I8BE)
@@ -353,7 +357,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 // Byte value > 0.
                 //
                 // See ticket: http://scm.opendap.org/trac/ticket/1199
-                snprintf(rep, 32, "%d", *(gp.tcp + loc));
+                snprintf(&rep[0], 32, "%d", *(gp.tcp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I16BE)
@@ -361,7 +365,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                      || H5Tequal(type, H5T_NATIVE_SHORT)) {
 
                 gp.tsp = (short *) sm_buf;
-                snprintf(rep, 32, "%hd", *(gp.tsp + loc));
+                snprintf(&rep[0], 32, "%hd", *(gp.tsp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I32BE)
@@ -369,7 +373,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                      || H5Tequal(type, H5T_NATIVE_INT)) {
 
                 gp.tip = (int *) sm_buf;
-                snprintf(rep, 32, "%d", *(gp.tip + loc));
+                snprintf(&rep[0], 32, "%d", *(gp.tip + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I64BE)
@@ -378,21 +382,14 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                      || H5Tequal(type, H5T_NATIVE_LLONG)) {
 
                 gp.tlp = (long *) sm_buf;
-                snprintf(rep, 32, "%ld", *(gp.tlp + loc));
+                snprintf(&rep[0], 32, "%ld", *(gp.tlp + loc));
             }
 
             break;
         }
 
         case H5T_FLOAT: {
-        	// FIXME rep is leaked by the throw - replace with vector<char>
-                // James, I try to change rep to vector<char>, but it fails.
-                // I guess it is because of the c string functions we are using.
-                // It may take longer to fix this.
-                // Given the time constraint, I leave this and we will tackle in
-                // the next release. KY 2012-09-28
-            rep = new char[32];
-            memset(rep, 0, 32);
+            rep.resize(32);
             char gps[30];
 
             if (H5Tget_size(type) == 4) {
@@ -408,7 +405,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                     gps[ll++] = '.';
 
                 gps[ll] = '\0';
-                snprintf(rep, 32, "%s", gps);
+                snprintf(&rep[0], 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 8) {
 
@@ -418,7 +415,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 if (!strchr(gps, '.') && !strchr(gps, 'e'))
                     gps[ll++] = '.';
                 gps[ll] = '\0';
-                snprintf(rep, 32, "%s", gps);
+                snprintf(&rep[0], 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 0){
 		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
@@ -441,8 +438,9 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 buf = new char[str_size + 1];
                 strncpy(buf, (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
-                rep = new char[str_size + 3];
-                snprintf(rep, str_size + 3, "%s", buf);
+                //rep = new char[str_size + 3];
+                rep.resize(str_size+3);
+                snprintf(&rep[0], str_size + 3, "%s", buf);
                 rep[str_size + 2] = '\0';
                 delete[] buf; buf = 0;
             }
@@ -456,13 +454,14 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         default:
 	    break;
 	} // switch(H5Tget_class(type))
-    } // try
-    catch (...) {
-	if( rep ) delete[] rep;
-	throw;
-    }
+    //} // try
+    //catch (...) {
+//	if( rep ) delete[] rep;
+//	throw;
+ //   }
 
-    return rep;
+    string rep_str(rep.begin(),rep.end());
+    return rep_str;
 }
 
 
@@ -502,10 +501,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into the DAS table.
-    char *print_rep = NULL;
+    //char *print_rep = NULL;
+    string print_rep;
     vector<char>temp_buf;
 
-    try {
+    //try {
         bool ignore_attr = false;
         hid_t attr_id;
 	for (int j = 0; j < num_attr; j++) {
@@ -588,10 +588,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	        if (attr_inst.ndims == 0) {
 		    for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
 		        print_rep = print_attr(ty_id, loc, &value[0]);
-		        if (print_rep != NULL) {
-			    attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
-		            delete[] print_rep;
-		            print_rep = NULL;
+		        //if (print_rep != NULL) {
+		        if (print_rep.c_str() != NULL) {
+			    attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+		            //delete[] print_rep;
+		            //print_rep = NULL;
                         }
 		    }
 
@@ -626,8 +627,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                             // tempvalue will be moved to the next value.
                    for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
 			    print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-			    if (print_rep != NULL) {
-			        attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
+			    //if (print_rep != NULL) {
+			    if (print_rep.c_str() != NULL) {
+			        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
 			        tempvalue = tempvalue + elesize;
 
 			        DBG(cerr
@@ -635,8 +637,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 				    << "elesize=" << elesize
 				    << endl);
 
-			        delete[] print_rep;
-			        print_rep = NULL;
+			        //delete[] print_rep;
+			        //print_rep = NULL;
 			    }
 			    else {
                                 if (H5Aclose(attr_id) < 0) {
@@ -655,12 +657,14 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
 	    }
 	} // for (int j = 0; j < num_attr; j++)
-    } // try - protects print_rep and value
+    //} // try - protects print_rep and value
+#if 0
     catch (...) {
 	if (print_rep)
 	    delete[] print_rep;
 	throw;
     }
+#endif
 
     DBG(cerr << "<read_objects()" << endl);
 }
@@ -871,18 +875,14 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
        throw InternalErr(__FILE__, __LINE__,
                           "Could not retrieve the comment size.");
     }
-// cerr<<"comment_size= "<<comment_size <<endl;
 
     if (comment_size > 0) {
-    	// FIXME comment leaked
-        //char* comment = new char[comment_size+1];
         vector<char> comment;
         comment.resize(comment_size+1);
         if (H5Oget_comment(oid,&comment[0],comment_size+1)<0) {
 	    throw InternalErr(__FILE__, __LINE__,
                           "Could not retrieve the comment.");
         }
-//printf("comment = %s\n", comment);
 
         // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);

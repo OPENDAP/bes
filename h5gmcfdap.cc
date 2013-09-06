@@ -354,6 +354,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                 }
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
             break;
@@ -382,6 +383,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                 }
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
             break;
@@ -409,6 +411,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
             break;
@@ -435,6 +438,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
             }
             break;
@@ -443,6 +447,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
             case CV_SPECIAL:
             case CV_MODIFY:
             default: 
+                delete bt;
                 throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
         }
     }
@@ -503,6 +508,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string 
         }
 
         dds.add_var(ar);
+        delete bt;
         delete ar;
     }
 

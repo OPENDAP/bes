@@ -121,7 +121,7 @@ bool HDF5Array::m_array_of_structure() {
         int total_elems =
             linearize_multi_dimensions(&offset[0], &step[0], &count[0], &picks[0]);
 
-        HDF5Structure *p = dynamic_cast < HDF5Structure * >(var());
+        HDF5Structure *p = static_cast < HDF5Structure * >(var());
         if (!p) {
             throw InternalErr(__FILE__, __LINE__, "Not a HDF5Structure");
         }
@@ -252,7 +252,7 @@ bool HDF5Array::m_array_in_structure()
 	// Remember the last parent name.
 	parent_name = q->name();
 
-	HDF5Structure &p = dynamic_cast<HDF5Structure &> (*q);
+	HDF5Structure &p = static_cast<HDF5Structure &> (*q);
 	// Remember the index of array from the parent.
 	array_index = p.get_array_index();
 	array_size = p.get_array_size();
@@ -281,7 +281,7 @@ bool HDF5Array::m_array_in_structure()
 	// Remember the last parent name.
 	parent_name = q->name();
 
-	HDF5Structure &p = dynamic_cast<HDF5Structure &> (*q);
+	HDF5Structure &p = static_cast<HDF5Structure &> (*q);
 	// Remember the index of array from the parent.
 	array_index = p.get_array_index();
 	array_size = p.get_array_size();

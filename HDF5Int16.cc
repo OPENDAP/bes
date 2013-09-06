@@ -107,7 +107,7 @@ bool HDF5Int16::read()
 	BaseType *q = get_parent();
 	if (!q)
 	    throw InternalErr(__FILE__, __LINE__, "null pointer");
-	HDF5Structure &p = dynamic_cast<HDF5Structure &> (*q);
+	HDF5Structure &p = static_cast<HDF5Structure &> (*q);
 
 #ifdef DODS_DEBUG
 	int i = H5Tget_nmembers(ty_id);
@@ -159,7 +159,7 @@ bool HDF5Int16::read()
 		}
 		// Remember the last parent name.
 		parent_name = q->name();
-		p = dynamic_cast<HDF5Structure &> (*q);
+		p = static_cast<HDF5Structure &> (*q);
 		// Remember the index of array from the last parent.
 		j = p.get_array_index();
 		q = q->get_parent();

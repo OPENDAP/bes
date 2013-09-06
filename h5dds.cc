@@ -364,7 +364,7 @@ static BaseType *Get_bt(const string &vname,
                 }
 
 
-                HDF5Array &h5_ar = dynamic_cast < HDF5Array & >(*btp);
+                HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
                 for (int dim_index = 0; dim_index < ndim; dim_index++) {
                     h5_ar.append_dim(size2[dim_index]);
                     DBG(cerr << "=Get_bt() " << size2[dim_index] << endl);
@@ -416,52 +416,52 @@ static BaseType *Get_bt(const string &vname,
 
     case dods_byte_c: {
     	// TODO In this/these case(s) you know the type is a dods_byte so you can
-    	// safely use static_cast<>() instead of the more expensive dynamic_cast
+    	// safely use static_cast<>() instead of the more expensive static_cast
     	// operator. Not a huge deal, but static_cast is faster.
-        HDF5Byte &v = dynamic_cast < HDF5Byte & >(*btp);
+        HDF5Byte &v = static_cast < HDF5Byte & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
         
     case dods_int16_c: {
-        HDF5Int16 &v = dynamic_cast < HDF5Int16 & >(*btp);
+        HDF5Int16 &v = static_cast < HDF5Int16 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_uint16_c: {
-        HDF5UInt16 &v = dynamic_cast < HDF5UInt16 & >(*btp);
+        HDF5UInt16 &v = static_cast < HDF5UInt16 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_int32_c: {
-        HDF5Int32 &v = dynamic_cast < HDF5Int32 & >(*btp);
+        HDF5Int32 &v = static_cast < HDF5Int32 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_uint32_c: {
-        HDF5UInt32 &v = dynamic_cast < HDF5UInt32 & >(*btp);
+        HDF5UInt32 &v = static_cast < HDF5UInt32 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_float32_c: {
-        HDF5Float32 &v = dynamic_cast < HDF5Float32 & >(*btp);
+        HDF5Float32 &v = static_cast < HDF5Float32 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_float64_c: {
-        HDF5Float64 &v = dynamic_cast < HDF5Float64 & >(*btp);
+        HDF5Float64 &v = static_cast < HDF5Float64 & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
     }
     case dods_str_c: {
-        HDF5Str &v = dynamic_cast < HDF5Str & >(*btp);
+        HDF5Str &v = static_cast < HDF5Str & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;
@@ -470,7 +470,7 @@ static BaseType *Get_bt(const string &vname,
         break;
         
     case dods_url_c: {
-        HDF5Url &v = dynamic_cast < HDF5Url & >(*btp);
+        HDF5Url &v = static_cast < HDF5Url & >(*btp);
         v.set_did(dt_inst.dset);
         v.set_tid(dt_inst.type);
         break;

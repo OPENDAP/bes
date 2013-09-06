@@ -63,11 +63,6 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
         case tid:                                           \
             bt = new (type)(var->getNewName(),var->getFullPath());  \
             break;
-    // FIXME bt is leaked by the throw below
-    // James, I don't know why bt is leaked below.  Since here we basically
-    // follow the netCDF handler(ncdds.cc), could you give us some advice?
-    // If it is still causing potential leaks, we can fix this in the next release.
-    // KY 2012-09-28
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
         HANDLE_CASE(H5CHAR,HDF5CFInt16);
@@ -86,7 +81,6 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
     if (bt != NULL) {
 
         const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
-        // cerr<<"number of dimensions "<<dims.size() <<endl;
 
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
         if (0 == dims.size()) { 
@@ -94,10 +88,13 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
                 HDF5CFStr *sca_str = NULL;
                 sca_str = new HDF5CFStr(var->getNewName(),filename,var->getFullPath());
                 dds.add_var(sca_str);
+                delete bt;
                 delete sca_str;
             }
-            else 
+            else {
+                delete bt;
                 throw InternalErr(__FILE__,__LINE__,"Non string scalar data is not supported");
+            }
         }
         else {
             HDF5CFArray *ar = NULL;
@@ -110,7 +107,6 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
                                     bt);
 
             for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-               // cerr<<"dim name "<<(*it_d)->getNewName() <<endl;
                if (""==(*it_d)->getNewName()) 
                     ar->append_dim((*it_d)->getSize());
                else 
@@ -118,6 +114,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
             }
 
             dds.add_var(ar);
+            delete bt;
             delete ar;
         }
     }

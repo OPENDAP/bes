@@ -61,7 +61,7 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     if (this == &rhs)
         return *this;
 
-    dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
+    static_cast < Structure & >(*this) = rhs;  // run Structure assignment
 
 
     return *this;
@@ -85,7 +85,7 @@ bool HDF5Structure::read()
     // Read each member in the structure.
     for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
         DBG(cerr << "=read() i=" << i << endl);
-        BaseType *p = dynamic_cast < BaseType * >(*q);
+        BaseType *p = static_cast < BaseType * >(*q);
         p->read();
     }
 
