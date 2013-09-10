@@ -1,3 +1,7 @@
+2013-09-06  hyoklee
+
+	improved code issues.
+
 2013-09-06  MuQun Yang <myang6@hdfgroup.org>
 
 	* HDF5UInt32.cc
@@ -15,7 +19,7 @@
 	* heos5cfdap.cc
 	* HDF5Float64.cc
 	* HDF5Structure.cc
-	improved code to address issues that security audit has found.
+	improved code to address issues.
 
 2013-08-28  James Gallagher  <jgallagher@opendap.org>
 
