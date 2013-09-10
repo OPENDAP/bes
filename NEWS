@@ -1,4 +1,8 @@
 Version 3.11.1
+
+Internal code refinements.
+
+Version 3.11.0
   This version fixed several bugs in handling MODIS (including version 6) and 
 MEaSUREs VIP products. It also improved the CF attributes handling such as 
 valid_range and scale/offset and the archive metadata handling. It provides a 
