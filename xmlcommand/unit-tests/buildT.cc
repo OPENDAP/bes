@@ -51,7 +51,7 @@ using std::ostringstream ;
 #include "BESError.h"
 #include "TheBESKeys.h"
 
-#include <test_config.h>
+#include "test_config.h"
 
 int what_test = 0 ;
 
@@ -78,7 +78,7 @@ public:
 
     void do_test()
     {
-    	TheBESKeys::ConfigFile = "./bes.conf";
+    	TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/bes.conf";
 
 	cout << endl << "*****************************************" << endl;
 	cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;

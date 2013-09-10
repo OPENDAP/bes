@@ -36,9 +36,8 @@ DISTCLEANFILES = test_config.h
 ############################################################################
 # Unit Tests
 
-
 test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
 
 if CPPUNIT
 UNIT_TESTS = propsT buildT

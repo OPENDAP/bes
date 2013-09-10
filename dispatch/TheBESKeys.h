@@ -50,7 +50,8 @@ class TheBESKeys : public BESKeys
     static string ConfigFile ;
     static BESKeys *TheKeys() ;
 
-    // Tried adding this; didn't work. What's being leaked from the keys? jhrg 12/21/12
+    // Tried adding this; didn't work. What's being leaked from the
+    // keys? jhrg 12/21/12
     //virtual ~TheBESKeys() {}
 } ;
 

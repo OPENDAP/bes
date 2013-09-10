@@ -55,10 +55,11 @@ check-local:
 	@echo ""
 endif
 
-TEST_SRC = testFile.cc testFile.h
+TEST_SRC = testFile.cc testFile.h ../BESDapResponseBuilder.cc \
+	../BESDapResponseCache.cc ../BESDAPCache.cc
 
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
-ResponseBuilderTest_LDADD = $(AM_LDADD) ../BESDapResponseBuilder.o ../BESDapResponseCache.o ../BESDAPCache.o
+ResponseBuilderTest_LDADD = $(AM_LDADD) 
 
-ResponseCacheTest_SOURCES = ResponseCacheTest.cc
-ResponseCacheTest_LDADD = $(AM_LDADD)  ../BESDapResponseBuilder.o ../BESDapResponseCache.o ../BESDAPCache.o
+ResponseCacheTest_SOURCES = ResponseCacheTest.cc  $(TEST_SRC)
+ResponseCacheTest_LDADD = $(AM_LDADD)

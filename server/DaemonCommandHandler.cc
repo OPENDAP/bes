@@ -60,7 +60,7 @@ using namespace std;
 #include "BESDaemonConstants.h"
 
 // Defined in daemon.cc
-extern void block_signals();
+// extern void block_signals();
 extern void unblock_signals();
 extern int start_master_beslistener();
 extern bool stop_all_beslisteners(int);
