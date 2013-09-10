@@ -1,3 +1,7 @@
+Updated for version 3.11.1 (10 September 2013)
+
+Addressed some issues in the code base.
+
 Updated for version 3.11.0 (30 May 2013)
 
  Limitation of handling MOD14 product is documented under USAGE. MOD14 is not

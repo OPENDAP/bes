@@ -1,13 +1,17 @@
+2013-09-06  hyoklee
+
+	cleaned up code issues.
+
 2013-09-06 MuQun Yang <myang6@hdfgroup.org>
 
 	* hdfdesc.cc, HDFSP.cc
-	cleaned up codes after addressing security audit issues.
+	cleaned up code issues.
 
 2013-08-28  MuQun Yang <myang6@hdfgroup.org>
 
 	* HDFSP.cc, hc2dap.cc, HDFSPArrayGeoField.cc, HE2CF.cc|h
 	* HDF4RequestHandler.cc, HDFGrid.cc
-	improved code to address security audit result.
+	improved code.
 
 2013-08-26 James Gallagher   <jgallagher@opendap.org>
 
