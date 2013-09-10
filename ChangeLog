@@ -1,3 +1,951 @@
+2013-09-10  James Gallagher <jgallagher@opendap.org>
+
+	changes for distcheck
+
+	M    dap/unit-tests/Makefile.am
+	M    server/DaemonCommandHandler.cc
+	M    dispatch/TheBESKeys.h
+	M    xmlcommand/unit-tests/test_config.h.in
+	M    xmlcommand/unit-tests/buildT.cc
+	M    xmlcommand/unit-tests/Makefile.am
+
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	build fix: gse.y was listed in EXTRA_DIST but gse.yy should have
+	been lsited.
+
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	I removed the BES_CONF environment variable. We used this in some
+	tests but there is an easy fix: use 'TheBESKeys::ConfigFile =
+	"./bes.conf";' or the equivalent after including "TheBESKeys.h".
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Build/Audit fixes.
+
+	M    libdap/XDRFileUnMarshaller.cc
+	M    libdap/XDRFileUnMarshaller.h
+	M    bes/dispatch/unit-tests/keysT.cc
+	M    bes/functions/Makefile.am
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Fixes from the audit
+
+	M    server/daemon.cc
+	M    dispatch/TheBESKeys.cc
+	M    Makefile.am
+
+2013-08-27  James Gallagher <jgallagher@opendap.org>
+
+	audit fixes
+
+	M    libdap/Makefile.am
+	M    bes/dispatch/unit-tests/BESCache3Test.cc
+	M    bes/functions/tests/functionsTest.at
+	M    bes/functions/tests/bescmd/bind_name_4.dods.bescmd.baseline
+	M    bes/functions/tests/bescmd/bind_name_2.dods.bescmd.baseline
+
+2013-08-26  James Gallagher <jgallagher@opendap.org>
+
+	indenting...
+
+	M    dapreader/DapModule.cc
+
+2013-08-26  James Gallagher <jgallagher@opendap.org>
+
+	Dropped the %requires down to 2.4
+
+	M    functions/gse.yy
+
+2013-08-21  James Gallagher <jgallagher@opendap.org>
+
+	parser build rule fix
+
+2013-08-20  James Gallagher <jgallagher@opendap.org>
+
+	ignore the generated scanner code
+
+2013-08-20  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for the GSE paraser.
+
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixed up the GSE Clause parsers so they work with modern bison versions.
+
+2013-08-02  James Gallagher <jgallagher@opendap.org>
+
+	Fixed broken function registration. The MakeArray function was
+	registered twice and LinearScale not at all. All the tests
+	involving LinearScale failed. Fixed.
+
+	M    functions/DapFunctions.cc
+
+2013-07-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bes/functions module: GrideoConstraint test fixed;
+	DapFunctions fixed errant checki; Makefile hack that attempts to
+	work around error messages for unit-tests.
+
+2013-07-10  James Gallagher <jgallagher@opendap.org>
+
+	Merged code from the miic_6.2013 branch. These changes include new
+	functions and tests for the new #<type>() special form. This
+	provides a way to use large arrays in CEs.
+
+	_M   .
+	M    configure.ac
+	A  + dap/dap_help.txt
+	D    dap/bes-testsuite
+	AM + dap/tests
+	MM   dap/BESDapTransmit.cc
+	A  + dap/BESDAPCache.h
+	A  + dap/BESDapResponseBuilder.cc
+	A  + dap/dap_help.xml
+	AM + dap/unit-tests
+	_M   dap/unit-tests/response_cache
+	A  + dap/dap_help.html
+	A  + dap/BESDapResponseCache.cc
+	A  + dap/BESDapResponseCache.h
+	M    dap/dap.conf.in
+	MM   dap/BESDapTransmit.h
+	A  + dap/BESDAPCache.cc
+	M    dap/Makefile.am
+	A  + dap/BESDapResponseBuilder.h
+	_M   dispatch/BESCatalogList.cc
+	_M   dispatch/BESCatalog.h
+	_M   dispatch/BESCatalogEntry.cc
+	_M   dispatch/BESCatalogDirectory.h
+	_M   dispatch/BESCatalogResponseHandler.cc
+	D    dispatch/bes/dap_help.html
+	D    dispatch/bes/dap_help.txt
+	D    dispatch/bes/dap_help.xml
+	D    dispatch/bes/dap.conf.in
+	A  + dispatch/bes/old
+	_M   dispatch/BESCatalogUtils.h
+	_M   dispatch/BESCatalogList.h
+	M    dispatch/Makefile.am
+	_M   dispatch/BESContainerStorageCatalog.h
+	_M   dispatch/BESCatalogResponseHandler.h
+	_M   dispatch/BESCatalogUtils.cc
+	_M   dispatch/BESContainerStorageCatalog.cc
+	_M   dispatch/BESCatalogEntry.h
+	_M   dispatch/BESCatalogDirectory.cc
+	A  + functions/GridFunction.cc
+	A  + functions/VersionFunction.cc
+	A  + functions/GridFunction.h
+	A  + functions/VersionFunction.h
+	M    functions/DapFunctions.cc
+	M    functions/DapFunctions.h
+	A  + functions/BindShapeFunction.cc
+	A  + functions/BindShapeFunction.h
+	M    functions/GSEClause.cc
+	M    functions/GSEClause.h
+	AM + functions/tests
+	D    functions/ArrayGeoConstraint.cc
+	A  + functions/old_and_in_the_way
+	A  + functions/BindNameFunction.cc
+	A  + functions/MakeArrayFunction.h
+	A  + functions/BindNameFunction.h
+	A  + functions/GeoGridFunction.cc
+	A  + functions/LinearScaleFunction.h
+	D    functions/unit-tests/ArrayGeoConstraintTest.cc
+	M    functions/unit-tests/CEFunctionsTest.cc
+	M    functions/unit-tests/GridGeoConstraintTest.cc
+	M    functions/unit-tests/Makefile.am
+	D    functions/gse-test.cc
+	M    functions/gse_parser.h
+	M    functions/grid_utils.cc
+	M    functions/grid_utils.h
+	M    functions/GeoConstraint.cc
+	D    functions/ce_functions.cc
+	D    functions/ArrayGeoConstraint.h
+	M    functions/GeoConstraint.h
+	D    functions/ce_functions.h
+	A  + functions/MakeArrayFunction.cc
+	M    functions/GridGeoConstraint.cc
+	M    functions/Makefile.am
+	A  + functions/GeoGridFunction.h
+	A  + functions/LinearScaleFunction.cc
+
+2013-07-09  James Gallagher <jgallagher@opendap.org>
+
+	Trunk fixes for the functions module in the libdap and bes spec
+	files. Also a repair to XDRStreamMarshaller.cc
+
+2013-06-04  James Gallagher <jgallagher@opendap.org>
+
+	Added .deps to svn:ignore
+
+2013-05-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for linux - CentOS 6 comes with gdal 1.7 but our code
+	needs a newer version. I Hacked the ax_lib_gdal.m4 script
+	so that it looks for the version of gdal and sets the GDAL
+	variables to null if 1.10+ is not found (it was returning an
+	error).
+
+	M    conf/ax_lib_gdal.m4
+	M    configure.ac
+
+2013-05-20  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repairing priduction rules for gdal and pthreads dependecies
+
+2013-05-20  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repairing priduction rules for gdal and pthreads dependecies
+
+2013-05-17  James Gallagher <jgallagher@opendap.org>
+
+	Changes to get the distcheck target working
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	comments
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	Added files to the svn ignore property
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	Excised the errant 'function_dap()' server function and added #include <util.h> to some unit tests. These changes were needed since the code moved here from it's former home in libdap.
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: team sync
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adding conditional production rules for swath2grid
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Almost have swath2grid compiling. Team sync
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added configure options for valgrind
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adding gdal lib check m4 file.
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adjusted production rules so that the Makefile for bes/functions/swath2grid is built, but refrained from addin swath2grid to the SUBDIRS var in bes/functions/Makefile.am. This means you can build it by hand but it's not built automagically.
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Got unit tests working in bes/functions/unit-tests
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	libdap: Moving trunk/libdap/unit-tests/ce-functions-testsuite to trunk/bes/functions/unit-tests because that's where the functions are that need the contents of that directory.
+
+2013-05-14  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes/dispatch: Repaired problems with conditional build in BESCatalogList
+
+2013-05-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Modified command line option handler in BESCatalogListTest
+
+2013-05-10  James Gallagher <jgallagher@opendap.org>
+
+	massive SVN ignore...
+
+2013-05-09  James Gallagher <jgallagher@opendap.org>
+
+	Added using namespace std and removed some excess blank lines, commented DBG code, ...
+
+2013-05-09  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Removed include of GetOpt.h from BESCatalogListUnitTest
+
+2013-05-09  James Gallagher <jgallagher@opendap.org>
+
+	<vector.h> --> <vector> in #include
+
+2013-05-07  James Gallagher <jgallagher@opendap.org>
+
+	changed from $(top_srcdir) to $top_builddir) in the specification of a
+	library in dispatch/unit-tests. The distcheck target is working again.
+
+	M    dispatch/unit-tests/Makefile.am
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixed BESCatalogList lifecycle memory leak. Wrote and tested unit test to verify the fix was effective.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: dispatch unit tests seem to be working.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: dispatch unit tests seem to be working.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Trying to fix unit-tests
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: First pass at fixing lifecycle memory leaks in  singleton BESCatalogList
+
+2013-05-06  James Gallagher <jgallagher@opendap.org>
+
+	Added some comments to BESDapTransmitt.cc since there will be changes there as support for DMR data response objects is added. Also, this may be where the cache support for DAP response objects moves (from libdap).
+
+2013-05-01  James Gallagher <jgallagher@opendap.org>
+
+	formatting and comments
+
+	M    dap/BESDapTransmit.cc
+	M    dap/BESDDSResponse.cc
+	M    dispatch/BESResponseObject.h
+	M    dispatch/BESContextManager.cc
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	spelling in a comments; formatting
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	spelling in a comment
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Formatting changes only
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Added files to svn ignore
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Comments, logging, formatting.
+
+2013-02-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: repaired character case issurs in import statements
+
+2013-02-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added code to functions so that grid() and geogrid() show up in the version() function response only when the dataset has a grid or geo located grid
+
+2013-02-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added methods to ServerFunctionsList to allow inspection of the list contents.
+
+2013-02-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moved AbstractFunction class to ServerFunction class
+
+2013-02-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added the use of AbstractFunction class.
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed besdap; note that this code (in dap/bes-testsuite) is not run at all in the current version of the bes (1/2/13)
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the distcheck target
+
+	M    dapreader/DapRequestHandler.cc
+	M    configure.ac
+	M    dap/bes-testsuite/bes.conf.in
+	M    dap/bes-testsuite/Makefile.am
+	M    dap/bes-testsuite/package.m4
+	M    dap/Makefile.am
+	M    functions/ce_functions.cc
+	M    functions/Makefile.am
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	removed old code from the DapFunctions class
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	removed old code from the DapFunctions class
+
+2013-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Added LEX adn YACC macros to the configure.ac file.
+
+	M    configure.ac
+	M    dap/BESDapTransmit.cc
+	A    functions/unit-tests
+	A    functions/unit-tests/ArrayGeoConstraintTest.cc
+	A    functions/unit-tests/CEFunctionsTest.cc
+	A    functions/unit-tests/GridGeoConstraintTest.cc
+	M    functions/Makefile.am
+
+2013-01-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Updating configure for automake-.ac1.13
+
+2013-01-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Removed BES ServerFunctionsList; its now in libdap.
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Changed the way functions are registered so that CE does not have to copy all the functions into every instance of the CE class. Now CE uses functions directly from a list in libdap.
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Changed the name of the 'dap' module back to libdap_module so that the existing hander test config files will work w/o edits.
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed unneeded function declarations
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed conf from dap since it's not needed.
+
+	D    dap/conf
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Module builds and BES starts when it's included.
+
+	_M   functions
+	D    functions/dap_functions.conf.in
+	A  + functions/functions.conf.in
+	A    functions/ArrayGeoConstraint.cc
+	A    functions/ArrayGeoConstraint.h
+	M    functions/Makefile.am
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Build changes - I cleaned up the dispatch Makefile.am so that it no longer builds/installs
+	a dap.conf file.
+
+	M    configure.ac
+	M    dispatch/Makefile.am
+	M    dispatch/BESRequestHandler.h
+	M    functions/DapFunctions.cc
+	M    functions/ce_functions.h
+	M    functions/Makefile.am
+	M    Makefile.am
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Mistakenly added Makefile.in...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Factoring DAP out of BESCatalog*
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Update for functions
+
+	M    functions/Makefile.in
+	M    functions/GSEClause.cc
+	M    functions/gse.lex
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixing dependencies
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixing dependencies
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added basic DAP server functions here. These have been copied from libdap but will work as a standalone module.
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: REmoved dependency betwee dispatch and dap
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added Server Functions List code
+
+2013-01-27  James Gallagher <jgallagher@opendap.org>
+
+	Added pkginclude_HEADERS to the new dap module Makefile.am
+
+2013-01-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Dropping configure.ac from dap  odule
+
+2013-01-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Reomving Makefile.in
+
+2013-01-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the --dap-libs value given the new organization where DAP code
+	is a true module.
+
+	M    bes-config.in
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	dap.conf now built in bes/dap and modified for the new code layout.
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	make install now works
+
+	A  + dap/bes-testsuite/Makefile.in
+	M    dap/Makefile.am
+	M    server/Makefile.am
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Build appears to be working sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Build appears to be working sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Team Sybc
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for new dap module for BES
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired (I think) autoconf/automake inputs and now the bes builds.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Checking in incrmental repair of build rules.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Replacing the dap dir with the besdap_module stuff I put at the top level. Step 2: mv trunk/besdap_module to trunk/bes/dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Replacing the dap dir with the besdap_module stuff I put at the top level. Step 1: Remove the be/dap dir.
+	-This line, and those below, will be ignored--
+
+	D    https://scm.opendap.org/svn/trunk/bes/dap
+
+2013-01-18  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the 3.11.0-1 code (hyrax 1.8 release branch) into the trunk.
+
+	_M   .
+	_M   conf
+	_M   dapreader
+	_M   dapreader/bes-testsuite
+	M    dapreader/bes-testsuite/package.m4
+	_M   docs
+	_M   ppt/unit-tests
+	M    configure.ac
+	_M   server
+	_M   server/test
+	M    server/ServerApp.cc
+	M    server/Makefile.am
+	M    INSTALL
+	_M   bin
+	M    NEWS
+	M    ChangeLog
+	_M   standalone
+	M    standalone/Makefile.am
+	M    standalone/StandAloneApp.cc
+	_M   cmdln
+	_M   cmdln/unit-tests
+	M    cmdln/Makefile.am
+	_M   cmdln/testsuite
+	M    cmdln/testsuite/nc/fnoc1.nc.2.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.5.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.0.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.2.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_basic.0.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	A  + cmdln/testsuite/generate_data_baseline.sh.in
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.6.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.0.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.1.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.3.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.4.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.0.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.1.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.6.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.0.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.1.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.0.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.3.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.1.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.0.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.1.bescmd
+	M    cmdln/testsuite/Makefile.am
+	A  + cmdln/testsuite/generate_metadata_baseline.sh.in
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.5.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.6.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.8.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.8.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.0.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.1.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.3.bescmd.baseline
+	M    cmdln/testsuite/besTest.at
+	M    README
+	_M   templates
+	_M   xmlcommand
+	_M   xmlcommand/unit-tests
+	_M   dispatch
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESCatalog.h
+	M    dispatch/TheBESKeys.h
+	M    dispatch/BESCatalogEntry.cc
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESModuleApp.cc
+	_M   dispatch/bes
+	M    dispatch/BESCatalogUtils.h
+	M    dispatch/BESUtil.cc
+	M    dispatch/Makefile.am
+	M    dispatch/TheBESKeys.cc
+	M    dispatch/BESContainer.h
+	M    dispatch/BESDataDDSResponse.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESDDSResponse.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESCache3.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESCatalogEntry.h
+	_M   dispatch/unit-tests
+	_M   dispatch/unit-tests/cache
+	M    dispatch/BESDapTransmit.h
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    bes.spec
+	M    Makefile.am
+
+2013-01-15  James Gallagher <jgallagher@opendap.org>
+
+	Mostly minor changes for compiler warnings; also changes for the
+	(un)compression cache.
+
+	_M   .
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/PPTConnection.cc
+	M    cmdln/testsuite/Makefile.am
+	M    xmlcommand/BESXMLInterface.cc
+	M    dispatch/BESDataDDXResponseHandler.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	D    dispatch/BESUncompressManager2.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESCache3.h
+	M    dispatch/BESServiceRegistry.h
+	M    dispatch/BESContainerStorageFile.cc
+	D    dispatch/BESCache2.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESCache3.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/unit-tests/Makefile.am
+	D    dispatch/BESUncompressManager2.h
+	D    dispatch/BESCache2.h
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2012-12-24  James Gallagher <jgallagher@opendap.org>
 
 	Added stuff to svn:ignore

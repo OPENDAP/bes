@@ -1,4 +1,27 @@
 
+Updated for version 3.12.0
+
+From the NEWS file:
+There are several changes to the BES for this release.
+
+The DAP operations have been moved to their own module, reducing the 
+amount of stuff hanging around in dispatch. Along with this change, new
+functionality for server-side functions has been added to the BES's
+DAP module. This supports, in conjunction with changes in the OLFS,
+the function syntax developed by COLA and used by the FTDS server. The
+BES can now run server functions and cache the results, providing a
+way for clients built using the netCDF library client toolkits to
+'open' such a URL and then make repeated subsetting requests against
+the result of that function.
+
+Note that libdap now supports new server function special forms that
+provide a way to pass large arrays into the server as constants in the
+constriant.
+
+Also note that we've redone how server functions are defined, making
+it simpler to write them correctly. The default set of functions is
+now bundled in a separate module (see the 'functions' directory).
+
 Updated for version 3.11.0
 
 Added a new method to the BESDDSResponse and BESDataDDSResponse classes
