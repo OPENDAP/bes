@@ -359,7 +359,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 void BESDAPCache::m_check_ctor_params()
 {
     if (d_cache_dir.empty()) {
-        string err = "The cache directory was not specified, must be non-empty";
+        string err = "The cache directory was not specified";
         throw InternalErr(__FILE__, __LINE__, err);
     }
 

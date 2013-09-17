@@ -163,6 +163,7 @@ private:
         BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
+        BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
         rb.send_dds(dhi.get_output_stream(), *dds, ce, true, print_mime);
     }
 };
@@ -189,6 +190,7 @@ private:
         BESDapResponseBuilder rb;
         rb.set_dataset_name(dds->filename());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
+        BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
         rb.send_data(dhi.get_output_stream(), *dds, ce, print_mime);
     }
 };

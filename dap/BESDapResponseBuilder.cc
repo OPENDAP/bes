@@ -558,16 +558,16 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
-        DBG(cerr << "Found function(s) in CE: " << d_btp_func_ce << endl);
+        BESDEBUG("dap", "Found function(s) in CE: " << d_btp_func_ce << endl);
         string cache_token = "";
         DDS *fdds = 0;
 
         if (responseCache()) {
-            DBG(cerr << "Using the cache for the server function CE" << endl);
+        	BESDEBUG("dap", "Using the cache for the server function CE" << endl);
             fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
-            DBG(cerr << "Cache not found; (re)calculating" << endl);
+        	BESDEBUG("dap", "Cache not found; (re)calculating" << endl);
             eval.parse_constraint(d_btp_func_ce, dds);
             fdds = eval.eval_function_clauses(dds);
         }
@@ -604,7 +604,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
         delete fdds;
     }
     else {
-        DBG(cerr << "Simple constraint" << endl);
+    	BESDEBUG("dap", "Simple constraint" << endl);
 
         eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
 
