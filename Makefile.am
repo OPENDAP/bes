@@ -26,7 +26,7 @@ endif
 bin_SCRIPTS = besd bes-config bes-config-pkgconfig
 
 pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc bes_dap.pc
+pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
