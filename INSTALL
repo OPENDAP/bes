@@ -182,7 +182,7 @@ REQUIREMENTS
     version 4.2.9, although any recent version should work fine. 
     In order to link with 4.2.9 on Linux (and maybe other platforms) I had to
     compile HDF4 using --without-fortran --with-pic and I also used 
-    --without-netcdf (because some sites need their HDF4 libraries built that
+    --disable-netcdf (because some sites need their HDF4 libraries built that
     way and I wanted to be sure the handler would build with that 
     configuration). If the configure script cannot find your copy of HDF4, use
     the --with-hdf4 options to tell it where to look (see configure --help).
