@@ -7,7 +7,7 @@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)
 AM_CXXFLAGS = 
-#CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline 
 #CXXFLAGS = @CXXFLAGS@ -Wall
 
 noinst_LTLIBRARIES = libhdfclass.la
