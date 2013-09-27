@@ -2635,7 +2635,7 @@ EOS5File::EOS5Handle_General_NameClashing(set <string>&objnameset, vector<T*>& o
     int ol_index = 0;
     int cl_index = 0;
 
-    class vector<T*>::iterator irv;
+    typename vector<T*>::iterator irv;
 
     for (irv = objvec.begin();
                 irv != objvec.end(); ++irv) {

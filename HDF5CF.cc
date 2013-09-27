@@ -1031,18 +1031,18 @@ File::Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) t
     int ol_index = 0;
     int cl_index = 0;
 
-    class vector<T*>::iterator irv;
+    /*class*/
+    typename vector<T*>::iterator irv;
 
-    for (irv = objvec.begin();
-                irv != objvec.end(); ++irv) {
-         setret = objnameset.insert((*irv)->newname);
-         if (false == setret.second ) {
-            clashnamelist.insert(clashnamelist.end(),(*irv)->newname);
-            cl_to_ol[cl_index] = ol_index;
-            cl_index++;
-         }
-         ol_index++;
-    }
+	for (irv = objvec.begin(); irv != objvec.end(); ++irv) {
+		setret = objnameset.insert((*irv)->newname);
+		if (false == setret.second) {
+			clashnamelist.insert(clashnamelist.end(), (*irv)->newname);
+			cl_to_ol[cl_index] = ol_index;
+			cl_index++;
+		}
+		ol_index++;
+	}
 
     // Now change the clashed elements to unique elements; 
     // Generate the set which has the same size as the original vector.

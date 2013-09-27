@@ -1548,7 +1548,7 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
     int ol_index = 0;
     int cl_index = 0;
 
-    class vector<T*>::iterator irv;
+    typename vector<T*>::iterator irv;
     //for (vector<T*>::iterator irv = objvec.begin();
 
     for (irv = objvec.begin();

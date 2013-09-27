@@ -408,7 +408,7 @@ namespace HDF5CF
 
             ~EOS5CVar() {}
 
-            const EOS5Type getEos5Type() const {
+            EOS5Type getEos5Type() const {
                 return this->eos_type;
             }
             float getPointLower() const{
@@ -586,7 +586,7 @@ namespace HDF5CF
             void Handle_Var_NameClashing(set<string> &objnameset) throw(Exception);
             void Handle_RootGroup_NameClashing(set<string> &objnameset) throw(Exception);
             void Handle_Obj_AttrNameClashing() throw(Exception);
-            template <class T> void Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
+            template <typename T> void Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
 
             void Add_One_FakeDim_Name(Dimension *dim) throw(Exception);
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
@@ -646,15 +646,15 @@ namespace HDF5CF
             GMFile(const char*path, hid_t file_id, H5GCFProduct product,GMPattern gproduct_pattern);
             virtual ~GMFile(); 
         public:
-            const H5GCFProduct getProductType() {
+            H5GCFProduct getProductType() const {
                 return product_type;
             }
 
-            const vector<GMCVar *>&getCVars() const{
+            const vector<GMCVar *>&getCVars() const {
                 return this->cvars;
             }
 
-            const vector<GMSPVar *>&getSPVars() const{
+            const vector<GMSPVar *>&getSPVars() const {
                 return this->spvars;
             }
         
@@ -734,7 +734,7 @@ namespace HDF5CF
             void Handle_GMSPVar_NameClashing(set<string> &) throw(Exception);
             void Handle_GMSPVar_AttrNameClashing() throw(Exception);
             void Handle_DimNameClashing() throw(Exception);
-            template <class T> void GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
+            template <typename T> void GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
  
             string get_CF_string(string s);
             void Add_Aqu_Attrs() throw(Exception);
@@ -987,10 +987,9 @@ namespace HDF5CF
             void Handle_EOS5CVar_NameClashing(set<string> &) throw(Exception);
             void Handle_EOS5CVar_AttrNameClashing() throw(Exception);
             void Handle_DimNameClashing() throw(Exception);
-            template <class T> void EOS5Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
+            template <typename T> void EOS5Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
             void Adjust_CF_attr() throw(Exception);
-            template<class T>
-            void Create_Missing_CV(T*, EOS5CVar*,const string &, EOS5Type, int) throw(Exception);
+            template <typename T> void Create_Missing_CV(T*, EOS5CVar*,const string &, EOS5Type, int) throw(Exception);
             void Create_Added_Var_NewName_FullPath(EOS5Type, const string& , const string& , string &, string &)  throw(Exception);
 
 
