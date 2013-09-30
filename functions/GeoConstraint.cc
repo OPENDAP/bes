@@ -393,13 +393,13 @@ void GeoConstraint::flip_latitude_within_array(Array &a, int lat_length,
     if (!d_array_data) {
 	a.read();
 	d_array_data = static_cast<char*>(a.value());
-	d_array_data_size = a.width();	// Bytes not elements
+	d_array_data_size = a.width(true);	// Bytes not elements
     }
 
     int size = count_size_except_latitude_and_longitude(a);
     // char *tmp_data = new char[d_array_data_size];
     vector<char> tmp_data(d_array_data_size);
-    int array_elem_size = a.var()->width();
+    int array_elem_size = a.var()->width(true);
     int lat_lon_size = (d_array_data_size / size);
 
     DBG(cerr << "lat, lon_length: " << lat_length << ", " << lon_length << endl);
@@ -487,7 +487,7 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
     DBG2(a.print_val(stderr));
 
     // Save the left-hand data to local storage
-    int left_size = a.width();		// width() == length() * element size
+    int left_size = a.width(true);		// width() == length() * element size
     char *left_data = (char*)a.value();	// value() allocates and copies
 
     // Build a constraint for the 'right' part, which goes from the left edge
@@ -505,7 +505,7 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
     DBG2(a.print_val(stderr));
 
     char *right_data = (char*)a.value();
-    int right_size = a.width();
+    int right_size = a.width(true);
 
     // Make one big lump O'data
     d_array_data_size = left_size + right_size;
@@ -514,7 +514,7 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
     // Assume COARDS conventions are being followed: lon varies fastest.
     // These *_elements variables are actually elements * bytes/element since
     // memcpy() uses bytes.
-    int elem_size = a.var()->width();
+    int elem_size = a.var()->width(true);
     int left_row_size = (get_lon_length() - get_longitude_index_left()) * elem_size;
     int right_row_size = (get_longitude_index_right() + 1) * elem_size;
     int total_bytes_per_row = left_row_size + right_row_size;

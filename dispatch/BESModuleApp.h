@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,8 +36,8 @@
 #include <list>
 #include <string>
 
-using std::list ;
-using std::string ;
+using std::list;
+using std::string;
 
 #include "BESBaseApp.h"
 #include "BESPluginFactory.h"
@@ -56,24 +56,22 @@ using std::string ;
  * @see BESApp
  * @see BESGlobalIQ
  */
-class BESModuleApp : public BESBaseApp
-{
+class BESModuleApp: public BESBaseApp {
 private:
-    BESPluginFactory<BESAbstractModule> _moduleFactory ;
-    typedef struct _bes_module
-    {
-	string _module_name ;
-	string _module_library ;
-    } bes_module ;
-    list< bes_module > 		_module_list ;
-    int				loadModules( void ) ;
+	BESPluginFactory<BESAbstractModule> _moduleFactory;
+	typedef struct _bes_module {
+		string _module_name;
+		string _module_library;
+	} bes_module;
+	list<bes_module> _module_list;
+	int loadModules(void);
 public:
-                                BESModuleApp( void ) ;
-    virtual                     ~BESModuleApp( void ) ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			terminate( int sig = 0 ) ;
+	BESModuleApp(void);
+	virtual ~BESModuleApp(void);
+	virtual int initialize(int argC, char **argV);
+	virtual int terminate(int sig = 0);
 
-    virtual void		dump( ostream &strm ) const ;
+	virtual void dump(ostream &strm) const;
 };
 
 #endif

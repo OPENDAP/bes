@@ -787,9 +787,7 @@ public:
             DBG(cerr << endl << endl);
 
             GridGeoConstraint gc2(g2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+            // top, left, bottom, right
             gc2.set_bounding_box(30, 40, 10, 120);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
@@ -851,9 +849,7 @@ public:
             CPPUNIT_ASSERT(lon2);
 
             GridGeoConstraint gc2(g2, lat2, lon2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+            // top, left, bottom, right
             gc2.set_bounding_box(30, 40, 10, 120);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
@@ -906,9 +902,7 @@ public:
             g->set_send_p(true);
 
             GridGeoConstraint gc(g);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint from lon 1 to 5 and lat from
-            // 5 to 8
+            // top, left, bottom, right
             gc.set_bounding_box(30.0, 200.0, 20.0, 280.0);
 
             /* time[3] = { 0, 1, 2 };
@@ -974,9 +968,7 @@ public:
             CPPUNIT_ASSERT(lon);
 
             GridGeoConstraint gc(g, lat, lon);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint from lon 1 to 5 and lat from
-            // 5 to 8
+
             gc.set_bounding_box(30.0, 200.0, 20.0, 280.0);
 
             /* time[3] = { 0, 1, 2 };
@@ -1038,9 +1030,7 @@ public:
             g2->set_send_p(true);
 
             GridGeoConstraint gc2(g2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+
             gc2.set_bounding_box(30, 300, 30, 60);
 
             /* lat:  { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
@@ -1108,9 +1098,7 @@ public:
             CPPUNIT_ASSERT(lon2);
 
             GridGeoConstraint gc2(g2, lat2, lon2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+
             gc2.set_bounding_box(30, 300, 30, 60);
 
             /* lat:  { -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
@@ -1172,9 +1160,7 @@ public:
             g2->set_send_p(true);
 
             GridGeoConstraint gc2(g2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+
             gc2.set_bounding_box(30, 280, 30, 40);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
@@ -1242,9 +1228,7 @@ public:
             CPPUNIT_ASSERT(lon2);
 
             GridGeoConstraint gc2(g2, lat2, lon2);
-            // SST1 with a constraint that uses neg_pos notation for lon
-            // This should result in a constraint lat from 5 to 8 and
-            // from lon 1 to 5
+
             gc2.set_bounding_box(30, 280, 30, 40);
 
             /* lat: { 40, 30, 20, 10, 0, -10, -20, -30, -40, -50 };
