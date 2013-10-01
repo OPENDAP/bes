@@ -20,10 +20,7 @@ SUBDIRS = . unit-tests
 DIST_SUBDIRS = unit-tests
 
 if LIBDAP
-# lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
 lib_LTLIBRARIES = libbes_dispatch.la 
-# pkglib_LTLIBRARIES = libdap_module.la
-
 bin_PROGRAMS = besregtest
 else
 lib_LTLIBRARIES = libbes_dispatch.la
@@ -31,65 +28,31 @@ endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
-
-#libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-#libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-#libdap_module_la_LDFLAGS = -avoid-version -module
-#libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-
-#libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
-#libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-#libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
-#libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
+	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
 besregtest_SOURCES = besregtest.cc
 besregtest_CPPFLAGS = $(AM_CPPFLAGS)
 besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
 
-# pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 pkginclude_HEADERS = $(HDRS) 
 
-#nobase_sysconf_DATA = bes/bes.conf
-
 pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml
-	
-# bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in
 
-#	bes/dap_help.html bes/dap_help.txt
-#	bes/dap_help.xml
-
-# bes/dap.conf.in 
-
 DISTCLEANFILES = bes/bes.conf
 
-# bes/dap.conf
-
-#if LIBDAP
-#install-data-local: bes/bes.conf bes/dap.conf
-#	@currdate=`date +"%y%m%d%H%M"`; \
-#	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-#	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-#	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf.$$currdate; \
-#	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf; \
-#	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf.$$currdate; \
-#	$(INSTALL_DATA) bes/dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
-#else
 install-data-local: bes/bes.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf.$$currdate; \
 	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
 	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf
-#endif
 
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/bes.conf
-	
-# $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	mkdir -p bes
@@ -100,15 +63,6 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]prefix[@]%${prefix}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
-# TODO Remove
-#bes/dap.conf: bes/dap.conf.in ../config.status
-#	mkdir -p bes
-#	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-#		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-#		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
-#		-e "s%[@]datarootdir[@]%${datarootdir}%" \
-#		-e "s%[@]datadir[@]%${datadir}%" \
-#		-e "s%[@]bindir[@]%${bindir}%" $< > bes/dap.conf
 
 ##############################################################################
 #
@@ -158,16 +112,6 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc
-	
-
-# Older cache code removed from the BES, at least for testing. 
-# The BESFileContainer class is the user of the cache and it
-# builds using a compile-time directive that selects BESCache
-# or BESCache3 (BESCache2 was a nice idea, but works only on
-# OSX and (maybe) BSD). jhrg 4/4/12
-#    BESCache2.cc BESUncompressManager2.cc 
-
-# BESProcessEncodedString.cc; moved to apache. jhrg 4/25/12
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
@@ -223,64 +167,6 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
 
-# See note above about BESCache3 and BESFileContainer
-#   BESCache2.h BESUncompressManager2.h  
-
-# BESProcessEncodedString.h. Moved to apache. jhrg 4/25/12
-
-#DAP_SRCS = BESCatalogResponseHandler.cc \
-#	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
-#	BESDDXResponseHandler.cc \
-#	BESDataResponseHandler.cc \
-#	BESDataDDXResponseHandler.cc \
-#	BESDMRResponseHandler.cc \
-#	BESDapModule.cc \
-#	BESDapRequestHandler.cc BESDapTransmit.cc
-
-#DAP_HDRS = BESCatalogResponseHandler.h \
-#	BESDASResponseHandler.h BESDDSResponseHandler.h \
-#	BESDDXResponseHandler.h \
-#	BESDataResponseHandler.h \
-#	BESDataDDXResponseHandler.h \
-#	BESDMRResponseHandler.h \
-#	BESDapModule.h \
-#	BESDapRequestHandler.h BESDapTransmit.h
-
-#BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
-#	BESDataDDSResponse.cc BESDMRResponse.cc \
-#	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
-#	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
-#	BESDapErrorInfo.cc BESDapService.cc BESCatalogEntry.cc
-
-#BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
-#	BESDDSResponse.h BESDMRResponse.h \
-#	BESDataDDSResponse.h \
-#	BESContainerStorageCatalog.h \
-#	BESCatalogDirectory.h BESCatalog.h \
-#	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
-#	BESDapErrorInfo.h BESDapService.h BESCatalogEntry.h
-
-
-
-#CATALOG_SRCS = 	BESContainerStorageCatalog.cc \
-#	BESCatalogDirectory.cc \
-#	BESCatalogUtils.cc \
-#	BESCatalogList.cc \
-#	BESDapError.cc \
-#	BESDapErrorInfo.cc \
-#	BESDapService.cc \
-#	BESCatalogEntry.cc
-
-#CATALOG_HDRS = 	BESContainerStorageCatalog.h\
-#	BESCatalogDirectory.h \
-#	BESCatalog.h \
-#	BESCatalogUtils.h \
-#	BESCatalogList.h \
-#	BESDapErrorInfo.h \
-#	BESDapService.h \
-#	BESCatalogEntry.h
-
-
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
 C4_XM=$(C4_dir)/dispatch.xml
@@ -291,10 +177,3 @@ cccc:
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) \
 		$(SRCS)$(HDRS)  
-
-
-
-
-		
-#		$(DAP_SRCS) $(BES_DAP_SRCS) \
-#		$(DAP_HDRS) $(BES_DAP_HDRS)

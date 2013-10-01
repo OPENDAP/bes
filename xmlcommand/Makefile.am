@@ -26,7 +26,7 @@ endif
 
 libbes_xml_command_la_SOURCES = $(SRCS) $(HDRS)
 libbes_xml_command_la_LDFLAGS = -version-info $(LIBXMLCOMMAND_VERSION)
-libbes_xml_command_la_LIBADD = ../dispatch/libbes_dispatch.la
+libbes_xml_command_la_LIBADD = ../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 libdap_xml_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_xml_module_la_LDFLAGS = -avoid-version -module
