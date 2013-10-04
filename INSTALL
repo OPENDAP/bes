@@ -236,7 +236,7 @@ NOTES
       }
      
       
-    4) H5.EnableDropLongStrng=true option 
+    4) H5.EnableDropLongString=true option 
 
     - NetCDF Java client cannot handle string size bigger than 32767
       and will throw an error if such variable is seen. Thus, the hdf5_handler
