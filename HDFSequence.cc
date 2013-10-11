@@ -80,7 +80,7 @@ bool HDFSequence::read()
     return status;
 }
 
-bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
+bool HDFSequence::read_tagref(int32 /*tag*/, int32 ref, int &err)
 {
     string hdf_file = dataset();
     string hdf_name = this->name();
@@ -104,7 +104,7 @@ bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
     if (row >= vd.fields[0].vals[0].size()) {
         set_read_p(true);
         err = 0;                // everything is OK
-        return false;           // Indicate EOF
+        return true;            // Indicate EOF
     }
     // is this an empty Vdata.
     // I'm not sure that it should be an error to read from an empty vdata.
@@ -120,7 +120,7 @@ bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
     set_read_p(true);
     err = 0;                    // everything is OK
 
-    return true;
+    return false;
 }
 
 void HDFSequence::transfer_attributes(AttrTable *at)

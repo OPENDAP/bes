@@ -405,7 +405,7 @@ HDFSPArray_VDField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    return false;
+    return true;
 }
 
 // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers

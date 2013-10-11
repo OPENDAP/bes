@@ -169,7 +169,7 @@ bool HDFSPArrayGeoField::read ()
         }
     }
 
-    return false;
+    return true;
 
 }
 

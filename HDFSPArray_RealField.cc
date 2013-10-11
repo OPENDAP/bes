@@ -265,7 +265,7 @@ HDFSPArray_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    return false;
+    return true;
 }
 
 // Standard way to pass the coordinates of the subsetted region from the client to the handlers

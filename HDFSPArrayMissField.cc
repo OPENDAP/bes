@@ -60,7 +60,7 @@ HDFSPArrayMissGeoField::read ()
         set_value ((dods_int32 *) &val[0], nelms);
     }
 
-    return false;
+    return true;
 }
 
 // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers

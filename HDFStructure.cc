@@ -117,7 +117,7 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err) {
 		return true;
 	}
 	catch (...) {
-		set_read_p(true);
+		set_read_p(false);
 		err = 1;
 		return false;
 	}

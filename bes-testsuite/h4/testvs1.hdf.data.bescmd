@@ -3,7 +3,9 @@
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="data" space="catalog">/hdf-testfiles/testvs1.hdf</setContainer>
     <define name="d">
-	<container name="data" />
+	   <container name="data">
+	       <!-- constraint>Vdata_DFNT_UINT16</constraint -->
+	   </container>
     </define>
     <get type="dods" definition="d" />
 </request>
