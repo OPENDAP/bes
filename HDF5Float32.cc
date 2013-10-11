@@ -70,7 +70,7 @@ bool HDF5Float32::read()
     DBG(cerr << ">HDFFloat32::read() ty_id=" << ty_id << endl);
     DBG(cerr << ">HDFFloat32::read() dset_id=" << dset_id << endl);
     if (read_p())
-	return false;
+	return true;
 
     if (get_dap_type(ty_id) == "Float32") {
 	dods_float32 buf;
@@ -162,7 +162,7 @@ bool HDF5Float32::read()
 	set_value(buf[j].a);
     }
 
-    return false;
+    return true;
 }
 
 void HDF5Float32::set_did(hid_t dset)

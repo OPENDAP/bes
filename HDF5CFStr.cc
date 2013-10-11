@@ -261,5 +261,5 @@ bool HDF5CFStr::read()
         throw InternalErr (__FILE__, __LINE__, "H5Tis_variable_str returns negative value" );
     } 
 
-    return false;
+    return true;
 }

@@ -62,7 +62,7 @@ bool HDF5Sequence::read()
     throw InternalErr(__FILE__, __LINE__,
                       "HDF5Sequence::read(): Unimplemented method.");
 
-    return false;
+    return true;
 }
 
 void HDF5Sequence::set_did(hid_t dset)

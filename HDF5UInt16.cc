@@ -66,7 +66,7 @@ BaseType *HDF5UInt16::ptr_duplicate()
 bool HDF5UInt16::read()
 {
     if (read_p())
-	return false;
+	return true;
 
     if (get_dap_type(ty_id) == "UInt16") {
 	dods_uint16 buf;
@@ -170,7 +170,7 @@ bool HDF5UInt16::read()
 	set_value(buf[j].a);
     } // In case of structure
  
-    return false;
+    return true;
 }
 
 void HDF5UInt16::set_did(hid_t dset)

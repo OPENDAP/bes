@@ -65,7 +65,7 @@ BaseType *HDF5UInt32::ptr_duplicate()
 bool HDF5UInt32::read()
 {
     if (read_p())
-	return false;
+	return true;
 
     if (get_dap_type(ty_id) == "UInt32") {
 	dods_uint32 buf;
@@ -167,7 +167,7 @@ bool HDF5UInt32::read()
     } // In case of structure
 
 
-    return false;
+    return true;
 }
 
 void HDF5UInt32::set_did(hid_t dset)

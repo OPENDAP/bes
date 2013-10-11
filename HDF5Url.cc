@@ -83,7 +83,7 @@ bool HDF5Url::read()
     }
 
 
-    return false;
+    return true;
 }
 
 void HDF5Url::set_did(hid_t dset)

@@ -65,7 +65,7 @@ BaseType *HDF5Byte::ptr_duplicate()
 bool HDF5Byte::read()
 {
     if (read_p())
-	return false;
+	return true;
 
     if (get_dap_type(ty_id) == "Byte") {
 	dods_byte buf;
@@ -168,7 +168,7 @@ bool HDF5Byte::read()
 	set_value(buf[j].a);
     } // In case of structure
  
-    return false;
+    return true;
 }
 
 void HDF5Byte::set_did(hid_t dset)

@@ -153,7 +153,7 @@ cerr <<"final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
     set_value ((dods_float32 *) &val[0], nelms);
-    return false;
+    return true;
 }
 
 // parse constraint expr. and make hdf5 coordinate point location.

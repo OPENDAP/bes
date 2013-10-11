@@ -66,7 +66,7 @@ BaseType *HDF5Int16::ptr_duplicate()
 bool HDF5Int16::read()
 {
     if (read_p())
-	return false;
+	return true;
     if (get_dap_type(ty_id) == "Int8") {
 	dods_int16 buf;
 	dods_byte buf2;
@@ -188,7 +188,7 @@ bool HDF5Int16::read()
 	set_value(buf[j].a);
     } // In case of structure
 
-    return false;
+    return true;
 }
 
 void HDF5Int16::set_did(hid_t dset)

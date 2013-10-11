@@ -58,7 +58,7 @@ BaseType *HDF5BaseArray::ptr_duplicate()
 // Read in an Array from either an SDS or a GR in an HDF file.
 bool HDF5BaseArray::read()
 {
-    return false;
+    return true;
 }
 
 

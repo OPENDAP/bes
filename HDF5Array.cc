@@ -678,7 +678,7 @@ bool HDF5Array::read()
     // release the handlers
     H5Dclose(d_dset_id);
     H5Tclose(d_ty_id);
-    return false;
+    return true;
 }
 
 // public functions to set all parameters needed in read function.

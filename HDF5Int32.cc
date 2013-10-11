@@ -69,7 +69,7 @@ BaseType *HDF5Int32::ptr_duplicate()
 bool HDF5Int32::read()
 {
     if (read_p())
-        return false;
+        return true;
 
     DBG(cerr << ">HDF5Int32::read() dataset=" << dataset() << endl);
     DBG(cerr << ">HDF5Int32::read() ty_id=" << ty_id << endl);
@@ -172,7 +172,7 @@ bool HDF5Int32::read()
 	set_value(buf[j].a);
     }                           // In case of structure
 
-    return false;
+    return true;
 }
 
 void HDF5Int32::set_did(hid_t dset)

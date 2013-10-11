@@ -281,8 +281,8 @@ bool HDF5GMSPCFArray::read()
     H5Sclose(dspace);
     H5Dclose(dsetid);
     H5Fclose(fileid);
-    return false;
     
+    return true;
 }
 
         

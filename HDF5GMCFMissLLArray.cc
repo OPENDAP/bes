@@ -185,7 +185,7 @@ bool HDF5GMCFMissLLArray::read()
         H5Gclose(rootid);
         H5Fclose(fileid);
     }
-    return false;
+    return true;
 }
 
 template<class T>

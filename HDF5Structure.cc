@@ -79,7 +79,7 @@ bool HDF5Structure::read()
         << " array_index= " << array_index << endl);
 
     if (read_p())
-        return false;
+        return true;
 
 
     // Read each member in the structure.
@@ -101,7 +101,7 @@ bool HDF5Structure::read()
 #endif
 
 
-    return false;
+    return true;
 }
 
 void HDF5Structure::set_did(hid_t dset)

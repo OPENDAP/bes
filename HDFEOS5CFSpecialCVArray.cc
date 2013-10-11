@@ -231,6 +231,6 @@ bool HDFEOS5CFSpecialCVArray::read(){
     H5Sclose(attr_space);
     H5Fclose(file_id);
 
-    return false;
+    return true;
 }
 

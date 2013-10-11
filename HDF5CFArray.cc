@@ -602,7 +602,7 @@ bool HDF5CFArray::read()
     H5Dclose(dsetid);
     H5Fclose(fileid);
     
-    return false;
+    return true;
 }
 
 

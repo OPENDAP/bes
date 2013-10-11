@@ -75,7 +75,7 @@ bool HDF5Str::read()
     size_t size = H5Tget_size(ty_id);
     DBG(cerr << ">read() size=" << size << endl);
     if (read_p())
-	return false;
+	return true;
 
 #if 0
     if (array_flag == 1) {
@@ -181,7 +181,7 @@ bool HDF5Str::read()
 	val2buf(&str);
     }
 
-    return false;
+    return true;
 }
 
 void HDF5Str::set_did(hid_t dset)

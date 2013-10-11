@@ -67,7 +67,7 @@ BaseType *HDF5Float64::ptr_duplicate()
 bool HDF5Float64::read()
 {
     if (read_p())
-	return false;
+	return true;
 
     if (get_dap_type(ty_id) == "Float64") {
 	dods_float64 buf;
@@ -161,7 +161,7 @@ bool HDF5Float64::read()
 	set_value(buf[j].a);
     }
 
-    return false;
+    return true;
 }
 
 void HDF5Float64::set_did(hid_t dset)

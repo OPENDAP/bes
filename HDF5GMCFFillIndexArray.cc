@@ -185,7 +185,7 @@ cerr <<"var name "<<varname <<endl;
 
     }
 
-    return false;
+    return true;
 }
 
 
