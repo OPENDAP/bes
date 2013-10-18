@@ -1,3 +1,8 @@
+
+Version 3.11.2
+
+Works with libdap 3.12.1 and the documented behavior for BaseType::read().
+
 Version 3.11.1
 
 Internal code refinements.

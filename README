@@ -1,3 +1,7 @@
+Updated for version 3.11.2 (18 Oct. 2013)
+
+BaseType::read() changes.
+
 Updated for version 3.11.1 (10 September 2013)
 
 Addressed some issues in the code base.
