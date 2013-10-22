@@ -1,11 +1,11 @@
 Attributes {
     HDF_GLOBAL {
-        String FileHeader "AlgorithmID=1C21;\\012AlgorithmVersion=7.53;\\012FileName=1C21.19980101.00539.7.HDF;\\012GenerationDateTime=2011-07-07T00:25:04.000Z;\\012StartGranuleDateTime=1998-01-01T00:45:52.456Z;\\012StopGranuleDateTime=1998-01-01T02:17:10.097Z;\\012GranuleNumber=539;\\012NumberOfSwaths=1;\\012NumberOfGrids=0;\\012GranuleStart=SOUTHERNMOST_LATITUDE;\\012TimeInterval=ORBIT;\\012ProcessingSystem=PPS;\\012ProductVersion=7;\\012MissingData=0;\\012";
-        String InputRecord "InputFileNames=1B21.19980101.00539.7.HDF;\\012InputAlgorithmVersions=7.60;\\012InputGenerationDateTimes=2011-07-07T00:23:56.000Z;\\012";
-        String NavigationRecord "LongitudeOfMaximumLatitude=144.833466;\\012SolarBetaAngleAtBeginningOfGranule=-56.610329;\\012SolarBetaAngleAtEndOfGranule=-56.496986;\\012";
-        String FileInfo "DataFormatVersion=m;\\012TKCodeBuildVersion=1;\\012MetadataVersion=m;\\012FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;\\012BlueprintFilename=TRMM.V7.1C21.blueprint.xml;\\012BlueprintVersion=BV_13;\\012TKIOVersion=1.6;\\012MetadataStyle=PVL;\\012EndianType=LITTLE_ENDIAN;\\012";
-        String JAXAInfo "CalibrationCoefficientVersion=0;\\012GranuleFirstScanUTCDate=1998/01/01;\\012GranuleFirstScanUTCTime=00:45:52;\\012GranuleFirstScanUTCMilliseconds=526;\\012GranuleLastScanUTCDate=1998/01/01;\\012GranuleLastScanUTCTime=02:17:09;\\012GranuleLastScanUTCMilliseconds=618;\\012SoftwareVersion=3;\\012DatabaseVersion=5;\\012TotalQualityCode=G;\\012LongitudeOnEquator=60.671200;\\012UTCDateOnEquator=1998/01/01;\\012UTCTimeOnEquator=01:08:42;\\012UTCMillisecondsOnEquator=458;\\012CenterScanUTCDate=1998/01/01;\\012CenterScanUTCTime=01:31:30;\\012CenterScanUTCMilliseconds=773;\\012FirstScanLat=-35.142494;\\012FirstScanLon=-23.471754;\\012LastScanLat=-35.143040;\\012LastScanLon=-46.833317;\\012NumberOfRainScans=2510;\\012";
-        String SwathHeader "NumberScansInSet=1;\\012MaximumNumberScansTotal=10000;\\012NumberScansBeforeGranule=0;\\012NumberScansGranule=9138;\\012NumberScansAfterGranule=0;\\012NumberPixels=49;\\012ScanType=CROSSTRACK;\\012";
+        String FileHeader "AlgorithmID=1C21;\012AlgorithmVersion=7.53;\012FileName=1C21.19980101.00539.7.HDF;\012GenerationDateTime=2011-07-07T00:25:04.000Z;\012StartGranuleDateTime=1998-01-01T00:45:52.456Z;\012StopGranuleDateTime=1998-01-01T02:17:10.097Z;\012GranuleNumber=539;\012NumberOfSwaths=1;\012NumberOfGrids=0;\012GranuleStart=SOUTHERNMOST_LATITUDE;\012TimeInterval=ORBIT;\012ProcessingSystem=PPS;\012ProductVersion=7;\012MissingData=0;\012";
+        String InputRecord "InputFileNames=1B21.19980101.00539.7.HDF;\012InputAlgorithmVersions=7.60;\012InputGenerationDateTimes=2011-07-07T00:23:56.000Z;\012";
+        String NavigationRecord "LongitudeOfMaximumLatitude=144.833466;\012SolarBetaAngleAtBeginningOfGranule=-56.610329;\012SolarBetaAngleAtEndOfGranule=-56.496986;\012";
+        String FileInfo "DataFormatVersion=m;\012TKCodeBuildVersion=1;\012MetadataVersion=m;\012FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;\012BlueprintFilename=TRMM.V7.1C21.blueprint.xml;\012BlueprintVersion=BV_13;\012TKIOVersion=1.6;\012MetadataStyle=PVL;\012EndianType=LITTLE_ENDIAN;\012";
+        String JAXAInfo "CalibrationCoefficientVersion=0;\012GranuleFirstScanUTCDate=1998/01/01;\012GranuleFirstScanUTCTime=00:45:52;\012GranuleFirstScanUTCMilliseconds=526;\012GranuleLastScanUTCDate=1998/01/01;\012GranuleLastScanUTCTime=02:17:09;\012GranuleLastScanUTCMilliseconds=618;\012SoftwareVersion=3;\012DatabaseVersion=5;\012TotalQualityCode=G;\012LongitudeOnEquator=60.671200;\012UTCDateOnEquator=1998/01/01;\012UTCTimeOnEquator=01:08:42;\012UTCMillisecondsOnEquator=458;\012CenterScanUTCDate=1998/01/01;\012CenterScanUTCTime=01:31:30;\012CenterScanUTCMilliseconds=773;\012FirstScanLat=-35.142494;\012FirstScanLon=-23.471754;\012LastScanLat=-35.143040;\012LastScanLon=-46.833317;\012NumberOfRainScans=2510;\012";
+        String SwathHeader "NumberScansInSet=1;\012MaximumNumberScansTotal=10000;\012NumberScansBeforeGranule=0;\012NumberScansGranule=9138;\012NumberScansAfterGranule=0;\012NumberPixels=49;\012ScanType=CROSSTRACK;\012";
     }
     transCoef_dim_0 {
         String name "fakeDim0";
@@ -478,6 +478,6 @@ Attributes {
         String name "fakeDim18";
     }
     Swath {
-        String SwathHeader "NumberScansInSet=1;\\012MaximumNumberScansTotal=10000;\\012NumberScansBeforeGranule=0;\\012NumberScansGranule=9138;\\012NumberScansAfterGranule=0;\\012NumberPixels=49;\\012ScanType=CROSSTRACK;\\012";
+        String SwathHeader "NumberScansInSet=1;\012MaximumNumberScansTotal=10000;\012NumberScansBeforeGranule=0;\012NumberScansGranule=9138;\012NumberScansAfterGranule=0;\012NumberPixels=49;\012ScanType=CROSSTRACK;\012";
     }
 }

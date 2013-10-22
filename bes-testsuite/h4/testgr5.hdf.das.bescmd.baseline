@@ -9,7 +9,7 @@ Attributes {
         Float32 GLOBAL_ATTR_DFNT_FLOAT32 0, 1, -1, 3.40282e+38, 1.4013e-45, -3.40282e+38, -1.4013e-45;
         Float64 GLOBAL_ATTR_DFNT_FLOAT64 0, 1, -1, 1.79769e+308, 4.94066e-324, -1.79769e+308, -4.94066e-324;
         Float64 GLOBAL_ATTR_DFNT_CHAR8 0, 1, -1, 1.79769e+308, 4.94066e-324, -1.79769e+308, -4.94066e-324;
-        String GLOBAL_ATTR_DFNT_UCHAR8 "\\000\\001\\377";
+        String GLOBAL_ATTR_DFNT_UCHAR8 "\000\001\377";
     }
     GR_DFNT_INT32 {
         Int32 GR_ATTR_DFNT_INT32 0, 1, -1, 2147483647, -2147483648;
@@ -38,6 +38,6 @@ Attributes {
     GR_DFNT_CHAR8 {
     }
     GR_DFNT_UCHAR8 {
-        String GR_ATTR_DFNT_UCHAR8 "\\000\\001\\377";
+        String GR_ATTR_DFNT_UCHAR8 "\000\001\377";
     }
 }

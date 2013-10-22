@@ -53,7 +53,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -65,7 +65,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -139,7 +139,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -151,7 +151,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -183,22 +183,22 @@
         <Attribute name="GridStructure" type="Container"/>
         <Attribute name="PointStructure" type="Container"/>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_latitude_dim_0" type="Container">
+    <Attribute name="Swath1_Geolocation_Fields_Latitude_dim_0" type="Container">
         <Attribute name="name" type="String">
             <value>xtrack:Swath1</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_latitude_dim_1" type="Container">
+    <Attribute name="Swath1_Geolocation_Fields_Latitude_dim_1" type="Container">
         <Attribute name="name" type="String">
             <value>ytrack:Swath1</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_longitude_dim_0" type="Container">
+    <Attribute name="Swath1_Geolocation_Fields_Longitude_dim_0" type="Container">
         <Attribute name="name" type="String">
             <value>xtrack:Swath1</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_longitude_dim_1" type="Container">
+    <Attribute name="Swath1_Geolocation_Fields_Longitude_dim_1" type="Container">
         <Attribute name="name" type="String">
             <value>ytrack:Swath1</value>
         </Attribute>
@@ -218,22 +218,22 @@
             <value>ytrack:Swath1</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath2_Geolocation_Fields_latitude_dim_0" type="Container">
+    <Attribute name="Swath2_Geolocation_Fields_Latitude_dim_0" type="Container">
         <Attribute name="name" type="String">
             <value>xtrack:Swath2</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath2_Geolocation_Fields_latitude_dim_1" type="Container">
+    <Attribute name="Swath2_Geolocation_Fields_Latitude_dim_1" type="Container">
         <Attribute name="name" type="String">
             <value>ytrack:Swath2</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath2_Geolocation_Fields_longitude_dim_0" type="Container">
+    <Attribute name="Swath2_Geolocation_Fields_Longitude_dim_0" type="Container">
         <Attribute name="name" type="String">
             <value>xtrack:Swath2</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath2_Geolocation_Fields_longitude_dim_1" type="Container">
+    <Attribute name="Swath2_Geolocation_Fields_Longitude_dim_1" type="Container">
         <Attribute name="name" type="String">
             <value>ytrack:Swath2</value>
         </Attribute>
@@ -273,9 +273,9 @@
             <value>7.000000000</value>
         </Attribute>
     </Attribute>
-    <Array name="Swath1_Geolocation_Fields_latitude">
+    <Array name="Swath1_Geolocation_Fields_Latitude">
         <Attribute name="long_name" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
@@ -284,9 +284,9 @@
         <dimension name="xtrack_Swath1" size="4"/>
         <dimension name="ytrack_Swath1" size="8"/>
     </Array>
-    <Array name="Swath1_Geolocation_Fields_longitude">
+    <Array name="Swath1_Geolocation_Fields_Longitude">
         <Attribute name="long_name" type="String">
-            <value>longitude</value>
+            <value>Longitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>
@@ -304,9 +304,9 @@
         <dimension name="xtrack_Swath1" size="4"/>
         <dimension name="ytrack_Swath1" size="8"/>
     </Array>
-    <Array name="Swath2_Geolocation_Fields_latitude">
+    <Array name="Swath2_Geolocation_Fields_Latitude">
         <Attribute name="long_name" type="String">
-            <value>latitude</value>
+            <value>Latitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_north</value>
@@ -315,9 +315,9 @@
         <dimension name="xtrack_Swath2" size="8"/>
         <dimension name="ytrack_Swath2" size="16"/>
     </Array>
-    <Array name="Swath2_Geolocation_Fields_longitude">
+    <Array name="Swath2_Geolocation_Fields_Longitude">
         <Attribute name="long_name" type="String">
-            <value>longitude</value>
+            <value>Longitude</value>
         </Attribute>
         <Attribute name="units" type="String">
             <value>degrees_east</value>

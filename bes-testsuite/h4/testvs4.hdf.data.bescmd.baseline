@@ -43,9 +43,10 @@ Sequence {
     Structure {
         String Field_DFNT_CHAR8__0;
     } Field_DFNT_CHAR8;
-} Vdata_DFNT_CHAR8 = { { { "" } }, { { "\\001" } }, { { "\\377" } }, { { "\\177" } }, { { "\\200" } } };
+} Vdata_DFNT_CHAR8 = { { { "" } }, { { "\001" } }, { { "\377" } }, { { "\177" } }, { { "\200" } } };
 Sequence {
     Structure {
         String Field_DFNT_UCHAR8__0;
     } Field_DFNT_UCHAR8;
-} Vdata_DFNT_UCHAR8 = { { { "" } }, { { "\\001" } }, { { "\\377" } } };
+} Vdata_DFNT_UCHAR8 = { { { "" } }, { { "\001" } }, { { "\377" } } };
+

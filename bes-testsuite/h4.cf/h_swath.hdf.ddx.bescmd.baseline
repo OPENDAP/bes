@@ -45,7 +45,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -56,7 +56,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -114,8 +114,8 @@
             <value>3.000000000</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath_Geolocation_Fields_latitude" type="Container">
-        <Attribute name="Vdata_field_latitude" type="Float32">
+    <Attribute name="Swath_Geolocation_Fields_Latitude" type="Container">
+        <Attribute name="Vdata_field_Latitude" type="Float32">
             <value>0.000000000</value>
             <value>1.000000000</value>
             <value>2.000000000</value>
@@ -126,8 +126,8 @@
             <value>7.000000000</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath_Geolocation_Fields_longitude" type="Container">
-        <Attribute name="Vdata_field_longitude" type="Float32">
+    <Attribute name="Swath_Geolocation_Fields_Longitude" type="Container">
+        <Attribute name="Vdata_field_Longitude" type="Float32">
             <value>0.000000000</value>
             <value>1.000000000</value>
             <value>2.000000000</value>

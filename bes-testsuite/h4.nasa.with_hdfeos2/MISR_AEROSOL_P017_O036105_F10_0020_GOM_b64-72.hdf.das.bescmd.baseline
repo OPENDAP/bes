@@ -1389,7 +1389,13 @@ Attributes {
         Int32 Num_local_modes 0;
         String Local_mode_site_name "";
         Float32 Orbit_QA 0.000000000;
-        String SubsetMetadata "\\012GROUP = SUBSET\\012  PARENT_FILE = MISR_AM1_AS_AEROSOL_P017_O036105_F10_0020.hdf\\012  BLOCKS = (64,65,66,67,68,69,70,71,72)\\012  PARAMETERS = (ALL)\\012END GROUP = SUBSET\\012";
+        String SubsetMetadata "
+GROUP = SUBSET
+  PARENT_FILE = MISR_AM1_AS_AEROSOL_P017_O036105_F10_0020.hdf
+  BLOCKS = (64,65,66,67,68,69,70,71,72)
+  PARAMETERS = (ALL)
+END GROUP = SUBSET
+";
     }
     PerBlockMetadataCommon {
     }

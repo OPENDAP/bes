@@ -2,52 +2,52 @@
 <Dataset name="S2000415.HDF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF_GLOBAL" type="Container">
         <Attribute name="Producer_Agency" type="String">
-            <value>NASA\\000</value>
+            <value>NASA\000</value>
         </Attribute>
         <Attribute name="Producer_Institution" type="String">
-            <value>JPL\\000</value>
+            <value>JPL\000</value>
         </Attribute>
         <Attribute name="Sensor_Name" type="String">
-            <value>NSCAT\\000</value>
+            <value>NSCAT\000</value>
         </Attribute>
         <Attribute name="Project_ID" type="String">
-            <value>NSCAT\\000</value>
+            <value>NSCAT\000</value>
         </Attribute>
         <Attribute name="SIS_ID" type="String">
-            <value>597-512-24/1996-07-01\\000</value>
+            <value>597-512-24/1996-07-01\000</value>
         </Attribute>
         <Attribute name="Build_ID" type="String">
-            <value>3.2.1/1996-11-05\\000</value>
+            <value>3.2.1/1996-11-05\000</value>
         </Attribute>
         <Attribute name="ADEOS_Data_Package_ID" type="String">
-            <value>S2\\000</value>
+            <value>S2\000</value>
         </Attribute>
         <Attribute name="ADEOS_Data_Package_Type" type="String">
-            <value>S\\000</value>
+            <value>S\000</value>
         </Attribute>
         <Attribute name="Product_Creation_Time" type="String">
-            <value>1996-318T01:35:16.000\\000</value>
+            <value>1996-318T01:35:16.000\000</value>
         </Attribute>
         <Attribute name="Data_Type" type="String">
-            <value>L2\\000</value>
+            <value>L2\000</value>
         </Attribute>
         <Attribute name="Data_Status" type="String">
-            <value>COMPLETE\\000</value>
+            <value>COMPLETE\000</value>
         </Attribute>
         <Attribute name="First_Rev_Number" type="Int32">
             <value>415</value>
         </Attribute>
         <Attribute name="First_Rev_Eq_Crossing_Time" type="String">
-            <value>1996-259T04:01:28.226\\000</value>
+            <value>1996-259T04:01:28.226\000</value>
         </Attribute>
         <Attribute name="First_Rev_Eq_Crossing_Lon" type="Float32">
             <value>279.983</value>
         </Attribute>
         <Attribute name="First_Data_Time" type="String">
-            <value>1996-259T03:43:48.945\\000</value>
+            <value>1996-259T03:43:48.945\000</value>
         </Attribute>
         <Attribute name="Last_Data_Time" type="String">
-            <value>1996-259T05:09:48.997\\000</value>
+            <value>1996-259T05:09:48.997\000</value>
         </Attribute>
         <Attribute name="Num_Expected_Output_Records" type="Int32">
             <value>458</value>
@@ -56,22 +56,22 @@
             <value>458</value>
         </Attribute>
         <Attribute name="Ambig_Removal_Method" type="String">
-            <value>Baseline used\\000</value>
+            <value>Baseline used\000</value>
         </Attribute>
         <Attribute name="HDF_Build_ID" type="String">
-            <value>JPL D-xxxxx 12/15/94\\000</value>
+            <value>JPL D-xxxxx 12/15/94\000</value>
         </Attribute>
         <Attribute name="HDF_SIS_ID" type="String">
-            <value>JPL D-12060 12/15/94\\000</value>
+            <value>JPL D-12060 12/15/94\000</value>
         </Attribute>
         <Attribute name="HDF_Conversion_Organization" type="String">
-            <value>JPL PO.DAAC\\000</value>
+            <value>JPL PO.DAAC\000</value>
         </Attribute>
         <Attribute name="HDF_Conversion_Time" type="String">
             <value>1996-320T17:32:34       </value>
         </Attribute>
         <Attribute name="Data_Format_Type" type="String">
-            <value>HDF\\000</value>
+            <value>HDF\000</value>
         </Attribute>
     </Attribute>
     <Structure name="NSCAT Rev 20">
@@ -823,4 +823,3 @@
     </Structure>
     <dataBLOB href=""/>
 </Dataset>
-

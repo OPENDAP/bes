@@ -24,9 +24,9 @@ Attributes {
         Float64 Attr_DFNT_FLOAT64 0, 1, -1, 1.79769e+308, 2.22507e-308, -1.79769e+308, -2.22507e-308;
     }
     Vdata_DFNT_CHAR8 {
-        String Attr_DFNT_CHAR8 "\\000\\001\\377\\177\\200";
+        String Attr_DFNT_CHAR8 "\000\001\377\177\200";
     }
     Vdata_DFNT_UCHAR8 {
-        String Attr_DFNT_UCHAR8 "\\000\\001\\377";
+        String Attr_DFNT_UCHAR8 "\000\001\377";
     }
 }

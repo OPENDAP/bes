@@ -45,7 +45,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -56,7 +56,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -120,7 +120,7 @@
                     </Attribute>
                     <Attribute name="GeoField_2" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;latitude&quot;</value>
+                            <value>&quot;Latitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -131,7 +131,7 @@
                     </Attribute>
                     <Attribute name="GeoField_3" type="Container">
                         <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;longitude&quot;</value>
+                            <value>&quot;Longitude&quot;</value>
                         </Attribute>
                         <Attribute name="DataType" type="String">
                             <value>DFNT_FLOAT32</value>
@@ -189,8 +189,8 @@
             <value>3.000000000</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_latitude" type="Container">
-        <Attribute name="Vdata_field_latitude" type="Float32">
+    <Attribute name="Swath1_Geolocation_Fields_Latitude" type="Container">
+        <Attribute name="Vdata_field_Latitude" type="Float32">
             <value>0.000000000</value>
             <value>1.000000000</value>
             <value>2.000000000</value>
@@ -201,8 +201,8 @@
             <value>7.000000000</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath1_Geolocation_Fields_longitude" type="Container">
-        <Attribute name="Vdata_field_longitude" type="Float32">
+    <Attribute name="Swath1_Geolocation_Fields_Longitude" type="Container">
+        <Attribute name="Vdata_field_Longitude" type="Float32">
             <value>0.000000000</value>
             <value>1.000000000</value>
             <value>2.000000000</value>
@@ -225,8 +225,8 @@
             <value>7.000000000</value>
         </Attribute>
     </Attribute>
-    <Attribute name="Swath2_Geolocation_Fields_latitude" type="Container"/>
-    <Attribute name="Swath2_Geolocation_Fields_longitude" type="Container"/>
+    <Attribute name="Swath2_Geolocation_Fields_Latitude" type="Container"/>
+    <Attribute name="Swath2_Geolocation_Fields_Longitude" type="Container"/>
     <Array name="Swath1_Data_Fields_temperature">
         <Attribute name="long_name" type="String">
             <value>temperature</value>
@@ -243,13 +243,13 @@
         <dimension name="ZDim_Swath2" size="8"/>
         <dimension name="NDim_Swath2" size="16"/>
     </Array>
-    <Array name="vdata_Swath2_Geolocation_Fields_latitude_vdf_latitude">
+    <Array name="vdata_Swath2_Geolocation_Fields_Latitude_vdf_Latitude">
         <Float32/>
-        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_latitude_vdf_latitude" size="16"/>
+        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_Latitude_vdf_Latitude" size="16"/>
     </Array>
-    <Array name="vdata_Swath2_Geolocation_Fields_longitude_vdf_longitude">
+    <Array name="vdata_Swath2_Geolocation_Fields_Longitude_vdf_Longitude">
         <Float32/>
-        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_longitude_vdf_longitude" size="16"/>
+        <dimension name="VDFDim0_vdata_Swath2_Geolocation_Fields_Longitude_vdf_Longitude" size="16"/>
     </Array>
     <dataBLOB href=""/>
 </Dataset>

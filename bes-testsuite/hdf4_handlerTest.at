@@ -49,7 +49,7 @@ AT_CLEANUP]
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([data])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/h4/$1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/h4/$1   | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $abs_srcdir/h4/$1.baseline stdout || diff -b -B $abs_srcdir/h4/$1.baseline stderr], [], [ignore],[],[])
 AT_XFAIL_IF([test "$3" = "xfail"])
 AT_CLEANUP]

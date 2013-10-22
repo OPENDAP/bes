@@ -27,12 +27,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "NDim";
                     }
@@ -68,10 +68,10 @@ Attributes {
     Swath_Geolocation_Fields_pressure {
         Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000;
     }
-    Swath_Geolocation_Fields_latitude {
-        Float32 Vdata_field_latitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    Swath_Geolocation_Fields_Latitude {
+        Float32 Vdata_field_Latitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
     }
-    Swath_Geolocation_Fields_longitude {
-        Float32 Vdata_field_longitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    Swath_Geolocation_Fields_Longitude {
+        Float32 Vdata_field_Longitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
     }
 }

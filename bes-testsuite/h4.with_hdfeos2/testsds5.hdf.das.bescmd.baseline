@@ -93,7 +93,7 @@ Attributes {
     }
     SDS_DFNT_CHAR8 {
         String long_name "SDS_DFNT_CHAR8";
-        String valid_range "€";
+        String valid_range "\200\177";
         String SDS_ATTR_DFNT_CHAR8 "";
         String coordinates "Axis_DFNT_CHAR8";
     }

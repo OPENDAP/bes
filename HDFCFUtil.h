@@ -61,6 +61,14 @@ struct dimmap_entry
 struct HDFCFUtil
 {
 
+    /// A customized escaping function to escape special characters following OPeNDAP's escattr function
+    /// that can be found at escaping.cc and escaping.h. i
+    /// Note: the customized version will not treat
+    /// \n(new line),\t(tab),\r(Carriage return) as special characters since NASA HDF files
+    /// use this characters to make the attribute easy to read. Escaping these characters in the attributes
+    /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
+    static string escattr(string s);
+
     /// Check the BES key. 
     /// This function will check a BES key specified at the file h4.conf.in.
     /// If the key's value is either true or yes. The handler claims to find

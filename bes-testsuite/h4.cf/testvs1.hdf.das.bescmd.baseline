@@ -12,7 +12,7 @@ Attributes {
         UInt16 Vdata_field_Field_DFNT_UINT16 0, 1, 65535;
     }
     Vdata_DFNT_INT8 {
-        Int16 Vdata_field_Field_DFNT_INT8 0, 1, 255, 127, 128;
+        Int32 Vdata_field_Field_DFNT_INT8 0, 1, 255, 127, 128;
     }
     Vdata_DFNT_UINT8 {
         Byte Vdata_field_Field_DFNT_UINT8 0, 1, 255;

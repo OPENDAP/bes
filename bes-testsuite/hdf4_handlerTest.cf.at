@@ -1,10 +1,25 @@
-# Process with autom4te to create an -*- Autotest -*- test suite.
-# This test simple HDF-EOS2 files, hybrid files, and generic files used in
-# the default handler.
-
-
-# ------------------------------
+# Copyright (C) 2013 The HDF Group
+# All rights reserved.
 #
+# Process with autom4te to create an -*- Autotest -*- test suite.
+#
+# This test simple generic HDF4 files (same as the default handler),
+# fake HDF-EOS2 files, and fake hybrid files. This script is a convenient
+# way of testing all files with EnableCF=true option without HDF-EOS2 library.
+# 
+# It assumes that EnableCF is true in the bes.conf file 
+# that --with-hdfeos2 is NOT specified in the configuration script. 
+#
+# The baseline files are under h4.cf/. Since --with-hdfeos2 is not used, 
+# you can copy baseline files from h4.generic/, h4.hdfeos2/, and h4.hybrid/.
+# 
+# The "test.cf.sh" script uses this test autotest script.
+#
+# See also hdf4_hadnler.with_hdfeos2.at file.
+#
+# Author: Hyo-Kyung Lee (hyoklee@hdfgroup.org)
+# Last Update: Oct 16, 2013
+# -----------------------------------------------------------------------------
 
 AT_INIT([bes.conf besstandalone getdap])
 # AT_COPYRIGHT([])
@@ -139,20 +154,22 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs4.hdf.data.bescmd])
 # AT_BESCMD_RESPONSE_TEST([testvs5.hdf.dds.bescmd])
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs5.hdf.data.bescmd])
 
-# Test Hybrid files.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data1.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data1.bescmd])
 
-AT_BESCMD_RESPONSE_TEST([h_grid.hdf.das.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_grid.hdf.data.bescmd])
-AT_BESCMD_RESPONSE_TEST([h_grid.hdf.dds.bescmd])
-AT_BESCMD_RESPONSE_TEST([h_grid.hdf.ddx.bescmd])
-AT_BESCMD_RESPONSE_TEST([h_swath.hdf.das.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_swath.hdf.data.bescmd])
-AT_BESCMD_RESPONSE_TEST([h_swath.hdf.dds.bescmd])
-AT_BESCMD_RESPONSE_TEST([h_swath.hdf.ddx.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([special_char_file_attr_sds.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([special_char_file_attr_sds.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([special_char_file_attr_sds.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([special_char_file_attr_sds.hdf.ddx.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([special_char_var_attr_sds.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([special_char_var_attr_sds.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([special_char_var_attr_sds.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([special_char_var_attr_sds.hdf.ddx.bescmd])
+
 
 # Test HDF-EOS2 files.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.hdf.das.bescmd])
@@ -247,3 +264,13 @@ AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.ddx.bescmd])
+
+# Test Hybrid files.
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_grid.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_grid.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_swath.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.ddx.bescmd])

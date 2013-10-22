@@ -250,7 +250,8 @@ HE2CF::print_attr(int32 type, int loc, void *vals)
 
     case DFNT_CHAR:
         {
-            return escattr(static_cast<const char*>(vals));
+            // Using the customized escattr. Don't escape \n,\r and \t. KY 2013-10-14
+            return HDFCFUtil::escattr(static_cast<const char*>(vals));
         }
 
     case DFNT_INT16:
@@ -430,8 +431,10 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         if(attr_type == DFNT_UCHAR || attr_type == DFNT_CHAR){
             string tempstring2(attr_data);
             string tempfinalstr= string(tempstring2.c_str());
-            tempfinalstr=escattr(tempfinalstr);
-            at->append_attr(attr_namestr, "String" , tempfinalstr);
+
+            // Using the customized escattr. Don't escape \n,\r and \t. KY 2013-10-14
+            //tempfinalstr=escattr(tempfinalstr);
+            at->append_attr(attr_namestr, "String" , HDFCFUtil::escattr(tempfinalstr));
         }
     
         else {
@@ -631,6 +634,7 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
     if(attrvalue[count] != '\0') 
         throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be NULL");
 
+    // No need to escape the special characters since they are ECS metadata. Will see. KY 2013-10-14
     cur_data.resize(attrvalue.size()-1);
     copy(attrvalue.begin(),attrvalue.end()-1,cur_data.begin());
 }
@@ -916,6 +920,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
                 at->del_attr(attr_cf_name);
             }
 	    //at->append_attr(buf_attr, print_type(datatype), print_rep);
+            // No need to escape special characters since print_rep already does that.
 	    at->append_attr(attr_cf_name, HDFCFUtil::print_type(datatype), print_rep);
 
 	}

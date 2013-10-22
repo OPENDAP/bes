@@ -18,12 +18,12 @@ Attributes {
                 }
                 DataField {
                     DataField_1 {
-                        String DataFieldName "lat";
+                        String DataFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "YDim";
                     }
                     DataField_2 {
-                        String DataFieldName "lon";
+                        String DataFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "XDim";
                     }
@@ -40,18 +40,18 @@ Attributes {
         PointStructure {
         }
     }
-    GeoGrid_Data_Fields_lat {
-        String long_name "lat";
+    GeoGrid_Data_Fields_Latitude {
+        String long_name "Latitude";
         String units "degrees_north";
     }
-    GeoGrid_Data_Fields_lat_dim_0 {
+    GeoGrid_Data_Fields_Latitude_dim_0 {
         String name "YDim:GeoGrid";
     }
-    GeoGrid_Data_Fields_lon {
-        String long_name "lon";
+    GeoGrid_Data_Fields_Longitude {
+        String long_name "Longitude";
         String units "degrees_east";
     }
-    GeoGrid_Data_Fields_lon_dim_0 {
+    GeoGrid_Data_Fields_Longitude_dim_0 {
         String name "XDim:GeoGrid";
     }
     GeoGrid_Data_Fields_temperature {

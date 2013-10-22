@@ -1068,6 +1068,11 @@ throw (Exception)
         if (field->rank >0) 
             dimids.assign(field->rank,0);
 
+        // Assign number of dimension attribute vector
+        vector <int>num_dim_attrs;
+        if (field->rank >0)
+            num_dim_attrs.assign(field->rank,0);
+
         // Handle dimensions with original dimension names
         for (int dimindex = 0; dimindex < field->rank; dimindex++)  {
 
@@ -1080,14 +1085,17 @@ throw (Exception)
             }	
 
             // Obtain dimension info.: dim_name, dim_size,dim_type and num of dim. attrs.
+            int temp_num_dim_attrs = 0;
             status =
                 SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
-                           &num_dim_attrs);
+                           &temp_num_dim_attrs);
             if (status == FAIL) {
                 SDendaccess (sds_id);
                 throw5 ("SDdiminfo failed ", "SDS name ", sds_name,
                         "dim index= ", dimindex);
             }
+
+            num_dim_attrs[dimindex] = temp_num_dim_attrs;
 
             // No dimension attribute has been found in NASA files, 
             // so don't handle it now. KY 2010-06-08
@@ -1150,7 +1158,7 @@ throw (Exception)
                 int32 dummy_value_count = 0;
 
                 // Loop through to check if an attribute called "name" exists and set a flag.
-                for (int attrindex = 0; attrindex < num_dim_attrs; attrindex++) {
+                for (int attrindex = 0; attrindex < num_dim_attrs[dimindex]; attrindex++) {
 
                     status = SDattrinfo(dimids[dimindex],attrindex,attr_name,
                                         &dummy_type,&dummy_value_count);
@@ -1167,7 +1175,7 @@ throw (Exception)
                 }
                                    
                 // Loop through to obtain the dimension attributes and save the corresponding attributes to dim_info.
-                for (int attrindex = 0; attrindex < num_dim_attrs; attrindex++) {
+                for (int attrindex = 0; attrindex < num_dim_attrs[dimindex]; attrindex++) {
 
                     Attribute *attr = new Attribute();
                     status = SDattrinfo(dimids[dimindex],attrindex,attr_name,

@@ -210,6 +210,7 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
 
     case DFNT_CHAR:
         {
+            // Use the customized escattr function. Don't escape \n,\t and \r. KY 2013-10-14
             return escattr(static_cast<const char*>(vals));
         }
 
@@ -1615,6 +1616,40 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
     } 
 
 }
+
+
+string HDFCFUtil::escattr(string s)
+{
+    const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
+    const string ESC = "\\";
+    const string DOUBLE_ESC = ESC + ESC;
+    const string QUOTE = "\"";
+    const string ESCQUOTE = ESC + QUOTE;
+
+
+    // escape \ with a second backslash
+    string::size_type ind = 0;
+    while ((ind = s.find(ESC, ind)) != s.npos) {
+        s.replace(ind, 1, DOUBLE_ESC);
+        ind += DOUBLE_ESC.length();
+    }
+
+    // escape non-printing characters with octal escape
+    ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != s.npos)
+        s.replace(ind, 1, ESC + octstring(s[ind]));
+
+    // escape " with backslash
+    ind = 0;
+    while ((ind = s.find(QUOTE, ind)) != s.npos) {
+        s.replace(ind, 1, ESCQUOTE);
+        ind += ESCQUOTE.length();
+    }
+
+    return s;
+}
+
+
 
 
 

@@ -788,7 +788,10 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
             if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
-                at->append_attr((*i)->getNewName(), "String" , tempfinalstr);
+                // We want to escape the possible special characters except the fullpath attribute. This may be overkilled since
+                // fullpath is only added for some CERES and MERRA data. We think people use fullpath really mean to keep their
+                // original names. So escaping them for the time being. KY 2013-10-14
+                at->append_attr((*i)->getNewName(), "String" , ((*i)->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
             }
             else {
                 for (int loc=0; loc < (*i)->getCount() ; loc++) {
@@ -1359,7 +1362,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     HDFSP::SD* spsd = f->getSD();
  
     // Except TRMM, we don't find ECS metadata in other non-EOS products. For the option to treat EOS2 as pure HDF4, we
-    // kind of relax the support of merging metadata in the EOS2 case(read_das_hdfeos2). We will see if we have the user
+    // kind of relax the support of merging metadata as we do for the EOS2 case(read_das_hdfeos2). We will see if we have the user
     // request to make them consistent in the future. KY 2013-07-08
     for(vector<HDFSP::Attribute *>::const_iterator i=spsd->getAttributes().begin();i!=spsd->getAttributes().end();i++) {
  
@@ -1412,7 +1415,11 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
-                at->append_attr((*i)->getNewName(), "String" , tempfinalstr);
+                
+                 // Using the customized escattr function to escape special characters except
+                 // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
+                // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
+                at->append_attr((*i)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
             }
 
             else {
@@ -1553,7 +1560,12 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
-                at->append_attr((*i)->getNewName(), "String" , tempfinalstr);
+
+                // We want to escape the possible special characters except the fullpath attribute. This may be overkilled since
+                // fullpath is only added for some CERES and MERRA data. We think people use fullpath really mean to keep their
+                // original names. So escaping them for the time being. KY 2013-10-14
+
+                at->append_attr((*i)->getNewName(), "String" ,((*i)->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
             }
             else {
                 for (int loc=0; loc < (*i)->getCount() ; loc++) {
@@ -1580,7 +1592,9 @@ bool read_das_hdfsp(DAS & das, const string & filename)
                 if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
                     string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
                     string tempfinalstr= string(tempstring2.c_str());
-                    dim_at->append_attr((*j)->getNewName(), "String" , tempfinalstr);
+
+                    //escaping the special characters in string attributes when mapping to DAP
+                    dim_at->append_attr((*j)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                 }
                 else {
                     for (int loc=0; loc < (*j)->getCount() ; loc++) {

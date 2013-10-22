@@ -31,12 +31,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
@@ -78,12 +78,12 @@ Attributes {
                         String DimList "ZDim";
                     }
                     GeoField_2 {
-                        String GeoFieldName "latitude";
+                        String GeoFieldName "Latitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
                     GeoField_3 {
-                        String GeoFieldName "longitude";
+                        String GeoFieldName "Longitude";
                         String DataType "DFNT_FLOAT32";
                         String DimList "xtrack", "ytrack";
                     }
@@ -104,24 +104,24 @@ Attributes {
         PointStructure {
         }
     }
-    Swath1_Geolocation_Fields_latitude {
-        String long_name "latitude";
+    Swath1_Geolocation_Fields_Latitude {
+        String long_name "Latitude";
         String units "degrees_north";
     }
-    Swath1_Geolocation_Fields_latitude_dim_0 {
+    Swath1_Geolocation_Fields_Latitude_dim_0 {
         String name "xtrack:Swath1";
     }
-    Swath1_Geolocation_Fields_latitude_dim_1 {
+    Swath1_Geolocation_Fields_Latitude_dim_1 {
         String name "ytrack:Swath1";
     }
-    Swath1_Geolocation_Fields_longitude {
-        String long_name "longitude";
+    Swath1_Geolocation_Fields_Longitude {
+        String long_name "Longitude";
         String units "degrees_east";
     }
-    Swath1_Geolocation_Fields_longitude_dim_0 {
+    Swath1_Geolocation_Fields_Longitude_dim_0 {
         String name "xtrack:Swath1";
     }
-    Swath1_Geolocation_Fields_longitude_dim_1 {
+    Swath1_Geolocation_Fields_Longitude_dim_1 {
         String name "ytrack:Swath1";
     }
     Swath1_Data_Fields_temperature {
@@ -136,24 +136,24 @@ Attributes {
     Swath1_Data_Fields_temperature_dim_2 {
         String name "ytrack:Swath1";
     }
-    Swath2_Geolocation_Fields_latitude {
-        String long_name "latitude";
+    Swath2_Geolocation_Fields_Latitude {
+        String long_name "Latitude";
         String units "degrees_north";
     }
-    Swath2_Geolocation_Fields_latitude_dim_0 {
+    Swath2_Geolocation_Fields_Latitude_dim_0 {
         String name "xtrack:Swath2";
     }
-    Swath2_Geolocation_Fields_latitude_dim_1 {
+    Swath2_Geolocation_Fields_Latitude_dim_1 {
         String name "ytrack:Swath2";
     }
-    Swath2_Geolocation_Fields_longitude {
-        String long_name "longitude";
+    Swath2_Geolocation_Fields_Longitude {
+        String long_name "Longitude";
         String units "degrees_east";
     }
-    Swath2_Geolocation_Fields_longitude_dim_0 {
+    Swath2_Geolocation_Fields_Longitude_dim_0 {
         String name "xtrack:Swath2";
     }
-    Swath2_Geolocation_Fields_longitude_dim_1 {
+    Swath2_Geolocation_Fields_Longitude_dim_1 {
         String name "ytrack:Swath2";
     }
     Swath2_Data_Fields_temperature {
