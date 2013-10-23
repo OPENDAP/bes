@@ -53,6 +53,49 @@ bool HDF5CFDAPUtil::check_beskeys(const string key) {
 
 }
 
+
+string HDF5CFDAPUtil::escattr(string s)
+{
+    const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
+    const string ESC = "\\";
+    const string DOUBLE_ESC = ESC + ESC;
+    const string QUOTE = "\"";
+    const string ESCQUOTE = ESC + QUOTE;
+
+    // escape \ with a second backslash
+    string::size_type ind = 0;
+    while ((ind = s.find(ESC, ind)) != s.npos) {
+        s.replace(ind, 1, DOUBLE_ESC);
+        ind += DOUBLE_ESC.length();
+    }
+
+    // escape non-printing characters with octal escape
+    ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != s.npos)
+        s.replace(ind, 1, ESC + octstring(s[ind]));
+
+
+    // escape " with backslash
+    ind = 0;
+    while ((ind = s.find(QUOTE, ind)) != s.npos) {
+        s.replace(ind, 1, ESCQUOTE);
+        ind += ESCQUOTE.length();
+    }
+
+    return s;
+}
+
+string
+HDF5CFDAPUtil::octstring(unsigned char val)
+{
+    ostringstream buf;
+    buf << oct << setw(3) << setfill('0')
+    << static_cast<unsigned int>(val);
+
+    return buf.str();
+}
+
+
 void HDF5CFDAPUtil::replace_double_quote(string & str) {
 
     const string offend_char = "\"";
@@ -167,6 +210,10 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             gp.cp = (char *) vals;
             char c;
             c = *(gp.cp+loc);
+            // Since the character may be a special character and DAP may not be able to represent so supposedly we should escape the character
+            // by calling the escattr function. However, HDF5 native char maps to DAP Int16. So the mapping assumes that users will never
+            // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead HDF5 string should be used to represent characters.
+            // So don't do any escaping of H5CHAR for now. KY 2013-10-14
             rep <<(int)c;
             return rep.str();
         }

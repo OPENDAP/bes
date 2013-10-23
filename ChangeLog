@@ -1,6 +1,40 @@
-2013-09-06  hyoklee
+2013-10-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-	improved code issues.
+	* h4cfdaputil.cc:
+	fixed double escaping problem.
+	
+2013-10-11  James Gallagher  <jgallagher@opendap.org>
+
+	* HDF5Array.cc
+	* HDF5BaseArray.cc
+	* HDF5Byte.cc
+	* HDF5CFArray.cc
+	* HDF5CFStr.cc
+	* HDF5Float32.cc
+	* HDF5Float64.cc
+	* HDF5GMCFFillIndexArray.cc
+	* HDF5GMCFMissLLArray.cc
+	* HDF5GMCFMissNonLLCVArray.cc
+	* HDF5GMSPCFArray.cc
+	* HDF5Int16.cc
+	* HDF5Int32.cc
+	* HDF5Sequence.cc
+	* HDF5Str.cc
+	* HDF5Structure.cc
+	* HDF5UInt16.cc
+	* HDF5UInt32.cc
+	* HDF5Url.cc
+	* HDFEOS5CFMissLLArray.cc
+	* HDFEOS5CFMissNonLLCVArray.cc
+	* HDFEOS5CFSpecialCVArray.cc:
+	edited to match the new, sane, sematics for for BaseType::read().
+
+2013-10-14  MuQun Yang <myang6@hdfgroup.org>
+
+	* h5cfdaputil.cc
+	* h5cfdaputil.h
+	* h5commoncfdap.cc:
+	escaped special characters.
 
 2013-09-06  MuQun Yang <myang6@hdfgroup.org>
 

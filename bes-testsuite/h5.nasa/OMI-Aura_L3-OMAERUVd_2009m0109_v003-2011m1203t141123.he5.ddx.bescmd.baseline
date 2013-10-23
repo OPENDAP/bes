@@ -119,7 +119,7 @@
             <value>505612807.00000000</value>
         </Attribute>
         <Attribute name="PGEVersion" type="String">
-            <value>&quot;1.2.0.1&quot;</value>
+            <value>\&quot;1.2.0.1\&quot;</value>
         </Attribute>
         <Attribute name="StartUTC" type="String">
             <value>2009-01-08T12:15:00.000000Z</value>

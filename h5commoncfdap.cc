@@ -281,8 +281,11 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
             if (false == is_droplongstr || 
-                tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) 
+                tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) {
+                if((attr->getNewName()!="origname")&&(attr->getNewName()!="fullnamepath"))
+                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
                 at->append_attr(attr->getNewName(),"String",tempstring);
+            }
         }
     }
 }

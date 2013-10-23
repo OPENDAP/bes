@@ -117,6 +117,10 @@ AT_BESCMD_RESPONSE_TEST([t_space_null.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_space_null.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_null.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_space_null.h5.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_special_char_attr.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_special_char_attr.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_special_char_attr.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_special_char_attr.h5.ddx.bescmd])
 
 # Test CF cases.
 AT_BESCMD_RESPONSE_TEST([t_flatten.h5.das.bescmd])
