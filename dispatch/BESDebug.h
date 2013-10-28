@@ -61,7 +61,7 @@ using std::string ;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << " src: "<< x << "] " << y ; } while( 0 )
+#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << " key: "<< x << "] " << y ; } while( 0 )
 
 /** @brief macro used to determine if the specified debug context is set
  *
