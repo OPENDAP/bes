@@ -113,7 +113,7 @@ restartBES()
 ###########################################################################
 #
 # Attempts to locate a running BES by using the ps command to search the 
-# process stack for running instances of the besdaemon and beslistner 
+# process stack for running instances of the besdaemon and beslistener 
 # programs. All of the PID are collected and cached in the environment
 # variable "BES_PID"
 #

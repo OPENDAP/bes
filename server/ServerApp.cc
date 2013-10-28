@@ -82,8 +82,8 @@ ServerApp::~ServerApp()
 	BESCatalogUtils::delete_all_catalogs();
 }
 
-// This is needed so that the master beslistner will get the exit status of
-// all of the child beslisteners (preventing them from becoming zombies).
+// This is needed so that the master bes listener will get the exit status of
+// all of the child bes listeners (preventing them from becoming zombies).
 static void CatchSigChild(int sig)
 {
     if (sig == SIGCHLD)
@@ -103,11 +103,11 @@ static void CatchSigHup(int sig)
     if (sig == SIGHUP)
     {
         int pid = getpid();
-        BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGHUP." << endl);
+        BESDEBUG("besdaemon", "beslistener: " << pid << " caught SIGHUP." << endl);
 
         BESApp::TheApplication()->terminate(sig);
 
-        BESDEBUG("besdaemon", "beslisterner: " << pid << " past terminate (SIGHUP)." << endl);
+        BESDEBUG("besdaemon", "beslistener: " << pid << " past terminate (SIGHUP)." << endl);
 
         exit(SERVER_EXIT_RESTART);
     }
@@ -120,11 +120,11 @@ static void CatchSigTerm(int sig)
     if (sig == SIGTERM)
     {
         int pid = getpid();
-        BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGTERM" << endl);
+        BESDEBUG("besdaemon", "beslistener: " << pid << " caught SIGTERM" << endl);
 
         BESApp::TheApplication()->terminate(sig);
 
-        BESDEBUG("besdaemon", "beslisterner: " << pid << " past terminate (SIGTERM)." << endl);
+        BESDEBUG("besdaemon", "beslistener: " << pid << " past terminate (SIGTERM)." << endl);
 
         exit(SERVER_EXIT_NORMAL_SHUTDOWN);
     }
@@ -151,7 +151,7 @@ static void register_signal_handlers()
     act.sa_flags |= SA_RESTART;
 #endif
 
-    BESDEBUG( "server", "beslisterner: Registering signal handlers ... " << endl );
+    BESDEBUG( "server", "beslistener: Registering signal handlers ... " << endl );
 
     act.sa_handler = CatchSigChild;
     if (sigaction(SIGCHLD, &act, 0))
@@ -167,7 +167,7 @@ static void register_signal_handlers()
     if (sigaction(SIGHUP, &act, 0) < 0)
         throw BESInternalFatalError("Could not register a handler to catch beslistener hup signal.", __FILE__, __LINE__);
 
-    BESDEBUG( "server", "beslisterner: OK" << endl );
+    BESDEBUG( "server", "beslistener: OK" << endl );
 }
 
 int ServerApp::initialize(int argc, char **argv)
@@ -265,7 +265,7 @@ int ServerApp::initialize(int argc, char **argv)
         }
         catch (BESError &e)
         {
-            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
@@ -291,7 +291,7 @@ int ServerApp::initialize(int argc, char **argv)
         }
         catch (BESError &e)
         {
-            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
@@ -321,7 +321,7 @@ int ServerApp::initialize(int argc, char **argv)
         }
         catch (BESError &e)
         {
-            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
@@ -339,31 +339,31 @@ int ServerApp::initialize(int argc, char **argv)
     }
     catch (BESError &e)
     {
-        BESDEBUG( "server", "beslisterner: FAILED: " << e.get_message() << endl );
+        BESDEBUG( "server", "beslistener: FAILED: " << e.get_message() << endl );
         (*BESLog::TheLog()) << e.get_message() << endl;
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
 
-    BESDEBUG( "server", "beslisterner: initializing default module ... "
+    BESDEBUG( "server", "beslistener: initializing default module ... "
             << endl );
     BESDefaultModule::initialize(argc, argv);
-    BESDEBUG( "server", "beslisterner: done initializing default module"
+    BESDEBUG( "server", "beslistener: done initializing default module"
             << endl );
 
-    BESDEBUG( "server", "beslisterner: initializing default commands ... "
+    BESDEBUG( "server", "beslistener: initializing default commands ... "
             << endl );
     BESXMLDefaultCommands::initialize(argc, argv);
-    BESDEBUG( "server", "beslisterner: done initializing default commands"
+    BESDEBUG( "server", "beslistener: done initializing default commands"
             << endl );
 
     // This will load and initialize all of the modules
-    BESDEBUG( "server", "beslisterner: initializing loaded modules ... "
+    BESDEBUG( "server", "beslistener: initializing loaded modules ... "
             << endl );
     int ret = BESModuleApp::initialize(argc, argv);
-    BESDEBUG( "server", "beslisterner: done initializing loaded modules"
+    BESDEBUG( "server", "beslistener: done initializing loaded modules"
             << endl );
 
-    BESDEBUG( "server", "beslisterner: initialized settings:" << *this );
+    BESDEBUG( "server", "beslistener: initialized settings:" << *this );
 
     if (needhelp)
     {
@@ -374,7 +374,7 @@ int ServerApp::initialize(int argc, char **argv)
     // will get this GID. Then use killpg() to send a signal to this process
     // and all of the children.
     session_id = setsid();
-    BESDEBUG("besdaemon", "beslisterner: The master beslistener session id (group id): " << session_id << endl);
+    BESDEBUG("besdaemon", "beslistener: The master beslistener session id (group id): " << session_id << endl);
 
     return ret;
 }
@@ -383,7 +383,7 @@ int ServerApp::run()
 {
     try
     {
-        BESDEBUG( "server", "beslisterner: initializing memory pool ... "
+        BESDEBUG( "server", "beslistener: initializing memory pool ... "
                 << endl );
         BESMemoryManager::initialize_memory_pool();
         BESDEBUG( "server", "OK" << endl );
@@ -394,9 +394,9 @@ int ServerApp::run()
             _ts = new TcpSocket(_portVal);
             listener.listen(_ts);
 
-            BESDEBUG( "server", "beslisterner: listening on port (" << _portVal << ")" << endl );
+            BESDEBUG( "server", "beslistener: listening on port (" << _portVal << ")" << endl );
 
-            BESDEBUG( "server", "beslisterner: about to write status (4)" << endl );
+            BESDEBUG( "server", "beslistener: about to write status (4)" << endl );
             // Write to stdout works because the besdaemon is listening on the
             // other end of a pipe where the pipe fd[1] has been dup2'd to
             // stdout. See daemon.cc:start_master_beslistener.
@@ -404,14 +404,14 @@ int ServerApp::run()
             int status = BESLISTENER_RUNNING;
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
-            BESDEBUG( "server", "beslisterner: wrote status (" << res << ")" << endl );
+            BESDEBUG( "server", "beslistener: wrote status (" << res << ")" << endl );
         }
 
         if (!_unixSocket.empty())
         {
             _us = new UnixSocket(_unixSocket);
             listener.listen(_us);
-            BESDEBUG( "server", "beslisterner: listening on unix socket ("
+            BESDEBUG( "server", "beslistener: listening on unix socket ("
                     << _unixSocket << ")" << endl );
         }
 
@@ -469,22 +469,22 @@ int ServerApp::terminate(int sig)
         // Do this in the reverse order that it was initialized. So
         // terminate the loaded modules first, then the default
         // commands, then the default module.
-        BESDEBUG( "server", "beslisterner: terminating loaded modules ...  "
+        BESDEBUG( "server", "beslistener: terminating loaded modules ...  "
                 << endl );
         BESModuleApp::terminate(sig);
-        BESDEBUG( "server", "beslisterner: done terminating loaded modules"
+        BESDEBUG( "server", "beslistener: done terminating loaded modules"
                 << endl );
 
-        BESDEBUG( "server", "beslisterner: terminating default commands ...  "
+        BESDEBUG( "server", "beslistener: terminating default commands ...  "
                 << endl );
         BESXMLDefaultCommands::terminate();
-        BESDEBUG( "server", "beslisterner: done terminating default commands ...  "
+        BESDEBUG( "server", "beslistener: done terminating default commands ...  "
                 << endl );
 
-        BESDEBUG( "server", "beslisterner: terminating default module ... "
+        BESDEBUG( "server", "beslistener: terminating default module ... "
                 << endl );
         BESDefaultModule::terminate();
-        BESDEBUG( "server", "beslisterner: done terminating default module ... "
+        BESDEBUG( "server", "beslistener: done terminating default module ... "
                 << endl );
     }
     return sig;

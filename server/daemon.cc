@@ -732,14 +732,14 @@ static void set_group_id() {
     // get group id or name from BES configuration file
     // If BES.Group begins with # then it is a group id,
     // else it is a group name and look up the id.
-    BESDEBUG( "server", "beslisterner: Setting group id ... " << endl );
+    BESDEBUG( "server", "beslistener: Setting group id ... " << endl );
     bool found = false;
     string key = "BES.Group";
     string group_str;
     try {
         TheBESKeys::TheKeys()->get_value(key, group_str, found);
     } catch (BESError &e) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -747,7 +747,7 @@ static void set_group_id() {
     }
 
     if (!found || group_str.empty()) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -767,7 +767,7 @@ static void set_group_id() {
         struct group *ent;
         ent = getgrnam(group_str.c_str());
         if (!ent) {
-            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
@@ -777,7 +777,7 @@ static void set_group_id() {
     }
 
     if (new_gid < 1) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
@@ -787,7 +787,7 @@ static void set_group_id() {
 
     BESDEBUG( "server", "to id " << new_gid << " ... " << endl );
     if (setgid(new_gid) == -1) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
@@ -797,12 +797,12 @@ static void set_group_id() {
 
     BESDEBUG( "server", "OK" << endl );
 #else
-    BESDEBUG( "server", "beslisterner: Groups not supported in this OS" << endl );
+    BESDEBUG( "server", "beslistener: Groups not supported in this OS" << endl );
 #endif
 }
 
 static void set_user_id() {
-    BESDEBUG( "server", "beslisterner: Setting user id ... " << endl );
+    BESDEBUG( "server", "beslistener: Setting user id ... " << endl );
 
     // Get user name or id from the BES configuration file.
     // If the BES.User value begins with # then it is a user
@@ -814,7 +814,7 @@ static void set_user_id() {
     try {
         TheBESKeys::TheKeys()->get_value(key, user_str, found);
     } catch (BESError &e) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -822,7 +822,7 @@ static void set_user_id() {
     }
 
     if (!found || user_str.empty()) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -840,7 +840,7 @@ static void set_user_id() {
         struct passwd *ent;
         ent = getpwnam(user_str.c_str());
         if (!ent) {
-            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
@@ -851,7 +851,7 @@ static void set_user_id() {
 
     // new user id cannot be root (0)
     if (!new_id) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -860,7 +860,7 @@ static void set_user_id() {
 
     BESDEBUG( "server", "to " << new_id << " ... " << endl );
     if (setuid(new_id) == -1) {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        BESDEBUG( "server", "beslistener: FAILED" << endl );
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
