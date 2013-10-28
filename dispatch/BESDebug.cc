@@ -162,7 +162,7 @@ string BESDebug::GetPidStr()
  */
 void BESDebug::Help(ostream &strm)
 {
-    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]contextn\"" << endl
+    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]context\"" << endl
             << "  context with dash (-) in front will be turned off" << endl << "  context of all will turn on debugging for all contexts" << endl << endl
             << "Possible context(s):" << endl;
 
