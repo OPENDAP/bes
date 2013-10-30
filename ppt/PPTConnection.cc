@@ -266,6 +266,7 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 		throw BESInternalError(err, __FILE__, __LINE__);
 	}
 
+	// TODO Improve this code! No strings or stringstream unless necessary. jhrg 10/30/13
 	char lenbuffer[8];
 	lenbuffer[0] = _inBuff[0];
 	lenbuffer[1] = _inBuff[1];

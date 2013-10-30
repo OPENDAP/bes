@@ -178,14 +178,24 @@ void BESServerHandler::execute(Connection *c)
 		// The server has been sent a message that the client is exiting
 		// and closing the connection. So exit this process.
 		if (extensions["status"] == c->exit()) {
-			// The protocol docs indicate that the EXIT_NOW 'code' is followed
-			// by a zero-length 'data' chunk (a chunk that has type 'd'). See section
+			// The protocol docs indicate that the EXIT_NOW 'token' is followed
+			// by a zero-length chunk (a chunk that has type 'd'). See section
 			// 4.3 of the documentation (http://docs.opendap.org/index.php/Hyrax_-_BES_PPT).
 			// jhrg 10/30/13
+
+			*(BESLog::TheLog()) << "Received PPT_EXIT_NOW in an extension chunk." << endl;
+
+			// This call to Connection::receive() reads the final zero-length chunk
+			// (with chunk tye 'd') that follows the PPT_EXIT_NOW code. jhrg 10/30/13
+			// NB: It is actually implemented in PPTConnection.cc
 			if (c->receive(extensions, &ss)) {
-				c->closeConnection();
 		        *(BESLog::TheLog()) << "Closed connection; child returning " << CHILD_SUBPROCESS_READY << " to the master listener." << endl;
 
+		        // This call closes the socket - it does minimal bookkeeping and
+		        // calls the the kernel's close() function. NB: The method is
+		        // implemented in PPTServer.cc and that calls Socket::close() on the
+		        // Socket instance held by the Connection.
+				c->closeConnection();
 				exit(CHILD_SUBPROCESS_READY);
 			}
 			else {

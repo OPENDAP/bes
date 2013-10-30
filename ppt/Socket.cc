@@ -109,6 +109,7 @@ int Socket::receive(char *inBuff, const int inSize)
 	int bytesRead = 0;
 
     //if ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
+	// check for EINTR and EAGAIN. jhrg 10/30/13
 	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
 	    if (errno == EINTR || errno == EAGAIN)
 	        continue;
