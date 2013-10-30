@@ -302,28 +302,23 @@ PPTConnection::receive( map<string,string> &extensions,
     BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl ) ;
     BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl ) ;
 
-    if( _inBuff[7] == 'x' )
-    {
-	ostringstream xstrm ;
-	receive( xstrm, inlen ) ;
-	read_extensions( extensions, xstrm.str() ) ;
-    }
-    else if( _inBuff[7] == 'd' )
-    {
-	if( !inlen )
-	{
-	    // we've received the last chunk, return true, there
-	    // is nothing more to read from the socket
-	    return true ;
+	if (_inBuff[7] == 'x') {
+		ostringstream xstrm;
+		receive(xstrm, inlen);
+		read_extensions(extensions, xstrm.str());
 	}
-	receive( *use_strm, inlen ) ;
-    }
-    else
-    {
-	string err = (string)"type of data is " + _inBuff[7]
-	             + ", should be x for extensions or d for data" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
+	else if (_inBuff[7] == 'd') {
+		if (!inlen) {
+			// we've received the last chunk, return true, there
+			// is nothing more to read from the socket
+			return true;
+		}
+		receive(*use_strm, inlen);
+	}
+	else {
+		string err = (string) "type of data is " + _inBuff[7] + ", should be x for extensions or d for data";
+		throw BESInternalError(err, __FILE__, __LINE__);
+	}
 
     return false ;
 }
@@ -389,52 +384,42 @@ PPTConnection::receive( ostream &strm, const /* unsigned */ int len )
  * @param extensions map to store the name/value pairs in
  * @param xstr string of extensions in the form *(name[=value];)
  */
-void
-PPTConnection::read_extensions( map<string,string> &extensions, const string &xstr )
+void PPTConnection::read_extensions(map<string, string> &extensions, const string &xstr)
 {
-    // extensions are in the form var[=val]; There is always a semicolon at the end
-    // if there is no equal sign then there is no value.
+	// extensions are in the form var[=val]; There is always a semicolon at the end
+	// if there is no equal sign then there is no value.
 
-    string var ;
-    string val ;
-    unsigned int index = 0 ;
-    bool done = false ;
-    while( !done )
-    {
-	string::size_type semi = xstr.find( ';', index ) ;
-	if( semi == string::npos )
-	{
-	    string err = "malformed extensions "
-	                 + xstr.substr( index, xstr.length() - index )
-			 + ", missing semicolon" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string var;
+	string val;
+	unsigned int index = 0;
+	bool done = false;
+	while (!done) {
+		string::size_type semi = xstr.find(';', index);
+		if (semi == string::npos) {
+			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index) + ", missing semicolon";
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		string::size_type eq = xstr.find('=', index);
+		if (eq == string::npos || eq > semi) {
+			// there is no value for this variable
+			var = xstr.substr(index, semi - index);
+			extensions[var] = "";
+		}
+		else if (eq == semi - 1) {
+			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index)
+					+ ", missing value after =";
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		else {
+			var = xstr.substr(index, eq - index);
+			val = xstr.substr(eq + 1, semi - eq - 1);
+			extensions[var] = val;
+		}
+		index = semi + 1;
+		if (index >= xstr.length()) {
+			done = true;
+		}
 	}
-	string::size_type eq = xstr.find( '=', index ) ;
-	if( eq == string::npos || eq > semi )
-	{
-	    // there is no value for this variable
-	    var = xstr.substr( index, semi-index ) ;
-	    extensions[var] = "" ;
-	}
-	else if( eq == semi-1 )
-	{
-	    string err = "malformed extensions "
-	                 + xstr.substr( index, xstr.length() - index )
-			 + ", missing value after =" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    var = xstr.substr( index, eq-index ) ;
-	    val = xstr.substr( eq+1, semi-eq-1 ) ;
-	    extensions[var] = val ;
-	}
-	index = semi+1 ;
-	if( index >= xstr.length() )
-	{
-	    done = true ;
-	}
-    }
 }
 
 /** @brief read a buffer of data from the socket without blocking

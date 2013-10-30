@@ -126,22 +126,24 @@ SocketListener::accept()
 	//if( select( maxfd+1, &read_fd,
 	 //           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
 #endif
-	while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
-	    switch (errno) {
-	    case EAGAIN:	// rerun select on interrupted calls, ...
-	    case EINTR:
-		break;
-	    case EBADF:		// or exit on error
-	    case EINVAL:
-	    default: {
-		string err("select: ");
-		const char *error_info = strerror(errno);
-		if (error_info)
-		    err += (string) error_info;
-		throw BESInternalError(err, __FILE__, __LINE__);
-	    }
-	    }
-	}
+		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+			switch (errno) {
+
+			case EAGAIN:	// rerun select on interrupted calls, ...
+			case EINTR:
+				break;
+#if 0
+			case EBADF:		// or exit on error
+			case EINVAL:
+#endif
+			default: {
+				string err("select: ");
+				const char *error_info = strerror(errno);
+				if (error_info) err += (string) error_info;
+				throw BESInternalError(err, __FILE__, __LINE__);
+			}
+			}
+		}
 
 	iter = _socket_list.begin() ;
 	for( ; iter != _socket_list.end(); iter++ )

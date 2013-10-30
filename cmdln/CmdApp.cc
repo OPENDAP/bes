@@ -63,7 +63,7 @@ CmdApp::CmdApp()
       _client( 0 ),
       _hostStr( "localhost" ),
       _unixStr( "" ),
-      _portVal( 10002 ),
+      _portVal( 10022 ),
       _outputStrm( 0 ),
       _inputStrm( 0 ),
       _createdInputStrm( false ),

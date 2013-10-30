@@ -126,11 +126,11 @@ static void CatchSigPipe(int sig)
         BESDEBUG("beslistener", "beslistener: " << pid << " caught SIGPIPE." << endl);
         *(BESLog::TheLog()) << "beslistener caught sig pipe" << endl;
 
-        BESApp::TheApplication()->terminate(sig);
+        //BESApp::TheApplication()->terminate(sig);
 
         BESDEBUG("beslistener", "beslistener: " << pid << " past terminate (SIGPIPE)." << endl);
 
-        exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+        //exit(SERVER_EXIT_NORMAL_SHUTDOWN);
     }
 }
 
