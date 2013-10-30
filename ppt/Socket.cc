@@ -104,20 +104,22 @@ Socket::send( const string &str, int start, int end )
     }
 }
 
-int	
-Socket::receive( char *inBuff, const int inSize )
+int Socket::receive(char *inBuff, const int inSize)
 {
-    int bytesRead = 0 ;
-    if( ( bytesRead = read( _socket, inBuff, inSize ) ) < 1 )
-    {
-	string err( "socket failure, reading on stream socket: " ) ;
-	const char *error_info = strerror( errno ) ;
-	if( error_info )
-	    err += " " + (string)error_info ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
-    //inBuff[bytesRead] = '\0' ;
-    return bytesRead ;
+	int bytesRead = 0;
+
+    //if ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
+	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
+	    if (errno == EINTR || errno == EAGAIN)
+	        continue;
+
+		string err("socket failure, reading on stream socket: ");
+		const char *error_info = strerror(errno);
+		if (error_info) err += " " + (string) error_info;
+		throw BESInternalError(err, __FILE__, __LINE__);
+	}
+	//inBuff[bytesRead] = '\0' ;
+	return bytesRead;
 }
 
 #if 0
