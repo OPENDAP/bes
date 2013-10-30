@@ -58,12 +58,16 @@ using std::ofstream ;
 
 #define BES_CMDLN_DEFAULT_TIMEOUT 5
 
+// We got tired of typing in this all the time... jhrg 10/30/13
+#define DEFAULT_PORT 10022
+#define DEFAULT_HOST "localhost"
+
 CmdApp::CmdApp()
     : BESBaseApp(),
       _client( 0 ),
-      _hostStr( "localhost" ),
+      _hostStr( DEFAULT_HOST ),
       _unixStr( "" ),
-      _portVal( 10022 ),
+      _portVal( DEFAULT_PORT ),
       _outputStrm( 0 ),
       _inputStrm( 0 ),
       _createdInputStrm( false ),
@@ -237,6 +241,7 @@ CmdApp::initialize( int argc, char **argv )
     CmdTranslation::initialize( argc, argv ) ;
 
     string portStr = "" ;
+    //string portStr = DEFAULT_PORT ;
     string outputStr = "" ;
     string inputStr = "" ;
     string timeoutStr = "" ;
@@ -311,12 +316,12 @@ CmdApp::initialize( int argc, char **argv )
 
     if( _hostStr != "" )
     {
-	if( portStr == "" )
+	if( !_portVal  && portStr == "" )
 	{
 	    cout << "port must be specified when specifying a host" << endl ;
 	    badUsage = true ;
 	}
-	else
+	else if (!_portVal)
 	{
 	    _portVal = atoi( portStr.c_str() ) ;
 	}

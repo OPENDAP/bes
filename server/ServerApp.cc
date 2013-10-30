@@ -94,8 +94,8 @@ static void CatchSigChild(int sig)
         int stat;
         pid_t pid = wait(&stat);
 
-        BESDEBUG("beslistener", "beslistener: child pid: " << pid << " exited with status: " << stat << endl);
-        *(BESLog::TheLog()) << "beslistener child pid: " << pid << " exited with status: " << stat << endl;
+        BESDEBUG("beslistener", "beslistener: child pid: " << pid << " exited with status: " << WEXITSTATUS(stat) << endl);
+        *(BESLog::TheLog()) << "beslistener child pid: " << pid << " exited with status: " << WEXITSTATUS(stat) << endl;
     }
 }
 
