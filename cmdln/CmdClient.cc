@@ -156,7 +156,7 @@ void
 CmdClient::shutdownClient()
 {
     if( _client )
-	_client->closeConnection() ;
+    	_client->closeConnection() ;
 }
 
 /** @brief Set the output stream for responses from the BES server.
