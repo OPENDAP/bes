@@ -1141,7 +1141,7 @@ int main(int argc, char *argv[])
                 // master_beslistener_pid = start_master_beslistener();
                 start_master_beslistener();
             }
-            // If the satus is not 'restart' and not running, then exit loop
+            // If the status is not 'restart' and not running, then exit loop
             else if (master_beslistener_status != BESLISTENER_RUNNING) {
                 done = true;
             }

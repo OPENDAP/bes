@@ -89,9 +89,13 @@ static void CatchSigChild(int sig)
     if (sig == SIGCHLD)
     {
         BESDEBUG("besdaemon", "beslistener: caught sig chld" << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig child" << endl;
+
         int stat;
         pid_t pid = wait(&stat);
+
         BESDEBUG("besdaemon", "beslistener: child pid: " << pid << " exited with status: " << stat << endl);
+        *(BESLog::TheLog()) << "beslistener child pid: " << pid << " exited with status: " << stat << endl;
     }
 }
 
@@ -104,6 +108,7 @@ static void CatchSigHup(int sig)
     {
         int pid = getpid();
         BESDEBUG("besdaemon", "beslistener: " << pid << " caught SIGHUP." << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig hup" << endl;
 
         BESApp::TheApplication()->terminate(sig);
 
@@ -112,6 +117,23 @@ static void CatchSigHup(int sig)
         exit(SERVER_EXIT_RESTART);
     }
 }
+
+static void CatchSigPipe(int sig)
+{
+    if (sig == SIGPIPE)
+    {
+        int pid = getpid();
+        BESDEBUG("besdaemon", "beslistener: " << pid << " caught SIGPIPE." << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig pipe" << endl;
+
+        BESApp::TheApplication()->terminate(sig);
+
+        BESDEBUG("besdaemon", "beslistener: " << pid << " past terminate (SIGPIPE)." << endl);
+
+        exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+    }
+}
+
 // This is the default signal sent by 'kill'; when the master beslistener gets
 // this signal it should stop. besdaemon should not try to start a new
 // master beslistener.
@@ -121,6 +143,7 @@ static void CatchSigTerm(int sig)
     {
         int pid = getpid();
         BESDEBUG("besdaemon", "beslistener: " << pid << " caught SIGTERM" << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig term" << endl;
 
         BESApp::TheApplication()->terminate(sig);
 
@@ -143,6 +166,7 @@ static void register_signal_handlers()
     struct sigaction act;
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
+    sigaddset(&act.sa_mask, SIGPIPE);
     sigaddset(&act.sa_mask, SIGTERM);
     sigaddset(&act.sa_mask, SIGHUP);
     act.sa_flags = 0;
@@ -156,6 +180,10 @@ static void register_signal_handlers()
     act.sa_handler = CatchSigChild;
     if (sigaction(SIGCHLD, &act, 0))
         throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__, __LINE__);
+
+    act.sa_handler = CatchSigPipe;
+    if (sigaction(SIGPIPE, &act, 0) < 0)
+        throw BESInternalFatalError("Could not register a handler to catch beslistener pipe signal.", __FILE__, __LINE__);
 
     // For these, block sigchld
     //  sigaddset(&act.sa_mask, SIGCHLD);
