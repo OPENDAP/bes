@@ -83,7 +83,7 @@ public:
 	{
 	    string::size_type lb = result.find( "[" ) ;
 	    CPPUNIT_ASSERT( lb != string::npos ) ;
-	    string::size_type rb = result.find( "]" ) ;
+	    string::size_type rb = result.rfind( "]" ) ;
 	    CPPUNIT_ASSERT( rb != string::npos ) ;
 	    result = result.substr( rb+2 ) ;
 	}
