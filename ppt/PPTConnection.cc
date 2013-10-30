@@ -320,7 +320,7 @@ PPTConnection::receive( map<string,string> &extensions,
 		throw BESInternalError(err, __FILE__, __LINE__);
 	}
 
-    return false ;
+	return false;
 }
 
 /** @brief receive from the socket the number of bytes specified
@@ -384,42 +384,52 @@ PPTConnection::receive( ostream &strm, const /* unsigned */ int len )
  * @param extensions map to store the name/value pairs in
  * @param xstr string of extensions in the form *(name[=value];)
  */
-void PPTConnection::read_extensions(map<string, string> &extensions, const string &xstr)
+void
+PPTConnection::read_extensions( map<string,string> &extensions, const string &xstr )
 {
-	// extensions are in the form var[=val]; There is always a semicolon at the end
-	// if there is no equal sign then there is no value.
+    // extensions are in the form var[=val]; There is always a semicolon at the end
+    // if there is no equal sign then there is no value.
 
-	string var;
-	string val;
-	unsigned int index = 0;
-	bool done = false;
-	while (!done) {
-		string::size_type semi = xstr.find(';', index);
-		if (semi == string::npos) {
-			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index) + ", missing semicolon";
-			throw BESInternalError(err, __FILE__, __LINE__);
-		}
-		string::size_type eq = xstr.find('=', index);
-		if (eq == string::npos || eq > semi) {
-			// there is no value for this variable
-			var = xstr.substr(index, semi - index);
-			extensions[var] = "";
-		}
-		else if (eq == semi - 1) {
-			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index)
-					+ ", missing value after =";
-			throw BESInternalError(err, __FILE__, __LINE__);
-		}
-		else {
-			var = xstr.substr(index, eq - index);
-			val = xstr.substr(eq + 1, semi - eq - 1);
-			extensions[var] = val;
-		}
-		index = semi + 1;
-		if (index >= xstr.length()) {
-			done = true;
-		}
+    string var ;
+    string val ;
+    unsigned int index = 0 ;
+    bool done = false ;
+    while( !done )
+    {
+	string::size_type semi = xstr.find( ';', index ) ;
+	if( semi == string::npos )
+	{
+	    string err = "malformed extensions "
+	                 + xstr.substr( index, xstr.length() - index )
+			 + ", missing semicolon" ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
+	string::size_type eq = xstr.find( '=', index ) ;
+	if( eq == string::npos || eq > semi )
+	{
+	    // there is no value for this variable
+	    var = xstr.substr( index, semi-index ) ;
+	    extensions[var] = "" ;
+	}
+	else if( eq == semi-1 )
+	{
+	    string err = "malformed extensions "
+	                 + xstr.substr( index, xstr.length() - index )
+			 + ", missing value after =" ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
+	else
+	{
+	    var = xstr.substr( index, eq-index ) ;
+	    val = xstr.substr( eq+1, semi-eq-1 ) ;
+	    extensions[var] = val ;
+	}
+	index = semi+1 ;
+	if( index >= xstr.length() )
+	{
+	    done = true ;
+	}
+    }
 }
 
 /** @brief read a buffer of data from the socket without blocking
