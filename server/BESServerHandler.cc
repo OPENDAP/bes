@@ -183,23 +183,34 @@ void BESServerHandler::execute(Connection *c)
 			// 4.3 of the documentation (http://docs.opendap.org/index.php/Hyrax_-_BES_PPT).
 			// jhrg 10/30/13
 
+            BESDEBUG( "beslistener", "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl );
 			*(BESLog::TheLog()) << "Received PPT_EXIT_NOW in an extension chunk." << endl;
 
 			// This call to Connection::receive() reads the final zero-length chunk
-			// (with chunk tye 'd') that follows the PPT_EXIT_NOW code. jhrg 10/30/13
+			// (with chunk type 'd') that follows the PPT_EXIT_NOW code. jhrg 10/30/13
 			// NB: It is actually implemented in PPTConnection.cc
 			if (c->receive(extensions, &ss)) {
-		        *(BESLog::TheLog()) << "Closed connection; child returning " << CHILD_SUBPROCESS_READY << " to the master listener." << endl;
+
+	            BESDEBUG( "beslistener", "BESServerHandler::execute() - Received zero length closing chunk." << endl );
 
 		        // This call closes the socket - it does minimal bookkeeping and
 		        // calls the the kernel's close() function. NB: The method is
 		        // implemented in PPTServer.cc and that calls Socket::close() on the
 		        // Socket instance held by the Connection.
+                BESDEBUG( "beslistener", "BESServerHandler::execute() -  Closing client connection." << endl );
 				c->closeConnection();
-				exit(CHILD_SUBPROCESS_READY);
+	            BESDEBUG( "beslistener", "BESServerHandler::execute() - Client connection has been closed." << endl );
+	            *(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of " << CHILD_SUBPROCESS_READY << " to the master listener." << endl;
+
+                BESDEBUG( "beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which is a value of "<< CHILD_SUBPROCESS_READY << ")" << endl );
+
+                exit(CHILD_SUBPROCESS_READY);
+                BESDEBUG( "beslistener", "BESServerHandler::execute() - exit() completed. In theory this log message shoudle NEVER appear ing the log!!!!" << endl );
+
+
 			}
 			else {
-				BESDEBUG("beslistener", "Failed to get final zero-length closing chunk");
+				BESDEBUG("beslistener", "BESServerHandler::execute() - Failed to get final zero-length closing chunk");
 		        *(BESLog::TheLog()) << "beslistener: Failed to get final zero-length closing chunk; child returning " << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl;
 
 				c->closeConnection();
