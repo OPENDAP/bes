@@ -111,8 +111,10 @@ int Socket::receive(char *inBuff, const int inSize)
     //if ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
 	// check for EINTR and EAGAIN. jhrg 10/30/13
 	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
-	    if (errno == EINTR || errno == EAGAIN)
-	        continue;
+	    if (errno == EINTR || errno == EAGAIN) {
+	    	errno = 0;
+	    	continue;
+	    }
 
 		string err("socket failure, reading on stream socket: ");
 		const char *error_info = strerror(errno);
