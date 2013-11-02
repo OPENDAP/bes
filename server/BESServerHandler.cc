@@ -188,7 +188,7 @@ void BESServerHandler::execute(Connection *c)
 
 			// This call to Connection::receive() reads the final zero-length chunk
 			// (with chunk type 'd') that follows the PPT_EXIT_NOW code. jhrg 10/30/13
-			// NB: It is actually implemented in PPTConnection.cc
+			// NB: It is actually implemented in Socket.cc
 			if (c->receive(extensions, &ss)) {
 
 	            BESDEBUG( "beslistener", "BESServerHandler::execute() - Received zero length closing chunk." << endl );
