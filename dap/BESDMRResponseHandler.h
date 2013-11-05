@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,30 +37,27 @@
 
 /** @brief response handler that builds an OPeNDAP DMR response object
  *
- * A request 'get das for &lt;def_name&gt;;' will be handled by this
+ * A request 'get dmr for def_name;' will be handled by this
  * response handler. Given a definition name it determines what containers
  * are to be used to build the OPeNDAP DMR response object. It then
- * transmits the DMR object using the method send_das on the speicifed
+ * transmits the DMR object using the method send_das on the specified
  * transmitter object.
  *
  * @see DMR
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESDMRResponseHandler : public BESResponseHandler
-{
+class BESDMRResponseHandler: public BESResponseHandler {
 public:
-				BESDMRResponseHandler( const string &name ) ;
-    virtual			~BESDMRResponseHandler( void ) ;
+	BESDMRResponseHandler(const string &name);
+	virtual ~BESDMRResponseHandler();
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+	virtual void execute(BESDataHandlerInterface &dhi);
+	virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+	virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *DMRResponseBuilder( const string &name ) ;
+	static BESResponseHandler *DMRResponseBuilder(const string &name);
 };
 
 #endif // I_BESDMRResponseHandler_h
-

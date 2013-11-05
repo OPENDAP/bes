@@ -33,36 +33,32 @@
 #ifndef I_BESDMRResponse
 #define I_BESDMRResponse 1
 
-// FIXME: Change this to DMR or whatever
-#include <DAS.h>
+#include <DMR.h>
+#include <ConstraintEvaluator.h>
 
 #include "BESDapResponse.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 /** @brief Represents an OPeNDAP DMR DAP4 data object within the BES
  */
 class BESDMRResponse: public BESDapResponse {
-    private:
-	// FIXME: Change this to DMR, or whatever
-        DAS * _dmr;
-    public:
-				// FIXME: Change this to DMR
-    				BESDMRResponse(DAS *dmr)
-				    : BESDapResponse(), _dmr(dmr) { }
-    virtual			~BESDMRResponse();
+private:
+	DMR * _dmr;
+	ConstraintEvaluator _ce;
+public:
+	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
+	virtual ~BESDMRResponse();
 
-    virtual void		set_container( const string &cn ) ;
-    virtual void		clear_container( ) ;
+	virtual void set_container(const string &cn);
+	virtual void clear_container();
 
-    virtual void		dump( ostream &strm ) const ;
+	virtual void dump(ostream &strm) const;
 
-    // FIXME: Change this to DMR
-    DAS *			get_dmr()
-				{
-				    return _dmr;
-				}
+	DMR * get_dmr() { return _dmr; }
+	void set_dmr(DMR *dmr) { _dmr = dmr; }
+
+    ConstraintEvaluator &get_ce() { return _ce; }
 };
 
 #endif // I_BESDMRResponse
-

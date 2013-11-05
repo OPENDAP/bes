@@ -42,7 +42,7 @@
  *     dds
  *     ddx
  *     dods
- *     dataddx
+ *     dmr
  * show
  *     catalog
  *     info
@@ -51,30 +51,41 @@
 
 #define OPENDAP_SERVICE "dap"
 #define DAP2_FORMAT "dap2"
+
 #define DAS_RESPONSE "get.das"
 #define DAS_SERVICE "das"
 #define DAS_DESCRIPT "OPeNDAP Data Attribute Structure"
 #define DAS_RESPONSE_STR "getDAS"
+
 #define DDS_RESPONSE "get.dds"
 #define DDS_SERVICE "dds"
 #define DDS_DESCRIPT "OPeNDAP Data Description Structure"
 #define DDS_RESPONSE_STR "getDDS"
+
 #define DDX_RESPONSE "get.ddx"
 #define DDX_SERVICE "ddx"
 #define DDX_DESCRIPT "OPeNDAP Data Description and Attribute XML Document"
 #define DDX_RESPONSE_STR "getDDX"
+
 #define DATA_RESPONSE "get.dods"
 #define DATA_SERVICE "dods"
 #define DATA_DESCRIPT "OPeNDAP Data Object"
 #define DATA_RESPONSE_STR "getDODS"
+
 #define DATADDX_RESPONSE "get.dataddx"
 #define DATADDX_SERVICE "dataddx"
 #define DATADDX_DESCRIPT "OPeNDAP Data Description and Attributes in DDX format and Data Object"
 #define DATADDX_RESPONSE_STR "getDataDDX"
+
 #define DMR_RESPONSE "get.dmr"
 #define DMR_SERVICE "dmr"
 #define DMR_DESCRIPT "OPeNDAP Data DMR Structure"
 #define DMR_RESPONSE_STR "getDMR"
+
+#define DAP4DATA_RESPONSE "get.dap4data"
+#define DAP4DATA_SERVICE "dapdata"
+#define DAP4DATA_DESCRIPT "OPeNDAP Data DAP4DATA Structure"
+#define DAP4DATA_RESPONSE_STR "getDAP4DATA"
 
 /*
  * DataDDX data names

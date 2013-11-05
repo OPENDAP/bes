@@ -52,10 +52,12 @@ public:
     				         BESDataHandlerInterface &dhi ) ;
     static void		send_basic_ddx( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dataddx( BESResponseObject *obj,
-    				            BESDataHandlerInterface &dhi ) ;
+
     static void		send_basic_dmr( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_dap4data( BESResponseObject *obj,
+    				            BESDataHandlerInterface &dhi ) ;
+
 } ;
 
 #endif // I_BESDapTransmit_h

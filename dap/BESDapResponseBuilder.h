@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -41,71 +40,85 @@ class libdap::DAS;
  * @author jhrg 1/28/2011
  */
 
-class BESDapResponseBuilder
-{
+class BESDapResponseBuilder {
 public:
-    friend class ResponseBuilderTest;
+	friend class ResponseBuilderTest;
 
 protected:
-    std::string d_dataset;  		/// Name of the dataset/database
-    std::string d_ce;  		    /// Constraint expression
-    std::string d_btp_func_ce;   /// The BTP functions, extracted from the CE
-    int d_timeout;  		/// Response timeout after N seconds
-    std::string d_default_protocol;	/// Version std::string for the library's default protocol version
+	std::string d_dataset;  		/// Name of the dataset/database
+	std::string d_ce;  		    /// Constraint expression
+	std::string d_btp_func_ce;   /// The BTP functions, extracted from the CE
+	int d_timeout;  		/// Response timeout after N seconds
+	std::string d_default_protocol;	/// Version std::string for the library's default protocol version
 
-    BESDapResponseCache *d_response_cache;
+	BESDapResponseCache *d_response_cache;
 
-    void initialize();
+	void initialize();
 
 public:
 
-    /** Make an empty instance. Use the set_*() methods to load with needed
-        values. You must call at least set_dataset_name() or be requesting
-        version information. */
-    BESDapResponseBuilder() {
-        initialize();
-    }
+	/** Make an empty instance. Use the set_*() methods to load with needed
+	 values. You must call at least set_dataset_name() or be requesting
+	 version information. */
+	BESDapResponseBuilder()
+	{
+		initialize();
+	}
 
-    virtual ~BESDapResponseBuilder();
+	virtual ~BESDapResponseBuilder();
 
-    virtual std::string get_ce() const;
-    virtual void set_ce(std::string _ce);
+	virtual std::string get_ce() const;
+	virtual void set_ce(std::string _ce);
 
-    virtual std::string get_btp_func_ce() const { return d_btp_func_ce; }
-    virtual void set_btp_func_ce(std::string _ce) { d_btp_func_ce = _ce; }
+	virtual std::string get_btp_func_ce() const
+	{
+		return d_btp_func_ce;
+	}
+	virtual void set_btp_func_ce(std::string _ce)
+	{
+		d_btp_func_ce = _ce;
+	}
 
-    virtual std::string get_dataset_name() const;
-    virtual void set_dataset_name(const std::string _dataset);
+	virtual std::string get_dataset_name() const;
+	virtual void set_dataset_name(const std::string _dataset);
 
-    void set_timeout(int timeout = 0);
-    int get_timeout() const;
+	void set_timeout(int timeout = 0);
+	int get_timeout() const;
 
-    virtual void establish_timeout(std::ostream &stream) const;
+	virtual void establish_timeout(std::ostream &stream) const;
 
-    virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
+	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
-    virtual BESDapResponseCache *responseCache();
+	virtual BESDapResponseCache *responseCache();
 
-    virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
-    virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-                          bool constrained = false, bool with_mime_headers = true);
+	virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
+	virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+			false, bool with_mime_headers = true);
 
-    virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-                          bool constrained = false,  bool with_mime_headers = true);
+	virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
+			false, bool with_mime_headers = true);
 
-    virtual void dataset_constraint(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool ce_eval = true);
-    virtual void send_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool with_mime_headers = true);
+	virtual void dataset_constraint(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+			bool ce_eval = true);
+	virtual void send_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+			bool with_mime_headers = true);
 
-    virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-                          bool with_mime_headers = true);
+	virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+			bool with_mime_headers = true);
 
-    virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
-                                   const std::string &boundary, const std::string &start,
-                                   bool ce_eval = true);
+	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
+			const std::string &boundary, const std::string &start, bool ce_eval = true);
 
-    virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-                           const std::string &start, const std::string &boundary,
-                           bool with_mime_headers = true);
+	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval, bool constrained =
+			false, bool with_mime_headers = true);
+
+	virtual void send_dap4_data(std::ostream &data_stream, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
+			bool with_mime_headers);
+
+	// TODO
+	// Is this used by the code that caches function results? If not, remove.
+	virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+			const std::string &start, const std::string &boundary, bool with_mime_headers = true);
 };
 
 #endif // _response_builder_h

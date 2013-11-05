@@ -45,10 +45,13 @@ BESDMRResponse::~BESDMRResponse()
 void
 BESDMRResponse::set_container( const string &cn )
 {
+	// FIXME Add container support
+#if 0
     if( _dmr && get_explicit_containers() )
     {
 	_dmr->container_name( cn ) ;
     }
+#endif
 }
 
 /** @brief clear the container in the DAP response object
@@ -56,10 +59,12 @@ BESDMRResponse::set_container( const string &cn )
 void
 BESDMRResponse::clear_container( )
 {
+#if 0
     if( _dmr )
     {
 	_dmr->container_name( "" ) ;
     }
+#endif
 }
 
 /** @brief dumps information about this object

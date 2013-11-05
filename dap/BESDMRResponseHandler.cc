@@ -30,18 +30,20 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <DMR.h>
+
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
 
-BESDMRResponseHandler::BESDMRResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
+		BESResponseHandler(name)
 {
 }
 
-BESDMRResponseHandler::~BESDMRResponseHandler( )
+BESDMRResponseHandler::~BESDMRResponseHandler()
 {
 }
 
@@ -58,14 +60,12 @@ BESDMRResponseHandler::~BESDMRResponseHandler( )
  * @see BESDMRResponse
  * @see BESRequestHandlerList
  */
-void
-BESDMRResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = DMR_RESPONSE_STR ;
-    // FIXME: Change this to whatever
-    DAS *dmr = new DAS() ;
-    _response = new BESDMRResponse( dmr ) ;
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+	dhi.action_name = DMR_RESPONSE_STR;
+	DMR *dmr = new DMR();
+	_response = new BESDMRResponse(dmr);
+	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
 /** @brief transmit the response object built by the execute command
@@ -80,14 +80,11 @@ BESDMRResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDMRResponseHandler::transmit( BESTransmitter *transmitter,
-                                 BESDataHandlerInterface &dhi )
+void BESDMRResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-	transmitter->send_response( DMR_SERVICE, _response, dhi ) ;
-    }
+	if (_response) {
+		transmitter->send_response(DMR_SERVICE, _response, dhi);
+	}
 }
 
 /** @brief dumps information about this object
@@ -96,19 +93,17 @@ BESDMRResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDMRResponseHandler::dump( ostream &strm ) const
+void BESDMRResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDMRResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+	strm << BESIndent::LMarg << "BESDMRResponseHandler::dump - (" << (void *) this << ")" << endl;
+	BESIndent::Indent();
+	BESResponseHandler::dump(strm);
+	BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDMRResponseHandler::DMRResponseBuilder( const string &name )
+BESDMRResponseHandler::DMRResponseBuilder(const string &name)
 {
-    return new BESDMRResponseHandler( name ) ;
+	return new BESDMRResponseHandler(name);
 }
 

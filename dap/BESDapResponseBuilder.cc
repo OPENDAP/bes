@@ -54,6 +54,10 @@
 #include <Ancillary.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRFileUnMarshaller.h>
+
+#include <DMR.h>
+#include <XMLWriter.h>
+
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
@@ -707,6 +711,133 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     }
 
     out << flush;
+}
+
+void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool constrained,
+        bool with_mime_headers)
+{
+    if (!constrained) {
+        if (with_mime_headers)
+            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+        XMLWriter xml;
+        dmr.print_dap4(xml, constrained);
+        out << xml.get_doc();
+        out << flush;
+        return;
+    }
+
+    // FIXME Add support for constraints
+#if 0
+    // Set up the alarm.
+    establish_timeout(out);
+   // dds.set_timeout(d_timeout);
+
+    // Split constraint into two halves
+    split_ce(eval);
+
+    // If there are functions, parse them and eval.
+    // Use that DDS and parse the non-function ce
+    // Serialize using the second ce and the second dds
+    if (!d_btp_func_ce.empty()) {
+        string cache_token = "";
+        DMR *fdmr = 0;
+
+        if (responseCache()) {
+            DBG(cerr << "Using the cache for the server function CE" << endl);
+            fdmr = responseCache()->cache_dataset(dmr, d_btp_func_ce, this, &eval, cache_token);
+        }
+        else {
+            DBG(cerr << "Cache not found; (re)calculating" << endl);
+            eval.parse_constraint(d_btp_func_ce, dmr);
+            fdmr = eval.eval_function_clauses(dmr);
+        }
+
+        // Server functions might mark variables to use their read()
+        // methods. Clear that so the CE in d_ce will control what is
+        // sent. If that is empty (there was only a function call) all
+        // of the variables in the intermediate DDS (i.e., the function
+        // result) will be sent.
+        fdmr->mark_all(false);
+
+        eval.parse_constraint(d_ce, *fdmr);
+
+        if (with_mime_headers)
+            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+
+        fdmr->print_constrained(out);
+
+        if (responseCache())
+        	responseCache()->unlock_and_close(cache_token);
+
+        delete fdmr;
+    }
+    else {
+        DBG(cerr << "Simple constraint" << endl);
+
+        eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+
+        if (with_mime_headers)
+            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+        dmr.print_constrained(out);
+    }
+#endif
+
+    out << flush;
+}
+
+void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, ConstraintEvaluator & eval, bool with_mime_headers)
+{
+// FIXME Fill in this placeholder - get DMR working first then add CE support and then
+	// get this working
+#if 0
+	// Set up the alarm.
+    establish_timeout(data_stream);
+    //dds.set_timeout(d_timeout);
+#if 0
+    eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+#endif
+    if (dds.get_response_limit() != 0 && dds.get_request_size(true) > dds.get_response_limit()) {
+        string msg = "The Request for " + long_to_string(dds.get_request_size(true) / 1024)
+                + "KB is too large; requests for this user are limited to "
+                + long_to_string(dds.get_response_limit() / 1024) + "KB.";
+        throw Error(msg);
+    }
+
+    //dds.tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+
+    // Start sending the response...
+
+    // Handle *functional* constraint expressions specially
+    if (eval.function_clauses()) {
+        // We could unique_ptr<DDS> here to avoid memory leaks if
+        // dataset_constraint_ddx() throws an exception.
+        DDS *fdds = eval.eval_function_clauses(dds);
+        try {
+            if (with_mime_headers)
+                set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+            data_stream << flush;
+            dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
+        }
+        catch (...) {
+            delete fdds;
+            throw;
+        }
+        delete fdds;
+    }
+    else {
+        if (with_mime_headers)
+            set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+        data_stream << flush;
+        dataset_constraint_ddx(data_stream, dds, eval, boundary, start);
+    }
+
+    data_stream << flush;
+
+    if (with_mime_headers)
+        data_stream << CRLF << "--" << boundary << "--" << CRLF;
+#endif
 }
 
 /** Send the data in the DDS object back to the client program. The data is
