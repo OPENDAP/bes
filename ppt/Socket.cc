@@ -50,7 +50,7 @@
 #include <sstream>
 
 #include "Socket.h"
-#include "BESLOG.h"
+#include "BESLog.h"
 #include "BESInternalError.h"
 
 Socket::Socket( int socket, struct sockaddr *addr )
