@@ -47,7 +47,10 @@
 #include <unistd.h>
 #endif
 
+#include <sstream>
+
 #include "Socket.h"
+#include "BESLOG.h"
 #include "BESInternalError.h"
 
 Socket::Socket( int socket, struct sockaddr *addr )
@@ -112,30 +115,18 @@ int Socket::receive(char *inBuff, const int inSize)
 	// check for EINTR and EAGAIN. jhrg 10/30/13
 	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
 	    if (errno == EINTR || errno == EAGAIN) {
+	    	*(BESLog::TheLog()) << "Socket::receive: errno: " << errno << ", bytesRead: " << bytesRead << endl;
 	    	errno = 0;
 	    	continue;
 	    }
 
-		string err("socket failure, reading on stream socket: ");
-		const char *error_info = strerror(errno);
-		if (error_info) err += " " + (string) error_info;
-		throw BESInternalError(err, __FILE__, __LINE__);
+		std::ostringstream oss;
+		oss << "Socket::receive: socket failure, reading on stream socket: " << strerror(errno) << ", bytesRead: " << bytesRead;
+		throw BESInternalError(oss.str(), __FILE__, __LINE__);
 	}
-	//inBuff[bytesRead] = '\0' ;
+
 	return bytesRead;
 }
-
-#if 0
-// removed jhrg 5/5/11
-void
-Socket::sync()
-{
-#if 0
-    // fsync does not work for sockets.
-    fsync( _socket ) ;
-#endif
-}
-#endif
 
 /** @brief dumps information about this object
  *

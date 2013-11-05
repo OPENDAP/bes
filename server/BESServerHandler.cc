@@ -164,7 +164,7 @@ void BESServerHandler::execute(Connection *c)
 	map<string, string> extensions;
 
 	// we loop continuously waiting for messages. The only way we exit
-	// this loop is 1. we receive a status of exit from the client, 2.
+	// this loop is: 1. we receive a status of exit from the client, 2.
 	// the client drops the connection, the process catches the signal
 	// and exits, 3. a fatal error has occurred in the server so exit,
 	// 4. the server process is killed.
@@ -182,40 +182,28 @@ void BESServerHandler::execute(Connection *c)
 			// by a zero-length chunk (a chunk that has type 'd'). See section
 			// 4.3 of the documentation (http://docs.opendap.org/index.php/Hyrax_-_BES_PPT).
 			// jhrg 10/30/13
+			// Note, however, that PPTConnection::receive() continues to read chunks until
+			// the end chunk is read. That means that it will read the end chunk for the
+			// PPT_EXIT_NOW chunk (and so we don't need to).
 
-            BESDEBUG( "beslistener", "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl );
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl);
 			*(BESLog::TheLog()) << "Received PPT_EXIT_NOW in an extension chunk." << endl;
+			// This call closes the socket - it does minimal bookkeeping and
+			// calls the the kernel's close() function. NB: The method is
+			// implemented in PPTServer.cc and that calls Socket::close() on the
+			// Socket instance held by the Connection.
+			BESDEBUG("beslistener", "BESServerHandler::execute() -  Closing client connection." << endl);
 
-			// This call to Connection::receive() reads the final zero-length chunk
-			// (with chunk type 'd') that follows the PPT_EXIT_NOW code. jhrg 10/30/13
-			// NB: It is actually implemented in Socket.cc
-			if (c->receive(extensions, &ss)) {
+			c->closeConnection();
 
-	            BESDEBUG( "beslistener", "BESServerHandler::execute() - Received zero length closing chunk." << endl );
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Client connection has been closed." << endl);
+			*(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of "
+					<< CHILD_SUBPROCESS_READY << " to the master listener." << endl;
 
-		        // This call closes the socket - it does minimal bookkeeping and
-		        // calls the the kernel's close() function. NB: The method is
-		        // implemented in PPTServer.cc and that calls Socket::close() on the
-		        // Socket instance held by the Connection.
-                BESDEBUG( "beslistener", "BESServerHandler::execute() -  Closing client connection." << endl );
-				c->closeConnection();
-	            BESDEBUG( "beslistener", "BESServerHandler::execute() - Client connection has been closed." << endl );
-	            *(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of " << CHILD_SUBPROCESS_READY << " to the master listener." << endl;
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which is a value of "
+					<< CHILD_SUBPROCESS_READY << ")" << endl);
 
-                BESDEBUG( "beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which is a value of "<< CHILD_SUBPROCESS_READY << ")" << endl );
-
-                exit(CHILD_SUBPROCESS_READY);
-                BESDEBUG( "beslistener", "BESServerHandler::execute() - exit() completed. In theory this log message shoudle NEVER appear ing the log!!!!" << endl );
-
-
-			}
-			else {
-				BESDEBUG("beslistener", "BESServerHandler::execute() - Failed to get final zero-length closing chunk");
-		        *(BESLog::TheLog()) << "beslistener: Failed to get final zero-length closing chunk; child returning " << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl;
-
-				c->closeConnection();
-				exit(SERVER_EXIT_ABNORMAL_TERMINATION);
-			}
+			exit(CHILD_SUBPROCESS_READY);
 		}
 
 		// This is code that was in place for the string commands. With xml
@@ -224,8 +212,7 @@ void BESServerHandler::execute(Connection *c)
 		// need be. pwest 06 Feb 2009
 		//string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
 		string cmd_str = ss.str();
-		BESDEBUG( "server", "BESServerHandler::execute - command = "
-				<< cmd_str << endl );
+		BESDEBUG("server", "BESServerHandler::execute - command = " << cmd_str << endl);
 
 		BESStopWatch *sw = 0;
 		if (BESISDEBUG( "timing" ))
@@ -250,8 +237,7 @@ void BESServerHandler::execute(Connection *c)
 
 			cout.rdbuf(holder);
 
-			BESDEBUG( "server", "BESServerHandler::execute - "
-					<< "executed successfully" << endl );
+			BESDEBUG("server", "BESServerHandler::execute - " << "executed successfully" << endl);
 
 			if (BESISDEBUG( "timing" ))
 			{
@@ -315,7 +301,9 @@ void BESServerHandler::execute(Connection *c)
 					exit( CHILD_SUBPROCESS_READY );
 #endif
 					BESDEBUG("beslistener", "BES Internal Fatal Error");
-			        *(BESLog::TheLog()) << "beslistener: BES Internal Fatal Error; child returning " << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl;
+
+					*(BESLog::TheLog()) << "beslistener: BES Internal Fatal Error; child returning "
+					<< SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl;
 
 					c->closeConnection();
 					exit(SERVER_EXIT_ABNORMAL_TERMINATION);

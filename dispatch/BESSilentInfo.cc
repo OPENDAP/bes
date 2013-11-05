@@ -148,7 +148,7 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * @see BESError
  */
 void
-BESSilentInfo::add_exception( BESError &e, const string &admin )
+BESSilentInfo::add_exception( BESError &, const string & )
 {
 }
 

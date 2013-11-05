@@ -30,10 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include <sstream>
 #include <iostream>
 

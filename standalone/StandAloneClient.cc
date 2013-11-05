@@ -400,7 +400,7 @@ StandAloneClient::interact()
     {
         string message = "" ;
         size_t len = this->readLine( message ) ;
-        if( len == -1 || message == "exit" || message == "exit;" )
+        if( /*len == -1 || */ message == "exit" || message == "exit;" )
 	{
             done = true ;
         }

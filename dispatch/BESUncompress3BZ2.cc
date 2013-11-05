@@ -50,12 +50,14 @@ using std::ostringstream;
 
 #define CHUNK 4096
 
+#if 0
 static void bz_internal_error(int errcode)
 {
     ostringstream strm;
     strm << "internal error in bz2 library occurred: " << errcode;
     throw BESInternalError(strm.str(), __FILE__, __LINE__);
 }
+#endif
 
 /** @brief uncompress a file with the .bz2 file extension
  *

@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
             int result = reg_expr.match(inQuestion.c_str(),
                     inQuestion.length());
             if (result != -1) {
-                if (result == inQuestion.length()) {
+                if ((unsigned int)result == inQuestion.length()) {
                     cout << "expression \"" << reg << "\" matches exactly";
                 } else {
                     cout << "expression \"" << reg << "\" matches " << result

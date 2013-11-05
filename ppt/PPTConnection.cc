@@ -248,8 +248,7 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 
 	// If the receive buffer has not yet been created, get the receive size
 	// and create the buffer.
-	BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len
-			<< endl );
+	BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len << endl );
 	if (!_inBuff) {
 		_inBuff_len = _mySock->getRecvBufferSize() + 1;
 		_inBuff = new char[_inBuff_len + 1];
@@ -259,14 +258,10 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 	// read the first 8 bytes. The first 7 are the length and the next 1
 	// if x then extensions follow, if d then data follows.
 	int bytesRead = readChunkHeader(_inBuff, 8);
-	BESDEBUG( "ppt", "Reading header, read "
-			<< bytesRead << " bytes" << endl );
-	if (bytesRead != 8) {
-		string err = "Failed to read length and type of chunk";
-		throw BESInternalError(err, __FILE__, __LINE__);
-	}
+	BESDEBUG( "ppt", "Reading header, read " << bytesRead << " bytes" << endl );
+	if (bytesRead != 8)
+		throw BESInternalError("Failed to read chunk header", __FILE__, __LINE__);
 
-	// TODO Improve this code! No strings or stringstream unless necessary. jhrg 10/30/13
 	char lenbuffer[8];
 	lenbuffer[0] = _inBuff[0];
 	lenbuffer[1] = _inBuff[1];
