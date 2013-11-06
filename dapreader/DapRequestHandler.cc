@@ -22,7 +22,6 @@
 #include "config.h"
 
 #include "DapRequestHandler.h"
-//#include "DapResponseNames.h"
 
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
@@ -56,10 +55,6 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     add_handler(DATA_RESPONSE, DapRequestHandler::dap_build_data);
     add_handler(VERS_RESPONSE, DapRequestHandler::dap_build_vers);
     add_handler(HELP_RESPONSE, DapRequestHandler::dap_build_help);
-}
-
-DapRequestHandler::~DapRequestHandler()
-{
 }
 
 bool DapRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)

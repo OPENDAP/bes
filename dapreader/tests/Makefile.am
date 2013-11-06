@@ -3,9 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-# AM_CPPFLAGS =
-AM_CXXFLAGS =
-
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -17,7 +14,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = dap dapreader_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
+EXTRA_DIST = dap DapReaderTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf
 
@@ -36,10 +33,10 @@ bes.conf: bes.conf.in ../../config.status
 
 AUTOM4TE = autom4te
  
-#TESTSUITE = $(srcdir)/dapreader_moduleTest
-#
-#check-local: atconfig atlocal $(TESTSUITE)
-#	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+TESTSUITE = $(srcdir)/DapReaderTest
+
+check-local: atconfig atlocal $(TESTSUITE)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -48,19 +45,6 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/dapreader_moduleTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(srcdir)/DapReaderTest.at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
-
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac
-	:;{ \
-	echo '# Signature of the current package.' && \
-	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
-	echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])' && \
-	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
-	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
-	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
-	} >'$(srcdir)/package.m4'
-
-
