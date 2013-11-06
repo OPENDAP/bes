@@ -4,6 +4,9 @@
 # 11/05/13 Hacked up by jhrg
 #
 
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap 
+AM_CXXFLAGS =
+
 AUTOMAKE_OPTIONS = foreign check-news
 
 SUBDIRS = . tests
@@ -19,9 +22,9 @@ SRCS = TestModule.cc TestRequestHandler.cc
 HDRS = TestModule.h TestRequestHandler.h
 
 libtest_server_module_la_SOURCES = $(SRCS) $(HDRS)
-libtest_server_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) 
+libtest_server_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libtest_server_module_la_LDFLAGS = -avoid-version -module 
-libtest_server_module_la_LIBADD = $(DAP_SERVER_LIBS) -ltest-types
+libtest_server_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types
 
 # Don't install the headers for this kind of module.
 pkginclude_HEADERS = $(HDRS) 

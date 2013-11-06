@@ -49,6 +49,8 @@
 
 #include <InternalErr.h>
 // #include <Ancillary.h>
+#include <mime_util.h>
+
 #include <test/TestTypeFactory.h>
 
 #include "TestRequestHandler.h"
@@ -220,11 +222,14 @@ bool TestRequestHandler::build_dds(BESDataHandlerInterface & dhi)
 		string accessed = dhi.container->access();
 
 		DDS *dds = bdds->get_dds();
-	    TestTypeFactory *ttf = new TestTypeFactory;
-	    DDS server(ttf);
+	    // TestTypeFactory ttf;
+	    BaseTypeFactory ttf;
+	    DDS server(&ttf);
 		dds->filename(accessed);
+		dds->set_dataset_name(name_path(accessed));
 		BESDEBUG(NAME, "accessed: " << accessed << endl);
 		dds->parse(accessed);
+		dds->set_factory(0);
 #if 0
 		DAS *das = new DAS;
 		BESDASResponse bdas(das);

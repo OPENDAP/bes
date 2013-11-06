@@ -7,9 +7,12 @@ BES.LogVerbose=no
 
 BES.modules=dap,cmd,ts
 
-# Load BES modules from the source dirs
-BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
-BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=@modulesdir@/libdap_module.so
+BES.module.cmd=@modulesdir@/libdap_xml_module.so
+
+# BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+# BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+
 BES.module.ts=@abs_top_builddir@/test_server/.libs/libtest_server_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/test_server/tests
