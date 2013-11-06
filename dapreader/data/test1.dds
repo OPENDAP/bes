@@ -1,0 +1,7 @@
+#
+# Test the test server...
+
+Dataset {
+    Int32 array[10];
+    String s;
+} test;
