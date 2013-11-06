@@ -43,7 +43,6 @@ using std::endl ;
 #include "BESResponseHandlerList.h"
 
 #include "BESDASResponseHandler.h"
-#include "BESDMRResponseHandler.h"
 #include "BESDDSResponseHandler.h"
 #include "BESDataResponseHandler.h"
 #include "BESDDXResponseHandler.h"
