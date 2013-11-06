@@ -54,10 +54,10 @@
 #include <Ancillary.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRFileUnMarshaller.h>
-
+#if 0
 #include <DMR.h>
 #include <XMLWriter.h>
-
+#endif
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
@@ -713,6 +713,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
+#if 0
 void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool constrained,
         bool with_mime_headers)
 {
@@ -839,6 +840,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, Con
         data_stream << CRLF << "--" << boundary << "--" << CRLF;
 #endif
 }
+#endif
 
 /** Send the data in the DDS object back to the client program. The data is
  encoded using a Marshaller, and enclosed in a MIME document which is all sent

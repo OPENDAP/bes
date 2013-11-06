@@ -108,13 +108,13 @@ public:
 
 	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
-
+#if 0
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
 	virtual void send_dap4_data(std::ostream &data_stream, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
 			bool with_mime_headers);
-
+#endif
 	// TODO
 	// Is this used by the code that caches function results? If not, remove.
 	virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
