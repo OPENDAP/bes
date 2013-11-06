@@ -219,6 +219,7 @@ int PPTServer::welcomeClient()
     if (!_secure)
     {
         send(PPTProtocol::PPTSERVER_CONNECTION_OK);
+        BESDEBUG( "ppt", "Sent " << PPTProtocol::PPTSERVER_CONNECTION_OK << " to PPT client." << endl );
     }
     else
     {
