@@ -25,7 +25,7 @@ using std::endl;
 
 #include "DapModule.h"
 #include "DapRequestHandler.h"
-#include "DapResponseNames.h"
+//#include "DapResponseNames.h"
 
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>

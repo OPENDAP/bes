@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "DapRequestHandler.h"
-#include "DapResponseNames.h"
+//#include "DapResponseNames.h"
 
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
