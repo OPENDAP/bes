@@ -1,6 +1,7 @@
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
+%define bespiddir %{_localstatedir}/run/%{name}
 %define besuser %{name}
 %define besgroup %{name}
 %define beslibdir %{_libdir}/bes
@@ -8,7 +9,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.7.2
+Version:        3.12.0
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -19,17 +20,25 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  libdap-devel >= 3.9.0
+Requires:       libdap >= 3.12.0
+Requires:       readline bzip2 zlib
+Requires:       libxml2 >= 2.6.16
+# needed by ppt
+Requires:       openssl
+
+Requires(pre): shadow-utils
+
+BuildRequires:  libdap-devel >= 3.12.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
+BuildRequires:  libxml2-devel >= 2.6.16
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
-BuildRequires:  doxygen graphviz
-Requires(pre): shadow-utils
+# BuildRequires:  doxygen graphviz
 
 %description
-BES is a new, high-performance back-end server software framework for 
+BES is a high-performance back-end server software framework for 
 OPeNDAP that allows data providers more flexibility in providing end 
 users views of their data. The current OPeNDAP data objects (DAS, DDS, 
 and DataDDS) are still supported, but now data providers can add new data 
@@ -39,12 +48,11 @@ data objects/views, the ability to define views with constraints and
 aggregation, the ability to add reporting mechanisms, initialization 
 hooks, and more.
 
-
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.9.0
+Requires:       libdap-devel >= 3.11.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -54,14 +62,12 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+# %package doc
+# Summary: Documentation of the OPeNDAP BES
+# Group: Documentation
 
-%package doc
-Summary: Documentation of the OPeNDAP BES
-Group: Documentation
-
-%description doc
-Documentation of OPeNDAP BES.
-
+# %description doc
+# Documentation of OPeNDAP BES.
 
 %prep
 %setup -q
@@ -71,14 +77,14 @@ chmod a-x dispatch/BESStreamResponseHandler*
 %configure --disable-static --disable-dependency-tracking
 make %{?_smp_mflags}
 
-make docs
-rm -rf __distribution_docs
-cp -pr docs __distribution_docs
-mv __distribution_docs/html __distribution_docs/api-html
-# .map and .md5 files are of dubious use
-rm __distribution_docs/api-html/*.map
-rm __distribution_docs/api-html/*.md5
-chmod a-x __distribution_docs/BES_*.doc
+# make docs
+# rm -rf __distribution_docs
+# cp -pr docs __distribution_docs
+# mv __distribution_docs/html __distribution_docs/api-html
+# # .map and .md5 files are of dubious use
+# rm __distribution_docs/api-html/*.map
+# rm __distribution_docs/api-html/*.md5
+# chmod a-x __distribution_docs/BES_*.doc
 
 sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
   -e 's:=.*/bes.log:=%{beslogdir}/bes.log:' \
@@ -97,17 +103,17 @@ sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-for file in config.guess depcomp missing config.sub install-sh ltmain.sh mkinstalldirs; do
-  chmod a+x $RPM_BUILD_ROOT%{_datadir}/bes/templates/conf/$file
-done
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
+chmod g+w $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
 mkdir -p $RPM_BUILD_ROOT%{beslogdir}
+chmod g+w $RPM_BUILD_ROOT%{beslogdir}
+mkdir -p $RPM_BUILD_ROOT%{bespiddir}
+chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %pre
 getent group %{besgroup} >/dev/null || groupadd -r %{besgroup}
@@ -126,13 +132,17 @@ exit 0
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README
 %dir %{_sysconfdir}/bes/
+%dir %{_sysconfdir}/bes/modules
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt
 %{_datadir}/bes/*.xml
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
+%{_bindir}/besd
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
@@ -143,10 +153,12 @@ exit 0
 %{bescachedir}
 %{bespkidir}/
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
+%attr (-,%{besuser},%{besgroup}) %{bespiddir}
+%attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
 %files devel
 %defattr(-,root,root,-)
-%doc __distribution_docs/BES_*.doc
+# %doc __distribution_docs/BES_*.doc
 %{_bindir}/besCreateModule
 %{_bindir}/bes-config
 %{_includedir}/bes/
@@ -155,11 +167,26 @@ exit 0
 %{_datadir}/bes/templates/
 %{_datadir}/aclocal/bes.m4
 
-%files doc
-%defattr(-,root,root,-)
-%doc __distribution_docs/api-html/
+# %files doc
+# %defattr(-,root,root,-)
+# %doc __distribution_docs/api-html/
 
 %changelog
+* Thu Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
+- Update
+
+* Thu May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
+- Update
+
+* Thu Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
+- Update
+
+* Thu Mar 11 2010 Patrick West <westp@rpi.edu> - 3.8.1-1
+- Update
+
+* Tue Feb 02 2010 Patrick West <westp@rpi.edu> - 3.8.0-1
+- Update
+
 * Thu Jan 29 2009 James Gallagher <jgallagher@opendap.org> - 3.7.0-1
 - Update
 

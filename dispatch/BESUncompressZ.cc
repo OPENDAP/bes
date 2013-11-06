@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -152,7 +152,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     long int		 maxcode;
     long int		 maxmaxcode;
     int			 n_bits;
-    int			  rsize;
+    int			  rsize = 0;
 
     insize = 0;
     
@@ -175,6 +175,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	    err += src.c_str() ;
 	    close( srcFile ) ;
 	    close( destFile ) ;
+	    remove( target.c_str() ) ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
@@ -183,12 +184,14 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	    err += ": not in compressed format";
 	    close( srcFile ) ;
 	    close( destFile ) ;
+	    remove( target.c_str() ) ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
 	string err = "unknown error";
 	close( srcFile ) ;
 	close( destFile ) ;
+	remove( target.c_str() ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
 
     }
@@ -208,6 +211,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	err += BITS;
 	close( srcFile ) ;
 	close( destFile ) ;
+	remove( target.c_str() ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
@@ -251,6 +255,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 		    err += src.c_str() ;
 		    close( srcFile ) ;
 		    close( destFile ) ;
+		    remove( target.c_str() ) ;
 		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		}
 		
@@ -294,6 +299,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			err += " !!!! uncompress: corrupt input!!!";
 			close( srcFile ) ;
 			close( destFile ) ;
+			remove( target.c_str() ) ;
 			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    outbuf[outpos++] = (unsigned char)(finchar = 
@@ -327,6 +333,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			string err = "uncompress: corrupt input";
 			close( srcFile ) ;
 			close( destFile ) ;
+			remove( target.c_str() ) ;
 			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    
@@ -362,6 +369,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 				    string err = "uncompress: write eror";
 				    close( srcFile ) ;
 				    close( destFile ) ;
+				    remove( target.c_str() ) ;
 				    throw BESInternalError( err, 
 							    __FILE__, 
 							    __LINE__ ) ;
@@ -394,6 +402,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	string err = "uncompress: write eror";
 	close( srcFile ) ;
 	close( destFile ) ;
+	remove( target.c_str() ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 

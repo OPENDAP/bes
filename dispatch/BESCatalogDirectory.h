@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -41,35 +41,22 @@ using std::string ;
 
 #include "BESCatalog.h"
 
-class BESInfo ;
+class BESCatalogEntry ;
 class BESCatalogUtils ;
 
 /** @brief builds catalogs from a directory structure
  */
 class BESCatalogDirectory : public BESCatalog
 {
-public:
-    typedef struct _bes_dir_entry
-    {
-	bool collection ;
-	list<string> services ;
-	string name ;
-	string size ;
-	string mod_date ;
-	string mod_time ;
-    } bes_dir_entry ;
 private:
-    const BESCatalogUtils *	_utils ;
-
-    bool			isData( const string &inQuestion,
-    					list<string> &services ) ;
+    BESCatalogUtils *		_utils ;
 public:
 				BESCatalogDirectory( const string &name ) ;
     virtual			~BESCatalogDirectory( void ) ;
 
-    virtual void		show_catalog( const string &container,
-					      const string &catalog_or_info,
-					      BESInfo *info ) ;
+    virtual BESCatalogEntry *	show_catalog( const string &container,
+					      const string &coi,
+					      BESCatalogEntry *entry ) ;
 
     virtual void		dump( ostream &strm ) const ;
 };

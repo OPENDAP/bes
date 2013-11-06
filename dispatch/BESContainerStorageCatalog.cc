@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,10 +37,8 @@
 #include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
-#include "GNURegex.h"
-#include "Error.h"
-
-using namespace libdap ;
+#include "BESRegex.h"
+#include "BESDebug.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -63,16 +61,16 @@ using namespace libdap ;
  * @see BESKeys
  * @see BESContainer
  */
-BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
-    : BESContainerStorageVolatile( n )
+BESContainerStorageCatalog::BESContainerStorageCatalog(const string &n) :
+        BESContainerStorageVolatile(n)
 {
-    _utils = BESCatalogUtils::Utils( n ) ;
-    _root_dir = _utils->get_root_dir() ;
-    _follow_sym_links = _utils->follow_sym_links() ;
+    _utils = BESCatalogUtils::Utils(n);
+    _root_dir = _utils->get_root_dir();
+    _follow_sym_links = _utils->follow_sym_links();
 }
 
 BESContainerStorageCatalog::~BESContainerStorageCatalog()
-{ 
+{
 }
 
 /** @brief adds a container with the provided information
@@ -103,70 +101,56 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  * @throws BESInternalError if there is a problem determining the resource
  * determined using the regular expression extensions.
  */
-void
-BESContainerStorageCatalog::add_container( const string &sym_name,
-					   const string &real_name,
-					   const string &type )
+void BESContainerStorageCatalog::add_container(const string &sym_name, const string &real_name, const string &type)
 {
     // make sure that the real name passed in is not oon the exclude list
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
-    string::size_type stopat = real_name.length() - 1 ;
-    while( real_name[stopat] == '/' )
-    {
-	stopat-- ;
-    }
-    string new_name = real_name.substr( 0, stopat + 1 ) ;
+    BESDEBUG( "bes", "BESContainerStorageCatalog::add_container: "
+            << "adding container with name \"" << sym_name << "\", real name \""
+            << real_name << "\", type \"" << type << "\"" << endl);
 
-    string basename ;
-    string::size_type slash = new_name.rfind( "/" ) ;
-    if( slash != string::npos )
-    {
-	basename = new_name.substr( slash+1, new_name.length() - slash ) ;
+    string::size_type stopat = real_name.length() - 1;
+    while (real_name[stopat] == '/') {
+        stopat--;
     }
-    else
-    {
-	basename = new_name ;
+    string new_name = real_name.substr(0, stopat + 1);
+
+    string basename;
+    string::size_type slash = new_name.rfind("/");
+    if (slash != string::npos) {
+        basename = new_name.substr(slash + 1, new_name.length() - slash);
     }
-    if( !_utils->include( basename ) || _utils->exclude( basename ) )
-    {
-	string s = "Attempting to create a container with real name "
-	           + real_name + " which is on the exclude list" ;
-	throw BESForbiddenError( s, __FILE__, __LINE__ ) ;
+    else {
+        basename = new_name;
+    }
+    // BESCatalogUtils::include method already calls exclude, so just
+    // need to call include
+    if (!_utils->include(basename)) {
+        string s = "Attempting to create a container with real name " + real_name + " which is on the exclude list";
+        throw BESForbiddenError(s, __FILE__, __LINE__);
     }
 
     // If the type is specified, then just pass that on. If not, then match
     // it against the types in the type list.
-    string new_type = type ;
-    if( new_type == "" )
-    {
-	BESCatalogUtils::match_citer i = _utils->match_list_begin() ;
-	BESCatalogUtils::match_citer ie = _utils->match_list_end() ;
-	bool done = false ;
-	for( ; i != ie && !done; i++ )
-	{
-	    BESCatalogUtils::type_reg match = (*i) ;
-	    try
-	    {
-		Regex reg_expr( match.reg.c_str() ) ;
-		if( reg_expr.match( real_name.c_str(), real_name.length() ) == real_name.length() )
-		{
-		    new_type = match.type ;
-		    done = true ;
-		}
-	    }
-	    catch( Error &e )
-	    {
-		string serr = (string)"Unable to match data type, "
-		              + "malformed Catalog TypeMatch parameter " 
-			      + "in bes configuration file around " 
-			      + match.reg + ": " + e.get_error_message() ;
-		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-	    }
-	}
+    string new_type = type;
+    if (new_type == "") {
+        BESCatalogUtils::match_citer i = _utils->match_list_begin();
+        BESCatalogUtils::match_citer ie = _utils->match_list_end();
+        bool done = false;
+        for (; i != ie && !done; i++) {
+            BESCatalogUtils::type_reg match = (*i);
+            BESRegex reg_expr(match.reg.c_str());
+            if (reg_expr.match(real_name.c_str(), real_name.length()) == static_cast<int>(real_name.length())) {
+                new_type = match.type;
+                done = true;
+            }
+
+        }
     }
-    BESContainerStorageVolatile::add_container( sym_name, real_name, new_type );
+
+    BESContainerStorageVolatile::add_container(sym_name, real_name, new_type);
 }
 
 /** @brief is the specified node in question served by a request handler
@@ -178,39 +162,24 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
  * @param provides what is provided for the node by the node types request handler
  * return true if a request hanlder serves the specified node, false otherwise
  */
-bool
-BESContainerStorageCatalog::isData( const string &inQuestion,
-				    list<string> &provides )
+bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
 {
-    string node_type = "" ;
-    BESCatalogUtils::match_citer i = _utils->match_list_begin() ;
-    BESCatalogUtils::match_citer ie = _utils->match_list_end() ;
-    bool done = false ;
-    for( ; i != ie && !done; i++ )
-    {
-	BESCatalogUtils::type_reg match = (*i) ;
-	try
-	{
-	    Regex reg_expr( match.reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
-	    {
-		node_type = match.type ;
-		done = true ;
-	    }
-	}
-	catch( Error &e )
-	{
-	    string serr = (string)"Unable to determine data products (is data), "
-			  + "malformed Catalog TypeMatch parameter " 
-			  + "in bes configuration file around " 
-			  + match.reg + ": " + e.get_error_message() ;
-	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-	}
+    string node_type = "";
+    BESCatalogUtils::match_citer i = _utils->match_list_begin();
+    BESCatalogUtils::match_citer ie = _utils->match_list_end();
+    bool done = false;
+    for (; i != ie && !done; i++) {
+        BESCatalogUtils::type_reg match = (*i);
+        BESRegex reg_expr(match.reg.c_str());
+        if (reg_expr.match(inQuestion.c_str(), inQuestion.length()) == static_cast<int>(inQuestion.length())) {
+            node_type = match.type;
+            done = true;
+        }
     }
 
-    BESServiceRegistry::TheRegistry()->services_handled( node_type, provides ) ;
+    BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
 
-    return done ;
+    return done;
 }
 
 /** @brief dumps information about this object
@@ -220,17 +189,15 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESContainerStorageCatalog::dump( ostream &strm ) const
+void BESContainerStorageCatalog::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContainerStorageCatalog::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
-    strm << BESIndent::LMarg << "utils: " << get_name() << endl ;
-    BESIndent::Indent() ;
-    _utils->dump( strm ) ;
-    BESIndent::UnIndent() ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESContainerStorageCatalog::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name: " << get_name() << endl;
+    strm << BESIndent::LMarg << "utils: " << get_name() << endl;
+    BESIndent::Indent();
+    _utils->dump(strm);
+    BESIndent::UnIndent();
+    BESIndent::UnIndent();
 }
 

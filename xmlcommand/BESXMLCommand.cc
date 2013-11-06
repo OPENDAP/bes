@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -34,14 +34,25 @@
 #include "BESResponseHandlerList.h"
 #include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
+#include "BESLog.h"
 
 map< string, p_xmlcmd_builder> BESXMLCommand::cmd_list ;
 
+/** @brief Creates a BESXMLCommand document given a base data handler
+ * interface object
+ *
+ * Since there can be multiple commands within a single BES request
+ * document, there can be multiple data handler interface objects
+ * created. Use the one passed as the base interface handler object
+ */
 BESXMLCommand::BESXMLCommand( const BESDataHandlerInterface &base_dhi )
 {
     _dhi.make_copy( base_dhi ) ;
 }
 
+/** @brief The request has been parsed, use the command action name to
+ * set the response handler
+ */
 void
 BESXMLCommand::set_response()
 {
@@ -54,14 +65,33 @@ BESXMLCommand::set_response()
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     _dhi.data[DATA_REQUEST] = _str_cmd ;
+    *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			<< " from " << _dhi.data[REQUEST_FROM]
+			<< " [" << _str_cmd << "] received" << endl ;
+
 }
 
+/** @brief Add a command to the possible commands allowed by this BES
+ *
+ * This adds a function to parse a specific BES command within the BES
+ * request document using the given name. If a command element is found
+ * with the name cmd_str, then the XMLCommand object is created using
+ * the passed cmd object.
+ *
+ * @param cmd_str The name of the command
+ * @param cmd The function to call to create the BESXMLCommand object
+ */
 void
 BESXMLCommand::add_command( const string &cmd_str, p_xmlcmd_builder cmd )
 {
     BESXMLCommand::cmd_list[cmd_str] = cmd ;
 }
 
+/** @brief Deletes the command called cmd_str from the list of possible
+ * commands
+ *
+ * @param cmd_str The name of the command to remove from the list
+ */
 bool
 BESXMLCommand::del_command( const string &cmd_str )
 {
@@ -75,6 +105,10 @@ BESXMLCommand::del_command( const string &cmd_str )
     return ret ;
 }
 
+/** @brief Find the BESXMLCommand creation function with the given name
+ *
+ * @param cmd_str The name of the command creation function to find
+ */
 p_xmlcmd_builder
 BESXMLCommand::find_command( const string &cmd_str )
 {

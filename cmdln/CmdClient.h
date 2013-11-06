@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -82,7 +82,7 @@ private:
 
     size_t			readLine( string &str ) ;
     void			displayHelp() ;
-    void			executeCommand( const string &cmd,
+    bool			executeCommand( const string &cmd,
 						int repeat ) ;
 public:
     				CmdClient( )
@@ -99,12 +99,12 @@ public:
 					     int timeout ) ;
     void			shutdownClient() ;
     void			setOutput( ostream *strm, bool created ) ;
-    void			executeClientCommand( const string &cmd ) ;
-    void			executeCommands( const string &cmd,
+    bool			executeClientCommand( const string &cmd ) ;
+    bool			executeCommands( const string &cmd,
 						 int repeat ) ;
-    void			executeCommands( ifstream &inputFile,
+    bool			executeCommands( ifstream &inputFile,
 						 int repeat ) ;
-    void			interact() ;
+    bool			interact() ;
     bool			isConnected() ;
     void			brokenPipe() ;
 

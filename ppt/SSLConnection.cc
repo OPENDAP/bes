@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -88,36 +88,6 @@ SSLConnection::send( const string &buf )
 	    throw BESInternalError( msg, __FILE__, __LINE__ ) ;
 	}
     }
-}
-
-int
-SSLConnection::receive( char *buffer, unsigned int buffer_size )
-{
-    bool isDone = false ;
-    if( _connected )
-    {
-	int retlen = SSL_read( _connection, (void *)buffer, buffer_size ) ;
-	if( retlen <= 0 )
-	{
-	    if( retlen == 0 )
-	    {
-		isDone = true ;
-	    }
-	    else
-	    {
-		string msg = "FAILED to read from SSL connection\n" ;
-		msg += ERR_error_string( ERR_get_error(), NULL ) ;
-		throw BESInternalError( msg, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-	    if( retlen > buffer_size ) retlen = buffer_size ;
-	    buffer[retlen] = '\0' ;
-	}
-    }
-
-    return isDone ;
 }
 
 /** @brief dumps information about this object

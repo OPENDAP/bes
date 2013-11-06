@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -29,10 +29,6 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 #include <sstream>
 
@@ -129,6 +125,24 @@ BESXMLInfo::begin_response( const string &response_name,
     {
 	cleanup() ;
         string err = (string)"Error creating the xml writer for response "
+		     + _response_name ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    rc = xmlTextWriterSetIndent( _writer, 4 ) ;
+    if( rc < 0 )
+    {
+	cleanup() ;
+        string err = (string)"Error starting indentation for response document "
+		     + _response_name ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    rc = xmlTextWriterSetIndentString( _writer, BAD_CAST "    " ) ;
+    if( rc < 0 )
+    {
+	cleanup() ;
+        string err = (string)"Error setting indentation for response document "
 		     + _response_name ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
@@ -548,7 +562,7 @@ BESXMLInfo::dump( ostream &strm ) const
 }
 
 BESInfo *
-BESXMLInfo::BuildXMLInfo( const string &info_type )
+BESXMLInfo::BuildXMLInfo( const string &/*info_type*/ )
 {
     return new BESXMLInfo( ) ;
 }

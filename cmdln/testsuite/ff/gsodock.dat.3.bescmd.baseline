@@ -26,7 +26,7 @@
 <td align=left valign=top>32 bit Real<br></td>
 </tr><tr><td align=right valign=top><b>Salinity</b>:</td>
 <td align=left valign=top>32 bit Real<br></td>
-</tr><tr><td align=right valign=top><b>DO </b>:</td>
+</tr><tr><td align=right valign=top><b>DO_percent</b>:</td>
 <td align=left valign=top>32 bit Real<br></td>
 </tr><tr><td align=right valign=top><b>pH</b>:</td>
 <td align=left valign=top>32 bit Real<br></td>

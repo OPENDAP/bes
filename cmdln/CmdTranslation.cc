@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -54,6 +54,7 @@ CmdTranslation::initialize(int, char**)
     _translations["show"] = CmdTranslation::translate_show ;
     _translations["show.catalog"] = CmdTranslation::translate_catalog ;
     _translations["show.info"] = CmdTranslation::translate_catalog ;
+    _translations["show.error"] = CmdTranslation::translate_show_error ;
     _translations["set"] = CmdTranslation::translate_set ;
     _translations["set.context"] = CmdTranslation::translate_context ;
     _translations["set.container"] = CmdTranslation::translate_container ;
@@ -107,7 +108,7 @@ CmdTranslation::translate( const string &commands )
 	return "" ;
     }
     
-    LIBXML_TEST_VERSION
+    LIBXML_TEST_VERSION;
 
     int rc;
     xmlTextWriterPtr writer = 0 ;
@@ -302,9 +303,64 @@ CmdTranslation::translate_show( BESTokenizer &t, xmlTextWriterPtr writer )
 }
 
 bool
+CmdTranslation::translate_show_error( BESTokenizer &t, xmlTextWriterPtr writer)
+{
+    string show_what = t.get_current_token() ;
+    if( show_what.empty() || show_what != "error" )
+    {
+	t.parse_error( "show command must be error" ) ;
+    }
+
+    string etype = t.get_next_token() ;
+    if( etype == ";" )
+    {
+	string err = (string)"show " + show_what
+		     + " command must inlude the error type to show" ;
+	t.parse_error( err ) ;
+    }
+
+    string semi = t.get_next_token() ;
+    if( semi != ";" )
+    {
+	string err = (string)"show " + show_what
+		     + " commands must end with a semicolon" ;
+	t.parse_error( err ) ;
+    }
+    show_what[0] = toupper( show_what[0] ) ;
+    string tag = "show" + show_what ;
+
+    // start the show element
+    int rc = xmlTextWriterStartElement( writer, BAD_CAST tag.c_str() ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to start " << tag << " element" << endl ;
+	return false ;
+    }
+
+    /* Add the error type attribute */
+    rc = xmlTextWriterWriteAttribute( writer, BAD_CAST "type",
+				      BAD_CAST etype.c_str() ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to add the get type attribute" << endl ;
+	return "" ;
+    }
+
+    // end the show element
+    rc = xmlTextWriterEndElement( writer ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to close " << tag << " element" << endl ;
+	return false ;
+    }
+
+    return true ;
+}
+
+bool
 CmdTranslation::translate_catalog( BESTokenizer &t, xmlTextWriterPtr writer )
 {
-    // show catalog|info [for node]
+    // show catalog|info [in catalog] [for node]
     // <showCatalog node="" />
     string show_what = t.get_current_token() ;
     if( show_what.empty() || ( show_what != "info" && show_what != "catalog" ) )
@@ -608,6 +664,7 @@ CmdTranslation::translate_define( BESTokenizer &t,
 
     // constraints and attributes
     map<string,string> constraints ;
+    string default_constraint ;
     map<string,string> attrs ;
     if( token == "with" )
     {
@@ -615,29 +672,37 @@ CmdTranslation::translate_define( BESTokenizer &t,
 	unsigned int type ;
 	while( token != "aggregate" && token != ";" )
 	{
-	    string c = t.parse_container_name( token, type ) ;
-	    if( clist[c] != c )
+	    // see if we have a default constraint for all containers
+	    if( token == "constraint" )
 	    {
-		t.parse_error( "contstraint container does not exist" ) ;
-	    }
-	    if( type == 1 )
-	    {
-		// constraint
-		constraints[c] = t.remove_quotes( t.get_next_token() ) ;
-	    }
-	    else if( type == 2 )
-	    {
-		// attributed
-		attrs[c] = t.remove_quotes( t.get_next_token() ) ;
+		default_constraint = t.remove_quotes( t.get_next_token() ) ;
 	    }
 	    else
 	    {
-		t.parse_error( "unknown constraint type" ) ;
-	    }
-	    token = t.get_next_token() ;
-	    if( token == "," )
-	    {
+		string c = t.parse_container_name( token, type ) ;
+		if( clist[c] != c )
+		{
+		    t.parse_error( "contstraint container does not exist" ) ;
+		}
+		if( type == 1 )
+		{
+		    // constraint
+		    constraints[c] = t.remove_quotes( t.get_next_token() ) ;
+		}
+		else if( type == 2 )
+		{
+		    // attributed
+		    attrs[c] = t.remove_quotes( t.get_next_token() ) ;
+		}
+		else
+		{
+		    t.parse_error( "unknown constraint type" ) ;
+		}
 		token = t.get_next_token() ;
+		if( token == "," )
+		{
+		    token = t.get_next_token() ;
+		}
 	    }
 	}
     }
@@ -706,6 +771,34 @@ CmdTranslation::translate_define( BESTokenizer &t,
 	{
 	    cerr << "failed to add the container space attribute" << endl ;
 	    return "" ;
+	}
+    }
+
+    // write the default constraint if we have one
+    if( !default_constraint.empty() )
+    {
+	// start the constraint element
+	int rc = xmlTextWriterStartElement( writer, BAD_CAST "constraint" );
+	if( rc < 0 )
+	{
+	    cerr << "failed to start container constraint element" << endl ;
+	    return false ;
+	}
+
+	/* Write the value of the constraint */
+	rc = xmlTextWriterWriteString( writer, BAD_CAST default_constraint.c_str());
+	if( rc < 0 )
+	{
+	    cerr << "failed to write constraint for container" << endl ;
+	    return "" ;
+	}
+
+	// end the container constraint element
+	rc = xmlTextWriterEndElement( writer ) ;
+	if( rc < 0 )
+	{
+	    cerr << "failed to close constraint element" << endl ;
+	    return false ;
 	}
     }
 

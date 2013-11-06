@@ -325,7 +325,6 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat"
 <a href="opendap_form_help.html#disposition" target="help">Action:</a></h3>
 <td>
 <input type="button" value="Get ASCII" onclick="ascii_button()">
-<input type="button" value="Get as NetCDF" onclick="binary_button('nc')">
 <input type="button" value="Binary (DAP) Object" onclick="binary_button('dods')">
 <input type="button" value="Show Help" onclick="help_button()">
 

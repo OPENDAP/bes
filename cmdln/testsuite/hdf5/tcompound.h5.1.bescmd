@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
-    <setContainer name="c" space="catalog">/data/hdf5/tcompound.h5</setContainer>
+    <setContainer name="c" space="catalog">/data/hdf5/grid_1_2d.h5</setContainer>
     <define name="d">
 	<container name="c" />
     </define>

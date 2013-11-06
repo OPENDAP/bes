@@ -1,5 +1,153 @@
+News for version 3.12.0
 
-	$Id$
+There are several changes to the BES for this release.
+
+The DAP operations have been moved to their own module, reducing the 
+amount of stuff hanging around in dispatch. Along with this change, new
+functionality for server-side functions has been added to the BES's
+DAP module. This supports, in conjunction with changes in the OLFS,
+the function syntax developed by COLA and used by the FTDS server. The
+BES can now run server functions and cache the results, providing a
+way for clients built using the netCDF library client toolkits to
+'open' such a URL and then make repeated subsetting requests against
+the result of that function.
+
+Note that libdap now supports new server function special forms that
+provide a way to pass large arrays into the server as constants in the
+constriant.
+
+Also note that we've redone how server functions are defined, making
+it simpler to write them correctly. The default set of functions is
+now bundled in a separate module (see the 'functions' directory).
+
+News for version 3.11.0
+
+Added a new method to the BESDDSResponse and BESDataDDSResponse classes
+so that the contained DDS/DataDDS object can be set/changed by a handler.
+This is used by the GDAL handler so that it can use a version of DDS that
+it has specialized.
+
+News for 3.10.4
+
+Merged to trunk; tagged.
+
+News for version 3.10.2
+
+Changed the way the RPM packages install so that the 'bes' group has
+write permissions on both /var/log/bes and /var/run/bes. The latter is
+not strictly needed, but might be useful at some point.
+
+Changed the default port for the BES to 10022 dues to conflicts on CentOS.
+
+Also, fixed the way the server checks for conflicts at runtime and made the
+error messages more informative.
+
+There is no version 3.10.1
+
+News for version 3.10.0
+
+Added support for the Hyrax Admin Interface (HAI). The server now
+supports a set of commands that can be used to start and stop the
+server; load/reload/edit the configuration files; look at logging
+output; and toggle debugging output on-the-fly.
+
+Added support for response size limits.
+
+News for version 3.9.2
+
+Bug fix in PPT released in this version.
+
+News for version 3.9.1
+
+The CSV handler was moved out of this component and mae its own
+handler, with all the stuff that implies (it's onw RPM, source dist,
+etc.). At teh smae time a new tool for building tests has been added -
+look in the code for the dapreader classes. Email us for more
+information.
+
+Bug & Build fixes fixes.
+
+The default location of the bes.log file is now $prefix/var/bes.log
+
+Support for the DAP3.3 Keywords (an experimental feature).
+
+News for version 3.9.0, 14 Sep 2010
+
+Moved BES.Catalog.catalog.RootDirectory parameter to bes.conf so users
+have to edit only one conf file for initial configuration
+
+Allowing for conf files to include any required module configuration
+files to be loaded first. For example, if ncml module requires dap
+module, then the ncml module can include the dap module so that it gets
+loaded and configured first. Also takes care of a problem where a
+configuration file is included multiple times.
+
+Fixed a problem where when transmitting a response any exceptions were
+being absorbed and a generic exception thrown in its place.
+
+Various bug fixes released in this new version.
+
+News for version 3.8.4, 24 May 2010
+
+Bug fix. IPC bug triggered by an errant handler. Likely the cause of the
+runaway process bug which could be triggered by crawlers.
+
+News for version 3.8.3, 04 May 2010
+
+Fixed problem in logging where the actual command being executed
+wasn't being logged to the log file.
+
+News for version 3.8.2, 06 April 2010
+
+Fixed bug in BESKeys where = was adding to a definition instead of
+replacing.
+
+Logging the received requests to the BESLog log file. Was just saying
+[xml document]
+
+News for version 3.8.1, 11 March 2010
+
+Fixed potential bug in BES Uncompression Cache code when failure to
+uncompress a file and checking size of current cache.
+
+News for version 3.8.0, 2 February 2010
+
+Changed the way BES configuration is modified for the different
+handlers. Before, changes were made using either a target to make (make
+bes-conf), or running a script (bes-x-data.sh), or making changes
+directly to bes.conf. This is no longer the case. The file bes.conf will
+have miner modifications (administrator email address, user and group
+BES should run as, etc...) and that's it. All module configuration will
+be in their own files in the etc/bes/modules directory. The bes.conf
+file will include module configurations in the directory that end in
+.conf. Any files that end with .conf in that directory will be loaded.
+This way, bes.conf will never need to be modified after installation.
+
+The bes.conf files that are already out there will still work. This is
+the new, preferred method of configuration and we recommend that you
+move to this format.
+
+Added a new besd script that can be used to run the BES at boot/reboot
+using chkconfig on linux systems. Please see besd script for more
+information and ask your system administrator about gettig this
+installed in the proper location.
+
+Added a new command to test error handling by clients <showError type="x" />,
+where x is 1-5 and represents the following:
+1. Internal Error - the error is internal to the BES Server
+2. Internal Fatal Error - error is fatal, can not continue
+3. Syntax User Error - the requester has a syntax error in request or config
+4. Forbidden Error - the requester is forbidden to see the resource
+5. Not Found Error - the resource can not be found
+
+Removed all old OPeNDAP CGI server 3 references and files.
+
+DataDDX support added to the BES in the dap module.
+
+Cleaned up doxygen documentation for the BES.
+
+Changed all tests from dejagnu to autotest. Changed bes/dispatch unit
+tests to use CPPUNIT.
 
 News for version 3.7.2, 8 April 2009
 

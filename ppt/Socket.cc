@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -47,7 +47,10 @@
 #include <unistd.h>
 #endif
 
+#include <sstream>
+
 #include "Socket.h"
+#include "BESLog.h"
 #include "BESInternalError.h"
 
 Socket::Socket( int socket, struct sockaddr *addr )
@@ -104,26 +107,25 @@ Socket::send( const string &str, int start, int end )
     }
 }
 
-int	
-Socket::receive( char *inBuff, int inSize )
+int Socket::receive(char *inBuff, const int inSize)
 {
-    int bytesRead = 0 ;
-    if( ( bytesRead = read( _socket, inBuff, inSize ) ) < 1 )
-    {
-	string err( "socket failure, reading on stream socket: " ) ;
-	const char *error_info = strerror( errno ) ;
-	if( error_info )
-	    err += " " + (string)error_info ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
-    inBuff[bytesRead] = '\0' ;
-    return bytesRead ;
-}
+	int bytesRead = 0;
 
-void
-Socket::sync()
-{
-    fsync( _socket ) ;
+    //if ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
+	// check for EINTR and EAGAIN. jhrg 10/30/13
+	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
+	    if (errno == EINTR || errno == EAGAIN) {
+	    	*(BESLog::TheLog()) << "Socket::receive: errno: " << errno << ", bytesRead: " << bytesRead << endl;
+	    	errno = 0;
+	    	continue;
+	    }
+
+		std::ostringstream oss;
+		oss << "Socket::receive: socket failure, reading on stream socket: " << strerror(errno) << ", bytesRead: " << bytesRead;
+		throw BESInternalError(oss.str(), __FILE__, __LINE__);
+	}
+
+	return bytesRead;
 }
 
 /** @brief dumps information about this object

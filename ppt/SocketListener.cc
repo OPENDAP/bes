@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -36,6 +36,14 @@
 
 #include <cstring>
 #include <cerrno>
+
+#if 0
+#ifdef _ACCEPT_USES_SOCKLEN_T
+#define SOCK_TYPE socklen_t
+#else
+#define SOCK_TYPE int
+#endif
+#endif
 
 #include "SocketListener.h"
 #include "BESInternalError.h"
@@ -113,15 +121,29 @@ SocketListener::accept()
 	    FD_SET( s, &read_fd ) ;
 	}
 
-	if( select( maxfd+1, &read_fd,
-	            (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
-	{
-	    string err( "selecting sockets " ) ;
-	    const char *error_info = strerror( errno ) ;
-	    if( error_info )
-		err += " " + (string)error_info ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
+#if 0
+	// jhrg 5/16/11
+	//if( select( maxfd+1, &read_fd,
+	 //           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
+#endif
+		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+			switch (errno) {
+
+			case EAGAIN:	// rerun select on interrupted calls, ...
+			case EINTR:
+				break;
+#if 0
+			case EBADF:		// or exit on error
+			case EINVAL:
+#endif
+			default: {
+				string err("select: ");
+				const char *error_info = strerror(errno);
+				if (error_info) err += (string) error_info;
+				throw BESInternalError(err, __FILE__, __LINE__);
+			}
+			}
+		}
 
 	iter = _socket_list.begin() ;
 	for( ; iter != _socket_list.end(); iter++ )
@@ -131,18 +153,26 @@ SocketListener::accept()
 	    if ( FD_ISSET( s, &read_fd ) )  
 	    {    
 		struct sockaddr from ;
-		int len_from = sizeof( from ) ;
-#ifdef _ACCEPT_USES_SOCKLEN_T 
-		msgsock = ::accept( s, (struct sockaddr *)&from,
-				    (socklen_t *)&len_from ) ;
-#else
-		msgsock = ::accept( s, (struct sockaddr *)&from,
-		                    &len_from ) ;
-#endif
-		return s_ptr->newSocket( msgsock, (struct sockaddr *)&from );
+		socklen_t len_from = sizeof( from ) ;
+
+		while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
+		    if (errno == EINTR) {
+			continue;
+		    }
+		    else {
+			string err("accept: ");
+			const char *error_info = strerror(errno);
+			if (error_info)
+			    err += (string) error_info;
+			throw BESInternalError(err, __FILE__, __LINE__);
+		    }
+		}
+
+		return s_ptr->newSocket( msgsock, (struct sockaddr *)&from ) ;
 	    }
 	}
     }
+
     return 0 ;
 }
 

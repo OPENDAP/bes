@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -44,9 +44,9 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand( const BESDataHandlerInterf
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a set container command.
  *
-    <setContainer name="c" space="catalog">data/nc/fnoc1.nc</setContainer>
+    &lt;setContainer name="c" space="catalog"&gt;data/nc/fnoc1.nc&lt;/setContainer&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -67,7 +67,12 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    if( value.empty() )
+    string cname ;
+    string cvalue ;
+    map<string, string> cprops ;
+    xmlNode *real = BESXMLUtils::GetFirstChild( node, cname, cvalue, cprops ) ;
+
+    if( value.empty() && !real )
     {
 	string err = action + " command: container real name missing" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
@@ -100,6 +105,20 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
 
     // now that everything has passed tests, set the value in the dhi
     _dhi.data[REAL_NAME] = value ; 
+
+    // if there is a child node, then the real value of the container is
+    // this content, or is set in this content.
+    if( real )
+    {
+	xmlBufferPtr buf = xmlBufferCreate() ;
+	xmlNodeDump( buf, real->doc, real, 2, 1 ) ;
+	if( buf->content )
+	{
+	    value = (char *)buf->content ;
+	    _dhi.data[REAL_NAME] = (char *)(buf->content) ;
+	}
+    }
+
     _dhi.action = SETCONTAINER ;
 
     _str_cmd = (string)"set container in " + storage
@@ -108,6 +127,7 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
     {
 	_str_cmd += "," + container_type ;
     }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

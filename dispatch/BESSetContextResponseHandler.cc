@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -51,7 +51,7 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler( )
  * Using a context name and a context value, set that context in the context
  * manager.
  *
- * The response object is silent, i.e. nothing si returned to the client
+ * The response object is silent, i.e. nothing is returned to the client
  * unless there is an exception condition.
  *
  * @param dhi structure that holds request and response information

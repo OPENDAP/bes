@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,7 +35,7 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "BESObj.h"
 
@@ -48,15 +48,17 @@ using std::string ;
 /** @brief Abstract exception class for the BES with basic string message
  *
  */
-class BESError : public BESObj
-{
+class BESError: public BESObj {
 protected:
-    string		_msg ;
-    unsigned int	_type ;
-    string		_file ;
-    unsigned int	_line ;
+    string _msg;
+    unsigned int _type;
+    string _file;
+    unsigned int _line;
 
-    			BESError() { _msg = "UNDEFINED" ; }
+    BESError()
+    {
+        _msg = "UNDEFINED";
+    }
 public:
     /** @brief constructor that takes message, type of error, source file
      * the error originated and the line number in the source file
@@ -65,45 +67,64 @@ public:
      * @param type type of error generated. Default list of error types are
      * defined above as internal error, internal fatal error, syntax/user
      * error, resource forbidden error, resource not found error.
+     * @param file the filename in which this error object was created
+     * @param line the line number within the file in which this error
+     * object was created
      */
-    			BESError( const string &msg,
-				  unsigned int type,
-			          const string &file,
-				  unsigned int line )
-			    : _msg( msg ),
-			      _type( type ),
-			      _file( file ),
-			      _line( line ) {}
-    virtual		~BESError() {}
+    BESError(const string &msg, unsigned int type, const string &file, unsigned int line) :
+            _msg(msg), _type(type), _file(file), _line(line)
+    {
+    }
+    virtual ~BESError()
+    {
+    }
 
     /** @brief set the error message for this exception
      *
      * @param msg message string
      */
-    virtual void	set_message( const string &msg ) { _msg = msg ; }
+    virtual void set_message(const string &msg)
+    {
+        _msg = msg;
+    }
     /** @brief get the error message for this exception
      *
      * @return error message
      */
-    virtual string	get_message() { return _msg ; }
+    virtual string get_message()
+    {
+        return _msg;
+    }
     /** @brief get the file name where the exception was thrown
      *
      * @return file name
      */
-    virtual string	get_file() { return _file ; }
+    virtual string get_file()
+    {
+        return _file;
+    }
     /** @brief get the line number where the exception was thrown
      *
      * @return line number
      */
-    virtual int		get_line() { return _line ; }
+    virtual int get_line()
+    {
+        return _line;
+    }
 
     /** @brief Set the return code for this particular error class
      *
      * Sets the return code for this error class, which could represent the
      * need to terminate or do something specific based on the error.
-     * @param return_code code used when returning from the error
+     *
+     * @param type the type of error this error object represents. Can
+     * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
+     * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
-    virtual void	set_error_type( int type ) { _type = type ; }
+    virtual void set_error_type(int type)
+    {
+        _type = type;
+    }
 
     /** @brief Return the return code for this error class
      *
@@ -111,14 +132,16 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    virtual int		get_error_type() { return _type ; }
+    virtual int get_error_type()
+    {
+        return _type;
+    }
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESError_h_ 
-

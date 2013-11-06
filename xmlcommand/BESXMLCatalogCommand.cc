@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -32,7 +32,7 @@
 
 #include "BESXMLCatalogCommand.h"
 #include "BESContainerStorageList.h"
-#include "BESDapNames.h"
+#include "BESNames.h"
 #include "BESDataNames.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
@@ -46,7 +46,7 @@ BESXMLCatalogCommand::BESXMLCatalogCommand( const BESDataHandlerInterface &base_
 
 /** @brief parse a show command. No properties or children elements
  *
-    <deleteContainer name="containerName" store="storeName" />
+    &lt;showCatalog node="containerName" /&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -72,14 +72,21 @@ BESXMLCatalogCommand::parse_request( xmlNode *node )
     if( name == CATALOG_RESPONSE_STR )
     {
 	_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
+	_str_cmd = "show catalog" ;
     }
     else
     {
 	_dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
+	_str_cmd = "show info" ;
     }
 
-    // this is an optional property, so could be empty string
+    // node is an optional property, so could be empty string
     _dhi.data[CONTAINER] = props["node"] ;
+    if( !_dhi.data[CONTAINER].empty() )
+    {
+	_str_cmd += " for " + _dhi.data[CONTAINER] ;
+    }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

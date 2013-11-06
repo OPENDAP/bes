@@ -1,0 +1,49 @@
+
+#-----------------------------------------------------------------------#
+# OPeNDAP Dap Module Configuration file                                 #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=dap,dapcmd
+
+BES.module.dap=@bes_modules_dir@/libdap_module.so
+BES.module.dapcmd=@bes_modules_dir@/libdap_xml_module.so
+
+BES.Catalog.Default=catalog
+
+# This parameter is set in the various data module configuration files,
+# such as nc.conf, under the <prefix>/etc/bes/modules/ directory. Does
+# not need to be set here.
+
+BES.Catalog.catalog.TypeMatch=
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+# BES.Catalog.catalog.FollowSymLinks is for catalog requests and data
+# containers in the catalog and is used in conjunction with the
+# BES.Catalog.catalog.RootDirectory parameter above.
+
+BES.Catalog.catalog.FollowSymLinks=No
+
+#-----------------------------------------------------------------------#
+# DAP help file locations, for text, html, and xml versions             #
+#-----------------------------------------------------------------------#
+
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.xml
+
+#-----------------------------------------------------------------------#
+# Function cache parameters                                             #
+#-----------------------------------------------------------------------#
+
+DAP.FunctionCache.path="/tmp/dap_cache"
+DAP.FunctionCache.prefix="f"
+
+# This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
+DAP.FunctionCache.size=20000
+

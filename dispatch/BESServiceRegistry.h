@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -45,7 +45,7 @@ using std::list ;
 
 class BESInfo ;
 
-/** @brief The service registry allows modules to register services witht he
+/** @brief The service registry allows modules to register services with the
  * BES that they provide.
  *
  * For example, the dap service provides the das, dds, ddx, and dods
@@ -53,9 +53,9 @@ class BESInfo ;
  * the nc_module for netcdf data, can register that it can provide the dap
  * services by calling the handle_services call.
  *
- * Also provided by this class is the response body for the <showServices />
- * command, returning the list of services, the commands provided by that
- * services, and the description of those commands
+ * Also provided by this class is the response body for the
+ * &lt;showServices &gt;/ command, returning the list of services, the
+ * commands provided by that services, and the description of those commands
  */
 class BESServiceRegistry : public BESObj
 {

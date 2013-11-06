@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,15 +36,15 @@
 #include <string>
 #include <map>
 
-using std::string ;
-using std::map ;
+using std::string;
+using std::map;
 
 #include "BESContainerStorage.h"
 
 /** @brief implementation of BESContainerStorage that represents a
  * way to read container information from a file.
  *
- * This impelementation of BESContainerStorage loads container information
+ * This implementation of BESContainerStorage loads container information
  * from a file. The name of the file is determined from the bes
  * configuration file. The key is:
  *
@@ -67,35 +67,32 @@ using std::map ;
  * @see BESFileContainer
  * @see BESKeys
  */
-class BESContainerStorageFile : public BESContainerStorage
-{
+class BESContainerStorageFile: public BESContainerStorage {
 private:
-    string			_file ;
-    typedef struct _container
-    {
-	string _symbolic_name ;
-	string _real_name ;
-	string _container_type ;
-    } container ;
-    map< string, BESContainerStorageFile::container * > _container_list ;
-    typedef map< string, BESContainerStorageFile::container * >::const_iterator Container_citer ;
-    typedef map< string, BESContainerStorageFile::container * >::iterator Container_iter ;
+    string _file;
+    typedef struct _container {
+        string _symbolic_name;
+        string _real_name;
+        string _container_type;
+    } container;
+    map<string, BESContainerStorageFile::container *> _container_list;
+    typedef map<string, BESContainerStorageFile::container *>::const_iterator Container_citer;
+    typedef map<string, BESContainerStorageFile::container *>::iterator Container_iter;
 
 public:
-    				BESContainerStorageFile( const string &n );
-    virtual			~BESContainerStorageFile() ;
+    BESContainerStorageFile(const string &n);
+    virtual ~BESContainerStorageFile();
 
-    virtual BESContainer *	look_for( const string &sym_name ) ;
-    virtual void		add_container( const string &sym_name,
-					       const string &real_name,
-					       const string &type ) ;
-    virtual bool		del_container( const string &s_name ) ;
-    virtual bool		del_containers( ) ;
+    virtual BESContainer * look_for(const string &sym_name);
+    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
+    virtual bool del_container(const string &s_name);
+    virtual bool del_containers();
 
-    virtual void		show_containers( BESInfo &info ) ;
+    virtual bool isData(const string &inQuestion, list<string> &provides);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void show_containers(BESInfo &info);
+
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // I_BESContainerStorageFile_h_
-

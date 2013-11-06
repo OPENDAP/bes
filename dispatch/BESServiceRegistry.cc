@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -44,12 +44,9 @@ BESServiceRegistry::~BESServiceRegistry()
 {
 }
 
-/** @brief Add a service to the BES and the list of commands that are a part
- * of that service
+/** @brief Add a service to the BES
  *
  * @param name name of the service to be added
- * @param commands a map specifying the name of each command and the
- * description of that command
  * @throws BESInternalError if the service already exists
  */
 void
@@ -201,16 +198,19 @@ BESServiceRegistry::remove_service( const string &service )
     }
 }
 
-/** @brief Determines if a service and, optionally, a command is available
+/** @brief Determines if a service and, optionally, a command and a
+ * return format, is available
  *
- * Given a service name and possibly a command name, determine if that
- * service is available and, if not empty, if the service provides the
- * specified command.
+ * Given a service name and possibly a command name and return format,
+ * determine if that service is available and, if not empty, if the service
+ * provides the specified command.
  *
  * @param service the name of the service in question
  * @param cmd the service command in question, defaults to empty string
+ * @param format the service return format in question, defaults to empty string
  * @return true if the service is available and, if provided, the command is
- * provided by the service.
+ * provided by the service and, if format is provided, the return format
+ * of the service and command
  */
 bool
 BESServiceRegistry::service_available( const string &service,
@@ -340,11 +340,11 @@ BESServiceRegistry::services_handled( const string &handler,
     }
 }
 
-/** @brief fills in the response object for the <showService /> request
+/** @brief fills in the response object for the &lt;showService /&gt; request
  *
  * This function is called to fill in the response object for the
- * <showServices /> request. It adds each of the services and the commands
- * provided by that service.
+ * &lt;showServices /&gt; request. It adds each of the services and the
+ * commands provided by that service.
  *
  * @param info The BES informational object that will hold the response
  */

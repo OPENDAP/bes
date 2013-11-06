@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -55,7 +55,8 @@ public:
 	<i>and</i> the header.
 
 	@name MIME utility functions
-	@see DODSFilter
+	@see libdap::escaping.cc
+	@see libdap::mime_util.cc
     */
     static void			set_mime_text( ostream &strm ) ;
     static void			set_mime_html( ostream &strm ) ;
@@ -101,6 +102,20 @@ public:
     /** implode a list of values into a single string delimited by delim **/
     static string		implode( const list<string> &values,
 					 char delim ) ;
+
+    struct url
+    {
+	string protocol ;
+	string domain ;
+	string uname ;
+	string psswd ;
+	string port ;
+	string path ;
+    } ;
+
+    static void			url_explode( const string &url_str,
+					     BESUtil::url &url_parts ) ;
+    static string		url_create( BESUtil::url &url_parts ) ;
 } ;
 
 #endif // E_BESUtil_h

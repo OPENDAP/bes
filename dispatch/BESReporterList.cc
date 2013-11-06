@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -46,14 +46,16 @@ BESReporterList::~BESReporterList()
     for( ; i != _reporter_list.end(); i++ )
     {
 	reporter = (*i).second ;
-	if( reporter ) delete reporter ;
-	_reporter_list.erase( i ) ;
+	if( reporter ) { delete reporter ; (*i).second = 0 ; }
+	// instead of erasing each element as I go, call clear outside
+	// of the for loop
     }
+    _reporter_list.clear() ;
 }
 
 bool
 BESReporterList::add_reporter( string reporter_name,
-			      BESReporter *reporter_object )
+			       BESReporter *reporter_object )
 {
     if( find_reporter( reporter_name ) == 0 )
     {

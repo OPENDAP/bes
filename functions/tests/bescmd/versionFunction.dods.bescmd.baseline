@@ -1,0 +1,2 @@
+The data:
+String version = .*ds:functions xmlns:ds=\"http://xml.opendap.org/ns/DAP/.*/dataset-services#\".*ds:function  name=\"geogrid\".*ds:function.*ds:functions.*;

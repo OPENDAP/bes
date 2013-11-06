@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -40,14 +40,18 @@
 #define SERVER_EXIT_ABNORMAL_TERMINATION 2
 #define SERVER_EXIT_RESTART 3
 
+#if 0
 // This exit condition is ignored by the daemon.
 #define SERVER_EXIT_CHILD_SUBPROCESS_NORMAL_TERMINATION 4
 // This exit condition is ignore by the daemon.
 #define SERVER_EXIT_CHILD_SUBPROCESS_ABNORMAL_TERMINATION 5
+#endif
 
 #define CHILD_SUBPROCESS_READY 6
 
-// The server itself nevers uses this value, just the daemon initializes with this number
+#if 0
+// jhrg not used
+// The server itself never uses this value, just the daemon initializes with this number
 #define SERVER_EXIT_UNDEFINED_STATE 7
-
+#endif
 #endif // ServerExitConditions_h_

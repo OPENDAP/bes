@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -61,9 +61,29 @@ protected:
 public:
     virtual			~BESXMLCommand() {}
 
+    /** @brief Parse the XML request document begining at the given node
+     *
+     * @param node Begin parsing at this XML node
+     */
     virtual void		parse_request( xmlNode *node ) = 0 ;
+    /** @brief Has a response handler been created given the request
+     * document?
+     *
+     * @return true if a response handler has been set, false otherwise
+     */
     virtual bool		has_response() = 0 ;
+    /** @brief Prepare any information needed to execute the request of
+     * this command
+     */
     virtual void		prep_request() {}
+    /** @brief Return the current BESDataHandlerInterface
+     *
+     * Since there can be multiple commands within a single request
+     * document, different interface objects can be created. This
+     * returns the current interface object
+     *
+     * @return The current BESDataHandlerInterface object
+     */
     virtual BESDataHandlerInterface &get_dhi() { return _dhi ; }
 
     virtual void		dump( ostream &strm ) const ;

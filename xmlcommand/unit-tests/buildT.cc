@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -49,7 +49,9 @@ using std::ostringstream ;
 #include "BuildTCmd1.h"
 #include "BuildTCmd2.h"
 #include "BESError.h"
-#include <test_config.h>
+#include "TheBESKeys.h"
+
+#include "test_config.h"
 
 int what_test = 0 ;
 
@@ -76,7 +78,10 @@ public:
 
     void do_test()
     {
+    	TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/bes.conf";
+
 	cout << endl << "*****************************************" << endl;
+	cout << "TheBESKeys::ConfigFile = " << TheBESKeys::ConfigFile << endl;
 	cout << "Entered buildT::run" << endl;
 
 	try

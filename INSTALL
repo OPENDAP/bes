@@ -1,7 +1,5 @@
 
-	$Id$
-
-Updated for version 3.7.2 of the OPeNDAP BES.
+Updated for version 3.12.0 of the OPeNDAP BES.
 
 Installing the BES
 
@@ -37,10 +35,11 @@ BUILDING THE SOFTWARE
 
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, et c., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose' and
-  then './configure; make'.
+  If you are building from a SVN checkout, run 'autoreconf --verbose
+  --install' before './configure; make'. If you try to run autoconf,
+  et c., by hand and wind up with build files that don't work, use
+  'autoreconf --force --install --verbose' and then './configure;
+  make'.
 
 AFTER INSTALLING
 
@@ -87,8 +86,8 @@ BUILD REQUIREMENTS
     thing to do is to run configure and see if it complains. If it
     does, go to the above link and grab the library.
 
-  o To build from a fresh SVN checkout, you'll need automake 1.10, autoconf
-    2.61 and libtool 1.5.6. Earlier versions may work, but may cause
+  o To build from a fresh SVN checkout, you'll need automake 1.11, autoconf
+    2.61 and libtool 2.2+. Earlier versions may work, but may cause
     problems, particularly with the 'distcheck' target for make. Given those
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.
@@ -104,7 +103,7 @@ BUILD REQUIREMENTS
     3.7.3 or greater to build this software. See
     http://www.opendap.org/download/. Since libdap uses libcurl and libxml2,
     you will need these libraries, too. You must have libcurl version 7.12.0
-    or newer and libxml2 2.5.7 or newer. We provide source versions of the
+    or newer and libxml2 2.6.16 or newer. We provide source versions of the
     packages on the web site; the web pages for these projects are:
     http://curl.haxx.se/ and http://xmlsoft.org/.
 
@@ -192,8 +191,11 @@ CONFIGURATION AND TESTING
 
     - The configuration file is located in the installation directory under
       etc/bes and is called bes.conf. This file will need to be edited, and
-      is fairly well documented. So, if you installed in /usr/local, then
-      this file will be located in /usr/local/etc/bes/bes.conf.
+      is fairly well documented. Any modules installed will have their
+      own configuration file in the modules directory. So, if you
+      installed in /usr/local, then this file will be located in
+      /usr/local/etc/bes/bes.conf and the modules directory where module
+      configuration files will go is /usr/local/etc/bes/modules.
 
     - If you want to include libdap in the build then you will need to
       either have dap-config on your path, or you can specify

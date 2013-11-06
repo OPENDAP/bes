@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,12 +36,9 @@
  *
  * @param copy_from The container to copy
  */
-BESContainer::BESContainer( const BESContainer &copy_from )
-    : _real_name( copy_from._real_name ),
-      _constraint( copy_from._constraint ),
-      _symbolic_name( copy_from._symbolic_name ),
-      _container_type( copy_from._container_type ),
-      _attributes( copy_from._attributes )
+BESContainer::BESContainer(const BESContainer &copy_from) :
+        BESObj(copy_from), _symbolic_name(copy_from._symbolic_name), _real_name(copy_from._real_name), _container_type(
+                copy_from._container_type), _constraint(copy_from._constraint), _attributes(copy_from._attributes)
 {
 }
 
@@ -49,14 +46,13 @@ BESContainer::BESContainer( const BESContainer &copy_from )
  *
  * @param copy_to The container to copy this instance into
  */
-void
-BESContainer::_duplicate( BESContainer &copy_to )
+void BESContainer::_duplicate(BESContainer &copy_to)
 {
-    copy_to._real_name = _real_name ;
-    copy_to._constraint = _constraint ;
-    copy_to._symbolic_name = _symbolic_name ;
-    copy_to._container_type = _container_type ;
-    copy_to._attributes = _attributes ;
+    copy_to._real_name = _real_name;
+    copy_to._constraint = _constraint;
+    copy_to._symbolic_name = _symbolic_name;
+    copy_to._container_type = _container_type;
+    copy_to._attributes = _attributes;
 }
 
 /** @brief dumps information about this object
@@ -66,17 +62,15 @@ BESContainer::_duplicate( BESContainer &copy_to )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESContainer::dump( ostream &strm ) const
+void BESContainer::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContainer::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "symbolic name: " << _symbolic_name << endl ;
-    strm << BESIndent::LMarg << "real name: " << _real_name << endl ;
-    strm << BESIndent::LMarg << "data type: " << _container_type << endl ;
-    strm << BESIndent::LMarg << "constraint: " << _constraint << endl ;
-    strm << BESIndent::LMarg << "attributes: " << _attributes << endl ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESContainer::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "symbolic name: " << _symbolic_name << endl;
+    strm << BESIndent::LMarg << "real name: " << _real_name << endl;
+    strm << BESIndent::LMarg << "data type: " << _container_type << endl;
+    strm << BESIndent::LMarg << "constraint: " << _constraint << endl;
+    strm << BESIndent::LMarg << "attributes: " << _attributes << endl;
+    BESIndent::UnIndent();
 }
 

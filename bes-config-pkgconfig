@@ -52,7 +52,7 @@ while test $# -gt 0; do
 	;;
 
     --cflags)
-	pkg-config --cflags libdap
+	pkg-config --cflags bes_dispatch
 	;;
 
     --libs)
@@ -60,7 +60,7 @@ while test $# -gt 0; do
        	;;
 
     --dap-libs)
-       	pkg-config --libs bes_dispatch bes_xml_command bes_ppt bes_dap
+       	pkg-config --libs bes_dispatch bes_xml_command bes_ppt
        	;;
 
     --modulesdir)

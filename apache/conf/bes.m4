@@ -20,8 +20,6 @@ AC_DEFUN([AC_CHECK_BES],
      [bes_pkgconfig_bes=no])
   PKG_CHECK_MODULES([BES_COMMAND],[bes_command >= $bes_min_version],,
      [bes_pkgconfig_bes=no])
-  PKG_CHECK_MODULES([BES_DAP],[bes_dap >= $bes_min_version],,
-     [bes_pkgconfig_bes=no])
 
   AC_PATH_PROG([BES_CONFIG], [bes-config], [no])
   if test "$BES_CONFIG" != 'no' ; then

@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -56,14 +56,23 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	{
 	    bool fnd = false ;
 	    string key = "BES.Memory.GlobalArea." ;
-	    string eps =
-		TheBESKeys::TheKeys()->get_key( key + "EmergencyPoolSize", fnd);
-	    string mhs =
-		TheBESKeys::TheKeys()->get_key( key + "MaximumHeapSize", fnd ) ;
-	    string verbose =
-		TheBESKeys::TheKeys()->get_key( key + "Verbose", fnd ) ;
-	    string control_heap =
-		TheBESKeys::TheKeys()->get_key( key + "ControlHeap", fnd ) ;
+
+	    string eps ;
+	    TheBESKeys::TheKeys()->get_value( key + "EmergencyPoolSize",
+					      eps, fnd ) ;
+
+	    string mhs ;
+	    TheBESKeys::TheKeys()->get_value( key + "MaximumHeapSize",
+					      mhs, fnd ) ;
+
+	    string verbose ;
+	    TheBESKeys::TheKeys()->get_value( key + "Verbose",
+					      verbose, fnd ) ;
+
+	    string control_heap ;
+	    TheBESKeys::TheKeys()->get_value( key + "ControlHeap",
+					      control_heap, fnd ) ;
+
 	    if( (eps=="") || (mhs=="") || (verbose=="") || (control_heap=="") )
 	    {
 		string line = "cannot determine memory keys."  ;
@@ -71,7 +80,8 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		     + " BES.Memory.GlobalArea.EmergencyPoolSize,"
 		     + " BES.Memory.GlobalArea.MaxiumumHeapSize,"
 		     + " BES.Memory.GlobalArea.Verbose, and"
-		     + " BES.Memory.GlobalArea.ControlHeap" ;
+		     + " BES.Memory.GlobalArea.ControlHeap" 
+		     + " in the BES configuration file." ;
 		throw BESInternalFatalError( line, __FILE__, __LINE__ ) ;
 	    }
 	    else

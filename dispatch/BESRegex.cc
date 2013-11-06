@@ -19,7 +19,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -102,15 +102,20 @@ BESRegex::BESRegex(const char* t, int)
 int 
 BESRegex::match(const char* s, int len, int pos)
 {
-    regmatch_t pmatch[len];
+    regmatch_t *pmatch = new regmatch_t[len+1];
     string ss = s;
 
     int result = regexec(static_cast<regex_t*>(d_preg), 
                          ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
+	int matchnum;
     if (result == REG_NOMATCH)
-        return -1;
+        matchnum = -1;
+	else
+		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
+		
+	delete[] pmatch; pmatch = 0;
 
-    return pmatch[0].rm_eo - pmatch[0].rm_so;
+    return matchnum;
 }
 
 /** Does the regular expression match the string? 
@@ -131,6 +136,13 @@ BESRegex::search(const char* s, int len, int& matchlen, int pos)
     	return -1;
     	
     // alloc space for len matches, which is theoretical max.
+    // Problem: If somehow 'len' is very large - say the size of a 32-bit int,
+    // then len+1 is a an integer overflow and this might be exploited by
+    // an attacker. It's not likely there will be more than a handful of
+    // matches, so I am going to limit this value to 32766. jhrg 3/4/09
+    if (len > 32766)
+    	return -1;
+
     regmatch_t *pmatch = new regmatch_t[len+1];
     string ss = s;
      

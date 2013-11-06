@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -35,10 +35,12 @@
 
 #include <fstream>
 #include <map>
+#include <vector>
 #include <string>
 
 using std::string ;
 using std::map ;
+using std::vector ;
 using std::ifstream ;
 
 #include "BESObj.h"
@@ -84,16 +86,25 @@ class BESKeys : public BESObj
 private:
     ifstream *		_keys_file ;
     string		_keys_file_name ;
-    map<string,string> *_the_keys ;
+    map<string,vector<string> > *_the_keys ;
+    bool		_own_keys ;
+
+    static vector<string> KeyList ;
+    static bool		LoadedKeys( const string &key_file ) ;
 
     void		clean() ;
+    void 		initialize_keys() ;
     void 		load_keys() ;
     bool 		break_pair( const char* b,
 				    string& key,
-				    string &value ) ;
+				    string &value,
+				    bool &addto ) ;
     bool		only_blanks( const char *line ) ;
-    void		removeLeadingAndTrailingBlanks( string &key ) ;
+    void		load_include_files( const string &files ) ;
+    void		load_include_file( const string &file ) ;
     			BESKeys() {}
+			BESKeys( const string &keys_file_name,
+				 map<string,vector<string> > *keys ) ;
 protected:
     			BESKeys( const string &keys_file_name ) ;
 public:
@@ -101,11 +112,15 @@ public:
 
     string		keys_file_name() { return _keys_file_name ; }
 
-    string		set_key( const string &key, const string &val ) ;
-    string		set_key( const string &pair ) ;
-    string		get_key( const string& s, bool &found ) ;
+    void		set_key( const string &key, const string &val,
+				 bool addto = false ) ;
+    void		set_key( const string &pair ) ;
+    void		get_value( const string& s, string &val,
+				   bool &found ) ;
+    void		get_values( const string& s, vector<string> &vals,
+				    bool &found ) ;
 
-    typedef map< string, string >::const_iterator Keys_citer ;
+    typedef map< string, vector< string > >::const_iterator Keys_citer ;
     Keys_citer		keys_begin() { return _the_keys->begin() ; }
     Keys_citer		keys_end() { return _the_keys->end() ; }
 

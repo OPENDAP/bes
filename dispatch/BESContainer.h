@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,8 +36,8 @@
 #include <list>
 #include <string>
 
-using std::list ;
-using std::string ;
+using std::list;
+using std::string;
 
 #include "BESObj.h"
 
@@ -57,16 +57,17 @@ using std::string ;
  *
  * @see BESContainerStorage
  */
-class BESContainer : public BESObj
-{
+class BESContainer: public BESObj {
 private:
-    string 			_symbolic_name ;
-    string 			_real_name ;
-    string 			_container_type ;
-    string 			_constraint ;
-    string			_attributes ;
- protected:
-				BESContainer() {}
+    string _symbolic_name;
+    string _real_name;
+    string _container_type;
+    string _constraint;
+    string _attributes;
+protected:
+    BESContainer()
+    {
+    }
 
     /** @brief construct a container with the given symbolic name, real name
      * and container type.
@@ -75,91 +76,90 @@ private:
      * @param real_name real name of the container, such as a file name
      * @param type type of data represented by this container, such as netcdf
      */
-    				BESContainer( const string &sym_name,
-				              const string &real_name,
-					      const string &type )
-				    : _symbolic_name( sym_name ),
-				      _real_name( real_name ),
-				      _container_type( type )
-				{}
+    BESContainer(const string &sym_name, const string &real_name, const string &type) :
+            _symbolic_name(sym_name), _real_name(real_name), _container_type(type)
+    {
+    }
 
-				BESContainer( const BESContainer &copy_from ) ;
+    BESContainer(const BESContainer &copy_from);
 
+    void _duplicate(BESContainer &copy_to);
 
-    void			_duplicate( BESContainer &copy_to ) ;
- public:
+public:
 
-    virtual			~BESContainer() {}
+    virtual ~BESContainer()
+    {
+    }
 
     /** @brief pure abstract method to duplicate this instances of BESContainer
      */
-    virtual BESContainer *	ptr_duplicate( ) = 0 ;
+    virtual BESContainer * ptr_duplicate() = 0;
 
     /** @brief set the constraint for this container
      *
      * @param s constraint
      */
-    void 			set_constraint( const string &s )
-				{
-				    _constraint = s ;
-				}
+    void set_constraint(const string &s)
+    {
+        _constraint = s;
+    }
 
     /** @brief set the real name for this container, such as a file name
      * if reading a data file.
      *
      * @param real_name real name, such as the file name
      */
-    void 			set_real_name( const string &real_name )
-				{
-				    _real_name = real_name ;
-				}
+    void set_real_name(const string &real_name)
+    {
+        _real_name = real_name;
+    }
 
     /** @brief set the type of data that this container represents, such
      * as cedar or netcdf.
      *
      * @param type type of data, such as cedar or netcdf
      */
-    void 			set_container_type( const string &type )
-				{
-				    _container_type = type ;
-				}
+    void set_container_type(const string &type)
+    {
+        _container_type = type;
+    }
 
     /** @brief set desired attributes for this container
      *
      * @param attrs attributes desired to access for this container
      */
-    void 			set_attributes( const string &attrs )
-				{
-				    _attributes = attrs ;
-				}
+    void set_attributes(const string &attrs)
+    {
+        _attributes = attrs;
+    }
 
-    /** @brief retreive the real name for this container, such as a
+    /** @brief retrieve the real name for this container, such as a
      * file name.
      *
      * @return real name, such as file name
      */
-    string 			get_real_name() const
-				{
-				    return _real_name ;
-				}
+    string get_real_name() const
+    {
+        return _real_name;
+    }
 
     /** @brief retrieve the constraint expression for this container
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    string 			get_constraint() const
-				{
-				    return _constraint ;
-				}
+    string get_constraint() const
+    {
+        return _constraint;
+    }
 
     /** @brief retrieve the symbolic name for this container
      *
      * @return symbolic name for this container
      */
-    string 			get_symbolic_name() const
-				{
-				    return _symbolic_name ;
-				}
+    string get_symbolic_name() const
+    {
+        return _symbolic_name;
+    }
 
     /** @brief retrieve the type of data this container holds, such as
      * cedar or netcdf.
@@ -167,19 +167,19 @@ private:
      * @return type of data this container represents, such as cedar or
      * netcdf
      */
-    string 			get_container_type() const
-				{
-				    return _container_type ;
-				}
+    string get_container_type() const
+    {
+        return _container_type;
+    }
 
     /** @brief retrieve the attributes desired from this container
      *
      * @return attributes desired from this container
      */
-    string 			get_attributes() const
-				{
-				    return _attributes ;
-				}
+    string get_attributes() const
+    {
+        return _attributes;
+    }
 
     /** @brief returns the true name of this container
      *
@@ -192,11 +192,10 @@ private:
      *
      * @return name of file to access
      */
-    virtual string		access() = 0 ;
-    virtual bool		release() = 0 ;
+    virtual string access() = 0;
+    virtual bool release() = 0;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESContainer_h_
-

@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -143,10 +143,12 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * not set then the information is output directly to the output stream.
  *
  * @param e the exception to be added to this informational object
+ * @param admin The contact information for the person responsible for
+ * this error
  * @see BESError
  */
 void
-BESSilentInfo::add_exception( BESError &e, const string &admin )
+BESSilentInfo::add_exception( BESError &, const string & )
 {
 }
 

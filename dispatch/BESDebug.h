@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -61,7 +61,7 @@ using std::string ;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "] " << y
+#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< x << "] " << y ; } while( 0 )
 
 /** @brief macro used to determine if the specified debug context is set
  *
@@ -85,13 +85,22 @@ using std::string ;
 class BESDebug
 {
 private:
-    static map<string,bool>	_debug_map ;
-    static ostream *		_debug_strm ;
-    static bool			_debug_strm_created ;
-    static string		_pid_str ;
-    typedef map<string,bool>::const_iterator _debug_citer ;
-    typedef map<string,bool>::iterator _debug_iter ;
+    typedef map<string,bool> DebugMap;
+
+    static DebugMap _debug_map ;
+    static ostream *_debug_strm ;
+    static bool	_debug_strm_created ;
+
+    typedef DebugMap::iterator _debug_iter ;
+
 public:
+    typedef DebugMap::const_iterator debug_citer ;
+
+    static const DebugMap &debug_map()
+    {
+        return _debug_map;
+    }
+
     /** @brief set the debug context to the specified value
      *
      * Static function that sets the specified debug context (flagName)
@@ -102,84 +111,78 @@ public:
      * @param flagName debug context flag to set to the given value
      * @param value set the debug context to this value
      */
-    static void			Set( const string &flagName, bool value )
-    				{
-				    if( flagName == "all" && value )
-				    {
-					_debug_iter i = _debug_map.begin() ;
-					_debug_iter e = _debug_map.end() ;
-					for( ; i != e; i++ )
-					{
-					    (*i).second = true ;
-					}
-				    }
-				    _debug_map[flagName] = value ;
-				}
+    static void Set(const string &flagName, bool value)
+    {
+        if (flagName == "all" && value)
+        {
+            _debug_iter i = _debug_map.begin();
+            _debug_iter e = _debug_map.end();
+            for (; i != e; i++)
+            {
+                (*i).second = true;
+            }
+        }
+        _debug_map[flagName] = value;
+    }
+
     /** @brief register the specified debug flag
      *
      * Allows developers to register a debug flag for when Help method
-     * is called.
+     * is called. It's OK to register a context more than once (subsequent
+     * calls to Register() have no affect. If the pseudo-context 'all' has
+     * been registered, the context is set to true (messages will be printed),
+     * otherwise it is set to false.
      *
      * @param flagName debug context to register
      */
-    static void			Register( const string &flagName )
-				{
-				    _debug_citer a = _debug_map.find( "all" ) ;
-				    _debug_citer i = _debug_map.find( flagName ) ;
-				    if( i == _debug_map.end() )
-				    {
-					if( a == _debug_map.end() )
-					{
-					    _debug_map[flagName] = false ;
-					}
-					else
-					{
-					    _debug_map[flagName] = true ;
-					}
-				    }
-				}
+    static void Register(const string &flagName)
+    {
+        debug_citer a = _debug_map.find("all");
+        debug_citer i = _debug_map.find(flagName);
+        if (i == _debug_map.end())
+        {
+            if (a == _debug_map.end())
+            {
+                _debug_map[flagName] = false;
+            }
+            else
+            {
+                _debug_map[flagName] = true;
+            }
+        }
+    }
+
     /** @brief see if the debug context flagName is set to true
      *
      * @param flagName debug context to check if set
      * @return whether the specified flagName is set or not
      */
-    static bool			IsSet( const string &flagName )
-    				{
-				    _debug_citer i = _debug_map.find( flagName ) ;
-				    if( i != _debug_map.end() )
-					return (*i).second ;
-				    else
-					i = _debug_map.find( "all" ) ;
-					if( i != _debug_map.end() )
-					    return (*i).second ;
-					else
-					    return false ;
-				}
+    static bool IsSet(const string &flagName)
+    {
+        debug_citer i = _debug_map.find(flagName);
+        if (i != _debug_map.end())
+            return (*i).second;
+        else
+            i = _debug_map.find("all");
+        if (i != _debug_map.end())
+            return (*i).second;
+        else
+            return false;
+    }
+
     /** @brief return the debug stream
      *
      * Can be a file output stream or cerr
      *
      * @return the current debug stream
      */
-    static ostream *		GetStrm()
-    				{
-				    return _debug_strm ;
-				}
+    static ostream * GetStrm()
+    {
+        return _debug_strm;
+    }
 
-    /** @brief return the pid as a string
-     *
-     * @return the pid as a string
-     */
-    static string		GetPidStr()
-				{
-				    if( _pid_str.empty() )
-				    {
-					char mypid[12] ;
-					BESUtil::fastpidconverter( mypid, 10 ) ;
-					_pid_str = mypid ;
-				    }
-				    return _pid_str ;
-				}
+    static string GetPidStr();
+
     /** @brief set the debug output stream to the specified stream
      *
      * Static method that sets the debug output stream to the specified ostream.
@@ -195,31 +198,34 @@ public:
      * @param strm set the current debug stream to strm
      * @param created whether the passed debug stream was created
      */
-    static void			SetStrm( ostream *strm, bool created )
-    				{
-				    if( _debug_strm_created && _debug_strm )
-				    {
-					_debug_strm->flush();
-					delete _debug_strm ;
-					_debug_strm = NULL ;
-				    }
-				    else if( _debug_strm )
-				    {
-					_debug_strm->flush() ;
-				    }
-				    if( !strm )
-				    {
-					_debug_strm = &cerr ;
-					_debug_strm_created = false ;
-				    }
-				    else
-				    {
-					_debug_strm = strm ;
-					_debug_strm_created = created ;
-				    }
-				}
+    static void SetStrm(ostream *strm, bool created)
+    {
+        if (_debug_strm_created && _debug_strm)
+        {
+            _debug_strm->flush();
+            delete _debug_strm;
+            _debug_strm = NULL;
+        }
+        else if (_debug_strm)
+        {
+            _debug_strm->flush();
+        }
+        if (!strm)
+        {
+            _debug_strm = &cerr;
+            _debug_strm_created = false;
+        }
+        else
+        {
+            _debug_strm = strm;
+            _debug_strm_created = created;
+        }
+    }
+
     static void			SetUp( const string &values ) ;
     static void			Help( ostream &strm ) ;
+    static bool         IsContextName( const string &name ) ;
+    static string       GetOptionsString() ;
 } ;
 
 #endif // I_BESDebug_h

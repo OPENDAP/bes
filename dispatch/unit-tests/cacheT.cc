@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -44,6 +44,7 @@ using namespace CppUnit ;
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <cstring>
 
 using std::cerr ;
 using std::cout ;
@@ -55,12 +56,31 @@ using std::ostringstream ;
 #include "BESError.h"
 #include <test_config.h>
 
-class connT: public TestFixture {
+#define ALLOW_64_BIT_CACHE_TEST 1
+
+// Not run by default!
+// Set from the command-line invocation of the main only
+// since we're not sure the OS has room for the test files.
+static bool gDo64BitCacheTest = false;
+
+static const std::string CACHE_PREFIX = string("bes_cache");
+static const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
+
+// For the 64 bit  (> 4G tests)
+static const std::string CACHE_DIR_TEST_64 = string(TEST_SRC_DIR) + string("/test_cache_64");
+static const unsigned long long MAX_CACHE_SIZE_IN_MEGS_TEST_64 = 5000ULL; // in Mb...
+// shift left by 20 multiplies by 1Mb
+static const unsigned long long MAX_CACHE_SIZE_IN_BYTES_TEST_64 = (MAX_CACHE_SIZE_IN_MEGS_TEST_64 << 20);
+static const unsigned long long NUM_FILES_TEST_64 = 6ULL;
+static const unsigned long long FILE_SIZE_IN_MEGS_TEST_64 = 1024ULL; // in Mb
+
+
+class cacheT: public TestFixture {
 private:
 
 public:
-    connT() {}
-    ~connT() {}
+    cacheT() {}
+    ~cacheT() {}
 
     void setUp()
     {
@@ -99,7 +119,7 @@ public:
 	    system( m.str().c_str() ) ;
 	}
 
-	char *touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" } ;
+	string touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" } ;
 	for( int i = 0; i < 8; i++ )
 	{
 	    sleep(1);
@@ -116,7 +136,7 @@ public:
     check_cache( const string &cache_dir, map<string,string> &should_be )
     {
 	map<string,string> contents ;
-	string match_prefix = "bes_cache#" ;
+	string match_prefix = MATCH_PREFIX;
 	DIR *dip = opendir( cache_dir.c_str() ) ;
 	CPPUNIT_ASSERT( dip ) ;
 	struct dirent *dit;
@@ -146,12 +166,113 @@ public:
 	}
     }
 
-    CPPUNIT_TEST_SUITE( connT ) ;
+    // Fill the test directory with files summing > 4Gb.
+    // First calls clean in case the thing exists.
+    // TODO HACK This really needs to be cleaned up
+    // to not use system but instead make the actual
+    // C calls to make the files so it can checkl errno
+    // and report the problems and make sure the test is
+    // valid!
+    void init_64_bit_cache(const std::string& cacheDir)
+    {
+      cout << "init_64_bit_cache() called with dir = " << cacheDir << endl;
+      cout << "Note: this makes large files and might take a while!" << endl;
+
+      // 0) Make sure it's not there
+      cout << "Cleaning old test cache..." << endl;
+      clean_64_bit_cache(cacheDir);
+      cout << " ... done." << endl;
+
+      // 1) make the dir and files.
+      string mkdirCmd = string("mkdir ") + cacheDir;
+      cout << "Shell call: " << mkdirCmd << endl;
+      system(mkdirCmd.c_str());
+
+      cout << "Making " << NUM_FILES_TEST_64 << " files..." << endl;
+      for (unsigned int i=0; i < NUM_FILES_TEST_64; ++i)
+        {
+          std::stringstream fss;
+          fss << cacheDir << "/" << MATCH_PREFIX <<
+              "_file_" << i << ".txt";
+          cout << "Creating filename=" << fss.str() <<
+              " of size (mb) = " << FILE_SIZE_IN_MEGS_TEST_64 << "..." << endl;
+          std::stringstream mkfileCmdSS;
+          mkfileCmdSS << "mkfile -n " << FILE_SIZE_IN_MEGS_TEST_64 << "m" << " " << fss.str();
+          cout << "Shell call: " << mkfileCmdSS.str() << endl;
+          system(mkfileCmdSS.str().c_str());
+          cout << "... done making file." << endl;
+        }
+    }
+
+    // Clean out all those giant temp files
+    void clean_64_bit_cache(const std::string& cacheDir)
+    {
+      cout << "clean_64_bit_cache() called..." << endl;
+      std::string rmCmd = string("rm -rf ") + cacheDir;
+      cout << "Shell call: " << rmCmd << endl;
+      system(rmCmd.c_str());
+    }
+
+    // Test function to test the cache on larger than 4G
+    // (ie > 32 bit)
+    // sum total of files sizes, which was a bug.
+    // Since this takes a lot of time and space to do,
+    // we'll make it optional somehow...
+    void do_test_64_bit_cache()
+    {
+      // create a directory with a bunch of large files
+      // to init the cache
+      init_64_bit_cache(CACHE_DIR_TEST_64);
+
+      // 1) make the cache
+      // 2) get the info and make sure size is too big
+      // 3) call purge
+      // 4) get info again and make sure size is not too big
+
+      // 1) Make the cache
+      cout << "Making a BESCache with dir=" << CACHE_DIR_TEST_64 <<
+          " and prefix=" << CACHE_PREFIX <<
+          " and max size (mb)= " << MAX_CACHE_SIZE_IN_MEGS_TEST_64 << endl;
+      BESCache cache64(CACHE_DIR_TEST_64,
+          CACHE_PREFIX,
+          MAX_CACHE_SIZE_IN_MEGS_TEST_64);
+
+      // 2) Get the info on the dir
+      BESCache::CacheDirInfo cache_info;
+      cache64.collect_cache_dir_info(cache_info);
+
+      cout << "Got cache info: " << cache_info.toString() << endl;
+
+      // Make sure we have a valid test dir
+      CPPUNIT_ASSERT(cache_info._total_cache_files_size > MAX_CACHE_SIZE_IN_BYTES_TEST_64);
+
+      // Call purge which should delete enough to make it smaller
+      cout << "Calling purge() on cache..." << endl;
+      cache64.purge();
+
+      cout << "Checking that size is smaller than max..." << endl;
+      cache_info.clear();
+      cache64.collect_cache_dir_info(cache_info);
+      cout << "New cache dir info = \n" << cache_info.toString() << endl;
+      CPPUNIT_ASSERT(cache_info._total_cache_files_size <= MAX_CACHE_SIZE_IN_BYTES_TEST_64);
+
+      cout << "Test complete, cleaning test cache dir..." << endl;
+
+      // Delete the massive empty files
+      clean_64_bit_cache(CACHE_DIR_TEST_64);
+    }
+
+      ///////////////////////////////////////////////////////////////////////////////////////////
+      // CPPUNIT
+
+    CPPUNIT_TEST_SUITE( cacheT ) ;
 
     CPPUNIT_TEST( do_test ) ;
 
     CPPUNIT_TEST_SUITE_END() ;
 
+
+    // Main test call
     void do_test()
     {
 	cout << "*****************************************" << endl;
@@ -461,16 +582,44 @@ public:
 	    CPPUNIT_ASSERT( !"purge failed" ) ;
 	}
 
+#ifdef ALLOW_64_BIT_CACHE_TEST
+	if (gDo64BitCacheTest)
+	  {
+            cout << "*****************************************" << endl;
+            cout << "Performing 64 bit cache test... " << endl;
+            try
+            {
+              do_test_64_bit_cache();
+            }
+            catch (BESError &e)
+            {
+              cerr << e.get_message() << endl;
+              CPPUNIT_ASSERT( !"64 bit tests failed" );
+            }
+	  }
+#endif // ALLOW_64_BIT_CACHE_TEST
+
 	cout << "*****************************************" << endl;
 	cout << "Returning from cacheT::run" << endl;
     }
-} ;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( connT ) ;
+
+
+} ; // test fixture class
+
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION( cacheT ) ;
 
 int 
-main( int, char** )
+main( int argc, char** argv)
 {
+  // HACK we're just chekcing the one...
+  if (argc > 1 && !strcmp(argv[1], "--do-64-bit-test"))
+    {
+      gDo64BitCacheTest = true;
+    }
+
     CppUnit::TextTestRunner runner ;
     runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 

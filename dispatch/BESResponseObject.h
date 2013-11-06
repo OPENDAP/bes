@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -33,9 +33,11 @@
 #ifndef BESResponseObject_h_
 #define BESResponseObject_h_ 1
 
+#if 0
 #include <string>
 
 using std::string ;
+#endif
 
 #include "BESObj.h"
 
@@ -49,10 +51,10 @@ using std::string ;
 class BESResponseObject : public BESObj
 {
 public:
-    				BESResponseObject() {} ;
-    virtual			~BESResponseObject() {} ;
+    BESResponseObject() {} ;
+    virtual ~BESResponseObject() {} ;
 
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual void dump( ostream &strm ) const = 0 ;
 };
 
 #endif //BESResponseObject_h_

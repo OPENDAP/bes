@@ -325,7 +325,6 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
 <a href="opendap_form_help.html#disposition" target="help">Action:</a></h3>
 <td>
 <input type="button" value="Get ASCII" onclick="ascii_button()">
-<input type="button" value="Get as NetCDF" onclick="binary_button('nc')">
 <input type="button" value="Binary (DAP) Object" onclick="binary_button('dods')">
 <input type="button" value="Show Help" onclick="help_button()">
 
@@ -340,7 +339,7 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
 FF_GLOBAL.Server: DODS FreeFrom based on FFND release 4.2.3
-FF_GLOBAL.text: Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar
+FF_GLOBAL.text: Time    Dep     Temp    Sal     DO     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar
 </textarea><p>
 
 <tr><td><td><hr>
@@ -444,7 +443,7 @@ Salinity <select name="org_opendap_URI_GSO_Dock_Salinity_operator" onfocus="desc
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_URI_GSO_Dock_DO_ = new dods_var("URI_GSO-Dock.DO%20", "org_opendap_URI_GSO_Dock_DO_", 0);
+org_opendap_URI_GSO_Dock_DO_ = new dods_var("URI_GSO-Dock.DO", "org_opendap_URI_GSO_Dock_DO_", 0);
 DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_DO_);
 // -->
 </script>

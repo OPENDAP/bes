@@ -1,0 +1,3 @@
+Dataset {
+    String version;
+} function_result_coads_climatology.nc;

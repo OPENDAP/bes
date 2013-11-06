@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# besd        Startup script for the OPeNDAP BES
+#
+# chkconfig: 5 65 25
+# description: OPeNDAP BES is a modular framework allowing access to
+#	       data files
+# processname: besctl
+# config: @sysconfdir@/bes/bes.conf
+# pidfile: @localstatedir@/run/bes.pid
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Path to the apachectl script, server binary, and short-form for messages.
+bes_prefix=@prefix@
+exec_prefix=@prefix@
+besctl=@bindir@/besctl
+prog=besd
+RETVAL=0
+LD_LIBRARY_PATH="@libdir@:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH
+
+# See how we were called.
+case "$1" in
+  start|stop|status|restart|help)
+	what=${1}
+	shift
+	other=$@
+	echo "${besctl} ${what} -i ${bes_prefix} ${other}"
+	${besctl} ${what} -i ${bes_prefix} ${other}
+	RETVAL=$?
+	;;
+  *)
+	echo $"Usage: $prog {start|stop|restart|status|help}"
+	exit 1
+esac
+
+exit $RETVAL

@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,11 +35,11 @@
 
 #include <list>
 
-using std::list ;
+using std::list;
 
 #include "BESContainerStorageVolatile.h"
 
-class BESCatalogUtils ;
+class BESCatalogUtils;
 
 /** @brief implementation of BESContainerStorage that represents a data
  * within a catalog repository
@@ -74,22 +74,17 @@ class BESCatalogUtils ;
  * @see BESContainer
  * @see BESKeys
  */
-class BESContainerStorageCatalog : public BESContainerStorageVolatile
-{
+class BESContainerStorageCatalog: public BESContainerStorageVolatile {
 private:
-    const BESCatalogUtils *	_utils ;
+    const BESCatalogUtils * _utils;
 public:
-    				BESContainerStorageCatalog( const string &n ) ;
-    virtual			~BESContainerStorageCatalog() ;
+    BESContainerStorageCatalog(const string &n);
+    virtual ~BESContainerStorageCatalog();
 
-    virtual void		add_container( const string &sym_name,
-					       const string &real_name,
-					       const string &type ) ;
-    bool			isData( const string &inQuestion,
-    					list<string> &provides ) ;
+    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
+    virtual bool isData(const string &inQuestion, list<string> &provides);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESContainerStorageCatalog_h_
-

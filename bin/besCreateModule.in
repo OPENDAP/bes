@@ -118,7 +118,6 @@ done
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf/
-chmod +x conf/mkinstalldirs
 
 include_dap=0
 
@@ -301,11 +300,6 @@ w
 q
 EOF
 
-    ed ./Makefile.am << EOF > /dev/null 2>&1
-,s/BES_LIBS/BES_DAP_LIBS/g
-w
-q
-EOF
 fi
 
 if [ "${NEW_COMMANDS}" != "" ]

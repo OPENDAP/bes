@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -78,7 +78,14 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     {
 	props.clear() ;
 	props["name"] = (*ki).first ;
-	info->add_tag( "key", (*ki).second, &props ) ;
+	info->begin_tag( "key", &props ) ;
+	vector<string>::const_iterator v = (*ki).second.begin() ;
+	vector<string>::const_iterator ve = (*ki).second.end() ;
+	for( ; v != ve; v++ )
+	{
+	    info->add_tag( "value", (*v) ) ;
+	}
+	info->end_tag( "key" ) ;
     }
     info->end_response() ;
 }

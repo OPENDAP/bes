@@ -1,0 +1,2 @@
+The data:
+String info = .*version=\".*\".*function name=\"grid\" version=\".*\".*

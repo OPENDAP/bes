@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -114,10 +114,15 @@ BESExceptionManager::handle_exception( BESError &e,
     try
     {
 	bool found = false ;
-	administrator =
-	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
+	vector<string> vals ;
+	string key = "BES.ServerAdministrator" ;
+	TheBESKeys::TheKeys()->get_value( key, administrator, found ) ;
     }
     catch( ... )
+    {
+	administrator = DEFAULT_ADMINISTRATOR ;
+    }
+    if( administrator.empty() )
     {
 	administrator = DEFAULT_ADMINISTRATOR ;
     }

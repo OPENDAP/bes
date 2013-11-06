@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -51,6 +51,7 @@ using std::ofstream ;
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
+#include "BESCatalogUtils.h"
 #include "CmdTranslation.h"
 
 StandAloneApp::StandAloneApp()
@@ -65,11 +66,14 @@ StandAloneApp::StandAloneApp()
 
 StandAloneApp::~StandAloneApp()
 {
-    if( _client )
-    {
-	delete _client ;
-	_client = 0 ;
-    }
+    if (_client) {
+		delete _client;
+		_client = 0;
+	}
+
+	delete TheBESKeys::TheKeys();
+
+	BESCatalogUtils::delete_all_catalogs();
 }
 
 void
@@ -214,14 +218,20 @@ StandAloneApp::initialize( int argc, char **argv )
 	BESDEBUG( "standalone", "ServerApp: initializing default module ... "
 				<< endl ) ;
 	BESDefaultModule::initialize( argc, argv ) ;
-	BESDEBUG( "standalone", "OK" << endl ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing default module"
+				<< endl ) ;
 
 	BESDEBUG( "standalone", "ServerApp: initializing default commands ... "
 				<< endl ) ;
 	BESXMLDefaultCommands::initialize( argc, argv ) ;
-	BESDEBUG( "standalone", "OK" << endl ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing default commands"
+				<< endl ) ;
 
+	BESDEBUG( "standalone", "ServerApp: initializing loaded modules ... "
+				<< endl ) ;
 	int retval = BESModuleApp::initialize( argc, argv ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing loaded modules"
+				<< endl ) ;
 	if( retval )
 	    return retval ;
     }
@@ -328,17 +338,23 @@ StandAloneApp::run()
 int
 StandAloneApp::terminate( int sig )
 {
-    BESDEBUG( "standalone", "ServerApp: terminating default module ... "
+    BESDEBUG( "standalone", "ServerApp: terminating loaded modules ... "
 			    << endl ) ;
-    BESDefaultModule::terminate( ) ;
-    BESDEBUG( "standalone", "OK" << endl ) ;
+    BESModuleApp::terminate( sig ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating loaded modules"
+			    << endl ) ;
 
     BESDEBUG( "standalone", "ServerApp: terminating default commands ...  "
 			    << endl ) ;
     BESXMLDefaultCommands::terminate( ) ;
-    BESDEBUG( "standalone", "OK" << endl ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating default commands"
+			    << endl ) ;
 
-    BESModuleApp::terminate( sig ) ;
+    BESDEBUG( "standalone", "ServerApp: terminating default module ... "
+			    << endl ) ;
+    BESDefaultModule::terminate( ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating default module"
+			    << endl ) ;
 
     CmdTranslation::terminate( ) ;
 

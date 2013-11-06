@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -33,54 +33,85 @@
 #ifndef S_BESCatalogUtils_h
 #define S_BESCatalogUtils_h 1
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
 #include <map>
+#include <vector>
 #include <list>
 #include <string>
 
-using std::map ;
-using std::list ;
-using std::string ;
+using std::map;
+using std::vector;
+using std::list;
+using std::string;
 
 #include "BESObj.h"
 #include "BESUtil.h"
 
-class BESCatalogUtils : public BESObj
-{
-private:
-    static map<string, BESCatalogUtils *> _instances ;
+class BESInfo;
+class BESCatalogEntry;
 
-    string			_root_dir ;
-    list<string>		_exclude ;
-    list<string>		_include ;
-    bool			_follow_syms ;
+class BESCatalogUtils: public BESObj {
+private:
+	static map<string, BESCatalogUtils *> _instances;
+
+	string _name;
+	string _root_dir;
+	list<string> _exclude;
+	list<string> _include;
+	bool _follow_syms;
 
 public:
-    struct type_reg
-    {
-	string type ;
-	string reg ;
-    } ;
-
+	struct type_reg {
+		string type;
+		string reg;
+	};
 private:
-    list< type_reg >		_match_list ;
+	vector<type_reg> _match_list;
 
-    				BESCatalogUtils() {}
+	BESCatalogUtils() {
+	}
+
+	static void bes_get_stat_info(BESCatalogEntry *entry, struct stat &buf);
 public:
-    				BESCatalogUtils( const string &name ) ;
-    virtual			~BESCatalogUtils() {}
-    const string &		get_root_dir() const { return _root_dir ; }
-    bool			follow_sym_links() const { return _follow_syms ; }
-    virtual bool		include( const string &inQuestion ) const ;
-    virtual bool		exclude( const string &inQuestion ) const ;
+	BESCatalogUtils(const string &name);
+	virtual ~BESCatalogUtils() {}
 
-    typedef list< type_reg >::const_iterator match_citer ;
-    BESCatalogUtils::match_citer match_list_begin() const ;
-    BESCatalogUtils::match_citer match_list_end() const ;
+	const string & get_root_dir() const {
+		return _root_dir;
+	}
+	bool follow_sym_links() const {
+		return _follow_syms;
+	}
+	virtual bool include(const string &inQuestion) const ;
+	virtual bool exclude(const string &inQuestion) const ;
 
-    virtual void		dump( ostream &strm ) const ;
+	typedef vector<type_reg>::const_iterator match_citer;
+	BESCatalogUtils::match_citer match_list_begin() const ;
+	BESCatalogUtils::match_citer match_list_end() const ;
 
-    static const BESCatalogUtils *Utils( const string &name ) ;
-} ;
+	virtual unsigned int get_entries(DIR *dip, const string &fullnode,
+			const string &use_node, const string &coi, BESCatalogEntry *entry,
+			bool dirs_only);
+
+	static void display_entry(BESCatalogEntry *entry, BESInfo *info);
+
+	static void bes_add_stat_info(BESCatalogEntry *entry,
+			const string &fullnode);
+
+	static bool isData(const string &inQuestion, const string &catalog,
+			list<string> &services);
+
+	virtual void dump(ostream &strm) const ;
+
+	static BESCatalogUtils * Utils(const string &name);
+
+	// Added because of reported memory leaks. jhrg 12/24/12
+	static void delete_all_catalogs();
+
+
+};
 
 #endif // S_BESCatalogUtils_h
-

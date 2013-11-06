@@ -10,15 +10,6 @@ my $package_dir = $ARGV[2];
 
 unix2mac($readme, "OSX_Resources/ReadMe.txt");
 
-my $version_number = get_version_number($version_file);
-print "version number: $version_number\n" if $debug ge 1;
-
-my $package_size = get_package_size($package_dir);
-print "Package_size: $package_size\n" if $debug ge 1;
-
-substitute_values("OSX_Resources/Info.plist", $version_number, $package_size);
-substitute_arch("OSX_Resources/InstallationCheck");
-
 ###################################################################
 
 # Substitute values into the named plist file. This probably only works 

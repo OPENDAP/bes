@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -43,7 +43,9 @@ using std::ifstream ;
 #include "BESFileContainer.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "BESInfo.h"
+#include "BESServiceRegistry.h"
 
 /** @brief pull container information from the specified file
  *
@@ -83,11 +85,11 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 
     string key = "BES.Container.Persistence.File." + n ;
     bool found = false ;
-    _file = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    TheBESKeys::TheKeys()->get_value( key, _file, found ) ;
     if( _file == "" )
     {
-	string s = key + " not defined in key file" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	string s = key + " not defined in BES configuration file" ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     ifstream persistence_file( _file.c_str() ) ;
@@ -194,9 +196,9 @@ BESContainerStorageFile::look_for( const string &sym_name )
  * @param type type of data represented by this container
  */
 void
-BESContainerStorageFile::add_container( const string &sym_name,
-					const string &real_name,
-					const string &type )
+BESContainerStorageFile::add_container( const string &,
+					const string &,
+					const string & )
 {
     string err = "Unable to add a container to a file, not yet implemented" ;
     throw BESInternalError( err, __FILE__, __LINE__ ) ;
@@ -221,7 +223,10 @@ BESContainerStorageFile::del_container( const string &s_name )
     {
 	BESContainerStorageFile::container *c = (*i).second;
 	_container_list.erase( i ) ;
-	delete c ;
+	if( c )
+	{
+	    delete c ;
+	}
 	ret = true ;
     }
     return ret ;
@@ -248,6 +253,30 @@ BESContainerStorageFile::del_containers( )
 	}
     }
     return true ;
+}
+
+/** @brief determine if the given container is data and what servies
+ * are available for it
+ *
+ * @param inQuestion the container in question
+ * @param provides an output parameter for storing the list of
+ * services provided for this container
+ */
+bool
+BESContainerStorageFile::isData( const string &inQuestion,
+				 list<string> &provides )
+{
+    bool isit = false ;
+    BESContainer *c = look_for( inQuestion ) ;
+    if( c )
+    {
+	isit = true ;
+	string node_type = c->get_container_type() ;
+	BESServiceRegistry::TheRegistry()->services_handled( node_type,
+							     provides ) ;
+	delete c; c = 0; // added jhrg 1.4.12
+    }
+    return isit ;
 }
 
 /** @brief show information for each container in this persistent store

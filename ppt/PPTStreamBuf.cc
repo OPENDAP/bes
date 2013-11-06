@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -46,6 +46,9 @@ using std::setfill ;
 #include "PPTStreamBuf.h"
 #include "BESDebug.h"
 
+const char* eod_marker = "0000000d";
+const size_t eod_marker_len = 8 ;
+
 PPTStreamBuf::PPTStreamBuf( int fd, unsigned bufsize )
     : d_bufsize( bufsize ),
       d_buffer( 0 ),
@@ -72,7 +75,8 @@ PPTStreamBuf::open( int fd, unsigned bufsize )
     d_buffer = new char[d_bufsize] ;
     setp( d_buffer, d_buffer + d_bufsize ) ;
 }
-  
+
+// We're stuck with this return type because this is inherited from stdc++ streambuf. jhrg
 int
 PPTStreamBuf::sync()
 {
@@ -81,14 +85,16 @@ PPTStreamBuf::sync()
 	ostringstream strm ;
 	strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)(pptr() - pbase()) << "d" ;
 	string tmp_str = strm.str() ;
-	BESDEBUG( "ppt", "PPTStreamBuf::sync - writing len "
-	          << tmp_str << endl ) ;
 	write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
 	count += write( d_fd, d_buffer, pptr() - pbase() ) ;
 	setp( d_buffer, d_buffer + d_bufsize ) ;
+#if 0
 	// If something doesn't look right try using fsync
+	// fsync is not supported for sockets. jhrg 5/4/11
 	fsync(d_fd);
+#endif
     }
+
     return 0 ;
 }
 
@@ -108,6 +114,9 @@ void
 PPTStreamBuf::finish()
 {
     sync() ;
+
+#if 0
+    // jhrg 5/5/11
     ostringstream strm ;
     /*
     ostringstream xstrm ;
@@ -117,10 +126,17 @@ PPTStreamBuf::finish()
     */
     strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)0 << "d" ;
     string tmp_str = strm.str() ;
-    BESDEBUG( "ppt", "PPTStreamBuf::finish - writing " << tmp_str << endl ) ;
-    write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
+#endif
+
+    BESDEBUG( "ppt", "PPTStreamBuf::finish - writing " << eod_marker << endl ) ;
+    
+    write( d_fd, eod_marker, eod_marker_len ) ; // tmp_str.c_str(), tmp_str.length() ) ;
+
+#if 0
     // If something doesn't look right try using fsync
+    // jhrg 5/5/11
     fsync(d_fd);
+#endif
     count = 0 ;
 }
 

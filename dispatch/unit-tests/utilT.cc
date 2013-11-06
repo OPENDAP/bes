@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -177,16 +177,18 @@ public:
 	cout << value << endl ;
 	BESUtil::explode( ',', value, values ) ;
 	display_values( values ) ;
-	CPPUNIT_ASSERT( values.size() == 4 ) ;
+	CPPUNIT_ASSERT( values.size() == 5 ) ;
 	i = values.begin() ;
 	i1 = i++ ;
 	i2 = i++ ;
 	i3 = i++ ;
 	i4 = i++ ;
+	list<string>::iterator i5 = i++ ;
 	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
 	CPPUNIT_ASSERT( (*i2) == "val2" ) ;
 	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
 	CPPUNIT_ASSERT( (*i4) == "val4" ) ;
+	CPPUNIT_ASSERT( (*i5) == "" ) ;
 
 	values.clear() ;
 
@@ -211,16 +213,18 @@ public:
 	cout << value << endl ;
 	BESUtil::explode( ';', value, values ) ;
 	display_values( values ) ;
-	CPPUNIT_ASSERT( values.size() == 4 ) ;
+	CPPUNIT_ASSERT( values.size() == 5 ) ;
 	i = values.begin() ;
 	i1 = i++ ;
 	i2 = i++ ;
 	i3 = i++ ;
 	i4 = i++ ;
+	i5 = i++ ;
 	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
 	CPPUNIT_ASSERT( (*i2) == "\"val2 with \\\"embedded quotes\\\"\"" ) ;
 	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
 	CPPUNIT_ASSERT( (*i4) == "\"val4 with quotes\"" ) ;
+	CPPUNIT_ASSERT( (*i5) == "" ) ;
 
 	cout << "*****************************************" << endl;
 	cout << "Imploding list to delimited string" << endl;

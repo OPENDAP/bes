@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -47,9 +47,9 @@ BESXMLGetCommand::BESXMLGetCommand( const BESDataHandlerInterface &base_dhi )
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a get command.
  *
-    <get  type="dds" definition="d" returnAs="name" />
+    &lt;get  type="dds" definition="d" returnAs="name" /&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -96,6 +96,7 @@ BESXMLGetCommand::parse_request( xmlNode *node )
     }
 
     parse_basic_get( node, name, type, value, props ) ;
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action
@@ -119,6 +120,9 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
     }
     _str_cmd += " for " + _definition ;
 
+    _space = props["space"] ;
+    if( !_space.empty() ) _str_cmd += " in " + _space ;
+
     string returnAs = props["returnAs"] ;
     if( returnAs.empty() )
     {
@@ -126,7 +130,7 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
     }
     _dhi.data[RETURN_CMD] = returnAs ;
 
-    _str_cmd += " returnAs " + returnAs ;
+    _str_cmd += " return as " + returnAs ;
 
     _dhi.action = "get." ;
     _dhi.action += BESUtil::lowercase( type ) ;
@@ -148,6 +152,13 @@ BESXMLGetCommand::get_dhi()
     return _dhi ;
 }
 
+/** @brief Prepare any information needed to execute the request of
+ * this get command
+ *
+ * This function is used to prepare the information needed to execute
+ * the get request. It finds the definition specified in the element
+ * and prepares all of the containers within that definition.
+ */
 void
 BESXMLGetCommand::prep_request()
 {
@@ -158,10 +169,22 @@ BESXMLGetCommand::prep_request()
 	return ;
     }
 
-    // FIX: should this be using dot notation? Like get das for volatile.d ;
-    // Or do it like the containers, just find the first one available? Same
-    // question for containers then?
-    BESDefine *d = BESDefinitionStorageList::TheList()->look_for( _definition );
+    BESDefine *d = 0 ;
+
+    if( !_space.empty() )
+    {
+	BESDefinitionStorage *ds =
+	    BESDefinitionStorageList::TheList()->find_persistence( _space ) ;
+	if( ds )
+	{
+	    d = ds->look_for( _definition ) ;
+	}
+    }
+    else
+    {
+	d = BESDefinitionStorageList::TheList()->look_for( _definition ) ;
+    }
+
     if( !d )
     {
 	string s = (string)"Unable to find definition " + _definition ;

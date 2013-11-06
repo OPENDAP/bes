@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,7 +33,8 @@
 #include "config.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #include <sys/types.h>
 #include "regex.h"
 }
@@ -41,18 +42,21 @@ extern "C" {
 
 #include <cerrno>
 #include <cstring>
-#include <iostream>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-using std::endl ;
-using std::cout ;
-
 #include "BESKeys.h"
 #include "BESUtil.h"
+#include "BESFSDir.h"
+#include "BESFSFile.h"
 #include "BESInternalFatalError.h"
+#include "BESSyntaxUserError.h"
+
+#define BES_INCLUDE_KEY "BES.Include"
+
+vector<string> BESKeys::KeyList;
 
 /** @brief default constructor that reads loads key/value pairs from the
  * specified file.
@@ -70,170 +74,313 @@ using std::cout ;
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-BESKeys::BESKeys( const string &keys_file_name )
-    : _keys_file( 0 ),
-      _keys_file_name( keys_file_name ),
-      _the_keys( 0 )
+BESKeys::BESKeys(const string &keys_file_name) :
+    _keys_file(0), _keys_file_name(keys_file_name), _the_keys(0), _own_keys(true)
 {
-    _keys_file = new ifstream( _keys_file_name.c_str() ) ;
-    int myerrno = errno ;
-    if( !(*_keys_file) )
-    {
-	char path[500] ;
-	getcwd( path, sizeof( path ) ) ;
-	string s = string("BES: fatal, cannot open initialization file ")
-		   + _keys_file_name + ": " ;
-	char *err = strerror( myerrno ) ;
-	if( err )
-	    s += err ;
-	else
-	    s += "Unknown error" ;
+    _the_keys = new map<string, vector<string> > ;
+    initialize_keys();
+}
 
-	s += (string)".\n" + "The current working directory is " + path + "\n" ;
-	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
-    }
-
-    _the_keys = new map<string,string>;
-    try
-    {
-	load_keys();
-    }
-    catch(BESInternalFatalError &)
-    {
-	clean();
-	throw;
-    }
-    catch(...)
-    {
-	clean() ;
-	string s = (string)"Undefined exception while trying to load keys "
-	           + "from bes configuration file " + _keys_file_name ;
-	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
-    }
+BESKeys::BESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
+    _keys_file(0), _keys_file_name(keys_file_name), _the_keys(keys), _own_keys(false)
+{
+    initialize_keys();
 }
 
 /** @brief cleans up the key/value pair mapping
  */
 BESKeys::~BESKeys()
 {
-    clean() ;
+    clean();
 }
 
-void
-BESKeys::clean()
+void BESKeys::initialize_keys()
 {
-    if( _keys_file )
+    _keys_file = new ifstream(_keys_file_name.c_str());
+    int myerrno = errno;
+    if (!(*_keys_file))
     {
-	_keys_file->close() ;
-	delete _keys_file ;
+        char path[500];
+        getcwd(path, sizeof(path));
+        string s = string("BES: fatal, cannot open BES configuration file ") + _keys_file_name + ": ";
+        char *err = strerror(myerrno);
+        if (err)
+            s += err;
+        else
+            s += "Unknown error";
+
+        s += (string) ".\n" + "The current working directory is " + path + "\n";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
-    if( _the_keys )
+
+    try
     {
-	delete _the_keys ;
+        load_keys();
+    }
+    catch (BESError &e)
+    {
+        // be sure we're throwing a fatal error, since the BES can't run
+        // within the configuration file
+        clean();
+        throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
+    }
+    catch (...)
+    {
+        clean();
+        string s = (string) "Undefined exception while trying to load keys " + "from bes configuration file " + _keys_file_name;
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 }
 
-inline void
-BESKeys::load_keys()
+void BESKeys::clean()
+{
+    if (_keys_file)
+    {
+        _keys_file->close();
+        delete _keys_file;
+    }
+    if (_the_keys && _own_keys)
+    {
+        delete _the_keys;
+    }
+}
+
+/* @brief Determine if the specified key file has been loaded yet
+ *
+ * Given the name of the key file, determine if it has already been
+ * loaded. More specifically, if started to load the file.
+ *
+ * @returns true if already started to load, false otherwise
+ */
+bool BESKeys::LoadedKeys(const string &key_file)
+{
+    vector<string>::const_iterator i = BESKeys::KeyList.begin();
+    vector<string>::const_iterator e = BESKeys::KeyList.end();
+    for (; i != e; i++)
+    {
+        if ((*i) == key_file)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void BESKeys::load_keys()
 {
     char buffer[255];
-    string key,value;
-    while(!(*_keys_file).eof())
+    string key, value;
+    while (!(*_keys_file).eof())
     {
-	if((*_keys_file).getline(buffer,255))
-	{
-	    if( break_pair( buffer, key, value ) )
-	    {
-		(*_the_keys)[key]=value;
-	    }
-	}
+        if ((*_keys_file).getline(buffer, 255))
+        {
+            bool addto = false;
+            if (break_pair(buffer, key, value, addto))
+            {
+                if (key == BES_INCLUDE_KEY)
+                {
+                    // I added this call to set_key() because we need access
+                    // to the child config files for the admin interface.
+                    // jhrg 5/27/11
+                    // Force 'addto' to true; we need all of the include values.
+                    // jhrg 6/21/11
+                    set_key(key, value, true);
+                    load_include_files(value);
+                }
+                else
+                {
+                    set_key(key, value, addto);
+                }
+            }
+        }
     }
 }
 
-inline bool
-BESKeys::break_pair(const char* b, string& key, string &value)
+// The string contained in the character buffer b should be of the
+// format key=value or key+=value. The pair is broken apart, storing the
+// key in the key parameter and the value of the key in the value
+// parameter. If += is used, then the value should be added to the value
+// of key, not replacing.
+//
+// It used to be that we would validate the key=value line. Instead,
+// anything after the equal sign is considered the value of the key.
+inline bool BESKeys::break_pair(const char* b, string& key, string &value, bool &addto)
 {
-    if((b[0]!='#') && (!only_blanks(b)))//Ignore comments a lines with only spaces
+    addto = false;
+    // Ignore comments and lines with only spaces
+    if (b && (b[0] != '#') && (!only_blanks(b)))
     {
-	register size_t l=strlen(b);
-	if(l>1)
-	{
-	    register int how_many_equals=0;
-	    int pos=0;
-	    for (register size_t j=0;j<l;j++)
-	    {
-		if(b[j] == '=')
-		{
-		    how_many_equals++;
-		    pos=j;
-		}
-	    }
+        register size_t l = strlen(b);
+        if (l > 1)
+        {
+            int pos = 0;
+            bool done = false;
+            for (register size_t j = 0; j < l && !done; j++)
+            {
+                if (b[j] == '=')
+                {
+                    if (!addto)
+                        pos = j;
+                    else
+                    {
+                        if (pos != static_cast<int> (j - 1))
+                        {
+                            string s = string("BES: Invalid entry ") + b + " in configuration file " + _keys_file_name
+                                    + " '+' character found in variable name" + " or attempting '+=' with space" + " between the characters.\n";
+                            throw BESInternalFatalError(s, __FILE__, __LINE__);
+                        }
+                    }
+                    done = true;
+                }
+                else if (b[j] == '+')
+                {
+                    addto = true;
+                    pos = j;
+                }
+            }
+            if (!done)
+            {
+                string s = string("BES: Invalid entry ") + b + " in configuration file " + _keys_file_name + ": " + " '=' character not found.\n";
+                throw BESInternalFatalError(s, __FILE__, __LINE__);
+            }
 
-	    if(how_many_equals!=1)
-	    {
-		char howmany[256] ;
-		sprintf( howmany, "%d", how_many_equals ) ;
-		string s = string( "BES: invalid entry " ) + b
-		           + "; there are " + howmany
-			   + " = characters.\n";
-		throw BESInternalFatalError( s, __FILE__, __LINE__ );
-	    }
-	    else
-	    {
-		string s=b;
-		key=s.substr(0,pos);
-		BESUtil::removeLeadingAndTrailingBlanks( key ) ;
-		value=s.substr(pos+1,s.size());
-		BESUtil::removeLeadingAndTrailingBlanks( value ) ;
+            string s = b;
+            key = s.substr(0, pos);
+            BESUtil::removeLeadingAndTrailingBlanks(key);
+            if (addto)
+                value = s.substr(pos + 2, s.size());
+            else
+                value = s.substr(pos + 1, s.size());
+            BESUtil::removeLeadingAndTrailingBlanks(value);
 
-		return true;
-	    }
-	}
+            return true;
+        }
 
-	return false;
+        return false;
     }
 
     return false;
 }
 
-bool
-BESKeys::only_blanks(const char *line)
+/** Load key/value pairs from other files
+ *
+ * Given a file, or a regular expression matching multiple files, where
+ * the location is relative to the location of the current keys file,
+ * load the keys from that file into this key list
+ *
+ * @param files string representing a file or a regular expression
+ * patter for 1 or more files
+ */
+void BESKeys::load_include_files(const string &files)
 {
-    int val;
-    regex_t rx;
-    string expr = "[^[:space:]]" ;
-    val = regcomp( &rx, expr.c_str(), REG_ICASE ) ;
+    string newdir;
+    BESFSFile allfiles(files);
 
-    if( val != 0 )
+    // If the files specified begin with a /, then use that directory
+    // instead of the current keys file directory.
+    if (!files.empty() && files[0] == '/')
     {
-	string s = (string)"Regular expression " + expr
-	           + " did not compile correctly" ;
-	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
-    }
-    val = regexec( &rx, line, 0, 0, REG_NOTBOL ) ;
-    if( val == 0 )
-    {
-	regfree( &rx ) ;
-	return false ;
+        newdir = allfiles.getDirName();
     }
     else
     {
-	if( val == REG_NOMATCH )
-	{
-	    regfree( &rx ) ;
-	    return true ;
-	}
-	else if( val == REG_ESPACE )
-	{
-	    string s = "Execution of regular expression out of space" ;
-	    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    string s = "Execution of regular expression has unknown problem" ;
-	    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
-	}
+        // determine the directory of the current keys file. All included
+        // files will be relative to this file.
+        BESFSFile currfile(_keys_file_name);
+        string currdir = currfile.getDirName();
+
+        string alldir = allfiles.getDirName();
+
+        if ((currdir == "./" || currdir == ".") && (alldir == "./" || alldir == "."))
+        {
+            newdir = "./";
+        }
+        else
+        {
+            if (alldir == "./" || alldir == ".")
+            {
+                newdir = currdir;
+            }
+            else
+            {
+                newdir = currdir + "/" + alldir;
+            }
+        }
     }
+
+    // load the files one at a time. If the directory doesn't exist,
+    // then don't load any configuration files
+    BESFSDir fsd(newdir, allfiles.getFileName());
+    BESFSDir::fileIterator i = fsd.beginOfFileList();
+    BESFSDir::fileIterator e = fsd.endOfFileList();
+    for (; i != e; i++)
+    {
+        load_include_file((*i).getFullPath());
+    }
+}
+
+/** Load key/value pairs from one include file
+ *
+ * Helper function to load key/value pairs from a BES configuration file
+ *
+ * @param file name of the configuration file to load
+ */
+void BESKeys::load_include_file(const string &file)
+{
+    // make sure the file exists and is readable
+    // throws exception if unable to read
+    // not loaded if has already be started to be loaded
+    if (!BESKeys::LoadedKeys(file))
+    {
+        BESKeys::KeyList.push_back(file);
+        BESKeys tmp(file, _the_keys);
+    }
+}
+
+bool BESKeys::only_blanks(const char *line)
+{
+    string my_line = line;
+    if (my_line.find_first_not_of(" ") != string::npos)
+        return false;
+    else
+        return true;
+
+#if 0
+    int val;
+    regex_t rx;
+    string expr = "[^[:space:]]";
+    val = regcomp(&rx, expr.c_str(), REG_ICASE);
+
+    if (val != 0)
+    {
+        string s = (string) "Regular expression " + expr + " did not compile correctly " + " in configuration file " + _keys_file_name;
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    val = regexec(&rx, line, 0, 0, REG_NOTBOL);
+    if (val == 0)
+    {
+        regfree(&rx);
+        return false;
+    }
+    else
+    {
+        if (val == REG_NOMATCH)
+        {
+            regfree(&rx);
+            return true;
+        }
+        else if (val == REG_ESPACE)
+        {
+            string s = (string) "Execution of regular expression out of space" + " in configuration file " + _keys_file_name;
+            throw BESInternalFatalError(s, __FILE__, __LINE__);
+        }
+        else
+        {
+            string s = (string) "Execution of regular expression has unknown " + " problem in configuration file " + _keys_file_name;
+            throw BESInternalFatalError(s, __FILE__, __LINE__);
+        }
+    }
+#endif
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
@@ -242,26 +389,31 @@ BESKeys::only_blanks(const char *line)
  * application, such as for testing purposes, key/value pairs from the command
  * line, etc...
  *
- * If the key is already set then this value replaces the value currently held
- * in the keys map.
+ * If addto is set to true then the value is added to the list of values for key
  *
- * @param key variable name that can be accessed using the get_key method
- * @param val value of the variable returned when get_key is called for this
- * key
- * @return returns the value of the key, empty string if unsuccessful
+ * If addto is false, and the key is already set then this value
+ * replaces all values for the key
+ *
+ * @param key name of the key/value pair to be set
+ * @param val value of the key to be set
+ * @param addto Specifies whether to add the value to the key or set the
+ * value. Default is to set, not add to
  */
-string
-BESKeys::set_key( const string &key, const string &val )
+void BESKeys::set_key(const string &key, const string &val, bool addto)
 {
-    map< string, string >::iterator i ;
-    i = _the_keys->find( key ) ;
-    if( i == _the_keys->end() )
+    map<string, vector<string> >::iterator i;
+    i = _the_keys->find(key);
+    if (i == _the_keys->end())
     {
-	(*_the_keys)[key] = val ;
-	return val ;
+        vector<string> vals;
+        (*_the_keys)[key] = vals;
     }
-    (*i).second = val ;
-    return val ;
+    if (!addto)
+        (*_the_keys)[key].clear();
+    if (!val.empty())
+    {
+        (*_the_keys)[key].push_back(val);
+    }
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
@@ -274,42 +426,74 @@ BESKeys::set_key( const string &key, const string &val )
  * in the keys map.
  *
  * @param pair the key/value pair passed as key=value
- * @return returns the value for the key, empty string if unsuccessful
  */
-string
-BESKeys::set_key( const string &pair )
+void BESKeys::set_key(const string &pair)
 {
-    string key ;
-    string val ;
-    break_pair( pair.c_str(), key, val ) ;
-    return set_key( key, val ) ;
+    string key;
+    string val;
+    bool addto = false;
+    break_pair(pair.c_str(), key, val, addto);
+    set_key(key, val, addto);
 }
 
 /** @brief Retrieve the value of a given key, if set.
  *
  * This method allows the user of BESKeys to retrieve the value of the
- * specified key.
+ * specified key. If multiple values are set then an exception is
+ * thrown.
  *
  * @param s The key the user is looking for
+ * @param val The value of the key the user is looking for
  * @param found Set to true of the key is set or false if the key is not set.
  * The value of a key can be set to the empty string, which is why this
  * boolean is provided.
- * @return Returns the value of the key, empty string if the key is not set.
+ * @throws BESSyntaxUserError if multiple values are available for the
+ * specified key
  */
-string
-BESKeys::get_key( const string& s, bool &found ) 
+void BESKeys::get_value(const string& s, string &val, bool &found)
 {
-    map<string,string>::iterator i;
-    i=_the_keys->find(s);
-    if(i!=_the_keys->end())
+    found = false;
+    map<string, vector<string> >::iterator i;
+    i = _the_keys->find(s);
+    if (i != _the_keys->end())
     {
-	found = true ;
-	return (*i).second;
+        found = true;
+        if ((*i).second.size() > 1)
+        {
+            string err = string("Multiple values for the key ") + s + " found, should only be one.";
+            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        }
+        if ((*i).second.size() == 1)
+        {
+            val = (*i).second[0];
+        }
+        else
+        {
+            val = "";
+        }
     }
-    else
+}
+
+/** @brief Retrieve the values of a given key, if set.
+ *
+ * This method allows the user of BESKeys to retrieve the value of the
+ * specified key.
+ *
+ * @param s The key the user is looking for
+ * @param vals The value set for the specified key
+ * @param found Set to true of the key is set or false if the key is not set.
+ * The value of a key can be set to the empty string, which is why this
+ * boolean is provided.
+ */
+void BESKeys::get_values(const string& s, vector<string> &vals, bool &found)
+{
+    found = false;
+    map<string, vector<string> >::iterator i;
+    i = _the_keys->find(s);
+    if (i != _the_keys->end())
     {
-	found = false ;
-	return "";
+        found = true;
+        vals = (*i).second;
     }
 }
 
@@ -319,38 +503,43 @@ BESKeys::get_key( const string& s, bool &found )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESKeys::dump( ostream &strm ) const
+void BESKeys::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESKeys::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "key file:" << _keys_file_name << endl ;
-    if( _keys_file && *_keys_file )
+    strm << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "key file:" << _keys_file_name << endl;
+    if (_keys_file && *_keys_file)
     {
-	strm << BESIndent::LMarg << "key file is valid" << endl ;
+        strm << BESIndent::LMarg << "key file is valid" << endl;
     }
     else
     {
-	strm << BESIndent::LMarg << "key file is NOT valid" << endl ;
+        strm << BESIndent::LMarg << "key file is NOT valid" << endl;
     }
-    if( _the_keys && _the_keys->size() )
+    if (_the_keys && _the_keys->size())
     {
-	strm << BESIndent::LMarg << "    keys:" << endl ;
-	BESIndent::Indent() ;
-	Keys_citer i = _the_keys->begin() ;
-	Keys_citer ie = _the_keys->end() ;
-	for( ; i != ie; i++ )
-	{
-	    strm << BESIndent::LMarg << (*i).first << ": "
-				     << (*i).second << endl ;
-	}
-	BESIndent::UnIndent() ;
+        strm << BESIndent::LMarg << "    keys:" << endl;
+        BESIndent::Indent();
+        Keys_citer i = _the_keys->begin();
+        Keys_citer ie = _the_keys->end();
+        for (; i != ie; i++)
+        {
+            strm << BESIndent::LMarg << (*i).first << ":" << endl;
+            BESIndent::Indent();
+            vector<string>::const_iterator v = (*i).second.begin();
+            vector<string>::const_iterator ve = (*i).second.end();
+            for (; v != ve; v++)
+            {
+                strm << (*v) << endl;
+            }
+            BESIndent::UnIndent();
+        }
+        BESIndent::UnIndent();
     }
     else
     {
-	strm << BESIndent::LMarg << "keys: none" << endl ;
+        strm << BESIndent::LMarg << "keys: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

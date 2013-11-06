@@ -13,7 +13,7 @@ endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
-CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 # This header file is used for configuration location
@@ -36,9 +36,8 @@ DISTCLEANFILES = test_config.h
 ############################################################################
 # Unit Tests
 
-
 test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
 
 if CPPUNIT
 UNIT_TESTS = propsT buildT

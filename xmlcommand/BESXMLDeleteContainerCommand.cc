@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -46,7 +46,7 @@ BESXMLDeleteContainerCommand::BESXMLDeleteContainerCommand( const BESDataHandler
 
 /** @brief parse a show command. No properties or children elements
  *
-    <deleteContainer name="containerName" space="storeName" />
+    &lt;deleteContainer name="containerName" space="storeName" /&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -84,7 +84,7 @@ BESXMLDeleteContainerCommand::parse_request( xmlNode *node )
     _dhi.action = DELETE_CONTAINER ;
 
     _str_cmd = (string)"delete container " + container_name
-	       + " from " + storage ;
+	       + " from " + storage + ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,13 +37,14 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDebug.h"
 
-BESSetContainerResponseHandler::BESSetContainerResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
+        BESResponseHandler(name)
 {
 }
 
-BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
+BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
 {
 }
 
@@ -81,30 +82,36 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
  * @see BESContainerStorage
  * @see BESContainer
  */
-void
-BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = SETCONTAINER_STR ;
-    BESInfo *info = new BESSilentInfo() ;
-    _response = info ;
+    dhi.action_name = SETCONTAINER_STR;
+    BESInfo *info = new BESSilentInfo();
+    _response = info;
 
-    string store_name = dhi.data[STORE_NAME] ;
-    string symbolic_name = dhi.data[SYMBOLIC_NAME] ;
-    string real_name = dhi.data[REAL_NAME] ;
-    string container_type = dhi.data[CONTAINER_TYPE] ;
-    BESContainerStorage *cp =
-	BESContainerStorageList::TheList()->find_persistence( store_name );
-    if( cp )
-    {
-	cp->del_container( symbolic_name ) ;
-	cp->add_container( symbolic_name, real_name, container_type ) ;
+    string store_name = dhi.data[STORE_NAME];
+    string symbolic_name = dhi.data[SYMBOLIC_NAME];
+    string real_name = dhi.data[REAL_NAME];
+    string container_type = dhi.data[CONTAINER_TYPE];
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute store = "
+            << dhi.data[STORE_NAME] << endl );
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute symbolic = "
+            << dhi.data[SYMBOLIC_NAME] << endl );
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute real = "
+            << dhi.data[REAL_NAME] << endl );
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute type = "
+            << dhi.data[CONTAINER_TYPE] << endl );
+    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
+    if (cp) {
+        BESDEBUG("bes", "BESSetContainerResponseHandler::execute adding the container..." << endl);
+        cp->del_container(symbolic_name);
+        cp->add_container(symbolic_name, real_name, container_type);
+        BESDEBUG("bes", "BESSetContainerResponseHandler::execute Done" << endl);
+
     }
-    else
-    {
-	string ret = (string)"Unable to add container \""
-		     + symbolic_name + "\" to container storage \""
-		     + store_name + "\". Store does not exist." ;
-	throw BESSyntaxUserError( ret, __FILE__, __LINE__ ) ;
+    else {
+        string ret = (string) "Unable to add container \"" + symbolic_name + "\" to container storage \"" + store_name
+                + "\". Store does not exist.";
+        throw BESSyntaxUserError(ret, __FILE__, __LINE__);
     }
 }
 
@@ -120,16 +127,13 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESSetContainerResponseHandler::transmit( BESTransmitter *transmitter,
-                                  BESDataHandlerInterface &dhi )
+void BESSetContainerResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (_response) {
+        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -139,19 +143,17 @@ BESSetContainerResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESSetContainerResponseHandler::dump( ostream &strm ) const
+void BESSetContainerResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESSetContainerResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESSetContainerResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESSetContainerResponseHandler::SetContainerResponseBuilder( const string &name)
+BESSetContainerResponseHandler::SetContainerResponseBuilder(const string &name)
 {
-    return new BESSetContainerResponseHandler( name ) ;
+    return new BESSetContainerResponseHandler(name);
 }
 

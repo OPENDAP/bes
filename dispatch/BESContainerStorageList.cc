@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-using std::endl ;
+using std::endl;
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -42,25 +42,23 @@ using std::endl ;
 #include "BESLog.h"
 #include "BESInfo.h"
 
-BESContainerStorageList *BESContainerStorageList::_instance = 0 ;
+BESContainerStorageList *BESContainerStorageList::_instance = 0;
 
-BESContainerStorageList::BESContainerStorageList()
-    : _first( 0 )
+BESContainerStorageList::BESContainerStorageList() :
+        _first(0)
 {
 }
 
 BESContainerStorageList::~BESContainerStorageList()
 {
-    BESContainerStorageList::persistence_list *pl = _first ;
-    while( pl )
-    {
-	if( pl->_persistence_obj )
-	{
-	    delete pl->_persistence_obj ;
-	}
-	BESContainerStorageList::persistence_list *next = pl->_next ;
-	delete pl ;
-	pl = next ;
+    BESContainerStorageList::persistence_list *pl = _first;
+    while (pl) {
+        if (pl->_persistence_obj) {
+            delete pl->_persistence_obj;
+        }
+        BESContainerStorageList::persistence_list *next = pl->_next;
+        delete pl;
+        pl = next;
     }
 }
 
@@ -76,48 +74,40 @@ BESContainerStorageList::~BESContainerStorageList()
  * @return true if successfully added, false otherwise
  * @see BESContainerStorage
  */
-bool
-BESContainerStorageList::add_persistence( BESContainerStorage *cp )
+bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
 {
-    bool ret = false ;
-    if( !_first )
-    {
-	_first = new BESContainerStorageList::persistence_list ;
-	_first->_persistence_obj = cp ;
-	_first->_reference = 1 ;
-	_first->_next = 0 ;
-	ret = true ;
+    bool ret = false;
+    if (!_first) {
+        _first = new BESContainerStorageList::persistence_list;
+        _first->_persistence_obj = cp;
+        _first->_reference = 1;
+        _first->_next = 0;
+        ret = true;
     }
-    else
-    {
-	BESContainerStorageList::persistence_list *pl = _first ;
-	bool done = false ;
-	while( done == false )
-	{
-	    if( pl->_persistence_obj->get_name() != cp->get_name() )
-	    {
-		if( pl->_next )
-		{
-		    pl = pl->_next ;
-		}
-		else
-		{
-		    pl->_next = new BESContainerStorageList::persistence_list ;
-		    pl->_next->_reference = 1 ;
-		    pl->_next->_persistence_obj = cp ;
-		    pl->_next->_next = 0 ;
-		    done = true ;
-		    ret = true ;
-		}
-	    }
-	    else
-	    {
-		done = true ;
-		ret = false ;
-	    }
-	}
+    else {
+        BESContainerStorageList::persistence_list *pl = _first;
+        bool done = false;
+        while (done == false) {
+            if (pl->_persistence_obj->get_name() != cp->get_name()) {
+                if (pl->_next) {
+                    pl = pl->_next;
+                }
+                else {
+                    pl->_next = new BESContainerStorageList::persistence_list;
+                    pl->_next->_reference = 1;
+                    pl->_next->_persistence_obj = cp;
+                    pl->_next->_next = 0;
+                    done = true;
+                    ret = true;
+                }
+            }
+            else {
+                done = true;
+                ret = false;
+            }
+        }
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief refence the specified persistent store if in the list
@@ -130,35 +120,28 @@ BESContainerStorageList::add_persistence( BESContainerStorage *cp )
  * @return true if successfully referenced, false otherwise
  * @see BESContainerStorage
  */
-bool
-BESContainerStorageList::ref_persistence( const string &persist_name )
+bool BESContainerStorageList::ref_persistence(const string &persist_name)
 {
-    bool ret = false ;
-    BESContainerStorageList::persistence_list *pl = _first ;
+    bool ret = false;
+    BESContainerStorageList::persistence_list *pl = _first;
 
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( pl->_persistence_obj &&
-	        pl->_persistence_obj->get_name() == persist_name )
-	    {
-		done = true ;
-		ret = true ;
-		pl->_reference++ ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
+                done = true;
+                ret = true;
+                pl->_reference++;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief dereference a persistent store in the list.
@@ -173,54 +156,44 @@ BESContainerStorageList::ref_persistence( const string &persist_name )
  * @return true if successfully de-referenced, false otherwise
  * @see BESContainerStorage
  */
-bool
-BESContainerStorageList::deref_persistence( const string &persist_name )
+bool BESContainerStorageList::deref_persistence(const string &persist_name)
 {
-    bool ret = false ;
-    BESContainerStorageList::persistence_list *pl = _first ;
-    BESContainerStorageList::persistence_list *last = 0 ;
+    bool ret = false;
+    BESContainerStorageList::persistence_list *pl = _first;
+    BESContainerStorageList::persistence_list *last = 0;
 
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( pl->_persistence_obj &&
-	        pl->_persistence_obj->get_name() == persist_name )
-	    {
-		ret = true ;
-		done = true ;
-		pl->_reference-- ;
-		if( !pl->_reference )
-		{
-		    if( pl == _first )
-		    {
-			_first = _first->_next ;
-		    }
-		    else
-		    {
-		    	if (!last)
-		    		throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
-			last->_next = pl->_next ;
-		    }
-		    delete pl->_persistence_obj ;
-		    delete pl ;
-		    pl = 0 ;
-		}
-	    }
-	    else
-	    {
-		last = pl ;
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
+                ret = true;
+                done = true;
+                pl->_reference--;
+                if (!pl->_reference) {
+                    if (pl == _first) {
+                        _first = _first->_next;
+                    }
+                    else {
+                        if (!last)
+                            throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
+                        last->_next = pl->_next;
+                    }
+                    delete pl->_persistence_obj;
+                    delete pl;
+                    pl = 0;
+                }
+            }
+            else {
+                last = pl;
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
 
-    return ret ;
+    return ret;
 }
 
 /** @brief find the persistence store with the given name
@@ -232,45 +205,40 @@ BESContainerStorageList::deref_persistence( const string &persist_name )
  * @see BESContainerStorage
  */
 BESContainerStorage *
-BESContainerStorageList::find_persistence( const string &persist_name )
+BESContainerStorageList::find_persistence(const string &persist_name)
 {
-    BESContainerStorage *ret = NULL ;
-    BESContainerStorageList::persistence_list *pl = _first ;
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( persist_name == pl->_persistence_obj->get_name() )
-	    {
-		ret = pl->_persistence_obj ;
-		done = true ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    BESContainerStorage *ret = NULL;
+    BESContainerStorageList::persistence_list *pl = _first;
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (persist_name == pl->_persistence_obj->get_name()) {
+                ret = pl->_persistence_obj;
+                done = true;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
-    return ret ;
+    return ret;
 }
 
-bool
-BESContainerStorageList::isnice()
+bool BESContainerStorageList::isnice()
 {
-    bool ret = false ;
-    string key = "BES.Container.Persistence" ;
-    bool found = false ;
-    string isnice = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( isnice == "Nice" || isnice == "nice" || isnice == "NICE" )
-	ret = true ;
-    else 
-	ret = false ;
-    return ret ;
+    bool ret = false;
+    string key = "BES.Container.Persistence";
+    bool found = false;
+    string isnice;
+    TheBESKeys::TheKeys()->get_value(key, isnice, found);
+    if (isnice == "Nice" || isnice == "nice" || isnice == "NICE")
+        ret = true;
+    else
+        ret = false;
+    return ret;
 }
 
 /** @brief look for the specified container information in the list of
@@ -297,46 +265,36 @@ BESContainerStorageList::isnice()
  * @see BESSyntaxUserError
  */
 BESContainer *
-BESContainerStorageList::look_for( const string &sym_name )
+BESContainerStorageList::look_for(const string &sym_name)
 {
-    BESContainer *ret_container = 0 ;
-    BESContainerStorageList::persistence_list *pl = _first ;
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    ret_container = pl->_persistence_obj->look_for( sym_name ) ;
-	    if( ret_container )
-	    {
-		done = true ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    BESContainer *ret_container = 0;
+    BESContainerStorageList::persistence_list *pl = _first;
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            ret_container = pl->_persistence_obj->look_for(sym_name);
+            if (ret_container) {
+                done = true;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
-    if( !ret_container )
-    {
-	if( isnice() )
-	{
-	    (*BESLog::TheLog()) << "Could not find the symbolic name "
-	                        << sym_name << endl ;
-	}
-	else
-	{
-	    string s = (string)"Could not find the symbolic name "
-	               + sym_name ;
-	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
-	}
+    if (!ret_container) {
+        if (isnice()) {
+            (*BESLog::TheLog()) << "Could not find the symbolic name " << sym_name << endl;
+        }
+        else {
+            string s = (string) "Could not find the symbolic name " + sym_name;
+            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+        }
     }
 
-    return ret_container ;
+    return ret_container;
 }
 
 /** @brief show information for each container in each persistence store
@@ -351,18 +309,16 @@ BESContainerStorageList::look_for( const string &sym_name )
  * @param info object to store the container and persistent store information
  * @see BESInfo
  */
-void
-BESContainerStorageList::show_containers( BESInfo &info )
+void BESContainerStorageList::show_containers(BESInfo &info)
 {
-    BESContainerStorageList::persistence_list *pl = _first ;
-    while( pl )
-    {
-	map<string,string> props ;
-	props["name"] = pl->_persistence_obj->get_name() ;
-	info.begin_tag( "store", &props ) ;
-	pl->_persistence_obj->show_containers( info ) ;
-	info.end_tag( "store" ) ;
-	pl = pl->_next ;
+    BESContainerStorageList::persistence_list *pl = _first;
+    while (pl) {
+        map<string, string> props;
+        props["name"] = pl->_persistence_obj->get_name();
+        info.begin_tag("store", &props);
+        pl->_persistence_obj->show_containers(info);
+        info.end_tag("store");
+        pl = pl->_next;
     }
 }
 
@@ -373,38 +329,32 @@ BESContainerStorageList::show_containers( BESInfo &info )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESContainerStorageList::dump( ostream &strm ) const
+void BESContainerStorageList::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContainerStorageList::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESContainerStorageList::persistence_list *pl = _first ;
-    if( pl )
-    {
-	strm << BESIndent::LMarg << "container storage:" << endl ;
-	BESIndent::Indent() ;
-	while( pl )
-	{
-	    pl->_persistence_obj->dump( strm ) ;
-	    pl = pl->_next ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageList::persistence_list *pl = _first;
+    if (pl) {
+        strm << BESIndent::LMarg << "container storage:" << endl;
+        BESIndent::Indent();
+        while (pl) {
+            pl->_persistence_obj->dump(strm);
+            pl = pl->_next;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "container storage: empty" << endl ;
+    else {
+        strm << BESIndent::LMarg << "container storage: empty" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
 BESContainerStorageList *
 BESContainerStorageList::TheList()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESContainerStorageList ;
+    if (_instance == 0) {
+        _instance = new BESContainerStorageList;
     }
-    return _instance ;
+    return _instance;
 }
 

@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -45,10 +45,11 @@ using std::ostringstream ;
 #include "UnixSocket.h"
 #include "PPTProtocol.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 
 #include "config.h"
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLClient.h"
 #endif
 
@@ -78,27 +79,27 @@ void
 PPTClient::get_secure_files()
 {
     bool found = false ;
-    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ClientCertFile", _cfile, found ) ;
     if( !found || _cfile.empty() )
     {
 	string err = "Unable to determine client certificate file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertAuthFile", found );
+    TheBESKeys::TheKeys()->get_value( "BES.ClientCertAuthFile", _cafile, found);
     if( !found || _cafile.empty() )
     {
 	string err = "Unable to determine client certificate authority file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ClientKeyFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ClientKeyFile", _kfile, found ) ;
     if( !found || _kfile.empty() )
     {
 	string err = "Unable to determine client key file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -131,7 +132,7 @@ PPTClient::initConnection()
 
     // we're just getting tokens, not a big buffer, so don't need that big
     // of a buffer. pcw 05/31/08
-    unsigned int ppt_buffer_size = 64 ;
+    const int ppt_buffer_size = 64 ;
     char *inBuff = new char[ppt_buffer_size+1] ;
     int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
@@ -168,7 +169,7 @@ PPTClient::initConnection()
 void
 PPTClient::authenticateWithServer()
 {
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
     // get the certificate and key file information
     get_secure_files() ;
 
@@ -178,7 +179,7 @@ PPTClient::authenticateWithServer()
     // receive response with port, terminated with TERMINATE token. We are
     // exchanging a port number and a terminating token. The buffer doesn't
     // need to be too big. pcw 05/31/08
-    unsigned int ppt_buffer_size = 64 ;
+    const int ppt_buffer_size = 64 ;
     char *inBuff = new char[ppt_buffer_size+1] ;
     int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
@@ -226,7 +227,7 @@ PPTClient::closeConnection()
 	    {
 		sendExit() ;
 	    }
-	    catch( BESInternalError e )
+	    catch( BESInternalError &e )
 	    {
 		cerr << "Failed to inform server that the client is exiting, "
 		     << "continuing" << endl ;

@@ -12,7 +12,7 @@ pkglibdir=${libdir}/bes
 pkgdatadir=${datadir}/bes
 
 CFLAGS="@XML2_CFLAGS@"
-LIBS="@BES_ZLIB_LIBS@ @BES_BZ2_LIBS@ @BES_DL_LIBS@ @XML2_LIBS@"
+LIBS="@BES_ZLIB_LIBS@ @BES_BZ2_LIBS@ @BES_DL_LIBS@ @XML2_LIBS@ @PTHREAD_LIBS@"
 
 usage()
 {
@@ -71,7 +71,8 @@ while test $# -gt 0; do
        	;;
 
     --dap-libs)
-       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt -lbes_dap $LIBS @openssl_libs@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt $LIBS @openssl_libs@"
+	# remove -lbes_dap jhrg 1/25/13
        	;;
 
     --modulesdir)

@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -62,7 +62,8 @@ BESUncompressManager::BESUncompressManager()
 
     bool found = false ;
     string key = "BES.Uncompress.Retry" ;
-    string val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string val ;
+    TheBESKeys::TheKeys()->get_value( key, val, found ) ;
     if( !found || val.empty() )
     {
 	_retry = 2000 ;
@@ -74,7 +75,8 @@ BESUncompressManager::BESUncompressManager()
     }
 
     key = "BES.Uncompress.NumTries" ;
-    val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    val = "" ;
+    TheBESKeys::TheKeys()->get_value( key, val, found ) ;
     if( !found || val.empty() )
     {
 	_num_tries = 10 ;
@@ -194,7 +196,14 @@ BESUncompressManager::get_method_names()
  * uncompression function with the name bozo, then the src file with the
  * extension .bozo is returned as is.
  *
+ * If there is a problem uncompressing the file, the uncompress code is
+ * responsible for closing the source file, the target file, AND
+ * REMOVING THE TARGET FILE. If the target file is left in place after
+ * an error, then the cache might use that file in the future for a
+ * request.
+ *
  * @param src file to be uncompressed
+ * @param target target file to uncompress into
  * @param cache BESCache object to uncompress the src file in
  * @return full path to the uncompressed file
  * @throws BESInternalError if there is a problem uncompressing
@@ -213,7 +222,7 @@ BESUncompressManager::uncompress( const string &src, string &target,
 	// The extension (Z, gz, bz2, GZ, BZ2, z) is used to determine which
 	// uncompression engine to use. It is compared to the list, which is
 	// all lower case. pcw 2/22/08
-	for( int i = 0; i < ext.length(); i++ )
+	for( int i = 0; i < static_cast<int>(ext.length()); i++ )
 	{
 	    ext[i] = tolower( ext[i] ) ;
 	}
@@ -221,6 +230,9 @@ BESUncompressManager::uncompress( const string &src, string &target,
 	// if we find the method for this file then use it. If we don't find
 	// it then assume that the file is not compressed and simply return
 	// the src file at the end of the method.
+	//
+	// Actually return false; return true if the file has been decompressed and return the
+	// cached (decompressed) file name in the value-result parameter 'target'. jhrg 3/21/12
 	p_bes_uncompress p = find_method( ext ) ;
 	if( p )
 	{
@@ -254,9 +266,16 @@ BESUncompressManager::uncompress( const string &src, string &target,
 				     << " using " << ext << " uncompression"
 				     << endl ) ;
 
-		    // we are now done in the cahce, unlock it
+		    // we are now done in the cache, unlock it
 		    cache.unlock() ;
 
+		    // MPJ: Is this safe to call after unlock?
+		    // We just unlocked the cache before we
+		    // decompress the file, so the get_read_lock call may fail
+		    // for another call while this is occurring
+		    // and spawn another decompress overwriting the other?
+		    // Or will another coming along see the unfinished
+		    // decompressed file and complain?
 		    p( src, target ) ;
 		    return true ;
 		}
@@ -272,9 +291,11 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    // an unknown problem in the cache, unlock it and throw a
 		    // BES exception
 		    cache.unlock() ;
+#if 0
 		    string err = (string)"Problem working with the cache, "
-		                 + "unknow error" ;
-		    throw BESInternalError( err, __FILE__,__LINE__);
+		                 + "unknown error" ;
+#endif
+		    throw BESInternalError( "Problem working with the cache, unknown error", __FILE__,__LINE__);
 		}
 	    }
 	    else

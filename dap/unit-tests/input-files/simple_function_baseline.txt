@@ -1,0 +1,13 @@
+HTTP/1.0 200 OK.*
+XDODS-Server:.*
+XOPeNDAP-Server:.*
+XDAP:.*
+Date:.*
+Last-Modified:.*
+Content-Type: application/octet-stream.*
+Content-Description: dods_data.*
+.*
+Dataset \{
+    String result;
+\} function_result_test;
+.*

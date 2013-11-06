@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
+AM_CPPFLAGS =  -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
 
 # AM_CPPFLAGS =
 # AM_CXXFLAGS =
@@ -10,7 +10,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_LTLIBRARIES = libtestmodule.la
@@ -18,8 +18,8 @@ check_LTLIBRARIES = libtestmodule.la
 libtestmodule_la_SOURCES = $(SRCS) $(HDRS)
 libtestmodule_la_LDFLAGS = -avoid-version -module
 libtestmodule_la_LIBADD = ../../xmlcommand/libbes_xml_command.la \
-			  ../../dispatch/libbes_dispatch.la
-
+			  ../../dispatch/libbes_dispatch.la 
+			  
 ##############################################################################
 #
 # Sources and Headers for libtestmodule.

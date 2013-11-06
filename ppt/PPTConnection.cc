@@ -18,11 +18,11 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,15 +38,15 @@
 #include <sstream>
 #include <iomanip>
 
-using std::cout ;
-using std::cerr ;
-using std::endl ;
-using std::flush ;
-using std::ostringstream ;
-using std::istringstream ;
-using std::hex ;
-using std::setw ;
-using std::setfill ;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::flush;
+using std::ostringstream;
+using std::istringstream;
+using std::hex;
+using std::setw;
+using std::setfill;
 
 #include "PPTConnection.h"
 #include "PPTProtocol.h"
@@ -56,11 +56,10 @@ using std::setfill ;
 
 PPTConnection::~PPTConnection()
 {
-    if( _inBuff )
-    {
-	delete [] _inBuff ;
-	_inBuff = 0 ;
-    }
+	if (_inBuff) {
+		delete[] _inBuff;
+		_inBuff = 0;
+	}
 }
 
 /** @brief Send a message to the server
@@ -71,18 +70,18 @@ PPTConnection::~PPTConnection()
  *
  * A buffer sent to the server will follow the following form:
  * @code
-       Chunked-Body   = chunk-extensions
-                        chunk
-                        last-chunk
+ Chunked-Body   = chunk-extensions
+ chunk
+ last-chunk
 
-       chunk-extensions= chunk-size 'x' *( chunk-ext-name [ "=" chunk-ext-val ] ;
-       chunk          = chunk-size 'd' chunk-data
-       chunk-size     = 8HEX
-       last-chunk     = 7("0") d
+ chunk-extensions= chunk-size 'x' *( chunk-ext-name [ "=" chunk-ext-val ] ;
+ chunk          = chunk-size 'd' chunk-data
+ chunk-size     = 8HEX
+ last-chunk     = 7("0") d
 
-       chunk-ext-name = token
-       chunk-ext-val  = token | quoted-string
-       chunk-data     = chunk-size(OCTET)
+ chunk-ext-name = token
+ chunk-ext-val  = token | quoted-string
+ chunk-data     = chunk-size(OCTET)
  * @endcode
  *
  * If there are extensions then they are sent first. The length of
@@ -97,32 +96,31 @@ PPTConnection::~PPTConnection()
  * @param buffer buffer of data to send
  * @param extensions list of name/value pairs sent
  */
-void
-PPTConnection::send( const string &buffer,
-                     map<string,string> &extensions )
+void PPTConnection::send(const string &buffer, map<string, string> &extensions)
 {
-    if( !buffer.empty() )
-    {
-	sendChunk( buffer, extensions ) ;
+	if (!buffer.empty()) {
+		sendChunk(buffer, extensions);
 
-	// send the last chunk without the extensions
-	map<string,string> no_extensions ;
-	sendChunk( "", no_extensions ) ;
-    }
-    else
-    {
-	sendChunk( "", extensions ) ;
-    }
+		// send the last chunk without the extensions
+		map<string, string> no_extensions;
+		sendChunk("", no_extensions);
+	}
+	else {
+		sendChunk("", extensions);
+	}
 }
 
 /** @brief Send the exit token as an extension
  */
-void
-PPTConnection::sendExit()
+void PPTConnection::sendExit()
 {
-    map<string,string> extensions ;
-    extensions["status"] = PPTProtocol::PPT_EXIT_NOW ;
-    send( "", extensions ) ;
+	map<string, string> extensions;
+	extensions["status"] = PPTProtocol::PPT_EXIT_NOW;
+	send("", extensions);
+
+	// Need to send a zero-length chunk here
+	extensions.clear();
+	sendChunk("", extensions);
 }
 
 /** @brief Send a chunk to the server
@@ -133,51 +131,44 @@ PPTConnection::sendExit()
  * @param extensions name/value pairs to send
  * @see PPTConnection::send
  */
-void
-PPTConnection::sendChunk( const string &buffer, map<string,string> &extensions )
+void PPTConnection::sendChunk(const string &buffer, map<string, string> &extensions)
 {
-    ostringstream strm ;
-    if( extensions.size() )
-    {
-	sendExtensions( extensions ) ;
-    }
-    strm << hex << setw( 7 ) << setfill( '0' ) << buffer.length() << "d" ;
-    if( !buffer.empty() )
-    {
-	strm << buffer ;
-    }
-    string toSend = strm.str() ;
-    send( toSend ) ;
+	ostringstream strm;
+	if (extensions.size()) {
+		sendExtensions(extensions);
+	}
+	strm << hex << setw(7) << setfill('0') << buffer.length() << "d";
+	if (!buffer.empty()) {
+		strm << buffer;
+	}
+	string toSend = strm.str();
+	send(toSend);
 }
 
 /** @brief send the specified extensions
  *
  * @param extensions name/value paris to be sent
  */
-void
-PPTConnection::sendExtensions( map<string,string> &extensions )
+void PPTConnection::sendExtensions(map<string, string> &extensions)
 {
-    ostringstream strm ;
-    if( extensions.size() )
-    {
-	ostringstream estrm ;
-	map<string,string>::const_iterator i = extensions.begin() ;
-	map<string,string>::const_iterator ie = extensions.end() ;
-	for( ; i != ie; i++ )
-	{
-	    estrm << (*i).first ;
-	    string value = (*i).second ;
-	    if( !value.empty() )
-	    {
-		estrm << "=" << value ;
-	    }
-	    estrm << ";" ;
+	ostringstream strm;
+	if (extensions.size()) {
+		ostringstream estrm;
+		map<string, string>::const_iterator i = extensions.begin();
+		map<string, string>::const_iterator ie = extensions.end();
+		for (; i != ie; i++) {
+			estrm << (*i).first;
+			string value = (*i).second;
+			if (!value.empty()) {
+				estrm << "=" << value;
+			}
+			estrm << ";";
+		}
+		string xstr = estrm.str();
+		strm << hex << setw(7) << setfill('0') << xstr.length() << "x" << xstr;
+		string toSend = strm.str();
+		send(toSend);
 	}
-	string xstr = estrm.str() ;
-	strm << hex << setw( 7 ) << setfill( '0' ) << xstr.length() << "x" << xstr ;
-	string toSend = strm.str() ;
-	send( toSend ) ;
-    }
 }
 
 /** @brief sends the buffer to the socket
@@ -186,55 +177,53 @@ PPTConnection::sendExtensions( map<string,string> &extensions )
  *
  * @param buffer data buffer to send to the socket
  */
-void
-PPTConnection::send( const string &buffer )
+void PPTConnection::send(const string &buffer)
 {
-    BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl ) ;
-    _mySock->send( buffer, 0, buffer.length() ) ;
-    _mySock->sync() ;
+	BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl );
+		_mySock->send( buffer, 0, buffer.length() );
+#if 0
+		// was calling fsync() which is not defined for sockets. There might be some
+		// 'sync' operation needed in the future, but for now this is an empty call. removed
+		// jhrg 5/5/11
+		_mySock->sync();
+#endif
+	}
+
+	/** @brief read a buffer of data from the socket
+	 *
+	 * @param buffer buffer to store the data received from the socket in
+	 * @param buffer_size max size of the data to be received
+	 * @return number of bytes actually read
+	 */
+int PPTConnection::readBuffer(char *buffer, const unsigned int buffer_size)
+{
+	return _mySock->receive(buffer, buffer_size);
 }
 
-/** @brief read a buffer of data from the socket
- *
- * @param buffer buffer to store the data received from the socket in
- * @param buffer_size max size of the data to be received
- * @return number of bytes actually read
- */
-int
-PPTConnection::readBuffer( char *buffer, unsigned int buffer_size )
+int PPTConnection::readChunkHeader(char *buffer, /*unsigned */int buffer_size)
 {
-    return _mySock->receive( buffer, buffer_size ) ;
-}
-
-int
-PPTConnection::readChunkHeader( char *buffer, unsigned int buffer_size )
-{
-    char *temp_buffer = buffer ;
-    int totalBytesRead = 0 ;
-    bool done = false ;
-    while( !done )
-    {
-	int bytesRead = readBuffer( temp_buffer, buffer_size ) ;
-	BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read "
-	                 << bytesRead << " bytes" << endl ) ;
-	if( bytesRead < 0 )
-	{
-	    return bytesRead ;
+	char *temp_buffer = buffer;
+	int totalBytesRead = 0;
+	bool done = false;
+	while (!done) {
+		int bytesRead = readBuffer(temp_buffer, buffer_size);
+		BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read "
+				<< bytesRead << " bytes" << endl );
+		if (bytesRead < 0) {
+			return bytesRead;
+		}
+		if (bytesRead < buffer_size) {
+			buffer_size = buffer_size - bytesRead;
+			temp_buffer = temp_buffer + bytesRead;
+			totalBytesRead += bytesRead;
+		}
+		else {
+			totalBytesRead += bytesRead;
+			done = true;
+		}
 	}
-	if( bytesRead < buffer_size )
-	{
-	    buffer_size = buffer_size - bytesRead ;
-	    temp_buffer = temp_buffer + bytesRead ;
-	    totalBytesRead += bytesRead ;
-	}
-	else
-	{
-	    totalBytesRead += bytesRead ;
-	    done = true ;
-	}
-    }
-    buffer[totalBytesRead] = '\0' ;
-    return totalBytesRead ;
+	buffer[totalBytesRead] = '\0';
+	return totalBytesRead;
 }
 
 /** @brief receive a chunk of either extensions into the specified map or data
@@ -252,75 +241,61 @@ PPTConnection::readChunkHeader( char *buffer, unsigned int buffer_size )
  * @param strm output stream to write the received data into
  * @return true if what was received is the last chunk, false otherwise
  */
-bool
-PPTConnection::receive( map<string,string> &extensions,
-			ostream *strm )
+bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 {
-    ostream *use_strm = _out ;
-    if( strm )
-	use_strm = strm ;
+	ostream *use_strm = _out;
+	if (strm) use_strm = strm;
 
-    // If the receive buffer has not yet been created, get the receive size
-    // and create the buffer.
-    BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len
-                     << endl ) ;
-    if( !_inBuff )
-    {
-	_inBuff_len = _mySock->getRecvBufferSize() + 1 ;
-	_inBuff = new char[_inBuff_len+1] ;
-    }
-
-    // The first buffer will contain the length of the chunk at the beginning.
-    // read the first 8 bytes. The first 7 are the length and the next 1
-    // if x then extensions follow, if d then data follows.
-    int bytesRead = readChunkHeader( _inBuff, 8 ) ;
-    BESDEBUG( "ppt", "Reading header, read "
-		     << bytesRead << " bytes" << endl ) ;
-    if( bytesRead != 8 )
-    {
-	string err = "Failed to read length and type of chunk" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
-
-    char lenbuffer[8] ;
-    lenbuffer[0] = _inBuff[0] ;
-    lenbuffer[1] = _inBuff[1] ;
-    lenbuffer[2] = _inBuff[2] ;
-    lenbuffer[3] = _inBuff[3] ;
-    lenbuffer[4] = _inBuff[4] ;
-    lenbuffer[5] = _inBuff[5] ;
-    lenbuffer[6] = _inBuff[6] ;
-    lenbuffer[7] = '\0' ;
-    istringstream lenstrm( lenbuffer ) ;
-    unsigned long inlen = 0 ;
-    lenstrm >> hex >> setw(7) >> inlen ;
-    BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl ) ;
-    BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl ) ;
-
-    if( _inBuff[7] == 'x' )
-    {
-	ostringstream xstrm ;
-	receive( xstrm, inlen ) ;
-	read_extensions( extensions, xstrm.str() ) ;
-    }
-    else if( _inBuff[7] == 'd' )
-    {
-	if( !inlen )
-	{
-	    // we've received the last chunk, return true, there
-	    // is nothing more to read from the socket
-	    return true ;
+	// If the receive buffer has not yet been created, get the receive size
+	// and create the buffer.
+	BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len << endl );
+	if (!_inBuff) {
+		_inBuff_len = _mySock->getRecvBufferSize() + 1;
+		_inBuff = new char[_inBuff_len + 1];
 	}
-	receive( *use_strm, inlen ) ;
-    }
-    else
-    {
-	string err = (string)"type of data is " + _inBuff[7]
-	             + ", should be x for extensions or d for data" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
 
-    return false ;
+	// The first buffer will contain the length of the chunk at the beginning.
+	// read the first 8 bytes. The first 7 are the length and the next 1
+	// if x then extensions follow, if d then data follows.
+	int bytesRead = readChunkHeader(_inBuff, 8);
+	BESDEBUG( "ppt", "Reading header, read " << bytesRead << " bytes" << endl );
+	if (bytesRead != 8)
+		throw BESInternalError("Failed to read chunk header", __FILE__, __LINE__);
+
+	char lenbuffer[8];
+	lenbuffer[0] = _inBuff[0];
+	lenbuffer[1] = _inBuff[1];
+	lenbuffer[2] = _inBuff[2];
+	lenbuffer[3] = _inBuff[3];
+	lenbuffer[4] = _inBuff[4];
+	lenbuffer[5] = _inBuff[5];
+	lenbuffer[6] = _inBuff[6];
+	lenbuffer[7] = '\0';
+	istringstream lenstrm(lenbuffer);
+	unsigned long inlen = 0;
+	lenstrm >> hex >> setw(7) >> inlen;
+	BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl );
+	BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl );
+
+	if (_inBuff[7] == 'x') {
+		ostringstream xstrm;
+		receive(xstrm, inlen);
+		read_extensions(extensions, xstrm.str());
+	}
+	else if (_inBuff[7] == 'd') {
+		if (!inlen) {
+			// we've received the last chunk, return true, there
+			// is nothing more to read from the socket
+			return true;
+		}
+		receive(*use_strm, inlen);
+	}
+	else {
+		string err = (string) "type of data is " + _inBuff[7] + ", should be x for extensions or d for data";
+		throw BESInternalError(err, __FILE__, __LINE__);
+	}
+
+	return false;
 }
 
 /** @brief receive from the socket the number of bytes specified
@@ -332,104 +307,93 @@ PPTConnection::receive( map<string,string> &extensions,
  * @param strm output stream to write what is received to
  * @param len number of bytes remaining to be read
  */
-void
-PPTConnection::receive( ostream &strm, unsigned int len )
+void PPTConnection::receive(ostream &strm, const /* unsigned */int len)
 {
-    BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl ) ;
-    if( !_inBuff )
-    {
-	string err = "buffer has not been initialized" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
+	BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl );
+		if( !_inBuff )
+		{
+			string err = "buffer has not been initialized";
+			throw BESInternalError( err, __FILE__, __LINE__ );
+		}
 
-    unsigned int to_read = len ;
-    if( len > _inBuff_len )
-    {
-	to_read = _inBuff_len ;
-    }
-    BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl ) ;
+		/* unsigned */int to_read = len;
+		if( len > _inBuff_len )
+		{
+			to_read = _inBuff_len;
+		}
+		BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl );
 
-    // read a buffer
-    int bytesRead = readBuffer( _inBuff, to_read ) ;
-    if( bytesRead <= 0 )
-    {
-	string err = "Failed to read data from socket" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
-    BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = "
-		     << bytesRead << endl ) ;
+		// read a buffer
+		int bytesRead = readBuffer( _inBuff, to_read );
+		if( bytesRead <= 0 )
+		{
+			string err = "Failed to read data from socket";
+			throw BESInternalError( err, __FILE__, __LINE__ );
+		}
+		BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = "
+				<< bytesRead << endl );
 
-    // write the buffer read to the stream
-    _inBuff[bytesRead] = '\0' ;
-    strm.write( _inBuff, bytesRead ) ;
+		// write the buffer read to the stream
+		_inBuff[bytesRead] = '\0';
+		strm.write( _inBuff, bytesRead );
 
-    // if bytesRead is less than the chunk length, then we need to go get
-    // some more. It doesn't matter what _inBuff_len is, because we need
-    // len bytes to be read and we read bytesRead bytes.
-    if( bytesRead < len )
-    {
-	BESDEBUG( "ppt", "PPTConnect::receive - remaining = "
-		         << (len - bytesRead) << endl ) ;
-	receive( strm, len - bytesRead ) ;
-    }
-}
+		// if bytesRead is less than the chunk length, then we need to go get
+		// some more. It doesn't matter what _inBuff_len is, because we need
+		// len bytes to be read and we read bytesRead bytes.
+		if( bytesRead < len )
+		{
+			BESDEBUG( "ppt", "PPTConnect::receive - remaining = "
+					<< (len - bytesRead) << endl );
+			receive( strm, len - bytesRead );
+		}
+	}
 
-/** @brief the string passed are extensions, read them and store the name/value pairs into
- * the passed map
- *
- * It has already been determined that extensions were read in the chunk. Deconstruct
- * the name/value pairs and store them into the map passed. Each extension ends with
- * a semicolon.
- *
- * @param extensions map to store the name/value pairs in
- * @param xstr string of extensions in the form *(name[=value];)
- */
-void
-PPTConnection::read_extensions( map<string,string> &extensions, const string &xstr )
+	/** @brief the string passed are extensions, read them and store the name/value pairs into
+	 * the passed map
+	 *
+	 * It has already been determined that extensions were read in the chunk. Deconstruct
+	 * the name/value pairs and store them into the map passed. Each extension ends with
+	 * a semicolon.
+	 *
+	 * @param extensions map to store the name/value pairs in
+	 * @param xstr string of extensions in the form *(name[=value];)
+	 */
+void PPTConnection::read_extensions(map<string, string> &extensions, const string &xstr)
 {
-    // extensions are in the form var[=val]; There is always a semicolon at the end
-    // if there is no equal sign then there is no value.
+	// extensions are in the form var[=val]; There is always a semicolon at the end
+	// if there is no equal sign then there is no value.
 
-    string var ;
-    string val ;
-    int index = 0 ;
-    bool done = false ;
-    while( !done )
-    {
-	string::size_type semi = xstr.find( ';', index ) ;
-	if( semi == string::npos )
-	{
-	    string err = "malformed extensions "
-	                 + xstr.substr( index, xstr.length() - index )
-			 + ", missing semicolon" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string var;
+	string val;
+	unsigned int index = 0;
+	bool done = false;
+	while (!done) {
+		string::size_type semi = xstr.find(';', index);
+		if (semi == string::npos) {
+			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index) + ", missing semicolon";
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		string::size_type eq = xstr.find('=', index);
+		if (eq == string::npos || eq > semi) {
+			// there is no value for this variable
+			var = xstr.substr(index, semi - index);
+			extensions[var] = "";
+		}
+		else if (eq == semi - 1) {
+			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index)
+					+ ", missing value after =";
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		else {
+			var = xstr.substr(index, eq - index);
+			val = xstr.substr(eq + 1, semi - eq - 1);
+			extensions[var] = val;
+		}
+		index = semi + 1;
+		if (index >= xstr.length()) {
+			done = true;
+		}
 	}
-	string::size_type eq = xstr.find( '=', index ) ;
-	if( eq == string::npos || eq > semi )
-	{
-	    // there is no value for this variable
-	    var = xstr.substr( index, semi-index ) ;
-	    extensions[var] = "" ;
-	}
-	else if( eq == semi-1 )
-	{
-	    string err = "malformed extensions "
-	                 + xstr.substr( index, xstr.length() - index )
-			 + ", missing value after =" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    var = xstr.substr( index, eq-index ) ;
-	    val = xstr.substr( eq+1, semi-eq-1 ) ;
-	    extensions[var] = val ;
-	}
-	index = semi+1 ;
-	if( index >= xstr.length() )
-	{
-	    done = true ;
-	}
-    }
 }
 
 /** @brief read a buffer of data from the socket without blocking
@@ -439,55 +403,51 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
  * variable _timeout is passed into the constructor.
  *
  * @param inBuff buffer to store the data into
+ * @param buffer_size the size of the passed buffer
  * @return number of bytes read in, -1 if failed to read anything
  */
-int
-PPTConnection::readBufferNonBlocking( char *inBuff, unsigned int buffer_size )
+int PPTConnection::readBufferNonBlocking(char *inBuff, const /* unsigned*/int buffer_size)
 {
-    struct pollfd p ;
-    p.fd = getSocket()->getSocketDescriptor();
-    p.events = POLLIN ;
-    struct pollfd arr[1] ;
-    arr[0] = p ;
+	struct pollfd p;
+	p.fd = getSocket()->getSocketDescriptor();
+	p.events = POLLIN;
+	struct pollfd arr[1];
+	arr[0] = p;
 
-    // Lets loop _timeout times with a delay block on poll of 1000 milliseconds
-    // and see if there is any data.
-    for( int j = 0; j < _timeout; j++ )
-    {
-	if( poll( arr, 1, 1000 ) < 0 )
-	{
-	    string error( "poll error" ) ;
-	    const char* error_info = strerror( errno ) ;
-	    if( error_info )
-		error += " " + (string)error_info ;
-	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
+	// Lets loop _timeout times with a delay block on poll of 1000 milliseconds
+	// and see if there are any data.
+	for (int j = 0; j < _timeout; j++) {
+		if (poll(arr, 1, 1000) < 0) {
+			string error("poll error");
+
+			// Allow this call to be interrupted without it being an error. jhrg 6/15/11
+			if (errno == EINTR || errno == EAGAIN) continue;
+
+			const char* error_info = strerror(errno);
+			if (error_info) error += " " + (string) error_info;
+			throw BESInternalError(error, __FILE__, __LINE__);
+		}
+		else {
+			if (arr[0].revents == POLLIN) {
+				return readBuffer(inBuff, buffer_size);
+			}
+			else {
+				cout << " " << j << flush;
+			}
+		}
 	}
-	else
-	{
-	    if (arr[0].revents==POLLIN)
-	    {
-		return readBuffer( inBuff, buffer_size ) ;
-	    }
-	    else
-	    {
-		cout << " " << j << flush ;
-	    }
-	}
-    }
-    cout << endl ;
-    return -1 ;
+	cout << endl;
+	return -1;
 }
 
-unsigned int
-PPTConnection::getRecvChunkSize()
+unsigned int PPTConnection::getRecvChunkSize()
 {
-    return _mySock->getRecvBufferSize() - PPT_CHUNK_HEADER_SPACE ;
+	return _mySock->getRecvBufferSize() - PPT_CHUNK_HEADER_SPACE;
 }
 
-unsigned int	
-PPTConnection::getSendChunkSize()
+unsigned int PPTConnection::getSendChunkSize()
 {
-    return _mySock->getSendBufferSize() - PPT_CHUNK_HEADER_SPACE ;
+	return _mySock->getSendBufferSize() - PPT_CHUNK_HEADER_SPACE;
 }
 
 /** @brief dumps information about this object
@@ -496,13 +456,11 @@ PPTConnection::getSendChunkSize()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-PPTConnection::dump( ostream &strm ) const
+void PPTConnection::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "PPTConnection::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    Connection::dump( strm ) ;
-    BESIndent::UnIndent() ;
+	strm << BESIndent::LMarg << "PPTConnection::dump - (" << (void *) this << ")" << endl;
+	BESIndent::Indent();
+	Connection::dump(strm);
+	BESIndent::UnIndent();
 }
 

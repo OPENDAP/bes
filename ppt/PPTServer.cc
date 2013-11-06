@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -41,6 +41,7 @@ using std::ostringstream ;
 
 #include "PPTServer.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "PPTProtocol.h"
 #include "SocketListener.h"
 #include "ServerHandler.h"
@@ -49,7 +50,7 @@ using std::ostringstream ;
 #include "BESDebug.h"
 
 #include "config.h"
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLServer.h"
 #endif
 
@@ -73,7 +74,7 @@ PPTServer::PPTServer( ServerHandler *handler,
 	string err( "Null listener passed to PPTServer" ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-#ifndef HAVE_OPENSSL
+#if !defined HAVE_OPENSSL && defined NOTTHERE
     if( _secure )
     {
 	string err("Server requested to be secure but OpenSSL is not built in");
@@ -96,41 +97,43 @@ void
 PPTServer::get_secure_files()
 {
     bool found = false ;
-    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerCertFile", _cfile, found ) ;
     if( !found || _cfile.empty() )
     {
 	string err = "Unable to determine server certificate file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertAuthFile", found );
+    TheBESKeys::TheKeys()->get_value( "BES.ServerCertAuthFile", _cafile, found);
     if( !found || _cafile.empty() )
     {
 	string err = "Unable to determine server certificate authority file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
+    found = false ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerKeyFile", _kfile, found ) ;
     if( !found || _kfile.empty() )
     {
 	string err = "Unable to determine server key file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    string portstr =
-	TheBESKeys::TheKeys()->get_key( "BES.ServerSecurePort", found ) ;
+    found = false ;
+    string portstr ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerSecurePort", portstr, found ) ;
     if( !found || portstr.empty() )
     {
 	string err = "Unable to determine secure connection port." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     _securePort = atoi( portstr.c_str() ) ;
     if( !_securePort )
     {
 	string err = (string)"Unable to determine secure connection port "
 	             + "from string " + portstr ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -139,39 +142,43 @@ PPTServer::get_secure_files()
     welcome message stuff (welcomeClient()) and then pass \c this to
     the handler's \c handle method. Note that \c this is a pointer to
     a PPTServer which is a kind of Connection. */
-void
-PPTServer::initConnection()
+void PPTServer::initConnection()
 {
-    for(;;)
+    for (;;)
     {
-	_mySock = _listener->accept() ;
-	if( _mySock )
-	{
-	    if( _mySock->allowConnection() == true )
-	    {
-		// welcome the client
-		if( welcomeClient( ) != -1 )
-		{
-		    // now hand it off to the handler
-		    _handler->handle( this ) ;
-		}
-	    }
-	    else
-	    {
-               _mySock->close();
-	    }
-	}
+        _mySock = _listener->accept();
+        if (_mySock)
+        {
+            if (_mySock->allowConnection() == true)
+            {
+                // welcome the client
+                if (welcomeClient() != -1) {
+                    // now hand it off to the handler
+                    _handler->handle(this);
+
+                    // Added this call to close - when the PPTServer class is used by
+                    // a server that gets a number of connections on the same port,
+                    // one per command, not closing the sockets after a command results
+                    // in lots of sockets in the 'CLOSE_WAIT' status.
+                    _mySock->close();
+                }
+            }
+            else
+            {
+                _mySock->close();
+            }
+        }
     }
 }
 
 void
 PPTServer::closeConnection()
 {
-    if( _mySock ) _mySock->close() ;
+    if( _mySock )
+        _mySock->close() ;
 }
 
-int
-PPTServer::welcomeClient()
+int PPTServer::welcomeClient()
 {
     // Doing a non blocking read in case the connection is being initiated
     // by a non-bes client. Don't want this to block. pcw - 3/5/07
@@ -179,52 +186,53 @@ PPTServer::welcomeClient()
     //
     // We are receiving handshaking tokens, so the buffer doesn't need to be
     // all that big. pcw - 05/31/08
-    unsigned int ppt_buffer_size = 64 ;
-    char *inBuff = new char[ppt_buffer_size+1] ;
-    int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
+    unsigned int ppt_buffer_size = 64;
+    char *inBuff = new char[ppt_buffer_size + 1];
+    int bytesRead = readBufferNonBlocking(inBuff, ppt_buffer_size);
 
     // if the read of the initial connection fails or blocks, then return
-    if( bytesRead == -1 )
+    if (bytesRead == -1)
     {
-	_mySock->close() ;
-	delete [] inBuff ;
-	return -1 ;
+        _mySock->close();
+        delete[] inBuff;
+        return -1;
     }
 
-    string status( inBuff, bytesRead ) ;
-    delete [] inBuff ;
+    string status(inBuff, bytesRead);
+    delete[] inBuff;
 
-    if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
+    if (status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION)
     {
-	/* If cannot negotiate with the client then we don't want to exit
-	 * by throwing an exception, we want to return and let the caller
-	 * clean up the connection
-	 */
-	string err( "PPT cannot negotiate, " ) ;
-	err += " client started the connection with " + status ;
-	BESDEBUG( "ppt", err << endl ) ;
-	//throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	send( err ) ;
-	_mySock->close() ;
-	return -1 ;
+        /* If cannot negotiate with the client then we don't want to exit
+         * by throwing an exception, we want to return and let the caller
+         * clean up the connection
+         */
+        string err("PPT cannot negotiate, ");
+        err += " client started the connection with " + status;
+        BESDEBUG( "ppt", err << endl );
+        //throw BESInternalError( err, __FILE__, __LINE__ ) ;
+        send(err);
+        _mySock->close();
+        return -1;
     }
 
-    if( !_secure )
+    if (!_secure)
     {
-	send( PPTProtocol::PPTSERVER_CONNECTION_OK ) ;
+        send(PPTProtocol::PPTSERVER_CONNECTION_OK);
+        BESDEBUG( "ppt", "Sent " << PPTProtocol::PPTSERVER_CONNECTION_OK << " to PPT client." << endl );
     }
     else
     {
-	authenticateClient() ;
+        authenticateClient();
     }
 
-    return  0 ;
+    return 0;
 }
 
 void
 PPTServer::authenticateClient()
 {
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
     BESDEBUG( "ppt", "requiring secure connection: port = "
 		     << _securePort << endl ) ;
     // let the client know that it needs to authenticate

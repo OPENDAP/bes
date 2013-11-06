@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -40,9 +40,10 @@ using std::map ;
 using std::string ;
 
 #include "BESObj.h"
+#include "BESDataHandlerInterface.h"
 
 class BESCatalog ;
-class BESInfo ;
+class BESCatalogEntry ;
 
 #define BES_DEFAULT_CATALOG "catalog"
 
@@ -72,23 +73,41 @@ private:
     map<string, BESCatalog *>	_catalogs ;
     string			_default_catalog ;
     static BESCatalogList *	_instance ;
+
+    static void initialize_instance();
+    static void delete_instance();
+
+    virtual ~BESCatalogList();
+
+    friend class BESCatalogListUnitTest;
+
+protected:
+    BESCatalogList();
+
+
 public:
     typedef map<string,BESCatalog *>::iterator catalog_iter ;
     typedef map<string,BESCatalog *>::const_iterator catalog_citer ;
 
-    				BESCatalogList() ;
-    virtual			~BESCatalogList() ;
+    static BESCatalogList * TheCatalogList() ;
+
+
+    virtual int			num_catalogs() { return _catalogs.size() ; }
+    virtual string		default_catalog() { return _default_catalog ; }
+
     virtual bool		add_catalog( BESCatalog *catalog ) ;
     virtual bool		ref_catalog( const string &catalog_name ) ;
     virtual bool		deref_catalog( const string &catalog_name );
     virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
-    virtual void		show_catalog( const string &container,
-					      const string &catalog_or_info,
-					      BESInfo *info ) ;
+    virtual BESCatalogEntry *	show_catalogs( BESDataHandlerInterface &dhi,
+					       BESCatalogEntry *entry,
+					       bool show_default = true ) ;
+    
+    virtual catalog_iter	first_catalog() { return _catalogs.begin() ; }
+    virtual catalog_iter	end_catalog() { return _catalogs.end() ; }
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESCatalogList *	TheCatalogList() ;
 } ;
 
 #endif // BESCatalogList_h_

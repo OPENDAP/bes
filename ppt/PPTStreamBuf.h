@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -54,9 +54,9 @@ public:
   unsigned int		how_many(){ return count ; }
 
   void			open( int fd, unsigned bufsize = 1 ) ;
-  
+
   int			sync() ;
-  
+
   int			overflow(int c) ;
 
   void			finish() ;

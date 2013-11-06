@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -106,6 +106,7 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
 			     << "instead of " << bytes_read ;
 		gzclose( gsrc ) ;
 		fclose( dest ) ;
+		remove( target.c_str() ) ;
 		throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;
 	    }
 	}

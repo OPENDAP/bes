@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -73,7 +73,17 @@ BESLog::BESLog()
 {
     _suspended = 0 ;
     bool found = false ;
-    _file_name = TheBESKeys::TheKeys()->get_key( "BES.LogName", found ) ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( "BES.LogName", _file_name, found ) ;
+    }
+    catch( ... )
+    {
+	string err = (string)"BES Fatal: unable to determine log file name."
+	             + " The key BES.LogName has multiple values" ;
+	cerr << err << endl ;
+	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+    }
     if( _file_name == "" )
     {
 	string err = (string)"BES Fatal: unable to determine log file name."
@@ -81,25 +91,17 @@ BESLog::BESLog()
 	cerr << err << endl ;
 	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
     }
-    else
+    _file_buffer = new ofstream( _file_name.c_str(), ios::out | ios::app ) ;
+    if( !(*_file_buffer) )
     {
-	_file_buffer = new ofstream( _file_name.c_str(), ios::out | ios::app ) ;
-	if( !(*_file_buffer) )
-	{
-	    string err = (string)"BES Fatal; cannot open log file "
-	                 + _file_name + "." ;
-	    cerr << err << endl ;
-	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-	} 
-	/*
-	if (_flushed)
-	{
-	    dump_time();
-	    _flushed=0;
-	}
-	*/
-    }
-    string verbose = TheBESKeys::TheKeys()->get_key( "BES.LogVerbose", found ) ;
+	string err = (string)"BES Fatal; cannot open log file "
+		     + _file_name + "." ;
+	cerr << err << endl ;
+	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+    } 
+    found = false ;
+    string verbose ;
+    TheBESKeys::TheKeys()->get_value( "BES.LogVerbose", verbose, found ) ;
     if( verbose == "YES" || verbose == "Yes" || verbose == "yes" )
     {
 	_verbose = true ;

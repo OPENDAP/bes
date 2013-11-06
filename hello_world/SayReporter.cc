@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -40,7 +40,7 @@ SayReporter::SayReporter()
       _file_buffer( 0 )
 {
     bool found = false ;
-    _log_name = TheBESKeys::TheKeys()->get_key( "Say.LogName", found );
+    TheBESKeys::TheKeys()->get_value( "Say.LogName", _log_name, found );
     if( _log_name == "" )
     {
 	throw BESInternalError( "cannot determine Say log name", __FILE__, __LINE__ ) ;

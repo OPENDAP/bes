@@ -1,3 +1,3477 @@
+2013-09-10  James Gallagher <jgallagher@opendap.org>
+
+	changes for distcheck
+
+	M    dap/unit-tests/Makefile.am
+	M    server/DaemonCommandHandler.cc
+	M    dispatch/TheBESKeys.h
+	M    xmlcommand/unit-tests/test_config.h.in
+	M    xmlcommand/unit-tests/buildT.cc
+	M    xmlcommand/unit-tests/Makefile.am
+
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	build fix: gse.y was listed in EXTRA_DIST but gse.yy should have
+	been lsited.
+
+2013-08-29  James Gallagher <jgallagher@opendap.org>
+
+	I removed the BES_CONF environment variable. We used this in some
+	tests but there is an easy fix: use 'TheBESKeys::ConfigFile =
+	"./bes.conf";' or the equivalent after including "TheBESKeys.h".
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Build/Audit fixes.
+
+	M    libdap/XDRFileUnMarshaller.cc
+	M    libdap/XDRFileUnMarshaller.h
+	M    bes/dispatch/unit-tests/keysT.cc
+	M    bes/functions/Makefile.am
+
+2013-08-28  James Gallagher <jgallagher@opendap.org>
+
+	Fixes from the audit
+
+	M    server/daemon.cc
+	M    dispatch/TheBESKeys.cc
+	M    Makefile.am
+
+2013-08-27  James Gallagher <jgallagher@opendap.org>
+
+	audit fixes
+
+	M    libdap/Makefile.am
+	M    bes/dispatch/unit-tests/BESCache3Test.cc
+	M    bes/functions/tests/functionsTest.at
+	M    bes/functions/tests/bescmd/bind_name_4.dods.bescmd.baseline
+	M    bes/functions/tests/bescmd/bind_name_2.dods.bescmd.baseline
+
+2013-08-26  James Gallagher <jgallagher@opendap.org>
+
+	indenting...
+
+	M    dapreader/DapModule.cc
+
+2013-08-26  James Gallagher <jgallagher@opendap.org>
+
+	Dropped the %requires down to 2.4
+
+	M    functions/gse.yy
+
+2013-08-21  James Gallagher <jgallagher@opendap.org>
+
+	parser build rule fix
+
+2013-08-20  James Gallagher <jgallagher@opendap.org>
+
+	ignore the generated scanner code
+
+2013-08-20  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for the GSE paraser.
+
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixed up the GSE Clause parsers so they work with modern bison versions.
+
+2013-08-02  James Gallagher <jgallagher@opendap.org>
+
+	Fixed broken function registration. The MakeArray function was
+	registered twice and LinearScale not at all. All the tests
+	involving LinearScale failed. Fixed.
+
+	M    functions/DapFunctions.cc
+
+2013-07-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bes/functions module: GrideoConstraint test fixed;
+	DapFunctions fixed errant checki; Makefile hack that attempts to
+	work around error messages for unit-tests.
+
+2013-07-10  James Gallagher <jgallagher@opendap.org>
+
+	Merged code from the miic_6.2013 branch. These changes include new
+	functions and tests for the new #<type>() special form. This
+	provides a way to use large arrays in CEs.
+
+	_M   .
+	M    configure.ac
+	A  + dap/dap_help.txt
+	D    dap/bes-testsuite
+	AM + dap/tests
+	MM   dap/BESDapTransmit.cc
+	A  + dap/BESDAPCache.h
+	A  + dap/BESDapResponseBuilder.cc
+	A  + dap/dap_help.xml
+	AM + dap/unit-tests
+	_M   dap/unit-tests/response_cache
+	A  + dap/dap_help.html
+	A  + dap/BESDapResponseCache.cc
+	A  + dap/BESDapResponseCache.h
+	M    dap/dap.conf.in
+	MM   dap/BESDapTransmit.h
+	A  + dap/BESDAPCache.cc
+	M    dap/Makefile.am
+	A  + dap/BESDapResponseBuilder.h
+	_M   dispatch/BESCatalogList.cc
+	_M   dispatch/BESCatalog.h
+	_M   dispatch/BESCatalogEntry.cc
+	_M   dispatch/BESCatalogDirectory.h
+	_M   dispatch/BESCatalogResponseHandler.cc
+	D    dispatch/bes/dap_help.html
+	D    dispatch/bes/dap_help.txt
+	D    dispatch/bes/dap_help.xml
+	D    dispatch/bes/dap.conf.in
+	A  + dispatch/bes/old
+	_M   dispatch/BESCatalogUtils.h
+	_M   dispatch/BESCatalogList.h
+	M    dispatch/Makefile.am
+	_M   dispatch/BESContainerStorageCatalog.h
+	_M   dispatch/BESCatalogResponseHandler.h
+	_M   dispatch/BESCatalogUtils.cc
+	_M   dispatch/BESContainerStorageCatalog.cc
+	_M   dispatch/BESCatalogEntry.h
+	_M   dispatch/BESCatalogDirectory.cc
+	A  + functions/GridFunction.cc
+	A  + functions/VersionFunction.cc
+	A  + functions/GridFunction.h
+	A  + functions/VersionFunction.h
+	M    functions/DapFunctions.cc
+	M    functions/DapFunctions.h
+	A  + functions/BindShapeFunction.cc
+	A  + functions/BindShapeFunction.h
+	M    functions/GSEClause.cc
+	M    functions/GSEClause.h
+	AM + functions/tests
+	D    functions/ArrayGeoConstraint.cc
+	A  + functions/old_and_in_the_way
+	A  + functions/BindNameFunction.cc
+	A  + functions/MakeArrayFunction.h
+	A  + functions/BindNameFunction.h
+	A  + functions/GeoGridFunction.cc
+	A  + functions/LinearScaleFunction.h
+	D    functions/unit-tests/ArrayGeoConstraintTest.cc
+	M    functions/unit-tests/CEFunctionsTest.cc
+	M    functions/unit-tests/GridGeoConstraintTest.cc
+	M    functions/unit-tests/Makefile.am
+	D    functions/gse-test.cc
+	M    functions/gse_parser.h
+	M    functions/grid_utils.cc
+	M    functions/grid_utils.h
+	M    functions/GeoConstraint.cc
+	D    functions/ce_functions.cc
+	D    functions/ArrayGeoConstraint.h
+	M    functions/GeoConstraint.h
+	D    functions/ce_functions.h
+	A  + functions/MakeArrayFunction.cc
+	M    functions/GridGeoConstraint.cc
+	M    functions/Makefile.am
+	A  + functions/GeoGridFunction.h
+	A  + functions/LinearScaleFunction.cc
+
+2013-07-09  James Gallagher <jgallagher@opendap.org>
+
+	Trunk fixes for the functions module in the libdap and bes spec
+	files. Also a repair to XDRStreamMarshaller.cc
+
+2013-06-04  James Gallagher <jgallagher@opendap.org>
+
+	Added .deps to svn:ignore
+
+2013-05-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for linux - CentOS 6 comes with gdal 1.7 but our code
+	needs a newer version. I Hacked the ax_lib_gdal.m4 script
+	so that it looks for the version of gdal and sets the GDAL
+	variables to null if 1.10+ is not found (it was returning an
+	error).
+
+	M    conf/ax_lib_gdal.m4
+	M    configure.ac
+
+2013-05-20  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repairing priduction rules for gdal and pthreads dependecies
+
+2013-05-20  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repairing priduction rules for gdal and pthreads dependecies
+
+2013-05-17  James Gallagher <jgallagher@opendap.org>
+
+	Changes to get the distcheck target working
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	comments
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	Added files to the svn ignore property
+
+2013-05-16  James Gallagher <jgallagher@opendap.org>
+
+	Excised the errant 'function_dap()' server function and added #include <util.h> to some unit tests. These changes were needed since the code moved here from it's former home in libdap.
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: team sync
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adding conditional production rules for swath2grid
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Almost have swath2grid compiling. Team sync
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added configure options for valgrind
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adding gdal lib check m4 file.
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-16  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Adjusted production rules so that the Makefile for bes/functions/swath2grid is built, but refrained from addin swath2grid to the SUBDIRS var in bes/functions/Makefile.am. This means you can build it by hand but it's not built automagically.
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Got unit tests working in bes/functions/unit-tests
+
+2013-05-15  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	libdap: Moving trunk/libdap/unit-tests/ce-functions-testsuite to trunk/bes/functions/unit-tests because that's where the functions are that need the contents of that directory.
+
+2013-05-14  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes/dispatch: Repaired problems with conditional build in BESCatalogList
+
+2013-05-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Modified command line option handler in BESCatalogListTest
+
+2013-05-10  James Gallagher <jgallagher@opendap.org>
+
+	massive SVN ignore...
+
+2013-05-09  James Gallagher <jgallagher@opendap.org>
+
+	Added using namespace std and removed some excess blank lines, commented DBG code, ...
+
+2013-05-09  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Removed include of GetOpt.h from BESCatalogListUnitTest
+
+2013-05-09  James Gallagher <jgallagher@opendap.org>
+
+	<vector.h> --> <vector> in #include
+
+2013-05-07  James Gallagher <jgallagher@opendap.org>
+
+	changed from $(top_srcdir) to $top_builddir) in the specification of a
+	library in dispatch/unit-tests. The distcheck target is working again.
+
+	M    dispatch/unit-tests/Makefile.am
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixed BESCatalogList lifecycle memory leak. Wrote and tested unit test to verify the fix was effective.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: dispatch unit tests seem to be working.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: dispatch unit tests seem to be working.
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Trying to fix unit-tests
+
+2013-05-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: First pass at fixing lifecycle memory leaks in  singleton BESCatalogList
+
+2013-05-06  James Gallagher <jgallagher@opendap.org>
+
+	Added some comments to BESDapTransmitt.cc since there will be changes there as support for DMR data response objects is added. Also, this may be where the cache support for DAP response objects moves (from libdap).
+
+2013-05-01  James Gallagher <jgallagher@opendap.org>
+
+	formatting and comments
+
+	M    dap/BESDapTransmit.cc
+	M    dap/BESDDSResponse.cc
+	M    dispatch/BESResponseObject.h
+	M    dispatch/BESContextManager.cc
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	spelling in a comments; formatting
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	spelling in a comment
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Formatting changes only
+
+2013-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Added files to svn ignore
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Comments, logging, formatting.
+
+2013-02-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: repaired character case issurs in import statements
+
+2013-02-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added code to functions so that grid() and geogrid() show up in the version() function response only when the dataset has a grid or geo located grid
+
+2013-02-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added methods to ServerFunctionsList to allow inspection of the list contents.
+
+2013-02-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moved AbstractFunction class to ServerFunction class
+
+2013-02-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added the use of AbstractFunction class.
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed besdap; note that this code (in dap/bes-testsuite) is not run at all in the current version of the bes (1/2/13)
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the distcheck target
+
+	M    dapreader/DapRequestHandler.cc
+	M    configure.ac
+	M    dap/bes-testsuite/bes.conf.in
+	M    dap/bes-testsuite/Makefile.am
+	M    dap/bes-testsuite/package.m4
+	M    dap/Makefile.am
+	M    functions/ce_functions.cc
+	M    functions/Makefile.am
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	removed old code from the DapFunctions class
+
+2013-01-31  James Gallagher <jgallagher@opendap.org>
+
+	removed old code from the DapFunctions class
+
+2013-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Added LEX adn YACC macros to the configure.ac file.
+
+	M    configure.ac
+	M    dap/BESDapTransmit.cc
+	A    functions/unit-tests
+	A    functions/unit-tests/ArrayGeoConstraintTest.cc
+	A    functions/unit-tests/CEFunctionsTest.cc
+	A    functions/unit-tests/GridGeoConstraintTest.cc
+	M    functions/Makefile.am
+
+2013-01-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Updating configure for automake-.ac1.13
+
+2013-01-30  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Removed BES ServerFunctionsList; its now in libdap.
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Changed the way functions are registered so that CE does not have to copy all the functions into every instance of the CE class. Now CE uses functions directly from a list in libdap.
+
+2013-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Changed the name of the 'dap' module back to libdap_module so that the existing hander test config files will work w/o edits.
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed unneeded function declarations
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed conf from dap since it's not needed.
+
+	D    dap/conf
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Module builds and BES starts when it's included.
+
+	_M   functions
+	D    functions/dap_functions.conf.in
+	A  + functions/functions.conf.in
+	A    functions/ArrayGeoConstraint.cc
+	A    functions/ArrayGeoConstraint.h
+	M    functions/Makefile.am
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Build changes - I cleaned up the dispatch Makefile.am so that it no longer builds/installs
+	a dap.conf file.
+
+	M    configure.ac
+	M    dispatch/Makefile.am
+	M    dispatch/BESRequestHandler.h
+	M    functions/DapFunctions.cc
+	M    functions/ce_functions.h
+	M    functions/Makefile.am
+	M    Makefile.am
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Mistakenly added Makefile.in...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Factoring DAP out of BESCatalog*
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Update for functions
+
+	M    functions/Makefile.in
+	M    functions/GSEClause.cc
+	M    functions/gse.lex
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: depending on dependencies...
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixing dependencies
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixing dependencies
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added basic DAP server functions here. These have been copied from libdap but will work as a standalone module.
+
+2013-01-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: REmoved dependency betwee dispatch and dap
+
+2013-01-28  James Gallagher <jgallagher@opendap.org>
+
+	Added Server Functions List code
+
+2013-01-27  James Gallagher <jgallagher@opendap.org>
+
+	Added pkginclude_HEADERS to the new dap module Makefile.am
+
+2013-01-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Dropping configure.ac from dap  odule
+
+2013-01-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Reomving Makefile.in
+
+2013-01-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the --dap-libs value given the new organization where DAP code
+	is a true module.
+
+	M    bes-config.in
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	dap.conf now built in bes/dap and modified for the new code layout.
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	make install now works
+
+	A  + dap/bes-testsuite/Makefile.in
+	M    dap/Makefile.am
+	M    server/Makefile.am
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Build appears to be working sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Build appears to be working sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Team Sybc
+
+2013-01-25  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for new dap module for BES
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Incremental check-in for team sync.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired (I think) autoconf/automake inputs and now the bes builds.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Checking in incrmental repair of build rules.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Moving BES DAP soures from the dispatch module to their own module, dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Replacing the dap dir with the besdap_module stuff I put at the top level. Step 2: mv trunk/besdap_module to trunk/bes/dap.
+
+2013-01-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Replacing the dap dir with the besdap_module stuff I put at the top level. Step 1: Remove the be/dap dir.
+	-This line, and those below, will be ignored--
+
+	D    https://scm.opendap.org/svn/trunk/bes/dap
+
+2013-01-18  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the 3.11.0-1 code (hyrax 1.8 release branch) into the trunk.
+
+	_M   .
+	_M   conf
+	_M   dapreader
+	_M   dapreader/bes-testsuite
+	M    dapreader/bes-testsuite/package.m4
+	_M   docs
+	_M   ppt/unit-tests
+	M    configure.ac
+	_M   server
+	_M   server/test
+	M    server/ServerApp.cc
+	M    server/Makefile.am
+	M    INSTALL
+	_M   bin
+	M    NEWS
+	M    ChangeLog
+	_M   standalone
+	M    standalone/Makefile.am
+	M    standalone/StandAloneApp.cc
+	_M   cmdln
+	_M   cmdln/unit-tests
+	M    cmdln/Makefile.am
+	_M   cmdln/testsuite
+	M    cmdln/testsuite/nc/fnoc1.nc.2.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.5.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.0.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.2.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_basic.0.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	A  + cmdln/testsuite/generate_data_baseline.sh.in
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.6.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.0.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.1.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.3.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.4.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.0.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.1.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.6.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.0.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.1.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.0.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.3.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.1.bescmd
+	M    cmdln/testsuite/hdf4/S2000415.HDF.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.0.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.1.bescmd
+	M    cmdln/testsuite/Makefile.am
+	A  + cmdln/testsuite/generate_metadata_baseline.sh.in
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.5.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.6.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.8.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.8.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.0.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.1.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.3.bescmd.baseline
+	M    cmdln/testsuite/besTest.at
+	M    README
+	_M   templates
+	_M   xmlcommand
+	_M   xmlcommand/unit-tests
+	_M   dispatch
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESCatalog.h
+	M    dispatch/TheBESKeys.h
+	M    dispatch/BESCatalogEntry.cc
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESModuleApp.cc
+	_M   dispatch/bes
+	M    dispatch/BESCatalogUtils.h
+	M    dispatch/BESUtil.cc
+	M    dispatch/Makefile.am
+	M    dispatch/TheBESKeys.cc
+	M    dispatch/BESContainer.h
+	M    dispatch/BESDataDDSResponse.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESDDSResponse.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESCache3.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESCatalogEntry.h
+	_M   dispatch/unit-tests
+	_M   dispatch/unit-tests/cache
+	M    dispatch/BESDapTransmit.h
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    bes.spec
+	M    Makefile.am
+
+2013-01-15  James Gallagher <jgallagher@opendap.org>
+
+	Mostly minor changes for compiler warnings; also changes for the
+	(un)compression cache.
+
+	_M   .
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/PPTConnection.cc
+	M    cmdln/testsuite/Makefile.am
+	M    xmlcommand/BESXMLInterface.cc
+	M    dispatch/BESDataDDXResponseHandler.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	D    dispatch/BESUncompressManager2.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESCache3.h
+	M    dispatch/BESServiceRegistry.h
+	M    dispatch/BESContainerStorageFile.cc
+	D    dispatch/BESCache2.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESCache3.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/unit-tests/Makefile.am
+	D    dispatch/BESUncompressManager2.h
+	D    dispatch/BESCache2.h
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn:ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-24  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff to svn ignore
+
+2012-12-21  James Gallagher <jgallagher@opendap.org>
+
+	memory leaks removed from besstandalone: Started at 20, now at 7.
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Changed svn ignore properties
+
+2012-11-16  James Gallagher <jgallagher@opendap.org>
+
+	Updated ChangeLog; reformatted BESDapTransmit.cc so it's easier to
+	read and fixed some of the includes, removing a few unnecessary
+	files.
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	distcheck really fixed this time?
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	Eh - removed the AT_TESTED() macro to quiet a distcheck error about
+	AT_BUGREPORT nt=ot being defined - it is defined in package.m4.
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	distcheck really fixed this time?
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-02  James Gallagher <jgallagher@opendap.org>
+
+	Eh - removed the AT_TESTED() macro to quiet a distcheck error about
+	AT_BUGREPORT nt=ot being defined - it is defined in package.m4.
+
+	M    cmdln/testsuite/besTest.at
+
+2012-11-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed cache dir permissions in the bes.spec file
+
+2012-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Change to the Makefile so that the libdap client code is linked into
+	the libdap_module (it's used for the caching operations)
+
+	M    dispatch/Makefile.am
+	M    dispatch/BESCache3.cc
+
+2012-09-28  James Gallagher <jgallagher@opendap.org>
+
+	A more sensible branch name
+
+	A    https://scm.opendap.org/svn/branch/bes/hyrax-1.8-release
+
+2012-07-27  James Gallagher <jgallagher@opendap.org>
+
+	Added a set_dds() method to BESDDSResponse and BESDataDDSResponse.
+	This enables a handler to subclass the DDS/DataDDS and have the
+	BES use that subclass. This is a way for handlers to manage
+	resources like files, for example, by arranging to have those
+	files closed with the (specialized) DDS's dtor is run.
+
+2012-07-26  James Gallagher <jgallagher@opendap.org>
+
+	I found a leak using valgrind in BESCatalogUtils, but my attempt
+	to fix it appears to have fallen short. I left the new code in the
+	file, but commented out.
+
+2012-06-07  James Gallagher <jgallagher@opendap.org>
+
+	spelling...
+
+2012-06-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixed problem with make install in the server bits...
+
+2012-04-17  James Gallagher <jgallagher@opendap.org>
+
+	Updated
+
+	M    NEWS
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	Bumped the version number to 3.10.4
+
+	M    configure.ac
+	M    bes.spec
+
+2012-04-12  James Gallagher <jgallagher@opendap.org>
+
+	Result of merging changes from the trunk. This code was	then merged to
+	the trunk and tagged.
+
+	_M   .
+	M    configure.ac
+	_M   templates/module.spec.template
+	M    dispatch/BESCatalogEntry.cc
+	M    dispatch/Makefile.am
+	_M   dispatch/BESTokenizer.h
+	M    dispatch/BESCatalogUtils.cc
+	_M   dispatch/BESTokenizer.cc
+	M    dispatch/BESCatalogEntry.h
+	M    dispatch/unit-tests/catT.cc
+	M    dispatch/unit-tests/Makefile.am
+	_M   OSX_Resources/InstallationCheck.proto
+	_M   OSX_Resources/Info.plist.proto
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2012-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Modified bes.conf.in to accommodate the new cache for compressed files. The cache no longer uses retry times.
+
+2012-04-05  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an issue in BESCache3 where files where not closed when a nonblocking lock could not be obtained on a file.
+
+2012-04-05  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the Makefile.am in bes/dispatch/unit-tests
+
+2012-04-04  James Gallagher <jgallagher@opendap.org>
+
+	Tuning plus a fix for purging where files are not locked exclusively during the purge.
+
+2012-04-04  James Gallagher <jgallagher@opendap.org>
+
+	BESCache3 improvements: Atomic shared and exclusive lock
+	acquisition simplifies use; purge and cache info code now manages
+	its own locks so the caller doesn't need to; shared locks used
+	where they make sense. Passes tests. Fixed BESFileContainer.cc so
+	that it uses a compile-time switch to choose between the original
+	cache and the new one.
+
+2012-04-03  James Gallagher <jgallagher@opendap.org>
+
+	Modified the 'cache lock' so that it keeps the cache info (i.e.
+	lock file) open for the duration and thus can use fcntl(2)
+	atomically to set and release locks.
+
+2012-04-03  James Gallagher <jgallagher@opendap.org>
+
+	Working; optimization to decompress values w/o the cache being locked works. Saves about 20% of time with four processes.
+
+2012-04-03  James Gallagher <jgallagher@opendap.org>
+
+	Cleaned up the Cache3 code so that the old variants of lock-here versus lock-there are removed.
+
+2012-04-03  James Gallagher <jgallagher@opendap.org>
+
+	This version of the code correctly handles the case where the cache is not locked during decompression. It works on both OSX and Linux. There's still room for improvement and performance tests, but this can be used.
+
+2012-04-02  James Gallagher <jgallagher@opendap.org>
+
+	More changes; working on the deadlock issue that arises when the cache is unlocked during the decompression operations.
+
+2012-04-02  James Gallagher <jgallagher@opendap.org>
+
+	The fcntl(2) locking works on linux, but I found an issue with the uncompress functions - they close the dest file, which releases the lock. Modified the code for GZ and will do more testing.
+
+2012-04-02  James Gallagher <jgallagher@opendap.org>
+
+	Updated for linux build
+
+	M    dispatch/unit-tests/BESCache3Test.cc
+
+2012-04-02  James Gallagher <jgallagher@opendap.org>
+
+	Problem in isLocked() fixed - was not closing file after testing.
+
+2012-04-02  James Gallagher <jgallagher@opendap.org>
+
+	BESCache3 is fixed an optimized so that it does not lock the cache during the file decompression, which means it allows simultaneous decompressions and reads. The cache is locked during file lock acqusition and cache purge operations. Still more testing, however...
+
+2012-04-01  James Gallagher <jgallagher@opendap.org>
+
+	BESCache3 works but still has to lock the entire cache for both the shared and exclusive lock access. Work on this; test on Linux.
+
+2012-03-31  James Gallagher <jgallagher@opendap.org>
+
+	BESCache3 and BESUncompressManager3 appear to work now. They pass the same stress test that BESCache2 passes
+
+2012-03-30  James Gallagher <jgallagher@opendap.org>
+
+	checkpoint
+
+2012-03-30  James Gallagher <jgallagher@opendap.org>
+
+	Added BESCache3 because linux lacks the lock semantics of OS/X's open(2) system service. Must reimplement using fcntl...
+
+2012-03-30  James Gallagher <jgallagher@opendap.org>
+
+	Added include for ostringstream
+
+2012-03-29  James Gallagher <jgallagher@opendap.org>
+
+	BESCache2 tests OK. All that's left is a test on linux.
+
+2012-03-29  James Gallagher <jgallagher@opendap.org>
+
+	BESCache2 compiles again.
+
+2012-03-29  James Gallagher <jgallagher@opendap.org>
+
+	BESCache2 broken - checkpoint.
+
+2012-03-29  James Gallagher <jgallagher@opendap.org>
+
+	Cache code appears to pass tests - 5 processes simultaneously accessing the cache 2000 times each where there are far more compressed files than will fit in the cache at one time (so there are lots of purge operations). There may be ways to improve its performance a bit...
+
+2012-03-28  James Gallagher <jgallagher@opendap.org>
+
+	Cache code. Testing, race condition with cache purging.
+
+2012-03-27  James Gallagher <jgallagher@opendap.org>
+
+	some headway on the multiprocess tests...
+
+2012-03-27  James Gallagher <jgallagher@opendap.org>
+
+	Fixed some minor issues in the cache code - unnecessary recalculation of sizes, normalized the cache to always use sizes in bytes but take configuration in sizes in megabytes, streamline error messages (need to check on that).
+
+2012-03-27  James Gallagher <jgallagher@opendap.org>
+
+	Improved cache purge code by changing the 'head room' param to 20%. Also fixed a problem where the megs versus bytes things were broken.
+
+2012-03-27  James Gallagher <jgallagher@opendap.org>
+
+	BESCache2 might be working - single process tests appear to work; have not tried multiprocess tests yet. Must work on some other stuff for a bit...
+
+2012-03-27  James Gallagher <jgallagher@opendap.org>
+
+	caching: basic tests pass
+
+2012-03-26  James Gallagher <jgallagher@opendap.org>
+
+	Checkpoint...
+
+2012-03-26  James Gallagher <jgallagher@opendap.org>
+
+	checkpoint - fixes for the file-descriptor unlock method. No tests yet...
+
+2012-03-26  James Gallagher <jgallagher@opendap.org>
+
+	checkpoint for the BESCache2 code - not quite working...
+
+2012-02-10  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the broken bes.pid file problem when using rpms. The problem was caused by having the besdaemon write the pid file after switching its UID from root. To fix this I changed when the pid file is written so that it is written by root. I aslo changed the directory where its written (likely not actually needed given the first change) so that the rpm-installed bes writes the pid file to /var/run/bes/bes.pid and the /var/run/bes dir is group writable by bes. This might be useful if the bes is ever run in developer mode from an RPM (unlikely, but...)
+
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Version 3.10.1
+
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
+
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Cleaned up error rporting in TcpSocket.cc. Also fixed the way
+	the getservbyport() was being used so it works.
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Patched part of bug 1881: BES now correctly queries the
+	/etc/services
+
+2012-02-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes:updated error messages in ppt
+
+2012-01-10  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Now returns zero on EOF, not -1.
+
+	M    cmdln/CmdClient.cc
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Now returns zero on EOF, not -1.
+
+	M    cmdln/CmdClient.cc
+
+2012-01-06  James Gallagher <jgallagher@opendap.org>
+
+	code review
+
+2012-01-03  James Gallagher <jgallagher@opendap.org>
+
+	Minor fixes...
+
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESStatus.cc
+
+2011-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Fix for older versions of OSX (with older versions of libxml2).
+
+	M    server/DaemonCommandHandler.cc
+
+2011-11-23  Patrick West <pwest@ucar.edu>
+
+	strerror requires string.h, so including cstring
+	M    dispatch/BESDataResponseHandler.cc
+
+2011-11-13  James Gallagher <jgallagher@opendap.org>
+
+	Undid a 'fix' for the xmlTextWriter code that may have actually
+	broken it. Hard to tell, because the API is a little odd, but I
+	think the code is now correct.
+
+2011-10-24  James Gallagher <jgallagher@opendap.org>
+
+	Removed some cruft from BESXMLWriter.
+
+	Fixed a problem with daemon.cc when building in developer mode -
+	the curr_euid variable was used but not defined.
+
+2011-10-21  James Gallagher <jgallagher@opendap.org>
+
+	In the bes/server code, I replaced the class 'XMLWriter' with
+	BESXMLWriter to avoid confusion with libdap's XMLWriter class.
+
+2011-10-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an issue in BESDataRepsonseHandler where the new response
+	size limit feature was broken when the special value of zero was
+	used. Also, TheBESKeys is using an env var which is not really a
+	great thing for server to be doing; I set things up so that we can
+	switch that out in the future.
+
+2011-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bunch of tickets and other stuff not in tickets including
+	the "The beslistener status is not 'BESLISTENER_RUNNING' (it is
+	'1') the master pid was not changed." bug.
+
+2011-10-06  James Gallagher <jgallagher@opendap.org>
+
+	Fix for ticket 1778 - When the server is run as root the log file
+	was being created by root and then the server could not write to
+	it.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+	A    http://scm.opendap.org/svn/branch/bes/3.9.3
+
+2011-08-24  James Gallagher <jgallagher@opendap.org>
+
+	Merge of Hyrax 1.7.1
+
+	_M   .
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    server/DaemonCommandHandler.cc
+	M    server/daemon.cc
+	M    NEWS
+	M    ChangeLog
+	_M   templates/module.spec.template
+	M    dispatch/BESSetContextResponseHandler.cc
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	M    bes.spec
+	_M   OSX_Resources/InstallationCheck.proto
+	_M   OSX_Resources/Info.plist.proto
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2011-07-28  Patrick West <pwest@ucar.edu>
+
+	Fix for using sizeof( char *eod_marker ), and replacing with const
+	size_t value.
+	M    ppt/PPTStreamBuf.cc
+
+>>>>>>> .merge-right.r25436
+2011-07-29  Patrick West <pwest@ucar.edu>
+
+	Using sizeof( eod_marker ), which is a char *. On 32 bit machines this
+	will be 4 and on 64 bit machines 8. The correct value is 8 (by chance).
+	Replaced with const size_t.
+	M    ppt/PPTStreamBuf.cc
+
+2011-05-10  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the Makefile.am; use mkdir -p in bes/bes.conf and
+	bes/dap.conf because in a parallel build the test -d might both
+	return false and then a bare mkdir bes can return an error
+	(becase the other one ran after the test-d test failed. (NB: I
+	removed the test -d).
+
+2011-05-09  Patrick West <pwest@ucar.edu>
+
+	Need to make sure we read all of the bytes.
+	M    unit-tests/sbT.cc
+
+2011-05-05  James Gallagher <jgallagher@opendap.org>
+
+	changes to the PPT implementation: I've removed teh fsync calls,
+	removed the warnings about comparisons between signed and
+	unsigned ints and used a constant in PPTStreamBuf to write the
+	EOD marker.
+
+	M    ppt/PPTClient.cc
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/Socket.h
+	M    ppt/PPTStreamBuf.h
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTConnection.h
+	M    ppt/Socket.cc
+
+2011-05-04  James Gallagher <jgallagher@opendap.org>
+
+	h 1.7 edits
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2011-04-25  James Gallagher <jgallagher@opendap.org>
+
+	Removed the doc rpm
+
+	M    bes.spec
+
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 releaseHyrax 1.7 release
+
+2011-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Changed default location of the bes log file
+
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+
+2011-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Changed default log location to $prefix/var/bes.log
+
+	M    dispatch/bes/bes.conf.in
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7 RC1
+
+	M    ppt/UnixSocket.cc
+	M    ppt/SSLClient.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESShowErrorResponseHandler.cc
+
+2011-03-25  Patrick West <pwest@ucar.edu>
+
+	removed SSL code from build.
+	M    ppt/PPTClient.cc
+	M    ppt/PPTServer.cc
+	M    ppt/Makefile.am
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added automated version numbers to OSX Package builds
+
+2011-03-10  Patrick West <pwest@ucar.edu>
+
+	erase doesn't return any value except the one where you pass in a
+	starting iterator and ending iterator, a range of iterators. And
+	that one returns the number of values erased. This for version
+	4.2.1 of the gnu g++ compiler.
+
+	M dispatch/BESReporterList.cc
+
+2011-03-10  James Gallagher <jgallagher@opendap.org>
+
+	BES issues - jhrg
+
+2011-03-10  Patrick West <pwest@ucar.edu>
+
+	If building the BES without libdap, then don't build the dapreader
+	M    Makefile.am
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	Error in explode when last character is the delimiter. Fixed the
+	explode method, then the code that uses it.
+
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/unit-tests/utilT.cc
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax 1.7 from the hyrax_1.6.2_release branch of shrew
+	to the trunk
+
+	_M   .
+	_M   templates/module.spec.template
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESRequestHandlerList.cc
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	D    OSX_Resources/ReadMe.txt
+	M    doxy.conf
+	M    Makefile.am
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2011-03-05  Patrick West <pwest@ucar.edu>
+
+	Fixed distcheck issue
+	
+	M    dapreader/bes-testsuite/Makefile.am
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	Pointing to correct libraries. For make check to work, though, the bes
+	has to be installed first.
+	
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	not doing bes-testsuite for now
+	
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	COPYING and COPYWRITE files not needed
+	
+	M    dapreader/Makefile.am
+
+2011-03-01  James Gallagher <jgallagher@opendap.org>
+
+	Added a call to DDS' Keywords object to parse CE keyword for the
+	dap version and then set the dhi first_container's constraint to
+	the hacked result of that parse (the parser returns the CE with
+	the keyword removed). Tested - works.
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	including cstring for string comparison function
+	M    dispatch/unit-tests/cacheT.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Needed libraries for this to work on linux
+	M    dapreader/Makefile.am
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Added dapreader. Removed csv-handler
+	A    dapreader
+	A    dapreader/DapRequestHandler.cc
+	A    dapreader/bes-testsuite
+	A    dapreader/bes-testsuite/dapreader_moduleTest.at
+	A    dapreader/bes-testsuite/bes.conf.in
+	A    dapreader/bes-testsuite/atlocal.in
+	A    dapreader/bes-testsuite/dap
+	A    dapreader/bes-testsuite/dap/test.00.bescmd
+	A    dapreader/bes-testsuite/dap/test.00.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.01.bescmd
+	A    dapreader/bes-testsuite/dap/test.01.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.02.bescmd
+	A    dapreader/bes-testsuite/dap/test.02.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.03.bescmd
+	A    dapreader/bes-testsuite/dap/test.03.bescmd.baseline
+	A    dapreader/bes-testsuite/Makefile.am
+	A    dapreader/bes-testsuite/package.m4
+	A    dapreader/DapModule.h
+	A    dapreader/dapreader.conf.in
+	A    dapreader/DapRequestHandler.h
+	A    dapreader/bes.log
+	A    dapreader/data
+	A    dapreader/data/fnoc1.dds
+	A    dapreader/data/fnoc1.das
+	AM   dapreader/data/fnoc1.data
+	A    dapreader/Makefile.am
+	A    dapreader/dapreader.conf
+	A    dapreader/DapResponseNames.h
+	A    dapreader/DapModule.cc
+	M    configure.ac
+	M    Makefile.am
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Making this a real handler
+	A    http://scm.opendap.org/svn/trunk/csv_handler
+	D    http://scm.opendap.org/svn/trunk/bes/csv-handler
+
+2011-02-08  James Gallagher <jgallagher@opendap.org>
+
+	Support for the new ResponseBuilder class - this replaces
+	DODSFilter, dropping that class' baggage from the CGI days and
+	includes the ability to parse CE keywords (although we might not
+	use this ultimately). Also, this checking includes a patch for the
+	ticket 1710 where the hdf4 handler seems to have a memory bug that
+	causes a seg fault when the handler is removed.
+
+2011-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Added d_lib = 0 to the code in BESPlugin.h that calls dlclose().
+
+2011-02-03  Patrick West <pwest@ucar.edu>
+
+	Removed, no longer used.
+	D    csv-handler/dap_csv_handler.cc
+
+2011-02-03  Patrick West <pwest@ucar.edu>
+
+	Reverse order in termination as was in initialization. Fixed a couple
+	issues in BESRegex. ContainerStorageCatalog was calling include and
+	exclude on a node when include already calls exclude internally.
+	Converted CatalogUtils to use BESRegex instead of GNURegex from libdap.
+	M    server/ServerApp.cc
+	M    standalone/StandAloneApp.cc
+	M    dispatch/BESRegex.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+
+2011-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Removed some old tests for avhrr data that will always fail
+	because the data have moved.
+
+	M    testsuite/besTest.at
+
+2011-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Patch for ticket 1702 - this patch is for the problem where modules
+	don't 'unplug' correctly and sometimes crash the beslistener/besstandalone.
+	It's not a fix, but the ncml_module now passes its tests.
+
+	M    BESPlugin.h
+
+2011-01-30  Patrick West <pwest@ucar.edu>
+
+	Had to use the access method against BESContainer so that the file type
+	can be discovered.
+	M    dispatch/BESRequestHandlerList.cc
+
+2011-01-20  Patrick West <pwest@ucar.edu>
+
+	csv-handler configuration file now loads the dap module first. Added
+	administrator email address to version response.
+	M    csv-handler/csv.conf.in
+	M    dispatch/BESVersionResponseHandler.cc
+
+2010-12-30  mjohnson
+
+	o Fix for newer GCC complaining about extra qualification in header for new func (can't put the classname scope operator in the declaration, only definition)
+
+2010-12-29  mjohnson
+
+	o Fixes to make the cache work for caches sizes > 4Gb (i.e. 64 bit rather than 32 bit).  For ticket #1672.
+
+	o Changes to the unit test are NOT on by default since they make a large test dir.  To run this test, one must do it by hand:  "dispatch/unit-tests/cacheT --do-64-bit-test"
+
+2010-12-16  mjohnson
+
+	Removed incorrect dist of missing nc dir in bes-testsuite so that make dist works
+
+2010-12-16  mjohnson
+
+	Fixed undefined symbol error due to not linking against libbes_dap in Makefile.
+
+2010-10-28  mjohnson
+
+	Merge from Hyrax 1.6.2 Release Shrew branch.  More odd property changes that seem to be noops but refuse to just go away.
+
+2010-10-28  mjohnson
+
+	o dispatch/BESResponseHandler.h: doc fix
+
+	o xmlcommand/BESXMLUtils.cc: switch a vsprint to use vsnprint to avoid buffer overflow.
+
+	o hello_world/README
+
+2010-09-30  mjohnson
+
+	INSTALL: added --install to autoreconf invocation for SVN users.
+
+	hello_world:
+	o Removed obsolete decoy bes.conf and autogenerated config.h.in
+	o Corrected README and INSTALL to be consistent with current code.
+
+2010-09-14  Patrick West <pwest@ucar.edu>
+
+	3.9.0 release
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2010-09-03  James Gallagher <jgallagher@opendap.org>
+
+	Geogrid test baselines updated/fixed.
+
+2010-09-03  James Gallagher <jgallagher@opendap.org>
+
+	Geogrid test baselines updated/fixed.
+
+2010-08-14  Patrick West <pwest@ucar.edu>
+
+	Class name was connT, copy-paste from another test. Changed to cacheT.
+	M    unit-tests/cacheT.cc
+
+2010-07-20  Patrick West <pwest@ucar.edu>
+
+	Making sure the container is not null before deleting.
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESContainerStorageVolatile.cc
+
+2010-07-18  Patrick West <pwest@ucar.edu>
+
+	Fix where BESDEBUG is a statement in an if statement and possibly other
+	code fragments.
+	M    dispatch/BESDebug.h
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Simplified the BES.modules comment even further. No need to include too
+	much information in the configuration file itself.
+	M    bes/bes.conf.in
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added BES.Catalog.catalog.RootDirectory parameter to bes.conf so most
+	users will just have to edit bes.conf.
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/bes/dap.conf.in
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added note that shouldn't have to change anything below the logfile
+	information.
+	M    dispatch/bes/bes.conf.in
+
+2010-07-14  Patrick West <pwest@ucar.edu>
+
+	Removed debug statements
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESStopWatch.cc
+	M    dispatch/BESFSDir.cc
+
+2010-07-14  mjohnson
+
+	o dispatch/BESDapTransmit.cc: Changes for ticket #1574.
+	Refactor using file local class hierarchy to factor out common
+	code.
+
+	o Other files: elimination of compiler warnings, mostly
+	signed/unsigned and unused parameters.
+
+2010-07-13  Patrick West <pwest@ucar.edu>
+
+	Allow for the multiple inclusion of a file without having it
+	loaded twice. This way, module configurations can require
+	another module to be loaded before itself. For example, the
+	netcdf module can require that the dap module be loaded first.
+
+	Fixed a bug in file inclusion using regular expressions where
+	was matching files that started with the file name. So including
+	dap.conf would include dap.conf.sav, which would lead to loading
+	dap module multiple times.
+
+	Also corrected some compile warnings in keysT and cacheT.
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESFSDir.cc
+	M    dispatch/unit-tests/keys_test_m1.ini
+	M    dispatch/unit-tests/keys_test_m2.ini
+	M    dispatch/unit-tests/keys_test_m3.ini
+	M    dispatch/unit-tests/cacheT.cc
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/BESKeys.h
+
+2010-07-09  Patrick West <pwest@ucar.edu>
+
+	Updated the bes.conf and dap.conf configuration files so not setting
+	modules or module parameters. Clearer on setting the root directory as
+	well.
+	M    bes/bes.conf.in
+	M    bes/dap.conf.in
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	Using pretty output in libxml2.
+	M    hello_world/bes-testsuite/hello/hello.bescmd.baseline
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	The CSV module handles the dap service
+	M    csv-handler/CSVModule.cc
+
+2010-05-24  James Gallagher <jgallagher@opendap.org>
+
+	Updated build and text documentation for 3.8.4
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    bes.spec
+
+2010-05-24  Patrick West <pwest@ucar.edu>
+
+	If the BES needs to exit (Internal Fatal Error) then it was sending the
+	error response, and then trying to send an exit to the client. But the
+	client wouldn't be listening anymore, it might be trying to send.
+	Cleaned this up so that the BES would set the status to error, and set
+	exit to true in the chunk extensions. The client should respond
+	accordingly.
+	M    server/BESServerHandler.cc
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.cc
+	M    cmdln/CmdClient.h
+
+2010-05-19  Patrick West <pwest@ucar.edu>
+
+	Fixed debug test from latest debug changes. Updated baselines for
+	bes-confgiuration-tests for error conditions now that the XML documents
+	are generated with indentation.
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    dispatch/unit-tests/debugT.cc
+
+2010-05-18  Patrick West <pwest@ucar.edu>
+
+	Since the BESDataHandlerInterface stored might be the true
+	representation of the current command, no need to dump the object in
+	debug.
+	M    dispatch/BESBasicInterface.cc
+
+2010-05-18  Patrick West <pwest@ucar.edu>
+
+	Additional XML Command debugging
+	M    xmlcommand/BESXMLInterface.cc
+
+2010-05-15  Patrick West <pwest@ucar.edu>
+
+	DEBUG now dumps the pid of the actual listener rather than the parent
+	process pid. Also added some additional information for each DEBUG line.
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESDebug.h
+
+2010-05-15  Patrick West <pwest@ucar.edu>
+
+	Removed csv sample handler
+	M    doxy.conf
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Doxygen version says 3.8.3
+	M    configure.ac
+	M    main_page.doxygen
+	M    doxy.conf
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Merging branch for 3.8.3 release of BES, Hyrax 1.6 to trunk
+	_M   .
+	M    conf/libdap.m4
+	M    configure.ac
+	M    INSTALL
+	M    server/ServerApp.cc
+	_M   csv-handler
+	M    csv-handler/conf/libdap.m4
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/configure.ac
+	M    bin/besCreateModule.in
+	M    NEWS
+	M    bes-config-pkgconfig
+	M    ChangeLog
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.0.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+	M    cmdln/testsuite/besTest.at
+	M    cmdln/Makefile.am
+	M    README
+	D    templates/conf/mkinstalldirs
+	M    templates/conf/libdap.m4
+	_M   templates/module.spec.template
+	M    templates/configure.ac
+	M    templates/Makefile.am
+	M    dispatch/bes/dap.conf.in
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/unit-tests/cache/template.txt
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESInterface.cc
+	M    xmlcommand/BESXMLShowErrorCommand.cc
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+	M    bes.spec
+	M    Makefile.am
+	_M   hello_world
+	M    hello_world/conf/libdap.m4
+	_M   hello_world/bes-testsuite
+
+2010-05-06  Patrick West <pwest@ucar.edu>
+
+	Upgraded configuration
+	D    hello_world/conf/mkinstalldirs
+	M    hello_world/config.h.in
+	M    hello_world/configure.ac
+	M    hello_world/SayReporter.cc
+
+2010-05-06  Patrick West <pwest@ucar.edu>
+
+	Using csv.conf instead of bes-csv-data.sh.
+	A    csv-handler/csv.conf.in
+	M    csv-handler/configure.ac
+	D    csv-handler/bes-csv-data.sh.in
+	D    csv-handler/config.h.in
+	M    csv-handler/Makefile.am
+
+2010-05-04  Patrick West <pwest@ucar.edu>
+
+	3.8.3 release
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    bes.spec
+
+2010-04-30  Patrick West <pwest@ucar.edu>
+
+	Problem when using cerr for BESDebug. The sync function in PPTStreamBuf
+	seemed to be syncing when the debug was dumped to cerr, which would call
+	BESDEBUG, which would call sync, etc... Removed the debug statement.
+
+	M    ppt/PPTStreamBuf.cc
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Requiring libdap 3.10.0. Fixed problem with b at end of version of
+	dap-config
+	M    conf/libdap.m4
+	M    configure.ac
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Added requires of libxml2 2.6.16
+	M    bes.spec
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Requiring libxml2 2.6.16 or greater.
+	M    configure.ac
+	M    INSTALL
+	M    bes.spec
+
+2010-04-20  Patrick West <pwest@ucar.edu>
+
+	libxml2 was being checked twice. The check was failing also, had to
+	rework.
+	M    configure.ac
+
+2010-04-20  Patrick West <pwest@ucar.edu>
+
+	Better explanation of changes to bes configuration
+	M    README
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added dits-hook target to remove the .svn subdirs that were being included in
+	the dist files.
+
+	M    libdap/Makefile.am
+	M    bes/Makefile.am
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added Requires: lines to the .spec files for libdap and bes.
+
+2010-04-06  Patrick West <pwest@ucar.edu>
+
+	3.8.2 release preparation
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+	Log output more interesting now, displaying the requests that were
+	received.
+	M    dispatch/BESInterface.cc
+	M    xmlcommand/BESXMLShowErrorCommand.cc
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	Updated release files for updated compression cache. Fixed problem with
+	BESKeys where = was adding to the definition instead of replacing. +=
+	should add to.
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    dispatch/BESKeys.cc
+	M    dispatch/bes/dap.conf.in
+	M    bes.spec
+
+2010-03-22  James Gallagher <jgallagher@opendap.org>
+
+	Added cstring include for strerror on FC11 (other linux dists
+	too?). Also added rpm-nodeps target to Makefile.am.
+
+	M    dispatch/BESFSFile.cc
+	M    Makefile.am
+
+2010-03-11  Patrick West <pwest@ucar.edu>
+
+	Cache now makes sure that there's enough space for the compressed file
+	being worked on. Modified tests for this.
+	M    BESCache.cc
+	M    unit-tests/cache/template.txt
+
+2010-03-10  Patrick West <pwest@ucar.edu>
+
+	Removing the target uncompressed file if error in uncompressing
+	the file
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESUncompressGZ.cc
+
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Updated change log for 1.6.0 hyrax release
+	M    ChangeLog
+
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Upgraded library versions. Removed command and pptcapi library
+	versions. No longer in the bes.
+	M    configure.ac
+
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Problem when server shut down but client connections still active. If
+	you try to start the BES again there's a problem in the script if there
+	are more than one beslistener running. This fixes that script error.
+	M    server/besctl.in
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Removed debug statement
+	M    server/ServerApp.cc
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Was using port parameter in bes configuration to find unix socket
+	M    server/ServerApp.cc
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	cflags were being created using the libdap pkg instead of bes_dispatch
+	package. Fixed this.
+	M    bes-config-pkgconfig
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Don't need mkinstalldirs, Part of autoconf. Added besd to bes.spec.
+	D    templates/conf/mkinstalldirs
+	M    templates/Makefile.am
+	M    bes.spec
+
+2010-02-03  Patrick West <pwest@ucar.edu>
+
+	Added testsuite as distdir in cmdln. Removed from distribution the
+	second bad key file in dispatch/unit-tests
+	M    cmdln/Makefile.am
+	M    dispatch/unit-tests/Makefile.am
+
+2010-02-02  Patrick West <pwest@ucar.edu>
+
+	First pass at 3.8.0 release of BES
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.0.bescmd
+	M    cmdln/testsuite/besTest.at
+	M    README
+	M    bes.spec
+
+2010-02-02  Patrick West <pwest@ucar.edu>
+
+	BES 3.8.0 release branch
+	A    http://scm.opendap.org/svn/branch/bes/3.8.0
+
+2010-01-26  mjohnson
+
+	Fixed multiple compiler warnings by removing empty
+	implementations of copy ctor and operator= since they were
+	private clearly to be disallowed from autogeneration and were
+	not called by anything.  Canonical solution is to just declare
+	them with no implementation.
+
+2010-01-25  Patrick West <pwest@ucar.edu>
+
+	show.error command added as default command.
+	M    cmdln/unit-tests/translateT.cc
+
+2010-01-24  Patrick West <pwest@ucar.edu>
+
+	Added a besd that can be added to init.d using chkconfig
+	M    configure.ac
+	AM   besd.in
+	M    Makefile.am
+
+2010-01-20  Patrick West <pwest@ucar.edu>
+
+	Added show error x command, <showError type="1" />
+	M    cmdln/CmdTranslation.cc
+	M    cmdln/CmdTranslation.h
+	A    dispatch/BESShowErrorResponseHandler.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDataNames.h
+	A    dispatch/BESShowErrorResponseHandler.cc
+	M    dispatch/BESDefaultModule.cc
+	A    xmlcommand/BESXMLShowErrorCommand.cc
+	M    xmlcommand/BESXMLDefaultCommands.cc
+	A    xmlcommand/BESXMLShowErrorCommand.h
+	M    xmlcommand/Makefile.am
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Made some parameters const, as they should not be changed. Fixed some
+	other fortify issues.
+	M    ppt/SSLConnection.cc
+	M    ppt/SSLConnection.h
+	M    ppt/Socket.h
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTConnection.h
+	M    ppt/Socket.cc
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Modified the README with information about the .conf files
+	M    README
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Updated doxy.conf using doxygen -u
+	M    doxy.conf
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	Cleaned up doxygen warnings
+
+	M    ppt/PPTConnection.cc
+	M    standalone/StandAloneClient.cc
+	M    cmdln/CmdClient.cc
+	M    xmlcommand/BESXMLCommand.h
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLDefaultCommands.cc
+	M    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLDapCommandModule.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESServiceRegistry.cc
+	M    dispatch/BESError.h
+	M    dispatch/BESServiceRegistry.h
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESDapErrorInfo.cc
+	M    dispatch/BESDapService.h
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESContainerStorage.cc
+	M    doxy.conf
+
+2010-01-12  Patrick West <pwest@ucar.edu>
+
+	besregtest link fixed
+	M    Makefile.am
+
+2010-01-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed fortify target in Makefile.am
+
+2010-01-11  Patrick West <pwest@ucar.edu>
+
+	Make sure the dap modules get loaded first. Created dap.conf with
+	information from bes.conf. bes.conf is now ready for standalone mode
+	without libdap.
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/bes/bes.conf.in
+	A    dispatch/bes/dap.conf.in
+	M    dispatch/Makefile.am
+	M    bes.spec
+
+2010-01-11  Patrick West <pwest@ucar.edu>
+
+	New files for new configuration files.
+	A    BESFSFile.cc
+	A    BESFSFile.h
+	A    BESFSDir.h
+	A    BESFSDir.cc
+
+2010-01-10  Patrick West <pwest@ucar.edu>
+
+	Making sure modules directory is installed along with bes.conf. BESKeys
+	needs to make sure BESInternalFatalError is being thrown, can't run
+	without the configuration file. Removed debug statement telling which
+	include file was being loaded. Removed unneeded includes of iostream.
+	M    dispatch/BESKeys.cc
+	M    dispatch/Makefile.am
+
+2010-01-10  Patrick West <pwest@ucar.edu>
+
+	Using BESRegex and BESError so no dependency on libdap
+	M    dispatch/besregtest.cc
+	M    dispatch/Makefile.am
+
+2010-01-10  Patrick West <pwest@ucar.edu>
+
+	Now have the ability to include other configuration files instead of
+	modifying bes.conf. Default is to include modules/.*.conf$
+	M    ppt/PPTClient.cc
+	M    ppt/PPTServer.cc
+	M    ppt/TcpSocket.cc
+	M    server/BESServerHandler.cc
+	M    server/ServerApp.cc
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESLog.cc
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/BESCatalogUtils.h
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESInfoList.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESConfigResponseHandler.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESCache.cc
+	A    dispatch/unit-tests/keys_test_m1.ini
+	A    dispatch/unit-tests/keys_test_m2.ini
+	A    dispatch/unit-tests/keys_test_m3.ini
+	M    dispatch/unit-tests/keys_test.ini
+	A    dispatch/unit-tests/fsT.cc
+	A    dispatch/unit-tests/keys_test_include.ini
+	D    dispatch/unit-tests/bad_keys2.ini
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESContainerStorageVolatile.cc
+	M    dispatch/BESKeys.h
+	M    dispatch/BESExceptionManager.cc
+
+2010-01-09  Patrick West <pwest@ucar.edu>
+
+	Added the use of besregtest when creating the TypeMatch variable.
+	M    README
+
+2010-01-09  Patrick West <pwest@ucar.edu>
+
+	Added example of using besregtest
+	M    bes/bes.conf.in
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	--clean to clean build and source directories from rpmbuild
+	M    Makefile.am
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	The tests with dap exceptions now work, so changed to expecting pass
+	M    cmdln/testsuite/besTest.at
+
+2010-01-08  Patrick West <pwest@ucar.edu>
+
+	Issue with virtual table in BESDapError causing
+	dynamic_cast to fail
+	M    dispatch/BESDapError.cc
+	M    dispatch/BESDapError.h
+
+2010-01-07  Patrick West <pwest@ucar.edu>
+
+	Generated by autoconf
+	D    conf/ltmain.sh
+
+2009-12-29  James Gallagher <jgallagher@opendap.org>
+
+	Shrew build changes that will hopefully lead to a version that
+	we can build using NMI's B&T system. Also, I added 'cccc'
+	targets so that we can take a 'metrics snapshot' without undue
+	pain.
+
+2009-12-24  Patrick West <pwest@ucar.edu>
+
+	Added information about editing the bes.conf for the username
+	and groupname, administrator login, and BES log file. Also added
+	information about running the bes-x-data.sh script for the
+	handlers or running the make bes-conf target.
+	M    README
+
+2009-12-04  Patrick West <pwest@ucar.edu>
+
+	html_form responses shouldn't include fileout_netcdf unless all
+	of them do.
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.4.bescmd.baseline
+
+2009-11-13  James Gallagher <jgallagher@opendap.org>
+
+	Tests updated
+
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.4.bescmd.baseline
+
+2009-11-06  Patrick West <pwest@ucar.edu>
+
+	HDF4 ddx issues resolved.
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+
+2009-11-04  James Gallagher <jgallagher@opendap.org>
+
+2009-10-08  Patrick West <pwest@ucar.edu>
+
+	Updated the README to have the reader use an input file for the
+	example.
+	M    hello_world/README
+
+2009-10-05  James Gallagher <jgallagher@opendap.org>
+
+	Test fix... in BESDDXResponseHandler.cc
+
+2009-10-02  James Gallagher <jgallagher@opendap.org>
+
+	Merge from branch/ioos/src/bes to /trunk/bes.
+
+	_M   .
+	M    conf/ltmain.sh
+	_M   csv-handler
+	_M   csv-handler/bes-testsuite
+	_M   templates/module.spec.template
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	A  + dispatch/unit-tests/servicesT.h
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2009-09-30  Patrick West <pwest@ucar.edu>
+
+	Include incorrect for BESDebug. Was BESDEBUG
+	M    dispatch/BESDapTransmit.cc
+
+2009-09-25  James Gallagher <jgallagher@opendap.org>
+
+	It just seem right to save things at this point. Most of the
+	configure.ac files have been updated. The libdap software has
+	had a number of the FILE* methods/functions commented out using
+	#if FILE_METHODS and then #undef FILE_METHODS. We'll see how
+	much of the redundant code can be removed before the next Hyrax
+	1.6 release.
+
+2009-09-21  James Gallagher <jgallagher@opendap.org>
+
+	cgi_util -- mime_util and some formatting hackery.
+
+	M    csv-handler/dap_csv_handler.cc
+	M    csv-handler/CSVDDS.cc
+
+2009-09-21  James Gallagher <jgallagher@opendap.org>
+
+	DataDDX request support.
+
+	M    dispatch/BESDataDDXResponseHandler.cc
+	M    dispatch/BESDapTransmit.cc
+
+2009-09-04  Patrick West <pwest@ucar.edu>
+
+	Added -r to help output. Modified -d help.
+	M    server/BESServerUtils.cc
+	M    dispatch/BESDebug.cc
+
+2009-09-04  Patrick West <pwest@ucar.edu>
+
+	Repaired the show services response document. Now uncommented.
+	M    unit-tests/servicesT.cc
+
+2009-09-04  Patrick West <pwest@ucar.edu>
+
+	Logging to BES log file as well as dumping to stderr or stdout.
+	M    server/ServerApp.cc
+	M    dispatch/BESBaseApp.cc
+
+2009-09-02  Patrick West <pwest@ucar.edu>
+
+	three error tests in ssfunc not same on Linux as MacOSX
+
+2009-09-02  James Gallagher <jgallagher@opendap.org>
+
+	Removed generated files
+
+	D    conf/mkinstalldirs
+	D    conf/depcomp
+	D    conf/config.guess
+	D    conf/config.sub
+	D    conf/missing
+	D    conf/install-sh
+
+2009-09-02  Patrick West <pwest@ucar.edu>
+
+	Updated example modules to use xml command module dap_xml_module
+	M    dispatch/bes/bes.conf.in
+
+2009-09-02  Patrick West <pwest@ucar.edu>
+
+	Removed reference to dejagnu
+	M    bes-testsuite/Makefile.am
+
+2009-09-02  Patrick West <pwest@ucar.edu>
+
+	Converted all dejagnu tests to autotest. Updated besCreateModule script
+	and test handlers (csv_handler and hello_world).
+	M    configure.ac
+	M    csv-handler/conf/mkinstalldirs
+	D    csv-handler/conf/depcomp
+	D    csv-handler/conf/missing
+	D    csv-handler/conf/config.guess
+	D    csv-handler/conf/config.sub
+	D    csv-handler/conf/ltmain.sh
+	D    csv-handler/conf/install-sh
+	M    csv-handler/bes-testsuite/bes.conf.in
+	A    csv-handler/bes-testsuite/atlocal.in
+	D    csv-handler/bes-testsuite/config
+	D    csv-handler/bes-testsuite/common_tests.exp
+	M    csv-handler/bes-testsuite/Makefile.am
+	A    csv-handler/bes-testsuite/csv_handlerTest.at
+	D    csv-handler/bes-testsuite/besstandalone.csv
+	M    csv-handler/configure.ac
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    bin/besCreateModule.in
+	D    cmdln/common_tests.exp
+	A    cmdln/testsuite/atlocal.in
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.4.bescmd.baseline
+	M    cmdln/testsuite/hdf5/tcompound.h5.5.bescmd.baseline
+	D    cmdln/testsuite/bescmdln.ssfunc
+	D    cmdln/testsuite/bescmdln.netcdf
+	M    cmdln/testsuite/ff/gsodock.dat.6.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.8.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.a.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.6.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.a.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.6.bescmd.baseline
+	D    cmdln/testsuite/bescmdln.freeform
+	M    cmdln/testsuite/nc/fnoc1.nc.6.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.3.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.7.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_wholearray.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_basic.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.3.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_timeselect.3.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_basic.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	D    cmdln/testsuite/config
+	D    cmdln/testsuite/bescmdln.show
+	A    cmdln/testsuite/Makefile.am
+	D    cmdln/testsuite/bescmdln.hdf4
+	D    cmdln/testsuite/bescmdln.hdf5
+	A    cmdln/testsuite/besTest.at
+	M    cmdln/Makefile.am
+	D    templates/conf/depcomp
+	D    templates/conf/missing
+	D    templates/conf/config.guess
+	D    templates/conf/config.sub
+	D    templates/conf/ltmain.sh
+	D    templates/conf/install-sh
+	M    templates/Module.cc
+	M    templates/Makefile.am
+	M    hello_world/conf/mkinstalldirs
+	D    hello_world/conf/depcomp
+	D    hello_world/conf/missing
+	D    hello_world/conf/config.guess
+	D    hello_world/conf/config.sub
+	D    hello_world/conf/ltmain.sh
+	D    hello_world/conf/install-sh
+	M    hello_world/bes-testsuite/bes.conf.in
+	M    hello_world/bes-testsuite/hello/hello.bescmd.baseline
+	A    hello_world/bes-testsuite/hello_handlerTest.at
+	D    hello_world/bes-testsuite/besstandalone.hello
+	A    hello_world/bes-testsuite/atlocal.in
+	D    hello_world/bes-testsuite/config
+	D    hello_world/bes-testsuite/common_tests.exp
+	M    hello_world/bes-testsuite/Makefile.am
+	M    hello_world/configure.ac
+	M    hello_world/SampleModule.cc
+
+2009-08-31  Patrick West <pwest@ucar.edu>
+
+	FilterTransmitter no longer needed. Was being used for Server 3
+	applications. Changed include of cgi_util to mime_util
+	D    dispatch/BESFilterTransmitter.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESDapTransmit.cc
+	D    dispatch/BESFilterTransmitter.h
+
+2009-08-31  mjohnson
+
+	Fixed broken build in Ticket #1392 for interface change to libdap.
+
+2009-08-24  Patrick West <pwest@ucar.edu>
+
+	Checking HAVE_LIBBZ2 to make sure can run that test.
+	M    unit-tests/uncompressT.cc
+
+2009-08-24  Patrick West <pwest@ucar.edu>
+
+	Changed all bes/dispatch unit tests to use CPPUNIT. Streamlined the
+	code, removed tests no longer needed, added new tests.
+	M    cmdln/unit-tests/Makefile.am
+	M    dispatch/unit-tests/regexT.cc
+	M    dispatch/unit-tests/scrubT.cc
+	D    dispatch/unit-tests/checkT.h
+	M    dispatch/unit-tests/containerT.cc
+	D    dispatch/unit-tests/replistT.h
+	D    dispatch/unit-tests/constraintT.h
+	M    dispatch/unit-tests/encodeT.cc
+	D    dispatch/unit-tests/defT.h
+	D    dispatch/unit-tests/uncompressT.h
+	M    dispatch/unit-tests/TestRequestHandler.cc
+	M    dispatch/unit-tests/resplistT.cc
+	M    dispatch/unit-tests/zT.cc
+	D    dispatch/unit-tests/regexT.h
+	D    dispatch/unit-tests/utilT.h
+	D    dispatch/unit-tests/scrubT.h
+	D    dispatch/unit-tests/pvolT.h
+	D    dispatch/unit-tests/containerT.h
+	M    dispatch/unit-tests/constraintT.cc
+	M    dispatch/unit-tests/reqhandlerT.cc
+	M    dispatch/unit-tests/debugT.cc
+	M    dispatch/unit-tests/pfileT.cc
+	D    dispatch/unit-tests/bz2T.h
+	D    dispatch/unit-tests/pfileT.h
+	M    dispatch/unit-tests/cacheT.cc
+	D    dispatch/unit-tests/cacheT.h
+	M    dispatch/unit-tests/checkT.cc
+	M    dispatch/unit-tests/pvolT.cc
+	D    dispatch/unit-tests/gzT.h
+	D    dispatch/unit-tests/debugT.h
+	D    dispatch/unit-tests/lockT.h
+	M    dispatch/unit-tests/agglistT.cc
+	D    dispatch/unit-tests/catInitT.h
+	D    dispatch/unit-tests/encodeT.h
+	M    dispatch/unit-tests/initT.cc
+	D    dispatch/unit-tests/initT.h
+	D    dispatch/unit-tests/resplistT.h
+	M    dispatch/unit-tests/keysT.cc
+	D    dispatch/unit-tests/zT.h
+	D    dispatch/unit-tests/keysT.h
+	M    dispatch/unit-tests/utilT.cc
+	M    dispatch/unit-tests/TestReporter.cc
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/replistT.cc
+	M    dispatch/unit-tests/reqlistT.cc
+	M    dispatch/unit-tests/servicesT.cc
+	D    dispatch/unit-tests/reqlistT.h
+	D    dispatch/unit-tests/servicesT.h
+	D    dispatch/unit-tests/reqhandlerT.h
+	M    dispatch/unit-tests/lockT.cc
+	M    dispatch/unit-tests/infoT.cc
+	M    dispatch/unit-tests/plistT.cc
+	D    dispatch/unit-tests/agglistT.h
+	D    dispatch/unit-tests/infoT.h
+	M    dispatch/unit-tests/bz2T.cc
+	D    dispatch/unit-tests/plistT.h
+	M    dispatch/unit-tests/defT.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	D    dispatch/unit-tests/failInitT.cc
+	D    dispatch/unit-tests/failInitT.h
+	M    dispatch/unit-tests/Makefile.am
+	M    xmlcommand/unit-tests/Makefile.am
+
+2009-08-23  Patrick West <pwest@ucar.edu>
+
+	Removed ; from end of BESDEBUG macro, requiring developers to
+	put it at the end of the statement in their code. This fixes an
+	issue where XCode and Eclipse think it's a syntax error. Also
+	fixed the server test suite, changing TestCommand to use
+	BESXMLCommand instead of BESCommand.
+	M    conf/mkinstalldirs
+	M    conf/depcomp
+	M    conf/config.guess
+	M    conf/ltmain.sh
+	M    conf/config.sub
+	M    conf/missing
+	M    conf/install-sh
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/PPTServer.cc
+	M    ppt/TcpSocket.cc
+	M    ppt/SSLClient.cc
+	M    ppt/PPTConnection.cc
+	M    ppt/SSLServer.cc
+	M    server/test/TestCommand.cc
+	M    server/test/TestCommand.h
+	M    server/test/Makefile.am
+	M    server/test/TestModule.cc
+	M    server/BESServerHandler.cc
+	M    server/ServerApp.cc
+	M    standalone/StandAloneClient.cc
+	M    standalone/StandAloneApp.cc
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.cc
+	M    dispatch/BESMemoryManager.cc
+	M    dispatch/BESDataDDXResponseHandler.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESStopWatch.cc
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESBasicInterface.cc
+	M    dispatch/BESDebug.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    dispatch/BESInterface.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLDefaultCommands.cc
+	M    xmlcommand/BESXMLDapCommandModule.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removed bes_command.pc and added bes_xml_command.pc
+	M    configure.ac
+	M    bes-config-pkgconfig
+	A    bes_xml_command.pc.in
+	M    Makefile.am
+	D    bes_command.pc.in
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removed creating command/Makefile
+	M    configure.ac
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removing the string command code from the trunk. Made a copy in
+	the tags directory bes/command. Also in each of the release
+	directories.
+	D    command
+
+2009-08-21  Patrick West <pwest@ucar.edu>
+
+	Removed command from build. Removed Cgi code from BES (just the
+	one file removed) and removed it from the build.
+	M    dispatch/Makefile.am
+	D    dispatch/BESCgiInterface.h
+	D    dispatch/BESCgiInterface.cc
+	M    Makefile.am
+
+2009-08-18  Patrick West <pwest@ucar.edu>
+
+	Added dataddx functionality. Separated out DAP sepcific macros from
+	BESResponseNames and BESDataNames into BESDapNames for cleaner
+	separation.
+	M    server/BESServerHandler.cc
+	A    command/BESGetDataDDXCommand.cc
+	M    command/BESCatalogCommand.cc
+	A    command/BESGetDataDDXCommand.h
+	M    command/DAPCommandModule.cc
+	M    command/Makefile.am
+	M    cmdln/CmdTranslation.cc
+	M    dispatch/BESCatalogList.cc
+	A    dispatch/BESDataDDXResponseHandler.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESDapRequestHandler.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESCatalogResponseHandler.cc
+	A    dispatch/BESDataDDXResponseHandler.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDapTransmit.cc
+	A    dispatch/BESDapNames.h
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESDataNames.h
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESDapService.cc
+	M    dispatch/BESDapTransmit.h
+	M    dispatch/BESCatalogDirectory.cc
+	A    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLDapCommandModule.cc
+	A    xmlcommand/BESXMLGetDataDDXCommand.h
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/Makefile.am
+
+2009-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Added #include <cstdio> where gcc 4.4 needs it.
+
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/UnixSocket.cc
+	M    ppt/Socket.cc
+
+2009-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for gcc 4.4: Added #include <cstdio> where needed.
+
+	M    conf/mkinstalldirs
+	M    conf/depcomp
+	M    conf/config.guess
+	M    conf/ltmain.sh
+	M    conf/config.sub
+	M    conf/missing
+	M    conf/install-sh
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESUncompressGZ.cc
+
+2009-07-13  Patrick West <pwest@ucar.edu>
+
+	Fixed results of bes-configuration-tests target in cmdln directory.
+	M    cmdln/testsuite/nc/fnoc1.nc.2.bescmd.baseline
+	M    cmdln/testsuite/nc/fnoc1.nc.3.bescmd.baseline
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.5.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.2.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.3.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.4.bescmd.baseline
+
+2009-06-08  Patrick West <pwest@ucar.edu>
+
+	Module up to date with current BES. Added missing pkg m4 file.
+	A    csv-handler/conf/pkg.m4
+	M    csv-handler/CSVModule.cc
+
+2009-06-08  Patrick West <pwest@ucar.edu>
+
+	Missing this m4 file for the libdap PKG configuration.
+	A    hello_world/conf/pkg.m4
+
+2009-05-28  Patrick West <pwest@ucar.edu>
+
+	Changed user_name to username and user_token to token.
+	M    BESDataNames.h
+
+2009-05-28  Patrick West <pwest@ucar.edu>
+
+	Corrected spacing in exception string
+	M    BESXMLInfo.cc
+
+2009-05-28  Patrick West <pwest@ucar.edu>
+
+	Removing HttpTransmitter and using Context instead
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESBasicHttpTransmitter.cc
+	M    dispatch/BESBasicInterface.cc
+	M    dispatch/BESTransmitterNames.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDefaultModule.cc
+
+2009-05-06  Patrick West <pwest@ucar.edu>
+
+	Making it its own project instead of under the BES.
+
+	A    http://scm.opendap.org/svn/trunk/pptcapi
+	D    http://scm.opendap.org/svn/trunk/bes/pptcapi
+
+2009-04-23  James Gallagher <jgallagher@opendap.org>
+
+	Merged small changeset from tags/bes/3.7.2 added by Patrick
+	after that tag was made. These changes fix issues with the rpm
+	builds.
+
+	_M   .
+	_M   csv-handler
+	D    csv-handler/csv_handler.spec
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/Makefile.am
+	_M   templates/module.spec.template
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	M    bes.spec
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Merged bes 3.7.2
+
+	_M   .
+	M    pptcapi/unit-tests/pptcapi_hexstrtoiT.cc
+	M    pptcapi/unit-tests/pptcapi_extensionsT.cc
+	M    pptcapi/pptcapi_authenticate.c
+	M    pptcapi/pptcapi.c
+	R  + pptcapi/bes_pptcapi.spec
+	R  + pptcapi/COPYRIGHT_UCAR
+	M    pptcapi/pptcapi_receive.c
+	M    pptcapi/pptcapi.h
+	R  + pptcapi/ChangeLog
+	M    pptcapi/pptcapi_debug.c
+	M    pptcapi/pptcapi_send.c
+	M    pptcapi/pptcapi_debug.h
+	R  + pptcapi/README
+	R  + pptcapi/bes_pptcapi.pc.in
+	M    pptcapi/pptcapi_tcp_connect.c
+	M    pptcapi/pptcapi_socket_connect.c
+	R  + pptcapi/OSX_Resources
+	R  + pptcapi/OSX_Resources/InstallationCheck
+	R  + pptcapi/OSX_Resources/License.txt
+	R  + pptcapi/OSX_Resources/update_mac_package_contents.pl
+	R  + pptcapi/OSX_Resources/Info.plist
+	R  + pptcapi/OSX_Resources/InstallationCheck.strings
+	R  + pptcapi/OSX_Resources/ReadMe.txt
+	R  + pptcapi/OSX_Resources/Description.plist
+	R  + pptcapi/OSX_Resources/Welcome.html
+	R  + pptcapi/OSX_Resources/background.jpg
+	M    pptcapi/pptcapi_utils.h
+	R  + pptcapi/INSTALL
+	R  + pptcapi/doxy.conf
+	R  + pptcapi/pptcapi-config-pkgconfig
+	R  + pptcapi/COPYING
+	R  + pptcapi/DoxygenLayout.xml
+	R  + pptcapi/NEWS
+	M    ppt/PPTServer.h
+	M    ppt/UnixSocket.h
+	M    ppt/Connection.cc
+	M    ppt/SocketListener.h
+	M    ppt/Connection.h
+	M    ppt/SSLClient.h
+	M    ppt/PPTClient.cc
+	M    ppt/PPTMarkFinder.cc
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/SSLConnection.cc
+	M    ppt/SSLConnection.h
+	M    ppt/SocketUtilities.h
+	M    ppt/Socket.h
+	M    ppt/SSLServer.h
+	M    ppt/PPTServer.cc
+	M    ppt/unit-tests/ConnTestStrs.h
+	M    ppt/unit-tests/ConnTest.cc
+	M    ppt/unit-tests/ExtConn.cc
+	M    ppt/unit-tests/ConnTest.h
+	M    ppt/unit-tests/ExtConn.h
+	M    ppt/unit-tests/connT.cc
+	M    ppt/unit-tests/extT.cc
+	M    ppt/unit-tests/ConnSocket.cc
+	M    ppt/unit-tests/ConnSocket.h
+	M    ppt/unit-tests/sbT.cc
+	M    ppt/UnixSocket.cc
+	M    ppt/SocketListener.cc
+	M    ppt/TcpSocket.cc
+	M    ppt/SSLClient.cc
+	M    ppt/TcpSocket.h
+	M    ppt/PPTClient.h
+	M    ppt/ServerHandler.h
+	M    ppt/PPTMarkFinder.h
+	M    ppt/PPTStreamBuf.h
+	M    ppt/PPTConnection.cc
+	M    ppt/SocketUtilities.cc
+	M    ppt/PPTConnection.h
+	M    ppt/PPTProtocol.cc
+	M    ppt/PPTProtocol.h
+	M    ppt/Socket.cc
+	M    ppt/SSLServer.cc
+	M    configure.ac
+	_M   csv-handler
+	M    csv-handler/CSV_Header.cc
+	M    csv-handler/CSVRequestHandler.h
+	M    csv-handler/CSV_Header.h
+	M    csv-handler/dap_csv_handler.cc
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd.baseline
+	M    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	M    csv-handler/CSV_Reader.cc
+	M    csv-handler/CSV_Reader.h
+	M    csv-handler/CSVDAS.cc
+	M    csv-handler/CSV_Data.cc
+	M    csv-handler/main.cc
+	M    csv-handler/CSVDAS.h
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVResponseNames.h
+	M    csv-handler/CSV_Field.h
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    csv-handler/CSVModule.h
+	M    csv-handler/CSV_Obj.cc
+	M    csv-handler/CSV_Data.h
+	M    csv-handler/CSV_Obj.h
+	M    csv-handler/CSVDDS.h
+	M    INSTALL
+	M    server/test/TestException.cc
+	M    server/test/TestSigResponseHandler.cc
+	M    server/test/TestException.h
+	M    server/test/TestSigResponseHandler.h
+	M    server/test/TestNames.h
+	M    server/test/TestCommand.cc
+	M    server/test/TestCommand.h
+	M    server/test/TestModule.cc
+	M    server/test/TestEhmResponseHandler.cc
+	M    server/test/TestRequestHandler.cc
+	M    server/test/TestModule.h
+	M    server/test/TestRequestHandler.h
+	M    server/test/TestEhmResponseHandler.h
+	M    server/ServerExitConditions.h
+	M    server/besctl.in
+	M    server/BESServerHandler.cc
+	M    server/BESServerHandler.h
+	M    server/BESServerUtils.cc
+	M    server/BESServerUtils.h
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+	M    server/ServerApp.h
+	M    bin/besCreateModule.in
+	M    NEWS
+	M    command/BESSetContextCommand.h
+	M    command/BESDeleteCommand.cc
+	M    command/BESDeleteCommand.h
+	M    command/BESDefaultCommands.cc
+	M    command/BESDelContainerCommand.cc
+	M    command/BESTermCommand.cc
+	M    command/BESCatalogCommand.cc
+	M    command/BESCatalogCommand.h
+	M    command/BESShowCommand.cc
+	M    command/BESGetCommand.h
+	M    command/BESCommand.h
+	M    command/BESShowCommand.h
+	M    command/BESCmdParser.h
+	M    command/BESDelDefCommand.h
+	M    command/BESCmdInterface.h
+	M    command/BESSetCommand.h
+	M    command/test/cmd_test.cc
+	M    command/BESDelDefsCommand.cc
+	M    command/BESDelDefsCommand.h
+	M    command/BESDefaultCommands.h
+	M    command/BESDelContainerCommand.h
+	M    command/BESTermCommand.h
+	M    command/BESGetCommand.cc
+	M    command/BESCommand.cc
+	M    command/DAPCommandModule.cc
+	M    command/BESCmdParser.cc
+	M    command/DAPCommandModule.h
+	M    command/BESDelDefCommand.cc
+	M    command/BESCmdInterface.cc
+	M    command/BESDefineCommand.cc
+	M    command/BESDelContainersCommand.cc
+	M    command/BESSetCommand.cc
+	M    command/BESDelContainersCommand.h
+	M    command/BESDefineCommand.h
+	M    command/BESSetContainerCommand.cc
+	M    command/BESSetContextCommand.cc
+	M    command/BESSetContainerCommand.h
+	M    apache/unit-tests/requestsT.cc
+	M    apache/unit-tests/wrapperT.cc
+	M    apache/BESApacheInterface.cc
+	M    apache/BESApacheInterface.h
+	M    apache/BESApacheRequests.cc
+	M    apache/BESApacheRequests.h
+	M    apache/BESApacheWrapper.cc
+	M    apache/BESApacheWrapper.h
+	M    apache/mod_opendap.cc
+	M    ChangeLog
+	M    standalone/StandAloneApp.h
+	M    standalone/Makefile.am
+	M    standalone/StandAloneClient.cc
+	M    standalone/StandAloneApp.cc
+	M    standalone/StandAloneClient.h
+	M    README
+	M    cmdln/unit-tests/prettyT.cc
+	M    cmdln/unit-tests/translateT.cc
+	M    cmdln/unit-tests/Makefile.am
+	M    cmdln/CmdPretty.cc
+	M    cmdln/CmdPretty.h
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdTranslation.cc
+	M    cmdln/CmdApp.cc
+	M    cmdln/CmdClient.h
+	M    cmdln/CmdTranslation.h
+	M    cmdln/Makefile.am
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/show/show_01.bescmd.baseline
+	M    cmdln/testsuite/show/show_02.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.1.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.4.bescmd.baseline
+	D    cmdln/CmdXMLUtils.cc
+	M    cmdln/CmdApp.h
+	D    cmdln/CmdXMLUtils.h
+	A  + templates/XMLCommand.cc
+	M    templates/Makefile.am.template
+	M    templates/_commands.cc
+	A  + templates/XMLCommand.h
+	A  + templates/conf/pkg.m4
+	_M   templates/module.spec.template
+	M    templates/Module.cc
+	M    templates/Makefile.am
+	M    templates/RequestHandler.cc
+	M    xmlcommand/BESXMLCommand.h
+	M    xmlcommand/BESXMLShowCommand.h
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.h
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLUtils.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLUtils.h
+	M    xmlcommand/BESXMLInterface.h
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLDefaultCommands.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.h
+	M    xmlcommand/BESXMLDefaultCommands.h
+	M    xmlcommand/BESXMLDapCommandModule.cc
+	M    xmlcommand/BESXMLCatalogCommand.h
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLGetCommand.h
+	M    xmlcommand/unit-tests/BuildTCmd2.h
+	M    xmlcommand/unit-tests/buildT.cc
+	M    xmlcommand/unit-tests/BuildTInterface.cc
+	M    xmlcommand/unit-tests/BuildTInterface.h
+	M    xmlcommand/unit-tests/propsT.cc
+	M    xmlcommand/unit-tests/BuildTCmd1.cc
+	M    xmlcommand/unit-tests/BuildTCmd2.cc
+	M    xmlcommand/unit-tests/BuildTCmd1.h
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLDefineCommand.h
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.h
+	M    xmlcommand/BESXMLSetContainerCommand.h
+	M    xmlcommand/BESXMLSetContextCommand.h
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLDapCommandModule.h
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.h
+	M    xmlcommand/BESXMLCommand.cc
+	M    dispatch/BESInitOrder.h
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESShowContextResponseHandler.cc
+	M    dispatch/BESStatusResponseHandler.h
+	M    dispatch/BESVersionResponseHandler.cc
+	M    dispatch/BESMemoryManager.cc
+	M    dispatch/BESVersionInfo.h
+	M    dispatch/BESDataRequestInterface.h
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESHelpResponseHandler.h
+	M    dispatch/BESDefineResponseHandler.h
+	M    dispatch/BESReturnManager.cc
+	M    dispatch/BESStreamResponseHandler.h
+	M    dispatch/BESSilentInfo.h
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESRegex.h
+	M    dispatch/BESDapModule.h
+	M    dispatch/BESSetContextResponseHandler.cc
+	M    dispatch/BESXMLInfo.h
+	M    dispatch/BESAggregationServer.h
+	M    dispatch/BESLog.cc
+	M    dispatch/BESFilterTransmitter.cc
+	M    dispatch/BESLog.h
+	M    dispatch/BESDelContainerResponseHandler.cc
+	M    dispatch/BESFileContainer.h
+	M    dispatch/BESDASResponse.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESPluginFactory.h
+	M    dispatch/BESProcessEncodedString.h
+	M    dispatch/BESDDSResponseHandler.h
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESReporterList.cc
+	M    dispatch/BESInitList.h
+	M    dispatch/BESShowDefsResponseHandler.h
+	M    dispatch/BESInterface.h
+	M    dispatch/BESTextInfo.h
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESContainerStorage.h
+	M    dispatch/BESContainerStorageVolatile.h
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESRegex.cc
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESBaseApp.cc
+	M    dispatch/BESDapRequestHandler.cc
+	M    dispatch/BESCatalog.h
+	M    dispatch/besregtest.cc
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESDapError.cc
+	M    dispatch/BESScrub.cc
+	M    dispatch/TheBESKeys.h
+	M    dispatch/BESFileContainer.cc
+	M    dispatch/BESApp.h
+	M    dispatch/BESDapResponse.cc
+	M    dispatch/BESMemoryGlobalArea.h
+	M    dispatch/BESRequestHandlerList.h
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESError.cc
+	A  + dispatch/BESServiceRegistry.cc
+	M    dispatch/BESUncompressZ.h
+	A  + dispatch/BESServiceRegistry.h
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESError.h
+	M    dispatch/BESDapErrorInfo.h
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESUncompressGZ.h
+	M    dispatch/BESCatalogDirectory.h
+	M    dispatch/BESInitFuns.h
+	M    dispatch/BESBasicInterface.h
+	M    dispatch/BESReporter.h
+	M    dispatch/BESServerSystemResources.h
+	M    dispatch/BESTransmitter.cc
+	M    dispatch/BESStopWatch.cc
+	M    dispatch/BESSetContainerResponseHandler.h
+	M    dispatch/BESDefinitionStorageVolatile.cc
+	M    dispatch/BESBasicHttpTransmitter.cc
+	M    dispatch/BESIndent.cc
+	M    dispatch/BESRequestHandlerList.cc
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESIndent.h
+	M    dispatch/BESConstraintFuncs.h
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESDASResponseHandler.h
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESResponseObject.h
+	M    dispatch/BESCatalogResponseHandler.cc
+	M    dispatch/BESAggFactory.h
+	M    dispatch/BESDapErrorInfo.cc
+	M    dispatch/bes/dap_help.html
+	A  + dispatch/bes/bes_help.xml
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/bes/bes_help.html
+	A  + dispatch/bes/dap_help.xml
+	M    dispatch/BESCatalogUtils.h
+	M    dispatch/BESInternalFatalError.h
+	M    dispatch/BESBasicInterface.cc
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESNotFoundError.h
+	M    dispatch/BESCatalogList.h
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESObj.h
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/BESConfigResponseHandler.h
+	M    dispatch/BESShowContainersResponseHandler.h
+	M    dispatch/BESDelDefsResponseHandler.h
+	M    dispatch/BESInitializer.h
+	A  + dispatch/BESDapService.h
+	M    dispatch/BESInfoList.cc
+	M    dispatch/BESDASResponse.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESGlobalIQ.h
+	M    dispatch/BESProcIdResponseHandler.cc
+	M    dispatch/BESReporterList.h
+	M    dispatch/BESTransmitterNames.h
+	M    dispatch/BESContainerStorageCatalog.h
+	M    dispatch/BESCache.h
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESDelContainersResponseHandler.cc
+	M    dispatch/BESDefinitionStorageList.cc
+	M    dispatch/BESSetContainerResponseHandler.cc
+	M    dispatch/BESDefinitionStorageList.h
+	M    dispatch/TheBESKeys.cc
+	MM   dispatch/BESTokenizer.h
+	M    dispatch/BESSetContextResponseHandler.h
+	M    dispatch/BESContextManager.cc
+	M    dispatch/BESScrub.h
+	M    dispatch/BESDapError.h
+	M    dispatch/BESBasicTransmitter.h
+	M    dispatch/BESHTMLInfo.h
+	M    dispatch/BESConfigResponseHandler.cc
+	M    dispatch/BESConstraintFuncs.cc
+	M    dispatch/BESContainer.h
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDataDDSResponse.h
+	M    dispatch/BESGlobalInit.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESRequestHandler.cc
+	M    dispatch/BESInternalError.h
+	M    dispatch/BESDataResponseHandler.h
+	M    dispatch/BESCatalogResponseHandler.h
+	M    dispatch/BESDDSResponse.cc
+	M    dispatch/BESGlobalIQ.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESDDSResponse.h
+	M    dispatch/BESDefine.h
+	M    dispatch/BESResponseHandler.h
+	A  + dispatch/BESServicesResponseHandler.cc
+	M    dispatch/BESSyntaxUserError.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESContainerStorageFile.h
+	MM   dispatch/BESTokenizer.cc
+	M    dispatch/BESAggregationServer.cc
+	M    dispatch/BESUncompressBZ2.h
+	M    dispatch/BESBasicHttpTransmitter.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESDelDefsResponseHandler.cc
+	M    dispatch/BESShowContainersResponseHandler.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESCgiInterface.h
+	M    dispatch/BESStatus.h
+	M    dispatch/BESDelContainerResponseHandler.h
+	M    dispatch/BESDebug.h
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESModuleApp.h
+	M    dispatch/BESResponseHandlerList.cc
+	M    dispatch/BESInfoList.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESDefine.cc
+	M    dispatch/BESUncompressManager.h
+	M    dispatch/BESDDXResponseHandler.h
+	M    dispatch/BESDataNames.h
+	M    dispatch/BESDelDefResponseHandler.cc
+	A  + dispatch/BESServicesResponseHandler.h
+	M    dispatch/BESCache.cc
+	M    dispatch/BESMemoryManager.h
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESDelContainersResponseHandler.h
+	M    dispatch/BESDefinitionStorageVolatile.h
+	M    dispatch/BESDefinitionStorage.h
+	M    dispatch/BESContextManager.h
+	M    dispatch/BESDataDDSResponse.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESProcessEncodedString.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESResponseHandlerList.h
+	M    dispatch/BESDefaultModule.h
+	M    dispatch/BESInitList.cc
+	M    dispatch/BESShowDefsResponseHandler.cc
+	M    dispatch/BESStatusResponseHandler.cc
+	M    dispatch/unit-tests/regexT.cc
+	M    dispatch/unit-tests/scrubT.cc
+	M    dispatch/unit-tests/Animal.h
+	M    dispatch/unit-tests/checkT.h
+	M    dispatch/unit-tests/TestReporter.h
+	M    dispatch/unit-tests/containerT.cc
+	M    dispatch/unit-tests/replistT.h
+	M    dispatch/unit-tests/TheCat.h
+	M    dispatch/unit-tests/constraintT.h
+	M    dispatch/unit-tests/TheDog.h
+	M    dispatch/unit-tests/encodeT.cc
+	M    dispatch/unit-tests/defT.h
+	M    dispatch/unit-tests/uncompressT.h
+	M    dispatch/unit-tests/TestRequestHandler.cc
+	M    dispatch/unit-tests/resplistT.cc
+	M    dispatch/unit-tests/zT.cc
+	M    dispatch/unit-tests/TestResponseHandler.h
+	M    dispatch/unit-tests/regexT.h
+	M    dispatch/unit-tests/utilT.h
+	M    dispatch/unit-tests/scrubT.h
+	M    dispatch/unit-tests/pvolT.h
+	M    dispatch/unit-tests/containerT.h
+	M    dispatch/unit-tests/constraintT.cc
+	M    dispatch/unit-tests/TheCat.cc
+	M    dispatch/unit-tests/reqhandlerT.cc
+	M    dispatch/unit-tests/dog.cc
+	M    dispatch/unit-tests/debugT.cc
+	M    dispatch/unit-tests/TheFailedCat.cc
+	M    dispatch/unit-tests/pfileT.cc
+	M    dispatch/unit-tests/bz2T.h
+	M    dispatch/unit-tests/pfileT.h
+	M    dispatch/unit-tests/cacheT.cc
+	M    dispatch/unit-tests/TestAggServer.h
+	M    dispatch/unit-tests/TestRequestHandler.h
+	M    dispatch/unit-tests/cacheT.h
+	M    dispatch/unit-tests/TestResponseHandler.cc
+	M    dispatch/unit-tests/Animal.cc
+	M    dispatch/unit-tests/checkT.cc
+	M    dispatch/unit-tests/pvolT.cc
+	M    dispatch/unit-tests/Application.h
+	M    dispatch/unit-tests/gzT.h
+	M    dispatch/unit-tests/baseApp.cc
+	M    dispatch/unit-tests/debugT.h
+	M    dispatch/unit-tests/baseApp.h
+	M    dispatch/unit-tests/lockT.h
+	M    dispatch/unit-tests/agglistT.cc
+	M    dispatch/unit-tests/catInitT.h
+	M    dispatch/unit-tests/encodeT.h
+	M    dispatch/unit-tests/initT.cc
+	M    dispatch/unit-tests/initT.h
+	M    dispatch/unit-tests/resplistT.h
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/unit-tests/zT.h
+	M    dispatch/unit-tests/keysT.h
+	M    dispatch/unit-tests/utilT.cc
+	M    dispatch/unit-tests/TestReporter.cc
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/replistT.cc
+	M    dispatch/unit-tests/cat.cc
+	M    dispatch/unit-tests/reqlistT.cc
+	A  + dispatch/unit-tests/servicesT.cc
+	M    dispatch/unit-tests/cat.h
+	M    dispatch/unit-tests/reqlistT.h
+	A  + dispatch/unit-tests/servicesT.h
+	M    dispatch/unit-tests/TheDog.cc
+	M    dispatch/unit-tests/dog.h
+	M    dispatch/unit-tests/reqhandlerT.h
+	M    dispatch/unit-tests/lockT.cc
+	M    dispatch/unit-tests/infoT.cc
+	M    dispatch/unit-tests/TheFailedCat.h
+	M    dispatch/unit-tests/plistT.cc
+	M    dispatch/unit-tests/agglistT.h
+	M    dispatch/unit-tests/infoT.h
+	M    dispatch/unit-tests/bz2T.cc
+	M    dispatch/unit-tests/plistT.h
+	M    dispatch/unit-tests/defT.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	M    dispatch/unit-tests/failInitT.cc
+	M    dispatch/unit-tests/failInitT.h
+	M    dispatch/unit-tests/TestAggServer.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESDelDefResponseHandler.h
+	M    dispatch/BESShowContextResponseHandler.h
+	M    dispatch/BESVersionResponseHandler.h
+	M    dispatch/BESContainerStorageList.h
+	M    dispatch/BESContainerStorageVolatile.cc
+	A  + dispatch/BESContainerStorage.cc
+	M    dispatch/BESForbiddenError.h
+	M    dispatch/BESStreamResponseHandler.cc
+	M    dispatch/BESAbstractModule.h
+	M    dispatch/BESReturnManager.h
+	M    dispatch/BESBaseApp.h
+	M    dispatch/BESDapRequestHandler.h
+	M    dispatch/BESKeys.h
+	M    dispatch/BESStopWatch.h
+	M    dispatch/BESTransmitter.h
+	M    dispatch/BESUtil.h
+	M    dispatch/BESInfoNames.h
+	M    dispatch/BESCgiInterface.cc
+	M    dispatch/BESStatus.cc
+	M    dispatch/BESGlobalInit.cc
+	M    dispatch/BESFilterTransmitter.h
+	M    dispatch/BESDapResponse.h
+	A  + dispatch/BESDapService.cc
+	M    dispatch/BESAggFactory.cc
+	M    dispatch/BESDapTransmit.h
+	M    dispatch/BESRequestHandler.h
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESExceptionManager.h
+	M    dispatch/BESResponseHandler.cc
+	M    dispatch/BESInfo.h
+	M    dispatch/BESCatalogDirectory.cc
+	M    dispatch/BESProcIdResponseHandler.h
+	M    dispatch/BESUncompressGZ.cc
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+	M    bes.spec
+	M    Makefile.am
+	_M   hello_world
+	M    hello_world/SampleSayCommand.cc
+	M    hello_world/SampleSayCommand.h
+	M    hello_world/SampleSayResponseHandler.cc
+	_M   hello_world/bes-testsuite
+	M    hello_world/bes-testsuite/hello/hello.bescmd.baseline
+	M    hello_world/SampleSayResponseHandler.h
+	M    hello_world/SampleSayXMLCommand.cc
+	M    hello_world/SayReporter.cc
+	M    hello_world/SampleSayXMLCommand.h
+	M    hello_world/SayReporter.h
+	M    hello_world/SampleResponseNames.h
+	M    hello_world/SampleModule.cc
+	M    hello_world/SampleRequestHandler.cc
+	M    hello_world/SampleModule.h
+	M    hello_world/SampleRequestHandler.h
+
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Formatting.
+
+	M    NEWS
+
 2009-04-06  Patrick West <pwest@ucar.edu>
 
 	memory cleanup when an exception occurrs
@@ -1649,9 +5123,6 @@
 	M    server/BESServerHandler.cc
 	M    dispatch/BESKeys.cc
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2008-04-04  Patrick West <pwest@ucar.edu>
 
 	Fixed delete of the buffer.
@@ -1764,9 +5235,6 @@
 	M    apache/mod_opendap.cc
 	A    apache/Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2008-03-03  James Gallagher <jgallagher@opendap.org>
 
 	Changes from a code review.
@@ -2429,9 +5897,6 @@
 	M    ChangeLog
 	M    Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-29  Patrick West <pwest@ucar.edu>
 
 	Added bes.m4 file to be included in the distributions. Fixed a
@@ -2455,9 +5920,6 @@
 	A    INSTALL_MacOSX.rtf
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-28  Patrick West <pwest@ucar.edu>
 
 	Updated dods tests in bes/cmdln/testsuite to write the results to a
@@ -2490,9 +5952,6 @@
 	Few more changes for 3.5.2
 	M    ChangeLog
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-13  James Gallagher <jgallagher@opendap.org>
 
 	hyraxctl.in: I've fixed this so that it works on FC6/64-bit.
@@ -3541,9 +7000,6 @@
 	pkg target update. Part of 3.5.1
 	M    ChangeLog
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-22  Patrick West <pwest@ucar.edu>
 
 	Needed to copy off besctl and bes.conf as well as bes-config.
@@ -3559,9 +7015,6 @@
 	If the _cache files do not exist then the rm failed. Added -f.
 	M    Makefile.am
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-21  Patrick West <pwest@ucar.edu>
 
 	distcheck was failing because using the wrong test_config.h. So
@@ -3591,9 +7044,6 @@
 	M    configure.ac
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-18  Patrick West <pwest@ucar.edu>
 
 	Fixed comments that were written with a wide screen.
@@ -3656,9 +7106,6 @@
 
 	Props set on NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-05-14  James Gallagher <jgallagher@opendap.org>
 
 	In bes.conf.in: Fixed the value of Retry; Removed the UNIX socket.
@@ -4360,9 +7807,6 @@
 	M    bes/bin/Makefile.am
 	M    bes/NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-02-08  Patrick West <pwest@ucar.edu>
 
 	Changed name from Server4 to Hyrax
@@ -4623,9 +8067,6 @@
 	M    INSTALL
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2006-12-28  Nathan Potter <ndp@coas.oregonstate.edu>
 
 	Changed some tests in bes/cmdln/testsuit/show and
@@ -5848,9 +9289,6 @@
 	Updates to ChangeLog, configure.ac and NEWS: info about version 3.1.1.
 	dispatch/bes/bes.conf.in: Fixed problems with names in bug #456.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2006-07-11  Patrick West <pwest@ucar.edu>
 
 	Method in BESInfo set_buffered should be returning whether the

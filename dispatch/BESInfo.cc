@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -78,7 +78,9 @@ BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
       _buffered( true )
 {
     bool found = false ;
-    string b = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    vector<string> vals ;
+    string b ;
+    TheBESKeys::TheKeys()->get_value( key, b, found ) ;
     if( b == "true" || b == "True" || b == "TRUE" ||
 	b == "yes" || b == "Yes" || b == "YES" )
     {
@@ -190,10 +192,19 @@ void
 BESInfo::add_data_from_file( const string &key, const string &name )
 {
     bool found = false ;
-    string file = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string file ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( key, file, found ) ;
+    }
+    catch( ... )
+    {
+	found = false ;
+    }
     if( found == false )
     {
-	add_data( name + " file key " + key + " not found, information not available\n" ) ;
+	add_data( name + " file key " + key
+	          + " not found, information not available\n" ) ;
     }
     else
     {
@@ -237,16 +248,18 @@ BESInfo::add_data_from_file( const string &key, const string &name )
  * this class we can take care of exceptions here.
  *
  * @param e The exception to add to the informational response object
+ * @param admin The contact information for the person
+ * responsible for this error
  */
 void
-BESInfo::add_exception( BESError &e, const string &administrator )
+BESInfo::add_exception( BESError &e, const string &admin )
 {
     begin_tag( "BESError" ) ;
     ostringstream stype ;
     stype << e.get_error_type() ;
     add_tag( "Type", stype.str() ) ;
     add_tag( "Message", e.get_message() ) ;
-    add_tag( "Administrator", administrator ) ;
+    add_tag( "Administrator", admin ) ;
 #ifdef BES_DEVELOPER
     begin_tag( "Location" ) ;
     add_tag( "File", e.get_file() ) ;

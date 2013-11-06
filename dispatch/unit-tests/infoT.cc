@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -72,7 +72,14 @@ string html_baseline = "<HTML>\n\
 </HTML>\n" ;
 
 string xml_baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\"><testXMLResponse><tag1>tag1 data</tag1><tag2><tag3 attr_name=\"&quot;attr_val&quot;\">tag3 data</tag3></tag2></testXMLResponse></response>\n" ;
+<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
+    <testXMLResponse>\n\
+        <tag1>tag1 data</tag1>\n\
+        <tag2>\n\
+            <tag3 attr_name=\"&quot;attr_val&quot;\">tag3 data</tag3>\n\
+        </tag2>\n\
+    </testXMLResponse>\n\
+</response>\n" ;
 
 class infoT: public TestFixture {
 private:

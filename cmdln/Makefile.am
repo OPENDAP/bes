@@ -13,20 +13,22 @@ endif
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = unit-tests testsuite
-DIST_SUBDIRS = unit-tests
+DIST_SUBDIRS = unit-tests testsuite
 
 bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc 		\
-		CmdPretty.cc ../xmlcommand/BESXMLUtils.cc		\
-		CmdApp.h CmdClient.h CmdTranslation.h CmdPretty.h	\
+		../xmlcommand/BESXMLUtils.cc				\
+		CmdApp.h CmdClient.h CmdTranslation.h			\
 		../xmlcommand/BESXMLUtils.h
 
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 
-bes-configuration-tests:
-	cd testsuite && make bes-configuration-tests
+server-tests:
+	besctl start && \
+	(cd testsuite && make server-tests) && \
+	besctl stop

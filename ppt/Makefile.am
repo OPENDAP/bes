@@ -13,7 +13,7 @@ endif
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = unit-tests
@@ -36,9 +36,15 @@ HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketConfig.h SocketListener.h PPTServer.h PPTProtocol.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
-if HAVE_OPENSSL
-libbes_ppt_la_CPPFLAGS += $(openssl_includes)
-libbes_ppt_la_LIBADD += $(openssl_libs)
-SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
-HDRS+=SSLClient.h SSLServer.h SSLConnection.h
-endif
+#if HAVE_OPENSSL
+#libbes_ppt_la_CPPFLAGS += $(openssl_includes)
+#libbes_ppt_la_LIBADD += $(openssl_libs)
+#SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
+#HDRS+=SSLClient.h SSLServer.h SSLConnection.h
+#endif
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	-mkdir $(C4_DIR)
+	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)

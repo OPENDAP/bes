@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -83,7 +83,6 @@ extern "C" {
 #include "BESDebug.h"
 #include "BESXMLInterface.h"
 #include "CmdTranslation.h"
-#include "CmdPretty.h"
 
 StandAloneClient::~StandAloneClient()
 {
@@ -282,7 +281,7 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 
 	    if( show_stream )
 	    {
-		CmdPretty::make_pretty( show_stream->str(), *_strm ) ;
+		*(_strm) << show_stream->str() << endl ;
 		delete show_stream ;
 		show_stream = 0 ;
 	    }
@@ -301,8 +300,8 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd       The BES commands to send to the BES server
-* @param repeat     Number of times to repeat the command
+* @param  cmd_list  The BES commands to send to the BES server
+* @param  repeat    Number of times to repeat the command
 * @throws BESError  Thrown if there is a problem sending any of the
 *                   request to the server or a problem receiving any
 *                   of the responses from the server.
@@ -401,7 +400,7 @@ StandAloneClient::interact()
     {
         string message = "" ;
         size_t len = this->readLine( message ) ;
-        if( len == -1 || message == "exit" || message == "exit;" )
+        if( /*len == -1 || */ message == "exit" || message == "exit;" )
 	{
             done = true ;
         }

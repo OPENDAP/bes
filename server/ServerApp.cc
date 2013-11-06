@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -31,21 +31,20 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <signal.h>
-#include <unistd.h> // for getpid
-#include <grp.h>    // for getgrnam
-#include <pwd.h>    // for getpwnam
-
+#include <sys/wait.h> // for wait
+#include <sys/types.h>
+#include <unistd.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
 
-using std::cout ;
-using std::cerr ;
-using std::endl ;
-using std::ios ;
-using std::ostringstream ;
-using std::ofstream ;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::ios;
+using std::ostringstream;
+using std::ofstream;
 
 #include "config.h"
 
@@ -61,246 +60,189 @@ using std::ofstream ;
 #include "PPTServer.h"
 #include "BESMemoryManager.h"
 #include "BESDebug.h"
+#include "BESCatalogUtils.h"
 #include "BESServerUtils.h"
 
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
+#include "BESDaemonConstants.h"
 
-ServerApp::ServerApp()
-    : BESModuleApp(),
-      _portVal( 0 ),
-      _gotPort( false ),
-      _unixSocket( "" ),
-      _secure( false ),
-      _mypid( 0 ),
-      _ts( 0 ),
-      _us( 0 ),
-      _ps( 0 )
+static int session_id = 0;
+
+ServerApp::ServerApp() :
+    BESModuleApp(), _portVal(0), _gotPort(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
 {
-    _mypid = getpid() ;
+    _mypid = getpid();
 }
 
 ServerApp::~ServerApp()
 {
+    delete TheBESKeys::TheKeys();
+
+	BESCatalogUtils::delete_all_catalogs();
 }
 
-void
-ServerApp::signalTerminate( int sig )
+// This is needed so that the master bes listener will get the exit status of
+// all of the child bes listeners (preventing them from becoming zombies).
+static void CatchSigChild(int sig)
 {
-    if( sig == SIGTERM )
+    if (sig == SIGCHLD)
     {
-        BESApp::TheApplication()->terminate( sig ) ;
-	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
-    }
-}
+        BESDEBUG("beslistener", "beslistener: caught sig chld" << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig child" << endl;
 
-void
-ServerApp::signalInterrupt( int sig )
-{
-    if( sig == SIGINT )
-    {
-	BESApp::TheApplication()->terminate( sig ) ;
-	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
-    }
-}
+        int stat;
+        pid_t pid = wait(&stat);
 
-void
-ServerApp::signalRestart( int sig )
-{
-    if( sig == SIGUSR1 )
-    {
-	BESApp::TheApplication()->terminate( sig ) ;
-	exit( SERVER_EXIT_RESTART ) ;
+        BESDEBUG("beslistener", "beslistener: child pid: " << pid << " exited with status: " << WEXITSTATUS(stat) << endl);
+        *(BESLog::TheLog()) << "beslistener child pid: " << pid << " exited with status: " << WEXITSTATUS(stat) << endl;
     }
 }
 
-void
-ServerApp::set_group_id()
+// If the HUP signal is sent to the master beslistener, it should exit and
+// return a value indicating to the besdaemon that it should be restarted.
+// This also has the side-affect of re-reading the configuration file.
+static void CatchSigHup(int sig)
 {
-#if !defined(OS2) && !defined(TPF)
-    // OS/2 and TPF don't support groups.
-
-    // get group id or name from BES configuration file
-    // If BES.Group begins with # then it is a group id,
-    // else it is a group name and look up the id.
-    BESDEBUG( "server", "ServerApp: Setting group id ... " << endl ) ;
-    bool found = false ;
-    string key = "BES.Group" ;
-    string group_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || group_str.empty() )
+    if (sig == SIGHUP)
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: Group not specified in BES configuration file" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-    BESDEBUG( "server", "to " << group_str << " ... " << endl ) ;
+        int pid = getpid();
+        BESDEBUG("beslistener", "beslistener: " << pid << " caught SIGHUP." << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig hup" << endl;
 
-    gid_t new_gid = 0 ;
-    if( group_str[0] == '#' )
-    {
-	// group id starts with a #, so is a group id
-	const char *group_c = group_str.c_str() ;
-	group_c++ ;
-	new_gid = atoi( group_c ) ;
-    }
-    else
-    {
-	// specified group is a group name
-	struct group *ent ;
-	ent = getgrnam( group_str.c_str() ) ;
-	if( !ent )
-	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
-	    string err = (string)"FAILED: Group " + group_str
-			 + " does not exist" ;
-	    cerr << err << endl ;
-	    (*BESLog::TheLog()) << err << endl ;
-	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-	}
-	new_gid = ent->gr_gid ;
-    }
+        BESApp::TheApplication()->terminate(sig);
 
-    if( new_gid < 1 )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	ostringstream err ;
-	err << "FAILED: Group id " << new_gid
-	    << " not a valid group id for BES" ;
-	cerr << err.str() << endl ;
-	(*BESLog::TheLog()) << err.str() << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
+        BESDEBUG("beslistener", "beslistener: " << pid << " past terminate (SIGHUP)." << endl);
 
-    BESDEBUG( "server", "to id " << new_gid << " ... " << endl ) ;
-    if( setgid( new_gid ) == -1 )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	ostringstream err ;
-	err << "FAILED: unable to set the group id to " << new_gid ;
-	cerr << err.str() << endl ;
-	(*BESLog::TheLog()) << err.str() << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+        exit(SERVER_EXIT_RESTART);
     }
+}
 
-    BESDEBUG( "server", "OK" << endl ) ;
-#else
-    BESDEBUG( "server", "ServerApp: Groups not supported in this OS" << endl ) ;
+static void CatchSigPipe(int sig)
+{
+    if (sig == SIGPIPE)
+    {
+        int pid = getpid();
+        BESDEBUG("beslistener", "beslistener: " << pid << " caught SIGPIPE." << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig pipe" << endl;
+
+        //BESApp::TheApplication()->terminate(sig);
+
+        BESDEBUG("beslistener", "beslistener: " << pid << " past terminate (SIGPIPE)." << endl);
+
+        //exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+    }
+}
+
+// This is the default signal sent by 'kill'; when the master beslistener gets
+// this signal it should stop. besdaemon should not try to start a new
+// master beslistener.
+static void CatchSigTerm(int sig)
+{
+    if (sig == SIGTERM)
+    {
+        int pid = getpid();
+        BESDEBUG("beslistener", "beslistener: " << pid << " caught SIGTERM" << endl);
+        *(BESLog::TheLog()) << "beslistener caught sig term" << endl;
+
+        BESApp::TheApplication()->terminate(sig);
+
+        BESDEBUG("beslistener", "beslistener: " << pid << " past terminate (SIGTERM)." << endl);
+
+        exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+    }
+}
+
+/** Register the signal handlers. This registers handlers for HUP, TERM and
+ *  CHLD. For each, if this OS supports restarting 'slow' system calls, enable
+ *  that. For the TERM and HUP handlers, block SIGCHLD for the duration of
+ *  the handler (we call stop_all_beslisteners() in those handlers and that
+ *  function uses wait() to collect the exit status of the child processes).
+ *  This ensure that our signal handlers (TERM and HUP) don't themselves get
+ *  interrupted.
+ */
+static void register_signal_handlers()
+{
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    sigaddset(&act.sa_mask, SIGCHLD);
+    sigaddset(&act.sa_mask, SIGPIPE);
+    sigaddset(&act.sa_mask, SIGTERM);
+    sigaddset(&act.sa_mask, SIGHUP);
+    act.sa_flags = 0;
+#ifdef SA_RESTART
+    BESDEBUG("beslistener" , "beslistener: setting restart for sigchld." << endl);
+    act.sa_flags |= SA_RESTART;
 #endif
+
+    BESDEBUG( "beslistener", "beslistener: Registering signal handlers ... " << endl );
+
+    act.sa_handler = CatchSigChild;
+    if (sigaction(SIGCHLD, &act, 0))
+        throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__, __LINE__);
+
+    act.sa_handler = CatchSigPipe;
+    if (sigaction(SIGPIPE, &act, 0) < 0)
+        throw BESInternalFatalError("Could not register a handler to catch beslistener pipe signal.", __FILE__, __LINE__);
+
+    // For these, block sigchld
+    //  sigaddset(&act.sa_mask, SIGCHLD);
+    act.sa_handler = CatchSigTerm;
+    if (sigaction(SIGTERM, &act, 0) < 0)
+        throw BESInternalFatalError("Could not register a handler to catch beslistener terminate signal.", __FILE__, __LINE__);
+
+    act.sa_handler = CatchSigHup;
+    if (sigaction(SIGHUP, &act, 0) < 0)
+        throw BESInternalFatalError("Could not register a handler to catch beslistener hup signal.", __FILE__, __LINE__);
+
+    BESDEBUG( "beslistener", "beslistener: OK" << endl );
 }
 
-void
-ServerApp::set_user_id()
+int ServerApp::initialize(int argc, char **argv)
 {
-    BESDEBUG( "server", "ServerApp: Setting user id ... " << endl ) ;
-
-    // Get user name or id from the BES configuration file.
-    // If the BES.User value begins with # then it is a user
-    // id, else it is a user name and need to look up the
-    // user id.
-    bool found = false ;
-    string key = "BES.User" ;
-    string user_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || user_str.empty() )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = (string)"FAILED: User not specified in BES config file" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-    BESDEBUG( "server", "to " << user_str << " ... " << endl ) ;
-
-    uid_t new_id = 0 ;
-    if( user_str[0] == '#' )
-    {
-	const char *user_str_c = user_str.c_str() ;
-	user_str_c++ ;
-	new_id = atoi( user_str_c ) ;
-    }
-    else
-    {
-	struct passwd *ent ;
-	ent = getpwnam( user_str.c_str() ) ;
-	if( !ent )
-	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
-	    string err = (string)"FAILED: Bad user name specified: "
-			 + user_str ;
-	    cerr << err << endl ;
-	    (*BESLog::TheLog()) << err << endl ;
-	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-	}
-	new_id = ent->pw_uid ;
-    }
-
-    // new user id cannot be root (0)
-    if( !new_id )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = (string)"FAILED: BES cannot run as root" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-
-    BESDEBUG( "server", "to " << new_id << " ... " << endl ) ;
-    if( setuid( new_id ) == -1 )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	ostringstream err ;
-	err << "FAILED: Unable to set user id to " << new_id ;
-	cerr << err.str() << endl ;
-	(*BESLog::TheLog()) << err.str() << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-}
-
-int
-ServerApp::initialize( int argc, char **argv )
-{
-    int c = 0 ;
-    bool needhelp = false ;
-    string dashi ;
-    string dashc ;
+    int c = 0;
+    bool needhelp = false;
+    string dashi;
+    string dashc;
+    string dashd = "";
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
-    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:r:" ) ) != EOF )
+    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF)
     {
-	switch( c )
-	{
-	    case 'i':
-		dashi = optarg ;
-		break ;
-	    case 'c':
-		dashc = optarg ;
-		break ;
-	    case 'r':
-		break ; // we can ignore the /var/run directory option here
-	    case 'p':
-		_portVal = atoi( optarg ) ;
-		_gotPort = true ;
-		break ;
-	    case 'u':
-		_unixSocket = optarg ;
-		break ;
-	    case 'd':
-		BESDebug::SetUp( optarg ) ;
-		break ;
-	    case 'v':
-		BESServerUtils::show_version( BESApp::TheApplication()->appName() ) ;
-		break ;
-	    case 's':
-		_secure = true ;
-		break ;
-	    case 'h':
-	    case '?':
-	    default:
-		needhelp = true ;
-		break ;
-	}
+        switch (c)
+        {
+            case 'i':
+                dashi = optarg;
+                break;
+            case 'c':
+                dashc = optarg;
+                break;
+            case 'r':
+                break; // we can ignore the /var/run directory option here
+            case 'p':
+                _portVal = atoi(optarg);
+                _gotPort = true;
+                break;
+            case 'u':
+                _unixSocket = optarg;
+                break;
+            case 'd':
+                dashd = optarg;
+                // BESDebug::SetUp(optarg);
+                break;
+            case 'v':
+                BESServerUtils::show_version(BESApp::TheApplication()->appName());
+                break;
+            case 's':
+                _secure = true;
+                break;
+            case 'h':
+            case '?':
+            default:
+                needhelp = true;
+                break;
+        }
     }
 
     // before we can do any processing, log any messages, initialize any
@@ -309,254 +251,271 @@ ServerApp::initialize( int argc, char **argv )
     // file, group and user id, and information that the modules will
     // need to run properly.
 
-    // If the -c optiion was passed, set the config file name in TheBESKeys
-    if( !dashc.empty() )
+    // If the -c option was passed, set the config file name in TheBESKeys
+    if (!dashc.empty())
     {
-	TheBESKeys::ConfigFile = dashc ;
+        TheBESKeys::ConfigFile = dashc;
     }
 
     // If the -c option was not passed, but the -i option
     // was passed, then use the -i option to construct
     // the path to the config file
-    if( dashc.empty() && !dashi.empty() )
+    if (dashc.empty() && !dashi.empty())
     {
-	if( dashi[dashi.length()-1] != '/' )
-	{
-	    dashi += '/' ;
-	}
-	string conf_file = dashi + "etc/bes/bes.conf" ;
-	TheBESKeys::ConfigFile = conf_file ;
+        if (dashi[dashi.length() - 1] != '/')
+        {
+            dashi += '/';
+        }
+        string conf_file = dashi + "etc/bes/bes.conf";
+        TheBESKeys::ConfigFile = conf_file;
     }
 
-    // Now that we have the configuration information, we can log to the
-    // BES log file if there are errors in starting up, etc...
-
-    uid_t curr_euid = geteuid() ;
-#ifndef BES_DEVELOPER
-    // must be root to run this app and to set user id and group id later
-    if( curr_euid )
-    {
-	string err = "FAILED: Must be root to run BES" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-#else
-    cout << "Developer Mode: not testing if BES is run by root" << endl ;
-#endif
+    if (!dashd.empty())
+        BESDebug::SetUp(dashd);
 
     // register the two debug context for the server and ppt. The
     // Default Module will register the bes context.
-    BESDebug::Register( "server" ) ;
-    BESDebug::Register( "ppt" ) ;
-
-    // Before we can load modules, start writing to the BES log
-    // file, etc... we need to run as the proper user. Set the user
-    // id and the group id to what is specified in the BES
-    // configuration file
-    if( curr_euid == 0 )
-    {
-#ifdef BES_DEVELOPER
-	cout << "Developer Mode: Running as root - setting group and user ids"
-	     << endl ;
-#endif
-	set_group_id() ;
-	set_user_id() ;
-    }
-    else
-    {
-	cout << "Developer Mode: Not setting group or user ids" << endl ;
-    }
+    BESDebug::Register("server");
+    BESDebug::Register("ppt");
 
     // Because we are now running as the user specified in the
-    // configuraiton file, we won't be able to listen on system ports.
+    // configuration file, we won't be able to listen on system ports.
     // If this is a problem, we may need to move this code above setting
     // the user and group ids.
-    bool found = false ;
-    string port_key = "BES.ServerPort" ;
-    if( !_gotPort )
+    bool found = false;
+    string port_key = "BES.ServerPort";
+    if (!_gotPort)
     {
-	string sPort = TheBESKeys::TheKeys()->get_key( port_key, found ) ;
-	if( found )
-	{
-	    _portVal = atoi( sPort.c_str() ) ;
-	    if( _portVal != 0 )
-	    {
-		_gotPort = true ;
-	    }
-	}
+        string sPort;
+        try
+        {
+            TheBESKeys::TheKeys()->get_value(port_key, sPort, found);
+        }
+        catch (BESError &e)
+        {
+            BESDEBUG( "beslistener", "beslistener: FAILED" << endl );
+            string err = (string) "FAILED: " + e.get_message();
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        }
+        if (found)
+        {
+            _portVal = atoi(sPort.c_str());
+            if (_portVal != 0)
+            {
+                _gotPort = true;
+            }
+        }
     }
 
-    found = false ;
-    string socket_key = "BES.ServerUnixSocket" ;
-    if( _unixSocket == "" )
+    found = false;
+    string socket_key = "BES.ServerUnixSocket";
+    if (_unixSocket == "")
     {
-	_unixSocket = TheBESKeys::TheKeys()->get_key( socket_key, found ) ;
+        try
+        {
+            TheBESKeys::TheKeys()->get_value(socket_key, _unixSocket, found);
+        }
+        catch (BESError &e)
+        {
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
+            string err = (string) "FAILED: " + e.get_message();
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        }
     }
 
-    if( !_gotPort && _unixSocket == "" )
+    if (!_gotPort && _unixSocket == "")
     {
-	string msg = "Must specify a tcp port or a unix socket or both\n" ;
-	msg += "Please specify on the command line with -p <port> -u <unix_socket>\n" ;
-	msg += "Or specify in the bes configuration file with "
-	    + port_key + " and/or " + socket_key + "\n" ;
-	cout << endl << msg ;
-	(*BESLog::TheLog()) << msg << endl ;
-	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
+        string msg = "Must specify a tcp port or a unix socket or both\n";
+        msg += "Please specify on the command line with -p <port>";
+        msg += " and/or -u <unix_socket>\n";
+        msg += "Or specify in the bes configuration file with " + port_key + " and/or " + socket_key + "\n";
+        cout << endl << msg;
+        (*BESLog::TheLog()) << msg << endl;
+        BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
-    found = false ;
-    if( _secure == false )
+    found = false;
+    if (_secure == false)
     {
-	string key = "BES.ServerSecure" ;
-	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
-	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
-	{
-	    _secure = true ;
-	}
+        string key = "BES.ServerSecure";
+        string isSecure;
+        try
+        {
+            TheBESKeys::TheKeys()->get_value(key, isSecure, found);
+        }
+        catch (BESError &e)
+        {
+            BESDEBUG( "server", "beslistener: FAILED" << endl );
+            string err = (string) "FAILED: " + e.get_message();
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        }
+        if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes")
+        {
+            _secure = true;
+        }
     }
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGTERM ... " << endl ) ;
-    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
+    try
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: cannot register SIGTERM signal handler" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+        register_signal_handlers();
     }
-    BESDEBUG( "server", "OK" << endl ) ;
-
-    BESDEBUG( "server", "ServerApp: Registering signal SIGINT ... " << endl ) ;
-    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
+    catch (BESError &e)
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: cannot register SIGINT signal handler" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+        BESDEBUG( "beslistener", "beslistener: FAILED: " << e.get_message() << endl );
+        (*BESLog::TheLog()) << e.get_message() << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
-    BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGUSR1 ... " << endl ) ;
-    if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
-    {
-	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: cannot register SIGUSR1 signal handler" ;
-	cerr << err << endl ;
-	(*BESLog::TheLog()) << err << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "beslistener", "beslistener: initializing default module ... "
+            << endl );
+    BESDefaultModule::initialize(argc, argv);
+    BESDEBUG( "beslistener", "beslistener: done initializing default module"
+            << endl );
 
-    BESDEBUG( "server", "ServerApp: initializing default module ... "
-			<< endl ) ;
-    BESDefaultModule::initialize( argc, argv ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
-
-    BESDEBUG( "server", "ServerApp: initializing default commands ... "
-			<< endl ) ;
-    BESXMLDefaultCommands::initialize( argc, argv ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "beslistener", "beslistener: initializing default commands ... "
+            << endl );
+    BESXMLDefaultCommands::initialize(argc, argv);
+    BESDEBUG( "beslistener", "beslistener: done initializing default commands"
+            << endl );
 
     // This will load and initialize all of the modules
-    int ret = BESModuleApp::initialize( argc, argv ) ;
+    BESDEBUG( "beslistener", "beslistener: initializing loaded modules ... "
+            << endl );
+    int ret = BESModuleApp::initialize(argc, argv);
+    BESDEBUG( "beslistener", "beslistener: done initializing loaded modules"
+            << endl );
 
-    BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
+    BESDEBUG( "beslistener", "beslistener: initialized settings:" << *this );
 
-    if( needhelp )
+    if (needhelp)
     {
-	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
+        BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
-    return ret ;
+    // This sets the process group to be ID of this process. All children
+    // will get this GID. Then use killpg() to send a signal to this process
+    // and all of the children.
+    session_id = setsid();
+    BESDEBUG("beslistener", "beslistener: The master beslistener session id (group id): " << session_id << endl);
+
+    return ret;
 }
 
-int
-ServerApp::run()
+int ServerApp::run()
 {
     try
     {
-	BESDEBUG( "server", "ServerApp: initializing memory pool ... "
-			    << endl ) ;
-	BESMemoryManager::initialize_memory_pool() ;
-	BESDEBUG( "server", "OK" << endl ) ;
+        BESDEBUG( "beslistener", "beslistener: initializing memory pool ... "
+                << endl );
+        BESMemoryManager::initialize_memory_pool();
+        BESDEBUG( "beslistener", "OK" << endl );
 
-	SocketListener listener ;
+        SocketListener listener;
+        if (_portVal)
+        {
+            _ts = new TcpSocket(_portVal);
+            listener.listen(_ts);
 
-	if( _portVal )
-	{
-	    _ts = new TcpSocket( _portVal ) ;
-	    listener.listen( _ts ) ;
-	    BESDEBUG( "server", "ServerApp: listening on port ("
-				<< _portVal << ")" << endl ) ;
-	}
+            BESDEBUG( "beslistener", "beslistener: listening on port (" << _portVal << ")" << endl );
 
-	if( !_unixSocket.empty() )
-	{
-	    _us = new UnixSocket( _unixSocket ) ;
-	    listener.listen( _us ) ;
-	    BESDEBUG( "server", "ServerApp: listening on unix socket ("
-				<< _unixSocket << ")" << endl ) ;
-	}
+            BESDEBUG( "beslistener", "beslistener: about to write status (4)" << endl );
+            // Write to stdout works because the besdaemon is listening on the
+            // other end of a pipe where the pipe fd[1] has been dup2'd to
+            // stdout. See daemon.cc:start_master_beslistener.
+            // NB BESLISTENER_PIPE_FD is 1 (stdout)
+            int status = BESLISTENER_RUNNING;
+            int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
-	BESServerHandler handler ;
+            BESDEBUG( "beslistener", "beslistener: wrote status (" << res << ")" << endl );
+        }
 
-	_ps = new PPTServer( &handler, &listener, _secure ) ;
-	_ps->initConnection() ;
+        if (!_unixSocket.empty())
+        {
+            _us = new UnixSocket(_unixSocket);
+            listener.listen(_us);
+            BESDEBUG( "beslistener", "beslistener: listening on unix socket ("
+                    << _unixSocket << ")" << endl );
+        }
+
+        BESServerHandler handler;
+
+        _ps = new PPTServer(&handler, &listener, _secure);
+        _ps->initConnection();
+
+        _ps->closeConnection();
     }
-    catch( BESError &se )
+    catch (BESError &se)
     {
-	cerr << se.get_message() << endl ;
-	(*BESLog::TheLog()) << se.get_message() << endl ;
-	return 1 ;
+        cerr << se.get_message() << endl;
+        (*BESLog::TheLog()) << se.get_message() << endl;
+        int status = SERVER_EXIT_FATAL_CAN_NOT_START;
+        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+        close(BESLISTENER_PIPE_FD);
+        return 1;
     }
-    catch( ... )
+    catch (...)
     {
-	cerr << "caught unknown exception" << endl ;
-	(*BESLog::TheLog()) << "caught unknown exception initializing sockets"
-			    << endl ;
-	return 1 ;
+        cerr << "caught unknown exception" << endl;
+        (*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
+        int status = SERVER_EXIT_FATAL_CAN_NOT_START;
+        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+        close(BESLISTENER_PIPE_FD);
+        return 1;
     }
 
-    return 0 ;
+    close(BESLISTENER_PIPE_FD);
+    return 0;
 }
 
-int
-ServerApp::terminate( int sig )
+int ServerApp::terminate(int sig)
 {
-    pid_t apppid = getpid() ;
-    if( apppid == _mypid )
+    pid_t apppid = getpid();
+    if (apppid == _mypid)
     {
-	if( _ps )
-	{
-	    _ps->closeConnection() ;
-	    delete _ps ;
-	}
-	if( _ts )
-	{
-	    _ts->close() ;
-	    delete _ts ;
-	}
-	if( _us )
-	{
-	    _us->close() ;
-	    delete _us ;
-	}
+        if (_ps)
+        {
+            _ps->closeConnection();
+            delete _ps;
+        }
+        if (_ts)
+        {
+            _ts->close();
+            delete _ts;
+        }
+        if (_us)
+        {
+            _us->close();
+            delete _us;
+        }
 
-	BESDEBUG( "server", "ServerApp: terminating default module ... "
-			    << endl ) ;
-	BESDefaultModule::terminate( ) ;
-	BESDEBUG( "server", "OK" << endl ) ;
+        // Do this in the reverse order that it was initialized. So
+        // terminate the loaded modules first, then the default
+        // commands, then the default module.
+        BESDEBUG( "beslistener", "beslistener: terminating loaded modules ...  "
+                << endl );
+        BESModuleApp::terminate(sig);
+        BESDEBUG( "beslistener", "beslistener: done terminating loaded modules"
+                << endl );
 
-	BESDEBUG( "server", "ServerApp: terminating default commands ...  "
-			    << endl ) ;
-	BESXMLDefaultCommands::terminate( ) ;
-	BESDEBUG( "server", "OK" << endl ) ;
+        BESDEBUG( "beslistener", "beslistener: terminating default commands ...  "
+                << endl );
+        BESXMLDefaultCommands::terminate();
+        BESDEBUG( "beslistener", "beslistener: done terminating default commands ...  "
+                << endl );
 
-	BESModuleApp::terminate( sig ) ;
+        BESDEBUG( "beslistener", "beslistener: terminating default module ... "
+                << endl );
+        BESDefaultModule::terminate();
+        BESDEBUG( "beslistener", "beslistener: done terminating default module ... "
+                << endl );
     }
-    return sig ;
+    return sig;
 }
 
 /** @brief dumps information about this object
@@ -565,73 +524,70 @@ ServerApp::terminate( int sig )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-ServerApp::dump( ostream &strm ) const
+void ServerApp::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "ServerApp::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "got port? " << _gotPort << endl ;
-    strm << BESIndent::LMarg << "port: " << _portVal << endl ;
-    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl ;
-    strm << BESIndent::LMarg << "is secure? " << _secure << endl ;
-    strm << BESIndent::LMarg << "pid: " << _mypid << endl ;
-    if( _ts )
+    strm << BESIndent::LMarg << "ServerApp::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "got port? " << _gotPort << endl;
+    strm << BESIndent::LMarg << "port: " << _portVal << endl;
+    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl;
+    strm << BESIndent::LMarg << "is secure? " << _secure << endl;
+    strm << BESIndent::LMarg << "pid: " << _mypid << endl;
+    if (_ts)
     {
-	strm << BESIndent::LMarg << "tcp socket:" << endl ;
-	BESIndent::Indent() ;
-	_ts->dump( strm ) ;
-	BESIndent::UnIndent() ;
+        strm << BESIndent::LMarg << "tcp socket:" << endl;
+        BESIndent::Indent();
+        _ts->dump(strm);
+        BESIndent::UnIndent();
     }
     else
     {
-	strm << BESIndent::LMarg << "tcp socket: null" << endl ;
+        strm << BESIndent::LMarg << "tcp socket: null" << endl;
     }
-    if( _us )
+    if (_us)
     {
-	strm << BESIndent::LMarg << "unix socket:" << endl ;
-	BESIndent::Indent() ;
-	_us->dump( strm ) ;
-	BESIndent::UnIndent() ;
+        strm << BESIndent::LMarg << "unix socket:" << endl;
+        BESIndent::Indent();
+        _us->dump(strm);
+        BESIndent::UnIndent();
     }
     else
     {
-	strm << BESIndent::LMarg << "unix socket: null" << endl ;
+        strm << BESIndent::LMarg << "unix socket: null" << endl;
     }
-    if( _ps )
+    if (_ps)
     {
-	strm << BESIndent::LMarg << "ppt server:" << endl ;
-	BESIndent::Indent() ;
-	_ps->dump( strm ) ;
-	BESIndent::UnIndent() ;
+        strm << BESIndent::LMarg << "ppt server:" << endl;
+        BESIndent::Indent();
+        _ps->dump(strm);
+        BESIndent::UnIndent();
     }
     else
     {
-	strm << BESIndent::LMarg << "ppt server: null" << endl ;
+        strm << BESIndent::LMarg << "ppt server: null" << endl;
     }
-    BESModuleApp::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    BESModuleApp::dump(strm);
+    BESIndent::UnIndent();
 }
 
-int
-main( int argc, char **argv )
+int main(int argc, char **argv)
 {
     try
     {
-	ServerApp app ;
-	return app.main( argc, argv ) ;
+        ServerApp app;
+        return app.main(argc, argv);
     }
-    catch( BESError &e )
+    catch (BESError &e)
     {
-	cerr << "Caught unhandled exception: " << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
+        cerr << "Caught unhandled exception: " << endl;
+        cerr << e.get_message() << endl;
+        return 1;
     }
-    catch( ... )
+    catch (...)
     {
-	cerr << "Caught unhandled, unknown exception" << endl ;
-	return 1 ;
+        cerr << "Caught unhandled, unknown exception" << endl;
+        return 1;
     }
-    return 0 ;
+    return 0;
 }
 

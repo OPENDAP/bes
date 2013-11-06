@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -32,6 +32,7 @@
 
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
+#include "BESContainerStorage.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESResponseNames.h"
@@ -40,19 +41,20 @@
 #include "BESDebug.h"
 
 BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+    : BESXMLCommand( base_dhi ),
+      _default_constraint( "" )
 {
 }
 
 /** @brief parse a show command. No properties or children elements
  *
-    <define name="d" space="default">
-        <container name="c">
-            <constraint>a valid ce</constraint>
-            <attributes>list of attributes</attributes>
-        </container>
-	<aggregate handler="someHandler" cmd="someCommand" />
-    </define> 
+    &lt;define name="d" space="default"&gt;
+        &lt;container name="c"&gt;
+            &lt;constraint&gt;a valid ce&lt;/constraint&gt;
+            &lt;attributes&gt;list of attributes&lt;/attributes&gt;
+        &lt;/container&gt;
+	&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
+    &lt;/define&gt; 
  *
  * Requires the name property. The space property is optional. Requires at
  * least one container element. The container element requires the name
@@ -66,6 +68,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 {
     string value ;		// element value, should not be any
     string def_name ;		// definition name
+    string def_space ;		// definition storage space
     string action ;		// element name, which is the request action
     map<string, string> props ;	// element properties. Should contain name
     				// and optionally space
@@ -90,6 +93,13 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
     _dhi.data[DEF_NAME] = def_name ;
     _str_cmd = (string)"define " + def_name ;
 
+    def_space = props["space"] ;
+    if( !def_space.empty() )
+    {
+	_str_cmd += " in " + def_space ;
+    }
+    _dhi.data[STORE_NAME] = def_space ;
+
     int num_containers = 0 ;
     string child_name ;
     string child_value ;
@@ -98,7 +108,12 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	BESXMLUtils::GetFirstChild( node, child_name, child_value, props ) ;
     while( child_node )
     {
-	if( child_name == "container" )
+	if( child_name == "constraint" )
+	{
+	    // default constraint for all containers
+	    _default_constraint = child_value ;
+	}
+	else if( child_name == "container" )
 	{
 	    handle_container_element( action, child_node, child_value, props ) ;
 	    num_containers++ ;
@@ -151,6 +166,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	    }
 	}
     }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action
@@ -159,10 +175,10 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 
 /** @brief handle a container element of the define element
  *
-        <container name="c">
-            <constraint>a valid ce</constraint>
-            <attributes>list of attributes</attributes>
-        </container>
+        &lt;container name="c"&gt;
+            &lt;constraint&gt;a valid ce&lt;/constraint&gt;
+            &lt;attributes&gt;list of attributes&lt;/attributes&gt;
+        &lt;/container&gt;
  *
  * The name is required. constraint and attribute sub elements are optional
  *
@@ -185,6 +201,9 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     }
 
     _containers.push_back( name ) ;
+
+    string space = props["space"] ;
+    _stores[name] = space ;
 
     bool have_constraint = false ;
     bool have_attributes = false ;
@@ -255,7 +274,7 @@ BESXMLDefineCommand::handle_container_element( const string &action,
 
 /** @brief handle an aggregate element of the define element
  *
-	<aggregate handler="someHandler" cmd="someCommand" />
+	&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
  *
  * The handler and cmd properties are required
  *
@@ -298,11 +317,34 @@ BESXMLDefineCommand::prep_request()
     for( ; i != e; i++ )
     {
 	// look for the specified container
-	BESContainer *d =
-	    BESContainerStorageList::TheList()->look_for( (*i) ) ;
-	d->set_constraint( _constraints[(*i)] ) ;
-	d->set_attributes( _attributes[(*i)] ) ;
-	_dhi.containers.push_back( d ) ;
+	BESContainer *c = 0 ;
+
+	// first see if a particilar store is being used
+	string store = _stores[(*i)] ;
+	if( !store.empty() )
+	{
+	    BESContainerStorage *cs = 
+		BESContainerStorageList::TheList()->find_persistence( store ) ;
+	    if( cs ) c = cs->look_for( (*i) ) ;
+	}
+	else
+	{
+	    c = BESContainerStorageList::TheList()->look_for( (*i) ) ;
+	}
+	if( !c && BESContainerStorageList::TheList()->isnice() == false )
+	{
+	    string s = (string)"Could not find the container "
+		       + (*i) ;
+	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
+	}
+
+	string constraint = _constraints[(*i)] ;
+	string attrs = _attributes[(*i)] ;
+	if( constraint.empty() ) constraint = _default_constraint ;
+	c->set_constraint( constraint ) ;
+	c->set_attributes( attrs ) ;
+	_dhi.containers.push_back( c ) ;
+	BESDEBUG( "xml", "define using container: " << endl << *c << endl ) ;
     }
 }
 

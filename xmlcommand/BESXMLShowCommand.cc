@@ -18,7 +18,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -41,12 +41,13 @@ BESXMLShowCommand::BESXMLShowCommand( const BESDataHandlerInterface &base_dhi )
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse any show command. No sub-elements or properties are
+ * defined
  *
-    <cmd1.1 prop1=\"prop1val\"> \
-	<element1>element1val</element1> \
-	<element2 prop2.1=\"prop2.1val\">element2val</element2> \
-    </cmd1.1> \
+ * If there are properties, values, or sub-elements for a show command
+ * then another command object should be created to parse those.
+ *
+    &lt;showX \&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -73,7 +74,7 @@ BESXMLShowCommand::parse_request( xmlNode *node )
     _dhi.action = "show." ;
     string toadd = BESUtil::lowercase( name.substr( 4, name.length() - 4 ) ) ;
     _dhi.action += toadd ;
-    _str_cmd = (string)"show " + toadd ;
+    _str_cmd = (string)"show " + toadd + ";" ;
     BESDEBUG( "besxml", "Converted xml element name to command "
 			<< _dhi.action << endl ) ;
 

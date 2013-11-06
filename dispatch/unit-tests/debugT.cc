@@ -18,7 +18,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -77,6 +77,19 @@ public:
 
     CPPUNIT_TEST_SUITE_END() ;
 
+    void compare_debug( string result, string expected )
+    {
+	if( !expected.empty() )
+	{
+	    string::size_type lb = result.find( "[" ) ;
+	    CPPUNIT_ASSERT( lb != string::npos ) ;
+	    string::size_type rb = result.rfind( "]" ) ;
+	    CPPUNIT_ASSERT( rb != string::npos ) ;
+	    result = result.substr( rb+2 ) ;
+	}
+	CPPUNIT_ASSERT( result == expected ) ;
+    }
+
     void do_test()
     {
 	cout << "*****************************************" << endl;
@@ -84,7 +97,6 @@ public:
 
 	char mypid[12] ;
 	BESUtil::fastpidconverter( mypid, 10 ) ;
-	string pid_str = (string)"[" + mypid + "] " ;
 
 	if( !DebugArgs.empty() )
 	{
@@ -153,27 +165,24 @@ public:
 	    ostringstream nc ;
 	    BESDebug::SetStrm( &nc, false ) ;
 	    string debug_str = "Testing nc debug" ;
-	    string result_str = pid_str + debug_str ;
 	    BESDEBUG( "nc", debug_str ) ;
-	    CPPUNIT_ASSERT( nc.str() == result_str ) ;
+	    compare_debug( nc.str(), debug_str ) ;
 
 	    cout << "*****************************************" << endl;
 	    cout << "try debugging to hdf4" << endl;
 	    ostringstream hdf4 ;
 	    BESDebug::SetStrm( &hdf4, false ) ;
 	    debug_str = "Testing hdf4 debug" ;
-	    result_str = pid_str + debug_str ;
 	    BESDEBUG( "hdf4", debug_str ) ;
-	    CPPUNIT_ASSERT( hdf4.str() == result_str ) ;
+	    compare_debug( hdf4.str(), debug_str ) ;
 
 	    cout << "*****************************************" << endl;
 	    cout << "try debugging to ff" << endl;
 	    ostringstream ff ;
 	    BESDebug::SetStrm( &ff, false ) ;
-	    debug_str = pid_str + "Testing ff debug" ;
-	    result_str = pid_str + debug_str ;
+	    debug_str = "Testing ff debug" ;
 	    BESDEBUG( "ff", debug_str ) ;
-	    CPPUNIT_ASSERT( ff.str() == result_str ) ;
+	    compare_debug( ff.str(), debug_str ) ;
 
 	    cout << "*****************************************" << endl;
 	    cout << "turn off ff and try debugging to ff again" << endl;
@@ -183,7 +192,7 @@ public:
 	    BESDebug::SetStrm( &ff2, false ) ;
 	    debug_str = "" ;
 	    BESDEBUG( "ff", debug_str ) ;
-	    CPPUNIT_ASSERT( ff2.str() == debug_str ) ;
+	    compare_debug( ff2.str(), debug_str ) ;
 
 	    cout << "*****************************************" << endl;
 	    cout << "try debugging to cdf" << endl;
@@ -191,7 +200,7 @@ public:
 	    BESDebug::SetStrm( &cdf, false ) ;
 	    debug_str = "" ;
 	    BESDEBUG( "cdf", debug_str ) ;
-	    CPPUNIT_ASSERT( cdf.str() == debug_str ) ;
+	    compare_debug( cdf.str(), debug_str ) ;
 	}
 
 	cout << "*****************************************" << endl;
