@@ -33,7 +33,7 @@
 #include <DDS.h>
 #include <DAS.h>
 #include <ConstraintEvaluator.h>
-#include <DMR.h>
+// #include <DMR.h>
 #include <Error.h>
 
 #include "BESDapTransmit.h"
@@ -42,7 +42,7 @@
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
 #include "BESDASResponse.h"
-#include "BESDMRResponse.h"
+// #include "BESDMRResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESContextManager.h"
@@ -221,7 +221,7 @@ private:
 		rb.send_ddx(dhi.get_output_stream(), *dds, ce, print_mime);
 	}
 };
-
+#if 0
 class SendDMR: public Sender {
 private:
 	virtual string get_request_type() const
@@ -278,7 +278,7 @@ private:
 		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime);
 	}
 };
-
+#endif
 ///////////////////////////////////////////////////////////////////////////////
 // Public Interface Impl
 
@@ -289,9 +289,10 @@ BESDapTransmit::BESDapTransmit() :
 	add_method(DDS_SERVICE, BESDapTransmit::send_basic_dds);
 	add_method(DDX_SERVICE, BESDapTransmit::send_basic_ddx);
 	add_method(DATA_SERVICE, BESDapTransmit::send_basic_data);
-
+#if 0
 	add_method(DMR_SERVICE, BESDapTransmit::send_basic_dmr);
 	add_method(DAP4DATA_SERVICE, BESDapTransmit::send_basic_dap4data);
+#endif
 }
 
 BESDapTransmit::~BESDapTransmit()
@@ -300,9 +301,10 @@ BESDapTransmit::~BESDapTransmit()
 	remove_method(DDS_SERVICE);
 	remove_method(DDX_SERVICE);
 	remove_method(DATA_SERVICE);
-
+#if 0
 	remove_method(DMR_SERVICE);
 	remove_method(DAP4DATA_SERVICE);
+#endif
 }
 
 void BESDapTransmit::send_basic_das(BESResponseObject * obj, BESDataHandlerInterface & dhi)
@@ -328,7 +330,7 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj, BESDataHandlerInte
 	SendDataDDS sender;
 	sender.send(obj, dhi);
 }
-
+#if 0
 void BESDapTransmit::send_basic_dmr(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 {
 	SendDMR sender;
@@ -340,3 +342,4 @@ void BESDapTransmit::send_basic_dap4data(BESResponseObject * obj, BESDataHandler
 	SendDap4Data sender;
 	sender.send(obj, dhi);
 }
+#endif

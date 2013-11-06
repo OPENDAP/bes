@@ -55,8 +55,8 @@
 #include <XDRStreamMarshaller.h>
 #include <XDRFileUnMarshaller.h>
 #if 0
-#include <DMR.h>
-#include <XMLWriter.h>
+// #include <DMR.h>
+// #include <XMLWriter.h>
 #endif
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()

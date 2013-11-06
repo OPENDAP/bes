@@ -21,7 +21,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDDXResponseHandler.cc \
 	BESDataResponseHandler.cc \
 	BESDataDDXResponseHandler.cc \
-	BESDMRResponseHandler.cc \
 	BESDapModule.cc \
 	BESDapRequestHandler.cc \
 	BESDapTransmit.cc \
@@ -29,7 +28,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDASResponse.cc \
 	BESDDSResponse.cc \
 	BESDataDDSResponse.cc \
-	BESDMRResponse.cc \
 	BESDapError.cc \
 	BESDapErrorInfo.cc \
 	BESDapService.cc \
@@ -42,7 +40,6 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDXResponseHandler.h \
 	BESDataResponseHandler.h \
 	BESDataDDXResponseHandler.h \
-	BESDMRResponseHandler.h \
 	BESDapModule.h \
 	BESDapRequestHandler.h \
 	BESDapTransmit.h \
@@ -50,7 +47,6 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponse.h \
 	BESDASResponse.h \
 	BESDDSResponse.h \
-	BESDMRResponse.h \
 	BESDataDDSResponse.h \
 	BESDapError.h \
 	BESDapErrorInfo.h \
