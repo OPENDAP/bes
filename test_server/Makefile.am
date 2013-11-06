@@ -6,8 +6,8 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS =
-DIST_SUBDIRS = 
+SUBDIRS = . tests
+DIST_SUBDIRS = tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libtest_server_module.la

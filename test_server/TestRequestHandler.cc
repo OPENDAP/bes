@@ -48,13 +48,16 @@
 #include <BESContextManager.h>
 
 #include <InternalErr.h>
-#include <Ancillary.h>
+// #include <Ancillary.h>
+#include <test/TestTypeFactory.h>
 
 #include "TestRequestHandler.h"
 
 #define NAME "ts"
 
 using namespace libdap;
+
+int test_variable_sleep_interval = 0;
 
 bool TestRequestHandler::d_use_series_values = true;
 bool TestRequestHandler::d_use_series_values_set = false;
@@ -217,17 +220,19 @@ bool TestRequestHandler::build_dds(BESDataHandlerInterface & dhi)
 		string accessed = dhi.container->access();
 
 		DDS *dds = bdds->get_dds();
-
+	    TestTypeFactory *ttf = new TestTypeFactory;
+	    DDS server(ttf);
 		dds->filename(accessed);
-		dds->parse(accessed + ".dds");
-
+		BESDEBUG(NAME, "accessed: " << accessed << endl);
+		dds->parse(accessed);
+#if 0
 		DAS *das = new DAS;
 		BESDASResponse bdas(das);
 		bdas.set_container(dhi.container->get_symbolic_name());
 
 		das->parse(accessed + ".das");
 		dds->transfer_attributes(das);
-
+#endif
 		bdds->set_constraint(dhi);
 		bdds->clear_container();
     }
