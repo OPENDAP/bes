@@ -108,7 +108,7 @@ public:
 
 	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
-#if 0
+#if 1
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 

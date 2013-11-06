@@ -54,7 +54,7 @@
 #include <Ancillary.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRFileUnMarshaller.h>
-#if 0
+#if 1
 #include <DMR.h>
 #include <XMLWriter.h>
 #endif
@@ -713,7 +713,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
-#if 0
+#if 1
 void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool constrained,
         bool with_mime_headers)
 {
