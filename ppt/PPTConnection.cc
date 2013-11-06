@@ -179,22 +179,24 @@ void PPTConnection::sendExtensions(map<string, string> &extensions)
  */
 void PPTConnection::send(const string &buffer)
 {
-	BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl );
-		_mySock->send( buffer, 0, buffer.length() );
-#if 0
-		// was calling fsync() which is not defined for sockets. There might be some
-		// 'sync' operation needed in the future, but for now this is an empty call. removed
-		// jhrg 5/5/11
-		_mySock->sync();
-#endif
-	}
+	BESDEBUG("ppt", "PPTConnection::send - sending " << buffer << endl);
 
-	/** @brief read a buffer of data from the socket
-	 *
-	 * @param buffer buffer to store the data received from the socket in
-	 * @param buffer_size max size of the data to be received
-	 * @return number of bytes actually read
-	 */
+	_mySock->send(buffer, 0, buffer.length());
+
+#if 0
+	// was calling fsync() which is not defined for sockets. There might be some
+	// 'sync' operation needed in the future, but for now this is an empty call. removed
+	// jhrg 5/5/11
+	_mySock->sync();
+#endif
+}
+
+/** @brief read a buffer of data from the socket
+ *
+ * @param buffer buffer to store the data received from the socket in
+ * @param buffer_size max size of the data to be received
+ * @return number of bytes actually read
+ */
 int PPTConnection::readBuffer(char *buffer, const unsigned int buffer_size)
 {
 	return _mySock->receive(buffer, buffer_size);

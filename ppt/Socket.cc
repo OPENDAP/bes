@@ -107,6 +107,10 @@ Socket::send( const string &str, int start, int end )
     }
 }
 
+// There's a potential issue here in that read() only guarantees to read N
+// bytes when reading from a file that has that many bytes remaining unread.
+// For a socket, the number of bytes read may be less. This code does not
+// appear to take that into account. jhrg 11/6/13
 int Socket::receive(char *inBuff, const int inSize)
 {
 	int bytesRead = 0;
@@ -115,6 +119,9 @@ int Socket::receive(char *inBuff, const int inSize)
 	// check for EINTR and EAGAIN. jhrg 10/30/13
 	while ((bytesRead = read(_socket, inBuff, inSize)) < 1) {
 	    if (errno == EINTR || errno == EAGAIN) {
+	    	// These codes are only returned when no bytes have been read, so
+	    	// there is no need to update the values of inSize or inBuff.
+	    	// jhrg 11/6/13
 	    	*(BESLog::TheLog()) << "Socket::receive: errno: " << errno << ", bytesRead: " << bytesRead << endl;
 	    	errno = 0;
 	    	continue;

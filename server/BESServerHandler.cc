@@ -100,15 +100,13 @@ void BESServerHandler::handle(Connection *c)
 	// cures that like exit().
 	else {
 		pid_t pid;
-		if ((pid = fork()) < 0) // error
-				{
+		if ((pid = fork()) < 0)  { // error
 			string error("fork error");
 			const char* error_info = strerror(errno);
 			if (error_info) error += " " + (string) error_info;
 			throw BESInternalError(error, __FILE__, __LINE__);
 		}
-		else if (pid == 0) // child
-				{
+		else if (pid == 0) { // child
 			execute(c);
 		}
 #if 0
