@@ -9,6 +9,19 @@
 AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
+AM_CXXFLAGS = 
+
+# These are not used by automake but are often useful for certain types of
+# debugging. The best way to use these is to run configure as:
+# ./configure --disable-shared CXXFLAGS=...
+# or ./configure --enable-developer --disable-shared
+# the --disable-shared is not required, but it seems to help with debuggers.
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
+TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+if BES_DEVELOPER
+AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+endif
 
 SUBDIRS = . unit-tests 
 # tests

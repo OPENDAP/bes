@@ -64,6 +64,10 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 	dhi.action_name = DMR_RESPONSE_STR;
 	DMR *dmr = new DMR();
+
+	// Here we might set the dap and dmr version if they should be different from
+	// 4.0 and 1.0. jhrg 11/6/13
+
 	_response = new BESDMRResponse(dmr);
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }

@@ -43,6 +43,7 @@
  *     ddx
  *     dods
  *     dmr
+ *     dap4data
  * show
  *     catalog
  *     info

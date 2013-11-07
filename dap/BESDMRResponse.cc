@@ -32,12 +32,6 @@
 
 #include "BESDMRResponse.h"
 
-BESDMRResponse::~BESDMRResponse()
-{
-    if( _dmr )
-	delete _dmr ;
-}
-
 /** @brief set the container in the DAP response object
  *
  * @param cn name of the current container being operated on

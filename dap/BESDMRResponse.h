@@ -48,7 +48,7 @@ private:
 	ConstraintEvaluator _ce;
 public:
 	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
-	virtual ~BESDMRResponse();
+	virtual ~BESDMRResponse() { delete _dmr ; }
 
 	virtual void set_container(const string &cn);
 	virtual void clear_container();

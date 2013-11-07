@@ -4,6 +4,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS =  -I$(top_srcdir)/ppt  -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand
+AM_CXXFLAGS = 
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -13,8 +14,12 @@ endif
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+if BES_DEVELOPER
+AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+endif
 
 SUBDIRS = test
 

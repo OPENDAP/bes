@@ -16,6 +16,7 @@ BES.Catalog.catalog.RootDirectory=@abs_srcdir@
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=dapreader:.*.das$;dapreader:.*.dds;dapreader:.*.data;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*.xml$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;

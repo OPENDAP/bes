@@ -17,10 +17,13 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
+AM_CXXFLAGS = 
 
 SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP
-SUBDIRS += dap dapreader functions
+# test_server does not work but does build - remove once I/We figure out why
+# it's broken since dapreader does the same thing. jhrg 11/6/13
+SUBDIRS += dap dapreader functions test_server
 endif
 
 bin_SCRIPTS = besd bes-config bes-config-pkgconfig
