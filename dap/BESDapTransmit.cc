@@ -41,10 +41,13 @@
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
+
 #include "BESDASResponse.h"
-#include "BESDMRResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
+
+#include "BESDMRResponse.h"
+
 #include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
@@ -251,7 +254,6 @@ private:
 	}
 };
 
-// FIXME
 class SendDap4Data: public Sender {
 private:
 	virtual string get_request_type() const
@@ -277,7 +279,8 @@ private:
 		rb.set_dataset_name(dmr->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime);
+		// FIXME Add support for CEs. jhrg 11/6/13
+		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, false /*print_mime*/, false /*constrained*/);
 	}
 };
 

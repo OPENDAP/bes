@@ -797,14 +797,19 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     out << flush;
 }
 
-void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, ConstraintEvaluator & eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/,
+        bool with_mime_headers, bool constrained)
 {
-// FIXME Fill in this placeholder - get DMR working first then add CE support and then
-	// get this working
-#if 0
+// FIXME Fill in this placeholder - get DMR working first
+
 	// Set up the alarm.
-    establish_timeout(data_stream);
-    //dds.set_timeout(d_timeout);
+    establish_timeout(out);
+
+    if (with_mime_headers)
+        set_mime_multipart(out, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+
+    data_stream << flush;
+
 #if 0
     eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
 #endif
@@ -815,10 +820,8 @@ void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, Con
         throw Error(msg);
     }
 
-    //dds.tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
-
     // Start sending the response...
-
+#if 0
     // Handle *functional* constraint expressions specially
     if (eval.function_clauses()) {
         // We could unique_ptr<DDS> here to avoid memory leaks if
@@ -826,9 +829,9 @@ void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, Con
         DDS *fdds = eval.eval_function_clauses(dds);
         try {
             if (with_mime_headers)
-                set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
-            data_stream << flush;
-            dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
+                set_mime_multipart(out, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+            out << flush;
+            dataset_constraint_ddx(out, *fdds, eval, boundary, start);
         }
         catch (...) {
             delete fdds;
@@ -838,18 +841,21 @@ void BESDapResponseBuilder::send_dap4_data(ostream & data_stream, DMR & dmr, Con
     }
     else {
         if (with_mime_headers)
-            set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
-        data_stream << flush;
-        dataset_constraint_ddx(data_stream, dds, eval, boundary, start);
+            set_mime_multipart(out, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+        out << flush;
+        dataset_constraint_ddx(out, dds, eval, boundary, start);
     }
 
-    data_stream << flush;
+    out << flush;
 
     if (with_mime_headers)
         data_stream << CRLF << "--" << boundary << "--" << CRLF;
 #endif
+
+    // FIXME Write a DMR version
+    // dataset_constraint_ddx(out, dds, eval, boundary, start);
+    out << flush;
 }
-#endif
 
 /** Send the data in the DDS object back to the client program. The data is
  encoded using a Marshaller, and enclosed in a MIME document which is all sent
