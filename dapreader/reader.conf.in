@@ -17,7 +17,7 @@ BES.module.reader=@bes_modules_dir@/libreader_module.so
 #-----------------------------------------------------------------------#
 # Setting the data information
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.TypeMatch+=reader:.*\.(rdas|rdds|rdata|rdmr)$;
+BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|dmr)$;
 
 #-----------------------------------------------------------------------#
 # Dap Reader module specific parameters
