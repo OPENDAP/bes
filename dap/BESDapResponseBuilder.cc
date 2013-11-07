@@ -714,10 +714,19 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 }
 
 #if 1
-void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool constrained,
-        bool with_mime_headers)
+void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers,
+		bool constrained)
 {
-    if (!constrained) {
+
+	XMLWriter xml;
+	dmr.print_dap4(xml);//, constrained);
+	out << xml.get_doc();
+	out << flush;
+	return;
+
+
+#if 0
+	if (!constrained) {
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
@@ -727,7 +736,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
         out << flush;
         return;
     }
-
+#endif
     // FIXME Add support for constraints
 #if 0
     // Set up the alarm.

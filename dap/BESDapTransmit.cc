@@ -149,7 +149,6 @@ private:
 	}
 	virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 	{
-
 		BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj);
 		if (!bdds) {
 			throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -230,6 +229,8 @@ private:
 	}
 	virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 	{
+		BESDEBUG("dapreader", "Entering SendDMR::send_internal ..." << endl);
+
 		BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
 		if (!bdmr) {
 			throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -245,7 +246,8 @@ private:
 		rb.set_dataset_name(dhi.container->get_real_name());
 		BESDEBUG("dap", "SendDMR: dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
-		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, print_mime);
+		// FIXME Add support for constraints. jhrg 11/6/13
+		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, false /*print_mime*/, false /*constrained*/);
 	}
 };
 
