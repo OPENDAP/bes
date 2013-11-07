@@ -102,9 +102,14 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 }
 
+const string module = "dapreader";
+// #include "XMLWriter.h"
+
 // handle the DAP4 requests
 bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
+	BESDEBUG(module, "Entering dap_build_dmr..." << endl);
+
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr)
@@ -131,7 +136,11 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 		ifstream in(accessed.c_str(), ios::in);
 		parser.intern(in, dmr);
 		dmr->set_factory(0);
-
+#if 0
+		XMLWriter xml;
+		dmr->print_dap4(xml);
+		cerr << "DMR: " << xml.get_doc() << endl;
+#endif
 		bdmr->set_constraint(dhi);
 		// bdmr->clear_container(); FIXME see above
 	}
@@ -148,12 +157,13 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     	throw BESInternalFatalError("Unknown exception caught building DDS", __FILE__, __LINE__);
     }
 
-    return true;
+	BESDEBUG(module, "Leaving dap_build_dmr..." << endl);
 
+    return true;
 }
 
 // FIXME Added DAP4 data response support
-bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
+bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &)
 {
 	return false;
 }
