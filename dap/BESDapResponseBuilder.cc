@@ -503,7 +503,7 @@ void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, Const
         const string &boundary, const string &start, bool ce_eval)
 {
     // Write the MPM headers for the DDX (text/xml) part of the response
-    libdap::set_mime_ddx_boundary(out, boundary, start, dap4_ddx, x_plain);
+    libdap::set_mime_ddx_boundary(out, boundary, start, dods_ddx, x_plain);
 
     // Make cid
     uuid_t uu;
@@ -647,7 +647,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 {
     if (d_ce.empty()) {
         if (with_mime_headers)
-            set_mime_text(out, dap4_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
         dds.print_xml_writer(out, false /*constrained */, "");
         //dds.print(out);
@@ -689,7 +689,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         eval.parse_constraint(d_ce, *fdds);
 
         if (with_mime_headers)
-            set_mime_text(out, dap4_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
         fdds->print_constrained(out);
 
@@ -704,7 +704,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
-            set_mime_text(out, dap4_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
         //dds.print_constrained(out);
         dds.print_xml_writer(out, true, "");
@@ -713,19 +713,19 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
-#if 1
+
 void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers,
 		bool constrained)
 {
-
+#if 0
 	XMLWriter xml;
 	dmr.print_dap4(xml);//, constrained);
 	out << xml.get_doc();
 	out << flush;
 	return;
+#endif
 
-
-#if 0
+#if 1
 	if (!constrained) {
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
@@ -806,20 +806,21 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
     establish_timeout(out);
 
     if (with_mime_headers)
-        set_mime_multipart(out, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+        set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
-    data_stream << flush;
+    out << flush;
 
 #if 0
     eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
 #endif
+#if 0
     if (dds.get_response_limit() != 0 && dds.get_request_size(true) > dds.get_response_limit()) {
         string msg = "The Request for " + long_to_string(dds.get_request_size(true) / 1024)
                 + "KB is too large; requests for this user are limited to "
                 + long_to_string(dds.get_response_limit() / 1024) + "KB.";
         throw Error(msg);
     }
-
+#endif
     // Start sending the response...
 #if 0
     // Handle *functional* constraint expressions specially
@@ -901,7 +902,7 @@ void BESDapResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, Cons
         DDS *fdds = eval.eval_function_clauses(dds);
         try {
             if (with_mime_headers)
-                set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+                set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(d_dataset));
             data_stream << flush;
             dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
         }
@@ -913,7 +914,7 @@ void BESDapResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, Cons
     }
     else {
         if (with_mime_headers)
-            set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(d_dataset));
+            set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(d_dataset));
         data_stream << flush;
         dataset_constraint_ddx(data_stream, dds, eval, boundary, start);
     }

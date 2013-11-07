@@ -11,13 +11,28 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=dapreader
-BES.module.dapreader=/Users/westp/opendap/opendap/lib/bes/libdapreader_module.so
+BES.modules+=reader
+BES.module.reader=@bes_modules_dir@/libreader_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data information
 #-----------------------------------------------------------------------#
+BES.Catalog.catalog.TypeMatch+=reader:.*\.(rdas|rdds|rdata|rdmr)$;
 
 #-----------------------------------------------------------------------#
 # Dap Reader module specific parameters
 #-----------------------------------------------------------------------#
+
+# These keys control how the DapReader handler interprets the DDS, DMR, 
+# etc., input files. By default it uses the BaseTypeFactory types - the
+# default type classes distributed with libdap - when instantiating variables.
+# By setting UseTyepTypes to true, the TestByte, ..., classes are used
+# instead.  
+
+DR.UseTestTypes=true
+
+# Use the DAP4 types and work with DAP4 objects.
+DR.SupportDAP4=false
+
+# Use the 'series values' feature of the test types
+DR.UseSeriesValues=false

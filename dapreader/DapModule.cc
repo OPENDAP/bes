@@ -30,6 +30,7 @@ using std::endl;
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 
+#include <BESDapService.h>
 #include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
 #include <BESContainerStorageCatalog.h>
@@ -43,6 +44,8 @@ void DapModule::initialize(const string &modname)
 	BESDEBUG(modname, "Initializing Dap Reader Module " << modname << endl);
 
 	BESRequestHandlerList::TheList()->add_handler(modname, new DapRequestHandler(modname));
+
+	BESDapService::handle_dap_service( modname ) ;
 
 	if (!BESCatalogList::TheCatalogList()->ref_catalog(DAP_CATALOG)) {
 		BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(DAP_CATALOG));

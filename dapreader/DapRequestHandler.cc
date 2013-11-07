@@ -102,8 +102,7 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 }
 
-const string module = "dapreader";
-// #include "XMLWriter.h"
+const string module = "reader";
 
 // handle the DAP4 requests
 bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
@@ -136,11 +135,7 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 		ifstream in(accessed.c_str(), ios::in);
 		parser.intern(in, dmr);
 		dmr->set_factory(0);
-#if 0
-		XMLWriter xml;
-		dmr->print_dap4(xml);
-		cerr << "DMR: " << xml.get_doc() << endl;
-#endif
+
 		bdmr->set_constraint(dhi);
 		// bdmr->clear_container(); FIXME see above
 	}
@@ -352,7 +347,7 @@ bool DapRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     attrs["name"] = PACKAGE_NAME;
     attrs["version"] = PACKAGE_VERSION;
     list<string> services;
-    BESServiceRegistry::TheRegistry()->services_handled("dapreader", services);
+    BESServiceRegistry::TheRegistry()->services_handled("reader", services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;

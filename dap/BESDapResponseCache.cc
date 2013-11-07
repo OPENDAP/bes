@@ -213,7 +213,7 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
     string boundary = read_multipart_boundary(data);
     BESDEBUG("dap", "MPM Boundary: " << boundary << endl);
 
-    read_multipart_headers(data, "text/xml", dap4_ddx);
+    read_multipart_headers(data, "text/xml", dods_ddx);
 
     BESDEBUG("dap", "Read the multipart haeaders" << endl);
 
@@ -392,7 +392,7 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
             // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
             // CE, which is not necessary and will alter the values of the send_p property
             // of the DDS's variables.
-			set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
+			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
 			//data_stream << flush;
 			rb->dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
 			//data_stream << flush;

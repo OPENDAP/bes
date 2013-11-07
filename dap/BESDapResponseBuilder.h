@@ -112,8 +112,8 @@ public:
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true, bool constrained = false);
 
-	virtual void send_dap4_data(std::ostream &data_stream, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
-			bool with_mime_headers);
+	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
+			bool with_mime_headers = true, bool constrained = false);
 #endif
 	// TODO
 	// Is this used by the code that caches function results? If not, remove.

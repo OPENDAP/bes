@@ -232,7 +232,7 @@ private:
 	}
 	virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 	{
-		BESDEBUG("dapreader", "Entering SendDMR::send_internal ..." << endl);
+		BESDEBUG("dap", "Entering SendDMR::send_internal ..." << endl);
 
 		BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
 		if (!bdmr) {
@@ -250,7 +250,7 @@ private:
 		BESDEBUG("dap", "SendDMR: dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 		// FIXME Add support for constraints. jhrg 11/6/13
-		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, false /*print_mime*/, false /*constrained*/);
+		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
 };
 
@@ -280,7 +280,7 @@ private:
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
 		// FIXME Add support for CEs. jhrg 11/6/13
-		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, false /*print_mime*/, false /*constrained*/);
+		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
 };
 

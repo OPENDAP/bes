@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,29 +36,21 @@
 #include "BESBasicTransmitter.h"
 //#include "BESDataHandlerInterface.h"
 
-class BESResponseObject ;
-class BESDataHandlerInterface ;
+class BESResponseObject;
+class BESDataHandlerInterface;
 
-class BESDapTransmit : public BESBasicTransmitter
-{
+class BESDapTransmit: public BESBasicTransmitter {
 public:
-    			BESDapTransmit() ;
-    virtual		~BESDapTransmit() ;
-    static void		send_basic_das( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dds( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_data( BESResponseObject *obj,
-    				         BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_ddx( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
+	BESDapTransmit();
+	virtual ~BESDapTransmit();
+	static void send_basic_das(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_ddx(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-    static void		send_basic_dmr( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dap4data( BESResponseObject *obj,
-    				            BESDataHandlerInterface &dhi ) ;
+	static void send_basic_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_dap4data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-} ;
+};
 
 #endif // I_BESDapTransmit_h
-
