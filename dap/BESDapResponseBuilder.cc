@@ -54,10 +54,13 @@
 #include <Ancillary.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRFileUnMarshaller.h>
-#if 1
+
 #include <DMR.h>
 #include <XMLWriter.h>
-#endif
+#include "D4StreamMarshaller.h"
+#include "chunked_ostream.h"
+#include "chunked_istream.h"
+
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
@@ -72,8 +75,13 @@
 #include "BESDapResponseBuilder.h"
 #include "BESDebug.h"
 
-#define CRLF "\r\n"             // Change here, expr-test.cc
+//#define CRLF "\r\n"             // Change here, expr-test.cc
 #define DAP_PROTOCOL_VERSION "3.2"
+
+const std::string CRLF = "\r\n";             // Change here, expr-test.cc
+const int chunk_size = 4096;
+const int8_t big_endian = 0x01;
+const int8_t little_endian = 0x00;
 
 using namespace std;
 using namespace libdap;
@@ -195,6 +203,11 @@ void BESDapResponseBuilder::establish_timeout(ostream &stream) const
         alarm(d_timeout);
     }
 #endif
+}
+
+void BESDapResponseBuilder::remove_timeout() const
+{
+	alarm(0);
 }
 
 static string::size_type
@@ -717,15 +730,6 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers,
 		bool constrained)
 {
-#if 0
-	XMLWriter xml;
-	dmr.print_dap4(xml);//, constrained);
-	out << xml.get_doc();
-	out << flush;
-	return;
-#endif
-
-#if 1
 	if (!constrained) {
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
@@ -736,7 +740,6 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
         out << flush;
         return;
     }
-#endif
     // FIXME Add support for constraints
 #if 0
     // Set up the alarm.
@@ -797,6 +800,53 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     out << flush;
 }
 
+void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &eval, bool with_mime_headers, bool filter)
+{
+	try {
+		// Set up the alarm.
+		establish_timeout(out);
+
+#if 0
+		bool filter = eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+#endif
+		if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
+			string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
+					+ "MB is too large; requests for this user are limited to "
+					+ long_to_string(dmr.response_limit() / 1024) + "MB.";
+			throw Error(msg);
+		}
+
+		if (with_mime_headers)
+			set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+	    // Write the DMR
+	    XMLWriter xml;
+	    dmr.print_dap4(xml, filter);
+
+	    // the byte order info precedes the start of chunking
+	    char byte_order = is_host_big_endian() ? big_endian : little_endian; // is_host_big_endian is in util.cc
+	    out << byte_order << flush;
+
+	    // now make the chunked output stream
+	    chunked_ostream cos(out, chunk_size);
+	    // using flush means that the DMR and CRLF are in the first chunk (if it is smaller than chunk_size)
+	    cos << xml.get_doc() << CRLF << flush;
+
+	    // Write the data, chunked with checksums
+	    D4StreamMarshaller m(cos);
+	    dmr.root()->serialize(m, dmr, eval, filter);
+
+		out << flush;
+
+		remove_timeout();
+	}
+	catch (...) {
+		remove_timeout();
+		throw;
+	}
+}
+
+#if 0
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/,
         bool with_mime_headers, bool constrained)
 {
@@ -857,6 +907,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
     // dataset_constraint_ddx(out, dds, eval, boundary, start);
     out << flush;
 }
+#endif
 
 /** Send the data in the DDS object back to the client program. The data is
  encoded using a Marshaller, and enclosed in a MIME document which is all sent

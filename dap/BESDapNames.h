@@ -83,10 +83,10 @@
 #define DMR_DESCRIPT "OPeNDAP Data DMR Structure"
 #define DMR_RESPONSE_STR "getDMR"
 
-#define DAP4DATA_RESPONSE "get.dap4data"
-#define DAP4DATA_SERVICE "dapdata"
-#define DAP4DATA_DESCRIPT "OPeNDAP Data DAP4DATA Structure"
-#define DAP4DATA_RESPONSE_STR "getDAP4DATA"
+#define DAP4DATA_RESPONSE "get.dap"
+#define DAP4DATA_SERVICE "dap"
+#define DAP4DATA_DESCRIPT "OPeNDAP DAP4 Data Structure"
+#define DAP4DATA_RESPONSE_STR "getDAP"
 
 /*
  * DataDDX data names

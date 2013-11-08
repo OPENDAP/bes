@@ -86,6 +86,7 @@ public:
 	int get_timeout() const;
 
 	virtual void establish_timeout(std::ostream &stream) const;
+	virtual void remove_timeout() const;
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
@@ -108,13 +109,13 @@ public:
 
 	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
-#if 1
+
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval,
-			bool with_mime_headers = true, bool constrained = false);
+			bool with_mime_headers = true, bool filter = false);
 
 	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
-			bool with_mime_headers = true, bool constrained = false);
-#endif
+			bool with_mime_headers = true, bool filter = false);
+
 	// TODO
 	// Is this used by the code that caches function results? If not, remove.
 	virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,

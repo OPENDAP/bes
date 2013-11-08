@@ -7,16 +7,15 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader
+BES.modules=dap,cmd,reader
 BES.module.dap=@modulesdir@/libdap_module.so
 BES.module.cmd=@modulesdir@/libdap_xml_module.so
-BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+BES.module.reader=@abs_top_builddir@/dapreader/.libs/libreader_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_srcdir@
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*.das$;dapreader:.*.dds;dapreader:.*.data;
-BES.Catalog.catalog.TypeMatch+=dapreader:.*.xml$;
+BES.Catalog.catalog.TypeMatch=reader:.*\.(das|dds|data|dmr)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;

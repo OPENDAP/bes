@@ -279,6 +279,9 @@ private:
 		rb.set_dataset_name(dmr->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
+	    // TODO Remove once real CE evaluator is written. jhrg 9/6/13
+	    // Mark all variables to be sent in their entirety.
+	    dmr->root()->set_send_p(true);
 		// FIXME Add support for CEs. jhrg 11/6/13
 		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
