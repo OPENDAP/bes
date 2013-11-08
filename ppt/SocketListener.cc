@@ -134,8 +134,10 @@ SocketListener::accept()
             switch (errno) {
 
             case EAGAIN:	// rerun select on interrupted calls, ...
+                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EAGAIN" << endl );
+                break;
             case EINTR:
-                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EAGAIN or EINTR" << endl );
+                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EINTR" << endl );
                 break;
 #if 0
             case EBADF:		// or exit on error

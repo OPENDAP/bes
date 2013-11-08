@@ -190,7 +190,7 @@ void BESServerHandler::execute(Connection *c)
 			// calls the the kernel's close() function. NB: The method is
 			// implemented in PPTServer.cc and that calls Socket::close() on the
 			// Socket instance held by the Connection.
-			BESDEBUG("beslistener", "BESServerHandler::execute() -  Closing client connection." << endl);
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Closing client connection." << endl);
 
 			c->closeConnection();
 
