@@ -151,8 +151,12 @@ void PPTServer::initConnection()
         BESDEBUG( "ppt", "PPTServer::initConnection() - Connection accepted. Connected=" << _mySock->isConnected() << endl );
         if (_mySock)
         {
+            BESDEBUG( "ppt", "PPTServer::initConnection() - Checking allowConnection() " << endl );
+
             if (_mySock->allowConnection() == true)
             {
+                BESDEBUG( "ppt", "PPTServer::initConnection() - allowConnection() is TRUE. " << endl );
+
                 // welcome the client
                 BESDEBUG( "ppt", "PPTServer::initConnection() - Calling welcomeClient()" << endl );
                 if (welcomeClient() != -1) {
@@ -168,6 +172,7 @@ void PPTServer::initConnection()
             }
             else
             {
+                BESDEBUG( "ppt", "PPTServer::initConnection() - allowConnection() is FALSE! Closing Socket. " << endl );
                 _mySock->close();
             }
         }
