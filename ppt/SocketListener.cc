@@ -186,6 +186,8 @@ SocketListener::accept()
                 return s_ptr->newSocket( msgsock, (struct sockaddr *)&from ) ;
             }
         }
+        BESDEBUG( "ppt", "SocketListener::accept() - Looks like select() timed out. Looping back to restart select()" << endl );
+
     }
     BESDEBUG( "ppt", "SocketListener::accept() - END (returning 0)" << endl );
 
