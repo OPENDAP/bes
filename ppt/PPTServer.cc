@@ -146,12 +146,15 @@ void PPTServer::initConnection()
 {
     for (;;)
     {
+        BESDEBUG( "ppt", "PPTServer::initConnection() - Calling SocketListener::accept()" << endl );
         _mySock = _listener->accept();
+        BESDEBUG( "ppt", "PPTServer::initConnection() - Connection accepted. Connected=" << _mySock->isConnected() << endl );
         if (_mySock)
         {
             if (_mySock->allowConnection() == true)
             {
                 // welcome the client
+                BESDEBUG( "ppt", "PPTServer::initConnection() - Calling welcomeClient()" << endl );
                 if (welcomeClient() != -1) {
                     // now hand it off to the handler
                     _handler->handle(this);
