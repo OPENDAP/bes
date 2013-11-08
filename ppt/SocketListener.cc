@@ -151,12 +151,15 @@ SocketListener::accept()
             }
             }
         }
-        BESDEBUG( "ppt", "SocketListener::accept() - select() was successful. Processing sockets..." << endl );
+        BESDEBUG( "ppt", "SocketListener::accept() - select() completed without error." << endl );
 
         iter = _socket_list.begin() ;
         for( ; iter != _socket_list.end(); iter++ )
         {
+
             Socket *s_ptr = (*iter).second ;
+            BESDEBUG( "ppt", "SocketListener::accept() - Processing socket " << s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+
             int s = s_ptr->getSocketDescriptor() ;
             if ( FD_ISSET( s, &read_fd ) )
             {
