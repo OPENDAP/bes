@@ -198,8 +198,8 @@ void BESServerHandler::execute(Connection *c)
 			*(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of "
 					<< CHILD_SUBPROCESS_READY << " to the master listener." << endl;
 
-			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which is a value of "
-					<< CHILD_SUBPROCESS_READY << ")" << endl);
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of "
+					<< CHILD_SUBPROCESS_READY << endl);
 
 			exit(CHILD_SUBPROCESS_READY);
 		}
