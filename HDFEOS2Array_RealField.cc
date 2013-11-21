@@ -830,7 +830,8 @@ HDFEOS2Array_RealField::read ()
     bool change_data_value = false; \
     if(sotype!=DEFAULT_CF_EQU) \
     { \
-        float *tmpval = new float[nelms]; \
+        vector<float>tmpval; \
+        tmpval.resize(nelms); \
         CAST tmptr = (CAST)VAL; \
         for(int l=0; l<nelms; l++) \
             tmpval[l] = (float)tmptr[l]; \
@@ -867,8 +868,7 @@ HDFEOS2Array_RealField::read ()
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)tmpval, nelms); \
-            delete[] tmpval; \
+            set_value((dods_float32 *)&tmpval[0], nelms); \
         } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
         { \
             size_t dimindex=0; \
@@ -908,8 +908,7 @@ HDFEOS2Array_RealField::read ()
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)tmpval, nelms); \
-            delete[] tmpval; \
+            set_value((dods_float32 *)&tmpval[0], nelms); \
         } \
     } \
     if(!change_data_value) \

@@ -1,5 +1,29 @@
+2013-11-20  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDFEOS2Array_RealField.cc
+	* HDFEOS2ArraySwathDimMapField.cc
+	fixed a memory leak that occurs when handler serves MYD021KM product.
+
+2013-10-22  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* HDFCFUtil.h
+	* HDFCFUtil.cc
+	* HE2CF.cc
+	escaped non-printable characters properly for DDX generation when
+	EnableCF option is true.
+	* HDFSP.c:
+	The number of dimension attribute should apply to ONE dimension only.
+	The previous version mixed the number of dimension attribute from one
+	dimension with another. Fixed it in this version.
+
 2013-10-11  James Gallagher <jgallagher@opendap.org>
 
+	* HDFSequence.cc
+	* HDFSPArray_RealField.cc
+	* HDFSPArray_VDField.cc
+	* HDFSPArrayGeoField.cc
+	* HDFSPArrayMissField.cc
+	* HDFStructure.cc:
 	Edits to match the new, sane, semantics for BaseType::read(). True
 	now means done/eof and flase means more data to read (more
 	instances for a sequence). All the tests pass.
@@ -14,7 +38,7 @@
 	new OSX compiler prints warnings about it and it seems to not make
 	a difference with newer g++ versions.
 
-2013-09-24  hyoklee
+2013-09-24  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	corrected HDF4 configuration option name.
 
@@ -34,11 +58,11 @@
 
 	hdf4_handler: Updated ChangeLog, NEWS, INSTALL, etc. for Hyrax 1.9
 
-2013-09-06  hyoklee
+2013-09-06  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	cleaned up codes after addressing security audit issues.
 
-2013-09-06  hyoklee
+2013-09-06  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	cleaned up code issues.
 
