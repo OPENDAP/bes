@@ -57,9 +57,10 @@
 
 #include <DMR.h>
 #include <XMLWriter.h>
-#include "D4StreamMarshaller.h"
-#include "chunked_ostream.h"
-#include "chunked_istream.h"
+#include <D4StreamMarshaller.h>
+#include <chunked_ostream.h>
+#include <chunked_istream.h>
+#include <D4CEDriver.h>
 
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
@@ -727,9 +728,10 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 }
 
 
-void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers,
-		bool constrained)
+void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers, bool constrained)
 {
+#if 0
+    // earlier code, before the DAP4 CE parser was added to libdap. jhrg 11/28/13
 	if (!constrained) {
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
@@ -740,7 +742,31 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
         out << flush;
         return;
     }
-    // FIXME Add support for constraints
+#endif
+
+	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
+    // If the parser returns false, the expression did not parse. The parser may also
+    // throw Error
+    if (constrained && !d_ce.empty()) {
+        D4CEDriver parser(&dmr);
+        bool parse_ok = parser.parse(d_ce);
+        if (!parse_ok)
+            throw Error("Constraint Expression failed to parse.");
+    }
+    // with an empty CE, send everything. Even though print_dap4() and serialize()
+    // don't need this, other code may depend on send_p being set. This may change
+    // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
+    else if (constrained) {
+        dmr.root()->set_send_p(true);
+    }
+
+    if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+    XMLWriter xml;
+    dmr.print_dap4(xml, constrained && !d_ce.empty() /* true == constrained */);
+    out << xml.get_doc() << flush;
+
+	// FIXME Add support for constraints
 #if 0
     // Set up the alarm.
     establish_timeout(out);
@@ -800,8 +826,10 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     out << flush;
 }
 
-void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &eval, bool with_mime_headers, bool filter)
+void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers, bool filter)
 {
+#if 0
+    // early code, before the D4 CE parser was added. jhrg 11/28/13
 	try {
 		// Set up the alarm.
 		establish_timeout(out);
@@ -834,7 +862,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
 
 	    // Write the data, chunked with checksums
 	    D4StreamMarshaller m(cos);
-	    dmr.root()->serialize(m, dmr, eval, filter);
+	    dmr.root()->serialize(m, dmr, /*eval,*/ filter);
 
 		out << flush;
 
@@ -844,6 +872,68 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
 		remove_timeout();
 		throw;
 	}
+#endif
+
+	try {
+        // Set up the alarm.
+        establish_timeout(out);
+
+        // If the CE is not empty, parse it. The projections, etc., are set as a side effect.
+        // If the parser returns false, the expression did not parse. The parser may also
+        // throw Error
+        if (!d_ce.empty()) {
+            D4CEDriver parser(&dmr);
+            bool parse_ok = parser.parse(d_ce);
+            if (!parse_ok)
+                throw Error("Constraint Expression failed to parse.");
+        }
+        // with an empty CE, send everything. Even though print_dap4() and serialize()
+        // don't need this, other code may depend on send_p being set. This may change
+        // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
+        else {
+            dmr.root()->set_send_p(true);
+        }
+
+        if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
+            string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
+                    + "MB is too large; requests for this user are limited to "
+                    + long_to_string(dmr.response_limit() / 1024) + "MB.";
+            throw Error(msg);
+        }
+
+        if (with_mime_headers)
+            set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+        // Write the DMR
+        XMLWriter xml;
+        dmr.print_dap4(xml, !d_ce.empty());
+
+    #if BYTE_ORDER_PREFIX
+        // the byte order info precedes the start of chunking
+        char byte_order = is_host_big_endian() ? big_endian : little_endian; // is_host_big_endian is in util.cc
+        out << byte_order << flush;
+    #endif
+        // now make the chunked output stream; set the size to be at least chunk_size
+        // but make sure that the whole of the xml plus the CRLF can fit in the first
+        // chunk. (+2 for the CRLF bytes).
+        chunked_ostream cos(out, max((unsigned int)CHUNK_SIZE, xml.get_doc_size()+2));
+
+        // using flush means that the DMR and CRLF are in the first chunk.
+        cos << xml.get_doc() << CRLF << flush;
+
+        // Write the data, chunked with checksums
+        D4StreamMarshaller m(cos);
+        dmr.root()->serialize(m, dmr, !d_ce.empty());
+
+        out << flush;
+
+        remove_timeout();
+    }
+    catch (...) {
+        remove_timeout();
+        throw;
+    }
+
 }
 
 #if 0
