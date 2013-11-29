@@ -213,8 +213,9 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
     string boundary = read_multipart_boundary(data);
     BESDEBUG("dap", "MPM Boundary: " << boundary << endl);
 
+    cerr << "before read_multipart_headers" << endl; //FIXME
     read_multipart_headers(data, "text/xml", dods_ddx);
-
+    cerr << "after read_multipart_headers" << endl; //FIXME
     BESDEBUG("dap", "Read the multipart haeaders" << endl);
 
     // Parse the DDX, reading up to and including the next boundary.
@@ -236,7 +237,7 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
 
     // Read the data part's MPM part headers (boundary was read by
     // DDXParse::intern)
-    read_multipart_headers(data, "application/octet-stream", dap4_data, data_cid);
+    read_multipart_headers(data, "application/octet-stream", dods_data_ddx /* old value? dap4_data */, data_cid);
 
     // Now read the data
 
@@ -261,6 +262,7 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     fdds->filename(filename) ;
     //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
+    cerr << "get_cached_data_ddx: cache_file_name: " << cache_file_name << endl; // FIXME
     read_data_from_cache(cache_file_name, fdds);
 
     BESDEBUG("dap", "DDS Filename: " << fdds->filename() << endl);

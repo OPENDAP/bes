@@ -54,6 +54,7 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static bool clean = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -112,7 +113,8 @@ public:
     }
 
     void tearDown() {
-		clean_cache(d_response_cache, "rc");
+        if (clean)
+            clean_cache(d_response_cache, "rc");
 		delete test_05_dds;
     }
 
@@ -341,12 +343,15 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dk");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
+            break;
+        case 'k':   // -k turns of cleaning the response_cache dir
+            clean = false;
             break;
         default:
             break;

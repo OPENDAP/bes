@@ -533,7 +533,7 @@ void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, Const
     dds.print_xml_writer(out, true, cid);
 
     // write the data part mime headers here
-    set_mime_data_boundary(out, boundary, cid, dap4_data, x_plain);
+    set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
 
     XDRStreamMarshaller m(out);
 
