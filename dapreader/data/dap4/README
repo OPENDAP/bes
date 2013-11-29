@@ -1,0 +1,7 @@
+
+To populate this directory with DMR files (text files that have DMRs written in xml),
+goto libdap's tests and unit-tests directories and run dmr-testsuite.tar.gz and
+D4-xml.tar.gz. Copy the tar.gz files into this directory and expand. The dap4.html,
+hackery that it is will then 'serve' those files. 
+
+jhrg 11/29/13
