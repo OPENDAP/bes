@@ -9,6 +9,14 @@ AT_INIT([bes.conf besstandalone getdap])
 
 AT_TESTED([besstandalone])
 
+AT_ARG_OPTION_ARG([generate-dmr],
+    [--generate-dmr=arg   Build the baseline file for dmr test 'arg'],
+    [echo "besstandalone -c $abs_builddir/bes.conf -i $at_arg_generate_dmr";
+     besstandalone -c $abs_builddir/bes.conf -i $at_arg_generate_dmr -o $at_arg_generate_dmr.baseline;
+     echo "Built baseline for $at_arg_generate_dmr";
+     exit],[])
+
+
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
 m4_define([_AT_BESCMD_TEST],   
@@ -33,6 +41,10 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/besdap/$1], [$abs_srcdir/besdap/$1.baseline])
 ])
 
-AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
-AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
+# These tests read files using hte gateway from a machine at RPI. I'm not sure if they still 
+# work. jhrg 11/29/13
+# AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
+# AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
+
+At_BESCMD_RESPONSE_TEST([

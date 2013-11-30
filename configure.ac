@@ -28,7 +28,7 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
-AC_CONFIG_TESTDIR(dapreader/tests, [.])
+AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [.])
 AC_CONFIG_TESTDIR(test_server/tests, [.])
 
@@ -320,12 +320,6 @@ AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln
 
 AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh], [chmod +x functions/tests/generate_data_baseline.sh])
 AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh], [chmod +x functions/tests/generate_metadata_baseline.sh])
-
-AC_CONFIG_FILES([dapreader/tests/generate_data_baseline.sh], [chmod +x dapreader/tests/generate_data_baseline.sh])
-AC_CONFIG_FILES([dapreader/tests/generate_metadata_baseline.sh], [chmod +x dapreader/tests/generate_metadata_baseline.sh])
-
-AC_CONFIG_FILES([test_server/tests/generate_data_baseline.sh], [chmod +x test_server/tests/generate_data_baseline.sh])
-AC_CONFIG_FILES([test_server/tests/generate_metadata_baseline.sh], [chmod +x test_server/tests/generate_metadata_baseline.sh])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 

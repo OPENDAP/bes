@@ -15,7 +15,7 @@ BES.module.reader=@abs_top_builddir@/dapreader/.libs/libreader_module.so
 BES.Catalog.catalog.RootDirectory=@abs_srcdir@
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=reader:.*\.(das|dds|data|dmr)$;
+BES.Catalog.catalog.TypeMatch=reader:.*\.(das|dds|data|dmr|xml)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
