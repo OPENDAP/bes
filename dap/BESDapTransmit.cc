@@ -249,7 +249,7 @@ private:
 		rb.set_dataset_name(dhi.container->get_real_name());
 		BESDEBUG("dap", "SendDMR: dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
-		// FIXME Add support for constraints. jhrg 11/6/13
+		// FIXME Remove extra args. 11/29/13 jhrg
 		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
 };
@@ -279,10 +279,7 @@ private:
 		rb.set_dataset_name(dmr->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-	    // TODO Remove once real CE evaluator is written. jhrg 9/6/13
-	    // Mark all variables to be sent in their entirety.
-	    // dmr->root()->set_send_p(true);
-		// FIXME Add support for CEs. jhrg 11/6/13
+		// FIXME Remove extra args. 11/29/13 jhrg
 		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
 };
