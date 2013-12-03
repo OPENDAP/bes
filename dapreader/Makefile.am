@@ -46,8 +46,8 @@ CLEANFILES = *~ reader.conf
 sample_datadir = $(datadir)/hyrax/data/reader
 sample_data_DATA = data/fnoc1.das data/fnoc1.dds data/fnoc1.data
 
-dap4_sample_datadir = $(datadir)/hyrax/data/reader/dap4
-dap4_sample_data_DATA = data/dap4/*
+# dap4_sample_datadir = $(datadir)/hyrax/data/reader/dap4
+# dap4_sample_data_DATA = data/dap4/*
 
 install-data-local: reader.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
