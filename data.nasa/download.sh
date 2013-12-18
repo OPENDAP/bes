@@ -4,7 +4,7 @@
 #
 # Check whether "wget" or "curl" is available first.
 GET=""
-command -v  wget > /dev/null && GET="wget -N" 
+command -v  wget > /dev/null && GET="wget -N --retr-symlinks" 
 if [ -z "$GET" ]; then
   command -v  curl > /dev/null && GET="curl -O"
 fi
