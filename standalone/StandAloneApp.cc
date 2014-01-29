@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,7 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <unistd.h>  // for getopt
+#include <unistd.h>
+#include <getopt.h>
 #include <signal.h>
 
 #include <iostream>
@@ -86,14 +87,15 @@ void
 StandAloneApp::showUsage( )
 {
     cout << endl ;
-    cout << appName() << ": the following flags are available:" << endl ;
-    cout << "    -c <configFile> - specifies a BES configuration file to use" << endl ;
-    cout << "    -x <command> - specifies a command for the server to execute" << endl ;
-    cout << "    -i <inputFile> - specifies a file name for a sequence of input commands" << endl ;
-    cout << "    -f <outputFile> - specifies a file name to output the results of the input" << endl ;
-    cout << "    -d - sets the optional debug flag for the client session" << endl ;
-    cout << "    -r <num> - repeat the command(s) num times" << endl ;
-    cout << "    -? - display this list of flags" << endl ;
+    cout << appName() << ": the following options are available:" << endl ;
+    cout << "    -c <file>, --config=<file> - BES configuration file" << endl ;
+    cout << "    -x <command>, --execute=<command> - command for the server to execute" << endl ;
+    cout << "    -i <file>, --inputfile=<file> - file with a sequence of input commands" << endl ;
+    cout << "    -f <file>, --outputfile=<file> - write output to this file" << endl ;
+    cout << "    -d, --debug - turn on debugging for the client session" << endl ;
+    cout << "    -r <num>, --repeat=<num> - repeat the command(s) <num> times" << endl ;
+    cout << "    -v, --version - return version information" << endl;
+    cout << "    -?, --help - display help information" << endl ;
     cout << endl ;
     BESDebug::Help( cout ) ;
 }
@@ -111,7 +113,21 @@ StandAloneApp::initialize( int argc, char **argv )
 
     int c ;
 
-    while( ( c = getopt( argc, argv, "?vc:d:x:f:i:r:" ) ) != EOF )
+    static struct option longopts[] =
+    {
+	{"config", 	1,	0,	'c'},
+	{"debug",	0,	0,	'd'},
+	{"version",	0,	0,	'v'},
+	{"execute",	1,	0,	'x'},
+	{"outputfile",	1,	0,	'f'},
+	{"inputfile",	1,	0,	'i'},
+	{"repeat",	1,	0,	'r'},
+	{"help",	0,	0,	'?'},
+	{0,0,0,0}
+    };
+    int option_index = 0;
+
+    while( ( c = getopt_long( argc, argv, "?vc:d:x:f:i:r:", longopts, &option_index) ) != EOF )
     {
 	switch( c )
 	{
