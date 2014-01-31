@@ -1110,7 +1110,10 @@ namespace HDFEOS2
                 /// All special arrangements need to be done in this step.
                 void Prepare(const char *path) throw(Exception);
 
-                
+                /// Check if this is a special 1d grid.
+                bool check_special_1d_grid() throw(Exception);
+
+
                 /// This is for the case(AIRS level 3) that the latitude and longitude of all grids are put under 
                 /// a special location grid. So all grids share one lat/lon.
                 bool getOneLatLon ()
@@ -1141,6 +1144,8 @@ namespace HDFEOS2
                     return this->points;
                 }
 
+                const std::string get_first_grid_name() const 
+                { return this->grids[0]->getName();}
                 /// Get the scale and offset type  
                 /// const SOType getScaleType () const
                 /// Move to the group level since I found that 
@@ -1239,6 +1244,7 @@ namespace HDFEOS2
 
                 std::string _geogrid_name;
                 static const char *_geogrid_names[];
+
 
                 // All the following functions are called by the Prepare() function.
 

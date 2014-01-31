@@ -1,4 +1,9 @@
-2013-11-20  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2014-01-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	Optimized handler for MOD08_M3 and AIRS version 6 with new BES keys.
+	* USAGE:updated to have NcML handler instruction.
+
+2013-11-20  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS2Array_RealField.cc
 	* HDFEOS2ArraySwathDimMapField.cc

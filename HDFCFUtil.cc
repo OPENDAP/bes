@@ -402,6 +402,50 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
 }
 
+// CF requires the scale_factor and add_offset attribute datatypes must be the same as the corresponding field datatype. 
+// For some NASA files, this is not true.
+// So we need to check if the _FillValue's datatype is the same as the attribute's. 
+// If not, we need to correct them.
+void HDFCFUtil::correct_scale_offset_type(AttrTable *at) {
+
+    AttrTable::Attr_iter it = at->attr_begin();
+    bool find_scale  = false;
+    bool find_offset = false;
+
+    // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.
+    string scale_factor_type; 
+    string add_offset_type;
+    string scale_factor_value;
+    string add_offset_value;
+
+    while (it!=at->attr_end() &&((find_scale!=true) ||(find_offset!=true))) {
+        if (at->get_name(it) =="scale_factor")
+        {                            
+            find_scale = true;
+            scale_factor_value = (*at->get_attr_vector(it)->begin());
+            scale_factor_type = at->get_type(it);
+        }
+
+        if(at->get_name(it)=="add_offset")
+        {
+            find_offset = true;
+            add_offset_value = (*at->get_attr_vector(it)->begin());
+            add_offset_type = at->get_type(it);
+        }
+
+        it++;
+    }
+
+    // Change offset type to the scale type
+    if((true==find_scale) && (true==find_offset)) {
+        if(scale_factor_type != add_offset_type) {
+            at->del_attr("add_offset");
+            at->append_attr("add_offset",scale_factor_type,add_offset_value);
+        }
+    }
+}
+    
+
 #ifdef USE_HDFEOS2_LIB
 
 // For MODIS (confirmed by level 1B) products, values between 65500(MIN_NON_SCALE_SPECIAL_VALUE)  
@@ -469,7 +513,12 @@ int HDFCFUtil::check_geofile_dimmap(const string & geofilename) {
 bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_name) 
 {
     AttrTable *at = das.get_table(new_field_name);
-
+// CODEING 2013-12-13
+// Change the following codes to two parts:
+// 1) For MODIS level 1B(using the swath name), check radiance,reflectance etc. 
+// If the DISABLESCALE key is true, no need to check scale and offset for other type.
+// Otherwise, continue checking the scale and offset names.
+//
     if(scaletype!=DEFAULT_CF_EQU && at!=NULL)
     {
         AttrTable::Attr_iter it = at->attr_begin();
@@ -661,7 +710,125 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
 
     return modis_dimmap_nonll_field;
 }
+/// TEMP CODING
+void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, const string filename, bool is_grid, const string newfname, SOType sotype){
 
+    // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.
+    string scale_factor_type;
+    string add_offset_type;
+
+
+    // Scale and offset values
+    string scale_factor_value=""; 
+    float  orig_scale_value = 1;
+    string add_offset_value="0"; 
+    float  orig_offset_value = 0;
+    bool add_offset_found = false;
+
+
+    // Go through all attributes to find scale_factor,add_offset,_FillValue,valid_range
+    // Number_Type information
+    AttrTable::Attr_iter it = at->attr_begin();
+    while (it!=at->attr_end())
+    {
+        if(at->get_name(it)=="scale_factor")
+        {
+            scale_factor_value = (*at->get_attr_vector(it)->begin());
+            orig_scale_value = atof(scale_factor_value.c_str());
+            scale_factor_type = at->get_type(it);
+        }
+
+        if(at->get_name(it)=="add_offset")
+        {
+            add_offset_value = (*at->get_attr_vector(it)->begin());
+            orig_offset_value = atof(add_offset_value.c_str());
+            add_offset_type = at->get_type(it);
+            add_offset_found = true;
+        }
+
+        it++;
+    } 
+
+    // According to our observations, it seems that MODIS products ALWAYS use the "scale" factor to 
+    // make bigger values smaller.
+    // So for MODIS_MUL_SCALE products, if the scale of some variable is greater than 1, 
+    // it means that for this variable, the MODIS type for this variable may be MODIS_DIV_SCALE.
+    // For the similar logic, we may need to change MODIS_DIV_SCALE to MODIS_MUL_SCALE and MODIS_EQ_SCALE
+    // to MODIS_DIV_SCALE.
+    // We indeed find such a case. HDF-EOS2 Grid MODIS_Grid_1km_2D of MOD(or MYD)09GA is a MODIS_EQ_SCALE.
+    // However,
+    // the scale_factor of the variable Range_1 in the MOD09GA product is 25. According to our observation,
+    // this variable should be MODIS_DIV_SCALE.We verify this is true according to MODIS 09 product document
+    // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
+    // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
+    // the similar cases so that we can verify with the corresponding product documents to see if this is true.
+    
+    if(scale_factor_value.length()!=0) {
+        if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+            if (orig_scale_value > 1) {
+
+                if(true == is_grid) {
+                    if ((filename.size() >5) && ((filename.compare(0,5,"MOD09") == 0)|| (filename.compare(0,5,"MYD09")==0))) {
+                        if ((newfname.size() >5) && newfname.find("Range") != string::npos)
+                            ;
+                    }
+                }
+                else 
+                    sotype = MODIS_DIV_SCALE;
+                (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
+                                   << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
+                                   << " Now change it to MODIS_DIV_SCALE. "<<endl;
+            }
+        }
+
+        if (MODIS_DIV_SCALE == sotype) {
+            if (orig_scale_value < 1) {
+                sotype = MODIS_MUL_SCALE;
+                (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
+                                   << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
+                                   << " Now change it to MODIS_MUL_SCALE. "<<endl;
+            }
+        }
+
+
+        if ((MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
+
+            //string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&orig_scale_value));
+            at->del_attr("scale_factor");
+            //at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+            // Since scale_factor should always be smaller than 1, so this is fine. We just need to
+            // change the type.
+            at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), scale_factor_value);
+            
+            if (true == add_offset_found) {
+                float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
+                at->del_attr("add_offset");
+                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+            }
+        }    
+
+        if ((MODIS_DIV_SCALE == sotype)) {
+
+            float new_scale_value = 1.0/orig_scale_value;
+            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale_value));
+            at->del_attr("scale_factor");
+            //at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+            // Since scale_factor should always be smaller than 1, so this is fine. We just need to
+            // change the type.
+            at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+            
+            if (true == add_offset_found) {
+                float new_offset_value = (orig_offset_value==0)?0:(-1 * orig_offset_value *new_scale_value); 
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
+                at->del_attr("add_offset");
+                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+            }
+
+        }
+    }
+
+}
 
 // These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
 // For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed
@@ -675,6 +842,9 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
 // bool changedtype - Flag to check if the datatype of this field needs to be changed
 // bool change_fvtype - Flag to check if the attribute _FillValue needs to change to data type
 
+/// Future  CODING reminder
+//  Divide this function into smaller functions:
+//
 void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname, SOType sotype,  bool gridname_change_valid_range, bool changedtype, bool & change_fvtype){
 
     // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.

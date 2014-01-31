@@ -60,67 +60,140 @@ HDF4.CacheDir=/tmp
 # important key to turn it on first.
 H4.EnableCF=true
 
-#   If this key's value is false, additional Vdata such as "Level 1B Swath 
-#  Metadta" in LAADS MYD021KM product will not be processed and visible 
-#  in the DAS/DDS output. Those additional Vdatas are added directly using 
-#  HDF4 APIs and HDF-EOS2 APIs cannot access them.
+# By turning EnableMODAPSFile to be true, when HDF-EOS2 library is used,
+# an extra HDF file handle(by calling SDstart) will be generated at the 
+# beginning of DAS,DDS and Data build. This may be useful for a server that 
+# mounts its data over the network. If you are not sure about your server 
+# settings, always leave it as false or comment out this key. By default this
+# key is turned off.
+H4.EnableMODAPSFile=false
+
+# When turning on this key, the handler will handle AIRS level 3 version 6 
+# products and MOD08_M3-like products in a speedy way by taking advantage of 
+# the special data structures in these two products. Using this key requires 
+# the use of HDF-EOS2 library now although HDF-EOS2 library will not be called.
+# By turning on this key, potentially HDF-EOS2 files that provide dimension 
+# scales for all dimensions may also be handled quickly. By default, this key 
+# should be set to true.
+H4.EnableSpecialEOS=true
+
+# DisableScaleOffsetComp: Disable Scale and offset computation  
+#
+# Some NASA HDF4(MODIS etc.) products don't follow the CF rule to pack the data.
+# To avoid the confusion for OPeNDAP's clients , the handler may adopt the 
+# following two approaches:
+
+# 1) Apply the scale and offset computation to the individual data point if the
+#    scale and offset rule doesn't follow CF in the handler.
+#
+# 2) If possible, transform the scale and offset rule to CF rule.
+#
+# Since approach 1) may degrade the performance of fetching large size data by 
+# heavy computation, we recommend approach 2), which is indicated by setting 
+# this key to be true. By default, this key should always be true.  
+H4.DisableScaleOffsetComp=true
+
+# By turning on this key, the handler will check if the datatype of scale_factor
+# and offset is the same. This is required by CF. If they don't share the same
+# datatype, the handler will make the data type of offset be the same as that 
+# of scale_factor. 
+#
+# Since we haven't found the data type inconsistencies of scale_factor and 
+# offset, in order not affect the performance, this key will be set to false by
+# default. 
+H4.EnableCheckScaleOffsetType = false
+
+#  If this key's value is false, additional Vdata such as "Level 1B Swath 
+# Metadta" in LAADS MYD021KM product will not be processed and visible 
+# in the DAS/DDS output. Those additional Vdatas are added directly using 
+# HDF4 APIs and HDF-EOS2 APIs cannot access them.
 H4.EnableHybridVdata=true
 
-# Some CERES products(CER_AVG,CER_ES4,CER_SRB and CER_ZAVG, see description
+#  Some CERES products(CER_AVG,CER_ES4,CER_SRB and CER_ZAVG, see description
 # in the HDFSP.h) have  many SDS fields and some Vdata fields. Correspondingly,
 # the DDS and DAS page may be very long. The performance of accessing such
-# products with visualization clients may be greatly affected. 
-# It may potentially  even choke netCDF java clients.
+# products with visualization clients may be greatly affected. It may 
+# potentially even choke netCDF java clients.
+#
 # To avoid such cases, we will not map vdata to DAP in such products by default.
 # Users can turn on this key to check vdata information of some CERES products.
 # This key will not affect the access of other products.
 H4.EnableCERESVdata=false
 
-#   If this key's value is false, small Vdata datasets will be mapped to 
+#  If this key's value is false, small Vdata datasets will be mapped to 
 # arrays in DDS output instead of attributes in DAS. 
-#   If this key's value is true, Vdata is mapped to attribute if there are less than 
-# or equal to 10 records.
+# If this key's value is true, Vdata is mapped to attribute if there are less 
+# than or equal to 10 records.
 H4.EnableVdata_to_Attr=true
 
 #   If this key's value is false, the short dataset name becomes long name with
 # Vgroup prefixed and fullpath attribute will not be printed in DAS output.
 #   For example, the DAS output for Region_Number dataset
 #
-#      Region_Number {
-#          String coordinates "Colatitude Longitude";
-#          String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
-# mber";
-#     }
+#  Region_Number {
+#   String coordinates "Colatitude Longitude";
+#   String fullpath "/Monthly Hourly Averages/Time And Position/Region Number";
+#  }
 #
 # becomes
 #    
-#     Monthly_Hourly_Averages_Time_And_Position_Region_Number {
-#          String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
-# ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
-#     }
+#  Monthly_Hourly_Averages_Time_And_Position_Region_Number {
+#  String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatitude \
+#                      Monthly_Hourly_Averages_Time_And_Position_Longitude";
+#  }
 #
 # in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
 H4.EnableCERESMERRAShortName=true
 
 #   If this key's value is false, handler will check if there's any Vdata that 
-#  has the same name as SDS. We haven't found such case in NASA products so it's 
+# has the same name as SDS. We haven't found such case in NASA products so it is
 # safe to disable this to improve performance.
 H4.DisableVdataNameclashingCheck=true
 
 #   If this key's value is true, handler will generate Vdata's attributes. By 
-#     default, it's turned off because most NASA hybrid products do not seem to store
-#  important information in Vdata attributes. If you serve pure HDF4 files, it's 
-#     recommended to turn this value to true so that users can see all data. This
-#  key will not affect the behavior of the handler triggered by the 
-#     H4.EnableVdata_to_Attr key in section 3.3 except the Vdata attributes of
-#  small Vdatas that are mapped to DAS instead of DDS. They will be also turned
-#     off from the DAS output.
-#  If Vdata doesn't have any attribute or field attribute, the description
-
+# default, it's turned off because most NASA hybrid products do not seem to 
+# store important information in Vdata attributes. If you serve pure HDF4 files,
+# it's recommended to turn this value to true so that users can see all data. 
+# This key will not affect the behavior of the handler triggered by the 
+# H4.EnableVdata_to_Attr key except the Vdata attributes of small Vdatas that 
+# are mapped to DAS instead of DDS. They will be also turned off from the DAS 
+# output. 
+#
+# If Vdata doesn't have any attribute or field attribute, the description
+#
 #         String hdf4_vd_desc "This is an HDF4 Vdata.";
-
+#
 #  will not appear in the attribute for that Vdata although the key is true.
-#     The attribute container of the Vdata will always appear regardless of this key.
+#  The attribute container of the Vdata will always appear regardless of this 
+# key.
 H4.EnableVdataDescAttr=false
 
+# This key is for MODIS swath that uses the dimension map.
+# If this key is set to be true, the handler will search the directory where 
+# the data files reside and see if corresponding MODIS geolocation files (MOD03
+# or MYD03) can be found, if yes, the handler will use the corresponding MODIS 
+# geolocation files for latitude and longitude.
+#
+# We feel this is a more accurate approach since additional corrections may be
+# done for geo-location values stored in those files [1] although we've done a
+# case study that shows the differences between the interpolated values and the
+# values stored in the geo-location file are very small.
+#
+# For example, when the handler serves
+#        "MOD05_L2.A2010001.0000.005.2010005211557.hdf"
+# it will first look for a geo-location file
+#        "MOD03.A2010001.0000.005.2010003235220.hdf"
+# from the SAME DIRECTORY where MOD05_L2 file exists.
+#
+# Please note that the "A2010001.0000" in the middle of the name is the
+# "Acquisition Date" of the data so the geo-location file name should have
+# exactly the same string. Handler uses this  string to identify if a MODIS
+# geo-location file exists or not.
+#
+#  This feature works only with HDF-EOS2 MODIS products. It will not work on the
+# pure HDF4 MODIS product like MOD14 that requires the MOD03 geo-location
+# product. That is, putting the MOD03 file with MOD14 in the same directory will
+# not affect the handler's DAS/DDS/DDX output of the MOD14 product.
 H4.EnableCheckMODISGeoFile=false
+
+

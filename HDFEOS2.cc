@@ -450,6 +450,8 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
 
                     HDFCFUtil::insert_map(gdset->dimcvarlist, ((*j)->getDimensions())[0]->getName(),
                                           (*j)->getName());
+//cerr<<"dimension name "<<((*j)->getDimensions())[0]->getName() <<endl;
+//cerr<<"variable name "<<(*j)->getName() <<endl;
                     (*j)->fieldtype = 3;
                     if((*j)->getName() == "Time") 
                         (*j)->fieldtype = 5;// IDV can handle 4-D fields when the 4th dim is Time.
@@ -2587,6 +2589,10 @@ void File::handle_swath_cf_attrs() throw(Exception) {
 void File::Prepare(const char *path) throw(Exception)
 {
 
+    // check if this is a special HDF-EOS2 grid(MOD08_M3) that have all dimension scales
+    // added by the HDF4 library but the relation between the dimension scale and the dimension is not
+    // specified. If the return value  is true, we will specify  
+
     // Obtain the number of swaths and the number of grids
     int numgrid = this->grids.size();
     int numswath = this->swaths.size(); 
@@ -2691,6 +2697,63 @@ void File::Prepare(const char *path) throw(Exception)
     }// End of handling swath
    
 }
+
+bool File::check_special_1d_grid() throw(Exception) {
+
+    int numgrid = this->grids.size();
+    int numswath = this->swaths.size();
+cerr<<"coming to check_special_1d_grid "<<endl;
+    
+    if (numgrid != 1 || numswath != 0) 
+        return false;
+cerr<<"after checking grid "<<endl;
+
+    // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
+    string DIMXNAME = this->get_geodim_x_name();
+    string DIMYNAME = this->get_geodim_y_name();
+
+    if(DIMXNAME != "XDim" || DIMYNAME != "YDim") 
+        return false;
+
+    int var_dimx_size = 0;
+    int var_dimy_size = 0;
+
+    GridDataset *mygrid = (this->grids)[0];
+
+    int field_xydim_flag = 0;
+    for (vector<Field *>::const_iterator i = mygrid->getDataFields().begin();
+            i!= mygrid->getDataFields().end(); ++i) {
+        if(1==(*i)->rank) {
+            if((*i)->name == "XDim"){
+                field_xydim_flag++;
+                var_dimx_size = ((*i)->getDimensions())[0]->getSize();
+            }
+            if((*i)->name == "YDim"){
+                field_xydim_flag++;
+                var_dimy_size = ((*i)->getDimensions())[0]->getSize();
+            }
+        }
+        if(2==field_xydim_flag)
+            break;
+    }
+
+    if(field_xydim_flag !=2)
+        return false;
+
+    // Obtain XDim and YDim size.
+    int xdimsize = mygrid->getInfo().getX();
+    int ydimsize = mygrid->getInfo().getY();
+   
+    if(var_dimx_size != xdimsize || var_dimy_size != ydimsize)
+        return false;
+
+    return true;
+    
+}
+    
+
+
+
 
 
 // Set scale and offset type

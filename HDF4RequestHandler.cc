@@ -121,7 +121,29 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
 
 #ifdef USE_HDFEOS2_LIB
+
+            string key = "H4.EnableMODAPSFile";
+            string doset;
+            bool found = false;
+            bool ADD_FILE_HANDLE = false;
+            int32 sd_id;
+            TheBESKeys::TheKeys()->get_value(key,doset,found);
+            if(true == found) {
+                if(doset == "true")
+                  ADD_FILE_HANDLE = true;
+            }
+#if 0
+if(true == ADD_FILE_HANDLE)
+cerr<<"Extra file open in DAS"<<endl;
+#endif
+
+            if(true == ADD_FILE_HANDLE)
+               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+
             read_das_use_eos2lib(*das, accessed);
+
+            if(true == ADD_FILE_HANDLE)
+                SDend(sd_id);
 #else
             read_das_hdfsp(*das,accessed);
 #endif
@@ -189,6 +211,8 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
         if (true == usecf) {
 
+
+
             // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
             // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
             // KY 2012-6-29
@@ -197,10 +221,32 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
 #ifdef USE_HDFEOS2_LIB        
 
+            string key = "H4.EnableMODAPSFile";
+            string doset;
+            bool found = false;
+            bool ADD_FILE_HANDLE = false;
+            int32 sd_id;
+            TheBESKeys::TheKeys()->get_value(key,doset,found);
+            if(true == found) {
+                if(doset == "true")
+                  ADD_FILE_HANDLE = true;
+            }
+#if 0
+if(true == ADD_FILE_HANDLE)
+cerr<<"Extra file open in DDS"<<endl;
+#endif
+             
+            if(true == ADD_FILE_HANDLE)  
+               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+
+ 
             read_das_use_eos2lib(*das, accessed);
             Ancillary::read_ancillary_das(*das, accessed);
 
             read_dds_use_eos2lib(*dds, accessed);
+
+            if(true == ADD_FILE_HANDLE)
+                SDend(sd_id);
 
 #else
             read_das_hdfsp(*das, accessed);
@@ -250,6 +296,9 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     string key="H4.EnableCF";
     string doset;
 
+    int ADD_FILE_HANDLE = false;
+    int32 sd_id = -1;
+
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found )
     {
@@ -289,10 +338,30 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 
 #ifdef USE_HDFEOS2_LIB        
+
+            string key = "H4.EnableMODAPSFile";
+            string doset;
+            bool found = false;
+//            bool ADD_FILE_HANDLE = false;
+//            int32 sd_id;
+            TheBESKeys::TheKeys()->get_value(key,doset,found);
+            if(true == found) {
+                if(doset == "true")
+                  ADD_FILE_HANDLE = true;
+            }
+#if 0
+if(true == ADD_FILE_HANDLE)
+cerr<<"Extra file open in DATA"<<endl;
+#endif
+
+            if(true == ADD_FILE_HANDLE)
+               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+
             read_das_use_eos2lib(*das, accessed);
             Ancillary::read_ancillary_das(*das, accessed);
 
             read_dds_use_eos2lib(*dds, accessed);
+
 
 #else
             read_das_hdfsp(*das, accessed);
@@ -316,6 +385,13 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         bdds->set_constraint(dhi);
 
         bdds->clear_container();
+
+#ifdef USE_HDFEOS2_LIB        
+        if(true == usecf) 
+             if(true == ADD_FILE_HANDLE)
+                SDend(sd_id);
+#endif
+        
     } 
 
     catch (BESError & e) {

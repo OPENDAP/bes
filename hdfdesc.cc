@@ -192,12 +192,19 @@ bool read_das_hdfsp(DAS & das, const string & filename);
 bool read_dds_hdfhybrid(DDS & dds, const string & filename);
 bool read_das_hdfhybrid(DAS & das, const string & filename);
 
+// Functions to read special 1-d HDF-EOS2 grid. This grid can be built up quickly.
+bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename);
+bool read_das_special_eos2(DAS &das,const string & filename);
+bool read_das_special_eos2_core(DAS &das, HDFSP::File *spf, const string & filename);
 
 // Functions to handle SDS fields for the CF option.
 void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SPType sptype); 
 
 // Functions to handle Vdata fields for the CF option.
 void read_dds_spvdfields(DDS &dds,const string& filename,int32 vdref, int32 numrec,HDFSP::VDField *spvd); 
+
+// Check if this is a special HDF-EOS2 file that can be handled by HDF4 directly. Using HDF4 only can improve performance.
+int check_special_eosfile(const string&filename,string&grid_name);
 
 
 // The following blocks only handle HDF-EOS2 objects based on HDF-EOS2 libraries.
@@ -207,10 +214,25 @@ void read_dds_spvdfields(DDS &dds,const string& filename,int32 vdref, int32 numr
 void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata); 
 
 // read_dds for HDF-EOS2
-bool read_dds_hdfeos2(DDS & dds, const string & filename);
+/// bool read_dds_hdfeos2(DDS & dds, const string & filename);
+// We find some special HDF-EOS2(MOD08_M3) products that provides coordinate variables
+// without using the dimension scales. We will handle this in a special way.
+// So change the return type of read_dds_hdfeos2.
+// 0: general non-EOS2 pure HDF4
+// 1: HDF-EOS2 hybrid 
+// 2: MOD08_M3
+//  HDF-EOS2 but no need to use HDF-EOS2 lib: no real dimension scales but have CVs for every dimension, treat differently
+// 3: AIRS level 3 
+//  HDF-EOS2 but no need to use HDF-EOS2 lib: 
+//  have dimension scales but don’t have CVs for every dimension, also need to condense dimensions, treat differently
+// 4. Expected AIRS level 3
+// HDF-EOS2 but no need to use HDF-EOS2 lib: Have dimension scales for all dimensions
+// 5. MERRA 
+// Special handling for MERRA file as 0.
+int read_dds_hdfeos2(DDS & dds, const string & filename);
 
 // reas das for HDF-EOS2
-bool read_das_hdfeos2(DAS & das, const string & filename);
+int read_das_hdfeos2(DAS & das, const string & filename);
 
 
 // read_dds for one grid or swath
@@ -334,6 +356,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 else if(grid_or_swath==1){
 
                     string tempfieldname = (*it_f)->getName();
+//cerr<<"field name is = "<<tempfieldname <<endl;
 
                     if((*it_f)->UseDimMap()) {
                         if (!modis_geofilename.empty()) {
@@ -390,6 +413,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                             }
                         }
                         else {// No dimension map file
+//cerr<<"coming to swath dim map "<<endl;
                             HDFEOS2ArraySwathDimMapField * ar = NULL;
                             ar = new HDFEOS2ArraySwathDimMapField(
                                                                   (*it_f)->getRank(), 
@@ -409,6 +433,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         }
                     }
                     else { // No dimension map
+//cerr<<"no dimension map "<<endl;
 
                         HDFEOS2Array_RealField * ar = NULL;
                         ar = new HDFEOS2Array_RealField(
@@ -592,8 +617,11 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 }
 
 // Build DDS for HDF-EOS2 only.
-bool read_dds_hdfeos2(DDS & dds, const string & filename) 
+//bool read_dds_hdfeos2(DDS & dds, const string & filename) 
+int read_dds_hdfeos2(DDS & dds, const string & filename) 
 {
+
+    BESDEBUG("h4","Coming to read_dds_hdfeos2 "<<endl);
 
     // Set DDS dataset.
     dds.set_dataset_name(basename(filename));
@@ -604,10 +632,102 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
     // will cause confusions and we may get wrong information.
     // So far, we've found only MERRA data that have this problem.
     // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
-    // Find MERRA data, return false, use HDF4 SDS code.
-    if((basename(filename)).compare(0,5,"MERRA")==0) 
-        return false; 
+    // Find MERRA data, return 5, use HDF4 SDS code.
+    if((basename(filename).size() >=5) && ((basename(filename)).compare(0,5,"MERRA")==0)) 
+        return 5; 
+        //return false; 
 
+    string check_enable_spec_eos_key="H4.EnableSpecialEOS";
+    bool turn_on_enable_spec_eos_key= false;
+    turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
+
+    if(true == turn_on_enable_spec_eos_key) {
+
+        string grid_name;
+        int ret_val = check_special_eosfile(filename,grid_name); 
+
+        // Expected AIRS level 3 case
+        if(4== ret_val) 
+            return ret_val;
+    
+        bool special_1d_grid = false;
+        bool airs_l3_v6 = false;
+
+        if(2 == ret_val || 3 == ret_val) {
+
+            // Very strange behavior for the HDF4 library, I have to obtain the ID here.
+            // If defined inside the Read function, the id will be 0 and the output is 
+            // unexpected. KY 2010-8-9
+            int32 myfileid = 0;
+            myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+
+            HDFSP::File *spf; 
+            try {
+
+                //   string grid_name = f->get_first_grid_name();
+//cerr<<"grid name is "<<grid_name <<endl;
+                spf  = HDFSP::File::Read(filename.c_str(),myfileid);
+
+                if(2==ret_val) {  
+                    if(spf->Check_if_special(grid_name)== true){
+
+                        special_1d_grid = true;
+
+                        // building  the normal DDS here.
+                        read_dds_special_1d_grid(dds,spf,filename);
+                    }
+                }
+                else {
+                    airs_l3_v6 = true;
+                    spf->Handle_AIRS_l3();
+                    read_dds_special_1d_grid(dds,spf,filename);
+                }
+                delete spf;
+
+            } catch (HDFSP::Exception &e)
+            {   
+                throw InternalErr(e.what());
+            }   
+
+            if (true == special_1d_grid || true== airs_l3_v6)
+                return ret_val;
+       
+        }
+
+    }
+ 
+    HDFEOS2::File *f;
+    
+    try {
+        // Read all the information of EOS objects from an HDF-EOS2 file
+        f= HDFEOS2::File::Read(filename.c_str());
+    } 
+    catch (HDFEOS2::Exception &e){
+
+        // If this file is not an HDF-EOS2 file, return false.
+        if (!e.getFileType()){
+            //return false;
+            return 0;
+        }
+        else
+        {
+            throw InternalErr(e.what());
+        }
+    }
+
+   try {
+        // Generate CF coordinate variables(including auxiliary coordinate variables) and dimensions
+        // All the names follow CF.
+        f->Prepare(filename.c_str());
+    }
+
+    catch (HDFEOS2:: Exception &e) {
+        delete f;
+        throw InternalErr(e.what());
+    }
+
+
+#if 0
     HDFEOS2::File *f;
     try {
 
@@ -617,21 +737,72 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
     {
         // If this is not an HDF-EOS2 file, return falase. We will treat it as an HDF4 file.
         if(!e.getFileType()){
-            return false;
+            return 0;
+            //return false;
         }
         else {
             throw InternalErr(e.what());
         }
     }
         
+
+    bool special_1d_grid = false;
     try {
+
         // Generate CF coordinate variables(including auxillary coordinate variables) and dimensions
-        f->Prepare(filename.c_str());
+        if (f->check_special_1d_grid()) {
+
+cerr<<"This is a special 1d grid at the EOS layer" <<endl;
+            // Very strange behavior for the HDF4 library, I have to obtain the ID here.
+            // If defined inside the Read function, the id will be 0 and the output is 
+            // unexpected. KY 2010-8-9
+            int32 myfileid;
+            myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+
+            HDFSP::File *spf; 
+            try {
+
+               string grid_name = f->get_first_grid_name();
+cerr<<"grid name is "<<grid_name <<endl;
+               spf  = HDFSP::File::Read(filename.c_str(),myfileid);
+               if(spf->Check_if_special(grid_name)== true){
+                  special_1d_grid = true;
+cerr<<"This is a special 1d grid " <<endl;
+
+                  // building  the normal DDS here.
+                  read_dds_special_1d_grid(dds,spf,filename);
+               }
+               delete spf;
+
+            } catch (HDFSP::Exception &e)
+           {   
+                throw InternalErr(e.what());
+            }   
+
+        }
     } catch (HDFEOS2::Exception &e)
     {
         delete f;
         throw InternalErr(e.what());
     }
+
+    if (true == special_1d_grid){
+cerr<<"special_1d_grid is true "<<endl;
+        delete f;
+        return 1;
+    }
+    else{ 
+        try {
+            f->Prepare(filename.c_str());
+        }
+
+        catch (HDFEOS2:: Exception &e) {
+            delete f;
+            throw InternalErr(e.what());
+        }
+    }
+
+#endif
         
     //Some grids have one shared lat/lon pair. For this case,"onelatlon" is true.
     // Other grids have their individual grids. We have to handle them differently.
@@ -674,7 +845,8 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
     ctype_field_namelist.clear();
 
     delete f;
-    return true;
+    return 1;
+    //return true;
 }
 
 
@@ -756,7 +928,12 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
     {
         throw InternalErr(e.what());
     }
-        
+
+    string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
+    bool turn_on_enable_check_scale_offset_key= false;
+    turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+    
+    
     // First Added non-HDFEOS2 SDS attributes.
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
     vector<HDFSP::SDField *>::const_iterator it_g;
@@ -807,6 +984,15 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
             int32 var_type = (*it_g)->getType();
             HDFCFUtil::correct_fvalue_type(at,var_type);
         }
+
+        // If H4.EnableCheckScaleOffsetType BES key is true,  
+        //    if yes, check if having scale_factor and add_offset attributes; 
+        //       if yes, check if scale_factor and add_offset attribute types are the same; 
+        //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
+        // (CF requires the type of scale_factor and add_offset the same). 
+        if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+            HDFCFUtil::correct_scale_offset_type(at); 
+
     }
 
     // Handle vdata attributes.
@@ -822,6 +1008,28 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
 void read_dds_use_eos2lib(DDS & dds, const string & filename)
 {
 
+    BESDEBUG("h4","Coming to read_dds_use_eos2lib" <<endl);
+    int ret_value = read_dds_hdfeos2(dds,filename);
+
+    BESDEBUG("h4","ret_value of read_dds_hdfeos2 is "<<ret_value<<endl);
+
+    // Treat MERRA and non-HDFEOS2 HDF4 products as pure HDF4 objects
+    // For Expected AIRS level 3 products, we temporarily handle in a generic HDF4 way.
+    if (ret_value == 0 || ret_value == 5 || ret_value == 4) {
+        if(read_dds_hdfsp(dds, filename))
+            return;
+    }
+    // Special handling
+    else if (ret_value == 1) {
+         //  Map non-EOS2 objects to DDS
+        if(true == read_dds_hdfhybrid(dds,filename))
+            return;
+    }
+    else {// ret_value = 2 and 3 are handled already
+            return;
+    }
+
+#if 0
     // first map HDF-EOS2 objects to DDS
     if(true == read_dds_hdfeos2(dds, filename)){
 
@@ -834,6 +1042,7 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename)
     if(read_dds_hdfsp(dds, filename)){
         return;
     }
+#endif
 
     // Call the default mapping of HDF4 to DDS. It should never reach here.
     // We add this line to ensure the HDF4 objects mapped to DDS even if the above routines return false.
@@ -916,8 +1125,10 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
 }
 
 // Build DAS for HDFEOS2 files.
-bool read_das_hdfeos2(DAS & das, const string & filename)
+int read_das_hdfeos2(DAS & das, const string & filename)
 {
+
+    BESDEBUG("h4","Coming to read_das_hdfeos2 " << endl);
 
     // There are some HDF-EOS2 files(MERRA) that should be treated
     // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
@@ -928,9 +1139,69 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
     // Find MERRA data, return false, use HDF4 SDS code.
     if((basename(filename).size() >=5) && ((basename(filename)).compare(0,5,"MERRA")==0)) {
-        return false;
+        return 5;
+        //return false;
     }
 
+    // We will check if the handler wants to turn on the special EOS key checking
+    string check_enable_spec_eos_key="H4.EnableSpecialEOS";
+    bool turn_on_enable_spec_eos_key= false;
+    turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
+
+    if(true == turn_on_enable_spec_eos_key) {
+
+        string grid_name;
+        int ret_val = check_special_eosfile(filename,grid_name); 
+
+        // Expected AIRS level 3
+        if(4== ret_val) 
+            return ret_val;
+    
+        bool airs_l3_v6 = false;
+        bool special_1d_grid = false;
+
+        // AIRS level 3 version 6 or MOD08_M3-like products
+        if(2 == ret_val || 3 == ret_val) {
+
+            // Very strange behavior for the HDF4 library, I have to obtain the ID here.
+            // If defined inside the Read function, the id will be 0 and the output is 
+            // unexpected. KY 2010-8-9
+            int32 myfileid = 0;
+            myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+
+            HDFSP::File *spf; 
+            try {
+
+                spf  = HDFSP::File::Read(filename.c_str(),myfileid);
+                if( 2 == ret_val) {
+
+                    // More check and build the relations if this is a special MOD08_M3-like file
+                    if(spf->Check_if_special(grid_name)== true){
+
+                        special_1d_grid = true;
+
+                        // building  the normal DAS here.
+                        read_das_special_eos2_core(das,spf,filename);
+                    }
+                }
+                else {
+                    airs_l3_v6 = true;
+                    spf->Handle_AIRS_l3();
+                    read_das_special_eos2_core(das,spf,filename);
+                }
+                delete spf;
+
+            } catch (HDFSP::Exception &e)
+            {   
+                throw InternalErr(e.what());
+            }   
+
+            if (true == special_1d_grid || true == airs_l3_v6)
+                return ret_val;
+       
+        }
+    }
+ 
     HDFEOS2::File *f;
     
     try {
@@ -939,9 +1210,10 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
     } 
     catch (HDFEOS2::Exception &e){
 
-        // If this file is not an HDF-EOS2 file, return false.
+        // If this file is not an HDF-EOS2 file, return 0.
         if (!e.getFileType()){
-            return false;
+            //return false;
+            return 0;
         }
         else
         {
@@ -949,7 +1221,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
         }
     }
 
-    try {
+   try {
         // Generate CF coordinate variables(including auxiliary coordinate variables) and dimensions
         // All the names follow CF.
         f->Prepare(filename.c_str());
@@ -989,6 +1261,27 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
         if ("VIP_CMG_GRID" == gridname) 
             gridname_change_valid_range = true;
     }
+
+    // Obtain information to identify MODIS_SWATH_Type_L1B product. This product's scale and offse need to be handled properly. 
+    bool is_modis_l1b = false;
+    // Since this is a swath product, we check swath only. 
+    for (int i = 0; i<(int) f->getSwaths().size(); i++) {
+        HDFEOS2::SwathDataset* swath = f->getSwaths()[i];
+        string sname = swath->getName();
+        if("MODIS_SWATH_Type_L1B" == sname){
+            is_modis_l1b = true;
+            break;
+        }
+    }
+
+    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
+    bool turn_on_disable_scale_comp_key= false;
+    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
+
+    string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
+    bool turn_on_enable_check_scale_offset_key= false;
+    turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+
 
     // MAP grids to DAS.
     for (int i = 0; i < (int) f->getGrids().size(); i++) {
@@ -1071,15 +1364,34 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
             // No need for CF scale and offset equation.
             if(sotype!=DEFAULT_CF_EQU && at!=NULL)
             {
-                // Check if the datatype of this field needs to be changed.
-                bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
+                bool has_Key_attr = false;
+                AttrTable::Attr_iter it = at->attr_begin();
+                while (it!=at->attr_end())
+                {
+                    if(at->get_name(it)=="Key")
+                    {
+                        has_Key_attr = true;
+                        break;
+                    }
+                    it++;
+                }
 
-                // Build up the field name list if the datatype of the field needs to be changed.
-                if (true == changedtype) 
-                    ctype_field_namelist.push_back(newfname);
+                if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                    HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename), true, newfname,sotype);
+                else {
 
-                // Handle MODIS special attributes
-                HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+//cerr<<"coming to computation "<<endl;
+                    // Check if the datatype of this field needs to be changed.
+                    bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
+
+                    // Build up the field name list if the datatype of the field needs to be changed.
+                    if (true == changedtype) 
+                        ctype_field_namelist.push_back(newfname);
+
+//cerr<<"coming to computation 2"<<endl;
+                    HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+          
+                }
             }
 
             // Handle AMSR-E attributes.
@@ -1091,6 +1403,14 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                 int32 var_type = (*it_gf)->getType();
                 HDFCFUtil::correct_fvalue_type(at,var_type);
             }
+
+            // if h4.enablecheckscaleoffsettype bes key is true, 
+            //    if yes, check if having scale_factor and add_offset attributes;
+            //       if yes, check if scale_factor and add_offset attribute types are the same;
+            //          if no, make add_offset's datatype be the same as the datatype of scale_factor.
+            // (cf requires the type of scale_factor and add_offset the same).
+            if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
+                HDFCFUtil::correct_scale_offset_type(at);
         }
     }
 
@@ -1167,18 +1487,36 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
 	    AttrTable *at = das.get_table(newfname);
 
-             // No need for CF scale and offset equation.
+            // No need for CF scale and offset equation.
             if(sotype!=DEFAULT_CF_EQU && at!=NULL)
             {
-                // Check if the datatype of this field needs to be changed.
-                bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
 
-                // Build up the field name list if the datatype of the field needs to be changed.
-                if (true == changedtype) 
-                    ctype_field_namelist.push_back(newfname);
+                bool has_Key_attr = false;
+                AttrTable::Attr_iter it = at->attr_begin();
+                while (it!=at->attr_end())
+                {
+                    if(at->get_name(it)=="Key")
+                    {
+                        has_Key_attr = true;
+                        break;
+                    }
+                    it++;
+                }
+
+                if((false == is_modis_l1b) && (false == gridname_change_valid_range) && (true == turn_on_disable_scale_comp_key)) 
+                    HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename),false,newfname,sotype);
+                else {
+
+                    // Check if the datatype of this field needs to be changed.
+                    bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
+
+                    // Build up the field name list if the datatype of the field needs to be changed.
+                    if (true == changedtype) 
+                        ctype_field_namelist.push_back(newfname);
                
-                // Handle MODIS special attributes such as valid_range, scale_factor and add_offset etc.
-                HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+                    // Handle MODIS special attributes such as valid_range, scale_factor and add_offset etc.
+                    HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+                }
             }
 
             // Handle AMSR-E attributes
@@ -1190,6 +1528,14 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
                 int32 var_type = (*it_f)->getType();
                 HDFCFUtil::correct_fvalue_type(at,var_type);
             }
+
+            // If H4.EnableCheckScaleOffsetType BES key is true,  
+            //    if yes, check if having scale_factor and add_offset attributes; 
+            //       if yes, check if scale_factor and add_offset attribute types are the same; 
+            //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
+            // (CF requires the type of scale_factor and add_offset the same). 
+            if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+                HDFCFUtil::correct_scale_offset_type(at); 
 
             field_counter++;
         }
@@ -1218,13 +1564,41 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
     cf.close();
     delete f;
-    return true;
+    //return true;
+    return 1;
 }    
 
 //The wrapper of building HDF-EOS2 and special HDF4 files. 
 void read_das_use_eos2lib(DAS & das, const string & filename)
 {
 
+    BESDEBUG("h4","Coming to read_das_use_eos2lib" << endl);
+
+    int ret_value = read_das_hdfeos2(das,filename);
+    BESDEBUG("h4","ret_value of read_das_hdfeos2 is "<<ret_value <<endl);
+
+    // Treat as pure HDF4 objects
+    if (ret_value == 4) {
+        if(read_das_special_eos2(das, filename))
+            return;
+    }
+    // Special handling, already handled
+    else if (ret_value == 2 || ret_value == 3) {
+        return;
+    }
+    else if (ret_value == 1) {
+         //  Map non-EOS2 objects to DDS
+        if(true == read_das_hdfhybrid(das,filename))
+            return;
+    }
+    else {// ret_value is 0(pure HDF4) or 5(Merra)
+        if(true == read_das_hdfsp(das, filename))
+            return;
+    }
+
+
+
+#if 0
     // First map HDF-EOS2 attributes to DAS
     if(true == read_das_hdfeos2(das, filename)){
         
@@ -1237,6 +1611,7 @@ void read_das_use_eos2lib(DAS & das, const string & filename)
     if(true == read_das_hdfsp(das, filename)){
         return;
     }
+#endif
 
     // Call the default mapping of HDF4 to DAS. It should never reach here.
     // We add this line to ensure the HDF4 attributes mapped to DAS even if the above routines return false.
@@ -1326,6 +1701,8 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
 // to all HDF4 products when HDF-EOS2 library is not configured in.
 bool read_das_hdfsp(DAS & das, const string & filename) 
 {
+
+    BESDEBUG("h4","Coming to read_das_sp "<<endl);
 
     // HDF4 H interface ID
     int32 myfileid;
@@ -1437,6 +1814,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     // Coremetadata, structmetadata and archive metadata need special parsers.
 
     // Write coremetadata.
+//cerr<<"core_metadata "<<endl;
     if(core_metadata.size() > 0){
         AttrTable *at = das.get_table("CoreMetadata");
         if (!at)
@@ -1450,6 +1828,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
+//cerr<<"parsing error "<<endl;
             (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2)" << endl
                 << arg.error()->get_error_message() << endl;
         }
@@ -1647,6 +2026,11 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     // For OTHERHDF products, add units for latitude and longitude; also change unit to units.
     HDFCFUtil::handle_otherhdf_special_attrs(f,das);
 
+
+    string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
+    bool turn_on_enable_check_scale_offset_key= false;
+    turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
+
     // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
     // with the variable datatype. Correct the fillvalue datatype if necessary. 
     for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
@@ -1657,6 +2041,13 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             HDFCFUtil::correct_fvalue_type(at,var_type);
         }
 
+        // If H4.EnableCheckScaleOffsetType BES key is true,  
+        //    if yes, check if having scale_factor and add_offset attributes; 
+        //       if yes, check if scale_factor and add_offset attribute types are the same; 
+        //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
+        // (CF requires the type of scale_factor and add_offset the same). 
+        if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+            HDFCFUtil::correct_scale_offset_type(at); 
     }
 
     // Optimization for users to tune the DAS output.
@@ -1669,6 +2060,281 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         
     delete f;
     return true;
+}
+
+// This routine is for case 4 of the cases returned by read_das_hdfeos2.
+// Creating this routine is for performance reasons. Structmetadata is
+// turned off because the information has been retrieved and presented 
+// by DDS and DAS.
+// Currently we don't have a user case for this routine and also
+// this code is not used. We still keep it for the future usage.
+// KY 2014-01-29
+
+bool read_das_special_eos2(DAS &das,const string& filename) {
+
+    BESDEBUG("h4","Coming to read_das_special_eos2 " << endl);
+
+    // HDF4 H interface ID
+    int32 myfileid;
+    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+
+    // Define a file pointer
+    HDFSP::File *f;
+    try {
+
+        // Obtain all the necesary information from HDF4 files.
+        f = HDFSP::File::Read(filename.c_str(), myfileid);
+    } 
+    catch (HDFSP::Exception &e)
+    {
+        throw InternalErr(e.what());
+    }
+        
+    try {
+        // Generate CF coordinate variables(including auxiliary coordinate variables) and dimensions
+        // All the names follow CF.
+        f->Prepare();
+    } 
+    catch (HDFSP::Exception &e) {
+        delete f;
+        throw InternalErr(e.what());
+    }
+
+    read_das_special_eos2_core(das, f, filename);
+    delete f;
+}
+
+// This routine is for special EOS2 that can be tuned to build up DAS and DDS quickly.
+// We also turn off the generation of StructMetadata for the performance reason.
+bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename) {
+
+    // Initialize ECS metadata
+    string core_metadata = "";
+    string archive_metadata = "";
+    string struct_metadata = "";
+    
+    // Obtain SD pointer, this is used to retrieve the file attributes associated with the SD interface
+    HDFSP::SD* spsd = f->getSD();
+  
+    //Ignore StructMetadata to improve performance 
+    for(vector<HDFSP::Attribute *>::const_iterator i=spsd->getAttributes().begin();i!=spsd->getAttributes().end();i++) {
+ 
+        // Here we try to combine ECS metadata into a string.
+        if(((*i)->getName().compare(0, 12, "CoreMetadata" )== 0) ||
+            ((*i)->getName().compare(0, 12, "coremetadata" )== 0)){
+
+            // We assume that CoreMetadata.0, CoreMetadata.1, ..., CoreMetadata.n attribures
+            // are processed in the right order during HDFSP::Attribute vector iteration.
+            // Otherwise, this won't work.
+            string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
+            core_metadata.append(tempstring);
+        }
+        else if(((*i)->getName().compare(0, 15, "ArchiveMetadata" )== 0) ||
+                ((*i)->getName().compare(0, 16, "ArchivedMetadata")==0)  ||
+                ((*i)->getName().compare(0, 15, "archivemetadata" )== 0)){
+            string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
+            archive_metadata.append(tempstring);
+        }
+        else if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
+                ((*i)->getName().compare(0, 14, "structmetadata" )== 0))
+              ; // Ignore StructMetadata for performance
+        else {
+            //  Process gloabal attributes
+            AttrTable *at = das.get_table("HDF_GLOBAL");
+            if (!at)
+                at = das.add_table("HDF_GLOBAL", new AttrTable);
+
+            // We treat string differently. DFNT_UCHAR and DFNT_CHAR are treated as strings.
+            if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+                string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                string tempfinalstr= string(tempstring2.c_str());
+                
+                 // Using the customized escattr function to escape special characters except
+                 // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
+                // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
+                at->append_attr((*i)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+            }
+
+            else {
+                for (int loc=0; loc < (*i)->getCount() ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                }
+          
+            }
+        }
+        
+    }
+    
+    // The following code may be condensed in the future. KY 2012-09-19
+    // Coremetadata, structmetadata and archive metadata need special parsers.
+
+    // Write coremetadata.
+    if(core_metadata.size() > 0){
+        AttrTable *at = das.get_table("CoreMetadata");
+        if (!at)
+            at = das.add_table("CoreMetadata", new AttrTable);
+        // tell lexer to scan attribute string
+        void *buf = hdfeos_string(core_metadata.c_str());
+        parser_arg arg(at);
+
+        if (hdfeosparse(&arg) != 0)
+            throw Error("Parse error while processing a CoreMetadata attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+//cerr<<"parsing error "<<endl;
+            (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2)" << endl
+                << arg.error()->get_error_message() << endl;
+        }
+
+        hdfeos_delete_buffer(buf);
+    }
+            
+    // Write archive metadata.
+    if(archive_metadata.size() > 0){
+        AttrTable *at = das.get_table("ArchiveMetadata");
+        if (!at)
+            at = das.add_table("ArchiveMetadata", new AttrTable);
+        // tell lexer to scan attribute string
+        void *buf = hdfeos_string(archive_metadata.c_str());
+        parser_arg arg(at);
+        if (hdfeosparse(&arg) != 0)
+            throw Error("Parse error while processing an ArchiveMetadata attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+            (*BESLog::TheLog())<< "Parse error while processing an ArchiveMetadata attribute. (2)" << endl
+                << arg.error()->get_error_message() << endl;
+        }
+
+        hdfeos_delete_buffer(buf);
+    }
+
+    // Handle individual fields
+    const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
+    vector<HDFSP::SDField *>::const_iterator it_g;
+    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+        // Add units for CV variables
+//        if((*it_g)->getFieldType() != 0 && (*it_g)->IsDimScale() == false){
+        if((*it_g)->getFieldType() != 0){
+
+            AttrTable *at = das.get_table((*it_g)->getNewName());
+            if (!at)
+                at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+            string tempunits = (*it_g)->getUnits();
+            if(at->simple_find("units")== at->attr_end() && tempunits!="")
+                at->append_attr("units", "String" ,tempunits);
+            if((*it_g)->getFieldType() == 1){
+                if(at->simple_find("long_name")== at->attr_end())
+                    at->append_attr("long_name","String","Latitude");
+            }
+            else if((*it_g)->getFieldType() == 2) {
+                if(at->simple_find("long_name")== at->attr_end())
+                    at->append_attr("long_name","String","Longitude");
+            }
+        }
+
+        // Ignore variables that don't have attributes.
+        if((*it_g)->getAttributes().size() == 0)
+          continue;
+    
+        AttrTable *at = das.get_table((*it_g)->getNewName());
+        if (!at)
+            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+        // MAP individual SDS field to DAP DAS
+        for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+
+            // Handle string first.
+            if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+                string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                string tempfinalstr= string(tempstring2.c_str());
+
+                // We want to escape the possible special characters except the fullpath attribute. This may be overkilled since
+                // fullpath is only added for some CERES and MERRA data. We think people use fullpath really mean to keep their
+                // original names. So escaping them for the time being. KY 2013-10-14
+
+                at->append_attr((*i)->getNewName(), "String" ,((*i)->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
+            }
+            else {
+                for (int loc=0; loc < (*i)->getCount() ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                }
+            }
+        }
+
+
+    }
+
+}
+
+// Function to build special AIRS level 3 and MOD08_M3 DDS. Doing this way is for performance reasons.
+bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename) {
+
+   SPType sptype = OTHERHDF;
+   const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
+
+   // Read SDS 
+   vector<HDFSP::SDField *>::const_iterator it_g;
+   for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+        BaseType *bt=NULL;
+        switch((*it_g)->getType()) {
+#define HANDLE_CASE(tid, type)                                          \
+            case tid:                                           \
+        bt = new (type)((*it_g)->getNewName(),filename); \
+        break;
+        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
+        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+#ifndef SIGNED_BYTE_TO_INT32
+        HANDLE_CASE(DFNT_INT8, HDFByte);
+#else
+        HANDLE_CASE(DFNT_INT8,HDFInt32);
+#endif
+        HANDLE_CASE(DFNT_UINT8, HDFByte);
+        HANDLE_CASE(DFNT_INT16, HDFInt16);
+        HANDLE_CASE(DFNT_UINT16, HDFUInt16);
+        HANDLE_CASE(DFNT_INT32, HDFInt32);
+        HANDLE_CASE(DFNT_UINT32, HDFUInt32);
+        HANDLE_CASE(DFNT_UCHAR8, HDFByte);
+        HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        default:
+            InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#undef HANDLE_CASE
+        }
+
+        if(bt)
+        {
+              
+            const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
+            //const vector<HDFSP::Dimension*>& dims= spsds->getCorrectedDimensions();
+            vector<HDFSP::Dimension*>::const_iterator it_d;
+
+            HDFSPArray_RealField *ar = NULL;
+            ar = new HDFSPArray_RealField(
+                                          (*it_g)->getRank(),
+                                          filename,
+                                          (*it_g)->getSDSref(),
+                                          (*it_g)->getType(),
+                                          sptype,
+                                          (*it_g)->getName(),
+                                          (*it_g)->getNewName(),
+                                          bt);
+            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+            dds.add_var(ar);
+            delete bt;
+            delete ar;
+        }
+
+    }
+
+    return true;
+
 }
 
 // Read SDS fields
@@ -1865,6 +2531,288 @@ void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numr
 
 }
 
+// This routine will check if this is a special EOS2 file that we can improve the performance
+// Currently AIRS level 3 version 6 and MOD08_M3-like products are what we can serve. KY 2014-01-29
+int check_special_eosfile(const string & filename, string& grid_name) {
+
+    int32 sdid     = 0;
+    int32 sds_id   = 0;
+    int n_sds      = 0;
+    int n_sd_attrs = 0;
+    bool is_eos    = false;
+    int ret_val    = 1;
+
+    sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
+    if (sdid <0)
+        throw InternalErr(__FILE__, __LINE__, "The SD interface cannot be open.");
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdid, &n_sds, &n_sd_attrs) == FAIL){
+        SDend(sdid);
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+
+    char attr_name[H4_MAX_NC_NAME];
+    int32 attr_type  = -1;
+    int32 attr_count = -1;
+    char structmdname[] = "StructMetadata.0";
+
+    // Is this an HDF-EOS2 file? 
+    for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
+        if(SDattrinfo(sdid,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
+            SDend(sdid);
+            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+        }
+
+        if(strcmp(attr_name,structmdname)==0)  {
+            is_eos = true;
+            break;
+        }
+    }
+    
+    if(true == is_eos) {
+
+        int sds_index  = 0;
+        int sds_rank   = 0;
+        int32 dim_sizes[H4_MAX_VAR_DIMS];
+        int32 sds_dtype = 0;
+        int  n_sds_attrs = 0;
+        char sds_name[H4_MAX_NC_NAME];
+        char xdim_name[] ="XDim";
+        char ydim_name[] ="YDim";
+   
+        string temp_grid_name1;
+        string temp_grid_name2;
+        bool   xdim_is_cv_flag = false;
+        bool   ydim_is_cv_flag = false;
+
+
+        // The following for-loop checks if this is a MOD08_M3-like HDF-EOS2 product.
+        for (sds_index = 0; sds_index < n_sds; sds_index++) {
+        
+            sds_id = SDselect (sdid, sds_index);
+            if (sds_id == FAIL) {
+                SDend(sdid);
+                throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+            }
+
+            // Obtain object name, rank, size, field type and number of SDS attributes
+            int status = SDgetinfo (sds_id, sds_name, &sds_rank, dim_sizes,
+                                              &sds_dtype, &n_sds_attrs);
+            if (status == FAIL) {
+                SDendaccess(sds_id);
+                SDend(sdid);
+                throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+            }
+
+            if(1 == sds_rank) {
+
+                // This variable "XDim" exists
+                if(strcmp(sds_name,xdim_name) == 0) { 
+                    int32 sds_dimid = SDgetdimid(sds_id,0);          
+                    if(sds_dimid == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    }
+                    char dim_name[H4_MAX_NC_NAME];
+                    int32 dim_size = 0;
+                    int32 dim_type = 0;
+                    int32 num_dim_attrs = 0;
+                    if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                    }
+
+                    // No dimension scale and XDim exists
+                    if(0 == dim_type) {
+                        string tempdimname(dim_name);
+                        if(tempdimname.size() >=5) {
+                            if(tempdimname.compare(0,5,"XDim:") == 0) {
+
+                                // Obtain the grid name.
+                                temp_grid_name1 = tempdimname.substr(5);
+                                xdim_is_cv_flag = true;
+
+                            }
+                        }
+                        else if("XDim" == tempdimname)
+                            xdim_is_cv_flag = true;
+                    }
+                }
+
+                // The variable "YDim" exists
+                if(strcmp(sds_name,ydim_name) == 0) {
+
+                    int32 sds_dimid = SDgetdimid(sds_id,0);          
+                    if(sds_dimid == FAIL) {
+                        SDendaccess (sds_id);
+                        SDend(sdid);
+                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    }
+                    char dim_name[H4_MAX_NC_NAME];
+                    int32 dim_size = 0;
+                    int32 dim_type = 0;
+                    int32 num_dim_attrs = 0;
+                    if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                    }
+
+                    // For this case, the dimension should not have dimension scales.
+                    if(0 == dim_type) {
+                        string tempdimname(dim_name);
+                        if(tempdimname.size() >=5) {
+                            if(tempdimname.compare(0,5,"YDim:") == 0) {
+                                // Obtain the grid name.
+                                temp_grid_name2 = tempdimname.substr(5);
+                                ydim_is_cv_flag = true;
+                            }
+                        }
+                        else if ("YDim" == tempdimname)
+                            ydim_is_cv_flag = true;
+                    }
+                }
+            }
+
+            if((true == xdim_is_cv_flag) && (true == ydim_is_cv_flag ))
+              break;
+
+            SDendaccess(sds_id);
+        }
+
+        // If one-grid and variable XDim/YDim exist and also they don't have dim. scales,we treat this as MOD08-M3-like products
+        if ((temp_grid_name1 == temp_grid_name2) && (true == xdim_is_cv_flag) && (true == ydim_is_cv_flag)) {
+            grid_name = temp_grid_name1;
+            ret_val = 2;
+        }
+
+        // Check if this is a new AIRS level 3 product. Since new AIRS level 3 version 6 products still have dimensions that don't have
+        // dimension scales and the old way to handle level 3 dimensions makes the performance suffer. We will see if we can improve
+        // performance by handling the data with just the HDF4 interfaces.
+        // At least the file name should have string AIRS.L3.
+        else if((basename(filename).size() >8) && (basename(filename).compare(0,4,"AIRS") == 0) && (basename(filename).find(".L3.")!=string::npos)){ 
+
+            bool has_dimscale = false;
+
+            // Go through the SDS object and check if this file has dimension scales.
+            for (sds_index = 0; sds_index < n_sds; sds_index++) {
+        
+                sds_id = SDselect (sdid, sds_index);
+                if (sds_id == FAIL) {
+                    SDend(sdid);
+                    throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+                }
+
+                // Obtain object name, rank, size, field type and number of SDS attributes
+                int status = SDgetinfo (sds_id, sds_name, &sds_rank, dim_sizes,
+                                              &sds_dtype, &n_sds_attrs);
+                if (status == FAIL) {
+                    SDendaccess(sds_id);
+                    SDend(sdid);
+                    throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                }
+
+                for (int dim_index = 0; dim_index<sds_rank; dim_index++) {
+            
+                    int32 sds_dimid = SDgetdimid(sds_id,dim_index);          
+                    if(sds_dimid == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    }
+
+                    char dim_name[H4_MAX_NC_NAME];
+                    int32 dim_size = 0;
+                    int32 dim_type = 0;
+                    int32 num_dim_attrs = 0;
+                    if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                    }
+
+                    if(dim_type !=0) {
+                        has_dimscale = true;
+                        break;
+                    }
+
+                }
+                SDendaccess(sds_id);
+                if( true == has_dimscale) 
+                    break;
+            }
+
+            // If having dimension scales, this is an AIRS level 3 version 6. Treat it differently. Otherwise, this is an old AIRS level 3 product.
+            if (true == has_dimscale)
+                ret_val = 3;
+        }
+        else {// Check if this is an HDF-EOS2 file but not using HDF-EOS2 at all.
+             // We turn off this for the time being because 
+             // 1) We need to make sure this is a grid file not swath or point file. 
+             // It will be time consuming to identify grids or swaths and hurts the performance for general case.    
+             // 2) No real NASA files exist. We will handle them later.
+             // KY 2014-01-29
+             ;
+#if 0
+            bool has_dimscale = true;
+            bool is_grid      = false;
+
+            // Go through the SDS object
+            for (sds_index = 0; sds_index < n_sds; sds_index++) {
+        
+                sds_id = SDselect (sdid, sds_index);
+                if (sds_id == FAIL) {
+                    SDend(sdid);
+                    throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+                }
+
+                // Obtain object name, rank, size, field type and number of SDS attributes
+                int status = SDgetinfo (sds_id, sds_name, &sds_rank, dim_sizes,
+                                                      &sds_dtype, &n_sds_attrs);
+                if (status == FAIL) {
+                    SDendaccess(sds_id);
+                    SDend(sdid);
+                    throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                }
+
+
+                for (int dim_index = 0; dim_index<sds_rank; dim_index++) {
+            
+                    int32 sds_dimid = SDgetdimid(sds_id,dim_index);          
+                    if(sds_dimid == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    }
+                    char dim_name[H4_MAX_NC_NAME];
+                    int32 dim_size = 0;
+                    int32 dim_type = 0;
+                    int32 num_dim_attrs = 0;
+                    if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
+                        SDendaccess(sds_id);
+                        SDend(sdid);
+                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                    }
+
+                    if(0 == dim_type) {
+                        has_dimscale = false;
+                    }
+
+                }
+                SDendaccess(sds_id);
+            }
+            if (true == has_dimscale)
+                ret_val = 4;
+#endif
+        }
+    }
+
+    SDend(sdid);
+    return ret_val;
+}
 
 // Default option 
 void read_dds(DDS & dds, const string & filename)

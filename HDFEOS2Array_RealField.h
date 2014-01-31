@@ -67,6 +67,9 @@ class HDFEOS2Array_RealField:public Array
         // Some MODIS files don't use the CF linear equation y = scale * x + offset,
         // the scaletype distinguishs products following different scale and offset rules. 
         SOType sotype;
+
+        int write_dap_data_scale_comp(int32 gfid, int32 gridid, int nelms, vector<int32> &offset32,vector<int32> &count32,vector<int32> &step32);
+        int write_dap_data_disable_scale_comp(int32 gfid, int32 gridid, int nelms, int32 *offset32,int32*count32,int32*step32);
 };
 
 

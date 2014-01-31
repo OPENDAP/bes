@@ -6,9 +6,10 @@ HDF4/HDF-EOS products in a manner that follows the CF conventions.
 Contents
 
 1. What are the CF conventions and how is it related to the new HDF4 handler?
-2. How to install CF-enabled HDF4 Handler correctly.
+2. How to install CF-enabled HDF4 Handler correctly
 3. BES Keys in h4.conf
-4. How to utilize MODIS geo-location data products with other MODIS products.
+4. How to easily modify attributes that do not follow the CF conventions 
+   using NcML handler.
 -------------------------------------------------------------------------------
 
 1. What are the CF conventions and how is it related to the new HDF4 handler?
@@ -124,8 +125,6 @@ key values in a configuration file called "h4.conf".
  If you used RPMs, you can find the h4.conf file in /etc/bes/modules/.
  If you built one, you can find the h4.conf file in {prefix}/etc/bes/modules.
 
- The following 6 BES keys are newly added in the h4.conf file. The default 
-configuration values are specified in the parentheses. 
 
 3.1 H4.EnableCF (true)
 
@@ -139,115 +138,41 @@ conventions. Such tools include IDV and Panoply.
 "true" to ensure other keys to be valid. Thus, this is the most important key 
 to be turned on.
 
+3.2 BES keys added at this version
+Please refer to the file h4.conf.in for descriptions of these keys.
+The default configuration values are specified after the "=" sign.
 
-3.2 H4.EnableMODISMISRVdata (true)
+H4.EnableMODAPSFile=false
+H4.EnableSpecialEOS=true
+H4.DisableScaleOffsetComp=true
+H4.EnableCheckScaleOffsetType=false
 
-  If this key's value is false, The non-HDFEOS vdata objects in an HDF-EOS2 
-files (e.g."Level 1B Swath Metadta" of MODIS level 1B products) will not be 
-mapped to DAP. Those vdatas are added directly using HDF4 APIs rather than 
-HDF-EOS2 APIs. The default setting of this key is true. these vdata objects 
-will be mapped to DAP.
- 
+3.3 BES keys added at the previous versions
 
-3.3 H4.EnableVdata_to_Attr (true)
+H4.EnableHybridVdata=true
+H4.EnableCERESVdata=false
+H4.EnableVdata_to_Attr=true
+H4.EnableCERESMERRAShortName=true
+H4.DisableVdataNameclashingCheck=true
+H4.EnableVdataDescAttr=false
+H4.EnableCheckMODISGeoFile=false
 
-  If this key's value is false, small vdata datasets will be mapped to 
-arrays in DDS output instead of attributes in DAS.
+4. How to easily modify attributes that do not follow the CF conventions 
+   using NcML handler
 
-  If this key's value is true, vdata is mapped to attribute if there are less 
-than or equal to 10 records.
+  Although HDF4 handler adjusts many things to meet the CF conventions 
+ automatically, it cannot correct all attributes. For example, some old HDF4
+ products use "add_off" instead of "add_offset."  To correct attribute name
+ and value, OPeNDAP provides NcML handler. With this module, a data provider 
+ can augment datasets served on their local Hyrax server in the following ways:
 
- For example, the DAS output of TRMM data 1B21 will show vdata as an attribute:
+  o Add, modify, or remove both attributes and variables
+  o Combine multiple datasets into a single "virtual" data set using "union", 
+  "joinNew", or "joinExisting" aggregations.
 
-   DATA_GRANULE_PR_CAL_COEF {
-        String hdf4_vd_desc "This is an HDF4 Vdata.";
-        Float32 Vdata_field_transCoef -0.5199999809;
-        Float32 Vdata_field_receptCoef 0.9900000095;
-        Float32 Vdata_field_fcifIOchar 0.000000000, 0.3790999949, 0.000000000, 
-        -102.7460022, 0.000000000, 24.00000000, 0.000000000, 226.0000000, 0.000000000, 
-        0.3790999949, 0.000000000, -102.7460022, 0.000000000, 24.00000000, 0.000000000, 
-        226.0000000;
-    }
+ Writing an NcML file is as easy as writing an HTML file. Please refer to 
+ the NcML example page [2] at HDF-EOS Tools and Information Center website.
 
-3.4 H4.EnableCERESMERRAShortName (true)
-
-  If this key's value is false, the object name will be prefixed by the vgroup 
-path and the fullpath attribute will not be printed in DAS output. This key 
-only affects NASA CERES and MERRA products we support.
-
-  For example, the DAS output for Region_Number dataset
-
-     Region_Number {
-         String coordinates "Colatitude Longitude";
-         String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
-mber";
-    }
-
-becomes
-    
-    Monthly_Hourly_Averages_Time_And_Position_Region_Number {
-         String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
-ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
-    }
-
-in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
-
-3.5 H4.DisableVdataNameclashingCheck (true)
-
-  If this key's value is false, the handler will check if there's any vdata 
-that has the same name as SDS. We haven't found such a case in NASA products 
-so it's safe to disable this to improve performance.
-
-3.6 H4.EnableVdataDescAttr (false)
-
-  If this key's value is true, the handler will generate vdata's attributes. By 
-default, it's turned off because most NASA hybrid products do not seem to store
- important information in vdata attributes. If you serve pure HDF4 files, it's 
-recommended to turn this value to true so that users can see all data. This
- key will not affect the behavior of the handler triggered by the 
-H4.EnableVdata_to_Attr key in section 3.3 except the vdata attributes of
- small vdatas that are mapped to attributes in DAS instead of arrays in DDS. 
-That is, only attributes of small vdatas will be also turned off from the DAS 
-output if this key is turned off, not the values of vdatas.
- If a vdata doesn't have any attribute or field attribute, the description
-
-        String hdf4_vd_desc "This is an HDF4 Vdata.";
-
- will not appear in the attribute for that vdata although the key is true.
-The attribute container of the vdata will always appear regardless of this key
-'s value.
-
-3.7 H4.EnableCheckMODISGeoFile (false)
-
- For MODIS swath data products that use the dimension map, if this key's value
- is true and a MODIS geo-location product such as MOD03 is present and under 
-the same directory as the swath product, the geolocation values will be 
-retrieved using the geolocation fields in MOD03/MYD03 file instead of using 
-the interpolation according to the dimension map formula. 
-
- We feel this is a more accurate approach since additional corrections may be 
-done for geo-location values stored in those files [1] although we've done a 
-case study that shows the differences between the interpolated values and the values stored in the geo-location file are very small.
-
- For example, when the handler serves 
-
-        "MOD05_L2.A2010001.0000.005.2010005211557.hdf" 
- file,
- 
- it will first look for a geo-location file 
-
-        "MOD03.A2010001.0000.005.2010003235220.hdf" 
-
- first from the SAME DIRECTORY where MOD05_L2 file exists. 
-
-   Please note that the "A2010001.0000" in the middle of the name is the 
- "Acquisition Date" of the data so the geo-location file name should have 
- exactly the same string. Handler uses this  string to identify if a MODIS 
- geo-location file exists or not.
-
-  This feature works only with HDF-EOS2 MODIS products. It will not work on the
- pure HDF4 MODIS product like MOD14 that requires the MOD03 geo-location 
-product. That is, putting the MOD03 file with MOD14 in the same directory will
- not affect the handler's DAS/DDS/DDX output of the MOD14 product.
 
 [1] http://modis.gsfc.nasa.gov/data/dataprod/nontech/MOD0203.php
+[2] http://hdfeos.org/examples/ncml.php

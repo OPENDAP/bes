@@ -747,6 +747,297 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
 }
 
+// Check if this is a special SDS(MOD08_M3) that needs the connection between CVs and dimension names.
+// General algorithm:
+// Insert a set for fields' dimensions, in the mean time, insert a set for 1-D field
+// For each dimension in the set, search if one can find the corresponding field that has the same dimension name in the set.
+// Return false if non-found occurs. 
+// Else return true.
+
+bool
+File::Check_if_special(const string& grid_name) throw(Exception) {
+
+    set<string> dimnameset;
+    set<SDField*> fldset; 
+
+
+    // Build up a dimension set and a 1-D field set.
+    // We already know that XDim and YDim should be in the dimension set. so inserting them.
+    // Hopefully by doing this, we can save some time since many variables have dimensions 
+    // "XDim" and "YDim" and excluding "XDim" and "YDim" may save some time if there are many 
+    // dimensions in the dimnameset.
+
+    string FullXDim,FullYDim;
+    FullXDim="XDim:" ;
+    FullYDim="YDim:";
+
+    FullXDim= FullXDim+grid_name;
+    FullYDim =FullYDim+grid_name;
+
+    for (vector < SDField * >::const_iterator i =
+        this->sd->getFields ().begin ();
+        i != this->sd->getFields ().end (); ++i) {
+
+        for (vector < Dimension * >::const_iterator k =
+            (*i)->getDimensions ().begin ();
+            k != (*i)->getDimensions ().end (); ++k) {
+//cerr<<"dimension name is "<<(*k)->getName() <<endl;
+            if((*k)->getName() !=FullXDim && (*k)->getName()!=FullYDim)
+               dimnameset.insert((*k)->getName());
+        }
+
+        if (1==(*i)->getRank())
+            fldset.insert((*i));
+
+    }
+
+//cerr<<"field size is= "<<fldset.size() <<endl;
+//cerr<<"dim. size is= "<<dimnameset.size() <<endl;
+   
+    // Check if all dimension names in the dimension set can be found in the 1-D variable sets. Moreover, the size of a dimension 
+    // should be smaller or the same as the size of 1-D variable.
+    // Plus XDim and YDim for number of dimensions 
+    if (fldset.size() < (dimnameset.size()+2))
+        return false;
+
+//cerr<<"coming after size comparison"<<endl;
+    int total_num_dims = 0;
+    int grid_name_size = grid_name.size();
+    string reduced_dimname;
+
+    for(set<SDField*>::const_iterator j =
+            fldset.begin(); j!=fldset.end(); ++ j) {
+        
+        size_t dim_size = ((*j)->getDimensions())[0]->getName().size();
+        if( dim_size > grid_name_size){
+           reduced_dimname = ((*j)->getDimensions())[0]->getName().substr(0,dim_size-grid_name_size-1);
+           if ((*j)->getName() == reduced_dimname)
+                total_num_dims++;
+        }
+    }
+ 
+    if(total_num_dims != (dimnameset.size()+2))
+        return false;
+//cerr<<"coming after number of dimensions comparison"<<endl;
+
+    // Updated dimension names for all variables: removing the grid_name prefix.
+    for (vector < SDField * >::const_iterator i =
+        this->sd->getFields ().begin ();
+        i != this->sd->getFields ().end (); ++i) {
+
+        for (vector < Dimension * >::const_iterator k =
+            (*i)->getDimensions ().begin ();
+            k != (*i)->getDimensions ().end (); ++k) {
+
+             size_t dim_size = (*k)->getName().size();
+             if( dim_size > grid_name_size){
+                reduced_dimname = (*k)->getName().substr(0,dim_size-grid_name_size-1);
+                (*k)->name = reduced_dimname;
+             }
+             else // Here we enforce that the dimension name has the grid suffix. This can be lifted in the future. KY 2014-01-16
+                return false;
+        }
+
+    }
+
+    // Build up Dimensions for DDS and DAS. 
+    for(std::set<SDField*>::const_iterator j =
+		    fldset.begin(); j!=fldset.end(); ++ j) {
+
+           if ((*j)->getName() == ((*j)->getDimensions())[0]->getName()) {
+ 
+            if("XDim" == (*j)->getName()){
+                std::string tempunits = "degrees_east";
+                (*j)->setUnits (tempunits); 
+                (*j)->fieldtype = 2;
+            }
+
+            else if("YDim" == (*j)->getName()){
+                std::string tempunits = "degrees_north";
+                (*j)->setUnits (tempunits); 
+                (*j)->fieldtype = 1;
+            }
+
+            else if("Pressure_Level" == (*j)->getName()) {
+                std::string tempunits = "hPa";
+                (*j)->setUnits (tempunits);
+                (*j)->fieldtype = 3;
+            }
+            else {
+                std::string tempunits = "level";
+                (*j)->setUnits (tempunits);
+                (*j)->fieldtype = 3;
+            }
+        }
+    }
+
+    return true;
+
+}
+
+void
+File::Handle_AIRS_l3() throw(Exception) {
+
+    File *file = this;
+
+    // set of names of dimensions that have dimension scales.
+    set<string> scaled_dname_set;
+
+    // set of names of dimensions that don't have dimension scales.
+    set<string> non_scaled_dname_set;
+    pair<set<string>::iterator,bool> ret;
+
+    // For dimensions that don't dimension scales, a map between dimension name and size.
+    map<string,int> non_scaled_dname_to_size;
+
+    // 1.  Loop through SDS fields and remove suffixes(:???) of the dimension names and the variable names. 
+    //     Also create scaled dim. name set and non-scaled dim. name set.
+    for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+        string tempname = (*i)->name;
+//cerr<<"field original name is: "<<tempname <<endl;
+        size_t found_colon = tempname.find_first_of(':');
+        if(found_colon!=string::npos) 
+            (*i)->newname = tempname.substr(0,found_colon);
+
+        for (vector < Dimension * >::const_iterator k =
+            (*i)->getDimensions ().begin ();
+            k != (*i)->getDimensions ().end (); ++k) {
+
+            string tempname = (*k)->name;
+            size_t found_colon = tempname.find_first_of(':');
+            if(found_colon!=string::npos) 
+                (*k)->name = tempname.substr(0,found_colon);
+// cerr<<"dimension name "<<(*k)->name <<endl;
+
+            if(0==(*k)->getType()) {
+                ret = non_scaled_dname_set.insert((*k)->name);
+//cerr<<"Not scaled dimension name "<<(*k)->name <<endl;
+                if (true == ret.second)
+                    non_scaled_dname_to_size[(*k)->name] = (*k)->dimsize;
+            }
+            else{
+                scaled_dname_set.insert((*k)->name);
+//cerr<<"scaled dimension name "<<(*k)->name <<endl;
+           }
+                      
+        }
+
+    }
+#if 0
+for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
+                                    sdim_it !=scaled_dname_set.end();
+                                    ++sdim_it) {
+cerr<<"scaled dim. name "<<*sdim_it <<endl;
+
+}
+#endif
+
+    // 2. Remove potential redundant CVs
+
+    // Make a copy of the scaled-dim name set:scaled-dim-marker
+    set<string>scaled_dname_set_marker = scaled_dname_set;
+  
+    // Loop through all the SDS objects, 
+    // If finding a 1-D variable name 
+    // b1) in both the scaled-dim name set and the scaled-dim-marker set, 
+    //     keep this variable but remove the variable name from the scaled-dim-marker. 
+    //     Mark this variable as a CV.(XDim: 2, YDim:1 Others: 3). 
+    // b2) In the scaled-dim name set but not in the scaled-dim-marker set, 
+    //     remove the variable from the variable vector.
+    for (std::vector < SDField * >::iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        if(1 == (*i)->getRank()) {
+            if(scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
+                if(scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
+                    scaled_dname_set_marker.erase((*i)->getNewName());
+                }
+
+                else {// Redundant variables
+//cerr<<"redundant variable names "<< (*i)->newname <<endl;
+                    delete(*i);
+                    file->sd->sdfields.erase(i);
+                    i--;
+                }
+            }
+        }
+        // Remove Latitude and Longitude 
+        else if( 2 == (*i)->getRank()) {
+            if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
+                delete(*i);
+                file->sd->sdfields.erase(i);
+                i--;
+            }
+        }
+    }
+
+#if 0
+for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
+                                    sdim_it !=scaled_dname_set.end();
+                                    ++sdim_it) {
+cerr<<"new scaled dim. name "<<*sdim_it <<endl;
+
+}
+#endif
+
+    //3. Add potential missing CVs
+    
+    // 3.1 Find the true dimensions that don't have dimension scales.
+    set<string>final_non_scaled_dname_set;
+    for(set<string>::const_iterator non_sdim_it = non_scaled_dname_set.begin(); 
+                                    non_sdim_it !=non_scaled_dname_set.end(); 
+                                    ++non_sdim_it) {
+//cerr<<"non-scaled dim. name "<<*non_sdim_it <<endl;
+        if(scaled_dname_set.find(*non_sdim_it)==scaled_dname_set.end())
+            final_non_scaled_dname_set.insert(*non_sdim_it);
+    }
+
+    // 3.2 Create the missing CVs based on the non-scaled dimensions.
+    for(set<string>::const_iterator non_sdim_it = final_non_scaled_dname_set.begin();
+                                    non_sdim_it !=final_non_scaled_dname_set.end();
+                                    ++non_sdim_it) {
+
+        SDField *missingfield = new SDField ();
+
+        // The name of the missingfield is not necessary.
+        // We only keep here for consistency.
+        missingfield->type = DFNT_INT32;
+        missingfield->name = *non_sdim_it;
+        missingfield->newname = *non_sdim_it;
+        missingfield->rank = 1;
+        missingfield->fieldtype = 4;
+        missingfield->setUnits("level");
+        Dimension *dim = new Dimension (*non_sdim_it,non_scaled_dname_to_size[*non_sdim_it] , 0);
+
+        missingfield->dims.push_back (dim);
+        file->sd->sdfields.push_back (missingfield);
+    }
+
+    // Change XDim to Longitude and YDim to Latitude for field name and dimension names
+
+    for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+        if(1 ==(*i)->getRank()){
+            if ("XDim" == (*i)->newname)
+                (*i)->newname = "Longitude";
+            else if ("YDim" == (*i)->newname)
+                (*i)->newname = "Latitude";
+        }
+
+        for (vector < Dimension * >::const_iterator k =
+            (*i)->getDimensions ().begin ();
+            k != (*i)->getDimensions ().end (); ++k) {
+            if("XDim" == (*k)->name)
+                (*k)->name = "Longitude";
+            else if ("YDim" == (*k)->name)
+                (*k)->name = "Latitude";
+        }
+
+    }
+}
+
 //  This method will check if the HDF4 file is one of TRMM or OBPG products or MODISARNSS we supported.
 void
 File::CheckSDType ()

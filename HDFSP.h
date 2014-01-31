@@ -733,6 +733,10 @@ namespace HDFSP
             /// All special arrangements need to be done in this step.
             void Prepare() throw(Exception);
 
+            bool Check_if_special(const std::string &gridname) throw(Exception);
+
+            void Handle_AIRS_l3() throw(Exception);
+
             ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
             void CheckSDType () throw (Exception);
 

@@ -115,6 +115,13 @@ struct HDFCFUtil
     /// So we need to check if the _FillValue's datatype is the same as the attribute's. If not, we need to correct them.
     static void correct_fvalue_type(libdap::AttrTable *at,int32 dtype);
 
+
+    /// CF requires the scale_factor and add_offset attribute datatypes hold the same  datatype.
+    /// So far we haven't found that scale_factor and add_offset attributes hold different datatypes in NASA files.
+    /// But just in case, we implement a BES key to give users a chance to check this. By default, the key is always off. 
+    static void correct_scale_offset_type(libdap::AttrTable *at);
+
+
 #ifdef USE_HDFEOS2_LIB
 
     /// The following routines change_data_type,is_special_value, check_geofile_dimmap, is_modis_dimmap_nonll_field, obtain_dimmap_info,
@@ -143,6 +150,10 @@ struct HDFCFUtil
 
     /// Obtain the MODIS swath dimension map info.
     static void obtain_dimmap_info(const std::string& filename, HDFEOS2::Dataset*dataset,std::vector<struct dimmap_entry>& dimmaps, std::string & modis_geofilename,bool &geofile_nas_dimmap);
+
+    /// Temp adding the handling of MODIS special attribute routines when disabling the scale computation
+    static void handle_modis_special_attrs_disable_scale_comp(libdap::AttrTable *at,const string filename, bool is_grid, const std::string newfname, SOType scaletype);
+
 
     /// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
     /// For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed

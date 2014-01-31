@@ -16,6 +16,7 @@
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2Array_RealField.h"
+#include "dodsutil.h"
 
 
 #define SIGNED_BYTE_TO_INT32 1
@@ -23,6 +24,8 @@
 bool
 HDFEOS2Array_RealField::read ()
 {
+
+    BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
 
     // Declare offset, count and step
     vector<int>offset;
@@ -111,6 +114,163 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
+    bool turn_on_disable_scale_comp_key= false;
+    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
+
+    bool is_modis_l1b = false;
+    if("MODIS_SWATH_Type_L1B" == swathname)
+        is_modis_l1b = true;
+
+    bool is_modis_vip = false;
+    if ("VIP_CMG_GRID" == gridname)
+            is_modis_vip = true;
+
+    bool field_is_vdata = false;
+
+    // HDF-EOS2 swath maps 1-D field as vdata. So we need to check if this field is vdata or SDS.
+    // Essentially we only call SDS attribute routines to retrieve MODIS scale,offset and fillvalue attributes since we don't
+    // find 1-D MODIS field has scale,offset and fillvalue attributes. We may need to visit this again in the future to see
+    // if we also need to support the handling of scale,offset,fillvalue via vdata routines. KY 2013-07-15
+    if (""==gridname) {
+
+        int32 tmp_rank = 0;
+        char tmp_dimlist[1024];
+        int32 tmp_dims[rank];
+        int32 field_dtype = 0;
+        intn r = 0;
+
+        r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+        if (r != 0) {
+            detachfunc(gridid);
+            closefunc(gfid);
+            ostringstream eherr;
+
+            eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+
+        if (1 == tmp_rank) 
+            field_is_vdata = true;
+    }
+
+
+    bool has_Key_attr = false;
+
+    if (false == field_is_vdata) {
+
+        // Obtain attribute values.
+        int32 sdfileid = -1;
+        sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+
+        if (FAIL == sdfileid) {
+            detachfunc(gridid);
+            closefunc(gfid);
+            ostringstream eherr;
+            eherr << "Cannot Start the SD interface for the file " << filename <<endl;
+        }
+
+        int32 sdsindex = -1;
+        int32 sdsid = -1;
+        sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
+        if (FAIL == sdsindex) {
+            detachfunc(gridid);
+            closefunc(gfid);
+            SDend(sdfileid);
+            ostringstream eherr;
+            eherr << "Cannot obtain the index of " << fieldname;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+
+        sdsid = SDselect(sdfileid, sdsindex);
+        if (FAIL == sdsid) {
+            detachfunc(gridid);
+            closefunc(gfid);
+            SDend(sdfileid);
+            ostringstream eherr;
+            eherr << "Cannot obtain the SDS ID  of " << fieldname;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+	
+    // Here we cannot check if SDfindattr fails or not since even SDfindattr fails it doesn't mean
+    // errors happen. If no such attribute can be found, SDfindattr still returns FAIL.
+    // The correct way is to use SDgetinfo and SDattrinfo to check if attributes "radiance_scales" etc exist.
+    // For the time being, I won't do this, due to the performance reason and code simplity and also the
+    // very small chance of real FAIL for SDfindattr.
+        if(SDfindattr(sdsid, "Key")!=FAIL) 
+            has_Key_attr = true;
+        SDendaccess(sdsid);
+        SDend(sdfileid);
+    }
+
+    if((false == is_modis_l1b) && (false == is_modis_vip)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key))
+        write_dap_data_disable_scale_comp(gfid,gridid,nelms,&offset32[0],&count32[0],&step32[0]);
+    else 
+        write_dap_data_scale_comp(gfid,gridid,nelms,offset32,count32,step32);
+
+    int32 r = -1;
+    r = detachfunc (gridid);
+    if (r != 0) {
+        closefunc(gfid);
+        ostringstream eherr;
+
+        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be detached.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+
+    r = closefunc (gfid);
+    if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+    return false;
+}
+
+int 
+HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gfid, int32 gridid, int nelms, vector<int32>& offset32,vector<int32>& count32,vector<int32>& step32) {
+    
+
+     // Define function pointers to handle both grid and swath
+    int32 (*openfunc) (char *, intn);
+    intn (*closefunc) (int32);
+    int32 (*attachfunc) (int32, char *);
+    intn (*detachfunc) (int32);
+    intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
+    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
+
+    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
+    intn (*readattrfunc) (int32, char *, void*);
+
+    if (swathname == "") {
+        openfunc = GDopen;
+        closefunc = GDclose;
+        attachfunc = GDattach;
+        detachfunc = GDdetach;
+        fieldinfofunc = GDfieldinfo;
+        readfieldfunc = GDreadfield;
+
+        attrinfofunc = GDattrinfo;
+        readattrfunc = GDreadattr;
+    }
+    else if (gridname == "") {
+        openfunc = SWopen;
+        closefunc = SWclose;
+        attachfunc = SWattach;
+        detachfunc = SWdetach;
+        fieldinfofunc = SWfieldinfo;
+        readfieldfunc = SWreadfield;
+
+        attrinfofunc = SWattrinfo;
+        readattrfunc = SWreadattr;
+    }
+    else 
+        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
+
     // tmp_rank and tmp_dimlist are two dummy variables that are only used when calling fieldinfo.
     int32 tmp_rank = 0;
     char  tmp_dimlist[1024];
@@ -123,7 +283,25 @@ HDFEOS2Array_RealField::read ()
 
     // returned value of HDF4 and HDF-EOS2 APIs
     intn  r = 0;
-    
+
+    // Obtain the field info. We mainly need the datatype information 
+    // to allocate the buffer to store the data
+    r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+    if (r != 0) {
+        detachfunc(gridid);
+        closefunc(gfid);   
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+
+//cerr<<"coming to write_dap_data_comp"<<endl;
+
+    // The following chunk of code until switch(field_dtype) handles MODIS level 1B, MOD29E1D Key and VIP products.
+    // The reason to keep the code this way is due to use of RECALCULATE macro. It is too much work to change it now. KY 2013-12-17
     // MODIS level 1B reflectance and radiance fields have scale/offset arrays rather than one scale/offset value.
     // So we need to handle these fields specially.
     float *reflectance_offsets =NULL;
@@ -208,7 +386,6 @@ HDFEOS2Array_RealField::read ()
             int32 sdfileid = -1;
             sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
             if (FAIL == sdfileid) {
-
                 detachfunc(gridid);
                 closefunc(gfid);
                 ostringstream eherr;
@@ -769,11 +946,30 @@ HDFEOS2Array_RealField::read ()
     // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
     // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
     // the similar cases so that we can verify with the corresponding product documents to see if this is true.
-    // 
+    // More information, 
+    // We just verified with the data producer, the scale_factor for Range_1 and Range_c is 25 but the
+    // equation is still multiplication instead of division. So we have to make this as a special case that
+    // we don't want to change the scale and offset settings. 
+    // KY 2014-01-13
 
     if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
-            sotype = MODIS_DIV_SCALE;
+            
+            if(gridname!="") {
+              
+                string temp_filename;
+                if (filename.find("#") != string::npos)
+                    temp_filename =filename.substr(filename.find_last_of("#") + 1);
+                 else
+                    temp_filename = filename.substr(filename.find_last_of("/") +1);
+
+                if ((temp_filename.size() >5) && ((temp_filename.compare(0,5,"MOD09") == 0)||(temp_filename.compare(0,5,"MYD09") == 0))) {
+                    if ((fieldname.size() >5) && fieldname.compare(0,5,"Range") == 0)
+                        ;
+                }
+            }
+            else 
+                sotype = MODIS_DIV_SCALE;
             (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "<< scale << endl
                                << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                << " Now change it to MODIS_DIV_SCALE. "<<endl;
@@ -789,22 +985,7 @@ HDFEOS2Array_RealField::read ()
         }
     }
     
-
-
-    // Obtain the field info. We mainly need the datatype information 
-    // to allocate the buffer to store the data
-    r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-    if (r != 0) {
-        detachfunc(gridid);
-        closefunc(gfid);   
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-
-
+#if 0
     // We need to loop through all datatpes to allocate the memory buffer for the data.
 // It is hard to add comments to the macro. We may need to change them to general routines in the future.
 // Some MODIS products use both valid_range(valid_min, valid_max) and fillvalues for data fields. When do recalculating,
@@ -824,7 +1005,6 @@ HDFEOS2Array_RealField::read ()
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
 //*******************************************************************************
-
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
@@ -916,7 +1096,122 @@ HDFEOS2Array_RealField::read ()
         set_value ((DODS_CAST)VAL, nelms); \
     } \
 }
+#endif
 
+// We need to loop through all datatpes to allocate the memory buffer for the data.
+// It is hard to add comments to the macro. We may need to change them to general routines in the future.
+// Some MODIS products use both valid_range(valid_min, valid_max) and fillvalues for data fields. When do recalculating,
+// I check fillvalue first, then check valid_min and valid_max if they are available. 
+// The middle check is_special_value addresses the MODIS L1B special value. 
+//**************************************************************************************
+//****    if((float)tmptr[l] != fillvalue ) \
+//                    { \
+//                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
+ //                       { \
+//                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
+//                            if(sotype==MODIS_MUL_SCALE) \
+//                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
+//                            else if(sotype==MODIS_EQ_SCALE) \
+//                                tmpval[l] = tmptr[l]*scale + field_offset; \
+//                            else if(sotype==MODIS_DIV_SCALE) \
+//                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
+//                        } \
+//*******************************************************************************
+#define RECALCULATE(CAST, DODS_CAST, VAL) \
+{ \
+    bool change_data_value = false; \
+    if(sotype!=DEFAULT_CF_EQU) \
+    { \
+        vector<float>tmpval; \
+        tmpval.resize(nelms); \
+        CAST tmptr = (CAST)VAL; \
+        for(int l=0; l<nelms; l++) \
+            tmpval[l] = (float)tmptr[l]; \
+        bool special_case = false; \
+        if(scale_factor_attr_index==FAIL) \
+            if(num_eles_of_an_attr==1) \
+                if(radiance_scales!=NULL && radiance_offsets!=NULL) \
+                { \
+                    scale = radiance_scales[0]; \
+                    field_offset = radiance_offsets[0];\
+                    special_case = true; \
+                } \
+        if((scale_factor_attr_index!=FAIL && !(scale==1 && field_offset==0)) || special_case)  \
+        { \
+            float temp_scale = scale; \
+            float temp_offset = field_offset; \
+            if(sotype==MODIS_MUL_SCALE) \
+                temp_offset = -1. *field_offset*temp_scale;\
+            else if (sotype==MODIS_DIV_SCALE) \
+            {\
+                temp_scale = 1/scale; \
+                temp_offset = -1. *field_offset*temp_scale;\
+            }\
+            for(int l=0; l<nelms; l++) \
+            { \
+                if(cf_general_attrindex!=FAIL) \
+                { \
+                    if((float)tmptr[l] != fillvalue ) \
+                    { \
+                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
+                        { \
+                            if ((orig_valid_min<=tmpval[l] && orig_valid_max>=tmpval[l]) || (true==has_Key_attr))\
+                            { \
+                                        tmpval[l] = tmptr[l]*temp_scale + temp_offset; \
+                           } \
+                        } \
+                    } \
+                } \
+            } \
+            change_data_value = true; \
+            set_value((dods_float32 *)&tmpval[0], nelms); \
+        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
+        { \
+            size_t dimindex=0; \
+            if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
+            { \
+                ostringstream eherr; \
+                eherr << "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in " << fieldname.c_str() << ". These two values must be equal."; \
+                throw InternalErr (__FILE__, __LINE__, eherr.str ()); \
+            } \
+            size_t start_index, end_index; \
+            size_t nr_elems = nelms/count32[dimindex]; \
+            start_index = offset32[dimindex]; \
+            end_index = start_index+step32[dimindex]*(count32[dimindex]-1); \
+            size_t index = 0;\
+            for(size_t k=start_index; k<=end_index; k+=step32[dimindex]) \
+            { \
+                float tmpscale = (fieldname.find("Emissive")!=string::npos)? radiance_scales[k]: reflectance_scales[k]; \
+                float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
+                for(size_t l=0; l<nr_elems; l++) \
+                { \
+                    if(cf_general_attrindex!=FAIL) \
+                    { \
+                        if(((float)tmptr[index])!=fillvalue) \
+                        { \
+                            if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
+                            { \
+                                if(sotype==MODIS_MUL_SCALE) \
+                                    tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
+                                else if(sotype==MODIS_EQ_SCALE) \
+                                    tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
+                                else if(sotype==MODIS_DIV_SCALE) \
+                                    tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
+                            } \
+                        } \
+                    } \
+                    index++; \
+                } \
+            } \
+            change_data_value = true; \
+            set_value((dods_float32 *)&tmpval[0], nelms); \
+        } \
+    } \
+    if(!change_data_value) \
+    { \
+        set_value ((DODS_CAST)VAL, nelms); \
+    } \
+}
     switch (field_dtype) {
         case DFNT_INT8:
         {
@@ -936,6 +1231,7 @@ HDFEOS2Array_RealField::read ()
 
 #ifndef SIGNED_BYTE_TO_INT32
             RECALCULATE(int8*, dods_byte*, &val[0]);
+            //set_value((dods_byte*)&val[0],nelms);
 #else
 
             vector<int32>newval;
@@ -945,6 +1241,7 @@ HDFEOS2Array_RealField::read ()
                 newval[counter] = (int32) (val[counter]);
 
             RECALCULATE(int32*, dods_int32*, &newval[0]);
+            //set_value((dods_int32*)&newval[0],nelms);
 #endif
         }
             break;
@@ -968,6 +1265,7 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint8*, dods_byte*, &val[0]);
+            //set_value((dods_byte*)&val[0],nelms);
         }
             break;
 
@@ -988,6 +1286,7 @@ HDFEOS2Array_RealField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
             RECALCULATE(int16*, dods_int16*, &val[0]);
+           //set_value((dods_int16*)&val[0],nelms);
         }
             break;
         case DFNT_UINT16:
@@ -1007,6 +1306,7 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint16*, dods_uint16*, &val[0]);
+            //set_value((dods_uint16*)&val[0],nelms);
         }
             break;
         case DFNT_INT32:
@@ -1026,6 +1326,7 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(int32*, dods_int32*, &val[0]);
+            //set_value((dods_int32*)&val[0],nelms);
         }
             break;
         case DFNT_UINT32:
@@ -1045,6 +1346,7 @@ HDFEOS2Array_RealField::read ()
             }
 
             RECALCULATE(uint32*, dods_uint32*, &val[0]);
+            //set_value((dods_uint32*)&val[0],nelms);
         }
             break;
         case DFNT_FLOAT32:
@@ -1065,6 +1367,7 @@ HDFEOS2Array_RealField::read ()
 
             // Recalculate seems not necessary.
             RECALCULATE(float32*, dods_float32*, &val[0]);
+            //set_value((dods_float32*)&val[0],nelms);
         }
             break;
         case DFNT_FLOAT64:
@@ -1092,6 +1395,278 @@ HDFEOS2Array_RealField::read ()
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
+    if(reflectance_scales!=NULL)
+    {
+        delete[] reflectance_offsets;
+        delete[] reflectance_scales;
+    }
+
+    if(radiance_scales!=NULL)
+    {
+        delete[] radiance_offsets;
+        delete[] radiance_scales;
+    }
+
+    return false;
+    
+}
+
+
+int
+HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gfid, int32 gridid, int nelms, int32 *offset32,int32*count32,int32*step32) {
+
+     // Define function pointers to handle both grid and swath
+    int32 (*openfunc) (char *, intn);
+    intn (*closefunc) (int32);
+    int32 (*attachfunc) (int32, char *);
+    intn (*detachfunc) (int32);
+    intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
+    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
+
+    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
+    intn (*readattrfunc) (int32, char *, void*);
+
+    if (swathname == "") {
+        openfunc = GDopen;
+        closefunc = GDclose;
+        attachfunc = GDattach;
+        detachfunc = GDdetach;
+        fieldinfofunc = GDfieldinfo;
+        readfieldfunc = GDreadfield;
+
+        attrinfofunc = GDattrinfo;
+        readattrfunc = GDreadattr;
+    }
+    else if (gridname == "") {
+        openfunc = SWopen;
+        closefunc = SWclose;
+        attachfunc = SWattach;
+        detachfunc = SWdetach;
+        fieldinfofunc = SWfieldinfo;
+        readfieldfunc = SWreadfield;
+
+        attrinfofunc = SWattrinfo;
+        readattrfunc = SWreadattr;
+    }
+    else 
+        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
+
+//cerr<<"coming to write_dap_data_disable"<<endl;
+
+    // tmp_rank and tmp_dimlist are two dummy variables that are only used when calling fieldinfo.
+    int32 tmp_rank = 0;
+    char  tmp_dimlist[1024];
+
+    // field dimension sizes
+    int32 tmp_dims[rank];
+
+    // field data type
+    int32 field_dtype = 0;
+
+    // returned value of HDF4 and HDF-EOS2 APIs
+    intn  r = 0;
+
+    // Obtain the field info. We mainly need the datatype information 
+    // to allocate the buffer to store the data
+    r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+    if (r != 0) {
+        detachfunc(gridid);
+        closefunc(gfid);   
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+
+     switch (field_dtype) {
+        case DFNT_INT8:
+        {
+
+            vector<int8>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);   
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+#ifndef SIGNED_BYTE_TO_INT32
+//            RECALCULATE(int8*, dods_byte*, &val[0]);
+            set_value((dods_byte*)&val[0],nelms);
+#else
+
+            vector<int32>newval;
+            newval.resize(nelms);
+
+            for (int counter = 0; counter < nelms; counter++)
+                newval[counter] = (int32) (val[counter]);
+
+
+//cerr<<"coming just before writing to DAP" <<" nelms is "<< nelms <<endl;
+//            RECALCULATE(int32*, dods_int32*, &newval[0]);
+            set_value((dods_int32*)&newval[0],nelms);
+//cerr<<"coming after writing to DAP" <<" nelms is "<< nelms <<endl;
+#endif
+        }
+            break;
+        case DFNT_UINT8:
+        case DFNT_UCHAR8:
+        case DFNT_CHAR8:
+        {
+
+            vector<uint8>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid); 
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            //RECALCULATE(uint8*, dods_byte*, &val[0]);
+            set_value((dods_byte*)&val[0],nelms);
+        }
+            break;
+
+        case DFNT_INT16:
+        {
+            vector<int16>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                offset32, step32, count32, &val[0]);
+
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+            //RECALCULATE(int16*, dods_int16*, &val[0]);
+           set_value((dods_int16*)&val[0],nelms);
+        }
+            break;
+        case DFNT_UINT16:
+        {
+            vector<uint16>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            //RECALCULATE(uint16*, dods_uint16*, &val[0]);
+            set_value((dods_uint16*)&val[0],nelms);
+        }
+            break;
+        case DFNT_INT32:
+        {
+            vector<int32>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            //RECALCULATE(int32*, dods_int32*, &val[0]);
+            set_value((dods_int32*)&val[0],nelms);
+        }
+            break;
+        case DFNT_UINT32:
+        {
+            vector<uint32>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            //RECALCULATE(uint32*, dods_uint32*, &val[0]);
+            set_value((dods_uint32*)&val[0],nelms);
+        }
+            break;
+        case DFNT_FLOAT32:
+        {
+            vector<float32>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            // Recalculate seems not necessary.
+            //RECALCULATE(float32*, dods_float32*, &val[0]);
+            set_value((dods_float32*)&val[0],nelms);
+        }
+            break;
+        case DFNT_FLOAT64:
+        {
+            vector<float64>val;
+            val.resize(nelms);
+            r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                offset32, step32, count32, &val[0]);
+            if (r != 0) {
+                detachfunc(gridid);
+                closefunc(gfid);
+
+                ostringstream eherr;
+
+                eherr << "field " << fieldname.c_str () << "cannot be read.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+            set_value ((dods_float64 *) &val[0], nelms);
+        }
+            break;
+        default:
+            detachfunc(gridid);
+            closefunc(gfid);
+
+            InternalErr (__FILE__, __LINE__, "unsupported data type.");
+    }
+}
+#if 0
     r = detachfunc (gridid);
     if (r != 0) {
         closefunc(gfid);
@@ -1110,21 +1685,9 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
-    if(reflectance_scales!=NULL)
-    {
-        delete[] reflectance_offsets;
-        delete[] reflectance_scales;
-    }
-
-    if(radiance_scales!=NULL)
-    {
-        delete[] radiance_offsets;
-        delete[] radiance_scales;
-    }
-
     return false;
 }
+#endif
 
 // Standard way to pass the coordinates of the subsetted region from the client to the handlers
 // Return the number of elements to read.
