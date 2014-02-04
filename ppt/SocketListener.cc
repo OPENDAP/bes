@@ -34,6 +34,9 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+// Added for OSX 10.9 jhrg
+#include <sys/select.h>
+
 #include <cstring>
 #include <cerrno>
 
