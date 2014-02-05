@@ -100,15 +100,13 @@ void BESServerHandler::handle(Connection *c)
 	// cures that like exit().
 	else {
 		pid_t pid;
-		if ((pid = fork()) < 0) // error
-				{
+		if ((pid = fork()) < 0)  { // error
 			string error("fork error");
 			const char* error_info = strerror(errno);
 			if (error_info) error += " " + (string) error_info;
 			throw BESInternalError(error, __FILE__, __LINE__);
 		}
-		else if (pid == 0) // child
-				{
+		else if (pid == 0) { // child
 			execute(c);
 		}
 #if 0
@@ -192,7 +190,7 @@ void BESServerHandler::execute(Connection *c)
 			// calls the the kernel's close() function. NB: The method is
 			// implemented in PPTServer.cc and that calls Socket::close() on the
 			// Socket instance held by the Connection.
-			BESDEBUG("beslistener", "BESServerHandler::execute() -  Closing client connection." << endl);
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Closing client connection." << endl);
 
 			c->closeConnection();
 
@@ -200,8 +198,8 @@ void BESServerHandler::execute(Connection *c)
 			*(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of "
 					<< CHILD_SUBPROCESS_READY << " to the master listener." << endl;
 
-			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which is a value of "
-					<< CHILD_SUBPROCESS_READY << ")" << endl);
+			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of "
+					<< CHILD_SUBPROCESS_READY << endl);
 
 			exit(CHILD_SUBPROCESS_READY);
 		}

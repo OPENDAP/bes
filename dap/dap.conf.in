@@ -41,8 +41,10 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # Function cache parameters                                             #
 #-----------------------------------------------------------------------#
 
-DAP.FunctionCache.path="/tmp/dap_cache"
-DAP.FunctionCache.prefix="f"
+# The BES is very literal about key values; don't use double quotes on
+# the pathname unless the name includes those! 12/17/13 jhrg
+DAP.FunctionCache.path=/tmp/dap_cache
+DAP.FunctionCache.prefix=f
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
 DAP.FunctionCache.size=20000

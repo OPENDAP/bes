@@ -9,7 +9,7 @@ AT_TESTED([besstandalone])
 
 AT_ARG_OPTION_ARG([generate g],
     [  -g arg, --generate=arg   Build the baseline file for test 'arg'],
-    [if besstandalone -c $abs_builddir/bes.conf -i $at_arg_generate -f $at_arg_generate.baseline; then
+    [if besstandalone -c bes.conf -i $at_arg_generate -f $at_arg_generate.baseline; then
          echo "Built baseline for $at_arg_generate"
      else
          echo "Could not generate baseline for $at_arg_generate"

@@ -33,6 +33,11 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
+// Added for OS/X 10.9
+#include <sys/select.h>
+#include <unistd.h>
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>

@@ -34,6 +34,9 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+// Added for OSX 10.9 jhrg
+#include <sys/select.h>
+
 #include <cstring>
 #include <cerrno>
 
@@ -49,6 +52,7 @@
 #include "BESInternalError.h"
 #include "Socket.h"
 #include "SocketConfig.h"
+#include "BESDebug.h"
 
 SocketListener::SocketListener()
     : _accepting( false )
@@ -97,6 +101,8 @@ SocketListener::listen( Socket *s )
 Socket *
 SocketListener::accept()
 {
+    BESDEBUG( "ppt", "SocketListener::accept() - START" << endl );
+
     int msgsock ;
 
     fd_set read_fd ;
@@ -106,72 +112,90 @@ SocketListener::accept()
 
     for(;;)
     {
-	timeout.tv_sec = 120 ;
-	timeout.tv_usec = 0 ;
+        timeout.tv_sec = 120 ;
+        timeout.tv_usec = 0 ;
 
-	FD_ZERO( &read_fd ) ;
+        FD_ZERO( &read_fd ) ;
 
-	maxfd = 0 ;
-	Socket_citer iter = _socket_list.begin() ;
-	for( ; iter != _socket_list.end(); iter++ )
-	{
-	    Socket *s_ptr = (*iter).second ;
-	    int s = s_ptr->getSocketDescriptor() ;
-	    if( s > maxfd ) maxfd = s ;
-	    FD_SET( s, &read_fd ) ;
-	}
+        maxfd = 0 ;
+        Socket_citer iter = _socket_list.begin() ;
+        for( ; iter != _socket_list.end(); iter++ )
+        {
+            Socket *s_ptr = (*iter).second ;
+            int s = s_ptr->getSocketDescriptor() ;
+            if( s > maxfd ) maxfd = s ;
+            FD_SET( s, &read_fd ) ;
+        }
 
 #if 0
-	// jhrg 5/16/11
-	//if( select( maxfd+1, &read_fd,
-	 //           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
+        // jhrg 5/16/11
+        //if( select( maxfd+1, &read_fd,
+        //           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
 #endif
-		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
-			switch (errno) {
 
-			case EAGAIN:	// rerun select on interrupted calls, ...
-			case EINTR:
-				break;
+        while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+            switch (errno) {
+
+            case EAGAIN:	// rerun select on interrupted calls, ...
+                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EAGAIN" << endl );
+                break;
+            case EINTR:
+                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EINTR" << endl );
+                break;
 #if 0
-			case EBADF:		// or exit on error
-			case EINVAL:
+            case EBADF:		// or exit on error
+            case EINVAL:
 #endif
-			default: {
-				string err("select: ");
-				const char *error_info = strerror(errno);
-				if (error_info) err += (string) error_info;
-				throw BESInternalError(err, __FILE__, __LINE__);
-			}
-			}
-		}
+            default: {
+                string err("select: ");
+                const char *error_info = strerror(errno);
+                if (error_info) err += (string) error_info;
+                throw BESInternalError(err, __FILE__, __LINE__);
+            }
+            }
+        }
+        BESDEBUG( "ppt", "SocketListener::accept() - select() completed without error." << endl );
 
-	iter = _socket_list.begin() ;
-	for( ; iter != _socket_list.end(); iter++ )
-	{
-	    Socket *s_ptr = (*iter).second ;
-	    int s = s_ptr->getSocketDescriptor() ;
-	    if ( FD_ISSET( s, &read_fd ) )  
-	    {    
-		struct sockaddr from ;
-		socklen_t len_from = sizeof( from ) ;
+        iter = _socket_list.begin() ;
+        for( ; iter != _socket_list.end(); iter++ )
+        {
 
-		while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
-		    if (errno == EINTR) {
-			continue;
-		    }
-		    else {
-			string err("accept: ");
-			const char *error_info = strerror(errno);
-			if (error_info)
-			    err += (string) error_info;
-			throw BESInternalError(err, __FILE__, __LINE__);
-		    }
-		}
+            Socket *s_ptr = (*iter).second ;
+            BESDEBUG( "ppt", "SocketListener::accept() - Processing socket " << s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
 
-		return s_ptr->newSocket( msgsock, (struct sockaddr *)&from ) ;
-	    }
-	}
+            int s = s_ptr->getSocketDescriptor() ;
+            if ( FD_ISSET( s, &read_fd ) )
+            {
+                BESDEBUG( "ppt", "SocketListener::accept() - FD_ISSET for "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+
+                struct sockaddr from ;
+                socklen_t len_from = sizeof( from ) ;
+
+                BESDEBUG( "ppt", "SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+
+                while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
+                    if (errno == EINTR) {
+                        BESDEBUG( "ppt", "SocketListener::accept() - accept() was interrupted" << endl );
+
+                        continue;
+                    }
+                    else {
+                        string err("accept: ");
+                        const char *error_info = strerror(errno);
+                        if (error_info)
+                            err += (string) error_info;
+                        throw BESInternalError(err, __FILE__, __LINE__);
+                    }
+                }
+                BESDEBUG( "ppt", "SocketListener::accept() - END (returning new Socket)" << endl );
+
+                return s_ptr->newSocket( msgsock, (struct sockaddr *)&from ) ;
+            }
+        }
+        BESDEBUG( "ppt", "SocketListener::accept() - Looks like select() timed out. Looping back to restart select()" << endl );
+
     }
+    BESDEBUG( "ppt", "SocketListener::accept() - END (returning 0)" << endl );
 
     return 0 ;
 }

@@ -106,7 +106,7 @@ BESDapResponseCache::BESDapResponseCache() : d_cache(0)
 
     BESDEBUG("dap", "Read cache params: " << path << ", " << prefix << ", " << size << endl);
 
-    // The require params must be present. If initialize() is not called,
+    // The required params must be present. If initialize() is not called,
     // then d_cache will stay null and is_available() will return false.
     // Also, the directory 'path' must exist, or d_cache will be null.
     if (!path.empty() && size_in_megabytes > 0)

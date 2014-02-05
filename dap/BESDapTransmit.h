@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -47,10 +47,10 @@ public:
 	static void send_basic_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_ddx(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-
+#if 1
 	static void send_basic_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_dap4data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-
+#endif
 };
 
 #endif // I_BESDapTransmit_h
