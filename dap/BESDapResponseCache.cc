@@ -43,9 +43,9 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
 
+
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
-#include "BESDAPCache.h"
 
 #include "BESUtil.h"
 #include "TheBESKeys.h"
@@ -67,7 +67,7 @@ void BESDapResponseCache::initialize(const string &cache_path, const string &pre
     // the cache will only be used if the directory exists.
 
 	if (dir_exists(cache_path)) {
-        d_cache = BESDAPCache::get_instance(cache_path, prefix, size_in_megabytes);
+        d_cache = BESFileLockingCache::get_instance(cache_path, prefix, size_in_megabytes);
         BESDEBUG("dap", "d_cache initialized to: " << d_cache << ", using: " << cache_path << ", " << prefix << ", " << size_in_megabytes << endl);
     }
 	else

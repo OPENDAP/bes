@@ -27,8 +27,8 @@
 #define _bes_dap_response_cache_h
 
 #include <string>
+#include "BESFileLockingCache.h"
 
-class BESDAPCache;
 class BESDapResponseBuilder;
 
 class libdap::DDS;
@@ -49,7 +49,7 @@ private:
     void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
 
-    BESDAPCache *d_cache;
+    BESFileLockingCache *d_cache;
 
     void initialize(const std::string &cache_path, const std::string &prefix, unsigned long size_in_megabytes);
 
