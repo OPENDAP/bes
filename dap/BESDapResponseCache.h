@@ -40,51 +40,36 @@ class libdap::BaseTypeFactory;
  * @author jhrg 5/3/13
  */
 
-class BESDapResponseCache
+class BESDapResponseCache: public BESFileLockingCache
 {
 private:
+
+    static BESDapResponseCache * d_instance;
+
+    /** Initialize the cache using the default values for the cache. */
+    BESDapResponseCache();
+
 	BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
     libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
 
-    BESFileLockingCache *d_cache;
-
-    void initialize(const std::string &cache_path, const std::string &prefix, unsigned long size_in_megabytes);
-
     friend class ResponseCacheTest;
 
-public:
-    /** Initialize the cache using the default values for the cache. */
-    BESDapResponseCache();
+    static void delete_instance();
 
-    /** Initialize the cache.
-     *
-     * @note Once the underlying cache object is made, calling this has no effect. To change the cache
-     * parameters, first delete the cache.
-     * @todo Write the delete method.
-     *
-     * @param cache_path The pathname where responses are stored. If this does not exist, the cache is not
-     * initialized
-     * @param prefix Use this to prefix each entry in the cache. This is used to differentiate the response
-     * cache entries from other entries if other things are cached in the same pathname.
-     * @param size_in_megabytes Cache size.
-     */
-    BESDapResponseCache(const std::string &cache_path, const std::string &prefix,
-    		unsigned long size_in_megabytes) : d_cache(0) {
-    	initialize(cache_path, prefix, size_in_megabytes);
-    }
+protected:
+
+    BESDapResponseCache(const string &cache_dir, const string &prefix, unsigned long long size);
+
+
+public:
+    static BESDapResponseCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static BESDapResponseCache *get_instance();
 
     virtual ~BESDapResponseCache() {}
 
-    /** Is the ResponseCache configured to cache objects? It is possible
-     * to make a ResponseCache object even though the underlying cache
-     * software has not been configured (or is intentionally turned off).
-     *
-     * @return True if the cache can be used, false otherwise.
-     */
-    bool is_available() { return d_cache != 0; }
 
     // If the DDS is in the cache and valid, return it
     virtual libdap::DDS *read_dataset(const std::string &filename, const std::string &constraint, std::string &cache_token);
@@ -93,7 +78,12 @@ public:
     virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
-    virtual void unlock_and_close(const std::string &cache_token);
+    // virtual void unlock_and_close(const std::string &cache_token);
+
+    static string getDefaultCacheDir();
+    static string getDefaultCachePrefix();
+    static unsigned long getDefaultCacheSize();
+
 };
 
 #endif // _bes_dap_response_cache_h

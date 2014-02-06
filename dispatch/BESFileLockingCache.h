@@ -71,7 +71,6 @@ typedef std::list<cache_entry> CacheFiles;
 class BESFileLockingCache: public BESObj {
 
 private:
-    static BESFileLockingCache * d_instance;
 
     static const char DAP_CACHE_CHAR = '#';
 
@@ -83,10 +82,8 @@ private:
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
     unsigned long long d_target_size;
     // Testing
-    BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
 
     // Suppress the assignment operator and default copy ctor, ...
-    BESFileLockingCache();
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
@@ -106,13 +103,15 @@ private:
     typedef std::map<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
-    // Life-cycle control
+
+protected:
+
+    BESFileLockingCache(): d_target_size(0), d_max_cache_size_in_bytes(0),d_prefix(""), d_cache_dir(""), d_cache_info(""), d_cache_info_fd(0){};
+    void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
+    BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
     virtual ~BESFileLockingCache() { }
-    static void delete_instance();
 
 public:
-    static BESFileLockingCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
-    static BESFileLockingCache *get_instance();
 
     string get_cache_file_name(const string &src, bool mangle = true);
 

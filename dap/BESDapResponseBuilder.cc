@@ -98,8 +98,15 @@ void BESDapResponseBuilder::initialize()
 BESDapResponseCache *
 BESDapResponseBuilder::responseCache()
 {
-	if (!d_response_cache) d_response_cache = new BESDapResponseCache();
-	return d_response_cache->is_available() ? d_response_cache: 0;
+	// cerr << "***** BESDapResponseBuilder::responseCache() - BEGIN" << endl ;
+
+	if (!d_response_cache)
+		d_response_cache =  BESDapResponseCache::get_instance();
+
+	// cerr << "***** BESDapResponseBuilder::responseCache() Got BESDapResponseCache instance: " << endl << *d_response_cache << endl;
+	// cerr << "***** BESDapResponseBuilder::responseCache() - END" << endl ;
+
+	return d_response_cache;
 }
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
@@ -551,6 +558,8 @@ void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, Const
  @return void */
 void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
+
+	// cerr << "***** BESDapResponseBuilder::send_data() - BEGIN" << endl;
     // Set up the alarm.
     establish_timeout(data_stream);
     dds.set_timeout(d_timeout);
@@ -628,6 +637,8 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
     }
 
     data_stream << flush;
+	// cerr << "***** BESDapResponseBuilder::send_data() - END" << endl;
+
 }
 
 /** Send the DDX response. The DDX never contains data, instead it holds a

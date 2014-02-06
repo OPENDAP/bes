@@ -64,9 +64,7 @@ static const unsigned long long BYTES_PER_MEG = 1048576ULL;
 // 2^64 / 2^20 == 2^44
 static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 
-BESFileLockingCache *BESFileLockingCache::d_instance = 0;
-
-/** @brief Private constructor that takes as arguments keys to the cache directory,
+/** @brief Protected constructor that takes as arguments keys to the cache directory,
  * file prefix, and size of the cache to be looked up a configuration file
  *
  * The keys specified are looked up in the specified keys object. If not
@@ -82,49 +80,22 @@ BESFileLockingCache *BESFileLockingCache::d_instance = 0;
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
         d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size)
 {
+    // cerr << endl << "***** BESFileLockingCache::BESFileLockingCache(" << d_cache_dir << ", " << d_prefix << ", " << d_max_cache_size_in_bytes << ")" << endl;
+
     m_initialize_cache_info();
 }
 
-void BESFileLockingCache::delete_instance() {
-    BESDEBUG("cache","BESFileLockingCache::delete_instance() - Deleting singleton BESFileLockingCache instance." << endl);
-    delete d_instance;
-    d_instance = 0;
+void BESFileLockingCache::initialize(const string &cache_dir, const string &prefix, unsigned long long size){
+	d_cache_dir = cache_dir;
+	d_prefix = prefix;
+	d_max_cache_size_in_bytes = size;
+
+    // cerr << endl << "***** BESFileLockingCache::initialize(" << d_cache_dir << ", " << d_prefix << ", " << d_max_cache_size_in_bytes << ")" << endl;
+
+    m_initialize_cache_info();
 }
 
-/** Get an instance of the BESFileLockingCache object. This class is a singleton, so the
- * first call to any of three 'get_instance()' methods makes an instance and subsequent calls
- * return a pointer to that instance.
- *
- *
- * @param cache_dir_key Key to use to get the value of the cache directory
- * @param prefix_key Key for the item/file prefix. Each file added to the cache uses this
- * as a prefix so cached items can be easily identified when /tmp is used for the cache.
- * @param size_key How big should the cache be, in megabytes
- * @return A pointer to a BESFileLockingCache object
- */
-BESFileLockingCache *
-BESFileLockingCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
-{
-    if (d_instance == 0){
-        d_instance = new BESFileLockingCache(cache_dir, prefix, size);
-#if HAVE_ATEXIT
-        atexit(delete_instance);
-#endif
-    }
-    return d_instance;
-}
 
-/** Get an instance of the BESFileLockingCache object. This version is used when there's no
- * question that the cache has been instantiated.
- */
-BESFileLockingCache *
-BESFileLockingCache::get_instance()
-{
-    if (d_instance == 0)
-        throw BESInternalError("Tried to get the BESFileLockingCache instance, but it hasn't been created yet", __FILE__, __LINE__);
-
-    return d_instance;
-}
 
 static inline string get_errno() {
 	char *s_err = strerror(errno);
@@ -403,7 +374,7 @@ void BESFileLockingCache::m_initialize_cache_info()
 		// initialize the cache size to zero
 		unsigned long long size = 0;
 		if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-			throw BESInternalError("Could not write size info to the cache info file in startup!", __FILE__, __LINE__);
+			throw BESInternalError("Could not write size info to the cache info file `"+d_cache_info+"`", __FILE__, __LINE__);
 
 		// This leaves the d_cache_info_fd file descriptor open
 		unlock_cache();
@@ -413,6 +384,8 @@ void BESFileLockingCache::m_initialize_cache_info()
 			throw BESInternalError(get_errno(), __FILE__, __LINE__);
 		}
 	}
+
+    // cerr << endl << "***** BESFileLockingCache::m_initialize_cache_info() completed. d_cache_info_fd: " << d_cache_info_fd << endl;
 
     BESDEBUG("cache", "d_cache_info_fd: " << d_cache_info_fd << endl);
 }

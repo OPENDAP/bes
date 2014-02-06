@@ -74,7 +74,7 @@ private:
 
 public:
     ResponseCacheTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
-		d_response_cache(string(TEST_SRC_DIR) + "/response_cache") {
+		d_response_cache(string(TEST_SRC_DIR) + "/response_cache"), cache(0) {
     }
 
     ~ResponseCacheTest() {
@@ -99,6 +99,8 @@ public:
     }
 
     void setUp() {
+		DBG(cerr << "setUp() - BEGIN" << endl);
+
     	string cid;
     	test_05_dds = new DDS(&ttf);
     	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
@@ -109,11 +111,15 @@ public:
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_05_dds->get_dataset_name() << endl);
     	DBG(cerr << "Intern CID: " << cid << endl);
+		DBG(cerr << "setUp() - END" << endl);
     }
 
     void tearDown() {
+		DBG(cerr << "tearDown() - BEGIN" << endl);
+
 		clean_cache(d_response_cache, "rc");
 		delete test_05_dds;
+		DBG(cerr << "tearDown() - END" << endl);
     }
 
     bool re_match(Regex &r, const string &s) {
@@ -133,17 +139,47 @@ public:
     // The directory 'never' does not exist; the cache won't be initialized,
     // so is_available() should be false
     void ctor_test_1() {
+		DBG(cerr << "ctor_test_1() - BEGIN" << endl);
 
-    	cache = new BESDapResponseCache(string(TEST_SRC_DIR) + "/never", "rc", 1000);
-    	CPPUNIT_ASSERT(!cache->is_available());
+		string cacheDir = string(TEST_SRC_DIR) + "/never";
+		string prefix = "rc";
+		long size = 1000;
+
+    	cache =  BESDapResponseCache::get_instance(cacheDir, prefix, size);
+		DBG(cerr << "ctor_test_1() - retrieved BESDapResponseCache instance: "<< endl);
+		if(cache){
+			DBG(cerr << *cache << endl);
+		}
+		else {
+			DBG(cerr << "NULL" << endl);
+		}
+
+    	CPPUNIT_ASSERT(!cache);
+		DBG(cerr << "ctor_test_1() - END" << endl);
+
     }
 
-    // The directory 'response_cache' should exist so is_available() should be
+    // The directory 'd_response_cache' should exist so is_available() should be
     // true.
     void ctor_test_2() {
-    	//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-    	cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
-    	CPPUNIT_ASSERT(cache->is_available());
+		DBG(cerr << "ctor_test_2() - BEGIN" << endl);
+
+		string cacheDir = d_response_cache;
+		string prefix = "rc";
+		long size = 1000;
+    	cache =  BESDapResponseCache::get_instance(cacheDir, prefix, size);
+		DBG(cerr << "ctor_test_1() - retrieved BESDapResponseCache instance: "<< endl);
+		if(cache){
+			DBG(cerr << *cache << endl);
+		}
+		else {
+			DBG(cerr << "NULL" << endl);
+		}
+
+    	CPPUNIT_ASSERT(cache);
+    	// cache->delete_instance();
+		DBG(cerr << "ctor_test_2() - END" << endl);
+
     }
 
     // Because setup() and teardown() clean out the cache directory, there should
@@ -151,12 +187,24 @@ public:
     // valid DDS with data and store a copy in the cache.
 	void cache_a_response()
 	{
+		DBG(cerr << "cache_a_response() - BEGIN" << endl);
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
+		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
+
+		DBG(cerr << "cache_a_response() - Retrieved BESDapResponseCache object: " << endl);
+		if(cache){
+			DBG(cerr << *cache << endl);
+		}
+		else {
+			DBG(cerr << "NULL" << endl);
+		}
+
 		string token;
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
+			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
 			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
@@ -164,18 +212,23 @@ public:
 			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
 			// TODO Stat the cache file to check it's size
 			delete cache_dds;
+	    	// cache->delete_instance();
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
+		DBG(cerr << "cache_a_response() - END" << endl);
+
     }
 
 	// The first call reads values into the DDS, stores a copy in the cache and
 	// returns the DDS. The second call reads the value from the cache.
 	void cache_and_read_a_response()
 	{
+		DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
+
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
+		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
@@ -215,18 +268,24 @@ public:
 			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
+	    	// cache->delete_instance();
+
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
+		DBG(cerr << "cache_and_read_a_response() - END" << endl);
+
     }
 
 	// The first call reads values into the DDS, stores a copy in the cache and
 	// returns the DDS. The second call reads the value from the cache.
 	void cache_and_read_a_response2()
 	{
+		DBG(cerr << "cache_and_read_a_response2() - BEGIN" << endl);
+
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
+		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
@@ -261,17 +320,23 @@ public:
 			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
+	    	// cache->delete_instance();
+
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
+		DBG(cerr << "cache_and_read_a_response2() - END" << endl);
+
     }
 
 	// Test caching a response where a CE is applied to the DDS. The CE here is 'b,u'
 	void cache_and_read_a_response3()
 	{
+		DBG(cerr << "cache_and_read_a_response3() - BEGIN" << endl);
+
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = new BESDapResponseCache(d_response_cache, "rc", 1000);
+		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
@@ -317,10 +382,14 @@ public:
 
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			delete cache_dds; cache_dds = 0;
+	    	// cache->delete_instance();
+
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
+		DBG(cerr << "cache_and_read_a_response3() - END" << endl);
+
 
     }
     CPPUNIT_TEST_SUITE( ResponseCacheTest );
