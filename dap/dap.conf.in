@@ -38,14 +38,24 @@ DAP.Help.HTML=@pkgdatadir@/dap_help.html
 DAP.Help.XML=@pkgdatadir@/dap_help.xml
 
 #-----------------------------------------------------------------------#
-# Function cache parameters                                             #
+# Response cache parameters                                             #
 #-----------------------------------------------------------------------#
 
 # The BES is very literal about key values; don't use double quotes on
 # the pathname unless the name includes those! 12/17/13 jhrg
-DAP.FunctionCache.path=/tmp/dap_cache
-DAP.FunctionCache.prefix=f
+DAP.ResponseCache.path=/tmp/dap_cache
+DAP.ResponseCache.prefix=f
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
-DAP.FunctionCache.size=20000
+DAP.ResponseCache.size=20000
+
+#-----------------------------------------------------------------------#
+# Stored Results cache parameters                                       #
+#-----------------------------------------------------------------------#
+
+DAP.StoredResultsCache.subdir=stored_results
+DAP.StoredResultsCache.prefix=result_
+
+# This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
+DAP.ResponseCache.size=20000
 

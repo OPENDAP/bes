@@ -33,7 +33,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapService.cc \
 	BESDAPCache.cc \
 	BESDapResponseBuilder.cc \
-	BESDapResponseCache.cc
+	BESDapResponseCache.cc \
+	BESStoredDapResultCache.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -53,7 +54,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapService.h \
 	BESDAPCache.h \
 	BESDapResponseBuilder.h \
-	BESDapResponseCache.h
+	BESDapResponseCache.h \
+	BESStoredDapResultCache.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)

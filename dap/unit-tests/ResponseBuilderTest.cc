@@ -64,6 +64,7 @@
 
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
+#include "BESDapResponseCache.h"
 #include "testFile.h"
 #include "test_config.h"
 
@@ -213,6 +214,10 @@ public:
         dds->set_dap_minor(2);
 
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PATH_KEY,  (string)TEST_SRC_DIR + "/response_cache");
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PREFIX_KEY,  "dap_response");
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::SIZE_KEY,    "100");
+
     }
 
     void tearDown() {
