@@ -412,6 +412,13 @@ BESStoredDapResultCache::get_cached_data_ddx(const string &cache_file_name, Base
  * a way to expand it to be general caching software for arbitrary DAP
  * responses.
  *
+ * @todo This code utilizes an "unsafe" unlocking scheme in which it
+ * depends on the calling method to unlock the cache file. We should build
+ * an encapsulating version of, say, the DDS (called CachedDDS?) that carries the
+ * lock information and that will unlock the underlying cache file when
+ * destroyed (along with destroying the DDS of course).
+ *
+ *
  * @return The DDS that resulted from calling the server functions
  * in the original CE.
  */
