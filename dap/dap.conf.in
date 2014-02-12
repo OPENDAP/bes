@@ -57,5 +57,5 @@ DAP.StoredResultsCache.subdir=stored_results
 DAP.StoredResultsCache.prefix=result_
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
-DAP.ResponseCache.size=20000
+DAP.StoredResultsCache.size=20000
 

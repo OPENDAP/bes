@@ -424,6 +424,7 @@ BESStoredDapResultCache::get_cached_data_ddx(const string &cache_file_name, Base
  */
 DDS *BESStoredDapResultCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
 {
+    BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - BEGIN" << endl );
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
     DDS *fdds;
@@ -441,13 +442,13 @@ DDS *BESStoredDapResultCache::cache_dataset(DDS &dds, const string &constraint, 
         	purge_file(cache_file_name);
 
         if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("cache", "function ce (change)- cached hit: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - function ce (change)- cached hit: " << cache_file_name << endl);
             fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
         }
         else if (create_and_lock(cache_file_name, fd)) {
             // If here, the cache_file_name could not be locked for read access;
             // try to build it. First make an empty file and get an exclusive lock on it.
-            BESDEBUG("cache", "function ce - caching " << cache_file_name << ", constraint: " << constraint << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - function ce - caching " << cache_file_name << ", constraint: " << constraint << endl);
 
             fdds = new DDS(dds);
             eval->parse_constraint(constraint, *fdds);
@@ -501,21 +502,24 @@ DDS *BESStoredDapResultCache::cache_dataset(DDS &dds, const string &constraint, 
         // get_read_lock() returns immediately if the file does not exist,
         // but blocks waiting to get a shared lock if the file does exist.
         else if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("cache", "function ce - cached hit: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - function ce - cached hit: " << cache_file_name << endl);
             fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
         }
         else {
-            throw InternalErr(__FILE__, __LINE__, "Cache error during function invocation.");
+            throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::cache_dataset() - Cache error during function invocation.");
         }
     }
     catch (...) {
-        BESDEBUG("cache", "caught exception, unlocking cache and re-throw." << endl );
+        BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - caught exception, unlocking cache and re-throw." << endl );
         // I think this call is not needed. jhrg 10/23/12
         unlock_cache();
         throw;
     }
 
+
+
     cache_token = cache_file_name;  // Set this value-result parameter
+    BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - END (cache_token=`"<< cache_token << "'" << endl );
     return fdds;
 }
 
@@ -580,8 +584,8 @@ string BESStoredDapResultCache::get_cache_file_name(const string &src, bool mang
 	}
 
     BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - cacheDir: '" << cacheDir << "'" << endl);
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - prefix:   '" << prefix << "'" << endl);
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - target:   '" << target  << "'" << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - prefix:   '" << prefix   << "'" << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - target:   '" << target   << "'" << endl);
 
     if(mangle){
         BESDEBUG("cache", "[WARNING] BESStoredDapResultCache::get_cache_file_name() - The parameter 'mangle' is ignored!" << endl);

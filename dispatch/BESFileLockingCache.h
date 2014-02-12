@@ -106,14 +106,14 @@ private:
 
 protected:
 
-    BESFileLockingCache(): d_target_size(0), d_max_cache_size_in_bytes(0),d_prefix(""), d_cache_dir(""), d_cache_info(""), d_cache_info_fd(0){};
+    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(0){};
     void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
     virtual ~BESFileLockingCache() { }
 
 public:
 
-    string get_cache_file_name(const string &src, bool mangle = true);
+    virtual string get_cache_file_name(const string &src, bool mangle = true);
 
     virtual bool create_and_lock(const string &target, int &fd);
     virtual bool get_read_lock(const string &target, int &fd);
@@ -130,6 +130,9 @@ public:
     virtual unsigned long long get_cache_size();
     virtual void update_and_purge(const string &new_file);
     virtual void purge_file(const string &file);
+
+    const string getCacheFilePrefix();
+    const string getCacheDirectory();
 
     virtual void dump(ostream &strm) const ;
 };

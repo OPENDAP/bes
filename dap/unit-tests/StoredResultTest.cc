@@ -42,10 +42,20 @@
 
 #include <test/TestTypeFactory.h>
 
+#include "TheBESKeys.h"
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
+#include "BESDebug.h"
+
+
 #include "testFile.h"
 #include "test_config.h"
+
+#define BES_DATA_ROOT "BES.Data.RootDirectory"
+#define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
+
+
+
 
 using namespace CppUnit;
 using namespace std;
@@ -100,6 +110,7 @@ public:
 
     void setUp() {
 		DBG(cerr << "setUp() - BEGIN" << endl);
+		DBG(BESDebug::SetUp("cerr,all"));
 
     	string cid;
     	test_05_dds = new DDS(&ttf);
@@ -111,6 +122,8 @@ public:
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_05_dds->get_dataset_name() << endl);
     	DBG(cerr << "Intern CID: " << cid << endl);
+
+
 		DBG(cerr << "setUp() - END" << endl);
     }
 
@@ -155,6 +168,10 @@ public:
 		}
 
     	CPPUNIT_ASSERT(!cache);
+
+    	// We DO NOT delete the instance because there isn't one, RIGHT?
+    	//cache->delete_instance();
+
 		DBG(cerr << "**** ctor_test_1() - END" << endl);
 
     }
@@ -176,7 +193,6 @@ public:
 		}
 
     	CPPUNIT_ASSERT(cache);
-    	// cache->delete_instance();
 		DBG(cerr << "**** ctor_test_2() - END" << endl);
 
 		cache->delete_instance();
@@ -213,7 +229,7 @@ public:
 			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			// TODO Stat the cache file to check it's size
 			delete cache_dds;
-	    	// cache->delete_instance();
+			cache->delete_instance();
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
@@ -270,6 +286,7 @@ public:
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
 	    	// cache->delete_instance();
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
@@ -321,7 +338,8 @@ public:
 			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
-	    	// cache->delete_instance();
+
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
@@ -383,7 +401,79 @@ public:
 
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			delete cache_dds; cache_dds = 0;
-	    	// cache->delete_instance();
+
+
+			cache->delete_instance();
+		}
+		catch (Error &e) {
+			CPPUNIT_FAIL(e.get_error_message());
+		}
+
+
+		DBG(cerr << "**** cache_and_read_a_response3() - END" << endl);
+
+
+    }
+
+
+	void configureFromBesKeysAndStoreResult()
+	{
+		DBG(cerr << "**** configureFromBesKeysAndStoreResult() - BEGIN" << endl);
+
+    	DBG(cerr << "Configuring BES Keys."<< endl);
+
+        TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  (string)TEST_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  "/response_cache");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+
+		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
+		cache = BESStoredDapResultCache::get_instance();
+
+		CPPUNIT_ASSERT(cache);
+
+		string token;
+		try {
+			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			cache->unlock_and_close(token);
+
+			DBG(cerr << "Cached response token: " << token << endl);
+			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(token == d_response_cache + "/my_result_17566926586167953453");
+			delete cache_dds; cache_dds = 0;
+
+			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// Force read from the cache file
+			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_data_ddx()
+			// does not lock the cached item.
+			//cache->unlock_and_close(token);
+
+			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(token == d_response_cache + "/my_result_17566926586167953453");
+			// There are nine variables in test.05.ddx
+			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+
+			ostringstream oss;
+			DDS::Vars_iter i = cache_dds->var_begin();
+			while (i != cache_dds->var_end()) {
+				DBG(cerr << "Variable " << (*i)->name() << endl);
+				// this will incrementally add thr string rep of values to 'oss'
+				(*i)->print_val(oss, "", false /*print declaration */);
+				DBG(cerr << "Value " << oss.str() << endl);
+				++i;
+			}
+
+			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
+			// is a any single digit. The *Test classes implement a counter and return strings where
+			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
+			// values for <number>.
+			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			delete cache_dds; cache_dds = 0;
+
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
@@ -401,6 +491,7 @@ public:
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
     CPPUNIT_TEST(cache_and_read_a_response3);
+    CPPUNIT_TEST(configureFromBesKeysAndStoreResult);
 
     CPPUNIT_TEST_SUITE_END();
 };

@@ -71,10 +71,10 @@ static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
  * found or not set correctly then an exception is thrown. I.E., if the
  * cache directory is empty, the size is zero, or the prefix is empty.
  *
- * @param cache_dir_key key to look up in the keys file to find cache dir
- * @param prefix_key key to look up in the keys file to find the cache prefix
- * @param size_key key to look up in the keys file to find the cache size (in MBytes)
- * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
+ * @param cache_dir The directory into which the cache files will be written.
+ * @param prefix    The prefix that will be added to each cache file.
+ * @param size      The size of the cache in MBytes
+ * @throws BESInternalError If the cache_dir does not exist or is not writable.
  * size is 0, or if cache dir does not exist.
  */
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
@@ -116,6 +116,7 @@ static inline struct flock *lock(int type) {
 
     return &lock;
 }
+
 
 inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd) {
     BESDEBUG("cache", "DAP Cache: recording descriptor: " << file << ", " << fd << endl);
@@ -864,6 +865,17 @@ void BESFileLockingCache::purge_file(const string &file)
         throw;
     }
 }
+
+
+const string BESFileLockingCache::getCacheFilePrefix(){
+	return d_prefix;
+}
+
+const string BESFileLockingCache::getCacheDirectory(){
+	return d_cache_dir;
+}
+
+
 
 /** @brief dumps information about this object
  *
