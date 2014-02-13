@@ -4,7 +4,7 @@ AC_DEFUN([AC_HEADER_TR1_FUNCTIONAL], [
   ac_cv_cxx_tr1_functional,
   [AC_LANG_SAVE
   AC_LANG_CPLUSPLUS
-  AC_TRY_COMPILE([#include <tr1/functional>], [using std::tr1::functional;],
+  AC_TRY_COMPILE([#include <tr1/functional>], [using std::tr1::hash;],
   ac_cv_cxx_tr1_functional=yes, ac_cv_cxx_tr1_functional=no)
   AC_LANG_RESTORE
   ])
