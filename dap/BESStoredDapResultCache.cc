@@ -31,8 +31,6 @@
 #include <iostream>
 #ifdef HAVE_TR1_FUNCTIONAL
 #include <tr1/functional>
-#else
-#include <functional>
 #endif
 #include <string>
 #include <fstream>
