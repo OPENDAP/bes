@@ -29,11 +29,14 @@
 #include <sys/stat.h>
 
 #include <iostream>
+#ifdef HAVE_TR1_FUNCTIONAL
 #include <tr1/functional>
+#else
+#include <functional>
+#endif
 #include <string>
 #include <fstream>
 #include <sstream>
-
 
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
@@ -53,6 +56,13 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
+
+#ifdef HAVE_TR1_FUNCTIONAL
+#define HASH_OBJ std::tr1::hash
+#else
+#define HASH_OBJ std::hash
+#endif
+
 
 #define CRLF "\r\n"
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
@@ -535,7 +545,7 @@ BESStoredDapResultCache::build_stored_result_file_name(const string &dataset, co
 {
     BESDEBUG("cache", "build_stored_result_file_name() - BEGIN. dataset: " << dataset << ", ce: " << ce << endl);
     std::ostringstream ostr;
-    std::tr1::hash<std::string> str_hash;
+    HASH_OBJ<std::string> str_hash;
     string name = dataset + "#" + ce;
     ostr << str_hash(name);
     string hashed_name = ostr.str();
