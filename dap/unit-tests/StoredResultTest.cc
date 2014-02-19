@@ -42,10 +42,20 @@
 
 #include <test/TestTypeFactory.h>
 
-#include "BESDapResponseCache.h"
+#include "TheBESKeys.h"
+#include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
+#include "BESDebug.h"
+
+
 #include "testFile.h"
 #include "test_config.h"
+
+#define BES_DATA_ROOT "BES.Data.RootDirectory"
+#define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
+
+
+
 
 using namespace CppUnit;
 using namespace std;
@@ -54,14 +64,13 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
-static bool clean = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
 using namespace libdap;
 
-class ResponseCacheTest: public TestFixture {
+class StoredResultTest: public TestFixture {
 private:
 	TestTypeFactory ttf;
 	DDS *test_05_dds;
@@ -71,14 +80,14 @@ private:
 	BESDapResponseBuilder rb;
 
     string d_response_cache;
-    BESDapResponseCache *cache;
+    BESStoredDapResultCache *cache;
 
 public:
-    ResponseCacheTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
+    StoredResultTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
 		d_response_cache(string(TEST_SRC_DIR) + "/response_cache"), cache(0) {
     }
 
-    ~ResponseCacheTest() {
+    ~StoredResultTest() {
     }
 
     void clean_cache(const string &directory, const string &prefix) {
@@ -101,6 +110,7 @@ public:
 
     void setUp() {
 		DBG(cerr << "setUp() - BEGIN" << endl);
+		DBG(BESDebug::SetUp("cerr,all"));
 
     	string cid;
     	test_05_dds = new DDS(&ttf);
@@ -112,15 +122,15 @@ public:
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_05_dds->get_dataset_name() << endl);
     	DBG(cerr << "Intern CID: " << cid << endl);
+
+
 		DBG(cerr << "setUp() - END" << endl);
     }
 
     void tearDown() {
 		DBG(cerr << "tearDown() - BEGIN" << endl);
 
-        if (clean)
-            clean_cache(d_response_cache, "rc");
-
+		clean_cache(d_response_cache, "result_");
 		delete test_05_dds;
 		DBG(cerr << "tearDown() - END" << endl);
     }
@@ -140,16 +150,16 @@ public:
     }
 
     // The directory 'never' does not exist; the cache won't be initialized,
-    // so is_available() should be false
+    // so get_instance() should return a null;
     void ctor_test_1() {
-		DBG(cerr << "ctor_test_1() - BEGIN" << endl);
+		DBG(cerr << "**** ctor_test_1() - BEGIN" << endl);
 
 		string cacheDir = string(TEST_SRC_DIR) + "/never";
-		string prefix = "rc";
+		string prefix = "result_";
 		long size = 1000;
 
-    	cache =  BESDapResponseCache::get_instance(cacheDir, prefix, size);
-		DBG(cerr << "ctor_test_1() - retrieved BESDapResponseCache instance: "<< endl);
+    	cache =  BESStoredDapResultCache::get_instance(cacheDir, prefix, size);
+		DBG(cerr << "ctor_test_1() - retrieved BESStoredResultCache instance: "<< endl);
 		if(cache){
 			DBG(cerr << *cache << endl);
 		}
@@ -158,20 +168,23 @@ public:
 		}
 
     	CPPUNIT_ASSERT(!cache);
-		DBG(cerr << "ctor_test_1() - END" << endl);
+
+    	// We DO NOT delete the instance because there isn't one, RIGHT?
+    	//cache->delete_instance();
+
+		DBG(cerr << "**** ctor_test_1() - END" << endl);
 
     }
 
-    // The directory 'd_response_cache' should exist so is_available() should be
-    // true.
+    // The directory 'd_response_cache' should exist so get_instance() should return a valid object (non-null)
     void ctor_test_2() {
-		DBG(cerr << "ctor_test_2() - BEGIN" << endl);
+		DBG(cerr << "**** ctor_test_2() - BEGIN" << endl);
 
 		string cacheDir = d_response_cache;
-		string prefix = "rc";
+		string prefix = "result_";
 		long size = 1000;
-    	cache =  BESDapResponseCache::get_instance(cacheDir, prefix, size);
-		DBG(cerr << "ctor_test_1() - retrieved BESDapResponseCache instance: "<< endl);
+    	cache =  BESStoredDapResultCache::get_instance(cacheDir, prefix, size);
+		DBG(cerr << "ctor_test_1() - retrieved BESStoredResultCache instance: "<< endl);
 		if(cache){
 			DBG(cerr << *cache << endl);
 		}
@@ -180,8 +193,9 @@ public:
 		}
 
     	CPPUNIT_ASSERT(cache);
-    	// cache->delete_instance();
-		DBG(cerr << "ctor_test_2() - END" << endl);
+		DBG(cerr << "**** ctor_test_2() - END" << endl);
+
+		cache->delete_instance();
 
     }
 
@@ -190,11 +204,11 @@ public:
     // valid DDS with data and store a copy in the cache.
 	void cache_a_response()
 	{
-		DBG(cerr << "cache_a_response() - BEGIN" << endl);
-		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
+		DBG(cerr << "**** cache_a_response() - BEGIN" << endl);
 
-		DBG(cerr << "cache_a_response() - Retrieved BESDapResponseCache object: " << endl);
+		cache = BESStoredDapResultCache::get_instance(d_response_cache, "result_", 1000);
+
+		DBG(cerr << "cache_a_response() - Retrieved BESStoredResultCache object: " << endl);
 		if(cache){
 			DBG(cerr << *cache << endl);
 		}
@@ -206,21 +220,21 @@ public:
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dap2_dataset(*test_05_dds, "", &rb, &eval, token);
 			DBG(cerr << "cache_a_response() - unlocking and closing cache... token: " << token << endl);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			// TODO Stat the cache file to check it's size
 			delete cache_dds;
-	    	// cache->delete_instance();
+			cache->delete_instance();
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
-		DBG(cerr << "cache_a_response() - END" << endl);
+		DBG(cerr << "**** cache_a_response() - END" << endl);
 
     }
 
@@ -228,18 +242,17 @@ public:
 	// returns the DDS. The second call reads the value from the cache.
 	void cache_and_read_a_response()
 	{
-		DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
+		DBG(cerr << "**** cache_and_read_a_response() - BEGIN" << endl);
 
-		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
+		cache = BESStoredDapResultCache::get_instance(d_response_cache, "result_", 1000);
 		string token;
 		try {
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dap2_dataset(*test_05_dds, "", &rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			delete cache_dds; cache_dds = 0;
 
 			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -250,7 +263,7 @@ public:
 			//cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -272,12 +285,13 @@ public:
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
 	    	// cache->delete_instance();
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
-		DBG(cerr << "cache_and_read_a_response() - END" << endl);
+		DBG(cerr << "**** cache_and_read_a_response() - END" << endl);
 
     }
 
@@ -285,28 +299,28 @@ public:
 	// returns the DDS. The second call reads the value from the cache.
 	void cache_and_read_a_response2()
 	{
-		DBG(cerr << "cache_and_read_a_response2() - BEGIN" << endl);
+		DBG(cerr << "**** cache_and_read_a_response2() - BEGIN" << endl);
 
 		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
+		cache = BESStoredDapResultCache::get_instance(d_response_cache, "result_", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dap2_dataset(*test_05_dds, "", &rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			delete cache_dds; cache_dds = 0;
 
 			// This reads the dataset from the cache, but unlike the previous test,
 			// does so using the public interface.
-			cache_dds = cache->cache_dataset(*test_05_dds, "", &rb, &eval, token);
+			cache_dds = cache->cache_dap2_dataset(*test_05_dds, "", &rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_17566926586167953453");
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -323,32 +337,32 @@ public:
 			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			CPPUNIT_ASSERT(re_match(regex, oss.str()));
 			delete cache_dds; cache_dds = 0;
-	    	// cache->delete_instance();
+
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
-		DBG(cerr << "cache_and_read_a_response2() - END" << endl);
+		DBG(cerr << "**** cache_and_read_a_response2() - END" << endl);
 
     }
 
 	// Test caching a response where a CE is applied to the DDS. The CE here is 'b,u'
 	void cache_and_read_a_response3()
 	{
-		DBG(cerr << "cache_and_read_a_response3() - BEGIN" << endl);
+		DBG(cerr << "**** cache_and_read_a_response3() - BEGIN" << endl);
 
-		//cache = new ResponseCache(TEST_SRC_DIR + "response_cache", "rc", 1000);
-		cache = BESDapResponseCache::get_instance(d_response_cache, "rc", 1000);
+		cache = BESStoredDapResultCache::get_instance(d_response_cache, "result_", 1000);
 		string token;
 		try {
 			// This loads a DDS in the cache and returns it.
-			DDS *cache_dds = cache->cache_dataset(*test_05_dds, "b,u", &rb, &eval, token);
+			DDS *cache_dds = cache->cache_dap2_dataset(*test_05_dds, "b,u", &rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			DBG(cerr << "Cached response token: " << token << endl);
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#b#u");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_13530502707064168674");
 			ostringstream oss;
 			DDS::Vars_iter i = cache_dds->var_begin();
 			while (i != cache_dds->var_end()) {
@@ -364,11 +378,11 @@ public:
 			delete cache_dds; cache_dds = 0;
 			oss.str("");
 
-			cache_dds = cache->cache_dataset(*test_05_dds, "b,u", &rb, &eval, token);
+			cache_dds = cache->cache_dap2_dataset(*test_05_dds, "b,u", &rb, &eval, token);
 			cache->unlock_and_close(token);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#b#u");
+			CPPUNIT_ASSERT(token == d_response_cache + "/result_13530502707064168674");
 			// There are nine variables in test.05.ddx but two in the CE used here and
 			// the response cached was constrained.
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 2);
@@ -385,17 +399,88 @@ public:
 
 			CPPUNIT_ASSERT(oss.str() == "255\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
 			delete cache_dds; cache_dds = 0;
-	    	// cache->delete_instance();
+
+
+			cache->delete_instance();
+		}
+		catch (Error &e) {
+			CPPUNIT_FAIL(e.get_error_message());
+		}
+
+
+		DBG(cerr << "**** cache_and_read_a_response3() - END" << endl);
+
+
+    }
+
+
+	void configureFromBesKeysAndStoreResult()
+	{
+		DBG(cerr << "**** configureFromBesKeysAndStoreResult() - BEGIN" << endl);
+
+    	DBG(cerr << "Configuring BES Keys."<< endl);
+
+        TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  (string)TEST_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  "/response_cache");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+
+		cache = BESStoredDapResultCache::get_instance();
+
+		CPPUNIT_ASSERT(cache);
+
+		string token;
+		try {
+			DDS *cache_dds = cache->cache_dap2_dataset(*test_05_dds, "", &rb, &eval, token);
+			cache->unlock_and_close(token);
+
+			DBG(cerr << "Cached response token: " << token << endl);
+			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(token == d_response_cache + "/my_result_17566926586167953453");
+			delete cache_dds; cache_dds = 0;
+
+			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// Force read from the cache file
+			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_data_ddx()
+			// does not lock the cached item.
+			//cache->unlock_and_close(token);
+
+			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(token == d_response_cache + "/my_result_17566926586167953453");
+			// There are nine variables in test.05.ddx
+			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+
+			ostringstream oss;
+			DDS::Vars_iter i = cache_dds->var_begin();
+			while (i != cache_dds->var_end()) {
+				DBG(cerr << "Variable " << (*i)->name() << endl);
+				// this will incrementally add thr string rep of values to 'oss'
+				(*i)->print_val(oss, "", false /*print declaration */);
+				DBG(cerr << "Value " << oss.str() << endl);
+				++i;
+			}
+
+			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
+			// is a any single digit. The *Test classes implement a counter and return strings where
+			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
+			// values for <number>.
+			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			delete cache_dds; cache_dds = 0;
+
+			cache->delete_instance();
 
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());
 		}
-		DBG(cerr << "cache_and_read_a_response3() - END" << endl);
+		DBG(cerr << "**** cache_and_read_a_response3() - END" << endl);
 
 
     }
-    CPPUNIT_TEST_SUITE( ResponseCacheTest );
+    CPPUNIT_TEST_SUITE( StoredResultTest );
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
@@ -403,25 +488,23 @@ public:
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
     CPPUNIT_TEST(cache_and_read_a_response3);
+    CPPUNIT_TEST(configureFromBesKeysAndStoreResult);
 
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ResponseCacheTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(StoredResultTest);
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dk");
+    GetOpt getopt(argc, argv, "d");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
-            break;
-        case 'k':   // -k turns of cleaning the response_cache dir
-            clean = false;
             break;
         default:
             break;
@@ -436,7 +519,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("ResponseCacheTest::") + argv[i++];
+            test = string("StoredResultTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

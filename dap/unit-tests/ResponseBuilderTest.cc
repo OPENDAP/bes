@@ -62,8 +62,10 @@
 #include <test/TestTypeFactory.h>
 #include <test/TestByte.h>
 
+#include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
+#include "BESDapResponseCache.h"
 #include "testFile.h"
 #include "test_config.h"
 
@@ -167,6 +169,9 @@ public:
     }
 
     void setUp() {
+		DBG(cerr << "setUp() - BEGIN" << endl);
+		DBG(BESDebug::SetUp("cerr,all"));
+
         // Test pathname
         df = new BESDapResponseBuilder();
 
@@ -213,6 +218,10 @@ public:
         dds->set_dap_minor(2);
 
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PATH_KEY,  (string)TEST_SRC_DIR + "/response_cache");
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PREFIX_KEY,  "dap_response");
+        TheBESKeys::TheKeys()->set_key( BESDapResponseCache::SIZE_KEY,    "100");
+
     }
 
     void tearDown() {
@@ -325,6 +334,8 @@ public:
     }
 
     void invoke_server_side_function_test() {
+		DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
+
         try {
             string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
             Regex r1(baseline.c_str());
@@ -336,6 +347,7 @@ public:
             df6->set_ce("");
 #endif
             ConstraintEvaluator ce;
+            DBG( cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_data()" << endl);
             df6->send_data(oss, *dds, ce);
 
             DBG( cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
@@ -379,6 +391,8 @@ public:
         } catch (Error &e) {
             CPPUNIT_FAIL("Caught libdap::Error!! Message:" + e.get_error_message());
         }
+		DBG(cerr << "invoke_server_side_function_test() - END" << endl);
+
     }
 
 

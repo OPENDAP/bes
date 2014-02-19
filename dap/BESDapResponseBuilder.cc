@@ -72,6 +72,7 @@
 #include <AlarmHandler.h>
 #endif
 
+#include "BESContextManager.h"
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
 #include "BESDebug.h"
@@ -107,8 +108,15 @@ void BESDapResponseBuilder::initialize()
 BESDapResponseCache *
 BESDapResponseBuilder::responseCache()
 {
-	if (!d_response_cache) d_response_cache = new BESDapResponseCache();
-	return d_response_cache->is_available() ? d_response_cache: 0;
+	// cerr << "***** BESDapResponseBuilder::responseCache() - BEGIN" << endl ;
+
+	if (!d_response_cache)
+		d_response_cache =  BESDapResponseCache::get_instance();
+
+	// cerr << "***** BESDapResponseBuilder::responseCache() Got BESDapResponseCache instance: " << endl << *d_response_cache << endl;
+	// cerr << "***** BESDapResponseBuilder::responseCache() - END" << endl ;
+
+	return d_response_cache;
 }
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
@@ -565,7 +573,17 @@ void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, Const
  @return void */
 void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
-    // Set up the alarm.
+	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - BEGIN"<< endl);
+
+    bool isStoreResultRequest = false;
+    string storeResultValue = BESContextManager::TheManager()->get_context("store_result", isStoreResultRequest);
+	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - isStoreResultRequest="<< (isStoreResultRequest?"true":"false") << endl);
+	if(isStoreResultRequest){
+		BESDEBUG("dap", "BESDapResponseBuilder::send_data() - storeResultValue="<< storeResultValue << endl);
+
+	}
+
+	// Set up the alarm.
     establish_timeout(data_stream);
     dds.set_timeout(d_timeout);
 
@@ -576,21 +594,21 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!d_btp_func_ce.empty()) {
-        BESDEBUG("dap", "Found function(s) in CE: " << d_btp_func_ce << endl);
+        BESDEBUG("dap", "BESDapResponseBuilder::send_data() - Found function(s) in CE: " << d_btp_func_ce << endl);
         string cache_token = "";
         DDS *fdds = 0;
 
         if (responseCache()) {
-        	BESDEBUG("dap", "Using the cache for the server function CE" << endl);
+        	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - Using the cache for the server function CE" << endl);
             fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &eval, cache_token);
         }
         else {
-        	BESDEBUG("dap", "Cache not found; (re)calculating" << endl);
+        	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - Cache not found; (re)calculating" << endl);
             eval.parse_constraint(d_btp_func_ce, dds);
             fdds = eval.eval_function_clauses(dds);
         }
 
-        DBG(fdds->print_constrained(cerr));
+        BESDEBUG("dap", "constrained DDS: " << endl; fdds->print_constrained(cerr));
 
         // Server functions might mark variables to use their read()
         // methods. Clear that so the CE in d_ce will control what is
@@ -613,7 +631,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        DBG(cerr << "About to call dataset_constraint" << endl);
+        BESDEBUG("dap", cerr << "BESDapResponseBuilder::send_data() - About to call dataset_constraint" << endl);
         dataset_constraint(data_stream, *fdds, eval, false);
 
         if (responseCache())
@@ -622,7 +640,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
         delete fdds;
     }
     else {
-    	BESDEBUG("dap", "Simple constraint" << endl);
+    	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - Simple constraint" << endl);
 
         eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
 
@@ -642,6 +660,10 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
     }
 
     data_stream << flush;
+
+
+	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - END"<< endl);
+
 }
 
 /** Send the DDX response. The DDX never contains data, instead it holds a
