@@ -112,9 +112,9 @@ string BESStoredDapResultCache::getSubDirFromConfig(){
 		// directory of the BES data system.
 	}
 
-
     return subdir;
 }
+
 
 string BESStoredDapResultCache::getResultPrefixFromConfig(){
 	bool found;
@@ -132,10 +132,9 @@ string BESStoredDapResultCache::getResultPrefixFromConfig(){
     return prefix;
 }
 
-string BESStoredDapResultCache::getStoredResultsDirFromConfig(){
-	BESDEBUG("cache", "BESStoreResultCache::getDefaultCacheDir() -  BEGIN" << endl);
-	bool found;
 
+string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
+	bool found;
     string cacheDir = "";
     TheBESKeys::TheKeys()->get_value( BES_CATALOG_ROOT, cacheDir, found ) ;
     if( !found ) {
@@ -147,20 +146,52 @@ string BESStoredDapResultCache::getStoredResultsDirFromConfig(){
             throw BESInternalError(msg , __FILE__, __LINE__);
         }
     }
-	BESDEBUG("cache", "BESStoreResultCache::getDefaultCacheDir() -  Using data directory: " << cacheDir << endl);
-
-
-    if(*cacheDir.rbegin() != '/')
-    	cacheDir += "/";
-
-    string subDir = getSubDirFromConfig(); // Can never start with a '/' (method ensures it)
-
-    cacheDir += subDir;
-	BESDEBUG("cache", "BESStoreResultCache::getDefaultCacheDir() -  Stored Results Directory: " << cacheDir << endl);
-
-	BESDEBUG("cache", "BESStoreResultCache::getDefaultCacheDir() -  END" << endl);
     return cacheDir;
+
 }
+string BESStoredDapResultCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
+
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  BEGIN" << endl);
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPart: "<< firstPart << endl);
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  secondPart: "<< secondPart << endl);
+
+	string firstPathFragment = firstPart;
+	string secondPathFragment = secondPart;
+
+
+	if(addLeadingSlash){
+	    if(*firstPathFragment.begin() != '/')
+	    	firstPathFragment = "/" + firstPathFragment;
+	}
+
+	// make sure there are not multiple slashes at the end of the first part...
+	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
+		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
+		// BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+	}
+
+	// make sure first part ends with a "/"
+    if(*firstPathFragment.rbegin() != '/'){
+    	firstPathFragment += "/";
+    }
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+
+	// make sure second part does not BEGIN with a slash
+	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
+		secondPathFragment = secondPathFragment.substr(1);
+	}
+
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
+
+	string newPath = firstPathFragment + secondPathFragment;
+
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  newPath: "<< newPath << endl);
+	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  END" << endl);
+
+	return newPath;
+
+}
+
 
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
@@ -169,58 +200,42 @@ BESStoredDapResultCache::BESStoredDapResultCache(){
 	bool found;
 #endif
 
-    string resultsDir = getStoredResultsDirFromConfig();
-    string resultPrefix = getResultPrefixFromConfig();
-    unsigned long size_in_megabytes = getCacheSizeFromConfig();
+	d_storedResultsSubdir = getSubDirFromConfig();
+	d_dataRootDir = getBesDataRootDirFromConfig();
+    string resultsDir = assemblePath(d_dataRootDir,d_storedResultsSubdir);
 
-    BESDEBUG("cache", "BESStoreResultCache() - Cache config params: " << resultsDir << ", " << resultPrefix << ", " << size_in_megabytes << endl);
+    d_resultFilePrefix = getResultPrefixFromConfig();
+    d_maxCacheSize = getCacheSizeFromConfig();
 
-    // The required params must be present. If initialize() is not called,
-    // then d_cache will stay null and is_available() will return false.
-    // Also, the directory 'path' must exist, or d_cache will be null.
-    if (!resultsDir.empty() && size_in_megabytes > 0)
-    	initialize(resultsDir, resultPrefix, size_in_megabytes);
+    BESDEBUG("cache", "BESStoreResultCache() - Stored results cache configuration params: " << resultsDir << ", " << d_resultFilePrefix << ", " << d_maxCacheSize << endl);
+
+  	initialize(resultsDir, d_resultFilePrefix, d_maxCacheSize);
 
     BESDEBUG("cache", "BESStoreResultCache::BESStoreResultCache() -  END" << endl);
 }
 
 
-/** @brief Protected constructor that takes as arguments keys to the cache directory,
- * file prefix, and size of the cache to be looked up a configuration file
+/**
  *
- * The keys specified are looked up in the specified keys object. If not
- * found or not set correctly then an exception is thrown. I.E., if the
- * cache directory is empty, the size is zero, or the prefix is empty.
- *
- * @param stored_results_dir key to look up in the keys file to find cache dir
- * @param prefix_key key to look up in the keys file to find the cache prefix
- * @param size_key key to look up in the keys file to find the cache size (in MBytes)
- * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
- * size is 0, or if cache dir does not exist.
  */
-BESStoredDapResultCache::BESStoredDapResultCache(const string &stored_results_dir, const string &prefix, unsigned long long size): BESFileLockingCache(stored_results_dir,prefix,size) {
+BESStoredDapResultCache::BESStoredDapResultCache( const string &data_root_dir, const string &stored_results_subdir, const string &result_file_prefix, unsigned long long max_cache_size){
+
+	d_storedResultsSubdir = stored_results_subdir;
+	d_dataRootDir = data_root_dir;
+	d_resultFilePrefix = result_file_prefix;
+	d_maxCacheSize = max_cache_size;
+	initialize(assemblePath(d_dataRootDir,stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
 
 }
 
 
-/** Get an instance of the BESStoreResultCache object. This class is a singleton, so the
- * first call to any of three 'get_instance()' methods makes an instance and subsequent calls
- * return a pointer to that instance.
- *
- *
- * @param cache_dir_key Key to use to get the value of the cache directory
- * @param prefix_key Key for the item/file prefix. Each file added to the cache uses this
- * as a prefix so cached items can be easily identified when /tmp is used for the cache.
- * @param size_key How big should the cache be, in megabytes
- * @return A pointer to a BESStoreResultCache object
- */
 BESStoredDapResultCache *
-BESStoredDapResultCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
+BESStoredDapResultCache::get_instance(const string &data_root_dir, const string &stored_results_subdir, const string &result_file_prefix, unsigned long long max_cache_size)
 {
     if (d_instance == 0){
-    	if(dir_exists(cache_dir)){
+    	if(dir_exists(data_root_dir)){
         	try {
-                d_instance = new BESStoredDapResultCache(cache_dir, prefix, size);
+                d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix, max_cache_size);
         	}
         	catch(BESInternalError &bie){
         	    BESDEBUG("cache", "BESStoreResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -230,21 +245,19 @@ BESStoredDapResultCache::get_instance(const string &cache_dir, const string &pre
     return d_instance;
 }
 
-/** Get the default instance of the BESStoreResultCache object. This will read "TheBESKeys" looking for the values
- * of FUNCTION_CACHE_PATH, FUNCTION_CACHE_PREFIX, an FUNCTION_CACHE_SIZE to initialize the cache.
+/** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
+ * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
  */
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
     if (d_instance == 0) {
-    	if(dir_exists(getStoredResultsDirFromConfig())){
-        	try {
-                d_instance = new BESStoredDapResultCache();
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "BESStoreResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
-    	}
+		try {
+			d_instance = new BESStoredDapResultCache();
+		}
+		catch(BESInternalError &bie){
+			BESDEBUG("cache", "BESStoreResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+		}
     }
 
     return d_instance;
@@ -402,46 +415,23 @@ BESStoredDapResultCache::get_cached_data_ddx(const string &cache_file_name, Base
 
 
 /**
- * Get the cached DDS object. Unlike the DAP2 DDS response, this is a C++
- * DDS object that holds the response's variables, their attributes and
- * their data. The DDS built by the handlers (but without data) is passed
- * into this method along with an CE evaluator, a ResponseBuilder and a
- * reference to a string. If the DDS has already been cached, the cached
- * copy is read and returned (complete with the attributes and data) and
- * the 'cache_token' value-result parameter is set to a string that should
- * be used with the unlock_and_close() method to release the cache's lock
- * on the response. If the DDS is not in the cache, the response is built,
- * cached, locked and returned. In both cases, the cache-token is used to
- * unlock the entry.
- *
- * @note The method read_dataset() looks in the cache and returns a valid
- * entry if it's found. This method first looks at the cache because another
- * process might have added an entry in the time between the two calls.
- *
- * @todo This code is designed just for server function result caching. find
- * a way to expand it to be general caching software for arbitrary DAP
- * responses.
- *
- * @todo This code utilizes an "unsafe" unlocking scheme in which it
- * depends on the calling method to unlock the cache file. We should build
- * an encapsulating version of, say, the DDS (called CachedDDS?) that carries the
- * lock information and that will unlock the underlying cache file when
- * destroyed (along with destroying the DDS of course).
- *
  *
  * @return The DDS that resulted from calling the server functions
  * in the original CE.
  */
-DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
+string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval)
 {
-    BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - BEGIN" << endl );
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - BEGIN" << endl );
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
     DDS *fdds;
 
     // Get the cache filename for this thing. Do not use the default
     // name mangling; instead use what build_cache_file_name() does.
-    string cache_file_name = get_cache_file_name(build_stored_result_file_name(dds.filename(), constraint), /*mangle*/false);
+    string local_id = get_stored_result_local_id(dds.filename(), constraint);
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - local_id: "<< local_id << endl );
+    string cache_file_name = get_cache_file_name(local_id, /*mangle*/false);
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - cache_file_name: "<< cache_file_name << endl );
     int fd;
     try {
         // If the object in the cache is not valid, remove it. The read_lock will
@@ -452,13 +442,13 @@ DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constra
         	purge_file(cache_file_name);
 
         if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - function ce (change)- cached hit: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce (change)- cached hit: " << cache_file_name << endl);
             fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
         }
         else if (create_and_lock(cache_file_name, fd)) {
             // If here, the cache_file_name could not be locked for read access;
             // try to build it. First make an empty file and get an exclusive lock on it.
-            BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - function ce - caching " << cache_file_name << ", constraint: " << constraint << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce - caching " << cache_file_name << ", constraint: " << constraint << endl);
 
             fdds = new DDS(dds);
             eval->parse_constraint(constraint, *fdds);
@@ -490,7 +480,7 @@ DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constra
             // of the DDS's variables.
 			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
 			//data_stream << flush;
-			rb->dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
+			rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
 			//data_stream << flush;
 
 			data_stream << CRLF << "--" << boundary << "--" << CRLF;
@@ -512,12 +502,25 @@ DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constra
         // get_read_lock() returns immediately if the file does not exist,
         // but blocks waiting to get a shared lock if the file does exist.
         else if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("cache", "BESStoredDapResultCache::cache_dataset() - function ce - cached hit: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce - cached hit: " << cache_file_name << endl);
             fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
         }
         else {
-            throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::cache_dap2_dataset() - Cache error during function invocation.");
+            throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::store_dap2_result() - Cache error during function invocation.");
         }
+
+
+        /**
+         * FIXME I think we need to delete this here, before we close and unlock the cache.
+         */
+    	delete fdds;
+
+        /**
+         * FIXME Is it cool to unlock and close the cache file at this point? I think so...
+         */
+        BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - unlocking and closing cache file "<< cache_file_name  << endl );
+		unlock_and_close(cache_file_name);
+
     }
     catch (...) {
         BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - caught exception, unlocking cache and re-throw." << endl );
@@ -527,10 +530,8 @@ DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constra
     }
 
 
-
-    cache_token = cache_file_name;  // Set this value-result parameter
-    BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - END (cache_token=`"<< cache_token << "'" << endl );
-    return fdds;
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - END (local_id=`"<< local_id << "'" << endl );
+    return local_id;
 }
 
 /**
@@ -541,29 +542,32 @@ DDS *BESStoredDapResultCache::cache_dap2_dataset(DDS &dds, const string &constra
  *
  */
 string
-BESStoredDapResultCache::build_stored_result_file_name(const string &dataset, const string &ce)
+BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const string &ce)
 {
-    BESDEBUG("cache", "build_stored_result_file_name() - BEGIN. dataset: " << dataset << ", ce: " << ce << endl);
+    BESDEBUG("cache", "get_stored_result_local_id() - BEGIN. dataset: " << dataset << ", ce: " << ce << endl);
     std::ostringstream ostr;
     HASH_OBJ<std::string> str_hash;
     string name = dataset + "#" + ce;
     ostr << str_hash(name);
     string hashed_name = ostr.str();
+    BESDEBUG("cache", "get_stored_result_local_id() - hashed_name: " << hashed_name << endl);
 
-    BESDEBUG("cache", "build_stored_result_file_name(): hashed_name: " << hashed_name << endl);
 
-    return hashed_name;
+    string local_id = d_resultFilePrefix + hashed_name;
+    BESDEBUG("cache", "get_stored_result_local_id() - file: " << local_id << endl);
+
+    local_id = assemblePath(d_storedResultsSubdir,local_id);
+
+    BESDEBUG("cache", "get_stored_result_local_id() - END. local_id: " << local_id << endl);
+    return local_id;
 }
 
 
 /** Build the name of file that will holds the uncompressed data from
  * 'src' in the cache.
  *
- * @note How names are mangled: 'src' is the full name of the file to be
- * cached.Tthe file name passed has an extension on the end that will be
- * stripped once the file is cached. For example, if the full path to the
- * file name is /usr/lib/data/fnoc1.nc.gz then the resulting file name
- * will be \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
+ * @note This method overrides the parent methid and DOES NOT support mangling the name.
+ * The "mangle" parameter will be ignored.
  *
  * @param src The source name to cache
  * @param mangle if True, assume the name is a file pathname and mangle it.
@@ -571,37 +575,22 @@ BESStoredDapResultCache::build_stored_result_file_name(const string &dataset, co
  * string) but do turn the string into a pathname located in the cache directory
  * with the cache prefix. the 'mangle' param is true by default.
  */
-string BESStoredDapResultCache::get_cache_file_name(const string &src, bool mangle)
+string BESStoredDapResultCache::get_cache_file_name(const string &local_id, bool mangle)
 {
-    string target = src;
-    // Make sure the target does not begin with slash
-	while(*target.begin() == '/' && target.length()>0){
-		target = target.substr(1);
-	}
-	if(target.empty()){
-        throw BESInternalError("BESStoredDapResultCache: The target cache file name must not be made of only the '/' character. Srsly.", __FILE__, __LINE__);
+	if(local_id.empty()){
+        throw BESInternalError("BESStoredDapResultCache: The target cache file name must not be an empty string. Srsly.", __FILE__, __LINE__);
 	}
 
-    string cacheDir = getCacheDirectory();
-    // Make sure cacheDir String ends in '/'
-    if(*cacheDir.rbegin() != '/')
-    	cacheDir += "/";
+    string cacheFile = assemblePath(d_dataRootDir,local_id);
 
-    string prefix = getCacheFilePrefix();
-    // Make sure the damn prefix does not begin with slash
-	while(*prefix.begin() == '/' && prefix.length()>0){
-		prefix = prefix.substr(1);
-	}
-
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - cacheDir: '" << cacheDir << "'" << endl);
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - prefix:   '" << prefix   << "'" << endl);
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - target:   '" << target   << "'" << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - local_id:   '" << local_id   << "'" << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cache_file_name() - cacheDir: '" << cacheFile << "'" << endl);
 
     if(mangle){
         BESDEBUG("cache", "[WARNING] BESStoredDapResultCache::get_cache_file_name() - The parameter 'mangle' is ignored!" << endl);
     }
 
 
-    return cacheDir + prefix + target;
+    return cacheFile;
 }
 

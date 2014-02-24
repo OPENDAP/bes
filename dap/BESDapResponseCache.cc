@@ -506,7 +506,7 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
             // of the DDS's variables.
 			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
 			//data_stream << flush;
-			rb->dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
+			rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
 			//data_stream << flush;
 
 			data_stream << CRLF << "--" << boundary << "--" << CRLF;

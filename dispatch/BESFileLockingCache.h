@@ -120,6 +120,7 @@ public:
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const string &target);
     virtual void unlock_and_close(int fd);
+    virtual bool getExclusiveLock(string file_name, int &ref_fd);
 
     virtual void lock_cache_write();
     virtual void lock_cache_read();

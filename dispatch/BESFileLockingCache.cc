@@ -200,9 +200,9 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-static bool getExclusiveLock(string file_name, int &ref_fd)
+bool BESFileLockingCache::getExclusiveLock(string file_name, int &ref_fd)
 {
-	BESDEBUG("cache", "getExclusiveLock: " << file_name <<endl);
+	BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() - " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
@@ -223,7 +223,7 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG("cache", "getExclusiveLock exit: " << file_name <<endl);
+    BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() -  exit: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -827,7 +827,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
  */
 void BESFileLockingCache::purge_file(const string &file)
 {
-	BESDEBUG("cache", "purge_file - starting the purge" << endl);
+	BESDEBUG("cache", "BESFileLockingCache::purge_file() - starting the purge" << endl);
 
     try {
         lock_cache_write();
@@ -842,7 +842,7 @@ void BESFileLockingCache::purge_file(const string &file)
                 size = buf.st_size;
             }
 
-            BESDEBUG("cache", "purge_file: " << file << " removed." << endl );
+            BESDEBUG("cache", "BESFileLockingCache::purge_file() - " << file << " removed." << endl );
 
             if (unlink(file.c_str()) != 0)
                 throw BESInternalError("Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__, __LINE__);

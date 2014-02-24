@@ -54,6 +54,7 @@ protected:
 	BESDapResponseCache *d_response_cache;
 
 	void initialize();
+	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 
 public:
 
@@ -99,7 +100,7 @@ public:
 	virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void dataset_constraint(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool ce_eval = true);
 	virtual void send_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
@@ -107,7 +108,7 @@ public:
 	virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
+	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
 
 	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval,
@@ -118,8 +119,8 @@ public:
 
 	// TODO
 	// Is this used by the code that caches function results? If not, remove.
-	virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-			const std::string &start, const std::string &boundary, bool with_mime_headers = true);
+	//virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	//		const std::string &start, const std::string &boundary, bool with_mime_headers = true);
 };
 
 #endif // _response_builder_h

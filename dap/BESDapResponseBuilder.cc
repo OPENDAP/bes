@@ -57,6 +57,7 @@
 
 #include <DMR.h>
 #include <XMLWriter.h>
+#include <D4AsyncUtil.h>
 #include <D4StreamMarshaller.h>
 #include <chunked_ostream.h>
 #include <chunked_istream.h>
@@ -72,9 +73,10 @@
 #include <AlarmHandler.h>
 #endif
 
+#include "BESDapResponseBuilder.h"
 #include "BESContextManager.h"
 #include "BESDapResponseCache.h"
-#include "BESDapResponseBuilder.h"
+#include "BESStoredDapResultCache.h"
 #include "BESDebug.h"
 
 //#define CRLF "\r\n"             // Change here, expr-test.cc
@@ -489,30 +491,77 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
+
+bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval) {
+    bool isStoreResultRequest = false;
+    string serviceUrl = BESContextManager::TheManager()->get_context("store_result", isStoreResultRequest);
+	BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - isStoreResultRequest="<< (isStoreResultRequest?"true":"false") << endl);
+
+	if(isStoreResultRequest){
+
+		/**
+		 * TODO Here we need to check to see if the client has indicated that they can do the async dance.
+		 * If they have not then we need to return the async required response.
+		 * Which begs the question - how does a dap2 client indicate they can do async?
+		 *
+		 */
+
+		BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - serviceUrl="<< serviceUrl << endl);
+
+		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+		string storedResultId="";
+		storedResultId = resultCache->store_dap2_result(dds, "", this, &eval);
+
+		BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
+
+		string targetURL = resultCache->assemblePath(serviceUrl,storedResultId);
+		BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
+
+		D4AsyncUtil d4au;
+		XMLWriter xmlWrtr;
+		d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL);
+		out << xmlWrtr.get_doc();
+		out << flush;
+		BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent AsyncAccepted" << endl);
+	}
+	return isStoreResultRequest;
+}
+
+
+
+
 /**
  * Build/return the BLOB part of the DAP2 data response.
  */
-void BESDapResponseBuilder::dataset_constraint(ostream &out, DDS & dds, ConstraintEvaluator & eval, bool ce_eval)
+void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool ce_eval)
 {
-    // send constrained DDS
-    DBG(cerr << "Inside dataset_constraint" << endl);
+	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - BEGIN" << endl);
 
-    dds.print_constrained(out);
-    out << "Data:\n";
-    out << flush;
+    bool isStoreResultRequest = false;
+    string serviceUrl = BESContextManager::TheManager()->get_context("store_result", isStoreResultRequest);
+	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - isStoreResultRequest="<< (isStoreResultRequest?"true":"false") << endl);
 
-    XDRStreamMarshaller m(out);
+	if(!store_dap2_result(out,dds,eval)){
 
-    try {
-        // Send all variables in the current projection (send_p())
-        for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++)
-            if ((*i)->send_p()) {
-                (*i)->serialize(eval, dds, m, ce_eval);
-            }
-    }
-    catch (Error & e) {
-        throw;
-    }
+		BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - Serializing DataDDS to stream..." << endl);
+
+	    dds.print_constrained(out);
+	    out << "Data:\n";
+	    out << flush;
+
+	    XDRStreamMarshaller m(out);
+
+		// Send all variables in the current projection (send_p())
+		for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++){
+			if ((*i)->send_p()) {
+				(*i)->serialize(eval, dds, m, ce_eval);
+			}
+		}
+	}
+
+	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - END" << endl);
+
+
 }
 
 /**
@@ -521,7 +570,7 @@ void BESDapResponseBuilder::dataset_constraint(ostream &out, DDS & dds, Constrai
  * been used to cache responses for some of the OPULS unstructured
  * grid work. It was originally intended to be used for DAP4.
  */
-void BESDapResponseBuilder::dataset_constraint_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
+void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
         const string &boundary, const string &start, bool ce_eval)
 {
     // Write the MPM headers for the DDX (text/xml) part of the response
@@ -632,7 +681,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
         BESDEBUG("dap", cerr << "BESDapResponseBuilder::send_data() - About to call dataset_constraint" << endl);
-        dataset_constraint(data_stream, *fdds, eval, false);
+        serialize_dap2_data_dds(data_stream, *fdds, eval, false);
 
         if (responseCache())
         	responseCache()->unlock_and_close(cache_token);
@@ -656,7 +705,7 @@ void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, Constraint
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        dataset_constraint(data_stream, dds, eval);
+        serialize_dap2_data_dds(data_stream, dds, eval);
     }
 
     data_stream << flush;
@@ -1021,6 +1070,8 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
 }
 #endif
 
+
+#if 0
 /** Send the data in the DDS object back to the client program. The data is
  encoded using a Marshaller, and enclosed in a MIME document which is all sent
  to \c data_stream.
@@ -1087,4 +1138,5 @@ void BESDapResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, Cons
     if (with_mime_headers)
         data_stream << CRLF << "--" << boundary << "--" << CRLF;
 }
+#endif
 
