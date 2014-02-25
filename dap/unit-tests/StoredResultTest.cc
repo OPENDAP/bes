@@ -331,6 +331,72 @@ public:
     }
 
 
+	// The first call reads values into the DDS, stores a copy in the cache and
+	// returns the DDS. The second call reads the value from the cache.
+	void cache_and_read_a_response2()
+	{
+		DBG(cerr << "**** cache_and_read_a_response2() - BEGIN" << endl);
+
+		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
+		string stored_result_local_id;
+		try {
+			DBG(cerr << "cache_and_read_a_response2() - Storing DAP2 dataset." << endl);
+			stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
+			DBG(cerr << "cache_and_read_a_response2() - Cached response local id: " << stored_result_local_id << endl);
+			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+
+
+			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// Force read from the cache file
+			DBG(cerr << "cache_and_read_a_response2() - Reading stored DAP2 dataset." << endl);
+			DDS *cache_dds = cache->get_cached_data_ddx(d_data_root_dir+stored_result_local_id, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_data_ddx()
+			// does not lock the cached item.
+			//cache->unlock_and_close(token);
+			DBG(cerr << "cache_and_read_a_response2() - Stored DAP2 dataset read." << endl);
+
+			CPPUNIT_ASSERT(cache_dds);
+			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+			// There are nine variables in test.05.ddx
+			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+
+			ostringstream oss;
+			DDS::Vars_iter i = cache_dds->var_begin();
+			while (i != cache_dds->var_end()) {
+				DBG(cerr << "Variable " << (*i)->name() << endl);
+				// this will incrementally add thr string rep of values to 'oss'
+				(*i)->print_val(oss, "", false /*print declaration */);
+				DBG(cerr << "Value " << oss.str() << endl);
+				++i;
+			}
+
+			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
+			// is a any single digit. The *Test classes implement a counter and return strings where
+			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
+			// values for <number>.
+			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			delete cache_dds; cache_dds = 0;
+
+
+
+			DBG(cerr << "cache_and_read_a_response2() - Storing the SAME DAP2 dataset." << endl);
+			stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
+			DBG(cerr << "cache_and_read_a_response2() - Cached response local id: " << stored_result_local_id << endl);
+			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+
+
+			cache->delete_instance();
+
+		}
+		catch (Error &e) {
+			CPPUNIT_FAIL(e.get_error_message());
+		}
+		DBG(cerr << "**** cache_and_read_a_response2() - END" << endl);
+
+    }
+
+
 
 	void configureFromBesKeysAndStoreResult()
 	{
@@ -402,6 +468,7 @@ public:
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_response);
     CPPUNIT_TEST(cache_and_read_a_response);
+    CPPUNIT_TEST(cache_and_read_a_response2);
     CPPUNIT_TEST(configureFromBesKeysAndStoreResult);
 
     CPPUNIT_TEST_SUITE_END();
