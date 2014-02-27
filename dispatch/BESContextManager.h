@@ -63,8 +63,8 @@ public:
     typedef map< string, string >::const_iterator Context_citer ;
     typedef map< string, string >::iterator Context_iter ;
 
-    virtual void		set_context( const string &name,
-					     const string &value ) ;
+    virtual void		set_context( const string &name, const string &value ) ;
+    virtual void		unset_context( const string &name) ;
     virtual string		get_context( const string &name, bool &found ) ;
 
     virtual void		list_context( BESInfo &info ) ;

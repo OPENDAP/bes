@@ -29,6 +29,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <sys/types.h>
+#include <stdio.h>
 
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
@@ -51,6 +52,7 @@
 #include <DAS.h>
 #include <DDS.h>
 #include <Str.h>
+#include <DDXParserSAX2.h>
 
 #include <GetOpt.h>
 
@@ -64,8 +66,10 @@
 
 #include "BESDebug.h"
 #include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "BESDapResponseBuilder.h"
 #include "BESDapResponseCache.h"
+#include "BESStoredDapResultCache.h"
 #include "testFile.h"
 #include "test_config.h"
 
@@ -79,6 +83,9 @@ static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define BES_DATA_ROOT "BES.Data.RootDirectory"
+#define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
 
 static void
 rb_simple_function(int, BaseType *[], DDS &, BaseType **btpp)
@@ -123,6 +130,9 @@ parse_datadds_response(istream &in, string &prolog, vector<char> &blob)
 class ResponseBuilderTest: public TestFixture {
 private:
     BESDapResponseBuilder *df, *df3, *df5, *df6;
+    string d_stored_result_subdir;
+	DDS *test_05_dds;
+	string stored_dap2_result_filename;
 
     AttrTable *cont_a;
     DAS *das;
@@ -154,7 +164,16 @@ private:
     }
 
 public:
-    ResponseBuilderTest(): df(0), df3(0), df5(0), df6(0), cont_a(0), das(0), dds(0) {
+    ResponseBuilderTest(): df(0),
+                           df3(0),
+                           df5(0),
+                           df6(0),
+                           d_stored_result_subdir("/response_cache"),
+                           test_05_dds(0),
+                           stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_17566926586167953453.data_ddx"),
+                           cont_a(0),
+                           das(0),
+                           dds(0) {
         now = time(0);
         ostringstream time_string;
         time_string << (int) now;
@@ -217,10 +236,31 @@ public:
         dds->set_dap_major(3);
         dds->set_dap_minor(2);
 
+
+    	string cid;
+    	DDXParser dp(&ttf);
+    	test_05_dds = new DDS(&ttf);
+		dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
+		// for these tests, set the filename to the dataset_name. ...keeps the cache names short
+		test_05_dds->filename(test_05_dds->get_dataset_name());
+    	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
+    	DBG(cerr << "setUp() - DDS Name: " << test_05_dds->get_dataset_name() << endl);
+    	DBG(cerr << "setUp() - Intern CID: " << cid << endl);
+
+
+
+
+
+
+
+
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PATH_KEY,  (string)TEST_SRC_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PREFIX_KEY,  "dap_response");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::SIZE_KEY,    "100");
+
+
+        DBG(cerr << "setUp() - END" << endl);
 
     }
 
@@ -232,6 +272,8 @@ public:
 
         delete das; das = 0;
         delete dds; dds = 0;
+
+        remove(stored_dap2_result_filename.c_str());
     }
 
     bool re_match(Regex &r, const string &s) {
@@ -246,6 +288,11 @@ public:
         int pos = r.match(s.c_str(), s.length());
         DBG(cerr << "r.match(s): " << pos << endl);
         return pos > 0;
+    }
+
+    inline bool file_exists (const std::string& name) {
+      struct stat buffer;
+      return (stat (name.c_str(), &buffer) == 0);
     }
 
 	void send_das_test() {
@@ -304,6 +351,164 @@ public:
         }
     }
 
+    void store_dap2_result_test() {
+
+    	DBG(cerr << "store_dap2_result_test() - Configuring BES Keys."<< endl);
+
+        TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  (string)TEST_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+        BESContextManager::TheManager()->set_context("store_result","http://localhost:8080/opendap/");
+
+        ConstraintEvaluator ce;
+
+    	DBG(cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
+        BESContextManager::TheManager()->unset_context("async_accepted");
+
+        string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
+        try {
+            oss.str("");
+        	df->send_data(oss, *test_05_dds, ce, false);
+
+        	string candidateResponseDoc = oss.str();
+
+            DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
+            DBG(cerr << "store_dap2_result_test() - Baseline Document: " << endl << baseline << endl);
+            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
+
+
+            CPPUNIT_ASSERT(!file_exists(stored_dap2_result_filename));
+
+        } catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+
+    	DBG(cerr << "store_dap2_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
+
+        BESContextManager::TheManager()->set_context("async_accepted","0");
+
+        baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_accepted.xml");
+
+
+        try {
+            oss.str("");
+        	df->send_data(oss, *test_05_dds, ce, false);
+
+        	string candidateResponseDoc = oss.str();
+            DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
+            DBG(cerr << "store_dap2_result_test() - Baseline Document: " << endl << baseline << endl);
+            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
+
+            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_12638119030834692914.data_ddx";
+            DBG(cerr << "store_dap2_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
+
+            TestTypeFactory ttf;
+			// Force read from the cache file
+            DBG(cerr << "store_dap2_result_test() - Reading stored DAP2 dataset." << endl);
+			DDS *cache_dds = BESStoredDapResultCache::get_instance()->get_cached_data_ddx(stored_dap2_result_filename, &ttf, "test.05");
+			DBG(cerr << "store_dap2_result_test() - Stored DAP2 dataset read." << endl);
+			CPPUNIT_ASSERT(cache_dds);
+
+			// There are nine variables in test.05.ddx
+			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+
+			ostringstream oss;
+			DDS::Vars_iter i = cache_dds->var_begin();
+			while (i != cache_dds->var_end()) {
+				DBG(cerr << "Variable " << (*i)->name() << endl);
+				// this will incrementally add thr string rep of values to 'oss'
+				(*i)->print_val(oss, "", false /*print declaration */);
+				DBG(cerr << "Value " << oss.str() << endl);
+				++i;
+			}
+
+			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
+			// is a any single digit. The *Test classes implement a counter and return strings where
+			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
+			// values for <number>.
+			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			delete cache_dds; cache_dds = 0;
+
+        } catch (Error &e) {
+            CPPUNIT_FAIL("ERROR: " + e.get_error_message());
+        }
+
+        BESContextManager::TheManager()->unset_context("store_result");
+        BESContextManager::TheManager()->unset_context("async_accepted");
+
+
+    }
+
+#if 0
+    void store_dap4_result_test() {
+
+    	DBG(cerr << "store_dap4_result_test() - Configuring BES Keys."<< endl);
+
+        TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  (string)TEST_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+        BESContextManager::TheManager()->set_context("store_result","http://localhost:8080/opendap/");
+
+
+        ConstraintEvaluator ce;
+
+    	DBG(cerr << "store_dap4_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
+
+        string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_required.xml");
+        try {
+            oss.str("");
+        	df->send_dap4_data(oss, *dmr, ce, false, false);
+
+        	string candidateResponseDoc = oss.str();
+
+            DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
+            DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
+            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
+
+            // FIXME Test to make sure no stored object file is created.
+
+        } catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+
+    	DBG(cerr << "store_dap4_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
+
+        BESContextManager::TheManager()->set_context("async_accepted","0");
+
+        baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_accepted.xml");
+
+        try {
+            oss.str("");
+        	df->send_data(oss, *dds, ce, false);
+
+        	string candidateResponseDoc = oss.str();
+            DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
+            DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
+            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
+
+
+            string stored_object_baseline_file = (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data.dap";
+            DBG(cerr << "store_dap4_result_test() - Stored Object Baseline File: " << endl << stored_object_baseline_file << endl);
+
+            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_12638119030834692914.dap";
+            DBG(cerr << "store_dap4_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
+
+            // FIXME Binary compare of baseline and response needs to be implmented here.
+
+        } catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+
+    }
+#endif
 
     void escape_code_test() {
         // These should NOT be escaped.
@@ -404,6 +609,11 @@ public:
 
         CPPUNIT_TEST(escape_code_test);
         CPPUNIT_TEST(invoke_server_side_function_test);
+        CPPUNIT_TEST(store_dap2_result_test);
+#if 0
+        CPPUNIT_TEST(store_dap4_result_test);
+#endif
+
 
     CPPUNIT_TEST_SUITE_END();
 };

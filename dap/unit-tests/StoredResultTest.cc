@@ -141,6 +141,10 @@ public:
 		DBG(cerr << "tearDown() - END" << endl);
     }
 
+
+
+
+
     bool re_match(Regex &r, const string &s) {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -245,6 +249,7 @@ public:
 	void cache_a_response()
 	{
 		DBG(cerr << "**** cache_a_response() - BEGIN" << endl);
+		string baseline_local_id = d_stored_result_subdir + "/result_17566926586167953453.data_ddx";
 
 		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
 
@@ -263,7 +268,7 @@ public:
 			stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
 
 			DBG(cerr << "Cached response id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 			// TODO Stat the cache file to check it's size
 			cache->delete_instance();
 		}
@@ -279,6 +284,7 @@ public:
 	void cache_and_read_a_response()
 	{
 		DBG(cerr << "**** cache_and_read_a_response() - BEGIN" << endl);
+		string baseline_local_id = d_stored_result_subdir + "/result_17566926586167953453.data_ddx";
 
 		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
 		string stored_result_local_id;
@@ -298,7 +304,7 @@ public:
 			DBG(cerr << "cache_and_read_a_response() - Stored DAP2 dataset read." << endl);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -336,6 +342,7 @@ public:
 	void cache_and_read_a_response2()
 	{
 		DBG(cerr << "**** cache_and_read_a_response2() - BEGIN" << endl);
+		string baseline_local_id = d_stored_result_subdir + "/result_17566926586167953453.data_ddx";
 
 		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
 		string stored_result_local_id;
@@ -343,7 +350,7 @@ public:
 			DBG(cerr << "cache_and_read_a_response2() - Storing DAP2 dataset." << endl);
 			stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
 			DBG(cerr << "cache_and_read_a_response2() - Cached response local id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
 
 			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -356,7 +363,7 @@ public:
 			DBG(cerr << "cache_and_read_a_response2() - Stored DAP2 dataset read." << endl);
 
 			CPPUNIT_ASSERT(cache_dds);
-			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
+			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 			// There are nine variables in test.05.ddx
 			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
@@ -379,12 +386,10 @@ public:
 			delete cache_dds; cache_dds = 0;
 
 
-
 			DBG(cerr << "cache_and_read_a_response2() - Storing the SAME DAP2 dataset." << endl);
 			stored_result_local_id = cache->store_dap2_result(*test_05_dds, "", &rb, &eval);
 			DBG(cerr << "cache_and_read_a_response2() - Cached response local id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == d_stored_result_subdir + "/result_17566926586167953453");
-
+			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
 			cache->delete_instance();
 
@@ -401,6 +406,7 @@ public:
 	void configureFromBesKeysAndStoreResult()
 	{
 		DBG(cerr << "**** configureFromBesKeysAndStoreResult() - BEGIN" << endl);
+		string baseline_local_id = d_stored_result_subdir + "/my_result_17566926586167953453.data_ddx";
 
     	DBG(cerr << "Configuring BES Keys."<< endl);
 
@@ -420,7 +426,7 @@ public:
 			//cache->unlock_and_close(stored_result_local_id);
 
 			DBG(cerr << "Cached response id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT("/"+stored_result_local_id == d_stored_result_subdir + "/my_result_17566926586167953453");
+			CPPUNIT_ASSERT("/"+stored_result_local_id == baseline_local_id);
 
 			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file

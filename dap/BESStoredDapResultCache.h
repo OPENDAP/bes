@@ -27,6 +27,8 @@
 #define _bes_store_result_cache_h
 
 #include <string>
+
+#include <DapXmlNamespaces.h>
 #include "BESFileLockingCache.h"
 
 class BESDapResponseBuilder;
@@ -61,12 +63,10 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
 
     friend class StoredResultTest;
 
-
-    string get_stored_result_local_id(const string &dataset, const string &ce);
+    string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 
     string getBesDataRootDirFromConfig();
     string getSubDirFromConfig();
@@ -86,11 +86,16 @@ public:
     static BESStoredDapResultCache *get_instance();
     static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
+    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+
     virtual ~BESStoredDapResultCache() {}
 
     // Store the passed DDS to disk as a serialized DAP2 object.
     virtual string store_dap2_result(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval);
+
+    // Store the passed DDS to disk as a serialized DAP2 object.
+    virtual string store_dap4_result(libdap::DMR &dmr, const string &constraint, BESDapResponseBuilder *rb);
 
     // virtual void unlock_and_close(const std::string &cache_token);
 

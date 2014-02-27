@@ -117,6 +117,9 @@ public:
 	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
 			bool with_mime_headers = true, bool filter = false);
 
+	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true, bool filter = false);
+	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
+
 	// TODO
 	// Is this used by the code that caches function results? If not, remove.
 	//virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,

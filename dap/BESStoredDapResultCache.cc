@@ -37,6 +37,8 @@
 #include <sstream>
 
 #include <DDS.h>
+#include <DMR.h>
+#include <DapXmlNamespaces.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <XDRStreamMarshaller.h>
@@ -542,8 +544,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
 
 /**
  *
- * @return The DDS that resulted from calling the server functions
- * in the original CE.
+ * @return The local ID (relative to the BES data root directory) of the stored dataset.
  */
 string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval)
 {
@@ -553,7 +554,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
 
     // Get the cache filename for this thing. Do not use the default
     // name mangling; instead use what build_cache_file_name() does.
-    string local_id = get_stored_result_local_id(dds.filename(), constraint);
+    string local_id = get_stored_result_local_id(dds.filename(), constraint, DAP_3_2);
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - local_id: "<< local_id << endl );
     string cache_file_name = get_cache_file_name(local_id, /*mangle*/false);
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - cache_file_name: "<< cache_file_name << endl );
@@ -572,7 +573,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
         else if (create_and_lock(cache_file_name, fd)) {
             // If here, the cache_file_name could not be locked for read access;
             // try to build it. First make an empty file and get an exclusive lock on it.
-            BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce - caching " << cache_file_name << ", constraint: " << constraint << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - cache_file_name " << cache_file_name << ", constraint: " << constraint << endl);
             DDS *fdds;
 
             fdds = new DDS(dds);
@@ -668,7 +669,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
  *
  */
 string
-BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const string &ce)
+BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version )
 {
     BESDEBUG("cache", "get_stored_result_local_id() - BEGIN. dataset: " << dataset << ", ce: " << ce << endl);
     std::ostringstream ostr;
@@ -678,8 +679,28 @@ BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const
     string hashed_name = ostr.str();
     BESDEBUG("cache", "get_stored_result_local_id() - hashed_name: " << hashed_name << endl);
 
+    string suffix="";
+    switch(version){
+	case DAP_2_0:
+		suffix = ".dods";
+		break;
 
-    string local_id = d_resultFilePrefix + hashed_name;
+	case DAP_3_2:
+		suffix = ".data_ddx";
+		break;
+
+	case DAP_4_0:
+		suffix = ".dap";
+		break;
+	default:
+        throw BESInternalError("BESStoredDapResultCache::get_stored_result_local_id() - Unrecognized DAP version!!", __FILE__, __LINE__);
+        break;
+    }
+
+    BESDEBUG("cache", "get_stored_result_local_id() - Data file suffix: " << suffix << endl);
+
+
+    string local_id = d_resultFilePrefix + hashed_name + suffix;
     BESDEBUG("cache", "get_stored_result_local_id() - file: " << local_id << endl);
 
     local_id = assemblePath(d_storedResultsSubdir,local_id);
@@ -687,6 +708,8 @@ BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const
     BESDEBUG("cache", "get_stored_result_local_id() - END. local_id: " << local_id << endl);
     return local_id;
 }
+
+
 
 
 /** Build the name of file that will holds the uncompressed data from
@@ -718,5 +741,90 @@ string BESStoredDapResultCache::get_cache_file_name(const string &local_id, bool
 
 
     return cacheFile;
+}
+
+/**
+ *
+ * @return The local ID (relative to the BES data root directory) of the stored dataset.
+ */
+string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constraint, BESDapResponseBuilder *rb){
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - BEGIN" << endl );
+    // These are used for the cached or newly created DDS object
+    BaseTypeFactory factory;
+
+    // Get the cache filename for this thing. Do not use the default
+    // name mangling; instead use what build_cache_file_name() does.
+    string local_id = get_stored_result_local_id(dmr.filename(), constraint, DAP_4_0);
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - local_id: "<< local_id << endl );
+    string cache_file_name = get_cache_file_name(local_id, /*mangle*/false);
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - cache_file_name: "<< cache_file_name << endl );
+    int fd;
+    try {
+        // If the object in the cache is not valid, remove it. The read_lock will
+        // then fail and the code will drop down to the create_and_lock() call.
+        // is_valid() tests for a non-zero object and for d_dateset newer than
+        // the cached object.
+        if (!is_valid(cache_file_name, dmr.filename()))
+        	purge_file(cache_file_name);
+
+        if (get_read_lock(cache_file_name, fd)) {
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - Stored Result already exists. Not rewriting file: " << cache_file_name << endl);
+        }
+        else if (create_and_lock(cache_file_name, fd)) {
+            // If here, the cache_file_name could not be locked for read access;
+            // try to build it. First make an empty file and get an exclusive lock on it.
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - cache_file_name: " << cache_file_name << ", constraint: " << constraint << endl);
+
+            ofstream data_stream(cache_file_name.c_str());
+            if (!data_stream)
+            	throw InternalErr(__FILE__, __LINE__, "Could not open '" + cache_file_name + "' to write cached response.");
+
+			//data_stream << flush;
+			rb->serialize_dap4_data(data_stream, dmr, false, false);
+			//data_stream << flush;
+
+			data_stream.close();
+
+            // Change the exclusive lock on the new file to a shared lock. This keeps
+            // other processes from purging the new file and ensures that the reading
+            // process can use it.
+			exclusive_to_shared_lock(fd);
+
+            // Now update the total cache size info and purge if needed. The new file's
+            // name is passed into the purge method because this process cannot detect its
+            // own lock on the file.
+            unsigned long long size = update_cache_info(cache_file_name);
+            if (cache_too_big(size))
+            	update_and_purge(cache_file_name);
+        }
+        // get_read_lock() returns immediately if the file does not exist,
+        // but blocks waiting to get a shared lock if the file does exist.
+        else if (get_read_lock(cache_file_name, fd)) {
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - Stored Result already exists. Not rewriting file: " << cache_file_name << endl);
+        }
+        else {
+            throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::store_dap4_result() - Cache error during function invocation.");
+        }
+
+
+
+        /**
+         * FIXME Is it cool to unlock and close the cache file at this point? I think so...
+         */
+        BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - unlocking and closing cache file "<< cache_file_name  << endl );
+		unlock_and_close(cache_file_name);
+
+    }
+    catch (...) {
+        BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - caught exception, unlocking cache and re-throw." << endl );
+        // I think this call is not needed. jhrg 10/23/12
+        unlock_cache();
+        throw;
+    }
+
+
+    BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - END (local_id=`"<< local_id << "')" << endl );
+    return local_id;
+
 }
 
