@@ -408,7 +408,7 @@ public:
             TestTypeFactory ttf;
 			// Force read from the cache file
             DBG(cerr << "store_dap2_result_test() - Reading stored DAP2 dataset." << endl);
-			DDS *cache_dds = BESStoredDapResultCache::get_instance()->get_cached_data_ddx(stored_dap2_result_filename, &ttf, "test.05");
+			DDS *cache_dds = BESStoredDapResultCache::get_instance()->get_cached_dap2_data_ddx(stored_dap2_result_filename, &ttf, "test.05");
 			DBG(cerr << "store_dap2_result_test() - Stored DAP2 dataset read." << endl);
 			CPPUNIT_ASSERT(cache_dds);
 

@@ -41,8 +41,11 @@
 #include <DapXmlNamespaces.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
+#include <D4ParserSax2.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRStreamUnMarshaller.h>
+#include <chunked_istream.h>
+#include <D4StreamUnMarshaller.h>
 //<XDRFileUnMarshaller.h>
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
@@ -383,11 +386,72 @@ void BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file
 }
 
 /**
+ * Read the data from the saved response document.
+ *
+ * @note this method is made of code copied from Connect (process_data(0)
+ * but this copy assumes it is reading a DDX with data written using the
+ * code in ResponseCache::cache_data_ddx().
+ *
+ * @param data The input stream
+ * @parma fdds Load this DDS object with the variables, attributes and
+ * data values from the cached DDS.
+ */
+void BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr)
+{
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - BEGIN" << endl);
+
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Opening cache file: " << cache_file_name << endl);
+
+
+    fstream in(cache_file_name.c_str(), ios::in|ios::binary);
+
+    // Gobble up the response's initial set of MIME headers. Normally
+    // a client would extract information from these headers.
+    remove_mime_header(in);
+
+    chunked_istream cis(in, CHUNK_SIZE);
+
+    bool debug = false;
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parser debugging enabled." << endl; debug=true );
+
+	// parse the DMR, stopping when the boundary is found.
+	// force chunk read
+	// get chunk size
+	int chunk_size = cis.read_next_chunk();
+
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - First chunk_size: " << chunk_size << endl);
+
+	if(chunk_size == EOF){
+        throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::read_dap4_data_from_cache() - Failed to read first chunk from file. Chunk size = EOF (aka " + libdap::long_to_string(EOF) + ")");
+	}
+
+	// get chunk
+	char chunk[chunk_size];
+	cis.read(chunk, chunk_size);
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Read first chunk." );
+
+	// parse char * with given size
+	D4ParserSax2 parser;
+	// '-2' to discard the CRLF pair
+	parser.intern(chunk, chunk_size-2, dmr, debug);
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parsed first chunk." );
+
+    D4StreamUnMarshaller um(cis, cis.twiddle_bytes());
+
+    dmr->root()->deserialize(um, *dmr);
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Deserialized data." );
+
+	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - END" << endl);
+
+}
+
+
+/**
  * Read data from cache. Allocates a new DDS using the given factory.
  *
  */
 DDS *
-BESStoredDapResultCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
+BESStoredDapResultCache::get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
 {
     BESDEBUG("cache", "Reading cache for " << cache_file_name << endl);
 
@@ -412,6 +476,36 @@ BESStoredDapResultCache::get_cached_data_ddx(const string &cache_file_name, Base
     }
 
     return fdds;
+}
+
+
+/**
+ * Read data from cache. Allocates a new DDS using the given factory.
+ *
+ */
+DMR *
+BESStoredDapResultCache::get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename)
+{
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - Reading cache for " << cache_file_name << endl);
+
+    DMR *fdmr = new DMR(factory);
+
+    fdmr->set_filename(filename) ;
+    //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
+
+    read_dap4_data_from_cache(cache_file_name, fdmr);
+
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Filename: " << fdmr->filename() << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Dataset name: " << fdmr->name() << endl);
+
+    fdmr->set_factory( 0 ) ;
+
+    // mark everything as read. and send. That is, make sure that when a response
+    // is retrieved from the cache, all of the variables are marked as to be sent
+    fdmr->root()->set_send_p(true);
+    fdmr->root()->set_read_p(true);
+
+    return fdmr;
 }
 
 
@@ -447,7 +541,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
 
         if (get_read_lock(cache_file_name, fd)) {
             BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce (change)- cached hit: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.filename());
+            fdds = get_cached_dap2_data_ddx(cache_file_name, &factory, dds.filename());
         }
         else if (create_and_lock(cache_file_name, fd)) {
             // If here, the cache_file_name could not be locked for read access;
@@ -507,7 +601,7 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
         // but blocks waiting to get a shared lock if the file does exist.
         else if (get_read_lock(cache_file_name, fd)) {
             BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - function ce - cached hit: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
+            fdds = get_cached_dap2_data_ddx(cache_file_name, &factory, dds.get_dataset_name());
         }
         else {
             throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::store_dap2_result() - Cache error during function invocation.");
@@ -747,6 +841,7 @@ string BESStoredDapResultCache::get_cache_file_name(const string &local_id, bool
  *
  * @return The local ID (relative to the BES data root directory) of the stored dataset.
  */
+
 string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constraint, BESDapResponseBuilder *rb){
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - BEGIN" << endl );
     // These are used for the cached or newly created DDS object
@@ -764,8 +859,10 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
         // then fail and the code will drop down to the create_and_lock() call.
         // is_valid() tests for a non-zero object and for d_dateset newer than
         // the cached object.
-        if (!is_valid(cache_file_name, dmr.filename()))
+        if (!is_valid(cache_file_name, dmr.filename())){
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - File is not valid. Purging file from cache. filename: " << cache_file_name << endl);
         	purge_file(cache_file_name);
+        }
 
         if (get_read_lock(cache_file_name, fd)) {
             BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - Stored Result already exists. Not rewriting file: " << cache_file_name << endl);
@@ -800,7 +897,9 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
         // get_read_lock() returns immediately if the file does not exist,
         // but blocks waiting to get a shared lock if the file does exist.
         else if (get_read_lock(cache_file_name, fd)) {
-            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - Stored Result already exists. Not rewriting file: " << cache_file_name << endl);
+            BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - Couldn't create and lock file, But I got a read lock. "
+            		"Result may have been created by another process. "
+            		"Not rewriting file: " << cache_file_name << endl);
         }
         else {
             throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::store_dap4_result() - Cache error during function invocation.");

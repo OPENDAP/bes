@@ -29,6 +29,7 @@
 #include <string>
 
 #include <DapXmlNamespaces.h>
+#include <DMR.h>
 #include "BESFileLockingCache.h"
 
 class BESDapResponseBuilder;
@@ -63,8 +64,10 @@ private:
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+    void read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
 
-    friend class StoredResultTest;
+    friend class StoredDap2ResultTest;
+    friend class StoredDap4ResultTest;
 
     string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 
@@ -86,7 +89,9 @@ public:
     static BESStoredDapResultCache *get_instance();
     static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+    libdap::DDS *get_cached_dap2_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+    libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename);
+
 
     virtual ~BESStoredDapResultCache() {}
 

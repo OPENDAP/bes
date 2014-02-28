@@ -404,7 +404,7 @@ DDS *BESDapResponseCache::read_dataset(const string &filename, const string &con
     try {
         if (get_read_lock(cache_file_name, fd) && is_valid(cache_file_name, filename)) {
             BESDEBUG("cache", "function ce (change)- cached hit: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, filename);
+            fdds = get_cached_dap2_data_ddx(cache_file_name, &factory, filename);
         }
     }
     catch (...) {

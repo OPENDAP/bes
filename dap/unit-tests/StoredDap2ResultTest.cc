@@ -70,7 +70,7 @@ static bool debug = false;
 
 using namespace libdap;
 
-class StoredResultTest: public TestFixture {
+class StoredDap2ResultTest: public TestFixture {
 private:
 	TestTypeFactory ttf;
 	DDS *test_05_dds;
@@ -85,7 +85,7 @@ private:
     BESStoredDapResultCache *cache;
 
 public:
-    StoredResultTest() : test_05_dds(0),
+    StoredDap2ResultTest() : test_05_dds(0),
     					 dp(&ttf),
     					 d_data_root_dir(string(TEST_SRC_DIR)),
     					 d_stored_result_subdir("/response_cache"),
@@ -93,7 +93,7 @@ public:
     					 cache(0) {
     }
 
-    ~StoredResultTest() {
+    ~StoredDap2ResultTest() {
     }
 
     void clean_cache(const string &directory, const string &prefix) {
@@ -137,6 +137,7 @@ public:
 		DBG(cerr << "tearDown() - BEGIN" << endl);
 
 		clean_cache(d_response_cache, "result_");
+		clean_cache(d_response_cache, "my_result_");
 		delete test_05_dds;
 		DBG(cerr << "tearDown() - END" << endl);
     }
@@ -294,11 +295,11 @@ public:
 			DBG(cerr << "Cached response id: " << stored_result_local_id << endl);
 
 
-			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
 			DBG(cerr << "cache_and_read_a_response() - Reading stored DAP2 dataset." << endl);
-			DDS *cache_dds = cache->get_cached_data_ddx(d_data_root_dir+stored_result_local_id, &ttf, "test.05");
-			// The code cannot unlock the file because get_cached_data_ddx()
+			DDS *cache_dds = cache->get_cached_dap2_data_ddx(d_data_root_dir+stored_result_local_id, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			//cache->unlock_and_close(token);
 			DBG(cerr << "cache_and_read_a_response() - Stored DAP2 dataset read." << endl);
@@ -353,11 +354,11 @@ public:
 			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 
 
-			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
 			DBG(cerr << "cache_and_read_a_response2() - Reading stored DAP2 dataset." << endl);
-			DDS *cache_dds = cache->get_cached_data_ddx(d_data_root_dir+stored_result_local_id, &ttf, "test.05");
-			// The code cannot unlock the file because get_cached_data_ddx()
+			DDS *cache_dds = cache->get_cached_dap2_data_ddx(d_data_root_dir+stored_result_local_id, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			//cache->unlock_and_close(token);
 			DBG(cerr << "cache_and_read_a_response2() - Stored DAP2 dataset read." << endl);
@@ -428,10 +429,10 @@ public:
 			DBG(cerr << "Cached response id: " << stored_result_local_id << endl);
 			CPPUNIT_ASSERT("/"+stored_result_local_id == baseline_local_id);
 
-			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
-			DDS *cache_dds = cache->get_cached_data_ddx(d_data_root_dir+"/"+stored_result_local_id, &ttf, "test.05");
-			// The code cannot unlock the file because get_cached_data_ddx()
+			DDS *cache_dds = cache->get_cached_dap2_data_ddx(d_data_root_dir+"/"+stored_result_local_id, &ttf, "test.05");
+			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			// cache->unlock_and_close(stored_result_local_id);
 
@@ -467,7 +468,7 @@ public:
 
 
     }
-    CPPUNIT_TEST_SUITE( StoredResultTest );
+    CPPUNIT_TEST_SUITE( StoredDap2ResultTest );
 
     CPPUNIT_TEST(path_construction_test);
     CPPUNIT_TEST(ctor_test_1);
@@ -480,7 +481,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(StoredResultTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(StoredDap2ResultTest);
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;

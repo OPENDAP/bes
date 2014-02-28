@@ -1005,11 +1005,6 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     XMLWriter xml;
     dmr.print_dap4(xml, !d_ce.empty());
 
-#if BYTE_ORDER_PREFIX
-    // the byte order info precedes the start of chunking
-    char byte_order = is_host_big_endian() ? big_endian : little_endian; // is_host_big_endian is in util.cc
-    out << byte_order << flush;
-#endif
     // now make the chunked output stream; set the size to be at least chunk_size
     // but make sure that the whole of the xml plus the CRLF can fit in the first
     // chunk. (+2 for the CRLF bytes).

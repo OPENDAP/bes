@@ -242,10 +242,10 @@ public:
 			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
 			delete cache_dds; cache_dds = 0;
 
-			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
 			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
-			// The code cannot unlock the file because get_cached_data_ddx()
+			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			//cache->unlock_and_close(token);
 
