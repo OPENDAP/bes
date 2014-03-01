@@ -30,8 +30,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <DMR.h>
-#include <D4ParserSax2.h>
 #include <ConstraintEvaluator.h>
 #include <DAS.h>
 #include <DDS.h>
@@ -41,6 +39,8 @@
 #include <util.h>
 #include <debug.h>
 
+#include <DMR.h>
+#include <D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
 
 #include "TheBESKeys.h"
@@ -84,7 +84,8 @@ private:
     string d_data_root_dir;
     string d_stored_result_subdir;
 	string d_response_cache;
-    BESStoredDapResultCache *cache;
+    string d_baseline_local_id;
+    string d_test01_dmr_value_baseline;
 
 public:
     StoredDap4ResultTest() : d4_ttf(0), d4_btf(0),
@@ -93,7 +94,8 @@ public:
     					 d_data_root_dir(string(TEST_SRC_DIR)),
     					 d_stored_result_subdir("/response_cache"),
     					 d_response_cache(string(TEST_SRC_DIR)+"/response_cache"),
-    					 cache(0) {
+    					 d_baseline_local_id(""),
+    					 d_test01_dmr_value_baseline(""){
     }
 
     ~StoredDap4ResultTest() {
@@ -140,12 +142,40 @@ public:
     	d4parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
     	DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
+    	d_baseline_local_id = "/response_cache/result_17277261128882003653.dap";
+
 
     	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
         test_01_dmr->set_filename(test_01_dmr->name());
 
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_01_dmr->name() << endl);
+
+        d_test01_dmr_value_baseline =
+    			"{{255, 255, 255, 255},{255, 255, 255, 255},{255, 255, 255, 255}}"
+    			"{{32000, 32000, 32000, 32000},{32000, 32000, 32000, 32000},"
+    			"{32000, 32000, 32000, 32000}}{{123456789, 123456789, 123456789, 123456789},"
+    			"{123456789, 123456789, 123456789, 123456789},{123456789, 123456789, 123456789, 123456789}}"
+    			"{{64000, 64000, 64000, 64000},{64000, 64000, 64000, 64000},{64000, 64000, 64000, 64000}}"
+    			"{{4026531840, 4026531840, 4026531840, 4026531840},{4026531840, 4026531840, 4026531840, 4026531840},"
+    			"{4026531840, 4026531840, 4026531840, 4026531840}}"
+    			"{{99.999, 99.999, 99.999, 99.999},{99.999, 99.999, 99.999, 99.999},{99.999, 99.999, 99.999, 99.999}}"
+    			"{{99.999, 99.999, 99.999, 99.999},{99.999, 99.999, 99.999, 99.999},{99.999, 99.999, 99.999, 99.999}}"
+    			"{{\"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\"},"
+    			"{\"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\"},"
+    			"{\"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\", \"Silly test string: 1\"}}"
+    			"{{\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", "
+    			"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"},"
+    			"{\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", "
+    			"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"},"
+    			"{\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", "
+    			"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\", \"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"}}"
+    			"{{123456789, 123456789, 123456789, 123456789, 123456789},{123456789, 123456789, 123456789, 123456789, 123456789},"
+    			"{123456789, 123456789, 123456789, 123456789, 123456789}}{{123456789, 123456789, 123456789, 123456789},{123456789, "
+    			"123456789, 123456789, 123456789},{123456789, 123456789, 123456789, 123456789},{123456789, 123456789, 123456789, "
+    			"123456789},{123456789, 123456789, 123456789, 123456789}}";
+
+		clean_cache(d_response_cache, "result_");
 
 		DBG(cerr << "setUp() - END" << endl);
     }
@@ -191,9 +221,9 @@ public:
 	void cache_a_dap4_response()
 	{
 		DBG(cerr << "**** cache_a_dap4_response() - BEGIN" << endl);
-		string baseline_local_id = d_stored_result_subdir + "/result_16472407572333548466.dap";
 
-		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
+		BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
+
 
 		DBG(cerr << "cache_a_dap4_response() - Got the instance of BESStoredResultCache object: " );
 		if(cache){
@@ -207,10 +237,17 @@ public:
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
 			DBG(cerr << "cache_a_response() - caching a dataset... " << endl);
+
+			// Mark all the stuff in the dataset so that everything gets written down!
+			test_01_dmr->root()->set_send_p(true);
+
+			// Write it down
 			stored_result_local_id = cache->store_dap4_result(*test_01_dmr, "", &responseBuilder);
 
-			DBG(cerr << "Cached response id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
+			DBG(cerr << "cache_a_dap4_response() -  baseline_local_id: " << d_baseline_local_id << endl);
+			DBG(cerr << "cache_a_dap4_response() - Cached response id: " << stored_result_local_id << endl);
+
+			CPPUNIT_ASSERT(stored_result_local_id == d_baseline_local_id);
 			// TODO Stat the cache file to check it's size
 			cache->delete_instance();
 		}
@@ -227,18 +264,23 @@ public:
 	void cache_and_read_a_dap4_response()
 	{
 		DBG(cerr << "**** cache_and_read_a_dap4_response() - BEGIN" << endl);
-		string baseline_local_id = d_stored_result_subdir + "/result_16472407572333548466.dap";
 
-		cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
+		BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance(d_data_root_dir, d_stored_result_subdir, "result_", 1000);
+
 		DBG(cerr << "cache_and_read_a_dap4_response() - Got BESStoredDapResultCache instance." << endl);
 		string stored_result_local_id;
 		try {
 			// TODO Could stat the cache file to make sure it's not already there.
 			DBG(cerr << "cache_and_read_a_dap4_response() - caching a dataset... " << endl);
+
+			// Mark all the stuff in the dataset so that everything gets written down!
+			test_01_dmr->root()->set_send_p(true);
+
+			// Write it down
 			stored_result_local_id = cache->store_dap4_result(*test_01_dmr, "", &responseBuilder);
 
 			DBG(cerr << "cache_and_read_a_dap4_response() - Cached response id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
+			CPPUNIT_ASSERT(stored_result_local_id == d_baseline_local_id);
 
 
 			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -247,35 +289,37 @@ public:
 			string cacheFileName = d_data_root_dir+stored_result_local_id;
 			DBG(cerr << "cache_and_read_a_dap4_response() - Reading stored DAP4 dataset. cache filename: "<< cacheFileName << endl);
 
-			DMR *cached_data = cache->get_cached_dap4_data(cacheFileName, d4_btf, "test.05");
+			DMR *cached_data = cache->get_cached_dap4_data(cacheFileName, d4_btf, "test.01");
 
 			DBG(cerr << "cache_and_read_a_dap4_response() - Stored DAP4 dataset has been read." << endl);
-			DBG(cerr << "cache_and_read_a_dap4_response() - cached_data->request_size(true): " << cached_data->request_size(true) << endl);
+
+
+			int response_element_count = cached_data->root()->element_count(true);
+			DBG(cerr << "cache_and_read_a_dap4_response() - response_element_count: " << response_element_count << endl);
 
 			CPPUNIT_ASSERT(cached_data);
-			CPPUNIT_ASSERT(stored_result_local_id == baseline_local_id);
 			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(cached_data->request_size(true) == 9);
+			CPPUNIT_ASSERT(response_element_count == 11);
 
-#if 0
 			ostringstream oss;
-			DDS::Vars_iter i = cache_dap->var_begin();
-			while (i != cache_dap->var_end()) {
+			Constructor::Vars_iter i = cached_data->root()->var_begin();
+			while (i != cached_data->root()->var_end()) {
 				DBG(cerr << "Variable " << (*i)->name() << endl);
 				// this will incrementally add thr string rep of values to 'oss'
 				(*i)->print_val(oss, "", false /*print declaration */);
-				DBG(cerr << "Value " << oss.str() << endl);
+				DBG(cerr << "response_value: " << oss.str() << endl);
 				++i;
 			}
+
+			DBG(cerr << "cache_and_read_a_dap4_response() - d_test01_dmr_value_baseline: " << d_test01_dmr_value_baseline << endl);
+
 
 			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
 			// is a any single digit. The *Test classes implement a counter and return strings where
 			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
 			// values for <number>.
-			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-			CPPUNIT_ASSERT(re_match(regex, oss.str()));
+			CPPUNIT_ASSERT(d_test01_dmr_value_baseline == oss.str());
 
-#endif
 
 			delete cached_data; cached_data = 0;
 	    	// cache->delete_instance();

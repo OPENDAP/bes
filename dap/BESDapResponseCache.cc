@@ -363,7 +363,7 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     fdds->filename(filename) ;
     //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
-    cerr << "get_cached_data_ddx: cache_file_name: " << cache_file_name << endl; // FIXME
+    BESDEBUG("cache", "BESDapResponseCache::get_cached_data_ddx() -cache_file_name: " << cache_file_name << endl);
     read_data_from_cache(cache_file_name, fdds);
 
     BESDEBUG("cache", "DDS Filename: " << fdds->filename() << endl);

@@ -333,56 +333,89 @@ bool BESStoredDapResultCache::is_valid(const string &cache_file_name, const stri
  * @parma fdds Load this DDS object with the variables, attributes and
  * data values from the cached DDS.
  */
-void BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file_name, DDS *fdds)
+bool BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file_name, DDS *fdds)
 {
 	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Opening cache file: " << cache_file_name << endl);
-	ifstream data(cache_file_name.c_str());
 
-    // Rip off the MIME headers from the response if they are present
-    string mime = get_next_mime_header(data);
-    while (!mime.empty()) {
-        mime = get_next_mime_header(data);
+
+	int fd = 1;
+
+	try {
+		if (get_read_lock(cache_file_name, fd)) {
+
+
+			ifstream data(cache_file_name.c_str());
+
+		    // Rip off the MIME headers from the response if they are present
+		    string mime = get_next_mime_header(data);
+		    while (!mime.empty()) {
+		        mime = get_next_mime_header(data);
+		    }
+
+		    // Parse the DDX; throw an exception on error.
+		    DDXParser ddx_parser(fdds->get_factory());
+
+		    // Read the MPM boundary and then read the subsequent headers
+		    string boundary = read_multipart_boundary(data);
+		    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - MPM Boundary: " << boundary << endl);
+
+		    read_multipart_headers(data, "text/xml", dods_ddx);
+
+		    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Read the multipart haeaders" << endl);
+
+		    // Parse the DDX, reading up to and including the next boundary.
+		    // Return the CID for the matching data part
+		    string data_cid;
+		    try {
+		    	ddx_parser.intern_stream(data, fdds, data_cid, boundary);
+		    	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Dataset name: " << fdds->get_dataset_name() << endl);
+		    }
+		    catch(Error &e) {
+		    	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - DDX Parser Error: " << e.get_error_message() << endl);
+		    	throw;
+		    }
+
+		    // Munge the CID into something we can work with
+		    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Data CID (before): " << data_cid << endl);
+		    data_cid = cid_to_header_value(data_cid);
+		    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Data CID (after): " << data_cid << endl);
+
+		    // Read the data part's MPM part headers (boundary was read by
+		    // DDXParse::intern)
+		    read_multipart_headers(data, "application/octet-stream", dods_data_ddx, data_cid);
+
+		    // Now read the data
+
+		    // XDRFileUnMarshaller um(data);
+		    XDRStreamUnMarshaller um(data);
+		    for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
+		        (*i)->deserialize(um, fdds);
+		    }
+
+		    data.close();
+			unlock_and_close(fd);
+			return true;
+
+		}
+		else {
+	        BESDEBUG( "cache", "BESStoredDapResultCache - The requested file does not exist. File: " + cache_file_name);
+
+	        return false;
+
+		}
+	}
+    catch (...) {
+        BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - caught exception, unlocking cache and re-throw." << endl );
+        // I think this call is not needed. jhrg 10/23/12
+        if(fd!=-1)
+			unlock_and_close(fd);
+        throw;
     }
 
-    // Parse the DDX; throw an exception on error.
-    DDXParser ddx_parser(fdds->get_factory());
 
-    // Read the MPM boundary and then read the subsequent headers
-    string boundary = read_multipart_boundary(data);
-    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - MPM Boundary: " << boundary << endl);
 
-    read_multipart_headers(data, "text/xml", dods_ddx);
 
-    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Read the multipart haeaders" << endl);
 
-    // Parse the DDX, reading up to and including the next boundary.
-    // Return the CID for the matching data part
-    string data_cid;
-    try {
-    	ddx_parser.intern_stream(data, fdds, data_cid, boundary);
-    	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Dataset name: " << fdds->get_dataset_name() << endl);
-    }
-    catch(Error &e) {
-    	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - DDX Parser Error: " << e.get_error_message() << endl);
-    	throw;
-    }
-
-    // Munge the CID into something we can work with
-    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Data CID (before): " << data_cid << endl);
-    data_cid = cid_to_header_value(data_cid);
-    BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Data CID (after): " << data_cid << endl);
-
-    // Read the data part's MPM part headers (boundary was read by
-    // DDXParse::intern)
-    read_multipart_headers(data, "application/octet-stream", dods_data_ddx, data_cid);
-
-    // Now read the data
-
-    // XDRFileUnMarshaller um(data);
-    XDRStreamUnMarshaller um(data);
-    for (DDS::Vars_iter i = fdds->var_begin(); i != fdds->var_end(); i++) {
-        (*i)->deserialize(um, fdds);
-    }
 }
 
 /**
@@ -396,53 +429,81 @@ void BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file
  * @parma fdds Load this DDS object with the variables, attributes and
  * data values from the cached DDS.
  */
-void BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr)
+bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr)
 {
 	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - BEGIN" << endl);
 
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Opening cache file: " << cache_file_name << endl);
+
+	int fd = 1;
+
+	try {
+		if (get_read_lock(cache_file_name, fd)) {
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Opening cache file: " << cache_file_name << endl);
+			fstream in(cache_file_name.c_str(), ios::in|ios::binary);
+
+			// Gobble up the response's initial set of MIME headers. Normally
+			// a client would extract information from these headers.
+			// NOTE - I am dumping this call because it basically just
+			// slurps up lines until it finds a blank line, regardless of what the
+			// lines actually have in the. So basically if the stream DOESN't have
+			// a mime header then this call will read (and ignore) the entire
+			// XML encoding of the DMR. doh.
+			// remove_mime_header(in);
+
+			chunked_istream cis(in, CHUNK_SIZE);
+
+			bool debug = BESDebug::IsSet( "parser" );
+
+			// parse the DMR, stopping when the boundary is found.
+			// force chunk read
+			// get chunk size
+			int chunk_size = cis.read_next_chunk();
+
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - First chunk_size: " << chunk_size << endl);
 
 
-    fstream in(cache_file_name.c_str(), ios::in|ios::binary);
+			if(chunk_size == EOF){
+				throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::read_dap4_data_from_cache() - Failed to read first chunk from file. Chunk size = EOF (aka " + libdap::long_to_string(EOF) + ")");
+			}
 
-    // Gobble up the response's initial set of MIME headers. Normally
-    // a client would extract information from these headers.
-    remove_mime_header(in);
+			// get chunk
+			char chunk[chunk_size];
+			cis.read(chunk, chunk_size);
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Read first chunk." << endl);
 
-    chunked_istream cis(in, CHUNK_SIZE);
+			// parse char * with given size
+			D4ParserSax2 parser;
+			// '-2' to discard the CRLF pair
+			parser.intern(chunk, chunk_size-2, dmr, debug);
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parsed first chunk." << endl);
 
-    bool debug = false;
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parser debugging enabled." << endl; debug=true );
+			D4StreamUnMarshaller um(cis, cis.twiddle_bytes());
 
-	// parse the DMR, stopping when the boundary is found.
-	// force chunk read
-	// get chunk size
-	int chunk_size = cis.read_next_chunk();
+			dmr->root()->deserialize(um, *dmr);
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Deserialized data."  << endl);
 
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - First chunk_size: " << chunk_size << endl);
+			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - END" << endl);
 
-	if(chunk_size == EOF){
-        throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::read_dap4_data_from_cache() - Failed to read first chunk from file. Chunk size = EOF (aka " + libdap::long_to_string(EOF) + ")");
+			in.close();
+			unlock_and_close(fd);
+
+			return true;
+
+		}
+		else {
+	        BESDEBUG( "cache", "BESStoredDapResultCache - The requested file does not exist. File: " + cache_file_name);
+
+	        return false;
+
+		}
 	}
-
-	// get chunk
-	char chunk[chunk_size];
-	cis.read(chunk, chunk_size);
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Read first chunk." );
-
-	// parse char * with given size
-	D4ParserSax2 parser;
-	// '-2' to discard the CRLF pair
-	parser.intern(chunk, chunk_size-2, dmr, debug);
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parsed first chunk." );
-
-    D4StreamUnMarshaller um(cis, cis.twiddle_bytes());
-
-    dmr->root()->deserialize(um, *dmr);
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Deserialized data." );
-
-	BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - END" << endl);
-
+    catch (...) {
+        BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - caught exception, unlocking cache and re-throw." << endl );
+        // I think this call is not needed. jhrg 10/23/12
+        if(fd!=-1)
+			unlock_and_close(fd);
+        throw;
+    }
 }
 
 
@@ -457,30 +518,39 @@ BESStoredDapResultCache::get_cached_dap2_data_ddx(const string &cache_file_name,
 
     DDS *fdds = new DDS(factory);
 
-    fdds->filename(filename) ;
-    //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
-    read_dap2_data_from_cache(cache_file_name, fdds);
+    if(read_dap2_data_from_cache(cache_file_name, fdds)){
 
-    BESDEBUG("cache", "DDS Filename: " << fdds->filename() << endl);
-    BESDEBUG("cache", "DDS Dataset name: " << fdds->get_dataset_name() << endl);
 
-    fdds->set_factory( 0 ) ;
+        fdds->filename(filename) ;
+        //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
-    // mark everything as read. and send. That is, make sure that when a response
-    // is retrieved from the cache, all of the variables are marked as to be sent
-    DDS::Vars_iter i = fdds->var_begin();
-    while(i != fdds->var_end()) {
-        (*i)->set_read_p( true );
-        (*i++)->set_send_p(true);
+        BESDEBUG("cache", "DDS Filename: " << fdds->filename() << endl);
+        BESDEBUG("cache", "DDS Dataset name: " << fdds->get_dataset_name() << endl);
+
+        fdds->set_factory( 0 ) ;
+
+        // mark everything as read. and send. That is, make sure that when a response
+        // is retrieved from the cache, all of the variables are marked as to be sent
+        DDS::Vars_iter i = fdds->var_begin();
+        while(i != fdds->var_end()) {
+            (*i)->set_read_p( true );
+            (*i++)->set_send_p(true);
+        }
+
+        return fdds;
+    }
+    else {
+    	delete fdds;
+    	return 0;
     }
 
-    return fdds;
+
 }
 
 
 /**
- * Read data from cache. Allocates a new DDS using the given factory.
+ * Read data from cache. Allocates a new DDS using the given factory. If the file does not exists this will return null (0).
  *
  */
 DMR *
@@ -490,22 +560,23 @@ BESStoredDapResultCache::get_cached_dap4_data(const string &cache_file_name, lib
 
     DMR *fdmr = new DMR(factory);
 
+	BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Filename: " << fdmr->filename() << endl);
     fdmr->set_filename(filename) ;
-    //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
-    read_dap4_data_from_cache(cache_file_name, fdmr);
+    if(read_dap4_data_from_cache(cache_file_name, fdmr)){
+		BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Dataset name: " << fdmr->name() << endl);
 
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Filename: " << fdmr->filename() << endl);
-    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap4_data() - DMR Dataset name: " << fdmr->name() << endl);
+		fdmr->set_factory( 0 ) ;
 
-    fdmr->set_factory( 0 ) ;
+		// mark everything as read. and send. That is, make sure that when a response
+		// is retrieved from the cache, all of the variables are marked as to be sent
+		fdmr->root()->set_send_p(true);
+		fdmr->root()->set_read_p(true);
 
-    // mark everything as read. and send. That is, make sure that when a response
-    // is retrieved from the cache, all of the variables are marked as to be sent
-    fdmr->root()->set_send_p(true);
-    fdmr->root()->set_read_p(true);
+		return fdmr;
+    }
 
-    return fdmr;
+    return 0;
 }
 
 

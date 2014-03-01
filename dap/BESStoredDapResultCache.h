@@ -63,8 +63,8 @@ private:
     BESStoredDapResultCache(const BESStoredDapResultCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    void read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
+    bool read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+    bool read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
 
     friend class StoredDap2ResultTest;
     friend class StoredDap4ResultTest;
