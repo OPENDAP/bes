@@ -70,7 +70,6 @@
 
 #include "BESDebug.h"
 #include "TheBESKeys.h"
-#include "BESContextManager.h"
 #include "BESDapResponseBuilder.h"
 #include "BESDapResponseCache.h"
 #include "BESStoredDapResultCache.h"
@@ -405,14 +404,17 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
-        BESContextManager::TheManager()->set_context("store_result","http://localhost:8080/opendap/");
 
         ConstraintEvaluator ce;
 
-    	DBG(cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
-        BESContextManager::TheManager()->unset_context("async_accepted");
+        // Set this to be a stored result request
+        df->set_store_result("http://localhost:8080/opendap/");
+        // Make the async_accepted string be empty to indicate that it was not set by a "client"
+    	df->set_async_accepted("");
 
-        string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
+    	DBG(cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
+
+    	string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
         	df->send_data(oss, *test_05_dds, ce, false);
@@ -432,8 +434,9 @@ public:
 
 
     	DBG(cerr << "store_dap2_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
-
-        BESContextManager::TheManager()->set_context("async_accepted","0");
+        // Make the async_accpeted string be the string "0" to indicate that client doesn't care how long it takes...
+    	df->set_async_accepted("0");
+    	DBG(cerr << "store_dap2_result_test() - async_accepted is set to: " << df->get_async_accepted()<< endl);
 
         baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_accepted.xml");
 
@@ -482,8 +485,6 @@ public:
             CPPUNIT_FAIL("ERROR: " + e.get_error_message());
         }
 
-        BESContextManager::TheManager()->unset_context("store_result");
-        BESContextManager::TheManager()->unset_context("async_accepted");
 
 
     }
@@ -500,15 +501,13 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
     	DBG(cerr << "store_dap4_result_test() - BES Keys configured."<< endl);
 
-
-        BESContextManager::TheManager()->set_context("store_result","http://localhost:8080/opendap/");
-    	DBG(cerr << "store_dap4_result_test() - BES store_result context set."<< endl);
-
-
         ConstraintEvaluator ce;
 
+        // Set this to be a stored result request
+        df->set_store_result("http://localhost:8080/opendap/");
+    	df->set_async_accepted("");
+
     	DBG(cerr << "store_dap4_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
-        BESContextManager::TheManager()->unset_context("async_accepted");
 
         string baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_required.xml";
         string baseline = readTestBaseline(baseline_file);
@@ -534,8 +533,8 @@ public:
 
     	DBG(cerr << "store_dap4_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
 
-        BESContextManager::TheManager()->set_context("async_accepted","0");
-    	DBG(cerr << "store_dap4_result_test() - BES async_accepted context set."<< endl);
+    	df->set_async_accepted("0");
+    	DBG(cerr << "store_dap4_result_test() - async_accepted is set to: " << df->get_async_accepted()<< endl);
 
         baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_accepted.xml";
         baseline = readTestBaseline(baseline_file);
@@ -562,7 +561,6 @@ public:
             string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_12638119030834692914.dap";
             DBG(cerr << "store_dap4_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
 
-            // FIXME Binary compare of baseline and response needs to be implmented here.
     		BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance();
 
 			DMR *cached_data = cache->get_cached_dap4_data(stored_object_response_file, d4_btf, "test.01");
@@ -589,11 +587,6 @@ public:
 
 			DBG(cerr << "cache_and_read_a_dap4_response() - baseline ( " << baseline.length() <<" chars): "<< endl << baseline << endl);
 
-
-			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
-			// is a any single digit. The *Test classes implement a counter and return strings where
-			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
-			// values for <number>.
 			CPPUNIT_ASSERT(baseline == oss.str());
 
 

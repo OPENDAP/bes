@@ -104,6 +104,10 @@ void BESDapResponseBuilder::initialize()
     d_default_protocol = DAP_PROTOCOL_VERSION;
 
     d_response_cache = 0;
+
+    d_store_result = "";
+    d_async_accepted = "";
+
 }
 
 /** Lazy getter for the ResponseCache. */
@@ -156,6 +160,34 @@ void BESDapResponseBuilder::set_ce(string _ce)
 {
     d_ce = www2id(_ce, "%", "%20");
 }
+
+std::string BESDapResponseBuilder::get_store_result() const
+{
+	return d_store_result;
+}
+
+void BESDapResponseBuilder::set_store_result(std::string store_result)
+{
+	d_store_result = store_result;
+	BESDEBUG("dap", "BESDapResponseBuilder::set_store_result() - store_result: " << store_result << endl);
+}
+
+std::string BESDapResponseBuilder::get_async_accepted() const
+{
+	return d_async_accepted;
+}
+void BESDapResponseBuilder::set_async_accepted(std::string async_accepted)
+{
+	d_async_accepted = async_accepted;
+	BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << async_accepted << endl);
+}
+
+
+
+
+
+
+
 
 /** The ``dataset name'' is the filename or other string that the
  filter program will use to access the data. In some cases this
@@ -493,20 +525,14 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 
 
 bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval) {
-    bool isStoreResultRequest = false;
-    string serviceUrl = BESContextManager::TheManager()->get_context("store_result", isStoreResultRequest);
-	BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - isStoreResultRequest="<< (isStoreResultRequest?"true":"false") << endl);
 
-	if(isStoreResultRequest){
+	if(get_store_result().length()!=0){
+		string serviceUrl = get_store_result();
 
 		D4AsyncUtil d4au;
 		XMLWriter xmlWrtr;
 
-		bool asyncAccepted = false;
-	    string async_acceptable_delay = BESContextManager::TheManager()->get_context("async_accepted", asyncAccepted);
-		BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - async_accepted="<< (asyncAccepted?"true":"false") << endl);
-
-		if(asyncAccepted){
+		if(get_async_accepted().length() != 0){
 
 			/**
 			 * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
@@ -541,10 +567,10 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
 		}
 
-
+		return true;
 
 	}
-	return isStoreResultRequest;
+	return false;
 }
 
 
@@ -980,7 +1006,10 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
             throw Error(msg);
         }
 
-        serialize_dap4_data(out, dmr, with_mime_headers, filter);
+    	if(!store_dap4_result(out,dmr)){
+            serialize_dap4_data(out, dmr, with_mime_headers, filter);
+    	}
+
 
         remove_timeout();
     }
@@ -1024,19 +1053,14 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 }
 
 bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
-    bool isStoreResultRequest = false;
-    string serviceUrl = BESContextManager::TheManager()->get_context("store_result", isStoreResultRequest);
-	BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - isStoreResultRequest="<< (isStoreResultRequest?"true":"false") << endl);
 
-	if(isStoreResultRequest){
+	if(get_store_result().length()!=0){
+		string serviceUrl = get_store_result();
+
 		D4AsyncUtil d4au;
 		XMLWriter xmlWrtr;
 
-		bool asyncAccepted = false;
-	    string async_acceptable_delay = BESContextManager::TheManager()->get_context("async_accepted", asyncAccepted);
-		BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - async_accepted="<< (asyncAccepted?"true":"false") << endl);
-
-		if(asyncAccepted){
+		if(get_async_accepted().length() != 0){
 
 			/**
 			 * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
@@ -1068,9 +1092,9 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
 		}
-
+		return true;
 	}
-	return isStoreResultRequest;
+	return false;
 }
 
 

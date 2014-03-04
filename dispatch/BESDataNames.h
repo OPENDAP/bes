@@ -42,6 +42,11 @@
 
 #define POST_CONSTRAINT "post_constraint"
 
+#define ASYNC "async"
+#define STORE_RESULT "store_result"
+
+
+
 #define RETURN_CMD "return_command"
 
 #define USER_ADDRESS "user_address"

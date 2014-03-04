@@ -193,6 +193,12 @@ private:
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dds->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
+
+
+		rb.set_async_accepted(dhi.data[ASYNC]);
+		rb.set_store_result(dhi.data[STORE_RESULT]);
+
+
 		BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
 		rb.send_data(dhi.get_output_stream(), *dds, ce, print_mime);
 	}
@@ -279,6 +285,13 @@ private:
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dmr->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
+
+
+		rb.set_async_accepted(dhi.data[ASYNC]);
+		rb.set_store_result(dhi.data[STORE_RESULT]);
+
+
+
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
 		// FIXME Remove extra args. 11/29/13 jhrg
 		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);

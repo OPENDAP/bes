@@ -51,6 +51,21 @@ protected:
 	int d_timeout;  		/// Response timeout after N seconds
 	std::string d_default_protocol;	/// Version std::string for the library's default protocol version
 
+	/**
+	 * Time, if any, that the client will wait for an async response.
+	 * An empty string (length=0) means the client didn't supply an async parameter
+	 */
+	std::string d_async_accepted;
+
+	/**
+	 * If set (i.e. non-null) then the client has asked for the result to be stored
+	 * for later retrieval. The value is the service URL used to construct
+	 * the stored result access URL to be returned to the client.
+	 * An empty string (length=0) means the client didn't supply a store_result async parameter
+	 */
+	std::string d_store_result;
+
+
 	BESDapResponseCache *d_response_cache;
 
 	void initialize();
@@ -71,6 +86,12 @@ public:
 	virtual std::string get_ce() const;
 	virtual void set_ce(std::string _ce);
 
+	virtual std::string get_store_result() const;
+	virtual void set_store_result(std::string _ce);
+
+	virtual std::string get_async_accepted() const;
+	virtual void set_async_accepted(std::string _ce);
+
 	virtual std::string get_btp_func_ce() const
 	{
 		return d_btp_func_ce;
@@ -90,6 +111,10 @@ public:
 	virtual void remove_timeout() const;
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
+
+
+
+
 
 	virtual BESDapResponseCache *responseCache();
 
