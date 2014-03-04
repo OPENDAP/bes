@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -54,8 +54,8 @@
 #include "SocketConfig.h"
 #include "BESDebug.h"
 
-SocketListener::SocketListener()
-    : _accepting( false )
+SocketListener::SocketListener() :
+		_accepting(false)
 {
 }
 
@@ -63,141 +63,124 @@ SocketListener::~SocketListener()
 {
 }
 
-void
-SocketListener::listen( Socket *s )
+void SocketListener::listen(Socket *s)
 {
-    if( _accepting )
-    {
-	string err = (string)"Already accepting connections, "
-	             + "no more sockets can be added" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
+	if (_accepting) {
+		string err = (string) "Already accepting connections, " + "no more sockets can be added";
+		throw BESInternalError(err, __FILE__, __LINE__);
+	}
 
-    if( s && !s->isConnected() && !s->isListening() )
-    {
-	s->listen() ;
-	_socket_list[s->getSocketDescriptor()] = s ;
-    }
-    else
-    {
-	if( !s )
-	{
-	    throw BESInternalError( "null socket passed", __FILE__, __LINE__ ) ;
+	if (s && !s->isConnected() && !s->isListening()) {
+		s->listen();
+		_socket_list[s->getSocketDescriptor()] = s;
 	}
-	else if( s->isConnected() )
-	{
-	    string err( "socket already connected, cannot listen" ) ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	else {
+		if (!s) {
+			throw BESInternalError("null socket passed", __FILE__, __LINE__);
+		}
+		else if (s->isConnected()) {
+			string err("socket already connected, cannot listen");
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		else if (s->isListening()) {
+			string err("socket already listening");
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
 	}
-	else if( s->isListening() )
-	{
-	    string err( "socket already listening" ) ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-    }
 }
 
 /** Use the select() system call to wait for an incoming connection */
 Socket *
 SocketListener::accept()
 {
-    BESDEBUG( "ppt", "SocketListener::accept() - START" << endl );
+	BESDEBUG("ppt", "SocketListener::accept() - START" << endl);
 
-    int msgsock ;
+	int msgsock;
 
-    fd_set read_fd ;
-    struct timeval timeout ;
+	fd_set read_fd;
+	struct timeval timeout;
 
-    int maxfd ;
+	int maxfd;
 
-    for(;;)
-    {
-        timeout.tv_sec = 120 ;
-        timeout.tv_usec = 0 ;
+	for (;;) {
+		timeout.tv_sec = 120;
+		timeout.tv_usec = 0;
 
-        FD_ZERO( &read_fd ) ;
+		FD_ZERO( &read_fd );
 
-        maxfd = 0 ;
-        Socket_citer iter = _socket_list.begin() ;
-        for( ; iter != _socket_list.end(); iter++ )
-        {
-            Socket *s_ptr = (*iter).second ;
-            int s = s_ptr->getSocketDescriptor() ;
-            if( s > maxfd ) maxfd = s ;
-            FD_SET( s, &read_fd ) ;
-        }
+		maxfd = 0;
+		for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
+			Socket *s_ptr = (*i).second;
+			int s = s_ptr->getSocketDescriptor();
+			if (s > maxfd) maxfd = s;
+			FD_SET( s, &read_fd );
+		}
 
 #if 0
-        // jhrg 5/16/11
-        //if( select( maxfd+1, &read_fd,
-        //           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
+		// jhrg 5/16/11
+		//if( select( maxfd+1, &read_fd,
+		//           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
 #endif
 
-        while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
-            switch (errno) {
+		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+			switch (errno) {
+			case EAGAIN:	// rerun select on interrupted calls, ...
+				BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);
+				// This case and the one below used to just 'break' so that the select call
+				// above would run again. I modified it to return null so that the caller could
+				// do other things, like process the results of signals.
+				return 0;
 
-            case EAGAIN:	// rerun select on interrupted calls, ...
-                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EAGAIN" << endl );
-                break;
-            case EINTR:
-                BESDEBUG( "ppt", "SocketListener::accept() - select encountered EINTR" << endl );
-                break;
-#if 0
-            case EBADF:		// or exit on error
-            case EINVAL:
-#endif
-            default: {
-                string err("select: ");
-                const char *error_info = strerror(errno);
-                if (error_info) err += (string) error_info;
-                throw BESInternalError(err, __FILE__, __LINE__);
-            }
-            }
-        }
-        BESDEBUG( "ppt", "SocketListener::accept() - select() completed without error." << endl );
+			case EINTR:
+				BESDEBUG("ppt2", "SocketListener::accept() - select encountered EINTR" << endl);
+				return 0;
 
-        iter = _socket_list.begin() ;
-        for( ; iter != _socket_list.end(); iter++ )
-        {
+			default: {
+				throw BESInternalError(string("select: ") + strerror(errno), __FILE__, __LINE__);
+			}
+			}
+		}
 
-            Socket *s_ptr = (*iter).second ;
-            BESDEBUG( "ppt", "SocketListener::accept() - Processing socket " << s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+		BESDEBUG("ppt", "SocketListener::accept() - select() completed without error." << endl);
 
-            int s = s_ptr->getSocketDescriptor() ;
-            if ( FD_ISSET( s, &read_fd ) )
-            {
-                BESDEBUG( "ppt", "SocketListener::accept() - FD_ISSET for "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+		for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
+			Socket *s_ptr = (*i).second;
+			BESDEBUG("ppt",
+					"SocketListener::accept() - Processing socket " << s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
 
-                struct sockaddr from ;
-                socklen_t len_from = sizeof( from ) ;
+			int s = s_ptr->getSocketDescriptor();
+			if (FD_ISSET( s, &read_fd )) {
+				BESDEBUG("ppt",
+						"SocketListener::accept() - FD_ISSET for "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
 
-                BESDEBUG( "ppt", "SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl );
+				struct sockaddr from;
+				socklen_t len_from = sizeof(from);
 
-                while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
-                    if (errno == EINTR) {
-                        BESDEBUG( "ppt", "SocketListener::accept() - accept() was interrupted" << endl );
+				BESDEBUG("ppt",
+						"SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
 
-                        continue;
-                    }
-                    else {
-                        string err("accept: ");
-                        const char *error_info = strerror(errno);
-                        if (error_info)
-                            err += (string) error_info;
-                        throw BESInternalError(err, __FILE__, __LINE__);
-                    }
-                }
-                BESDEBUG( "ppt", "SocketListener::accept() - END (returning new Socket)" << endl );
+				while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
+					if (errno == EINTR) {
+						BESDEBUG("ppt2", "SocketListener::accept() - accept() was interrupted" << endl);
 
-                return s_ptr->newSocket( msgsock, (struct sockaddr *)&from ) ;
-            }
-        }
-        BESDEBUG( "ppt", "SocketListener::accept() - Looks like select() timed out. Looping back to restart select()" << endl );
+						continue;
+					}
+					else {
+						throw BESInternalError(string("accept: ") + strerror(errno), __FILE__, __LINE__);
+					}
+				}
+				BESDEBUG("ppt", "SocketListener::accept() - END (returning new Socket)" << endl);
 
-    }
-    BESDEBUG( "ppt", "SocketListener::accept() - END (returning 0)" << endl );
+				return s_ptr->newSocket(msgsock, (struct sockaddr *) &from);
+			}
+		}
+		BESDEBUG("ppt",
+				"SocketListener::accept() - Looks like select() timed out. Looping back to restart select()" << endl);
 
-    return 0 ;
+	}
+	BESDEBUG("ppt", "SocketListener::accept() - END (returning 0)" << endl);
+
+	return 0;
 }
 
 /** @brief dumps information about this object
@@ -206,28 +189,23 @@ SocketListener::accept()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-SocketListener::dump( ostream &strm ) const
+void SocketListener::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "SocketListener::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _socket_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered sockets:" << endl ;
-	Socket_citer i = _socket_list.begin() ;
-	Socket_citer ie = _socket_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    strm << BESIndent::LMarg << "socket: " << (*i).first ;
-	    Socket *s_ptr = (*i).second ;
-	    s_ptr->dump( strm ) ;
+	strm << BESIndent::LMarg << "SocketListener::dump - (" << (void *) this << ")" << endl;
+	BESIndent::Indent();
+	if (_socket_list.size()) {
+		strm << BESIndent::LMarg << "registered sockets:" << endl;
+		Socket_citer i = _socket_list.begin();
+		Socket_citer ie = _socket_list.end();
+		for (; i != ie; i++) {
+			strm << BESIndent::LMarg << "socket: " << (*i).first;
+			Socket *s_ptr = (*i).second;
+			s_ptr->dump(strm);
+		}
 	}
-    }
-    else
-    {
-	strm << BESIndent::LMarg << "registered sockets: none" << endl ;
-    }
-    BESIndent::UnIndent() ;
+	else {
+		strm << BESIndent::LMarg << "registered sockets: none" << endl;
+	}
+	BESIndent::UnIndent();
 }
 

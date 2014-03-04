@@ -70,12 +70,12 @@ BESServerHandler::BESServerHandler()
 	catch (BESError &e) {
 		cerr << "Unable to determine method to handle clients, "
 				<< "single or multiple as defined by BES.ProcessManagerMethod" << ": " << e.get_message() << endl;
-		exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+		exit(SERVER_EXIT_FATAL_CANNOT_START);
 	}
 	if (_method != "multiple" && _method != "single") {
 		cerr << "Unable to determine method to handle clients, "
 				<< "single or multiple as defined by BES.ProcessManagerMethod" << endl;
-		exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+		exit(SERVER_EXIT_FATAL_CANNOT_START);
 	}
 }
 
@@ -185,7 +185,7 @@ void BESServerHandler::execute(Connection *c)
 			// PPT_EXIT_NOW chunk (and so we don't need to).
 
 			BESDEBUG("beslistener", "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl);
-			*(BESLog::TheLog()) << "Received PPT_EXIT_NOW in an extension chunk." << endl;
+
 			// This call closes the socket - it does minimal bookkeeping and
 			// calls the the kernel's close() function. NB: The method is
 			// implemented in PPTServer.cc and that calls Socket::close() on the
@@ -195,8 +195,6 @@ void BESServerHandler::execute(Connection *c)
 			c->closeConnection();
 
 			BESDEBUG("beslistener", "BESServerHandler::execute() - Client connection has been closed." << endl);
-			*(BESLog::TheLog()) << "Closed client connection; beslistener (child) exiting with return value of "
-					<< CHILD_SUBPROCESS_READY << " to the master listener." << endl;
 
 			BESDEBUG("beslistener", "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of "
 					<< CHILD_SUBPROCESS_READY << endl);

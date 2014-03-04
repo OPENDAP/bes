@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/server
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER

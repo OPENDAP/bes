@@ -128,7 +128,7 @@ static int pr_exit(int status)
             case SERVER_EXIT_NORMAL_SHUTDOWN:
                 return 0;
 
-            case SERVER_EXIT_FATAL_CAN_NOT_START:
+            case SERVER_EXIT_FATAL_CANNOT_START:
                 cerr << daemon_name << ": server cannot start, exited with status " << WEXITSTATUS( status ) << endl;
                 cerr << "Please check all error messages " << "and adjust server installation" << endl;
                 return 1;
@@ -321,9 +321,9 @@ int start_master_beslistener()
         close(pipefd[0]); // Close the read end of the pipe in the child
 
         // dup2 so we know the FD to write to in the child (the beslistener).
-        // BESLISTENER_PIPE_FD is '1' whcih is stdout; since beslistenr is a
+        // BESLISTENER_PIPE_FD is '1' which is stdout; since beslistener is a
         // daemon process both stdin and out have been closed so these descriptors
-        // are available. Usig higher numbers can cause problems (see ticket
+        // are available. Using higher numbers can cause problems (see ticket
         // 1783). jhrg 7/15/11
         if (dup2(pipefd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
             cerr << errno_str(": dup2 error ");
@@ -743,7 +743,7 @@ static void set_group_id() {
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     if (!found || group_str.empty()) {
@@ -751,7 +751,7 @@ static void set_group_id() {
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG( "server", "to " << group_str << " ... " << endl );
 
@@ -771,7 +771,7 @@ static void set_group_id() {
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
-            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+            exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_gid = ent->gr_gid;
     }
@@ -782,7 +782,7 @@ static void set_group_id() {
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
         (*BESLog::TheLog()) << err.str() << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     BESDEBUG( "server", "to id " << new_gid << " ... " << endl );
@@ -792,7 +792,7 @@ static void set_group_id() {
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
         (*BESLog::TheLog()) << err.str() << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     BESDEBUG( "server", "OK" << endl );
@@ -818,7 +818,7 @@ static void set_user_id() {
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     if (!found || user_str.empty()) {
@@ -826,7 +826,7 @@ static void set_user_id() {
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG( "server", "to " << user_str << " ... " << endl );
 
@@ -844,7 +844,7 @@ static void set_user_id() {
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
-            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+            exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_id = ent->pw_uid;
     }
@@ -855,7 +855,7 @@ static void set_user_id() {
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     BESDEBUG( "server", "to " << new_id << " ... " << endl );
@@ -865,7 +865,7 @@ static void set_user_id() {
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
         (*BESLog::TheLog()) << err.str() << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 }
 
@@ -880,7 +880,7 @@ int main(int argc, char *argv[])
     // must be root to run this app and to set user id and group id later
     if (curr_euid) {
         cerr << "FAILED: Must be root to run BES" << endl;
-        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 #else
     cerr << "Developer Mode: Not testing if BES is run by root" << endl;

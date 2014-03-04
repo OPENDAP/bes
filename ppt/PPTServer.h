@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,35 +35,36 @@
 
 #include "PPTConnection.h"
 
-class ServerHandler ;
-class SocketListener ;
-class Socket ;
+class ServerHandler;
+class SocketListener;
+class Socket;
 
-class PPTServer : public PPTConnection
-{
+class PPTServer: public PPTConnection {
 private:
-    ServerHandler *		_handler ;
-    SocketListener *		_listener ;
-    bool			_secure ;
-    int				_securePort ;
-    string			_cfile ;
-    string			_cafile ;
-    string			_kfile ;
+	ServerHandler * _handler;
+	SocketListener * _listener;
+	bool _secure;
+	int _securePort;
+	string _cfile;
+	string _cafile;
+	string _kfile;
 
-    int				welcomeClient() ;
-    void			authenticateClient() ;
-    void			get_secure_files() ;
+
+	int child_num;
+	int child_pid[100]; // FIXME Total hackery. jhrg 3/3/14
+	int child_status[100];
+
+	int welcomeClient();
+	void authenticateClient();
+	void get_secure_files();
 public:
-    				PPTServer( ServerHandler *handler,
-					   SocketListener *listener,
-					   bool isSecure ) ;
-    virtual			~PPTServer() ;
+	PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure);
+	virtual ~PPTServer();
 
-    virtual void		initConnection() ;
-    virtual void		closeConnection() ;
+	virtual void initConnection();
+	virtual void closeConnection();
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+	virtual void dump(ostream &strm) const;
+};
 
 #endif // PPTServer_h
-

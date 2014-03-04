@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,65 +35,52 @@
 
 #include <string>
 
-using std::string ;
-
 #include "Socket.h"
 
-class TcpSocket : public Socket
-{
+class TcpSocket: public Socket {
 private:
-    string			_host ;
-    int				_portVal ;
+	std::string _host;
+	int _portVal;
 
-    void			setTcpRecvBufferSize() ;
-    void			setTcpSendBufferSize() ;
-    bool			_haveRecvBufferSize ;
-    unsigned int		_recvBufferSize ;
-    bool			_haveSendBufferSize ;
-    unsigned int		_sendBufferSize ;
+	void setTcpRecvBufferSize();
+	void setTcpSendBufferSize();
+	bool _haveRecvBufferSize;
+	unsigned int _recvBufferSize;
+	bool _haveSendBufferSize;
+	unsigned int _sendBufferSize;
 public:
-    				TcpSocket( const string &host, int portVal )
-				    : Socket(),
-				      _host( host ),
-				      _portVal( portVal ),
-				      _haveRecvBufferSize( false ),
-				      _recvBufferSize( 0 ),
-				      _haveSendBufferSize( false ),
-				      _sendBufferSize( 0 ) {}
-				TcpSocket( int portVal )
-				    : Socket(),
-				      _host( "" ),
-				      _portVal( portVal ),
-				      _haveRecvBufferSize( false ) ,
-				      _recvBufferSize( 0 ),
-				      _haveSendBufferSize( false ),
-				      _sendBufferSize( 0 ) {}
-    				TcpSocket( int socket,
-				           struct sockaddr *addr )
-				    : Socket( socket, addr ),
-				      _host( "" ),
-				      _portVal( 0 ),
-				      _haveRecvBufferSize( false ) ,
-				      _recvBufferSize( 0 ),
-				      _haveSendBufferSize( false ),
-				      _sendBufferSize( 0 ) {}
-    virtual			~TcpSocket() {}
-    virtual void		connect() ;
-    virtual void		listen() ;
+	TcpSocket(const std::string &host, int portVal) :
+			Socket(), _host(host), _portVal(portVal), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
+					false), _sendBufferSize(0)
+	{
+	}
+	TcpSocket(int portVal) :
+			Socket(), _host(""), _portVal(portVal), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
+					false), _sendBufferSize(0)
+	{
+	}
+	TcpSocket(int socket, struct sockaddr *addr) :
+			Socket(socket, addr), _host(""), _portVal(0), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
+					false), _sendBufferSize(0)
+	{
+	}
+	virtual ~TcpSocket()
+	{
+	}
+	virtual void connect();
+	virtual void listen();
 
-    virtual unsigned int	getRecvBufferSize() ;
-    virtual unsigned int	getSendBufferSize() ;
+	virtual unsigned int getRecvBufferSize();
+	virtual unsigned int getSendBufferSize();
 
-    virtual Socket *		newSocket( int socket,
-                                           struct sockaddr *addr )
-				{
-				    return new TcpSocket( socket, addr ) ;
-				}
+	virtual Socket * newSocket(int socket, struct sockaddr *addr)
+	{
+		return new TcpSocket(socket, addr);
+	}
 
-    virtual bool		allowConnection() ;
+	virtual bool allowConnection();
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+	virtual void dump(std::ostream &strm) const;
+};
 
 #endif // TcpSocket_h
-
