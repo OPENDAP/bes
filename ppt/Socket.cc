@@ -112,10 +112,14 @@ int Socket::receive(char *inBuff, const int inSize)
 			continue;
 		}
 
-		std::ostringstream oss;
-		oss << "Socket::receive: socket failure, reading on stream socket: " << strerror(errno) << ", bytesRead: "
-				<< bytesRead;
-		throw BESInternalError(oss.str(), __FILE__, __LINE__);
+		if (bytesRead < 0) { // Error
+			std::ostringstream oss;
+			oss << "Socket::receive: socket failure, reading on stream socket: " << strerror(errno) << ", bytesRead: "
+					<< bytesRead;
+			throw BESInternalError(oss.str(), __FILE__, __LINE__);
+		}
+		else if (bytesRead == 0) // EOF
+			return 0;
 	}
 
 	return bytesRead;

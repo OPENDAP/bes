@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -209,9 +209,12 @@ int PPTConnection::readChunkHeader(char *buffer, /*unsigned */int buffer_size)
 	bool done = false;
 	while (!done) {
 		int bytesRead = readBuffer(temp_buffer, buffer_size);
-		BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read "
-				<< bytesRead << " bytes" << endl );
-		if (bytesRead < 0) {
+		BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read " << bytesRead << " bytes" << endl );
+		// change: this what < 0 but it can never be < 0 because Socket::receive()
+		// will throw a BESInternalError. However, 0 indicates EOF. Note that if
+		// the read(2) call in Socket::receive() returns without reading any bytes,
+		// that code will call read(2) again. jhrg 3/4/14
+		if (bytesRead == 0) {
 			return bytesRead;
 		}
 		if (bytesRead < buffer_size) {
