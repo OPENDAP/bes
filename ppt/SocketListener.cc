@@ -122,7 +122,15 @@ SocketListener::accept()
 		//           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
 #endif
 
+		pid_t cpid;
+		int stat;
+		while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
+			//--num_children;
+			//BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
+		}
+
 		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+
 			switch (errno) {
 			case EAGAIN:	// rerun select on interrupted calls, ...
 				BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);

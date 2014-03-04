@@ -425,7 +425,8 @@ int ServerApp::run()
 		_ps->closeConnection();
 	}
 	catch (BESError &se) {
-		cerr << se.get_message() << endl;
+		BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
+		// FIXME cerr << se.get_message() << endl;
 		(*BESLog::TheLog()) << se.get_message() << endl;
 		int status = SERVER_EXIT_FATAL_CANNOT_START;
 		write(BESLISTENER_PIPE_FD, &status, sizeof(status));
@@ -433,7 +434,7 @@ int ServerApp::run()
 		return 1;
 	}
 	catch (...) {
-		cerr << "caught unknown exception" << endl;
+		// FIXME jhrg 3/4/14 cerr << "caught unknown exception" << endl;
 		(*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
 		int status = SERVER_EXIT_FATAL_CANNOT_START;
 		write(BESLISTENER_PIPE_FD, &status, sizeof(status));

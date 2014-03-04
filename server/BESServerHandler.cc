@@ -208,7 +208,8 @@ void BESServerHandler::execute(Connection *c)
 		// need be. pwest 06 Feb 2009
 		//string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
 		string cmd_str = ss.str();
-		BESDEBUG("server", "BESServerHandler::execute - command = " << cmd_str << endl);
+		BESDEBUG("server2", "BESServerHandler::execute - command = " << cmd_str << endl);
+		BESDEBUG("server", "BESServerHandler::execute - command ... " << endl);
 
 		BESStopWatch *sw = 0;
 		if (BESISDEBUG( "timing" ))

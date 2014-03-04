@@ -259,7 +259,7 @@ void PPTServer::initConnection()
 			case SIGCHLD: {
 				int stat;
 				pid_t cpid;
-				while ((cpid = wait(&stat)) != -1) {
+				while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
 					--num_children;
 					BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
 				}
@@ -269,7 +269,7 @@ void PPTServer::initConnection()
 			case SIGPIPE: {
 				int stat;
 				pid_t cpid;
-				while ((cpid = wait(&stat)) != -1) {
+				while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
 					--num_children;
 					BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
 				}
