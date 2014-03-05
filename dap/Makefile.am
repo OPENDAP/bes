@@ -23,7 +23,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests 
+SUBDIRS = . unit-tests
 # tests
 
 lib_besdir=$(libdir)/bes
