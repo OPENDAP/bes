@@ -38,7 +38,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstring>
 #include <cstdlib>
+#include <cerrno>
 
 using std::cout;
 using std::cerr;
