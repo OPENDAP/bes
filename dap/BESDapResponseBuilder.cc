@@ -73,6 +73,7 @@
 #include <AlarmHandler.h>
 #endif
 
+#include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
 #include "BESContextManager.h"
 #include "BESDapResponseCache.h"
@@ -81,6 +82,10 @@
 
 //#define CRLF "\r\n"             // Change here, expr-test.cc
 #define DAP_PROTOCOL_VERSION "3.2"
+
+
+
+
 
 const std::string CRLF = "\r\n";             // Change here, expr-test.cc
 const int chunk_size = 4096;
@@ -529,8 +534,15 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 	if(get_store_result().length()!=0){
 		string serviceUrl = get_store_result();
 
-		D4AsyncUtil d4au;
 		XMLWriter xmlWrtr;
+		D4AsyncUtil d4au;
+
+		bool found;
+		string *stylesheet_ref=0, ss_ref_value;
+	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
+	    if( found ) {
+	    	stylesheet_ref = &ss_ref_value;
+	    }
 
 		if(get_async_accepted().length() != 0){
 
@@ -548,9 +560,8 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 			string targetURL = resultCache->assemblePath(serviceUrl,storedResultId);
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
 
-			D4AsyncUtil d4au;
 			XMLWriter xmlWrtr;
-			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL);
+			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL,stylesheet_ref);
 			out << xmlWrtr.get_doc();
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncAccepted response" << endl);
@@ -561,11 +572,12 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 			 * Client didn't indicate a willingness to accept an async response
 			 * So - we tell them that async is required.
 			 */
-			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0);
+			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0,stylesheet_ref);
 			out << xmlWrtr.get_doc();
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
 		}
+
 
 		return true;
 
@@ -1060,6 +1072,13 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 		D4AsyncUtil d4au;
 		XMLWriter xmlWrtr;
 
+		bool found;
+		string *stylesheet_ref=0, ss_ref_value;
+	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
+	    if( found ) {
+	    	stylesheet_ref = &ss_ref_value;
+	    }
+
 		if(get_async_accepted().length() != 0){
 
 			/**
@@ -1076,7 +1095,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			string targetURL = resultCache->assemblePath(serviceUrl,storedResultId);
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - targetURL='"<< targetURL << "'" << endl);
 
-			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL);
+			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
 			out << xmlWrtr.get_doc();
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
@@ -1087,7 +1106,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			 * Client didn't indicate a willingness to accept an async response
 			 * So - we tell them that async is required.
 			 */
-			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0);
+			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
 			out << xmlWrtr.get_doc();
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);

@@ -53,6 +53,7 @@
 #include <DDS.h>
 #include <Str.h>
 #include <DDXParserSAX2.h>
+#include <D4AsyncUtil.h>
 
 #include <DMR.h>
 #include <D4ParserSax2.h>
@@ -404,6 +405,7 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "http://localhost:8080/opendap/xsl/asynResponse.xsl");
 
         ConstraintEvaluator ce;
 
@@ -499,6 +501,7 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "http://localhost:8080/opendap/xsl/asynResponse.xsl");
     	DBG(cerr << "store_dap4_result_test() - BES Keys configured."<< endl);
 
         ConstraintEvaluator ce;
