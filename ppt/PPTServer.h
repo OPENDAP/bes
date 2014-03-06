@@ -49,10 +49,7 @@ private:
 	string _cafile;
 	string _kfile;
 
-
-	int child_num;
-	int child_pid[100]; // FIXME Total hackery. jhrg 3/3/14
-	int child_status[100];
+	volatile int d_num_children;
 
 	int welcomeClient();
 	void authenticateClient();
@@ -60,6 +57,10 @@ private:
 public:
 	PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure);
 	virtual ~PPTServer();
+
+	int get_num_children() { return d_num_children; }
+	void incr_num_children() { ++d_num_children; }
+	void decr_num_children() { --d_num_children; }
 
 	virtual void initConnection();
 	virtual void closeConnection();

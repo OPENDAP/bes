@@ -31,6 +31,9 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h> // for wait
+#include <sys/types.h>
 
 #include <iostream>
 #include <fstream>
@@ -67,48 +70,74 @@ using std::ofstream;
 
 static int session_id = 0;
 
-ServerApp::ServerApp() :
-		BESModuleApp(), _portVal(0), _gotPort(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
+// These are set to 1 by their respective handlers and then processed in the
+// signal processing loop.
+static volatile sig_atomic_t sigchild = 0;
+static volatile sig_atomic_t sigpipe = 0;
+static volatile sig_atomic_t sigterm = 0;
+static volatile sig_atomic_t sighup = 0;
+
+static string bes_exit_message(int cpid, int stat)
 {
-	_mypid = getpid();
+	ostringstream oss;
+	oss << "beslistener child pid: " << cpid;
+	if (WIFEXITED(stat)) { // exited via exit()?
+		oss << " exited with status: " << WEXITSTATUS(stat);
+	}
+	else if (WIFSIGNALED(stat)) { // exited via a signal?
+		oss << " exited with signal: " << WTERMSIG(stat);
+#ifdef WCOREDUMP
+		if (WCOREDUMP(stat))
+			oss << " and a core dump!";
+#endif
+	}
+	else {
+		oss << " exited, but I have no clue as to why";
+	}
+
+	return oss.str();
 }
 
-ServerApp::~ServerApp()
+// These two functions duplicate code in daemon.cc
+static void block_signals()
 {
-	delete TheBESKeys::TheKeys();
+    sigset_t set;
+    sigemptyset (&set);
+    sigaddset(&set, SIGCHLD);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+    sigaddset(&set, SIGPIPE);
 
-	BESCatalogUtils::delete_all_catalogs();
+    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
+    	throw BESInternalError(string("sigprocmask error: ") + strerror(errno) + " while trying to block signals.", __FILE__, __LINE__);
+    }
 }
 
-#if 0
+static void unblock_signals()
+{
+    sigset_t set;
+    sigemptyset (&set);
+    sigaddset(&set, SIGCHLD);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+    sigaddset(&set, SIGPIPE);
 
-// All of this was moved to PPTServer as part of the fix for ticket 2025,
-// The zombie process problem. jhrg 3/3/14
+    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
+    	throw BESInternalError(string("sigprocmask error: ") + strerror(errno) + " while trying to unblock signals.", __FILE__, __LINE__);
+    }
+}
+
+// I moved the signal handlers here so that signal processing would be simpler
+// and no library calls would be made to functions that are not 'asynch safe'.
+// This was the fix for ticket 2025 and friends (the zombie process problem).
+// jhrg 3/3/14
 
 // This is needed so that the master bes listener will get the exit status of
 // all of the child bes listeners (preventing them from becoming zombies).
 static void CatchSigChild(int sig)
 {
 	if (sig == SIGCHLD) {
-		int stat;
-		pid_t cpid = wait(&stat);
-#if 0
-		*(BESLog::TheLog()) << "beslistener child pid: " << cpid;
-		if (WIFEXITED(stat)) { // exited via exit()?
-			*(BESLog::TheLog()) << " exited with status: " << WEXITSTATUS(stat) << endl;
-		}
-		else if (WIFSIGNALED(stat)) { // exited via a signal?
-			*(BESLog::TheLog()) << " exited with signal: " << WTERMSIG(stat);
-#ifdef WCOREDUMP
-			if (WCOREDUMP(stat))
-			*(BESLog::TheLog()) << " and a core dump!";
-#endif
-			*(BESLog::TheLog()) << endl;
-		}
-		else {
-			*(BESLog::TheLog()) << " exited, but I have no clue as to why" << endl;
-		}
-#endif
+		sigchild = 1;
 	}
 }
 
@@ -118,28 +147,14 @@ static void CatchSigChild(int sig)
 static void CatchSigHup(int sig)
 {
 	if (sig == SIGHUP) {
-		BESApp::TheApplication()->terminate(sig);
-		exit(SERVER_EXIT_RESTART);
+		sighup = 1;
 	}
 }
 
 static void CatchSigPipe(int sig)
 {
 	if (sig == SIGPIPE) {
-		int stat;
-		pid_t cpid = wait(&stat);
-
-#if 0
-		// Removed on 10/?/13
-		// I think this might be added back in, except for the exit status, which is likely wrong,
-		// if we can figure out if this is the parent or child that processing the signal. jhrg
-		// 2/26/14
-		BESApp::TheApplication()->terminate(sig);
-
-		BESDEBUG("beslistener", "beslistener: " << pid << " past terminate (SIGPIPE)." << endl);
-
-		exit(SERVER_EXIT_NORMAL_SHUTDOWN);
-#endif
+		sigpipe = 1;
 	}
 }
 
@@ -149,8 +164,7 @@ static void CatchSigPipe(int sig)
 static void CatchSigTerm(int sig)
 {
 	if (sig == SIGTERM) {
-		BESApp::TheApplication()->terminate(sig);
-		exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+		sigterm = 1;
 	}
 }
 
@@ -200,7 +214,19 @@ static void register_signal_handlers()
 
 	BESDEBUG("beslistener", "beslistener: OK" << endl);
 }
-#endif
+
+ServerApp::ServerApp() :
+		BESModuleApp(), _portVal(0), _gotPort(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
+{
+	_mypid = getpid();
+}
+
+ServerApp::~ServerApp()
+{
+	delete TheBESKeys::TheKeys();
+
+	BESCatalogUtils::delete_all_catalogs();
+}
 
 int ServerApp::initialize(int argc, char **argv)
 {
@@ -346,18 +372,6 @@ int ServerApp::initialize(int argc, char **argv)
 		}
 	}
 
-#if 0
-	// TODO Remove if this work in PPTServer
-	try {
-		register_signal_handlers();
-	}
-	catch (BESError &e) {
-		BESDEBUG("beslistener", "beslistener: FAILED: " << e.get_message() << endl);
-		(*BESLog::TheLog()) << e.get_message() << endl;
-		exit(SERVER_EXIT_FATAL_CANNOT_START);
-	}
-#endif
-
 	BESDEBUG("beslistener", "beslistener: initializing default module ... " << endl);
 	BESDefaultModule::initialize(argc, argv);
 	BESDEBUG("beslistener", "beslistener: done initializing default module" << endl);
@@ -420,13 +434,57 @@ int ServerApp::run()
 		BESServerHandler handler;
 
 		_ps = new PPTServer(&handler, &listener, _secure);
-		_ps->initConnection();
+
+		register_signal_handlers();
+
+		// Loop forever, processing signals and running the code in PPTServer::initConnection().
+		// NB: The code in initConnection() used to loop forever, but I move that out to here
+		// so the signal handlers could be in this class. The PPTServer::initConnection() method
+		// is also used by daemon.cc but this class (ServerApp; the beslistener) and the besdaemon
+		// need to do different things for the signals like HUP and TERM, so they cannot share
+		// the signal processing code. One fix for the problem described in ticket 2025 was to
+		// move the signal handlers into PPTServer. Changing how the 'forever' loops are organized
+		// and keeping the signal processing code here (and in daemon.cc) is another solution that
+		// preserves the correct behavior of the besdaemon, too. jhrg 3/5/14
+		while (true) {
+			block_signals();
+
+			if (sigterm | sighup | sigchild | sigpipe) {
+				int stat;
+				pid_t cpid;
+				while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
+					_ps->decr_num_children();
+					if (sigpipe) (*BESLog::TheLog()) << "Master listener caught SISPIPE from child: " << cpid << endl;
+
+					BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << _ps->get_num_children() << endl);
+				}
+			}
+
+			if (sighup) {
+				BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
+
+				(*BESLog::TheLog()) << "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl;
+				::exit(SERVER_EXIT_RESTART);
+			}
+
+			if (sigterm) {
+				BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
+
+				(*BESLog::TheLog()) << "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl;
+				::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+			}
+
+			sigchild = 0; sigpipe = 0; // No need to reset sigterm or sighup.
+			unblock_signals();
+
+			_ps->initConnection();
+		}
 
 		_ps->closeConnection();
 	}
 	catch (BESError &se) {
 		BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
-		// FIXME cerr << se.get_message() << endl;
+
 		(*BESLog::TheLog()) << se.get_message() << endl;
 		int status = SERVER_EXIT_FATAL_CANNOT_START;
 		write(BESLISTENER_PIPE_FD, &status, sizeof(status));
@@ -434,7 +492,6 @@ int ServerApp::run()
 		return 1;
 	}
 	catch (...) {
-		// FIXME jhrg 3/4/14 cerr << "caught unknown exception" << endl;
 		(*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
 		int status = SERVER_EXIT_FATAL_CANNOT_START;
 		write(BESLISTENER_PIPE_FD, &status, sizeof(status));

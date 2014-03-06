@@ -31,10 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "config.h"
-
+#if 0
 #include <signal.h>
 #include <sys/wait.h> // for wait
 #include <sys/types.h>
+#endif
 #include <unistd.h>
 
 #include <string>
@@ -54,10 +55,8 @@ using std::ostringstream;
 #include "ServerHandler.h"
 #include "Socket.h"
 #include "TheBESKeys.h"
+#include "BESLog.h"
 #include "BESDebug.h"
-
-static volatile sig_atomic_t signum = 0;
-static volatile int num_children = 0;
 
 #if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLServer.h"
@@ -65,117 +64,9 @@ static volatile int num_children = 0;
 
 #define PPT_SERVER_DEFAULT_TIMEOUT 1
 
-static string exited_message(int cpid, int stat)
-{
-	ostringstream oss;
-	oss << "beslistener child pid: " << cpid;
-	if (WIFEXITED(stat)) { // exited via exit()?
-		oss << " exited with status: " << WEXITSTATUS(stat);
-	}
-	else if (WIFSIGNALED(stat)) { // exited via a signal?
-		oss << " exited with signal: " << WTERMSIG(stat);
-#ifdef WCOREDUMP
-		if (WCOREDUMP(stat))
-			oss << " and a core dump!";
-#endif
-	}
-	else {
-		oss << " exited, but I have no clue as to why";
-	}
-
-	return oss.str();
-}
-
-// I moved the signal handlers here so that signal processing would be simpler
-// and no library calls would be made to functions that are not 'asynch safe'.
-// This was the fix for ticket 2025 and friends (the zombie process problem).
-// jhrg 3/3/14
-
-// This is needed so that the master bes listener will get the exit status of
-// all of the child bes listeners (preventing them from becoming zombies).
-static void CatchSigChild(int sig)
-{
-	if (sig == SIGCHLD) {
-		signum = sig;
-	}
-}
-
-// If the HUP signal is sent to the master beslistener, it should exit and
-// return a value indicating to the besdaemon that it should be restarted.
-// This also has the side-affect of re-reading the configuration file.
-static void CatchSigHup(int sig)
-{
-	if (sig == SIGHUP) {
-		signum = sig;
-	}
-}
-
-static void CatchSigPipe(int sig)
-{
-	if (sig == SIGPIPE) {
-		signum = sig;
-	}
-}
-
-// This is the default signal sent by 'kill'; when the master beslistener gets
-// this signal it should stop. besdaemon should not try to start a new
-// master beslistener.
-static void CatchSigTerm(int sig)
-{
-	if (sig == SIGTERM) {
-		signum = sig;
-	}
-}
-
-/** Register the signal handlers. This registers handlers for HUP, TERM and
- *  CHLD. For each, if this OS supports restarting 'slow' system calls, enable
- *  that. For the TERM and HUP handlers, block SIGCHLD for the duration of
- *  the handler (we call stop_all_beslisteners() in those handlers and that
- *  function uses wait() to collect the exit status of the child processes).
- *  This ensure that our signal handlers (TERM and HUP) don't themselves get
- *  interrupted.
- */
-static void register_signal_handlers()
-{
-	struct sigaction act;
-	sigemptyset(&act.sa_mask);
-	sigaddset(&act.sa_mask, SIGCHLD);
-	sigaddset(&act.sa_mask, SIGPIPE);
-	sigaddset(&act.sa_mask, SIGTERM);
-	sigaddset(&act.sa_mask, SIGHUP);
-	act.sa_flags = 0;
-#ifdef SA_RESTART
-	BESDEBUG("beslistener", "beslistener: setting restart for sigchld." << endl);
-	act.sa_flags |= SA_RESTART;
-#endif
-
-	BESDEBUG("beslistener", "beslistener: Registering signal handlers ... " << endl);
-
-	act.sa_handler = CatchSigChild;
-	if (sigaction(SIGCHLD, &act, 0))
-		throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__,
-				__LINE__);
-
-	act.sa_handler = CatchSigPipe;
-	if (sigaction(SIGPIPE, &act, 0) < 0)
-		throw BESInternalFatalError("Could not register a handler to catch beslistener pipe signal.", __FILE__,
-				__LINE__);
-
-	act.sa_handler = CatchSigTerm;
-	if (sigaction(SIGTERM, &act, 0) < 0)
-		throw BESInternalFatalError("Could not register a handler to catch beslistener terminate signal.", __FILE__,
-				__LINE__);
-
-	act.sa_handler = CatchSigHup;
-	if (sigaction(SIGHUP, &act, 0) < 0)
-		throw BESInternalFatalError("Could not register a handler to catch beslistener hup signal.", __FILE__,
-				__LINE__);
-
-	BESDEBUG("beslistener", "beslistener: OK" << endl);
-}
-
 PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure) :
-		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure)
+		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure),
+		d_num_children(0)
 {
 	if (!handler) {
 		string err("Null handler passed to PPTServer");
@@ -197,8 +88,6 @@ PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSe
 	if (_secure) {
 		get_secure_files();
 	}
-
-	register_signal_handlers();
 }
 
 PPTServer::~PPTServer()
@@ -249,77 +138,30 @@ void PPTServer::get_secure_files()
  a PPTServer which is a kind of Connection. */
 void PPTServer::initConnection()
 {
-	for (;;) {
-		BESDEBUG("ppt2", "PPTServer::initConnection() - Calling SocketListener::accept()" << endl);
-		_mySock = _listener->accept();
+	_mySock = _listener->accept();
 
-		// If child_num != -1 we must have an exit status to pick up
-		if  (signum > 0) {
-			switch (signum) {
-			case SIGCHLD: {
-				int stat;
-				pid_t cpid;
-				while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
-					--num_children;
-					BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
-				}
-				break;
-			}
+	if (_mySock) {
+		if (_mySock->allowConnection() == true) {
+			// welcome the client
+			BESDEBUG("ppt2", "PPTServer::initConnection() - Calling welcomeClient()" << endl);
+			if (welcomeClient() != -1) {
 
-			case SIGPIPE: {
-				int stat;
-				pid_t cpid;
-				while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
-					--num_children;
-					BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
-				}
-				break;
-			}
+				incr_num_children();
+				BESDEBUG("ppt2", "PPTServer; number of children: " << get_num_children() << endl);
 
-			// Since these call exit(2), there is no need to wait for the children.
-			// I assume that the Admin interface will take care of a 'gentle' shutdown
-			// if that is needed. jhrg 3/3/14
-			case SIGTERM:
-				BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
-				::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+				// now hand it off to the handler
+				_handler->handle(this);
 
-			case SIGHUP:
-				BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
-				::exit(SERVER_EXIT_RESTART);
-
-			default:
-				break;
-			}
-
-			signum = 0;
-		}
-
-		if (_mySock) {
-			BESDEBUG("ppt2", "PPTServer::initConnection() - Checking allowConnection() " << endl);
-
-			if (_mySock->allowConnection() == true) {
-				BESDEBUG("ppt2", "PPTServer::initConnection() - allowConnection() is TRUE." << endl);
-
-				// welcome the client
-				BESDEBUG("ppt2", "PPTServer::initConnection() - Calling welcomeClient()" << endl);
-				if (welcomeClient() != -1) {
-					++ num_children;
-					BESDEBUG("ppt2", "PPTServer; number of children: " << num_children << endl);
-
-					// now hand it off to the handler
-					_handler->handle(this);
-
-					// Added this call to close - when the PPTServer class is used by
-					// a server that gets a number of connections on the same port,
-					// one per command, not closing the sockets after a command results
-					// in lots of sockets in the 'CLOSE_WAIT' status.
-					_mySock->close();
-				}
-			}
-			else {
-				BESDEBUG("ppt2", "PPTServer::initConnection() - allowConnection() is FALSE! Closing Socket. " << endl);
+				// Added this call to close - when the PPTServer class is used by
+				// a server that gets a number of connections on the same port,
+				// one per command, not closing the sockets after a command results
+				// in lots of sockets in the 'CLOSE_WAIT' status.
 				_mySock->close();
 			}
+		}
+		else {
+			BESDEBUG("ppt2", "PPTServer::initConnection() - allowConnection() is FALSE! Closing Socket. " << endl);
+			_mySock->close();
 		}
 	}
 }
@@ -393,25 +235,21 @@ int PPTServer::welcomeClient()
 void PPTServer::authenticateClient()
 {
 #if defined HAVE_OPENSSL && defined NOTTHERE
-	BESDEBUG( "ppt", "requiring secure connection: port = "
-			<< _securePort << endl );
+	BESDEBUG( "ppt", "requiring secure connection: port = " << _securePort << endl );
 	// let the client know that it needs to authenticate
 	send( PPTProtocol::PPTSERVER_AUTHENTICATE );
 
 	// wait for the client request for the secure port
 	// We are waiting for a ppt tocken requesting the secure port number.
 	// The buffer doesn't need to be all that big. pcw - 05/31/08
-	unsigned int ppt_buffer_size = 64;
-	char *inBuff = new char[ppt_buffer_size];
+	const unsigned int ppt_buffer_size = 64;
+ 	// char *inBuff = new char[ppt_buffer_size]; jhrg 3/5/14
+	char inBuff[ppt_buffer_size];
 	int bytesRead = _mySock->receive( inBuff, ppt_buffer_size );
 	string portRequest( inBuff, bytesRead );
-	delete [] inBuff;
+	// delete [] inBuff; jhrg 3/5/14
 	if( portRequest != PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT )
-	{
-		string err( "Secure connection ... expecting request for port" );
-		err += " client requested " + portRequest;
-		throw BESInternalError( err, __FILE__, __LINE__ );
-	}
+		throw BESInternalError( string("Secure connection ... expecting request for port client requested ") + portRequest, __FILE__, __LINE__ );
 
 	// send the secure port number back to the client
 	ostringstream portResponse;
@@ -426,8 +264,7 @@ void PPTServer::authenticateClient()
 	// if it authenticates, good, if not, an exception is thrown, no need to
 	// do anything else here.
 #else
-	string err = (string) "Authentication requested for this server " + "but OpenSSL is not built into the server";
-	throw BESInternalError(err, __FILE__, __LINE__);
+	throw BESInternalError("Authentication requested for this server but OpenSSL is not built into the server", __FILE__, __LINE__);
 #endif
 }
 

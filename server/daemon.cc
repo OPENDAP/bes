@@ -89,10 +89,11 @@ static string daemon_name;
 // This two variables are set by load_names
 static string beslistener_path;
 static string file_for_daemon_pid;
-// This can be used to see if HUP or TERM has been sent to the master bes
-int master_beslistener_status = BESLISTENER_STOPPED;
 
-static int master_beslistener_pid = -1; // This is also the process group id
+// This can be used to see if HUP or TERM has been sent to the master bes
+volatile int master_beslistener_status = BESLISTENER_STOPPED;
+volatile int num_children = 0;
+static volatile int master_beslistener_pid = -1; // This is also the process group id
 
 typedef map<string,string> arg_map;
 static arg_map global_args;
@@ -101,6 +102,12 @@ static string debug_sink = "";
 static TcpSocket *my_socket = 0;
 static UnixSocket *unix_socket = 0;
 static PPTServer *command_server = 0;
+
+// These are set to 1 by their respective handlers and then processed in the
+// signal processing loop. jhrg 3/5/14
+static volatile sig_atomic_t sigchild = 0;
+static volatile sig_atomic_t sigterm = 0;
+static volatile sig_atomic_t sighup = 0;
 
 static string errno_str(const string &msg)
 {
@@ -163,6 +170,10 @@ static int pr_exit(int status)
     return 0;
 }
 
+/** For code that must use signals to stop and start the master listener,
+ * block signals being delivered to this process. The code must call the
+ * companion unblock_signals() when it is done.
+ */
 void block_signals()
 {
     sigset_t set;
@@ -176,6 +187,7 @@ void block_signals()
     }
 }
 
+/** See block_signals() */
 void unblock_signals()
 {
     sigset_t set;
@@ -188,6 +200,7 @@ void unblock_signals()
         cerr << errno_str(": sigprocmask error unblocking signals in stop_all_beslisteners ");
     }
 }
+
 /** Stop all of the listeners (both the master listener and all of the
  *  child listeners that actually process requests). A test version of this
  *  used the master beslistener's exit status to determine if the daemon
@@ -206,7 +219,6 @@ bool stop_all_beslisteners(int sig)
     BESDEBUG("besdaemon", "besdaemon: stopping listeners" << endl);
 
     block_signals();
-    BESDEBUG("besdaemon", "besdaemon: blocking signals " << endl);
 
     BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid " << master_beslistener_pid << endl);
     // Send 'sig' to all members of the process group with/of the master bes.
@@ -362,8 +374,7 @@ int start_master_beslistener()
     // Read the status from the child (beslistener).
     int beslistener_start_status;
     int status = read(pipefd[0], &beslistener_start_status, sizeof(beslistener_start_status));
-    // ***
-    // cerr << "besdaemon read status: " << status << endl;
+
     if (status < 0) {
         cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
         close(pipefd[0]);
@@ -399,77 +410,88 @@ static void cleanup_resources()
 // Note that SIGCHLD, SIGTERM and SIGHUP are blocked while in these three
 // signal handlers below.
 
-// Catch SIGCHLD. This is used to detect if the HUP signal was sent to the
-// beslistener(s) and they have returned SERVER_EXIT_RESTART by recording
-// that value in the global 'master_beslistener_status'. Other code needs
-// to test that (static) global to see if the beslistener should be restarted.
 static void CatchSigChild(int signal)
 {
     if (signal == SIGCHLD) {
-        int status;
-        int pid = wait(&status);
-
-        BESDEBUG("besdaemon", "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << pr_exit(status) << endl);
-
-        // Decode and record the exit status, but only if it really is the
-        // master beslistener this daemon is using. If two or more Start commands
-        // are sent in a row, a master beslistener will start, fail to bind to
-        // the port (because another master beslstener is already bound to it)
-        // and exit. We don't want to record that second process's exit status here.
-        if (pid == master_beslistener_pid)
-            master_beslistener_status = pr_exit(status);
+    	sigchild = 1;
     }
 }
 
-// The two following signal handlers implement a simple stop/restart behavior
-// for the daemon. The TERM signal (which is the default for the 'kill'
-// command) is used to stop the entire server, including the besdaemon. The HUP
-// signal is used to stop all beslisteners and then restart the master
-// beslistener, forcing a re-read of the config file. Note that the daemon
-// does not re-read the config file.
-
-// When the daemon gets the HUP signal, it forwards that onto each beslistener.
-// They then all exit, returning the 'restart' code so that the daemon knows
-// to restart the master beslistener.
-//
-// Block sigchld when in this function.
 static void CatchSigHup(int signal)
 {
     if (signal == SIGHUP) {
-        BESDEBUG("besdaemon", "besdaemon: caught SIGHUP in besdaemon." << endl);
-        BESDEBUG("besdaemon", "besdaemon: sending SIGHUP to the process group: " << master_beslistener_pid << endl);
-
-        // restart the beslistener(s); read their exit status
-        stop_all_beslisteners(SIGHUP);
-
-        if (start_master_beslistener() == 0) {
-            cerr << "Could not restart the master beslistener." << endl;
-            stop_all_beslisteners(SIGTERM);
-            cleanup_resources();
-            exit(1);
-        }
+    	sighup = 1;
     }
 }
 
-// When TERM (the default for 'kill') is sent to this process, send it also
-// to each beslistener. This will cause the beslisteners to all exit with a zero
-// value (the code for 'do not restart').
-//
-// Block sigchld when in this function.
 static void CatchSigTerm(int signal)
 {
     if (signal == SIGTERM) {
-        BESDEBUG("besdaemon", "besdaemon: caught SIGTERM." << endl);
-        BESDEBUG("besdaemon", "besdaemon: sending SIGTERM to the process group: " << master_beslistener_pid << endl);
-
-        // Stop all of the beslistener(s); read their exit status
-        stop_all_beslisteners(SIGTERM);
-
-        cleanup_resources();
-
-        // Once all the child exit status values are read, exit the daemon
-        exit(0);
+    	sigterm = 1;
     }
+}
+
+static void process_signals()
+{
+	block_signals();
+
+	// Process SIGCHLD. This is used to detect if the HUP signal was sent to the
+	// master listener and it has returned SERVER_EXIT_RESTART by recording
+	// that value in the global 'master_beslistener_status'. Other code needs
+	// to test that (static) global to see if the beslistener should be restarted.
+	if (sigchild) {
+		int status;
+		int pid = wait(&status);
+
+		// Decode and record the exit status, but only if it really is the
+		// master beslistener this daemon is using. If two or more Start commands
+		// are sent in a row, a master beslistener will start, fail to bind to
+		// the port (because another master beslstener is already bound to it)
+		// and exit. We don't want to record that second process's exit status here.
+		if (pid == master_beslistener_pid) master_beslistener_status = pr_exit(status);
+
+		sigchild = 0;
+	}
+
+	// The two following signals implement a simple stop/restart behavior
+	// for the daemon. The TERM signal (which is the default for the 'kill'
+	// command) is used to stop the entire server, including the besdaemon. The HUP
+	// signal is used to stop all beslisteners and then restart the master
+	// beslistener, forcing a re-read of the config file. Note that the daemon
+	// does not re-read the config file.
+
+	// When the daemon gets the HUP signal, it forwards that onto each beslistener.
+	// They then all exit, returning the 'restart' code so that the daemon knows
+	// to restart the master beslistener.
+	if (sighup) {
+		// restart the beslistener(s); read their exit status
+		stop_all_beslisteners(SIGHUP);
+
+		// FIXME jhrg 3/5/14
+		if (start_master_beslistener() == 0) {
+			cerr << "Could not restart the master beslistener." << endl;
+			stop_all_beslisteners(SIGTERM);
+			cleanup_resources();
+			exit(1);
+		}
+
+		sighup = 0;
+	}
+
+	// When TERM (the default for 'kill') is sent to this process, send it also
+	// to each beslistener. This will cause the beslisteners to all exit with a zero
+	// value (the code for 'do not restart').
+	if (sigterm) {
+		// Stop all of the beslistener(s); read their exit status
+		stop_all_beslisteners(SIGTERM);
+
+		// FIXME jhrg 3/5/14
+		cleanup_resources();
+		// Once all the child exit status values are read, exit the daemon
+		exit(0);
+	}
+
+	unblock_signals();
 }
 
 /** Start the daemon command interpreter. This runs forever, until the daemon
@@ -528,10 +550,15 @@ static int start_command_processor(DaemonCommandHandler &handler)
         command_server = new PPTServer(&handler, &listener, /*is_secure*/false);
 
         // Once initialized, 'handler' loops until it's told to exit.
-        command_server->initConnection();
+        while(true) {
+        	process_signals();
+
+        	command_server->initConnection();
+        }
 
         // Once the handler exits, close sockets and free memory
         command_server->closeConnection();
+#if 0
         delete command_server;
         command_server = 0;
 
@@ -546,10 +573,14 @@ static int start_command_processor(DaemonCommandHandler &handler)
         stop_all_beslisteners(SIGTERM);
         unblock_signals();
 
+        // FIXME jhrg 3/5/14
+        // Pick up all the listener's status codes
         return 1;
+#endif
     }
     catch (BESError &se) {
         cerr << "daemon: " << se.get_message() << endl;
+#if 0
         delete command_server;
         command_server = 0;
         delete my_socket;
@@ -561,9 +592,11 @@ static int start_command_processor(DaemonCommandHandler &handler)
         stop_all_beslisteners(SIGTERM);
         unblock_signals();
         return 1;
+#endif
     }
     catch (...) {
         cerr << "daemon: " << "caught unknown exception" << endl;
+#if 0
         delete command_server;
         command_server = 0;
         delete my_socket;
@@ -575,7 +608,22 @@ static int start_command_processor(DaemonCommandHandler &handler)
         stop_all_beslisteners(SIGTERM);
         unblock_signals();
         return 1;
+#endif
     }
+
+    delete command_server;
+    command_server = 0;
+
+    // delete closes the sockets
+    delete my_socket;
+    my_socket = 0;
+    delete unix_socket;
+    unix_socket = 0;
+
+    // When/if the command interpreter exits, stop the all listeners.
+    stop_all_beslisteners(SIGTERM);
+
+    return 1;
 }
 
 /** Register the signal handlers. This registers handlers for HUP, TERM and
@@ -1135,6 +1183,9 @@ int main(int argc, char *argv[])
         bool done = false;
         while (!done) {
             pause();
+
+            process_signals();
+
             BESDEBUG("besdaemon", "besdaemon: master_beslistener_status: " << master_beslistener_status << endl);
             if (master_beslistener_status == BESLISTENER_RESTART) {
                 master_beslistener_status = BESLISTENER_STOPPED;

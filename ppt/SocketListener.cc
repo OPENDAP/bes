@@ -40,19 +40,14 @@
 #include <cstring>
 #include <cerrno>
 
-#if 0
-#ifdef _ACCEPT_USES_SOCKLEN_T
-#define SOCK_TYPE socklen_t
-#else
-#define SOCK_TYPE int
-#endif
-#endif
-
 #include "SocketListener.h"
 #include "BESInternalError.h"
 #include "Socket.h"
 #include "SocketConfig.h"
 #include "BESDebug.h"
+
+//extern volatile int bes_num_children; // defined in PPTServer.cc jhrg 3/5/14
+//extern string bes_exit_message(int cpid, int stat);
 
 SocketListener::SocketListener() :
 		_accepting(false)
@@ -65,27 +60,20 @@ SocketListener::~SocketListener()
 
 void SocketListener::listen(Socket *s)
 {
-	if (_accepting) {
-		string err = (string) "Already accepting connections, " + "no more sockets can be added";
-		throw BESInternalError(err, __FILE__, __LINE__);
-	}
+	if (_accepting)
+		throw BESInternalError("Already accepting connections, no more sockets can be added", __FILE__, __LINE__);
 
 	if (s && !s->isConnected() && !s->isListening()) {
 		s->listen();
 		_socket_list[s->getSocketDescriptor()] = s;
 	}
 	else {
-		if (!s) {
+		if (!s)
 			throw BESInternalError("null socket passed", __FILE__, __LINE__);
-		}
-		else if (s->isConnected()) {
-			string err("socket already connected, cannot listen");
-			throw BESInternalError(err, __FILE__, __LINE__);
-		}
-		else if (s->isListening()) {
-			string err("socket already listening");
-			throw BESInternalError(err, __FILE__, __LINE__);
-		}
+		else if (s->isConnected())
+			throw BESInternalError("socket already connected, cannot listen", __FILE__, __LINE__);
+		else if (s->isListening())
+			throw BESInternalError("socket already listening", __FILE__, __LINE__);
 	}
 }
 
@@ -95,99 +83,75 @@ SocketListener::accept()
 {
 	BESDEBUG("ppt", "SocketListener::accept() - START" << endl);
 
-	int msgsock;
-
 	fd_set read_fd;
-	struct timeval timeout;
+	FD_ZERO(&read_fd);
 
-	int maxfd;
-
-	for (;;) {
-		timeout.tv_sec = 120;
-		timeout.tv_usec = 0;
-
-		FD_ZERO( &read_fd );
-
-		maxfd = 0;
-		for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
-			Socket *s_ptr = (*i).second;
-			int s = s_ptr->getSocketDescriptor();
-			if (s > maxfd) maxfd = s;
-			FD_SET( s, &read_fd );
-		}
-
-#if 0
-		// jhrg 5/16/11
-		//if( select( maxfd+1, &read_fd,
-		//           (fd_set*)NULL, (fd_set*)NULL, &timeout) < 0 )
-#endif
-
-		pid_t cpid;
-		int stat;
-		while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/ )) > 0) {
-			//--num_children;
-			//BESDEBUG("ppt2", exited_message(cpid, stat) << "; num children: " << num_children << endl);
-		}
-
-		while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
-
-			switch (errno) {
-			case EAGAIN:	// rerun select on interrupted calls, ...
-				BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);
-				// This case and the one below used to just 'break' so that the select call
-				// above would run again. I modified it to return null so that the caller could
-				// do other things, like process the results of signals.
-				return 0;
-
-			case EINTR:
-				BESDEBUG("ppt2", "SocketListener::accept() - select encountered EINTR" << endl);
-				return 0;
-
-			default: {
-				throw BESInternalError(string("select: ") + strerror(errno), __FILE__, __LINE__);
-			}
-			}
-		}
-
-		BESDEBUG("ppt", "SocketListener::accept() - select() completed without error." << endl);
-
-		for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
-			Socket *s_ptr = (*i).second;
-			BESDEBUG("ppt",
-					"SocketListener::accept() - Processing socket " << s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
-
-			int s = s_ptr->getSocketDescriptor();
-			if (FD_ISSET( s, &read_fd )) {
-				BESDEBUG("ppt",
-						"SocketListener::accept() - FD_ISSET for "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
-
-				struct sockaddr from;
-				socklen_t len_from = sizeof(from);
-
-				BESDEBUG("ppt",
-						"SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
-
-				while ((msgsock = ::accept(s, &from, &len_from)) < 0) {
-					if (errno == EINTR) {
-						BESDEBUG("ppt2", "SocketListener::accept() - accept() was interrupted" << endl);
-
-						continue;
-					}
-					else {
-						throw BESInternalError(string("accept: ") + strerror(errno), __FILE__, __LINE__);
-					}
-				}
-				BESDEBUG("ppt", "SocketListener::accept() - END (returning new Socket)" << endl);
-
-				return s_ptr->newSocket(msgsock, (struct sockaddr *) &from);
-			}
-		}
-		BESDEBUG("ppt",
-				"SocketListener::accept() - Looks like select() timed out. Looping back to restart select()" << endl);
-
+	int maxfd = 0;
+	for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
+		Socket *s_ptr = (*i).second;
+		if (s_ptr->getSocketDescriptor() > maxfd) maxfd = s_ptr->getSocketDescriptor();
+		FD_SET(s_ptr->getSocketDescriptor(), &read_fd);
 	}
-	BESDEBUG("ppt", "SocketListener::accept() - END (returning 0)" << endl);
+#if 0
+	// Without this loop one client will always get an error like:
+	// Could not connect to host localhost on port 10022.  Connection reset by peer.
+	// when the server is first started. This may be an artifact of the test client
+	// when it is used to make many (e.g., 20) simultaneous requests. jhrg 3/5/14
+	pid_t cpid;
+	int stat;
+	while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
+		--bes_num_children;
+		BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << bes_num_children << endl);
+	}
+#endif
+	struct timeval timeout;
+	timeout.tv_sec = 120;
+	timeout.tv_usec = 0;
+	while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+		switch (errno) {
+		case EAGAIN:	// rerun select on interrupted calls, ...
+			BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);
+			// This case and the one below used to just 'break' so that the select call
+			// above would run again. I modified it to return null so that the caller could
+			// do other things, like process the results of signals.
+			return 0;
 
+		case EINTR:
+			BESDEBUG("ppt2", "SocketListener::accept() - select encountered EINTR" << endl);
+			return 0;
+
+		default:
+			throw BESInternalError(string("select: ") + strerror(errno), __FILE__, __LINE__);
+		}
+	}
+
+	BESDEBUG("ppt", "SocketListener::accept() - select() completed without error." << endl);
+
+	for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
+		Socket *s_ptr = (*i).second;
+		if (FD_ISSET( s_ptr->getSocketDescriptor(), &read_fd )) {
+			struct sockaddr from;
+			socklen_t len_from = sizeof(from);
+
+			BESDEBUG("ppt",
+					"SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
+			int msgsock;
+			while ((msgsock = ::accept(s_ptr->getSocketDescriptor(), &from, &len_from)) < 0) {
+				if (errno == EINTR) {
+					BESDEBUG("ppt2", "SocketListener::accept() - accept() was interrupted" << endl);
+					continue;
+				}
+				else {
+					throw BESInternalError(string("accept: ") + strerror(errno), __FILE__, __LINE__);
+				}
+			}
+
+			BESDEBUG("ppt", "SocketListener::accept() - END (returning new Socket)" << endl);
+			return s_ptr->newSocket(msgsock, (struct sockaddr *) &from);
+		}
+	}
+
+	BESDEBUG("ppt", "SocketListener::accept() - END (returning 0)" << endl);
 	return 0;
 }
 
