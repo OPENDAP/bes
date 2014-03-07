@@ -43,7 +43,8 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest StoredResultTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest
+# Removed from the h 1.9 branch and the trunk StoredResultTest
 else
 UNIT_TESTS =
 
