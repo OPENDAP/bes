@@ -419,7 +419,7 @@ public:
     	string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
-        	df->send_data(oss, *test_05_dds, ce, false);
+        	df->send_dap2_data(oss, *test_05_dds, ce, false);
 
         	string candidateResponseDoc = oss.str();
 
@@ -445,7 +445,7 @@ public:
 
         try {
             oss.str("");
-        	df->send_data(oss, *test_05_dds, ce, false);
+        	df->send_dap2_data(oss, *test_05_dds, ce, false);
 
         	string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
@@ -645,7 +645,7 @@ public:
 #endif
             ConstraintEvaluator ce;
             DBG( cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_data()" << endl);
-            df6->send_data(oss, *dds, ce);
+            df6->send_dap2_data(oss, *dds, ce);
 
             DBG( cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 

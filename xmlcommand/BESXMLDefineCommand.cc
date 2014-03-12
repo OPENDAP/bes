@@ -42,7 +42,8 @@
 
 BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dhi )
     : BESXMLCommand( base_dhi ),
-      _default_constraint( "" )
+      _default_constraint( "" ),
+      _default_function( "" )
 {
 }
 
@@ -66,111 +67,133 @@ BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dh
 void
 BESXMLDefineCommand::parse_request( xmlNode *node )
 {
-    string value ;		// element value, should not be any
-    string def_name ;		// definition name
-    string def_space ;		// definition storage space
-    string action ;		// element name, which is the request action
-    map<string, string> props ;	// element properties. Should contain name
-    				// and optionally space
+	string value ;		// element value, should not be any
+	string def_name ;		// definition name
+	string def_space ;		// definition storage space
+	string action ;		// element name, which is the request action
+	map<string, string> props ;	// element properties. Should contain name
+	// and optionally space
 
-    BESXMLUtils::GetNodeInfo( node, action, value, props ) ;
-    if( action != DEFINE_RESPONSE_STR )
-    {
-	string err = "The specified command " + action
-		     + " is not a set context command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-    }
-
-    _dhi.action = DEFINE_RESPONSE ;
-
-    def_name = props["name"] ;
-    if( def_name.empty() )
-    {
-	string err = action + " command: definition name missing" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-    }
-
-    _dhi.data[DEF_NAME] = def_name ;
-    _str_cmd = (string)"define " + def_name ;
-
-    def_space = props["space"] ;
-    if( !def_space.empty() )
-    {
-	_str_cmd += " in " + def_space ;
-    }
-    _dhi.data[STORE_NAME] = def_space ;
-
-    int num_containers = 0 ;
-    string child_name ;
-    string child_value ;
-    props.clear() ;
-    xmlNode *child_node =
-	BESXMLUtils::GetFirstChild( node, child_name, child_value, props ) ;
-    while( child_node )
-    {
-	if( child_name == "constraint" )
+	BESXMLUtils::GetNodeInfo( node, action, value, props ) ;
+	if( action != DEFINE_RESPONSE_STR )
 	{
-	    // default constraint for all containers
-	    _default_constraint = child_value ;
-	}
-	else if( child_name == "container" )
-	{
-	    handle_container_element( action, child_node, child_value, props ) ;
-	    num_containers++ ;
-	}
-	else if( child_name == "aggregate" )
-	{
-	    handle_aggregate_element( action, child_node, child_value, props ) ;
+		string err = "The specified command " + action
+				+ " is not a set context command" ;
+		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
 
-	// get the next child element
+	_dhi.action = DEFINE_RESPONSE ;
+
+	def_name = props["name"] ;
+	if( def_name.empty() )
+	{
+		string err = action + " command: definition name missing" ;
+		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	}
+
+	_dhi.data[DEF_NAME] = def_name ;
+	_str_cmd = (string)"define " + def_name ;
+
+	def_space = props["space"] ;
+	if( !def_space.empty() )
+	{
+		_str_cmd += " in " + def_space ;
+	}
+	_dhi.data[STORE_NAME] = def_space ;
+
+	int num_containers = 0 ;
+	string child_name ;
+	string child_value ;
 	props.clear() ;
-	child_name.clear() ;
-	child_value.clear() ;
-	child_node = BESXMLUtils::GetNextChild( child_node, child_name,
-						child_value, props ) ;
-    }
-
-    if( num_containers < 1 )
-    {
-	string err = action + "The define element must contain at least "
-	             + "one container element" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-    }
-
-    _str_cmd += " as " ;
-    bool first = true ;
-    vector<string>::iterator i = _containers.begin() ;
-    vector<string>::iterator e = _containers.end() ;
-    for( ; i != e; i++ )
-    {
-	if( !first ) _str_cmd += "," ;
-	_str_cmd += (*i) ;
-	first = false ;
-    }
-    if( _constraints.size() )
-    {
-	_str_cmd += " with " ;
-	first = true ;
-	map<string,string>::iterator ci = _constraints.begin() ;
-	map<string,string>::iterator ce = _constraints.end() ;
-	for( ; ci != ce; ci++ )
+	xmlNode *child_node =
+			BESXMLUtils::GetFirstChild( node, child_name, child_value, props ) ;
+	while( child_node )
 	{
-	    if( !first ) _str_cmd += "," ;
-	    _str_cmd += (*ci).first + ".constraint=\"" + (*ci).second + "\"" ;
-	    first = false ;
-	    string attrs = _attributes[(*ci).first] ;
-	    if( !attrs.empty() )
-	    {
-		_str_cmd += "," + (*ci).first + ".attributes=\"" + attrs + "\"";
-	    }
-	}
-    }
-    _str_cmd += ";" ;
+		if( child_name == "constraint" )
+		{
+			// default constraint for all containers
+			_default_constraint = child_value ;
+		}
+		else if( child_name == "function" )
+		{
+			// default function for all containers
+			_default_function = child_value ;
+		}
+		else if( child_name == "container" )
+		{
+			handle_container_element( action, child_node, child_value, props ) ;
+			num_containers++ ;
+		}
+		else if( child_name == "aggregate" )
+		{
+			handle_aggregate_element( action, child_node, child_value, props ) ;
+		}
 
-    // now that we've set the action, go get the response handler for the
-    // action
-    BESXMLCommand::set_response() ;
+		// get the next child element
+		props.clear() ;
+		child_name.clear() ;
+		child_value.clear() ;
+		child_node = BESXMLUtils::GetNextChild( child_node, child_name,
+				child_value, props ) ;
+	}
+
+	if( num_containers < 1 )
+	{
+		string err = action + "The define element must contain at least "
+				+ "one container element" ;
+		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	}
+
+	_str_cmd += " as " ;
+	bool first = true ;
+	vector<string>::iterator i = _containers.begin() ;
+	vector<string>::iterator e = _containers.end() ;
+	for( ; i != e; i++ )
+	{
+		if( !first ) _str_cmd += "," ;
+		_str_cmd += (*i) ;
+		first = false ;
+	}
+
+
+    if( _constraints.size() || _attributes.size() || _functions.size() )
+    {
+        _str_cmd += " with " ;
+        first = true ;
+        i = _containers.begin() ;
+        e = _containers.end() ;
+        for( ; i != e; i++ )
+        {
+            if( _constraints.count((*i)) )
+            {
+                if( !first ) _str_cmd += "," ;
+                first = false ;
+                _str_cmd += (*i) + ".constraint=\"" + _constraints[(*i)] + "\"" ;
+            }
+            if( _attributes.count((*i)) )
+            {
+                if( !first ) _str_cmd += "," ;
+                first = false ;
+                _str_cmd += (*i) + ".attributes=\"" + _attributes[(*i)] + "\"" ;
+            }
+            if( _functions.count((*i)) )
+            {
+                if( !first ) _str_cmd += "," ;
+                first = false ;
+                _str_cmd += (*i) + ".functions=\"" + _functions[(*i)] + "\"" ;
+            }
+        }
+    }
+
+
+	_str_cmd += ";" ;
+
+
+
+
+	// now that we've set the action, go get the response handler for the
+	// action
+	BESXMLCommand::set_response() ;
 }
 
 /** @brief handle a container element of the define element
@@ -206,6 +229,7 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     _stores[name] = space ;
 
     bool have_constraint = false ;
+    bool have_function   = false ;
     bool have_attributes = false ;
     string child_name ;
     string child_value ;
@@ -216,59 +240,82 @@ BESXMLDefineCommand::handle_container_element( const string &action,
 	BESXMLUtils::GetFirstChild( node, child_name, child_value, child_props);
     while( child_node )
     {
-	if( child_name == "constraint" )
-	{
-	    if( child_props.size() )
-	    {
-		string err = action + " command: constraint element "
-				    + "should not contain properties" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    if( child_value.empty() )
-	    {
-		string err = action + " command: attributes element "
-				    + "missing value" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    if( have_constraint )
-	    {
-		string err = action + " command: container element "
-				    + "contains multiple constraint elements" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    have_constraint = true ;
-	    _constraints[name] = child_value ;
-	}
-	else if( child_name == "attributes" )
-	{
-	    if( child_props.size() )
-	    {
-		string err = action + " command: attributes element "
-				    + "should not contain properties" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    if( child_value.empty() )
-	    {
-		string err = action + " command: attributes element "
-				    + "missing value" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    if( have_attributes )
-	    {
-		string err = action + " command: container element "
-				    + "contains multiple attributes elements" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    have_attributes = true ;
-	    _attributes[name] = child_value ;
-	}
+    	if( child_name == "constraint" )
+    	{
+    	    if( child_props.size() )
+    	    {
+    		string err = action + " command: constraint element "
+    				    + "should not contain properties" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( child_value.empty() )
+    	    {
+    		string err = action + " command: constraint element "
+    				    + "missing value" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( have_constraint )
+    	    {
+    		string err = action + " command: container element "
+    				    + "contains multiple constraint elements" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    have_constraint = true ;
+    	    _constraints[name] = child_value ;
+    	}
+    	else if( child_name == "function" )
+    	{
+    	    if( child_props.size() )
+    	    {
+    		string err = action + " command: dap4_function element "
+    				    + "should not contain properties" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( child_value.empty() )
+    	    {
+    		string err = action + " command: dap4_function element "
+    				    + "missing value" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( have_function )
+    	    {
+    		string err = action + " command: container element "
+    				    + "contains multiple dap4_function elements" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    have_function = true ;
+    	    _functions[name] = child_value ;
+    	}
+		else if( child_name == "attributes" )
+		{
+			if( child_props.size() )
+			{
+			string err = action + " command: attributes element "
+						+ "should not contain properties" ;
+			throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+			}
+			if( child_value.empty() )
+			{
+			string err = action + " command: attributes element "
+						+ "missing value" ;
+			throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+			}
+			if( have_attributes )
+			{
+			string err = action + " command: container element "
+						+ "contains multiple attributes elements" ;
+			throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+			}
+			have_attributes = true ;
+			_attributes[name] = child_value ;
+		}
 
-	// get the next child element
-	props.clear() ;
-	child_name.clear() ;
-	child_value.clear() ;
-	child_node = BESXMLUtils::GetNextChild( child_node, child_name,
-						child_value, props ) ;
+		// get the next child element
+		props.clear() ;
+		child_name.clear() ;
+		child_value.clear() ;
+		child_node = BESXMLUtils::GetNextChild( child_node, child_name,
+							child_value, props ) ;
     }
 }
 
@@ -339,9 +386,16 @@ BESXMLDefineCommand::prep_request()
 	}
 
 	string constraint = _constraints[(*i)] ;
-	string attrs = _attributes[(*i)] ;
 	if( constraint.empty() ) constraint = _default_constraint ;
 	c->set_constraint( constraint ) ;
+
+
+	string function = _functions[(*i)] ;
+	if( function.empty() ) function = _default_function ;
+	c->set_function( function ) ;
+
+
+	string attrs = _attributes[(*i)] ;
 	c->set_attributes( attrs ) ;
 	_dhi.containers.push_back( c ) ;
 	BESDEBUG( "xml", "define using container: " << endl << *c << endl ) ;

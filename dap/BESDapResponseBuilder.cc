@@ -670,7 +670,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
-void BESDapResponseBuilder::send_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
 	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - BEGIN"<< endl);
 
