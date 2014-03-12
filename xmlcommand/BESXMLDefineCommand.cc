@@ -180,7 +180,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
             {
                 if( !first ) _str_cmd += "," ;
                 first = false ;
-                _str_cmd += (*i) + ".functions=\"" + _functions[(*i)] + "\"" ;
+                _str_cmd += (*i) + ".function=\"" + _functions[(*i)] + "\"" ;
             }
         }
     }
