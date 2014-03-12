@@ -509,7 +509,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("StoredResultTest::") + argv[i++];
+            test = string("StoredDap2ResultTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
