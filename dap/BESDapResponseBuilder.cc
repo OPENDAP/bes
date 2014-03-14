@@ -102,7 +102,7 @@ void BESDapResponseBuilder::initialize()
     // Set default values. Don't use the C++ constructor initialization so
     // that a subclass can have more control over this process.
     d_dataset = "";
-    d_ce = "";
+    d_dap2ce = "";
     d_btp_func_ce = "";
     d_timeout = 0;
 
@@ -110,6 +110,8 @@ void BESDapResponseBuilder::initialize()
 
     d_response_cache = 0;
 
+    d_dap4ce = "";
+    d_dap4function = "";
     d_store_result = "";
     d_async_accepted = "";
 
@@ -148,7 +150,7 @@ BESDapResponseBuilder::~BESDapResponseBuilder()
  @return A string object that contains the constraint expression. */
 string BESDapResponseBuilder::get_ce() const
 {
-    return d_ce;
+    return d_dap2ce;
 }
 
 /** Set the DAP2 constraint expression. This will filter the CE text removing
@@ -163,7 +165,7 @@ string BESDapResponseBuilder::get_ce() const
  */
 void BESDapResponseBuilder::set_ce(string _ce)
 {
-    d_ce = www2id(_ce, "%", "%20");
+    d_dap2ce = www2id(_ce, "%", "%20");
 }
 
 
@@ -349,7 +351,7 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
     if (!expr.empty())
         ce = expr;
     else
-        ce = d_ce;
+        ce = d_dap2ce;
 
     string btp_function_ce = "";
     string::size_type pos = 0;
@@ -392,7 +394,7 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
     DBG(cerr << "Modified constraint: " << ce << endl);
     DBG(cerr << "BTP Function part: " << btp_function_ce << endl);
 
-    d_ce = ce;
+    d_dap2ce = ce;
     d_btp_func_ce = btp_function_ce;
 }
 
@@ -485,7 +487,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
     else {
         DBG(cerr << "Simple constraint" << endl);
 
-        eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -551,13 +553,13 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         }
 
         // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_ce will control what is
+        // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         fdds->mark_all(false);
 
-        eval.parse_constraint(d_ce, *fdds);
+        eval.parse_constraint(d_dap2ce, *fdds);
 
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -572,7 +574,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
     else {
         DBG(cerr << "Simple constraint" << endl);
 
-        eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -757,13 +759,13 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         BESDEBUG("dap", "constrained DDS: " << endl; fdds->print_constrained(cerr));
 
         // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_ce will control what is
+        // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         fdds->mark_all(false);
 
-        eval.parse_constraint(d_ce, *fdds);
+        eval.parse_constraint(d_dap2ce, *fdds);
 
         fdds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
@@ -790,7 +792,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
     else {
     	BESDEBUG("dap", "BESDapResponseBuilder::send_data() - Simple constraint" << endl);
 
-        eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
         dds.tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
@@ -831,7 +833,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
  Defaults to true. */
 void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
-    if (d_ce.empty()) {
+    if (d_dap2ce.empty()) {
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
@@ -866,13 +868,13 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         }
 
         // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_ce will control what is
+        // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         fdds->mark_all(false);
 
-        eval.parse_constraint(d_ce, *fdds);
+        eval.parse_constraint(d_dap2ce, *fdds);
 
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -887,7 +889,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     else {
         DBG(cerr << "Simple constraint" << endl);
 
-        eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -919,9 +921,9 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
 	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
     // If the parser returns false, the expression did not parse. The parser may also
     // throw Error
-    if (constrained && !d_ce.empty()) {
+    if (constrained && !d_dap2ce.empty()) {
         D4CEDriver parser(&dmr);
-        bool parse_ok = parser.parse(d_ce);
+        bool parse_ok = parser.parse(d_dap2ce);
         if (!parse_ok)
             throw Error("Constraint Expression failed to parse.");
     }
@@ -935,7 +937,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     XMLWriter xml;
-    dmr.print_dap4(xml, constrained && !d_ce.empty() /* true == constrained */);
+    dmr.print_dap4(xml, constrained && !d_dap2ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 
 	// FIXME Add support for constraints
@@ -950,28 +952,28 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
-    if (!d_btp_func_ce.empty()) {
+    if (!d_dap4_btp_func_expr.empty()) {
         string cache_token = "";
         DMR *fdmr = 0;
 
         if (responseCache()) {
             DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdmr = responseCache()->cache_dataset(dmr, d_btp_func_ce, this, &eval, cache_token);
+            fdmr = responseCache()->cache_dataset(dmr, d_dap4_btp_func_expr, this, &eval, cache_token);
         }
         else {
             DBG(cerr << "Cache not found; (re)calculating" << endl);
-            eval.parse_constraint(d_btp_func_ce, dmr);
+            eval.parse_constraint(d_dap4_btp_func_expr, dmr);
             fdmr = eval.eval_function_clauses(dmr);
         }
 
         // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_ce will control what is
+        // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
         // of the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         fdmr->mark_all(false);
 
-        eval.parse_constraint(d_ce, *fdmr);
+        eval.parse_constraint(d_dap2ce, *fdmr);
 
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
@@ -986,7 +988,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     else {
         DBG(cerr << "Simple constraint" << endl);
 
-        eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(d_dap2ce, dmr); // Throws Error if the ce doesn't parse.
 
         if (with_mime_headers)
             set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
@@ -1007,7 +1009,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
 		establish_timeout(out);
 
 #if 0
-		bool filter = eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+		bool filter = eval.parse_constraint(d_dap2ce, dmr); // Throws Error if the ce doesn't parse.
 #endif
 		if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
 			string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
@@ -1053,9 +1055,9 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
         // If the CE is not empty, parse it. The projections, etc., are set as a side effect.
         // If the parser returns false, the expression did not parse. The parser may also
         // throw Error
-        if (!d_ce.empty()) {
+        if (!d_dap2ce.empty()) {
             D4CEDriver parser(&dmr);
-            bool parse_ok = parser.parse(d_ce);
+            bool parse_ok = parser.parse(d_dap2ce);
             if (!parse_ok)
                 throw Error("Constraint Expression failed to parse.");
         }
@@ -1099,7 +1101,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     // Write the DMR
     XMLWriter xml;
-    dmr.print_dap4(xml, !d_ce.empty());
+    dmr.print_dap4(xml, !d_dap2ce.empty());
 
     // now make the chunked output stream; set the size to be at least chunk_size
     // but make sure that the whole of the xml plus the CRLF can fit in the first
@@ -1111,7 +1113,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     // Write the data, chunked with checksums
     D4StreamMarshaller m(cos);
-    dmr.root()->serialize(m, dmr, !d_ce.empty());
+    dmr.root()->serialize(m, dmr, !d_dap2ce.empty());
 
     out << flush;
 
@@ -1189,7 +1191,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
     out << flush;
 
 #if 0
-    eval.parse_constraint(d_ce, dmr); // Throws Error if the ce doesn't parse.
+    eval.parse_constraint(d_dap2ce, dmr); // Throws Error if the ce doesn't parse.
 #endif
 #if 0
     if (dds.get_response_limit() != 0 && dds.get_request_size(true) > dds.get_response_limit()) {
@@ -1263,7 +1265,7 @@ void BESDapResponseBuilder::send_data_ddx(ostream & data_stream, DDS & dds, Cons
     establish_timeout(data_stream);
     dds.set_timeout(d_timeout);
 
-    eval.parse_constraint(d_ce, dds); // Throws Error if the ce doesn't parse.
+    eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
     if (dds.get_response_limit() != 0 && dds.get_request_size(true) > dds.get_response_limit()) {
         string msg = "The Request for " + long_to_string(dds.get_request_size(true) / 1024)

@@ -46,7 +46,7 @@ public:
 
 protected:
 	std::string d_dataset;          /// Name of the dataset/database
-	std::string d_ce;               /// DAP2 Constraint expression
+	std::string d_dap2ce;               /// DAP2 Constraint expression
 	std::string d_dap4ce;           /// DAP4 Constraint expression
 	std::string d_dap4function;     /// DAP4 Server Side Function expression
 	std::string d_btp_func_ce;      /// The BTP functions, extracted from the CE

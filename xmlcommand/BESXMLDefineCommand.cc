@@ -421,16 +421,19 @@ BESXMLDefineCommand::prep_request()
 	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 	}
 
+	// FIXME What use case do we have in which the "default" value of the constraint is not an empty string?
 	string constraint = _constraints[(*i)] ;
 	if( constraint.empty() ) constraint = _default_constraint ;
 	c->set_constraint( constraint ) ;
 
 
+	// FIXME What use case do we have in which the "default" value of the dap4constraint is not an empty string?
 	string dap4constraint = _dap4constraints[(*i)] ;
 	if( dap4constraint.empty() ) dap4constraint = _default_dap4_constraint ;
 	c->set_dap4_constraint( dap4constraint ) ;
 
 
+	// FIXME What use case do we have in which the "default" value of the dap4function is not an empty string?
 	string function = _dap4functions[(*i)] ;
 	if( function.empty() ) function = _default_dap4_function ;
 	c->set_dap4_function( function ) ;
