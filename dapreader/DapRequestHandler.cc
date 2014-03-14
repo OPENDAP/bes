@@ -137,7 +137,8 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 		parser.intern(in, dmr);
 		dmr->set_factory(0);
 
-		bdmr->set_constraint(dhi);
+		bdmr->set_dap4_constraint(dhi);
+		bdmr->set_dap4_function(dhi);
 		// bdmr->clear_container(); FIXME see above
 	}
 	catch (BESError &e) {
@@ -205,7 +206,8 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 				throw Error("In the reader handler: Could not set UseSeriesValues");
 		}
 
-		bdmr->set_constraint(dhi);
+		bdmr->set_dap4_constraint(dhi);
+		bdmr->set_dap4_function(dhi);
 		// bdmr->clear_container(); FIXME see above
 	}
 	catch (BESError &e) {

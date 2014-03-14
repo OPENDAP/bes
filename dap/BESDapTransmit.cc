@@ -255,7 +255,8 @@ private:
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dhi.container->get_real_name());
 		BESDEBUG("dap", "SendDMR: dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
-		rb.set_ce(dhi.data[POST_CONSTRAINT]);
+		rb.set_dap4ce(dhi.data[DAP4_CONSTRAINT]);
+		rb.set_dap4function(dhi.data[DAP4_FUNCTION]);
 		// FIXME Remove extra args. 11/29/13 jhrg
 		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, print_mime, false /*constrained*/);
 	}
@@ -284,13 +285,12 @@ private:
 
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dmr->filename());
-		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 
+		rb.set_dap4ce(dhi.data[DAP4_CONSTRAINT]);
+		rb.set_dap4function(dhi.data[DAP4_FUNCTION]);
 
 		rb.set_async_accepted(dhi.data[ASYNC]);
 		rb.set_store_result(dhi.data[STORE_RESULT]);
-
-
 
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
 		// FIXME Remove extra args. 11/29/13 jhrg

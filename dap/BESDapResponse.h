@@ -79,7 +79,9 @@ class BESDapResponse: public BESResponseObject {
         string get_request_xml_base() const { return d_request_xml_base; }
 
         virtual void set_container(const string &cn) = 0;
-	virtual void set_constraint( BESDataHandlerInterface &dhi ) ;
+        virtual void set_constraint( BESDataHandlerInterface &dhi ) ;
+        virtual void set_dap4_constraint( BESDataHandlerInterface &dhi ) ;
+        virtual void set_dap4_function( BESDataHandlerInterface &dhi ) ;
         virtual void clear_container() = 0;
 
         virtual void dump(ostream &strm) const;

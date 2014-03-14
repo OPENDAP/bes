@@ -140,7 +140,7 @@ BESDapResponseBuilder::~BESDapResponseBuilder()
 	delete dynamic_cast<AlarmHandler*>(SignalHandler::instance()->remove_handler(SIGALRM));
 }
 
-/** Return the entire constraint expression in a string.  This
+/** Return the entire DAP2 constraint expression in a string.  This
  includes both the projection and selection clauses, but not the
  question mark.
 
@@ -151,7 +151,7 @@ string BESDapResponseBuilder::get_ce() const
     return d_ce;
 }
 
-/** Set the constraint expression. This will filter the CE text removing
+/** Set the DAP2 constraint expression. This will filter the CE text removing
  * any 'WWW' escape characters except space. Spaces are left in the CE
  * because the CE parser uses whitespace to delimit tokens while some
  * datasets have identifiers that contain spaces. It's possible to use
@@ -166,25 +166,80 @@ void BESDapResponseBuilder::set_ce(string _ce)
     d_ce = www2id(_ce, "%", "%20");
 }
 
+
+
+/** Return the entire DAP4 constraint expression in a string.
+ @brief Get the DAP4 constraint expression.
+ @return A string object that contains the constraint expression. */
+string BESDapResponseBuilder::get_dap4ce() const
+{
+    return d_dap4ce;
+}
+
+/** Set the DAP4 constraint expression. This will filter the DAP4 CE text removing
+ * any 'WWW' escape characters except space. Spaces are left in the CE
+ * because the CE parser uses whitespace to delimit tokens while some
+ * datasets have identifiers that contain spaces. It's possible to use
+ * double quotes around identifiers too, but most client software doesn't
+ * know about that.
+ *
+ * @@brief Set the CE
+ * @param _ce The constraint expression
+ */
+void BESDapResponseBuilder::set_dap4ce(string _ce)
+{
+    d_dap4ce = www2id(_ce, "%", "%20");
+}
+
+
+/** Return the entire DAP4 server side function expression in a string.
+ @brief Get the DAP4 server side function expression.
+ @return A string object that contains the constraint expression. */
+string BESDapResponseBuilder::get_dap4function() const
+{
+    return d_dap4function;
+}
+
+/** Set the DAP4 Server Side Fucntion expression. This will filter the
+ * function expression text removing
+ * any 'WWW' escape characters except space. Spaces are left in the CE
+ * because the CE parser uses whitespace to delimit tokens while some
+ * datasets have identifiers that contain spaces. It's possible to use
+ * double quotes around identifiers too, but most client software doesn't
+ * know about that.
+ *
+ * @@brief Set the CE
+ * @param _ce The constraint expression
+ */
+void BESDapResponseBuilder::set_dap4function(string _func)
+{
+    d_dap4function = www2id(_func, "%", "%20");
+}
+
+
+
+
+
+
 std::string BESDapResponseBuilder::get_store_result() const
 {
 	return d_store_result;
 }
 
-void BESDapResponseBuilder::set_store_result(std::string store_result)
+void BESDapResponseBuilder::set_store_result(std::string _sr)
 {
-	d_store_result = store_result;
-	BESDEBUG("dap", "BESDapResponseBuilder::set_store_result() - store_result: " << store_result << endl);
+	d_store_result = _sr;
+	BESDEBUG("dap", "BESDapResponseBuilder::set_store_result() - store_result: " << _sr << endl);
 }
 
 std::string BESDapResponseBuilder::get_async_accepted() const
 {
 	return d_async_accepted;
 }
-void BESDapResponseBuilder::set_async_accepted(std::string async_accepted)
+void BESDapResponseBuilder::set_async_accepted(std::string _aa)
 {
-	d_async_accepted = async_accepted;
-	BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << async_accepted << endl);
+	d_async_accepted = _aa;
+	BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << _aa << endl);
 }
 
 

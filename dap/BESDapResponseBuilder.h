@@ -45,10 +45,12 @@ public:
 	friend class ResponseBuilderTest;
 
 protected:
-	std::string d_dataset;  		/// Name of the dataset/database
-	std::string d_ce;  		    /// Constraint expression
-	std::string d_btp_func_ce;   /// The BTP functions, extracted from the CE
-	int d_timeout;  		/// Response timeout after N seconds
+	std::string d_dataset;          /// Name of the dataset/database
+	std::string d_ce;               /// DAP2 Constraint expression
+	std::string d_dap4ce;           /// DAP4 Constraint expression
+	std::string d_dap4function;     /// DAP4 Server Side Function expression
+	std::string d_btp_func_ce;      /// The BTP functions, extracted from the CE
+	int d_timeout;                  /// Response timeout after N seconds
 	std::string d_default_protocol;	/// Version std::string for the library's default protocol version
 
 	/**
@@ -86,11 +88,17 @@ public:
 	virtual std::string get_ce() const;
 	virtual void set_ce(std::string _ce);
 
+	virtual std::string get_dap4ce() const;
+	virtual void set_dap4ce(std::string _ce);
+
+	virtual std::string get_dap4function() const;
+	virtual void set_dap4function(std::string _func);
+
 	virtual std::string get_store_result() const;
-	virtual void set_store_result(std::string _ce);
+	virtual void set_store_result(std::string _sr);
 
 	virtual std::string get_async_accepted() const;
-	virtual void set_async_accepted(std::string _ce);
+	virtual void set_async_accepted(std::string _aa);
 
 	virtual std::string get_btp_func_ce() const
 	{

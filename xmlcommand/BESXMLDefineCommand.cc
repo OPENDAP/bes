@@ -43,7 +43,8 @@
 BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dhi )
     : BESXMLCommand( base_dhi ),
       _default_constraint( "" ),
-      _default_function( "" )
+      _default_dap4_constraint( "" ),
+      _default_dap4_function( "" )
 {
 }
 
@@ -114,10 +115,15 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 			// default constraint for all containers
 			_default_constraint = child_value ;
 		}
-		else if( child_name == "function" )
+		else if( child_name == "dap4constraint" )
 		{
 			// default function for all containers
-			_default_function = child_value ;
+			_default_dap4_constraint = child_value ;
+		}
+		else if( child_name == "dap4function" )
+		{
+			// default function for all containers
+			_default_dap4_function = child_value ;
 		}
 		else if( child_name == "container" )
 		{
@@ -156,7 +162,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	}
 
 
-    if( _constraints.size() || _attributes.size() || _functions.size() )
+    if( _constraints.size() || _dap4constraints.size() || _dap4functions.size() || _attributes.size()  )
     {
         _str_cmd += " with " ;
         first = true ;
@@ -170,17 +176,23 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
                 first = false ;
                 _str_cmd += (*i) + ".constraint=\"" + _constraints[(*i)] + "\"" ;
             }
+            if( _dap4constraints.count((*i)) )
+            {
+                if( !first ) _str_cmd += "," ;
+                first = false ;
+                _str_cmd += (*i) + ".dap4constraint=\"" + _dap4constraints[(*i)] + "\"" ;
+            }
+            if( _dap4functions.count((*i)) )
+            {
+                if( !first ) _str_cmd += "," ;
+                first = false ;
+                _str_cmd += (*i) + ".dap4function=\"" + _dap4functions[(*i)] + "\"" ;
+            }
             if( _attributes.count((*i)) )
             {
                 if( !first ) _str_cmd += "," ;
                 first = false ;
                 _str_cmd += (*i) + ".attributes=\"" + _attributes[(*i)] + "\"" ;
-            }
-            if( _functions.count((*i)) )
-            {
-                if( !first ) _str_cmd += "," ;
-                first = false ;
-                _str_cmd += (*i) + ".function=\"" + _functions[(*i)] + "\"" ;
             }
         }
     }
@@ -229,7 +241,8 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     _stores[name] = space ;
 
     bool have_constraint = false ;
-    bool have_function   = false ;
+    bool have_dap4constraint = false ;
+    bool have_dap4function   = false ;
     bool have_attributes = false ;
     string child_name ;
     string child_value ;
@@ -263,7 +276,30 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     	    have_constraint = true ;
     	    _constraints[name] = child_value ;
     	}
-    	else if( child_name == "function" )
+    	else if( child_name == "dap4constraint" )
+    	{
+    	    if( child_props.size() )
+    	    {
+    		string err = action + " command: constraint element "
+    				    + "should not contain properties" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( child_value.empty() )
+    	    {
+    		string err = action + " command: constraint element "
+    				    + "missing value" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    if( have_dap4constraint )
+    	    {
+    		string err = action + " command: container element "
+    				    + "contains multiple constraint elements" ;
+    		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    	    }
+    	    have_dap4constraint = true ;
+    	    _dap4constraints[name] = child_value ;
+    	}
+    	else if( child_name == "dap4function" )
     	{
     	    if( child_props.size() )
     	    {
@@ -277,14 +313,14 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     				    + "missing value" ;
     		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     	    }
-    	    if( have_function )
+    	    if( have_dap4function )
     	    {
     		string err = action + " command: container element "
     				    + "contains multiple dap4_function elements" ;
     		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     	    }
-    	    have_function = true ;
-    	    _functions[name] = child_value ;
+    	    have_dap4function = true ;
+    	    _dap4functions[name] = child_value ;
     	}
 		else if( child_name == "attributes" )
 		{
@@ -390,9 +426,14 @@ BESXMLDefineCommand::prep_request()
 	c->set_constraint( constraint ) ;
 
 
-	string function = _functions[(*i)] ;
-	if( function.empty() ) function = _default_function ;
-	c->set_function( function ) ;
+	string dap4constraint = _dap4constraints[(*i)] ;
+	if( dap4constraint.empty() ) dap4constraint = _default_dap4_constraint ;
+	c->set_dap4_constraint( dap4constraint ) ;
+
+
+	string function = _dap4functions[(*i)] ;
+	if( function.empty() ) function = _default_dap4_function ;
+	c->set_dap4_function( function ) ;
 
 
 	string attrs = _attributes[(*i)] ;
