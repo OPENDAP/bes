@@ -46,7 +46,7 @@ namespace libdap {
  @TODO Change implementation to use libxml2 objects and NOT strings.
 */
 void
-function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
+function_dap2_version(int, BaseType *[], DDS &dds, BaseType **btpp)
 {
     string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -88,7 +88,7 @@ function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
  @TODO Change implementation to use libxml2 objects and NOT strings.
 */
 
-BaseType *function_version(D4RValueList *args, DMR &dmr)
+BaseType *function_dap4_version(D4RValueList *args, DMR &dmr)
 {
     string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -118,8 +118,7 @@ BaseType *function_version(D4RValueList *args, DMR &dmr)
     Str *response = new Str("version");
 
     response->set_value(xml_value);
-    *btpp = response;
-    return;
+    return response;
 }
 
 } // namesspace libdap

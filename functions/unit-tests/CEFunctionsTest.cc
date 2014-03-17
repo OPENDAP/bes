@@ -401,7 +401,7 @@ public:
     void linear_scale_args_test() {
         try {
             BaseType *btp = 0;
-            function_linear_scale(0, 0, *dds, &btp);
+            function_dap2_linear_scale(0, 0, *dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
@@ -421,7 +421,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_array_c
                            && scaled->var()->type() == dods_float64_c);
             double *values = extract_double_array(dynamic_cast<Array*>(scaled));
@@ -446,7 +446,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -468,7 +468,7 @@ public:
             BaseType *argv[1];
             argv[0] = g;
             BaseType *scaled = 0;
-            function_linear_scale(1, argv, *dds, &scaled);
+            function_dap2_linear_scale(1, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -491,7 +491,7 @@ public:
             BaseType *argv[1];
             argv[0] = g;
             BaseType *btp = 0;
-            function_linear_scale(1, argv, *dds, &btp);
+            function_dap2_linear_scale(1, argv, *dds, &btp);
             CPPUNIT_FAIL("Should not get here; no params passed and no attributes set for grid 'b'");
         }
         catch (Error &e) {
@@ -512,7 +512,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_float64_c);
 
             CPPUNIT_ASSERT(dynamic_cast<Float64*>(scaled)->value() == 10.1);

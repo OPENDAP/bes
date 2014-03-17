@@ -34,7 +34,12 @@ class DDS;
 /**
  * The linear_scale() function applies the familiar y = mx + b equation to data.
  */
-void function_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+void function_dap2_linear_scale(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+
+/**
+ * The linear_scale() function applies the familiar y = mx + b equation to data.
+ */
+BaseType *function_dap4_linear_scale(D4RValueList *args, DMR &dmr);
 
 /**
  * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
@@ -49,7 +54,8 @@ public:
 		setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
 		setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
-		setFunction(libdap::function_linear_scale);
+		setFunction(libdap::function_dap2_linear_scale);
+		setFunction(libdap::function_dap4_linear_scale);
 		setVersion("1.0b1");
     }
     virtual ~LinearScaleFunction()
