@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dap:AsynchronousResponse status="rejected" xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
+    <dap:reason code="unavailable"/>
+    <dap:description>The Stored Result request cannot be serviced. Unable to acquire StoredResultCache instance. This is most likely because the StoredResultCache is not (correctly) configured.</dap:description>
+</dap:AsynchronousResponse>

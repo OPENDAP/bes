@@ -68,6 +68,7 @@ private:
 
     friend class StoredDap2ResultTest;
     friend class StoredDap4ResultTest;
+    friend class ResponseBuilderTest;
 
     string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 

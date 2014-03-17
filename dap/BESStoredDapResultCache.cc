@@ -92,8 +92,8 @@ unsigned long BESStoredDapResultCache::getCacheSizeFromConfig(){
     	iss >> size_in_megabytes;
     }
     else {
-    	string msg = "[ERROR] BESStoreResultCache::getCacheSize() - The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-    	BESDEBUG("cache", msg);
+    	string msg = "[ERROR] BESStoredDapResultCache::getCacheSize() - The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+    	BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg , __FILE__, __LINE__);
     }
     return size_in_megabytes;
@@ -105,8 +105,8 @@ string BESStoredDapResultCache::getSubDirFromConfig(){
     TheBESKeys::TheKeys()->get_value( SUBDIR_KEY, subdir, found ) ;
 
 	if( !found ) {
-    	string msg = "[ERROR] BESStoreResultCache::getDefaultSubDir() - The BES Key " + SUBDIR_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-    	BESDEBUG("cache", msg);
+    	string msg = "[ERROR] BESStoredDapResultCache::getSubDirFromConfig() - The BES Key " + SUBDIR_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+    	BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg , __FILE__, __LINE__);
 	}
 	else {
@@ -129,8 +129,8 @@ string BESStoredDapResultCache::getResultPrefixFromConfig(){
 		prefix = BESUtil::lowercase( prefix ) ;
 	}
 	else {
-    	string msg = "[ERROR] BESStoreResultCache::getResultPrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-    	BESDEBUG("cache", msg);
+    	string msg = "[ERROR] BESStoredDapResultCache::getResultPrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+    	BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg , __FILE__, __LINE__);
 	}
 
@@ -145,9 +145,9 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
     if( !found ) {
         TheBESKeys::TheKeys()->get_value( BES_DATA_ROOT, cacheDir, found ) ;
         if( !found ) {
-        	string msg = ((string)"[ERROR] BESStoreResultCache::getStoredResultsDir() - Neither the BES Key ") + BES_CATALOG_ROOT +
+        	string msg = ((string)"[ERROR] BESStoredDapResultCache::getStoredResultsDir() - Neither the BES Key ") + BES_CATALOG_ROOT +
         			"or the BES key " + BES_DATA_ROOT + " have been set! One MUST be set to utilize the Stored Result Caching system. ";
-        	BESDEBUG("cache", msg);
+        	BESDEBUG("cache", msg << endl);
             throw BESInternalError(msg , __FILE__, __LINE__);
         }
     }
@@ -156,9 +156,9 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
 }
 string BESStoredDapResultCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  BEGIN" << endl);
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPart: "<< firstPart << endl);
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  secondPart: "<< secondPart << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  BEGIN" << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPart: "<< firstPart << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPart: "<< secondPart << endl);
 
 	string firstPathFragment = firstPart;
 	string secondPathFragment = secondPart;
@@ -172,26 +172,26 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
 	// make sure there are not multiple slashes at the end of the first part...
 	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
 		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
-		// BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+		// BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
 	}
 
 	// make sure first part ends with a "/"
     if(*firstPathFragment.rbegin() != '/'){
     	firstPathFragment += "/";
     }
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
 
 	// make sure second part does not BEGIN with a slash
 	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
 		secondPathFragment = secondPathFragment.substr(1);
 	}
 
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
 
 	string newPath = firstPathFragment + secondPathFragment;
 
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  newPath: "<< newPath << endl);
-	BESDEBUG("cache", "BESStoreResultCache::assemblePath() -  END" << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  newPath: "<< newPath << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  END" << endl);
 
 	return newPath;
 
@@ -200,7 +200,7 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
 
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
-	BESDEBUG("cache", "BESStoreResultCache::BESStoreResultCache() -  BEGIN" << endl);
+	BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
 #if 0
 	bool found;
 #endif
@@ -212,11 +212,11 @@ BESStoredDapResultCache::BESStoredDapResultCache(){
     d_resultFilePrefix = getResultPrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
 
-    BESDEBUG("cache", "BESStoreResultCache() - Stored results cache configuration params: " << resultsDir << ", " << d_resultFilePrefix << ", " << d_maxCacheSize << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache() - Stored results cache configuration params: " << resultsDir << ", " << d_resultFilePrefix << ", " << d_maxCacheSize << endl);
 
   	initialize(resultsDir, d_resultFilePrefix, d_maxCacheSize);
 
-    BESDEBUG("cache", "BESStoreResultCache::BESStoreResultCache() -  END" << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  END" << endl);
 }
 
 
@@ -243,7 +243,7 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
                 d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix, max_cache_size);
         	}
         	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "BESStoreResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+        	    BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
         	}
     	}
     }
@@ -261,7 +261,7 @@ BESStoredDapResultCache::get_instance()
 			d_instance = new BESStoredDapResultCache();
 		}
 		catch(BESInternalError &bie){
-			BESDEBUG("cache", "BESStoreResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+			BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
 		}
     }
 
@@ -271,7 +271,7 @@ BESStoredDapResultCache::get_instance()
 
 
 void BESStoredDapResultCache::delete_instance() {
-    BESDEBUG("cache","BESStoreResultCache::delete_instance() - Deleting singleton BESStoreResultCache instance." << endl);
+    BESDEBUG("cache","BESStoredDapResultCache::delete_instance() - Deleting singleton BESStoredDapResultCache instance." << endl);
     delete d_instance;
     d_instance = 0;
 }

@@ -597,9 +597,30 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 		bool found;
 		string *stylesheet_ref=0, ss_ref_value;
 	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
-	    if( found ) {
+	    if( found && ss_ref_value.length()>0) {
 	    	stylesheet_ref = &ss_ref_value;
 	    }
+
+		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+		if(resultCache == NULL){
+
+			/**
+			 * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
+			 * Looks like need to reject the request and move on.
+			 *
+			 */
+			string msg =  "The Stored Result request cannot be serviced. ";
+			msg += "Unable to acquire StoredResultCache instance. ";
+			msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
+
+			BESDEBUG("dap", "[WARNING] " << msg << endl);
+			d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
+			out << xmlWrtr.get_doc();
+			out << flush;
+			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - Sent AsyncRequestRejected" << endl);
+			return true;
+		}
+
 
 		if(get_async_accepted().length() != 0){
 
@@ -921,11 +942,16 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
 	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
     // If the parser returns false, the expression did not parse. The parser may also
     // throw Error
-    if (constrained && !d_dap2ce.empty()) {
+    if (constrained && !d_dap4ce.empty()) {
+
+    	BESDEBUG("dap", "BESDapResponseBuilder::send_dmr() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
+
         D4CEDriver parser(&dmr);
-        bool parse_ok = parser.parse(d_dap2ce);
+        bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok)
             throw Error("Constraint Expression failed to parse.");
+
+
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -937,7 +963,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     XMLWriter xml;
-    dmr.print_dap4(xml, constrained && !d_dap2ce.empty() /* true == constrained */);
+    dmr.print_dap4(xml, constrained && !d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 
 	// FIXME Add support for constraints
@@ -1055,9 +1081,12 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
         // If the CE is not empty, parse it. The projections, etc., are set as a side effect.
         // If the parser returns false, the expression did not parse. The parser may also
         // throw Error
-        if (!d_dap2ce.empty()) {
-            D4CEDriver parser(&dmr);
-            bool parse_ok = parser.parse(d_dap2ce);
+        if (!d_dap4ce.empty()) {
+
+        	BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
+
+        	D4CEDriver parser(&dmr);
+            bool parse_ok = parser.parse(d_dap4ce);
             if (!parse_ok)
                 throw Error("Constraint Expression failed to parse.");
         }
@@ -1101,7 +1130,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     // Write the DMR
     XMLWriter xml;
-    dmr.print_dap4(xml, !d_dap2ce.empty());
+    dmr.print_dap4(xml, !d_dap4ce.empty());
 
     // now make the chunked output stream; set the size to be at least chunk_size
     // but make sure that the whole of the xml plus the CRLF can fit in the first
@@ -1113,7 +1142,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     // Write the data, chunked with checksums
     D4StreamMarshaller m(cos);
-    dmr.root()->serialize(m, dmr, !d_dap2ce.empty());
+    dmr.root()->serialize(m, dmr, !d_dap4ce.empty());
 
     out << flush;
 
@@ -1122,6 +1151,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 }
 
 bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
+
 
 	if(get_store_result().length()!=0){
 		string serviceUrl = get_store_result();
@@ -1132,9 +1162,30 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 		bool found;
 		string *stylesheet_ref=0, ss_ref_value;
 	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
-	    if( found ) {
+	    if( found && ss_ref_value.length()>0) {
 	    	stylesheet_ref = &ss_ref_value;
 	    }
+
+		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+		if(resultCache == NULL){
+
+			/**
+			 * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
+			 * Looks like need to reject the request and move on.
+			 *
+			 */
+			string msg =  "The Stored Result request cannot be serviced. ";
+			msg += "Unable to acquire StoredResultCache instance. ";
+			msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
+
+			BESDEBUG("dap", "[WARNING] " << msg << endl);
+			d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
+			out << xmlWrtr.get_doc();
+			out << flush;
+			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - Sent AsyncRequestRejected" << endl);
+			return true;
+		}
+
 
 		if(get_async_accepted().length() != 0){
 
@@ -1143,7 +1194,6 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			 */
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - serviceUrl="<< serviceUrl << endl);
 
-			BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
 			string storedResultId="";
 			storedResultId = resultCache->store_dap4_result(dmr, get_ce(), this);
 

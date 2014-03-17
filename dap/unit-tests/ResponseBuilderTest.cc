@@ -136,7 +136,7 @@ parse_datadds_response(istream &in, string &prolog, vector<char> &blob)
 
 class ResponseBuilderTest: public TestFixture {
 private:
-    BESDapResponseBuilder *df, *df3, *df5, *df6;
+    BESDapResponseBuilder *drb, *drb3, *drb5, *drb6;
     string d_stored_result_subdir;
 	DDS *test_05_dds;
 	string stored_dap2_result_filename;
@@ -178,10 +178,10 @@ private:
     }
 
 public:
-    ResponseBuilderTest(): df(0),
-                           df3(0),
-                           df5(0),
-                           df6(0),
+    ResponseBuilderTest(): drb(0),
+                           drb3(0),
+                           drb5(0),
+                           drb6(0),
                            d_stored_result_subdir("/response_cache"),
                            test_05_dds(0),
                            stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_17566926586167953453.data_ddx"),
@@ -212,26 +212,26 @@ public:
 		DBG(BESDebug::SetUp("cerr,all"));
 
         // Test pathname
-        df = new BESDapResponseBuilder();
+        drb = new BESDapResponseBuilder();
 
         // This file has an ancillary DAS in the input-files dir.
-        // df3 is also used to test escaping stuff in URLs. 5/4/2001 jhrg
-        df3 = new BESDapResponseBuilder();
-        df3->set_dataset_name((string)TEST_SRC_DIR + "/input-files/coads.data");
-        df3->set_ce("u,x,z[0]&grid(u,\"lat<10.0\")");
-        df3->set_timeout(1);
+        // drb3 is also used to test escaping stuff in URLs. 5/4/2001 jhrg
+        drb3 = new BESDapResponseBuilder();
+        drb3->set_dataset_name((string)TEST_SRC_DIR + "/input-files/coads.data");
+        drb3->set_ce("u,x,z[0]&grid(u,\"lat<10.0\")");
+        drb3->set_timeout(1);
 
         // Test escaping stuff. 5/4/2001 jhrg
-        df5 = new BESDapResponseBuilder();
-        df5->set_dataset_name("nowhere%5Bmydisk%5Dmyfile");
-        df5->set_ce("u%5B0%5D");
+        drb5 = new BESDapResponseBuilder();
+        drb5->set_dataset_name("nowhere%5Bmydisk%5Dmyfile");
+        drb5->set_ce("u%5B0%5D");
 
         // Try a server side function call.
         // loadServerSideFunction(); NB: This is called by the test's ctor
-        df6 = new BESDapResponseBuilder();
-        df6->set_dataset_name((string)TEST_SRC_DIR + "/input-files/bears.data");
-        //df6->set_ce("rbFuncTest()");
-        df6->set_timeout(1);
+        drb6 = new BESDapResponseBuilder();
+        drb6->set_dataset_name((string)TEST_SRC_DIR + "/input-files/bears.data");
+        //drb6->set_ce("rbFuncTest()");
+        drb6->set_timeout(1);
 
         cont_a = new AttrTable;
         cont_a->append_attr("size", "Int32", "7");
@@ -304,10 +304,10 @@ public:
     }
 
     void tearDown() {
-        delete df; df = 0;
-        delete df3; df3 = 0;
-        delete df5; df5 = 0;
-        delete df6; df6 = 0;
+        delete drb; drb = 0;
+        delete drb3; drb3 = 0;
+        delete drb5; drb5 = 0;
+        delete drb6; drb6 = 0;
 
         delete das; das = 0;
         delete dds; dds = 0;
@@ -346,7 +346,7 @@ public:
 		DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
 		Regex r1(baseline.c_str());
 
-		df->send_das(oss, *das);
+		drb->send_das(oss, *das);
 
 		DBG(cerr << "DAS: " << oss.str() << endl);
 
@@ -366,7 +366,7 @@ public:
 
         ConstraintEvaluator ce;
 
-        df->send_dds(oss, *dds, ce);
+        drb->send_dds(oss, *dds, ce);
 
         DBG(cerr << "DDS: " << oss.str() << endl);
 
@@ -384,7 +384,7 @@ public:
         ConstraintEvaluator ce;
 
         try {
-            df->send_ddx(oss, *dds, ce);
+            drb->send_ddx(oss, *dds, ce);
 
             DBG(cerr << "DDX: " << oss.str() << endl);
 
@@ -410,16 +410,16 @@ public:
         ConstraintEvaluator ce;
 
         // Set this to be a stored result request
-        df->set_store_result("http://localhost:8080/opendap/");
+        drb->set_store_result("http://localhost:8080/opendap/");
         // Make the async_accepted string be empty to indicate that it was not set by a "client"
-    	df->set_async_accepted("");
+    	drb->set_async_accepted("");
 
     	DBG(cerr << "store_dap2_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
 
     	string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
-        	df->send_dap2_data(oss, *test_05_dds, ce, false);
+        	drb->send_dap2_data(oss, *test_05_dds, ce, false);
 
         	string candidateResponseDoc = oss.str();
 
@@ -437,15 +437,15 @@ public:
 
     	DBG(cerr << "store_dap2_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
         // Make the async_accpeted string be the string "0" to indicate that client doesn't care how long it takes...
-    	df->set_async_accepted("0");
-    	DBG(cerr << "store_dap2_result_test() - async_accepted is set to: " << df->get_async_accepted()<< endl);
+    	drb->set_async_accepted("0");
+    	DBG(cerr << "store_dap2_result_test() - async_accepted is set to: " << drb->get_async_accepted()<< endl);
 
         baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_accepted.xml");
 
 
         try {
             oss.str("");
-        	df->send_dap2_data(oss, *test_05_dds, ce, false);
+        	drb->send_dap2_data(oss, *test_05_dds, ce, false);
 
         	string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
@@ -489,6 +489,18 @@ public:
 
 
 
+        /**
+         * Clean up the keys and shut down the cache  for the next test (a key neutral footprint)
+         */
+        BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
+        sdrc->delete_instance();
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "");
+        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "");
+
+
     }
 
 #if 1
@@ -498,28 +510,58 @@ public:
 
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  (string)TEST_SRC_DIR);
-        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
-        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
-        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
-        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "http://localhost:8080/opendap/xsl/asynResponse.xsl");
-    	DBG(cerr << "store_dap4_result_test() - BES Keys configured."<< endl);
-
         ConstraintEvaluator ce;
 
         // Set this to be a stored result request
-        df->set_store_result("http://localhost:8080/opendap/");
-    	df->set_async_accepted("");
+        drb->set_store_result("http://localhost:8080/opendap/");
+    	drb->set_async_accepted("0");
+    	DBG(cerr << "store_dap4_result_test() - Checking stored result request where the result cache is not configured."<< endl);
 
-    	DBG(cerr << "store_dap4_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
-
-        string baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_required.xml";
+        string baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_result_not_available.xml";
         string baseline = readTestBaseline(baseline_file);
     	DBG(cerr << "store_dap4_result_test() - Response baseline read from " << baseline_file << endl);
 
         try {
             oss.str("");
             test_01_dmr->root()->set_send_p(true);
-        	df->store_dap4_result(oss, *test_01_dmr);
+        	drb->store_dap4_result(oss, *test_01_dmr);
+
+        	string candidateResponseDoc = oss.str();
+
+            DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
+            DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
+            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
+
+            // FIXME Test to make sure no stored object file is created.
+
+        } catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+
+        // Configure the StoredResultCache
+
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "my_result_");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "1100");
+        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "http://localhost:8080/opendap/xsl/asynResponse.xsl");
+    	DBG(cerr << "store_dap4_result_test() - BES Keys configured."<< endl);
+
+
+        // Set this to be a stored result request
+        drb->set_store_result("http://localhost:8080/opendap/");
+    	drb->set_async_accepted("");
+
+    	DBG(cerr << "store_dap4_result_test() - Checking stored result request where async_accpeted is NOT set."<< endl);
+
+        baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_required.xml";
+        baseline = readTestBaseline(baseline_file);
+    	DBG(cerr << "store_dap4_result_test() - Response baseline read from " << baseline_file << endl);
+
+        try {
+            oss.str("");
+            test_01_dmr->root()->set_send_p(true);
+        	drb->store_dap4_result(oss, *test_01_dmr);
 
         	string candidateResponseDoc = oss.str();
 
@@ -536,8 +578,8 @@ public:
 
     	DBG(cerr << "store_dap4_result_test() - Checking stored result request where client indicates that async is accepted (async_accepted IS set)."<< endl);
 
-    	df->set_async_accepted("0");
-    	DBG(cerr << "store_dap4_result_test() - async_accepted is set to: " << df->get_async_accepted()<< endl);
+    	drb->set_async_accepted("0");
+    	DBG(cerr << "store_dap4_result_test() - async_accepted is set to: " << drb->get_async_accepted()<< endl);
 
         baseline_file =  (string) TEST_SRC_DIR + "/input-files/response_builder_store_dap4_data_async_accepted.xml";
         baseline = readTestBaseline(baseline_file);
@@ -545,7 +587,7 @@ public:
 
         try {
             oss.str("");
-        	df->store_dap4_result(oss, *test_01_dmr);
+        	drb->store_dap4_result(oss, *test_01_dmr);
 
         	string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
@@ -593,10 +635,24 @@ public:
 			CPPUNIT_ASSERT(baseline == oss.str());
 
 
-
         } catch (Error &e) {
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
+
+
+
+        /**
+         * Clean up the keys and shut down the cache  for the next test (a key neutral footprint)
+         */
+        BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
+        sdrc->delete_instance();
+        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "");
+        TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "");
+        TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "");
+
+
 
 
     }
@@ -604,30 +660,30 @@ public:
 
     void escape_code_test() {
         // These should NOT be escaped.
-        DBG(cerr << df3->get_dataset_name() << endl); DBG(cerr << df3->get_ce() << endl);
+        DBG(cerr << drb3->get_dataset_name() << endl); DBG(cerr << drb3->get_ce() << endl);
 
-        CPPUNIT_ASSERT(df3->get_dataset_name() == (string)TEST_SRC_DIR + "/input-files/coads.data");
-        CPPUNIT_ASSERT(df3->get_ce() == "u,x,z[0]&grid(u,\"lat<10.0\")");
+        CPPUNIT_ASSERT(drb3->get_dataset_name() == (string)TEST_SRC_DIR + "/input-files/coads.data");
+        CPPUNIT_ASSERT(drb3->get_ce() == "u,x,z[0]&grid(u,\"lat<10.0\")");
 
         // The ResponseBuilder instance is feed escaped values; they should be
         // unescaped by the ctor and the mutators. 5/4/2001 jhrg
 
-        DBG(cerr << df5->get_dataset_name() << endl); DBG(cerr << df5->get_ce() << endl);
+        DBG(cerr << drb5->get_dataset_name() << endl); DBG(cerr << drb5->get_ce() << endl);
 
-        CPPUNIT_ASSERT(df5->get_dataset_name() == "nowhere[mydisk]myfile");
-        CPPUNIT_ASSERT(df5->get_ce() == "u[0]");
+        CPPUNIT_ASSERT(drb5->get_dataset_name() == "nowhere[mydisk]myfile");
+        CPPUNIT_ASSERT(drb5->get_ce() == "u[0]");
 
-        df5->set_ce("u%5B0%5D");
-        CPPUNIT_ASSERT(df5->get_ce() == "u[0]");
+        drb5->set_ce("u%5B0%5D");
+        CPPUNIT_ASSERT(drb5->get_ce() == "u[0]");
 
-        df5->set_ce("Grid%20u%5B0%5D");
-        CPPUNIT_ASSERT(df5->get_ce() == "Grid%20u[0]");
+        drb5->set_ce("Grid%20u%5B0%5D");
+        CPPUNIT_ASSERT(drb5->get_ce() == "Grid%20u[0]");
     }
 
     // This tests reading the timeout value from argv[].
     void timeout_test() {
-        CPPUNIT_ASSERT(df3->get_timeout() == 1);
-        CPPUNIT_ASSERT(df5->get_timeout() == 0);
+        CPPUNIT_ASSERT(drb3->get_timeout() == 1);
+        CPPUNIT_ASSERT(drb5->get_timeout() == 0);
     }
 
     void invoke_server_side_function_test() {
@@ -639,13 +695,13 @@ public:
 
             DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
 #if 1
-            df6->set_ce("rbSimpleFunc()");
+            drb6->set_ce("rbSimpleFunc()");
 #else
             df6->set_ce("");
 #endif
             ConstraintEvaluator ce;
             DBG( cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_data()" << endl);
-            df6->send_dap2_data(oss, *dds, ce);
+            drb6->send_dap2_data(oss, *dds, ce);
 
             DBG( cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 
