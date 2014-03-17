@@ -32,6 +32,8 @@ class BaseType;
 class DDS;
 
 void function_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+BaseType *function_version(D4RValueList *args, DMR &dmr);
+
 class VersionFunction: public libdap::ServerFunction {
 public:
 	VersionFunction()

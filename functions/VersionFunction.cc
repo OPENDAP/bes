@@ -80,4 +80,46 @@ function_version(int, BaseType *[], DDS &dds, BaseType **btpp)
     return;
 }
 
+/** This server-side function returns version information for the server-side
+ functions. Note that this function takes no arguments and returns a
+ String using the BaseType value/result parameter.
+
+ @param btpp A pointer to the return value; caller must delete.
+ @TODO Change implementation to use libxml2 objects and NOT strings.
+*/
+
+BaseType *function_version(D4RValueList *args, DMR &dmr)
+{
+    string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
+    ServerFunction *sf;
+    string functionType;
+
+    ServerFunctionsList *sfList = libdap::ServerFunctionsList::TheList();
+    std::multimap<string,libdap::ServerFunction *>::iterator begin = sfList->begin();
+    std::multimap<string,libdap::ServerFunction *>::iterator end = sfList->end();
+    std::multimap<string,libdap::ServerFunction *>::iterator sfit;
+
+    xml_value += "<ds:functions xmlns:ds=\"http://xml.opendap.org/ns/DAP/4.0/dataset-services#\">\n";
+    for(sfit=begin; sfit!=end; sfit++){
+    	sf = sfList->getFunction(sfit);
+    	if(sf->canOperateOn(dmr)){
+			xml_value += "     <ds:function  name=\"" + sf->getName() +"\""+
+						 " version=\"" + sf->getVersion() + "\""+
+						 " type=\"" + sf->getTypeString() + "\""+
+						 " role=\"" + sf->getRole() + "\""+
+						 " >\n" ;
+			xml_value += "        <ds:Description href=\"" + sf->getDocUrl() + "\">" + sf->getDescriptionString() + "</ds:Description>\n";
+			xml_value += "    </ds:function>\n";
+    	}
+    }
+	xml_value += "</functions>\n";
+
+    Str *response = new Str("version");
+
+    response->set_value(xml_value);
+    *btpp = response;
+    return;
+}
+
 } // namesspace libdap
