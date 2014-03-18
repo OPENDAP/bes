@@ -44,8 +44,12 @@
 
 #include <Array.h>
 
+
 #include <Error.h>
 #include <DDS.h>
+#include <DMR.h>
+#include <D4RValue.h>
+
 
 #include <debug.h>
 #include <util.h>
@@ -57,6 +61,11 @@
 #include "MakeArrayFunction.h"
 
 namespace libdap {
+
+string make_array_info =
+string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
+"<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array\">\n" +
+"</function>";
 
 /** Parse the shape 'expression'. The form of the expression is '[' size ']'
  * @note Also used by bind_shape()
@@ -127,16 +136,12 @@ read_values(int argc, BaseType *argv[], Array *dest)
  * @exception Error Thrown for a variety of errors.
  */
 void
-function_make_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 {
-    string info =
-    string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array\">\n" +
-    "</function>";
 
     if (argc == 0) {
         Str *response = new Str("info");
-        response->set_value(info);
+        response->set_value(make_array_info);
         *btpp = response;
         return;
     }
@@ -234,5 +239,140 @@ function_make_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     *btpp = dest;
     return;
 }
+
+
+template<class DAP_Primitive, class DAP_BaseType>
+static void
+read_values(D4RValueList *args, DMR &dmr, Array *dest)
+{
+    vector<DAP_Primitive> values;
+    values.reserve(args->size()-2); 	// The number of values/elements to read
+
+    // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
+    for (unsigned int i = 2; i < args->size(); ++i) {
+    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr)) <<endl);
+    	values.push_back(static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr)));
+    }
+
+    BESDEBUG("functions", "values size: " << values.size() << endl);
+
+    // copy the values to the DAP Array
+    dest->set_value(values, values.size());
+}
+
+
+
+BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
+
+
+
+    // DAP4 function porting information: in place of 'argc' use 'args.size()'
+    if (args == 0 || args->size() == 0) {
+        Str *response = new Str("info");
+        response->set_value(make_array_info);
+        // DAP4 function porting: return a BaseType* instead of using the value-result parameter
+        return response;
+    }
+
+
+    // Check for 2 arguments
+    DBG(cerr << "args.size() = " << args.size() << endl);
+    if (!(args->size() == 1 || args->size() == 3 || args->size() == 4))
+        throw Error(malformed_expr,"Wrong number of arguments to linear_scale(). See linear_scale() for more information");
+
+    string type_name = extract_string_argument(args->get_rvalue(0)->value(dmr));
+    string shape = extract_string_argument(args->get_rvalue(1)->value(dmr));
+
+
+    BESDEBUG("functions", "type: " << type_name << endl);
+    BESDEBUG("functions", "shape: " << shape << endl);
+
+
+    //--clipstart
+
+    // get the DAP type; NB: In DAP4 this will include Url4 and Enum
+    Type type = libdap::get_type(type_name.c_str());
+    if (!is_simple_type(type))
+    	throw Error(malformed_expr, "make_array() can only build arrays of simple types (integers, floats and strings).");
+
+    // parse the shape information. The shape expression form is [size0][size1]...[sizeN]
+    // count [ and ] and the numbers should match (low budget invariant) and that's N
+    // use an istringstream to read the integer sizes and build an Array
+    vector<int> dims = parse_dims(shape);	// throws on parse error
+
+    static unsigned long counter = 1;
+    string name;
+    do {
+    	name = "g" + long_to_string(counter++);
+    } while (dmr.root()->var(name));
+
+    Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
+    BaseTypeFactory btf;
+    dest->add_var_nocopy(btf.NewVariable(type));	// ... so use add_var_nocopy() to add it instead
+
+    unsigned long number_of_elements = 1;
+    vector<int>::iterator i = dims.begin();
+    while (i != dims.end()) {
+    	number_of_elements *= *i;
+    	dest->append_dim(*i++);
+    }
+    //--clipend
+
+
+    // Get the total element number
+    // check that args.size() + 2 is N
+    if (number_of_elements + 2 != args->size())
+    	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " but found " + long_to_string(args->size()-2) + " instead.");
+
+    //--clipstart
+    switch (type) {
+    // All integer values are stored in Int32 DAP variables by the stock argument parser
+    // except values too large; those are stored in a UInt32
+    case dods_byte_c:
+    	read_values<dods_byte, Int32>(args, dmr, dest);
+    	break;
+
+    case dods_int16_c:
+    	read_values<dods_int16, Int32>(args, dmr, dest);
+    	break;
+
+    case dods_uint16_c:
+    	read_values<dods_uint16, Int32>(args, dmr, dest);
+    	break;
+
+    case dods_int32_c:
+        read_values<dods_int32, Int32>(args, dmr, dest);
+    	break;
+
+    case dods_uint32_c:
+    	// FIXME Should be UInt32 but the parser uses Int32 unless a value is too big.
+        read_values<dods_uint32, Int32>(args, dmr, dest);
+    	break;
+
+    case dods_float32_c:
+        read_values<dods_float32, Float64>(args, dmr, dest);
+    	break;
+
+    case dods_float64_c:
+        read_values<dods_float64, Float64>(args, dmr, dest);
+    	break;
+
+    case dods_str_c:
+        read_values<string, Str>(args, dmr, dest);
+    	break;
+
+    case dods_url_c:
+        read_values<string, Url>(args, dmr, dest);
+    	break;
+
+    default:
+    	throw InternalErr(__FILE__, __LINE__, "Unknown type error");
+    }
+    //--clipend
+
+
+}
+
+
 
 } // namesspace libdap

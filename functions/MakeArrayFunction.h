@@ -32,12 +32,17 @@ class BaseType;
 class DDS;
 
 /**
- * The linear_scale() function applies the familiar y = mx + b equation to data.
+ * The make_array function .
  */
-void function_make_array(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+void function_make_dap2_array(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
 
 /**
- * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
+ * The linear_scale() function applies the familiar y = mx + b equation to data.
+ */
+BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr);
+
+/**
+ * The LinearScaleFunction class encapsulates the array builder function 'function_make_array'
  * along with additional meta-data regarding its use and applicability.
  */
 class MakeArrayFunction: public libdap::ServerFunction {
@@ -49,7 +54,8 @@ public:
 		setUsageString("make_array(type,shape,value0,value1,...,valueN)");
 		setRole("http://services.opendap.org/dap4/server-side-function/make_array");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
-		setFunction(libdap::function_make_array);
+		setFunction(libdap::function_make_dap2_array);
+		setFunction(libdap::function_make_dap4_array);
 		setVersion("1.0");
     }
     virtual ~MakeArrayFunction()
