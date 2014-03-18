@@ -336,8 +336,10 @@ function_dap2_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
  numeric scalar, Array or Grid. */
 BaseType *function_dap4_linear_scale(D4RValueList *args, DMR &dmr)
 {
+    BESDEBUG("function", "function_dap4_linear_scale()  BEGIN " << endl);
+
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
-    if (args->size() == 0) {
+    if (args==0 || args->size() == 0) {
         Str *response = new Str("info");
         response->set_value(linear_scale_info);
         // DAP4 function porting: return a BaseType* instead of using the value-result parameter
@@ -388,6 +390,7 @@ BaseType *function_dap4_linear_scale(D4RValueList *args, DMR &dmr)
     }
     BESDEBUG("function", "function_dap4_linear_scale() - m: " << m << ", b: " << b << ", use_missing: " << use_missing << ", missing: " << missing << endl);
 
+    BESDEBUG("function", "function_dap4_linear_scale()  END " << endl);
 
     return function_linear_scale_worker(args->get_rvalue(0)->value(dmr),m,b,missing,use_missing);
 

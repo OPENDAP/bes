@@ -88,13 +88,15 @@ public:
     {
         try {
             dds = new DDS(&btf);
-	    string dds_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DDS ;
+            string dds_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DDS ;
             dds->parse(dds_file);
             DAS das;
-	    string das_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DAS ;
+            string das_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DAS ;
             das.parse(das_file);
             dds->transfer_attributes(&das);
             DBG(dds->print_xml(stderr, false, "noBlob"));
+
+
             // Load values into the grid variables
             Grid & a = dynamic_cast < Grid & >(*dds->var("a"));
             Array & m1 = dynamic_cast < Array & >(**a.map_begin());
