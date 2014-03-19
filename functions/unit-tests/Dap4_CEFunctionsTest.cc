@@ -204,6 +204,7 @@ public:
 
 
     CPPUNIT_TEST(make_array_test);
+    CPPUNIT_TEST(make_array_test_bad_params);
 
 
     CPPUNIT_TEST_SUITE_END();
@@ -432,6 +433,53 @@ public:
         }
         DBG(cerr << "make_array_test() - END" << endl);
     }
+
+    void make_array_test_bad_params() {
+        DBG(cerr << "make_array_test_bad_params() - BEGIN" << endl);
+
+        try {
+
+            long int length = 5;
+            string shape = "[5]";
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue("Float32")); // type
+            params.add_rvalue(new D4RValue(shape));
+			for(int i=0; i<length-1; i++ ){
+                params.add_rvalue(new D4RValue(i*0.1));
+            }
+
+            DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array()" << endl);
+
+            BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
+            DBG(cerr << "make_array_test_bad_params() - function_make_dap4_array() returned an "<< result->type_name() << endl);
+
+            CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+            Array *resultArray = dynamic_cast<Array*>(result);
+            DBG(cerr << "make_array_test_bad_params() - resultArray has "+
+            		long_to_string(resultArray->dimensions(true))+
+            		" dimensions " << endl);
+
+            CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
+
+            Array::Dim_iter p = resultArray->dim_begin();
+            int i = 0;
+            while ( p != resultArray->dim_end() ) {
+                CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
+                DBG(cerr << "make_array_test_bad_params() - dimension["<< long_to_string(i) << "]="<< long_to_string(dims[i]) << endl);
+                ++p;
+                i++;
+            }
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in make_array_test()");
+        }
+        DBG(cerr << "make_array_test_bad_params() - END" << endl);
+    }
+
 
 
 };
