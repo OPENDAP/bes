@@ -395,7 +395,6 @@ public:
                 length *= dims[i];
             }
 
-
             D4RValueList params;
             params.add_rvalue(new D4RValue("Float32")); // type
             params.add_rvalue(new D4RValue(shape));
@@ -425,8 +424,6 @@ public:
                 ++p;
                 i++;
             }
-
-
 
         }
         catch (Error &e) {
