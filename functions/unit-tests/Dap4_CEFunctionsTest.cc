@@ -54,6 +54,7 @@
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
 #include "MakeArrayFunction.h"
+#include "BindShapeFunction.h"
 
 //#include "ce_functions.h"
 #include "test_config.h"
@@ -204,8 +205,11 @@ public:
 
 
     CPPUNIT_TEST(make_array_test);
-    CPPUNIT_TEST(make_array_test_bad_params);
+    CPPUNIT_TEST(make_array_test_bad_args);
 
+    CPPUNIT_TEST(bind_shape_test);
+    CPPUNIT_TEST(bind_shape_test_no_data);
+    CPPUNIT_TEST(bind_shape_test_bad_shape);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -434,7 +438,7 @@ public:
         DBG(cerr << "make_array_test() - END" << endl);
     }
 
-    void make_array_test_bad_params() {
+    void make_array_test_bad_args() {
         DBG(cerr << "make_array_test_bad_params() - BEGIN" << endl);
 
 
@@ -456,7 +460,7 @@ public:
 		try {
 			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array()" << endl);
 			BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
-            CPPUNIT_ASSERT(!"[ERROR] in make_array_test_bad_params() Calling function_make_dap4_array() with too few parameters should have thrown an exception.");
+            CPPUNIT_ASSERT(!result);
 		}
         catch (Error &e) {
             DBG(cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message() << endl);
@@ -472,7 +476,7 @@ public:
 		try {
 			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array()" << endl);
 			BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
-            CPPUNIT_ASSERT(!"[ERROR] in make_array_test_bad_params() Calling function_make_dap4_array() with too many parameters should have thrown an exception.");
+            CPPUNIT_ASSERT(!result);
         }
         catch (Error &e) {
             DBG(cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message() << endl);
@@ -481,6 +485,174 @@ public:
 
 
         DBG(cerr << "make_array_test_bad_params() - END" << endl);
+    }
+
+    void bind_shape_test() {
+        DBG(cerr << "bind_shape_test() - BEGIN" << endl);
+
+        try {
+
+            long int num_dims = 3;
+            int dims[3] = {5,2,3};
+            string shape = "";
+
+
+            Array & array = dynamic_cast < Array & >(*two_arrays_dmr->root()->var("a"));
+
+            Array::Dim_iter p = array.dim_begin();
+            DBG(cerr << "bind_shape_test() - Source array " << array.name());
+            while ( p != array.dim_end() ) {
+                DBG(cerr << "["<<long_to_string(array.dimension_D4dim(p)->size()) << "]");
+                ++p;
+            }
+            DBG(cerr << endl);
+
+
+            for(int i=0; i<num_dims ; i++){
+                shape += "["+long_to_string(dims[i])+"]";
+            }
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(shape)); // type
+            params.add_rvalue(new D4RValue(&array));
+
+            DBG(cerr << "bind_shape_test() - Calling function_bind_shape_dap4()" << endl);
+
+            BaseType *result =  function_bind_shape_dap4(&params, *two_arrays_dmr);
+            DBG(cerr << "bind_shape_test() - function_bind_shape_dap4() returned an "<< result->type_name() << endl);
+
+            CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+            Array *resultArray = dynamic_cast<Array*>(result);
+            DBG(cerr << "bind_shape_test() - resultArray has "+
+            		long_to_string(resultArray->dimensions(true))+
+            		" dimensions " << endl);
+
+            CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
+
+
+            DBG(cerr << "bind_shape_test() -  Checking the DAP2 Array dimensions interface"<< endl);
+            p = resultArray->dim_begin();
+            int i = 0;
+            while ( p != resultArray->dim_end() ) {
+                CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
+                DBG(cerr << "bind_shape_test() - dimension["<< long_to_string(i) << "]="<< long_to_string(dims[i]) << endl);
+                ++p;
+                i++;
+            }
+
+            DBG(cerr << "bind_shape_test() -  Checking the DAP4 Array interface"<< endl);
+            DBG(cerr << "bind_shape_test() - array->is_dap4(): "<< resultArray->is_dap4() << endl);
+            CPPUNIT_ASSERT(resultArray->is_dap4());
+
+            p = resultArray->dim_begin();
+            i = 0;
+            DBG(cerr << "bind_shape_test() - Result array " << array.name());
+            while ( p != resultArray->dim_end() ) {
+
+            	D4Dimension *d4_dim = resultArray->dimension_D4dim(p);
+            	CPPUNIT_ASSERT(d4_dim);
+                //DBG(cerr << "bind_shape_test() - d4_dim->name(): "<< d4_dim->name() << endl);
+                //DBG(cerr << "bind_shape_test() - d4_dim->size(): "<< long_to_string(d4_dim->size()) << endl);
+                //DBG(cerr << "bind_shape_test() - dims["<< long_to_string(i)<< "]: " <<  long_to_string(dims[i]) << endl);
+
+                CPPUNIT_ASSERT(d4_dim->size() == dims[i]);
+                DBG(cerr << "["<<long_to_string(d4_dim->size()) << "]");
+                i++;
+                ++p;
+            }
+            DBG(cerr << endl);
+
+
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in bind_shape_test()");
+        }
+        DBG(cerr << "bind_shape_test() - END" << endl);
+    }
+
+
+    void bind_shape_test_bad_shape() {
+        DBG(cerr << "bind_shape_test_bad_shape() - BEGIN" << endl);
+
+        try {
+
+            long int num_dims = 3;
+            int dims[3] = {5,11,3};
+            string shape = "";
+
+
+            Array & array = dynamic_cast < Array & >(*two_arrays_dmr->root()->var("a"));
+
+            Array::Dim_iter p = array.dim_begin();
+            DBG(cerr << "bind_shape_test_bad_shape() - Source array " << array.name());
+            while ( p != array.dim_end() ) {
+                DBG(cerr << "["<<long_to_string(array.dimension_D4dim(p)->size()) << "]");
+                ++p;
+            }
+            DBG(cerr << endl);
+
+
+            for(int i=0; i<num_dims ; i++){
+                shape += "["+long_to_string(dims[i])+"]";
+            }
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(shape)); // type
+            params.add_rvalue(new D4RValue(&array));
+
+            DBG(cerr << "bind_shape_test_bad_shape() - Calling function_bind_shape_dap4()" << endl);
+
+            BaseType *result =  function_bind_shape_dap4(&params, *two_arrays_dmr);
+            CPPUNIT_ASSERT(!"[ERROR] bind_shape_test_bad_shape() - Mismatched dimensions should have thrown an Exception");
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << "bind_shape_test_bad_shape() - Caught expected exception. Message: " << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(true);
+        }
+
+        DBG(cerr << "bind_shape_test_bad_shape() - END" << endl);
+    }
+
+
+    void bind_shape_test_no_data() {
+        DBG(cerr << "bind_shape_test_no_data() - BEGIN" << endl);
+
+        try {
+
+            long int num_dims = 3;
+            int dims[3] = {5,2,3};
+            string shape = "";
+
+            for(int i=0; i<num_dims ; i++){
+                shape += "["+long_to_string(dims[i])+"]";
+            }
+
+            Float64 tmplate("");
+            Array array("input_array",&tmplate,true);
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(shape)); // type
+            params.add_rvalue(new D4RValue(&array));
+
+            DBG(cerr << "bind_shape_test_no_data() - Calling function_bind_shape_dap4()" << endl);
+
+            BaseType *result =  function_bind_shape_dap4(&params, *two_arrays_dmr);
+            DBG(cerr << "bind_shape_test_no_data() - function_bind_shape_dap4() returned an "<< result->type_name() << endl);
+
+            CPPUNIT_ASSERT(!"bind_shape_test_no_data() - Worked unexpectedly with an empty array.");
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT("bind_shape_test_no_data() -  Expected Fail (Exception) on empty array().");
+        }
+        DBG(cerr << "bind_shape_test_no_data() - END" << endl);
     }
 
 
