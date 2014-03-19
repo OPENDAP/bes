@@ -250,8 +250,8 @@ read_values(D4RValueList *args, DMR &dmr, Array *dest)
 
     // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
     for (unsigned int i = 2; i < args->size(); ++i) {
-    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr)) <<endl);
-    	values.push_back(static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr)));
+    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value() <<endl);
+    	values.push_back(static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value());
     }
 
     BESDEBUG("functions", "values size: " << values.size() << endl);
@@ -277,8 +277,8 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
 
     // Check for 2 arguments
     DBG(cerr << "args.size() = " << args.size() << endl);
-    if (!(args->size() == 1 || args->size() == 3 || args->size() == 4))
-        throw Error(malformed_expr,"Wrong number of arguments to linear_scale(). See linear_scale() for more information");
+    if (args->size() < 2)
+        throw Error(malformed_expr,"Wrong number of arguments to make_array(). See make_array() for more information");
 
     string type_name = extract_string_argument(args->get_rvalue(0)->value(dmr));
     string shape = extract_string_argument(args->get_rvalue(1)->value(dmr));
@@ -287,8 +287,6 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     BESDEBUG("functions", "type: " << type_name << endl);
     BESDEBUG("functions", "shape: " << shape << endl);
 
-
-    //--clipstart
 
     // get the DAP type; NB: In DAP4 this will include Url4 and Enum
     Type type = libdap::get_type(type_name.c_str());
@@ -316,15 +314,12 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     	number_of_elements *= *i;
     	dest->append_dim(*i++);
     }
-    //--clipend
-
 
     // Get the total element number
     // check that args.size() + 2 is N
     if (number_of_elements + 2 != args->size())
     	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " but found " + long_to_string(args->size()-2) + " instead.");
 
-    //--clipstart
     switch (type) {
     // All integer values are stored in Int32 DAP variables by the stock argument parser
     // except values too large; those are stored in a UInt32
@@ -368,8 +363,10 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     default:
     	throw InternalErr(__FILE__, __LINE__, "Unknown type error");
     }
-    //--clipend
+	dest->set_send_p(true);
+	dest->set_read_p(true);
 
+    return dest;
 
 }
 

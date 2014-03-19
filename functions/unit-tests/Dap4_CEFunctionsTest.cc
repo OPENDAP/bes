@@ -35,6 +35,7 @@
 #include <BaseType.h>
 #include <Int32.h>
 #include <Float64.h>
+#include <Array.h>
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
@@ -52,6 +53,7 @@
 
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
+#include "MakeArrayFunction.h"
 
 //#include "ce_functions.h"
 #include "test_config.h"
@@ -200,6 +202,10 @@ public:
     //CPPUNIT_TEST(linear_scale_grid_attributes_test);
     //CPPUNIT_TEST(linear_scale_grid_attributes_test2);
 
+
+    CPPUNIT_TEST(make_array_test);
+
+
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -277,6 +283,8 @@ public:
             CPPUNIT_ASSERT(!"Error in linear_scale_scalar_test()");
         }
     }
+
+
 
 
 #if 0
@@ -370,6 +378,63 @@ public:
     }
 
 #endif
+
+
+    void make_array_test() {
+        DBG(cerr << "make_array_test() - BEGIN" << endl);
+
+        try {
+
+
+            int dims[3] = {5,2,3};
+            long int length = 1;
+            string shape = "";
+
+            for(int i=0; i<3 ; i++){
+                shape += "["+long_to_string(dims[i])+"]";
+                length *= dims[i];
+            }
+
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue("Float32")); // type
+            params.add_rvalue(new D4RValue(shape));
+			for(int i=0; i<length; i++ ){
+                params.add_rvalue(new D4RValue(i*0.1));
+            }
+
+            DBG(cerr << "make_array_test() - Calling function_make_dap4_array()" << endl);
+
+            BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
+            DBG(cerr << "make_array_test() - function_make_dap4_array() returned an "<< result->type_name() << endl);
+
+            CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+            Array *resultArray = dynamic_cast<Array*>(result);
+            DBG(cerr << "make_array_test() - resultArray has "+
+            		long_to_string(resultArray->dimensions(true))+
+            		" dimensions " << endl);
+
+            CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
+
+            Array::Dim_iter p = resultArray->dim_begin();
+            int i = 0;
+            while ( p != resultArray->dim_end() ) {
+                CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
+                DBG(cerr << "make_array_test() - dimension["<< long_to_string(i) << "]="<< long_to_string(dims[i]) << endl);
+                ++p;
+                i++;
+            }
+
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in make_array_test()");
+        }
+        DBG(cerr << "make_array_test() - END" << endl);
+    }
 
 
 };
