@@ -186,7 +186,7 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     // Get the total element number
     // check that argc + 2 is N
     if (number_of_elements + 2 != (unsigned long)argc)
-    	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " but found " + long_to_string(argc-2) + " instead.");
+    	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " parameters but found " + long_to_string(argc-2) + " instead.");
 
     switch (type) {
     // All integer values are stored in Int32 DAP variables by the stock argument parser
@@ -318,7 +318,7 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     // Get the total element number
     // check that args.size() + 2 is N
     if (number_of_elements + 2 != args->size())
-    	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " but found " + long_to_string(args->size()-2) + " instead.");
+    	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " parameters but found " + long_to_string(args->size()-2) + " instead.");
 
     switch (type) {
     // All integer values are stored in Int32 DAP variables by the stock argument parser
