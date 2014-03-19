@@ -55,6 +55,7 @@
 #include "LinearScaleFunction.h"
 #include "MakeArrayFunction.h"
 #include "BindShapeFunction.h"
+#include "BindNameFunction.h"
 
 //#include "ce_functions.h"
 #include "test_config.h"
@@ -79,7 +80,7 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class CEFunctionsTest:public TestFixture
+class Dap4_CEFunctionsTest:public TestFixture
 {
 private:
     DMR *two_arrays_dmr;
@@ -87,9 +88,9 @@ private:
     D4BaseTypeFactory *d4_btf;
     ConstraintEvaluator ce;
 public:
-    CEFunctionsTest()
+    Dap4_CEFunctionsTest()
     {}
-    ~CEFunctionsTest()
+    ~Dap4_CEFunctionsTest()
     {}
     string
 
@@ -189,7 +190,7 @@ public:
 
     }
 
-    CPPUNIT_TEST_SUITE( CEFunctionsTest );
+    CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
     // Test void projection_function_grid(int argc, BaseType *argv[], DDS &dds)
 
@@ -210,6 +211,8 @@ public:
     CPPUNIT_TEST(bind_shape_test);
     CPPUNIT_TEST(bind_shape_test_no_data);
     CPPUNIT_TEST(bind_shape_test_bad_shape);
+
+    CPPUNIT_TEST(bind_name_test);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -655,11 +658,59 @@ public:
         DBG(cerr << "bind_shape_test_no_data() - END" << endl);
     }
 
+    void bind_name_test() {
+        DBG(cerr << "bind_name_test() - BEGIN" << endl);
+
+        try {
+            BaseType  &sourceVar  = dynamic_cast < BaseType & >(*two_arrays_dmr->root()->var("a"));
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() source variable: "<< sourceVar.type_name()  << " " << sourceVar.name()<< endl);
+
+            string name = "new_name_for_you_buddy";
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(name)); // type
+            params.add_rvalue(new D4RValue(&sourceVar));
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap4()" << endl);
+
+            BaseType *result =  function_bind_name_dap4(&params, *two_arrays_dmr);
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() returned "<< result->type_name()  << " " << result->name()<< endl);
+            CPPUNIT_ASSERT(result->name() == name);
+
+            Float64 myVar("myVar");
+            myVar.set_value((dods_float64) 1.1);
+            myVar.set_read_p(true);
+            myVar.set_send_p(true);
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() source variable: "<< myVar.type_name()  << " " << myVar.name()<< endl);
+
+            name = "new_name_for_myVar";
+
+            D4RValueList params2;
+            params2.add_rvalue(new D4RValue(name)); // type
+            params2.add_rvalue(new D4RValue(&myVar));
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap4()" << endl);
+
+            result =  function_bind_name_dap4(&params2, *two_arrays_dmr);
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() returned "<< result->type_name()  << " " << result->name()<< endl);
+            CPPUNIT_ASSERT(result->name() == name);
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in bind_name_test()");
+        }
+        DBG(cerr << "bind_name_test() - END" << endl);
+    }
+
 
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(Dap4_CEFunctionsTest);
 
 
 

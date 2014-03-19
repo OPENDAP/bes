@@ -40,8 +40,6 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr);
 
 
 
-
-
 /**
  * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
  * along with additional meta-data regarding its use and applicability.

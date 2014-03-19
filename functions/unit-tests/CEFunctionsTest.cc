@@ -46,6 +46,7 @@
 
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
+#include "BindNameFunction.h"
 
 //#include "ce_functions.h"
 #include "test_config.h"
@@ -153,6 +154,10 @@ public:
     CPPUNIT_TEST(linear_scale_grid_attributes_test);
     CPPUNIT_TEST(linear_scale_grid_attributes_test2);
     CPPUNIT_TEST(linear_scale_scalar_test);
+
+    CPPUNIT_TEST(bind_name_test);
+
+
 #if 0
     // Not used and defined to throw by default. 2/23/11 jhrg
     CPPUNIT_TEST(function_dap_1_test);
@@ -523,6 +528,66 @@ public:
             DBG(cerr << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in linear_scale_scalar_test()");
         }
+    }
+    void bind_name_test() {
+        DBG(cerr << "bind_name_test() - BEGIN" << endl);
+
+        try {
+
+        	string new_name = "new_name_for_you_buddy";
+            BaseType  *sourceVar  = dds->var("a");
+            DBG(cerr << "bind_name_test() - Source variable: "<< sourceVar->type_name()  << " " << sourceVar->name()<< endl);
+            BaseType *argv[2];
+
+            Str *name = new Str("");
+            name->set_value(new_name);
+            argv[0] = name;
+
+            argv[1] = sourceVar;
+            BaseType *result=0;
+
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap2()" << endl);
+
+            function_bind_name_dap2(2, argv, *dds, &result);
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap2() returned "<< result->type_name()  << " " << result->name()<< endl);
+            CPPUNIT_ASSERT(result->name() == new_name);
+
+            delete name;
+
+
+            Float64 myVar("myVar");
+            myVar.set_value((dods_float64) 1.1);
+            myVar.set_read_p(true);
+            myVar.set_send_p(true);
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap2() source variable: "<< myVar.type_name()  << " " << myVar.name()<< endl);
+
+            new_name = "new_name_for_myVar";
+            name = new Str("");
+            name->set_value(new_name);
+            argv[0] = name;
+
+            argv[1] = &myVar;
+
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap4()" << endl);
+            BaseType *result2 = 0;
+
+            function_bind_name_dap2(2, argv, *dds, &result2);
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() returned "<< result2->type_name()  << " " << result2->name()<< endl);
+            CPPUNIT_ASSERT(result2->name() == new_name);
+
+            delete name;
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in bind_name_test()");
+        }
+        DBG(cerr << "bind_name_test() - END" << endl);
     }
 
 #if 0

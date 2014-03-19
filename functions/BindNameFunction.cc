@@ -71,6 +71,8 @@ void
 function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 {
 
+	DBG(cerr << "function_bind_name_dap2() - BEGIN" << endl);
+
     if (argc == 0) {
         Str *response = new Str("info");
         response->set_value(bind_name_info);
@@ -82,8 +84,15 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     if (argc != 2)
     	throw Error(malformed_expr, "bind_name(name,variable) requires two arguments.");
 
+    DBG(cerr << "function_bind_name_dap2() - Processing argv[0]" << endl);
+
     string name = extract_string_argument(argv[0]);
+    DBG(cerr << "function_bind_name_dap2() - New name: " << name << endl);
+
+    DBG(cerr << "function_bind_name_dap2() - Processing argv[1]" << endl);
     BaseType *sourceVar = argv[1];
+    DBG(cerr << "function_bind_name_dap2() - Source variable:  " <<
+    		sourceVar->type_name() << " " << sourceVar->name() << endl);
 
     // Don't allow renaming that will introduce namespace collisions.
     //
@@ -103,6 +112,7 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     // all its variables and the function processing code also deletes all it's variables.
     // NB: Could use reference counting pointers to eliminate this copy... jhrg 6/24/13
     if (dds.var(sourceVar->name())) {
+    	DBG(cerr << "function_bind_name_dap2() - Copying existing variable in DDS: " << sourceVar->name() << endl);
     	*btpp = sourceVar->ptr_duplicate();
     	if (!(*btpp)->read_p()) {
     		(*btpp)->read();
@@ -112,10 +122,11 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     	(*btpp)->set_name(name);
     }
     else {
+    	DBG(cerr << "function_bind_name_dap2 - Using passed variable: " << sourceVar->name() << endl);
     	sourceVar->set_name(name);
-
     	*btpp = sourceVar;
     }
+    DBG(cerr << "function_bind_name_dap2() - END" << endl);
 
     return;
 }
@@ -138,8 +149,10 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
 
     BaseType *arg0 = args->get_rvalue(0)->value(dmr);
     string name = extract_string_argument(arg0);
+	cerr << "function_bind_name_dap4() - New name: " << name << endl;
 
     BaseType *sourceVar = args->get_rvalue(1)->value(dmr);
+	cerr << "function_bind_name_dap4() - Source variable:  " << sourceVar->type_name() << " " << sourceVar->name() << endl;
 
     BaseType *resultVar;
 
@@ -161,6 +174,7 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     // all its variables and the function processing code also deletes all it's variables.
     // NB: Could use reference counting pointers to eliminate this copy... jhrg 6/24/13
     if (dmr.root()->var(sourceVar->name())) {
+    	cerr << "function_bind_name_dap4() - Copying existing variable in DMR: " << sourceVar->name() << endl;
     	resultVar = sourceVar->ptr_duplicate();
     	if (!resultVar->read_p()) {
     		resultVar->read();
@@ -170,6 +184,7 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     	resultVar->set_name(name);
     }
     else {
+    	cerr << "function_bind_name_dap4 - Using passed variable: " << sourceVar->name() << endl;
     	resultVar = sourceVar;
     	resultVar->set_name(name);
 
