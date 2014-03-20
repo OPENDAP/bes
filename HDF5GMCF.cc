@@ -619,7 +619,6 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
                 irv != this->vars.end(); ++irv) {
             bool is_cv = check_cv((*irv)->name);
             if (true == is_cv) {
-//cerr<<"find CV "<<(*irv)->name <<endl;
                 if ((*irv)->dims.size() != 1)
                     throw3("The coordinate variable", (*irv)->name," must be one dimension for the zonal average product");
                 ozonedimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,(*irv)->fullpath));

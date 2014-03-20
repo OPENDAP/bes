@@ -170,7 +170,7 @@ bool HDF5CFStr::read()
             final_str="";
 
         if (""!=final_str) {
-            hsize_t ret_vlen_claim = 0;
+            herr_t ret_vlen_claim = 0;
             ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
             if (ret_vlen_claim < 0){
                 H5Tclose(memtype);

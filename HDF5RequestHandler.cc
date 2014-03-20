@@ -420,7 +420,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         hdds->transfer_attributes(das);
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
-////WARNING:TEMP, REMOVE LATER.:close the file ID temp. Later, will be closed by the derived class.
+
+        ////No need to close the file ID. It will be closed by the derived class.
         //if(cf_fileid !=-1)
          //   H5Fclose(cf_fileid);
 

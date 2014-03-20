@@ -537,7 +537,7 @@ bool HDF5CFArray::read()
             }
 
             if (false == strval.empty()) {
-                hsize_t ret_vlen_claim;
+                herr_t ret_vlen_claim;
                 if (0 == rank) 
                     ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
                 else 

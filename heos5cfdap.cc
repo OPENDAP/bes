@@ -1254,7 +1254,7 @@ else cerr <<"xmlmeta data has the suffix" <<endl;
 //            H5Fclose(s_file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-        if ((dtype_size = H5Tget_size(s_ty_id))<0) {
+        if ((dtype_size = H5Tget_size(s_ty_id))==0) {
 
             string msg = "Cannot get the data type size of HDF5 dataset  ";
             msg += s_oname[i];

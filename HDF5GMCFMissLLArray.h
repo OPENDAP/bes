@@ -61,8 +61,9 @@ class HDF5GMCFMissLLArray:public Array {
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
-    template<class T> 
-    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,string s_attr_name, T& attr_value);
+    //template<class T> 
+    template<typename T> 
+    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string& s_attr_name, T& attr_value);
 
     private:
         int rank;

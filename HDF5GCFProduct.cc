@@ -183,7 +183,6 @@ bool check_measure_ozone(hid_t s_root_id) {
     // attribute 2 and 3 will distinguish if it is level 2 or level 3.
     has_ozone_attr1 = H5Aexists(s_root_id,Ozone_ATTR1_NAME);
 
-// STOP HERE 2012-3-06
     if (has_ozone_attr1 >0) {
         string attr1_value = "";
         obtain_gm_attr_value(s_root_id, Ozone_ATTR1_NAME, attr1_value);
@@ -416,66 +415,53 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                 size_t total_data_size = num_elem * H5Tget_size(dtype);
 
                 if (H5Tis_variable_str(dtype)) {
+
                     // cerr <<"coming to variable length string "<<endl;
-//                    char *temp_buf = NULL;
                     vector<char>temp_buf;
                     temp_buf.resize(total_data_size);
-                    //try 
-                    	// TODO replace with vector<char>
-                        //temp_buf = new char[total_data_size];
 
-                        //if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf)<0)
-                        if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, &temp_buf[0])<0){
-                           H5Tclose(dtype);
-                           H5Dclose(s_dset_id);
-                           H5Sclose(dspace);
-                           H5Gclose(s_group_id);
-                           H5Gclose(s_root_id);
-               	           string msg = "cannot get the the dataspace of HDF5 dataset  ";
-                           msg += string(ACOS_L2S_DSET_NAME);
-                           throw InternalErr(__FILE__, __LINE__, msg);
-                        }
-
-                        //char *temp_bp = temp_buf;
-                        char *temp_bp = &temp_buf[0];
-                        char *onestring = NULL;
-                        string total_string="";
-                        
-                        for (int temp_i = 0; temp_i <num_elem; temp_i++) {
-
-                            // This line will assure that we get the real variable length string value.
-                            onestring =*(char **)temp_bp;
-                            // Change the C-style string to C++ STD string just for easy handling.
-                            if (onestring !=NULL) {
-                                string tempstring(onestring);
-                                total_string+=tempstring;
-                                // cerr <<"temp_string attr "<<tempstring <<endl;
-                            }
-                            // going to the next value.
-                            temp_bp += dtype_size;
-                        }
-                        
-                        //if (temp_buf != NULL) 
-                            // Reclaim any VL memory if necessary.
-                            H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
-                         //   delete []temp_buf;
-
-                        //
-
-                        H5Sclose(dspace);
+                    //if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf)<0)
+                    if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, &temp_buf[0])<0){
                         H5Tclose(dtype);
                         H5Dclose(s_dset_id);
+                        H5Sclose(dspace);
                         H5Gclose(s_group_id);
-                        // cerr<<"total_string "<<total_string <<endl;
+                        H5Gclose(s_root_id);
+               	        string msg = "cannot get the the dataspace of HDF5 dataset  ";
+                        msg += string(ACOS_L2S_DSET_NAME);
+                        throw InternalErr(__FILE__, __LINE__, msg);
+                    }
+
+                    char *temp_bp = &temp_buf[0];
+                    char *onestring = NULL;
+                    string total_string="";
+                        
+                    for (int temp_i = 0; temp_i <num_elem; temp_i++) {
+
+                        // This line will assure that we get the real variable length string value.
+                        onestring =*(char **)temp_bp;
+
+                        // Change the C-style string to C++ STD string just for easy handling.
+                        if (onestring !=NULL) {
+                            string tempstring(onestring);
+                            total_string+=tempstring;
+                            // cerr <<"temp_string attr "<<tempstring <<endl;
+                        }
+                        // going to the next value.
+                        temp_bp += dtype_size;
+                    }
+                        
+                    // Reclaim any VL memory if necessary.
+                    H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
+
+
+                    H5Sclose(dspace);
+                    H5Tclose(dtype);
+                    H5Dclose(s_dset_id);
+                    H5Gclose(s_group_id);
  
-                        if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0) 
-                            return_flag = true;
-                    //
-                    //catch (...) 
-                     //   if (temp_buf != NULL)
-                      //      delete[] temp_buf;
-                       // throw;
-                    //
+                    if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0) 
+                        return_flag = true;
                 }
                 else {
                     vector<char> temp_buf(total_data_size+1);
@@ -559,8 +545,8 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int num_elm = 0;
-    if (((num_elm = H5Sget_simple_extent_npoints(attr_space)) == 0)) {
+    int num_elm = H5Sget_simple_extent_npoints(attr_space);
+    if (0 == num_elm) {
         string msg = "cannot get the number for the attribute ";
         msg += string(s_attr_name);
         H5Tclose(attr_type);

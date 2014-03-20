@@ -942,7 +942,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     // (note the . after "HDF5_ROOT_GROUP." .  Then cutting the last "/".
 
     // TODO I don't think sizeof(gname) is right. jhrg 9/26/13
-    if (strncmp(gname, "/", sizeof(gname)) == 0) {
+    if (strncmp(gname, "/", strlen(gname)) == 0) {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP");
     }
     else {

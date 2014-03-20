@@ -199,8 +199,6 @@ throw(Exception) {
 
                     //  cerr <<"Group full_path_name " <<full_path_name <<endl;
 
-
-
                     cgroup = H5Gopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
                     if (cgroup < 0)
                         throw2( "Error opening the group ",full_path_name);
@@ -236,8 +234,8 @@ throw(Exception) {
                     // cerr<<"Coming to the dataset full_path " <<endl;
                     // Obtain the absolute path of the HDF5 dataset
 
-//                    string full_path_name = ((string(gname) != "/") 
- //                                   ?(string(gname)+"/"+string(oname)):("/"+string(oname)));
+                    //  string full_path_name = ((string(gname) != "/") 
+                    //                ?(string(gname)+"/"+string(oname)):("/"+string(oname)));
                     // string full_path_name = string(gname) + "/" + string(oname);
                     //cerr<<"dataset full_path "<<full_path_name <<endl;
                     string temp_oname(oname.begin(),oname.end());
@@ -249,7 +247,8 @@ throw(Exception) {
                     var->name = temp_oname.substr(0,temp_oname.size()-1);
                     var->fullpath = full_path_name;
                     var->newname = full_path_name;
-//cerr<<"variable path" <<var->fullpath <<endl;
+
+                    //cerr<<"variable path" <<var->fullpath <<endl;
 
                     cdset = H5Dopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
                     if (cdset < 0){
@@ -292,6 +291,7 @@ throw(Exception) {
                     break;
 
                 case H5O_TYPE_NAMED_DATATYPE:
+
                     // ignore the named datatype
                     break;
                 default:
@@ -332,7 +332,7 @@ void
 File:: Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname,bool &unsup_var_dtype)
 throw(Exception){
 
-    hid_t ty_id;
+    hid_t ty_id = -1;
 
     // Obtain the data type of the variable. 
     if ((ty_id = H5Dget_type(dset_id)) < 0) 
@@ -365,8 +365,6 @@ void
 File:: Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dspace) 
 throw(Exception){
 
-    //hsize_t*  dsize = NULL;
-    //hsize_t* maxsize = NULL;
 
     vector<hsize_t> dsize;
     vector<hsize_t> maxsize;
@@ -450,13 +448,6 @@ throw(Exception){
         if (ty_id != -1)
             H5Tclose(ty_id);
 
-        // Memory allocation exceptions could have been thrown when
-        // creating these, so check if these are not null before deleting.
-        //if( dsize != NULL ) 
-         //   delete[] dsize;
-        //if( maxsize!= NULL ) 
-         //   delete[] maxsize;
-
         throw;
         //throw2("Cannot obtain the dimension information for the dataset ",varname);
     }
@@ -470,20 +461,11 @@ throw(Exception)
 
 {
 
-//cerr <<"Coming to Retrieve_H5_Attr_Info "<<endl;
-
     hid_t attrid = -1;
     hid_t ty_id = -1;
     hid_t aspace_id = -1;
     hid_t memtype = -1;
 
-    //char* attr_name = NULL;
-    
-    //hsize_t* asize  = NULL;
-    //hsize_t* maxsize = NULL;
-
- //   vector<hsize_t> asize;
-  //  vector<hsize_t> maxsize;
 
     try {
 
@@ -539,8 +521,6 @@ throw(Exception)
         // if it is a scalar attribute, just define number of elements to be 1.
         if (ndims != 0) {
 
- //           hsize_t* asize =  new hsize_t[ndims];
- //           hsize_t* maxsize = new hsize_t[ndims];
             vector<hsize_t> asize;
             vector<hsize_t> maxsize;
             asize.resize(ndims);
@@ -559,14 +539,11 @@ throw(Exception)
         } // if(ndims != 0)
 
         size_t ty_size = H5Tget_size(ty_id);
-//ty_size = 0;
         if (0 == ty_size ) 
             throw2("Cannot obtain the dtype size for the attribute ",attr_name);
 
 
         memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
-//memtype = -1;
-
         if (memtype < 0) 
             throw2("Cannot obtain the memory datatype for the attribute ",attr_name);
 
@@ -584,20 +561,7 @@ throw(Exception)
         H5Sclose(aspace_id);
         H5Aclose(attrid);
 
-       // if(attr_name != NULL) 
-        //   delete []attr_name;
-#if 0
-        if(asize != NULL) 
-           delete []asize;
-        if(maxsize != NULL) 
-           delete []maxsize;
-#endif
 
-      
-
-        // cerr <<"attribute name "<<attr->name <<endl;
-        // cerr <<"attribute count "<<attr->count <<endl;
-        // cerr <<"attribute type size "<<(int)ty_size <<endl;
     } // try
     catch(...) {
 
@@ -613,17 +577,6 @@ throw(Exception)
         if(attrid != -1)
             H5Aclose(attrid);
 
-#if 0
-        if(attr_name != NULL) 
-            delete []attr_name;
-        if( asize != NULL) 
-            delete []asize;
-
-        if(maxsize != NULL) 
-            delete []maxsize;
-#endif
-
-        //throw1("Error in method File::Retrieve_h5_Attr_Info");
         throw;
     }
 
@@ -659,7 +612,6 @@ void
 File::Retrieve_H5_Attr_Value( Attribute *attr,string obj_name) 
 throw(Exception) 
 {
-    // cerr<<"coming to retrieve HDF5 attribute value "<<endl;
 
     // Define HDF5 object Ids.
     hid_t obj_id = -1;
@@ -712,14 +664,12 @@ throw(Exception)
 	    string total_vstring ="";
 
             attr->strsize.resize(attr->count);
-            // cerr<<"attr->count "<< attr->count <<endl;
 
             for (unsigned int temp_i = 0; temp_i <attr->count; temp_i++) {
 
                 // This line will assure that we get the real variable length string value.
                 onestring =*(char **)temp_bp;
                 if(onestring!= NULL) {
-                    // cerr <<"one string "<<onestring <<endl;
                     total_vstring +=string(onestring);
                     attr->strsize[temp_i] = (string(onestring)).size();
                 }
@@ -747,7 +697,6 @@ throw(Exception)
             attr->value.resize(total_vstring.size());
 
             copy(total_vstring.begin(),total_vstring.end(),attr->value.begin());
-            // cerr <<"total_string in vlen "<< total_vstring <<endl;
 
         }
         else {
@@ -762,15 +711,6 @@ throw(Exception)
             if (H5Aread(attr_id, memtype_id, (void *) &attr->value[0]) < 0) 
                 throw4("Cannot obtain the dtype size for the attribute ",attr->name, " of object ",obj_name);
 
-// cerr <<"attr name "<< attr->name <<endl;
-// cerr <<"total_bytes " << total_bytes <<endl;
-#if 0
-if(attr->dtype == H5FSTRING) {
-    cerr <<"string fixed size = " << attr->fstrsize <<endl;
-    cerr <<"string attr value = " << string(attr->value.begin(), attr->value.end()) <<endl;
-
-}         
-#endif
             if (attr->dtype == H5FSTRING) {
 
                 size_t sect_size = ty_size;
@@ -789,7 +729,8 @@ if(attr->dtype == H5FSTRING) {
                 attr->strsize.resize(num_sect);
                 for (int temp_i = 0; temp_i <num_sect; temp_i ++) 
                     attr->strsize[temp_i] = sect_newsize[temp_i];
-            // cerr <<"new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
+
+                // cerr <<"new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
 #if 0
 for (int temp_i = 0; temp_i <num_sect; temp_i ++)
      cerr <<"string new section size = " << attr->strsize[temp_i] <<endl;
@@ -801,11 +742,6 @@ for (int temp_i = 0; temp_i <num_sect; temp_i ++)
         H5Tclose(ty_id);
         H5Aclose(attr_id); 
         H5Oclose(obj_id);
-        //if (temp_buf != NULL)
-         //   delete []temp_buf;
-
-        //if (sect_newsize != NULL) 
-         //   delete [] sect_newsize;
 
    }
 
@@ -826,11 +762,6 @@ for (int temp_i = 0; temp_i <num_sect; temp_i ++)
         if (obj_id != -1)
             H5Oclose(obj_id);
 
-        //if (temp_buf != NULL)
-         //   delete[]temp_buf;
-
-        //if (sect_newsize !=NULL)
-         //   delete[]sect_newsize;
 
         //throw1("Error in method File::Retrieve_H5_Attr_Value");
         throw;
@@ -921,7 +852,6 @@ void File::Handle_Unsupported_Dspace() throw(Exception) {
         if (true == this->unsupported_var_dspace) {
             for (vector<Var *>::iterator irv = this->vars.begin();
                  irv != this->vars.end(); ++irv) {
-//cerr <<"having unsupported variable datatype" <<endl;
                 if (true  == (*irv)->unsupported_dspace) {
                     delete (*irv);
                     this->vars.erase(irv);
@@ -936,6 +866,7 @@ void File::Flatten_Obj_Name(bool include_attr) throw(Exception) {
     for (vector<Var *>::iterator irv = this->vars.begin();
          irv != this->vars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
+
 //cerr<<"CF variable new name "<< (*irv)->newname <<endl;
 
         for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
@@ -948,9 +879,7 @@ void File::Flatten_Obj_Name(bool include_attr) throw(Exception) {
 
         for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
              ira != this->root_attrs.end(); ++ira){ 
-            // cerr <<"new name before "<<(*ira)->newname <<endl;
             (*ira)->newname = get_CF_string((*ira)->newname);
-            // cerr <<"new name after "<<(*ira)->newname <<endl;
         }
 
         for (vector<Group *>::iterator irg = this->groups.begin();

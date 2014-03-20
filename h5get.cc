@@ -248,7 +248,7 @@ string get_dap_type(hid_t type)
     case H5T_INTEGER:
 
         size = H5Tget_size(type);
-        if (size < 0){
+        if (size == 0){
             throw InternalErr(__FILE__, __LINE__,
                               "size of datatype is invalid");
         }
@@ -288,7 +288,7 @@ string get_dap_type(hid_t type)
 
     case H5T_FLOAT:
         size = H5Tget_size(type);
-        if (size < 0){
+        if (size == 0){
             throw InternalErr(__FILE__, __LINE__,
                               "size of the datatype is invalid");
         }

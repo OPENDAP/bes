@@ -11,7 +11,7 @@
 #define YY_DECL int he5ddslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
 #define ECHO if (fwrite( yytext, yyleng, 1, yyout )) {}
-#define YY_NO_UNPUT
+/*#define YY_NO_UNPUT*/
 #include "he5dds.tab.hh"
 
 int yy_line_num = 1;

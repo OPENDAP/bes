@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _H5COMMONCFDAP_H
-#define _H5COMMONCDDAP_H
+#define _H5COMMONCFDAP_H
 #include <DDS.h>
 #include <DAS.h>
 #include "hdf5.h"

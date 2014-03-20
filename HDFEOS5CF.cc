@@ -1424,7 +1424,6 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
     set <string>::iterator its;
 //cerr <<"coming to Single Augment Grid "<<endl;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
-//cerr<<"DIMENSION NAME List "<<*its <<endl;
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
@@ -1585,10 +1584,10 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
 
             string var_grid_name = Obtain_Var_EOS5Type_GroupName(*irv,GRID);
             if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Latitude")) {
-//cerr<<"coming to latitiude "<<endl;
+
                 string tempdimname = (((*irv)->dims)[0])->name;
+
                 if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname)) {
-//cerr<<"coming to YDim "<<endl;
                         //Find it, create a coordinate variable.
                     EOS5CVar *EOS5cvar = new EOS5CVar(*irv);
 
@@ -1622,7 +1621,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
             string var_grid_name = Obtain_Var_EOS5Type_GroupName(*irv,GRID);
                       
             if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Longitude")) {
-//cerr<<"coming to longitiude "<<endl;
+
                 string tempdimname = (((*irv)->dims)[0])->name;
 
                 if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname)) {
@@ -1713,6 +1712,7 @@ cerr<<"dim names "<<(*its) <<endl;
             this->cvars.push_back(EOS5cvar);
             // erase the dimension name from the dimension name set
 
+            // This is the right way to make its platform-independent.
             tempvardimnamelist.erase(its++);
             find_ydim = true;
 // cerr<<"end of YDim " <<endl;
@@ -1753,7 +1753,8 @@ cerr<<"dim names "<<(*its) <<endl;
 
             // Save this cv to the cv vector
             this->cvars.push_back(EOS5cvar);
-            // erase the dimension name from the dimension name set
+
+            // erase the dimension name from the dimension name set,platform independent way.
             tempvardimnamelist.erase(its++);
             find_xdim = true;
 // cerr<<"end of XDim" <<endl;
@@ -1775,7 +1776,7 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
     int num_dimnames = tempvardimnamelist.size();
     bool has_dimnames = true;
 
-//cerr<<"num_dimnames "<<num_dimnames <<endl;
+    //cerr<<"num_dimnames "<<num_dimnames <<endl;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         if (cfgrid->dnames_to_1dvnames.find(*its) !=cfgrid->dnames_to_1dvnames.end()){
             for (vector<Var *>::iterator irv = this->vars.begin();
@@ -1833,7 +1834,7 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
 
 void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw(Exception){
 
-//cerr <<"coming to Handle_Multi_nonaugment_Grid_CVar "<<endl;
+     //cerr <<"coming to Handle_Multi_nonaugment_Grid_CVar "<<endl;
 
     // If the multiple grids don't share the same lat/lon according to the parameters
     // We then assume that each single grid has its own lat/lon, just loop through each grid.
@@ -1870,7 +1871,6 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw(Exception){
             }
        
             else {
-//cerr<<"coming to one lat/lon for all grids" <<endl;
                 // One lat/lon for all grids
                 bool use_own_latlon = false;
                 use_own_latlon = 
@@ -1882,16 +1882,13 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw(Exception){
                 }
             }
 
-//cerr <<"before handling nonlatlon grid"<<endl;
             // We need to handle the first grid differently since it will include "XDim" and "YDim".
             Handle_NonLatLon_Grid_CVar((this->eos5cfgrids)[0],tempvardimnamelist);
 
-//cerr <<"after handling nonlatlon grid"<<endl;
             // Updating the dimension name sets for other grids
             for (unsigned j = 1; j < this->eos5cfgrids.size(); j++ ) 
                 (this->eos5cfgrids)[j]->Update_Dimnamelist();
 
-//cerr <<"after updating dimension name list"<<endl;
             // Adjusting the dimension names for all vars under these EOS5 Grids
             Adjust_EOS5GridDimNames((this->eos5cfgrids)[0]);
 

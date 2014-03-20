@@ -423,7 +423,7 @@ bool HDF5Array::m_array_of_reference()
 
 		    case H5S_SEL_POINTS: {
 			DBG(cerr << "=read() Points selected." << endl);
-			hsize_t npoints = H5Sget_select_npoints(space_id);
+			hssize_t npoints = H5Sget_select_npoints(space_id);
 			if (npoints < 0) {
 			    throw InternalErr(__FILE__, __LINE__,
 				    "Cannot determine number of elements in the dataspace selection");
@@ -654,7 +654,7 @@ bool HDF5Array::read()
     } // if (nelms == d_num_elm)
     else {
 	size_t data_size = nelms * H5Tget_size(d_ty_id);
-	if (data_size < 0)
+	if (data_size == 0)
 	    throw InternalErr(__FILE__, __LINE__, "get_size failed");
 	vector<char> convbuf(data_size);
 	get_slabdata(d_dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);

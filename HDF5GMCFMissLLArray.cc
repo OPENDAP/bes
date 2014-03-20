@@ -159,20 +159,6 @@ bool HDF5GMCFMissLLArray::read()
         vector<float>val;
         val.resize(nelms);
 
-#if 0
-        float *val = NULL;
-         
-        try {
-            val       = new float[nelms];
-        }
-        catch (...) {
-            H5Gclose(rootid);
-            H5Fclose(fileid);
-            throw InternalErr (__FILE__, __LINE__,
-                          "Cannot allocate the memory for total_val and val for Latitude or Longitude");
-        }
-#endif
-
         if (nelms > LL_total_num) {
             H5Gclose(rootid);
             //H5Fclose(fileid);
@@ -190,8 +176,9 @@ bool HDF5GMCFMissLLArray::read()
     return true;
 }
 
-template<class T>
-void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,string s_attr_name, T& attr_value) {
+//template<class T>
+template<typename T>
+void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string & s_attr_name, T& attr_value) {
 
     hid_t s_attr_id = -1;
     if ((s_attr_id = H5Aopen_by_name(s_root_id,".",s_attr_name.c_str(),
@@ -224,8 +211,9 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int num_elm = 0;
-    if (((num_elm = H5Sget_simple_extent_npoints(attr_space)) == 0)) {
+    int num_elm = H5Sget_simple_extent_npoints(attr_space);
+     
+    if (0 == num_elm ) {
         string msg = "cannot get the number for the attribute ";
         msg += s_attr_name;
         H5Tclose(attr_type);

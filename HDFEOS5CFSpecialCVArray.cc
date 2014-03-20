@@ -138,8 +138,8 @@ bool HDFEOS5CFSpecialCVArray::read(){
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int attr_num_elm = 0;
-    if (((attr_num_elm = H5Sget_simple_extent_npoints(attr_space)) == 0)) {
+    int attr_num_elm = H5Sget_simple_extent_npoints(attr_space);
+    if (0 == attr_num_elm ) {
         string msg = "cannot get the number for the attribute ";
         msg += cv_attr_name;
         H5Tclose(attr_type);

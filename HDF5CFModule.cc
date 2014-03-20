@@ -63,7 +63,6 @@ bool check_eos5(hid_t file_id) {
 
         // Open the group
         if((eos_group_id = H5Gopen(file_id, eos5_check_group.c_str(),H5P_DEFAULT))<0) {
-            // cerr<<"cannot open the group "<<endl;
 
             string msg = "cannot open the HDF5 group  ";
             msg += eos5_check_group;
@@ -76,7 +75,6 @@ bool check_eos5(hid_t file_id) {
 
         if (has_eos_attr >0) {
 
- 
             // All HDF-EOS5 conditions are fulfilled, return true;
             // Otherwise, return false or throw an error.
             htri_t has_eos_dset = -1;

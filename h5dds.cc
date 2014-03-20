@@ -107,8 +107,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     ssize_t oname_size;
     for (hsize_t i = 0; i < nelems; i++) {
 
-        char *oname = NULL;
-//        vector <char>oname;
+        //char *oname = NULL;
+        vector <char>oname;
 
         try {
 
@@ -124,9 +124,11 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
             // Obtain the name of the object
             // TODO vector<char>
-            oname = new char[(size_t) oname_size + 1];
+            //oname = new char[(size_t) oname_size + 1];
+            oname.resize((size_t) oname_size + 1);
 
-            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
+            //if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
+            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
                 (size_t)(oname_size+1), H5P_DEFAULT) < 0){
                 string msg =
                     "h5_dds handler: Error getting the hdf5 object name from the group: ";
@@ -136,7 +138,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
             // Check if it is the hard link or the soft link
             H5L_info_t linfo;
-            if (H5Lget_info(pid,oname,&linfo,H5P_DEFAULT)<0) {
+            //if (H5Lget_info(pid,oname,&linfo,H5P_DEFAULT)<0) {
+            if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
                 string msg = "hdf5 link name error from: ";
                 msg += gname;
                 throw InternalErr(__FILE__, __LINE__, msg);
@@ -152,7 +155,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
             if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
                 string msg = "h5_dds handler: Error obtaining the info for the object";
-                msg += oname;
+                //msg += oname;
+                msg += string(oname.begin(),oname.end());
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
@@ -164,7 +168,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Obtain the full path name
                 string full_path_name =
-                    string(gname) + string(oname) + "/";
+                    string(gname) + string(oname.begin(),oname.end()-1) + "/";
+                    //string(gname) + string(oname) + "/";
 
                 DBG(cerr << "=depth_first():H5G_GROUP " << full_path_name
                     << endl);
@@ -187,7 +192,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Check the hard link loop and break the loop if it exists.
                 // Note the function get_hardlink is defined in h5das.cc
-		string oid = get_hardlink(pid, oname);
+		//string oid = get_hardlink(pid, oname);
+		string oid = get_hardlink(pid, &oname[0]);
                 if (oid == "") {
                     depth_first(cgroup, &t_fpn[0], dds, fname);
                 }
@@ -202,8 +208,10 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
             case H5O_TYPE_DATASET:{
 
                 // Obtain the absolute path of the HDF5 dataset
-                string full_path_name = string(gname) + string(oname);
+                //string full_path_name = string(gname) + string(oname);
+                string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);
 //cerr<<"dataset full_path "<<full_path_name <<endl;
+//cerr<<"dataset fill_path size is "<<full_path_name.size() <<endl;
 
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
                 // All the metadata information in the handler is stored in dt_inst.
@@ -223,11 +231,11 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
         } // try
         catch(...) {
 
-            if (oname) {delete[]oname; oname = NULL;}
+            //if (oname) {delete[]oname; oname = NULL;}
             throw;
             
         } // catch
-        if (oname) {delete[]oname; oname = NULL;}
+        //if (oname) {delete[]oname; oname = NULL;}
     } // for i is 0 ... nelems
 
     DBG(cerr << "<depth_first() " << endl);
@@ -554,6 +562,8 @@ static Structure *Get_structure(const string &varname,
                 structure_ptr->add_var(bt);
                 delete bt; bt = 0;
             }
+            // Caller needs to free the memory allocated by the library for memb_name.
+            free(memb_name);
         }
     }
     catch (...) {
@@ -598,6 +608,9 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     // Obtain the DDS dataset name.
     dds_table.set_dataset_name(name_path(filename)); 
 
+    // The following code lines are not used and it causes memory leaking. Comment out.
+    //  KY 2014-03-19
+#if 0
     //declare an array to store HDF5 dimensions
     hid_t *dimids = NULL;
     try {
@@ -610,6 +623,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         }
         throw;
     }
+#endif
 
     // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
@@ -633,6 +647,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         // Next, deal with Array and Grid data. This 'else clause' runs to
         // the end of the method. jhrg
 
+//cerr<<"varname "<<varname <<endl;
+//cerr<<"varname size is "<<varname.size() <<endl;
         HDF5Array *ar = new HDF5Array(varname, filename, bt);
         delete bt; bt = 0;
         ar->set_did(dt_inst.dset);
