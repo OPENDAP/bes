@@ -41,7 +41,7 @@ void map_gmh5_cfdds(DDS &, hid_t, const string &);
 void map_gmh5_cfdas(DAS &, hid_t, const string &);
 void gen_gmh5_cfdds(DDS &, HDF5CF::GMFile *);
 void gen_gmh5_cfdas(DAS &, HDF5CF::GMFile *);
-void gen_dap_onegmcvar_dds(DDS &,const HDF5CF::GMCVar*,const string &);
-void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string & filename);
+void gen_dap_onegmcvar_dds(DDS &,const HDF5CF::GMCVar*,const hid_t, const string &);
+void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const string & filename);
 
 #endif

@@ -50,7 +50,7 @@ HDF5CF_HDRS = h5cfdap.h HDF5CFModule.h  heos5cfdap.h h5gmcfdap.h h5commoncfdap.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
-SERVER_HDR = HDF5RequestHandler.h HDF5Module.h
+SERVER_HDR = HDF5RequestHandler.h HDF5Module.h HDF5_DDS.h
 
 libhdf5_module_la_SOURCES = $(HDF5DTYPE_SRCS) $(HDF5_SRCS) $(HDF5CFDTYPE_SRCS) $(HDF5CF_SRCS) $(SERVER_SRC) $(HDF5CFDTYPE_HDRS) $(HDF5CF_HDRS) $(HDF5DTYPE_HDRS) $(HDF5_HDRS) $(SERVER_HDR)
 libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)

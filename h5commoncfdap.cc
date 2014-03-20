@@ -54,7 +54,7 @@
 using namespace HDF5CF;
 
 
-void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename) {
+void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
 
     BaseType *bt = NULL;
 
@@ -86,7 +86,13 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
         if (0 == dims.size()) { 
             if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
                 HDF5CFStr *sca_str = NULL;
-                sca_str = new HDF5CFStr(var->getNewName(),filename,var->getFullPath());
+                try {
+                    sca_str = new HDF5CFStr(var->getNewName(),filename,var->getFullPath());
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
+                }
                 dds.add_var(sca_str);
                 delete bt;
                 delete sca_str;
@@ -97,14 +103,22 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const string & filename
             }
         }
         else {
+
             HDF5CFArray *ar = NULL;
-            ar = new HDF5CFArray (
+            try {
+                ar = new HDF5CFArray (
                                     var->getRank(),
-                                    filename,
+                                    //filename,
+                                    file_id,
                                     var->getType(),
                                     var->getFullPath(),
                                     var->getNewName(),
                                     bt);
+            }
+            catch(...) {
+                delete bt;
+                throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
+            }
 
             for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                if (""==(*it_d)->getNewName()) 
@@ -277,6 +291,7 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr) {
             string tempstring(attr->getValue().begin()+temp_start_pos,
                               attr->getValue().begin()+temp_start_pos+strsize[loc]);
             temp_start_pos += strsize[loc];
+
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.

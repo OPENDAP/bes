@@ -64,9 +64,17 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
 
     H5GCFProduct product_type = check_product(file_id);
-    GMPattern  gproduct_pattern = OTHERGMS;
-    GMFile *f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
 
+    GMPattern  gproduct_pattern = OTHERGMS;
+
+    GMFile * f = NULL;
+
+    try {
+        f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
+    }
+    catch(...) {
+        throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
+    }
     // Generally don't need to handle attributes when handling DDS. 
     bool include_attr = false;
     try {
@@ -107,14 +115,24 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Adjust_Dim_Name();
     }
     catch (HDF5CF::Exception &e){
-        delete f;
+        if (f != NULL)
+            delete f;
         throw InternalErr(e.what());
     }
 
-    // generate DDS.
-    gen_gmh5_cfdds(dds,f);
     
-    delete f;
+    // generate DDS.
+    try {
+        gen_gmh5_cfdds(dds,f);
+    }
+    catch(...) {
+        if (f != NULL)
+            delete f;
+        throw;
+    }
+    
+    if (f != NULL)
+        delete f;
 }
 
 void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
@@ -133,7 +151,15 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
     H5GCFProduct product_type = check_product(file_id);
     GMPattern gproduct_pattern = OTHERGMS;
-    HDF5CF::GMFile *f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
+
+    GMFile *f = NULL;
+
+    try {
+        f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
+    }
+    catch(...) {
+        throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
+    }
 
     bool include_attr = true;
     try {
@@ -164,14 +190,24 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Handle_Coor_Attr();
     }
     catch (HDF5CF::Exception &e){
-        delete f;
+        if (f!= NULL)
+            delete f;
         throw InternalErr(e.what());
     }
 
     // Generate the DAS attributes.
-    gen_gmh5_cfdas(das,f);
-    
-    delete f;
+    try {
+        gen_gmh5_cfdas(das,f);
+    }   
+    catch (...) {
+        if (f!= NULL)
+            delete f;
+        throw;
+ 
+    }
+
+    if (f != NULL)
+        delete f;
 }
 
 void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
@@ -181,6 +217,7 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
     const vector<HDF5CF::GMSPVar *>& spvars = f->getSPVars();
     const string filename                   = f->getPath();
+    const hid_t fileid                      = f->getFileID();
 
     // Read Variable info.
 
@@ -190,16 +227,16 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         // cerr <<"variable full path= "<< (*it_v)->getFullPath() <<endl;
-        gen_dap_onevar_dds(dds,*it_v,filename);
+        gen_dap_onevar_dds(dds,*it_v,fileid, filename);
     }
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         // cerr <<"variable full path= "<< (*it_cv)->getFullPath() <<endl;
-        gen_dap_onegmcvar_dds(dds,*it_cv,filename);
+        gen_dap_onegmcvar_dds(dds,*it_cv,fileid, filename);
     }
 
     for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
         // cerr <<"variable full path= "<< (*it_spv)->getFullPath() <<endl;
-        gen_dap_onegmspvar_dds(dds,*it_spv,filename);
+        gen_dap_onegmspvar_dds(dds,*it_spv,fileid, filename);
     }
 
 }
@@ -298,7 +335,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 }
 
 
-void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & filename) {
+void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file_id, const string & filename) {
 
     BaseType *bt = NULL;
 
@@ -307,11 +344,6 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
         case tid:                                           \
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
             break;
-    // FIXME bt leaked by throw
-    // James, I don't know why bt is leaked below.  Since here we basically
-    // follow the netCDF handler(ncdds.cc), could you give us some advice?
-    // If it is still causing potential leaks,  we can fix this in the next release.
-    // KY 2012-09-28
 
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
@@ -339,13 +371,22 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
             case CV_EXIST: 
             {
                 HDF5CFArray *ar = NULL;
-                ar = new HDF5CFArray (
+                
+                try {
+                    ar = new HDF5CFArray (
                                     cvar->getRank(),
-                                    filename,
+                                    //filename,
+                                    file_id,
                                     cvar->getType(),
                                     cvar->getFullPath(),
                                     cvar->getNewName(),
                                     bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5CFArray. ");
+                }
+
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
                         ar->append_dim((*it_d)->getSize());
@@ -364,15 +405,22 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
             {
                 // Using HDF5GMCFMissLLArray
                 HDF5GMCFMissLLArray *ar = NULL;
-                ar = new HDF5GMCFMissLLArray (
+                try {
+                    ar = new HDF5GMCFMissLLArray (
                                     cvar->getRank(),
-                                    filename,
+                                    //filename,
+                                    file_id,
                                     cvar->getType(),
                                     cvar->getFullPath(),
                                     cvar->getPtType(),
                                     cvar->getCVType(),
                                     cvar->getNewName(),
                                     bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissLLArray. ");
+                }
 
            
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
@@ -398,11 +446,19 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
                 HDF5GMCFMissNonLLCVArray *ar = NULL;
-                ar = new HDF5GMCFMissNonLLCVArray(
+
+                try {
+                    ar = new HDF5GMCFMissNonLLCVArray(
                                                       cvar->getRank(),
                                                       nelem,
                                                       cvar->getNewName(),
                                                       bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+                }
+
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
@@ -425,11 +481,19 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
                 }
 
                 HDF5GMCFFillIndexArray *ar = NULL;
-                ar = new HDF5GMCFFillIndexArray(
+  
+                try {
+                    ar = new HDF5GMCFFillIndexArray(
                                                       cvar->getRank(),
                                                       cvar->getType(),
                                                       cvar->getNewName(),
                                                       bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+                }
+
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
@@ -453,7 +517,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const string & f
     }
 }
 
-void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string & filename) {
+void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t fileid, const string & filename) {
 
     BaseType *bt = NULL;
 
@@ -462,11 +526,6 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string 
         case tid:                                           \
             bt = new (type)(spvar->getNewName(),spvar->getFullPath());  \
         break;
-    // FIXME bt leaked
-    // James, I don't know why bt is leaked below.  Since here we basically
-    // follow the netCDF handler(ncdds.cc), could you give us some advice?
-    // If it is still causing potential leaks, we can fix this in the next release.
-    // KY 2012-09-28
 
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
@@ -489,9 +548,12 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string 
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
 
         HDF5GMSPCFArray *ar = NULL;
-        ar = new HDF5GMSPCFArray (
+ 
+        try {
+            ar = new HDF5GMSPCFArray (
                                  spvar->getRank(),
-                                 filename,
+                                 //filename,
+                                 fileid,
                                  spvar->getType(),
                                  spvar->getFullPath(),
                                  spvar->getOriginalType(),
@@ -499,6 +561,12 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const string 
                                  spvar->getBitNum(),
                                  spvar->getNewName(),
                                  bt);
+        }
+        catch(...) {
+            delete bt;
+            throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+        }
+
 
         for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if (""==(*it_d)->getNewName()) 

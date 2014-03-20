@@ -37,17 +37,18 @@
 #include "config_hdf5.h"
 #include "h5cfdap.h"
 
-void read_cfdds(DDS&,const string&);
-void read_cfdas(DAS&, const string&);
+void read_cfdds(DDS&,const string&,hid_t);
+void read_cfdas(DAS&, const string&,hid_t);
 
-void read_cfdds(DDS & dds, const string &filename) {
+void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
     // Set the DDS name be the file name
     dds.set_dataset_name(name_path(filename));
 
-    hid_t fileid;
+    hid_t fileid = myfile_id;
     H5CFModule moduletype;
 
+#if 0
     fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if (fileid < 0) {
         string msg =
@@ -55,6 +56,7 @@ void read_cfdds(DDS & dds, const string &filename) {
         msg += filename;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
+#endif
 
     moduletype = check_module(fileid);
     if (moduletype == HDF_EOS5) {
@@ -76,11 +78,12 @@ void read_cfdds(DDS & dds, const string &filename) {
 
 }
 
-void read_cfdas(DAS & das, const string &filename) {
+void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
 
-    hid_t fileid;
+    hid_t fileid = myfile_id;
     H5CFModule moduletype;
 
+#if 0
     fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if (fileid < 0) {
         string msg =
@@ -88,6 +91,7 @@ void read_cfdas(DAS & das, const string &filename) {
         msg += filename;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
+#endif
 
     moduletype = check_module(fileid);
     if (moduletype == HDF_EOS5) {

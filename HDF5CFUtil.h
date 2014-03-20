@@ -74,7 +74,8 @@ struct HDF5CFUtil {
                // Obtain the unique name for the clashed names and save it to set namelist.
                static void gen_unique_name(string &str, set<string>&namelist,int&clash_index);
 
-               static void ClearMem(int* offset, int*count,int*step,hsize_t*hoffset,hsize_t*hcount,hsize_t*hstep);
+               // Not used. We use vectors.
+               //static void ClearMem(int* offset, int*count,int*step,hsize_t*hoffset,hsize_t*hcount,hsize_t*hstep);
 
                
 

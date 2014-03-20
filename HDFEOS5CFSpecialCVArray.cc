@@ -67,19 +67,20 @@ bool HDFEOS5CFSpecialCVArray::read(){
 
     }
 
-    hid_t file_id = -1;
+#if 0
+    hid_t fileid = -1;
 
-    if ((file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+    if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
         ostringstream eherr;
         eherr << "HDF5 File " << filename 
               << " cannot be opened. "<<endl;
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
+#endif
     string cv_name = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if ("" == cv_name) {
-        H5Fclose(file_id);
+     //   H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
 
@@ -88,33 +89,33 @@ bool HDFEOS5CFSpecialCVArray::read(){
     size_t cv_name_sep_pos = cv_name.find_first_of('_',0);  
 
     if (string::npos == cv_name_sep_pos) {
-        H5Fclose(file_id);
+      //  H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
     string cv_attr_name = cv_name.substr(0,cv_name_sep_pos);
 
-    htri_t swath_link_exist = H5Lexists(file_id,group_name.c_str(),H5P_DEFAULT);
+    htri_t swath_link_exist = H5Lexists(fileid,group_name.c_str(),H5P_DEFAULT);
 
     if (swath_link_exist <= 0) {
-        H5Fclose(file_id);
+       // H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "The TES swath link doesn't exist");
     }
     
-    htri_t swath_exist = H5Oexists_by_name(file_id,group_name.c_str(),H5P_DEFAULT); 
+    htri_t swath_exist = H5Oexists_by_name(fileid,group_name.c_str(),H5P_DEFAULT); 
     if (swath_exist <= 0) {
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "The TES swath doesn't exist");
     }
 
-    htri_t cv_attr_exist = H5Aexists_by_name(file_id,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
+    htri_t cv_attr_exist = H5Aexists_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
     if (cv_attr_exist <= 0) {
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "The TES swath CV attribute doesn't exist");
     }
 
-    hid_t cv_attr_id = H5Aopen_by_name(file_id,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
+    hid_t cv_attr_id = H5Aopen_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
     if (cv_attr_id <0) {
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain the TES CV attribute id");
     }
 
@@ -123,7 +124,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         string msg = "cannot get the attribute datatype for the attribute  ";
         msg += cv_attr_name;
         H5Aclose(cv_attr_id);
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -133,7 +134,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         msg += cv_attr_name;
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -144,7 +145,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -154,7 +155,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -164,7 +165,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
-        H5Fclose(file_id);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -172,14 +173,22 @@ bool HDFEOS5CFSpecialCVArray::read(){
     if ((attr_mem_type = H5Tget_native_type(attr_type,H5T_DIR_ASCEND)) < 0) {
         string msg = "cannot get the attribute datatype for the attribute  ";
         msg += cv_attr_name;
+        H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
-        H5Fclose(file_id);
+        H5Sclose(attr_space);
+        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    if (nelms <= 0 || (total_num_elm -1) <=0 ||total_num_elm < 0) 
-       throw InternalErr(__FILE__,__LINE__,
+    if (nelms <= 0 || (total_num_elm -1) <=0 ||total_num_elm < 0) { 
+        H5Tclose(attr_mem_type);
+        H5Tclose(attr_type);
+        H5Aclose(cv_attr_id);
+        H5Sclose(attr_space);
+        //H5Fclose(fileid);
+        throw InternalErr(__FILE__,__LINE__,
                          "Number of elements must be greater than 0");
+    }
 
     vector<float> val;
     val.resize(nelms);
@@ -194,11 +203,12 @@ bool HDFEOS5CFSpecialCVArray::read(){
     if (H5Aread(cv_attr_id,attr_mem_type, (void*)&orig_val[0])<0){
         string msg = "cannot retrieve the value of  the attribute ";
         msg += cv_attr_name;
+        H5Tclose(attr_mem_type);
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        //H5Fclose(fileid);
+        //throw InternalErr(__FILE__, __LINE__, msg);
     }
  
     
@@ -220,8 +230,10 @@ bool HDFEOS5CFSpecialCVArray::read(){
     for (int i = 1; i < total_num_elm; i++)
         total_val[i] = orig_val[i-1];
 
-	// FIXME offset and/or step can be null
-	for (int i = 0; i <nelms; i++)
+  
+    // Note: offset and step in this case will never be NULL since the total number of elements will be
+    // greater than 1. This is enforced in line 180. KY 2014-02-27
+    for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];
 
     set_value((dods_float32*)&val[0], nelms);
@@ -229,7 +241,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
     H5Tclose(attr_mem_type);
     H5Aclose(cv_attr_id);
     H5Sclose(attr_space);
-    H5Fclose(file_id);
+    //H5Fclose(fileid);
 
     return true;
 }

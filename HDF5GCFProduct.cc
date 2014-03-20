@@ -47,7 +47,7 @@ H5GCFProduct check_product(hid_t file_id) {
     if ((root_id = H5Gopen(file_id,ROOT_NAME,H5P_DEFAULT))<0){
         string msg = "cannot open the HDF5 root group  ";
         msg += string(ROOT_NAME);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -417,11 +417,15 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
 
                 if (H5Tis_variable_str(dtype)) {
                     // cerr <<"coming to variable length string "<<endl;
-                    char *temp_buf = NULL;
-                    try {
+//                    char *temp_buf = NULL;
+                    vector<char>temp_buf;
+                    temp_buf.resize(total_data_size);
+                    //try 
                     	// TODO replace with vector<char>
-                        temp_buf = new char[total_data_size];
-                        if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf)<0){
+                        //temp_buf = new char[total_data_size];
+
+                        //if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf)<0)
+                        if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, &temp_buf[0])<0){
                            H5Tclose(dtype);
                            H5Dclose(s_dset_id);
                            H5Sclose(dspace);
@@ -432,7 +436,8 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                            throw InternalErr(__FILE__, __LINE__, msg);
                         }
 
-                        char *temp_bp = temp_buf;
+                        //char *temp_bp = temp_buf;
+                        char *temp_bp = &temp_buf[0];
                         char *onestring = NULL;
                         string total_string="";
                         
@@ -450,11 +455,12 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                             temp_bp += dtype_size;
                         }
                         
-                        if (temp_buf != NULL) {
+                        //if (temp_buf != NULL) 
                             // Reclaim any VL memory if necessary.
-                            H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,temp_buf);
-                            delete []temp_buf;
-                        }
+                            H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
+                         //   delete []temp_buf;
+
+                        //
 
                         H5Sclose(dspace);
                         H5Tclose(dtype);
@@ -462,13 +468,14 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                         H5Gclose(s_group_id);
                         // cerr<<"total_string "<<total_string <<endl;
  
-                        if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0) return_flag = true;
-                    }
-                    catch (...) {
-                        if (temp_buf != NULL)
-                            delete[] temp_buf;
-                        throw;
-                    }
+                        if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0) 
+                            return_flag = true;
+                    //
+                    //catch (...) 
+                     //   if (temp_buf != NULL)
+                      //      delete[] temp_buf;
+                       // throw;
+                    //
                 }
                 else {
                     vector<char> temp_buf(total_data_size+1);
@@ -511,7 +518,8 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
          }
          else ;// Other product, don't do anything.
     }
-    else if (0 == has_smac_group) return_flag = false;
+    else if (0 == has_smac_group) 
+        return_flag = false;
     else {
         string msg = "Fail to determine if the link  ";
         msg += string(SMAC2S_META_GROUP_NAME);

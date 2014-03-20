@@ -1,3 +1,8 @@
+News for version 2.2.2
+
+This version fixes memory leak and improves performance by reducing the number
+of file open calls.
+
 News for version 2.2.1
 
 Internal code improvments.

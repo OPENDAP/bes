@@ -116,6 +116,13 @@ GMFile::~GMFile()
            delete *i;
         }
     }
+
+    if (!this->spvars.empty()){
+        for (vector<GMSPVar *>:: const_iterator i= this->spvars.begin(); i!=this->spvars.end(); ++i) {
+           delete *i;
+        }
+    }
+
 }
 
 string GMFile::get_CF_string(string s) {
@@ -735,7 +742,8 @@ void GMFile::Add_Dim_Name_SMAP()throw(Exception){
         if ((tempvarname.size() > key.size())&& 
             (key == tempvarname.substr(tempvarname.size()-key.size(),key.size()))){
 //cerr<<"tempvarname " <<tempvarname <<endl;
-            if ((*irv)->dims.size() !=2) throw1("Currently only 2D lat/lon is supported for SMAP");
+            if ((*irv)->dims.size() !=2) 
+                throw1("Currently only 2D lat/lon is supported for SMAP");
             smapdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,smapdim0));
             smapdimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[1]->size,smapdim1));
             break;

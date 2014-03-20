@@ -546,7 +546,14 @@ namespace HDF5CF
 
             /// Adjust dimension names based on different products
             virtual void Adjust_Dim_Name() = 0;
-                 
+
+       	    /// Obtain the HDF5 file ID
+	    const hid_t getFileID () const
+	    {
+                return this->fileid;
+       	    }
+
+         
 	    /// Obtain the path of the file
 	    const string & getPath () const
 	    {

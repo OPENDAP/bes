@@ -39,6 +39,7 @@
 
 #include "hdf5_handler.h"
 #include "HDF5RequestHandler.h"
+#include "HDF5_DDS.h"
 
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>
@@ -66,8 +67,8 @@ using namespace libdap;
 #include <string>
 
 // For the CF option
-extern void read_cfdas(DAS &das, const string & filename);
- extern void read_cfdds(DDS &dds, const string & filename);
+extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
+extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -87,6 +88,25 @@ HDF5RequestHandler::~HDF5RequestHandler()
 
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
+
+    bool found_key = false;
+    bool usecf = false;
+    string key = "H5.EnableCF";
+    string doset;
+
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+    hid_t fileid = -1;
+    hid_t cf_fileid = -1;
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found_key ) ;
+
+    if(true ==found_key ) {
+            // cerr<<"found it" <<endl;
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" ) 
+            usecf = true;
+    }
+         
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
 
@@ -99,44 +119,26 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     try {
-//cerr<<"coming to build das "<<endl;
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
-        // Use the BES TheKeys to separate CF option from the default option
+        if (true == usecf) {
 
-        bool found = false; // If not found, keep it for the default option
-        string key = "H5.EnableCF";
-        string doset;
-
-        TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-        if( found ) {
-            // cerr<<"found it" <<endl;
-            doset = BESUtil::lowercase( doset ) ;
-            if( doset == "true" || doset == "yes" ) {
-                // This is the CF option, go to the CF function
-                // cerr<<"go to CF option "<<endl;
-                read_cfdas( *das,filename);
-            }
-            else {
-               // go to the default option
-//cerr<<"default option" <<endl;
-                hid_t fileid = get_fileid(filename.c_str());
-                if (fileid < 0) {
-                  throw BESNotFoundError((string) "Could not open this hdf5 file: "
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
-                }
-
-                find_gloattr(fileid, *das);
-                depth_first(fileid, "/", *das);
-                close_fileid(fileid);
             }
+
+            read_cfdas( *das,filename,cf_fileid);
+            H5Fclose(cf_fileid);
         }
-        else {// Not even find the key, will go to the default option
+        else {
+               // go to the default option
 //cerr<<"default option" <<endl;
             hid_t fileid = get_fileid(filename.c_str());
             if (fileid < 0) {
-                throw BESNotFoundError((string) "Could not open hdf file: "
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
             }
 
@@ -149,21 +151,25 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->clear_container() ;
     }
     catch(InternalErr & e) {
-    	// TODO You can collapse this to 'throw BESDapError(e.get_er ...);'
-    	// Not a big deal...
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(...) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
         string s = "unknown exception caught building HDF5 DAS";
-        BESInternalFatalError ex(s, __FILE__, __LINE__);
-        throw ex;
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;
@@ -180,9 +186,42 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
     // Obtain the BESKeys. If finding the key, "found" will be true.
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if(true == found ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( doset == "true" || doset == "yes" ) {
+            //  This is the CF option, go to the CF function
+            usecf = true;
+        }
+    }
+
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+    hid_t fileid = -1;
+    hid_t cf_fileid = -1;
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
+ 
+    // For the time being, not mess up CF's fileID with Default's fileID
+    if(true == usecf) {
+           
+        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                               + filename, __FILE__, __LINE__);
+        }
+
+    }
+    else {
+
+        fileid = get_fileid(filename.c_str());
+        if (fileid < 0) {
+            throw BESNotFoundError(string("hdf5_build_dds: ")
+                               + "Could not open hdf5 file: "
+                               + filename, __FILE__, __LINE__);
+        }
+    }
+
+
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
@@ -192,31 +231,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        if( found ) {
-            // cerr<<"found it" <<endl;
+        if( true == usecf ) 
+            read_cfdds(*dds,filename,cf_fileid);
 
-            // Obtain the value of the key.
-            doset = BESUtil::lowercase( doset ) ;
-
-            if( doset == "true" || doset == "yes" ) {
-            //  This is the CF option, go to the CF function
-                // cerr<<"go to CF option "<<endl;
-                read_cfdds(*dds,filename);
-                usecf = true;
-           }
-        }    
-
-        hid_t fileid = -1;
-
-        if(false == usecf) {
-
-            fileid = get_fileid(filename.c_str());
-
-            if (fileid < 0) {
-                throw BESNotFoundError(string("hdf5_build_dds: ")
-                               + "Could not open hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-            }
+        else {
 
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
         }
@@ -234,7 +252,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        if(false == usecf){ 
+        if (true == usecf) {
+
+            // go to the CF option
+            read_cfdas( *das,filename,cf_fileid);
+ 
+        }
+        else { 
 
             find_gloattr(fileid, *das);
             depth_first(fileid, "/", *das);
@@ -249,10 +273,9 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         // 
             H5close();
         }
-        else {
-           // go to the CF option
-            read_cfdas( *das,filename);
-        }
+
+        if(cf_fileid != -1)
+            H5Fclose(cf_fileid);
 
         Ancillary::read_ancillary_das( *das, filename ) ;
 
@@ -263,19 +286,26 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     }
     catch(InternalErr & e) {
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(...) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
         string s = "unknown exception caught building HDF5 DDS";
-        BESInternalFatalError ex(s, __FILE__, __LINE__);
-        throw ex;
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;
@@ -291,7 +321,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     string doset;
 
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( found )
+    if(true == found )
     {
         // cerr<<"found it" <<endl;
         doset = BESUtil::lowercase( doset ) ;
@@ -303,11 +333,23 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         }
     }    
 
-    string filename = dhi.container->access();
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
+    hid_t cf_fileid = -1;
 
-    if(!usecf) { 
- 
+
+    string filename = dhi.container->access();
+
+    if(true ==usecf) { 
+
+        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (cf_fileid < 0){
+            throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                               + filename, __FILE__, __LINE__);
+        }
+
+    }
+    else {
         // Obtain the HDF5 file ID. 
         fileid = get_fileid(filename.c_str());
         if (fileid < 0) {
@@ -325,28 +367,43 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     try {
 
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
-        DataDDS *dds = bdds->get_dds();
-        if(!usecf) { // This is the default option
-            depth_first(fileid, (char*)"/", *dds, filename.c_str());
+
+        HDF5DDS *hdds = new HDF5DDS(bdds->get_dds());
+        delete bdds->get_dds();
+
+        bdds->set_dds(hdds);
+        
+        hdds->setHDF5Dataset(cf_fileid);
+
+        // DataDDS *dds = bdds->get_dds();
+        if(true == usecf) { 
+
+            // This is the CF option
+            read_cfdds( *hdds,filename,cf_fileid);
         }
-        else { // This is the CF option
-            // Will add this later.
-            read_cfdds( *dds,filename);
+        else {
+            depth_first(fileid, (char*)"/", *hdds, filename.c_str());
         }
 
-        if (!dds->check_semantics()) {   // DDS didn't comply with the DAP semantics 
-            dds->print(cerr);
+        if (!hdds->check_semantics()) {   // DDS didn't comply with the DAP semantics 
+            hdds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
         }
         
-        Ancillary::read_ancillary_dds( *dds, filename ) ;
+        Ancillary::read_ancillary_dds( *hdds, filename ) ;
 
         DAS *das = new DAS ;
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        if(!usecf) {// The default option
+        if(true == usecf) {
+            // CF option
+            read_cfdas( *das,filename,cf_fileid);
+            // cerr<<"end of DAS "<<endl;
+
+        }
+        else {
             
             // Obtain the global attributes and map them to DAS
             find_gloattr(fileid, *das);
@@ -357,31 +414,29 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             // The HDF5 file id will be closed now!
             close_fileid(fileid);
         }
-        else {// CF option
-           read_cfdas( *das,filename);
-           // cerr<<"end of DAS "<<endl;
-        }
 
         Ancillary::read_ancillary_das( *das, filename ) ;
 
-        dds->transfer_attributes(das);
+        hdds->transfer_attributes(das);
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
+////WARNING:TEMP, REMOVE LATER.:close the file ID temp. Later, will be closed by the derived class.
+        //if(cf_fileid !=-1)
+         //   H5Fclose(cf_fileid);
+
     }
     catch(InternalErr & e) {
-        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(Error & e) {
-        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-        throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF5 DataDDS";
-        BESInternalFatalError ex(s, __FILE__, __LINE__);
-        throw ex;
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;

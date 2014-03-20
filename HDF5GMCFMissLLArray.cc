@@ -85,6 +85,7 @@ bool HDF5GMCFMissLLArray::read()
             hstep[i] = (hsize_t) step[i];
         }
  
+#if 0
         hid_t fileid = -1;
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
@@ -93,10 +94,11 @@ bool HDF5GMCFMissLLArray::read()
               << " cannot be opened. "<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
+#endif
 
         hid_t rootid = -1;
         if ((rootid = H5Gopen(fileid,"/",H5P_DEFAULT)) < 0) {
-            H5Fclose(fileid);
+     //       H5Fclose(fileid);
             ostringstream eherr;
             eherr << "HDF5 dataset " << varname
                   << " cannot be opened. "<<endl;
@@ -121,7 +123,7 @@ bool HDF5GMCFMissLLArray::read()
             obtain_ll_attr_value(fileid,rootid,Num_lines_name,Num_lines);
             if (Num_lines <= 0) {
                 H5Gclose(rootid);
-                H5Fclose(fileid);
+                //H5Fclose(fileid);
                 throw InternalErr(__FILE__,__LINE__,"The number of line must be >0");
             }
 
@@ -144,7 +146,7 @@ bool HDF5GMCFMissLLArray::read()
             obtain_ll_attr_value(fileid,rootid,Num_columns_name,Num_cols);
             if (Num_cols <= 0) {
                 H5Gclose(rootid);
-                H5Fclose(fileid);
+                //H5Fclose(fileid);
                 throw InternalErr(__FILE__,__LINE__,"The number of line must be >0");
             }
 
@@ -173,7 +175,7 @@ bool HDF5GMCFMissLLArray::read()
 
         if (nelms > LL_total_num) {
             H5Gclose(rootid);
-            H5Fclose(fileid);
+            //H5Fclose(fileid);
             throw InternalErr (__FILE__, __LINE__,
                           "The number of elements exceeds the total number of  Latitude or Longitude");
         }
@@ -183,7 +185,7 @@ bool HDF5GMCFMissLLArray::read()
 
         set_value ((dods_float32 *) &val[0], nelms);
         H5Gclose(rootid);
-        H5Fclose(fileid);
+        //H5Fclose(fileid);
     }
     return true;
 }
@@ -197,7 +199,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         string msg = "Cannot open the HDF5 attribute  ";
         msg += s_attr_name;
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -207,7 +209,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         msg += s_attr_name;
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -218,7 +220,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         H5Tclose(attr_type);
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -230,7 +232,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -241,7 +243,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -254,7 +256,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -265,7 +267,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,st
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        H5Fclose(file_id);
+        //H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
 
     }

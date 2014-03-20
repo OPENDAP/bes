@@ -56,7 +56,7 @@ File::~File ()
                                    delete_elem ());
             H5Gclose(rootid);
         } 
-        H5Fclose(fileid);
+        //H5Fclose(fileid);
     } 
 }
 
@@ -87,8 +87,13 @@ throw(Exception) {
     if ((root_id = H5Gopen(file_id,"/",H5P_DEFAULT))<0){
         throw1 ("Cannot open the HDF5 root group " );
     }
-    this->Retrieve_H5_Obj(root_id,"/",include_attr);
     this->rootid =root_id;
+    try {
+        this->Retrieve_H5_Obj(root_id,"/",include_attr);
+    }
+    catch(...) {
+        throw;
+    }
 
     if (true == include_attr) {
 
@@ -106,7 +111,14 @@ throw(Exception) {
 
         for (int j = 0; j < num_attrs; j ++) {
             Attribute * attr = new Attribute();
-            this->Retrieve_H5_Attr_Info(attr,root_id,j, temp_unsup_attr_atype);
+            try {
+                this->Retrieve_H5_Attr_Info(attr,root_id,j, temp_unsup_attr_atype);
+            }
+            catch(...) {
+                delete attr;
+                throw;
+
+            }
             this->root_attrs.push_back(attr);
         }
         
@@ -188,13 +200,15 @@ throw(Exception) {
                     //  cerr <<"Group full_path_name " <<full_path_name <<endl;
 
 
-                    group = new Group();
-                    group->path = full_path_name;
-                    group->newname = full_path_name;
 
                     cgroup = H5Gopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
                     if (cgroup < 0)
                         throw2( "Error opening the group ",full_path_name);
+
+                    group = new Group();
+                    group->path = full_path_name;
+                    group->newname = full_path_name;
+
 
                     if (true == include_attr) {
 
@@ -202,6 +216,7 @@ throw(Exception) {
                         bool temp_unsup_attr_dtype = false;
 
                         for (int j = 0; j < num_attrs; j ++) {
+
                             attr = new Attribute();
                             Retrieve_H5_Attr_Info(attr,cgroup,j, temp_unsup_attr_dtype);
                             group->attrs.push_back(attr);
@@ -212,7 +227,6 @@ throw(Exception) {
                     }
                     this->groups.push_back(group);
                     Retrieve_H5_Obj(cgroup,full_path_name.c_str(),include_attr);
-
                     H5Gclose(cgroup);
                 }
 
@@ -238,16 +252,20 @@ throw(Exception) {
 //cerr<<"variable path" <<var->fullpath <<endl;
 
                     cdset = H5Dopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
-                    if (cdset < 0)
+                    if (cdset < 0){
                         throw2( "Error opening the HDF5 dataset ",full_path_name);
+                    }
 
                     bool temp_unsup_var_dtype = false;
                     Retrieve_H5_VarType(var,cdset,full_path_name,temp_unsup_var_dtype);
+
                     if (!this->unsupported_var_dtype && temp_unsup_var_dtype) 
                         this->unsupported_var_dtype = true; 
 
                     bool temp_unsup_var_dspace = false;
+
                     Retrieve_H5_VarDim(var,cdset,full_path_name,temp_unsup_var_dspace);
+
                     if (!this->unsupported_var_dspace && temp_unsup_var_dspace)
                         this->unsupported_var_dspace = true;
 
@@ -257,7 +275,9 @@ throw(Exception) {
                        bool temp_unsup_attr_dtype = false;
 
                        for (int j = 0; j < num_attrs; j ++) {
+                          
                             attr = new Attribute();
+
                             Retrieve_H5_Attr_Info(attr,cdset,j, temp_unsup_attr_dtype);
                             var->attrs.push_back(attr);
                             attr = NULL;
@@ -1104,8 +1124,8 @@ File:: Insert_One_NameSizeMap_Element2(map<string,hsize_t>& name_to_size, string
 {
     pair<map<string,hsize_t>::iterator,bool>mapret;
     mapret = name_to_size.insert(pair<string,hsize_t>(name,size));
-    if (false == mapret.second) throw4("The dimension name ",name," should map to ",
-                                      size);
+    if (false == mapret.second) 
+        throw4("The dimension name ",name," should map to ",size);
 
 }
 
@@ -1153,7 +1173,8 @@ File:: Add_One_FakeDim_Name(Dimension *dim) throw(Exception){
             dim->name = temp_clashname;
             dim->newname = dim->name;
             setret = dimnamelist.insert(dim->name);
-            if(false == setret.second) throw2("Fail to insert the unique dimsizede name ", dim->name);
+            if(false == setret.second) 
+                throw2("Fail to insert the unique dimsizede name ", dim->name);
 
            // We have to adjust the dim. name of the dimsize_to_fakedimname map, since the
            // dimname has been updated for this size.
@@ -1235,7 +1256,8 @@ File:: Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_va
 void 
 File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
 
-    if (false == add_path) return;
+    if (false == add_path) 
+        return;
 
     // Adding variable original name(origname) and full path(fullpath)
     for (vector<Var *>::iterator irv = this->vars.begin();

@@ -1,8 +1,50 @@
+2014-03-20  Hyo-Kyung  Lee  <hyoklee@hdfgroup.org>
+        * HDF5CF.cc
+        * HDF5CF.h
+        * HDF5CFArray.cc
+        * HDF5CFArray.h
+        * HDF5CFModule.cc
+        * HDF5CFUtil.cc
+        * HDF5CFUtil.h
+        * HDF5GCFProduct.cc
+        * HDF5GMCF.cc
+        * HDF5GMCFMissLLArray.cc
+        * HDF5GMCFMissLLArray.h
+        * HDF5GMSPCFArray.cc
+        * HDF5GMSPCFArray.h
+        * HDF5RequestHandler.cc
+        * HDF5_DDS.h
+        * HDFEOS5CF.cc
+        * HDFEOS5CFMissLLArray.cc
+        * HDFEOS5CFMissLLArray.h
+        * HDFEOS5CFSpecialCVArray.cc
+        * HDFEOS5CFSpecialCVArray.h
+        * Makefile.am
+        * NEWS
+        * USAGE
+        * configure.ac
+        * h5cfdap.cc
+        * h5commoncfdap.cc
+        * h5commoncfdap.h
+        * h5gmcfdap.cc
+        * h5gmcfdap.h
+        * hdf5_handler.spec
+        * heos5cfdap.cc
+        * heos5cfdap.h:
+	updated for fixing memory leak and improving performance.
+
+
+2013-12-13 Kent Yang <myang6@hdfgroup.org>
+        * configure.ac
+        * NEWS
+        * hdf5_handler.spec:
+        updated the version from 2.2.1 to 2.2.2
+
 2013-10-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	* h4cfdaputil.cc:
 	fixed double escaping problem.
-	
+
 2013-10-11  James Gallagher  <jgallagher@opendap.org>
 
 	* HDF5Array.cc

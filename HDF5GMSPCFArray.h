@@ -44,10 +44,11 @@ using namespace libdap;
 
 class HDF5GMSPCFArray:public Array {
     public:
-        HDF5GMSPCFArray(int rank, const string & filename, H5DataType dtype, const string &varfullpath, H5DataType otype, int sdbit, int numofdbits, const string & n="",  BaseType * v = 0):
+        HDF5GMSPCFArray(int rank, /*const string & filename*/ const hid_t fileid, H5DataType dtype, const string &varfullpath, H5DataType otype, int sdbit, int numofdbits, const string & n="",  BaseType * v = 0):
         Array(n,v),
         rank(rank),
-        filename(filename),
+        //filename(filename),
+        fileid(fileid),
         dtype(dtype),
         varname(varfullpath),
         otype(otype),
@@ -65,7 +66,8 @@ class HDF5GMSPCFArray:public Array {
 
     private:
         int rank;
-        string filename;
+        //string filename;
+        hid_t fileid;
         H5DataType dtype;
         string varname;
         H5DataType otype;

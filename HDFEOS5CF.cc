@@ -1678,8 +1678,9 @@ for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
 cerr<<"dim names "<<(*its) <<endl;
 #endif
 
-    for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
 
+    //for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
+    for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ) {
         if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) {
 //cerr<<"coming to YDim "<<endl;
 
@@ -1711,7 +1712,8 @@ cerr<<"dim names "<<(*its) <<endl;
             // Save this cv to the cv vector
             this->cvars.push_back(EOS5cvar);
             // erase the dimension name from the dimension name set
-            tempvardimnamelist.erase(its);
+
+            tempvardimnamelist.erase(its++);
             find_ydim = true;
 // cerr<<"end of YDim " <<endl;
          
@@ -1752,11 +1754,13 @@ cerr<<"dim names "<<(*its) <<endl;
             // Save this cv to the cv vector
             this->cvars.push_back(EOS5cvar);
             // erase the dimension name from the dimension name set
-            tempvardimnamelist.erase(its);
+            tempvardimnamelist.erase(its++);
             find_xdim = true;
 // cerr<<"end of XDim" <<endl;
          
         } // else if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(*its))
+        else
+            ++its;
         if (true == find_xdim && true == find_ydim) 
             break;
     } // for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
@@ -2022,14 +2026,21 @@ cerr<<"Dimension name befor latitude " << *its << endl;
     } // for (vector<Var *>::iterator irv = this->vars.begin() ...
      
     // Finish this variable, remove it from the list.
-    for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
+
+    bool find_lat_dim = false;
+    for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end();++its ) {
+        
         for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
             if (((*irv)->name == "Latitude") && (*irv)->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
+                find_lat_dim = true;
                 break;
             }
         }
+
+        if(true == find_lat_dim) 
+            break;
     }
 
 #if 0
@@ -2137,19 +2148,40 @@ cerr<<"Dimension name befor latitude " << *its << endl;
     } // for (vector<Var *>::iterator irv = this->vars.begin();
 
      
+
+    // Remove the dim. of latitude 
+    find_lat = false;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
          for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
             if (((*irv)->name == "Latitude") && (*irv)->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
+                find_lat = true;
                 break;
             }
+         }
+
+         if(true == find_lat)
+           break;
+    }
+
+    // Remove the dim. of longitude
+    find_lon = false;
+    for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
+
+        for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
+                irv != this->cvars.end(); ++irv) {
 
             if (((*irv)->name == "Longitude") && (*irv)->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
+                find_lon = true;
                 break;
             }
         }
+
+        if(true == find_lon)
+            break;
+         
     }
 
 #if 0
@@ -2229,7 +2261,8 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
          its = tempvardimnamelist.find((*irv)->cfdimname);
-         if (its != tempvardimnamelist.end()) tempvardimnamelist.erase(its);
+         if (its != tempvardimnamelist.end()) 
+            tempvardimnamelist.erase(its);
     }
 
     // Check if some attributes have CV information for some special products

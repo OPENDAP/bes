@@ -44,10 +44,11 @@ using namespace libdap;
 
 class HDFEOS5CFMissLLArray:public Array {
     public:
-        HDFEOS5CFMissLLArray(int rank, const string & filename,  const string &varfullpath, CVType cvartype,float point_lower, float point_upper, float point_left, float point_right, EOS5GridPRType eos5_pixelreg, EOS5GridOriginType eos5_origin, EOS5GridPCType eos5_projcode, int xdimsize, int ydimsize, const string & n="",  BaseType * v = 0):
+        HDFEOS5CFMissLLArray(int rank, /*const string & filename*/ const hid_t fileid,  const string &varfullpath, CVType cvartype,float point_lower, float point_upper, float point_left, float point_right, EOS5GridPRType eos5_pixelreg, EOS5GridOriginType eos5_origin, EOS5GridPCType eos5_projcode, int xdimsize, int ydimsize, const string & n="",  BaseType * v = 0):
         Array(n,v),
         rank(rank),
-        filename(filename),
+        //filename(filename),
+        fileid(fileid),
         varname(varfullpath),
         cvartype(cvartype),
         point_lower(point_lower),
@@ -69,7 +70,8 @@ class HDFEOS5CFMissLLArray:public Array {
 
     private:
         int rank;
-        string filename;
+        //string filename;
+        hid_t  fileid;
         string varname;
         CVType cvartype;
         float point_lower;

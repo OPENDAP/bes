@@ -202,6 +202,8 @@ void HDF5CFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_in
        str = newstr;
 }
 
+// Not used. We use vectors.
+#if 0
 void HDF5CFUtil::ClearMem(int*offset,int*count,int*step,hsize_t* hoffset, hsize_t* hcount, hsize_t*hstep) {
 
     if (offset != NULL) delete[]offset;
@@ -212,5 +214,6 @@ void HDF5CFUtil::ClearMem(int*offset,int*count,int*step,hsize_t* hoffset, hsize_
     if (hstep  != NULL) delete[]hstep;
 
 }
+#endif
            
     
