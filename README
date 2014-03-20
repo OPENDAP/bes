@@ -35,9 +35,21 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.2.2
+----------------------------
+For the CF option: 
+ -  Improve file I/O by reducing the number of HDF4/HDF-EOS2 file open/close 
+requests. 
+ -  Error handling is greatly improved: resources are released properly when 
+errors occur.
+
+For both CF and default options:
+ - Some memory leaks detected by valgrind are fixed.
+
+
 What's new for version 2.2.1
 ----------------------------
-Internal code improvements.
+  Internal code improvements.
 
 What's new for version 2.2.0
 ----------------------------
@@ -207,7 +219,7 @@ Implementation Details for HDF-EOS5 in CF option
         StructMetadata file, 1-D latitude and longitude arrays are 
         automatically computed and added in the DAP2 output.
 
-	Metadata: If metadata (e.g., StructMetadata or CoreMetada) is
+	Metadata: If metadata (e.g., StructMetadata or CoreMetadata) is
         split and stored into multiple attributes (e.g., StructMetadata.0,
         StructMetadata.1, ..., StructMetadata.n), they are merged into one
 	string and then parsed so that it can be represented in structured 
