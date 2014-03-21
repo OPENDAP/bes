@@ -1103,7 +1103,7 @@
             <value>42</value>
         </Attribute>
         <Attribute name="Max_Earth_View_Frames" type="Int32">
-            <value>74</value>
+            <value>1354</value>
         </Attribute>
         <Attribute name="_Valid_EV_Observations" type="Float32">
             <value>99.98944855</value>
@@ -1115,7 +1115,7 @@
             <value>97.65287781</value>
             <value>93.57270050</value>
             <value>77.26746368</value>
-            <value>32.22592163</value>
+            <value>63.97592163</value>
             <value>58.25228500</value>
             <value>56.25601196</value>
             <value>39.32955551</value>
@@ -1155,7 +1155,7 @@
             <value>0.000000000</value>
             <value>6.414491653</value>
             <value>22.22322464</value>
-            <value>32.18707275</value>
+            <value>35.68707275</value>
             <value>41.45549393</value>
             <value>43.54610825</value>
             <value>60.65989304</value>
@@ -1803,7 +1803,7 @@
             <value>0.009459292516</value>
             <value>0.01164220553</value>
             <value>0.01164220553</value>
-            <value>0.007858025841</value>
+            <value>0.01164220553</value>
             <value>0.01164220553</value>
             <value>0.01164220553</value>
             <value>0.01164220553</value>
@@ -4755,7 +4755,7 @@
             <value>0.000000000</value>
             <value>0.0009095473215</value>
             <value>0.0003638189228</value>
-            <value>0.0004885079688</value>
+            <value>0.0005457284278</value>
             <value>0.8593403101</value>
             <value>0.0001819094614</value>
             <value>0.000000000</value>
@@ -5739,7 +5739,7 @@
             <value>0.009459292516</value>
             <value>0.01255175285</value>
             <value>0.01200602483</value>
-            <value>0.007854437456</value>
+            <value>0.01218793355</value>
             <value>56.40212250</value>
             <value>0.01182411518</value>
             <value>0.01164220553</value>
@@ -6109,10 +6109,10 @@
             <value>0.009459292516</value>
         </Attribute>
         <Attribute name="Bit_QA_Flags_Last_Value" type="UInt32">
-            <value>786624</value>
+            <value>819392</value>
         </Attribute>
         <Attribute name="Bit_QA_Flags_Change" type="UInt32">
-            <value>8</value>
+            <value>8200</value>
         </Attribute>
         <Attribute name="Granule_Average_QA_Values" type="Float32">
             <value>290.0308228</value>
@@ -6127,7 +6127,7 @@
             <value>290.0033264</value>
             <value>289.9952393</value>
             <value>289.9971924</value>
-            <value>128.9697113</value>
+            <value>269.9394226</value>
             <value>269.9689636</value>
             <value>83.38051605</value>
             <value>83.01977539</value>
@@ -6167,7 +6167,7 @@
             <value>0.000000000</value>
         </Attribute>
         <Attribute name="Electronics_Redundancy_Vector" type="UInt32">
-            <value>16835413</value>
+            <value>22405973</value>
             <value>1048</value>
         </Attribute>
         <Attribute name="Electronics_Configuration_Change" type="UInt32">
@@ -7752,7 +7752,7 @@
             <value>65</value>
         </Attribute>
         <Attribute name="Earth_Sun_Distance" type="Float32">
-            <value>1.000017047</value>
+            <value>1.000230670</value>
         </Attribute>
         <Attribute name="Solar_Irradiance_on_RSB_Detectors_over_pi" type="Float32">
             <value>511.4599915</value>
@@ -7837,7 +7837,7 @@
             <value>316.2730103</value>
             <value>664.5989990</value>
             <value>664.5989990</value>
-            <value>512.5989990</value>
+            <value>664.5989990</value>
             <value>664.5989990</value>
             <value>664.6309814</value>
             <value>664.6309814</value>

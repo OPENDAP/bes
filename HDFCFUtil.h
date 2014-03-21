@@ -61,13 +61,18 @@ struct dimmap_entry
 struct HDFCFUtil
 {
 
+    /// Close HDF4 and HDF-EOS2 file IDs. For performance reasons, we want to keep HDF-EOS2/HDF4 IDs open
+    /// for one operation(DDS,DAS or DATA). In case of exceptions, these IDs need to be closed.
+    //static void close_fileid(int sdfd,int file_id,int gridfd,int swathfd);
+    //static void reset_fileid(int& sdfd, int&file_id,int&gridfd,int&swathfd);
+
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
     /// that can be found at escaping.cc and escaping.h. i
     /// Note: the customized version will not treat
     /// \n(new line),\t(tab),\r(Carriage return) as special characters since NASA HDF files
     /// use this characters to make the attribute easy to read. Escaping these characters in the attributes
     /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
-    static string escattr(string s);
+    static std::string escattr(std::string  s);
 
     /// Check the BES key. 
     /// This function will check a BES key specified at the file h4.conf.in.
@@ -76,7 +81,7 @@ struct HDFCFUtil
     /// For example, One may find a line H4.EnableCF=true at h4.conf.in.
     /// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
 
-    static bool check_beskeys(const std::string key);
+    static bool check_beskeys(const std::string& key);
 
     /// From a string separated by a separator to a list of string,
     /// for example, split "ab,c" to {"ab","c"}
@@ -93,7 +98,7 @@ struct HDFCFUtil
     static bool insert_map(std::map<std::string,std::string>& m, std::string key, std::string val);
 
     /// Change special characters to "_"
-    static string get_CF_string(std::string s);
+    static std::string get_CF_string(std::string s);
 
     /// Obtain the unique name for the clashed names and save it to set namelist.
     static void gen_unique_name(std::string &str,std::set<std::string>& namelist, int&clash_index);
@@ -132,7 +137,10 @@ struct HDFCFUtil
     /// the non-CF MODIS scale and offset rule to MODIS data. So the final data type may be different
     /// than the original one due to this operation. For example, the original datatype may be int16.
     /// After applying the scale/offset rule, the datatype may become float32.
-    static bool change_data_type(libdap::DAS & das, SOType scaletype, std::string new_field_name);
+    /// Currently when disabling scale and offset key is true,(H4.DisableScaleOffsetComp=true),
+    /// this function should only apply to MODIS level 1B,VIP CMG Grid and some snow and ice products
+    /// that use the Key attribute. KY 2014-02-12
+    static bool change_data_type(libdap::DAS & das, SOType scaletype, const std::string & new_field_name);
 
     /// For MODIS (confirmed by level 1B) products, values between 65500(MIN_NON_SCALE_SPECIAL_VALUE)  
     /// and 65535(MAX_NON_SCALE_SPECIAL_VALUE) are treated as
@@ -152,13 +160,13 @@ struct HDFCFUtil
     static void obtain_dimmap_info(const std::string& filename, HDFEOS2::Dataset*dataset,std::vector<struct dimmap_entry>& dimmaps, std::string & modis_geofilename,bool &geofile_nas_dimmap);
 
     /// Temp adding the handling of MODIS special attribute routines when disabling the scale computation
-    static void handle_modis_special_attrs_disable_scale_comp(libdap::AttrTable *at,const string filename, bool is_grid, const std::string newfname, SOType scaletype);
+    static void handle_modis_special_attrs_disable_scale_comp(libdap::AttrTable *at,const string &filename, bool is_grid, const std::string &newfname, SOType scaletype);
 
 
     /// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
     /// For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed
     /// to orig_scale_factor and orig_add_offset to keep the original field info.
-    static void handle_modis_special_attrs(libdap::AttrTable *at,const std::string newfname, SOType scaletype, bool gridname_change_valid_range, bool changedtype, bool &change_fvtype);
+    static void handle_modis_special_attrs(libdap::AttrTable *at,const std::string &filename, bool is_grid, const std::string & newfname, SOType scaletype, bool gridname_change_valid_range, bool changedtype, bool &change_fvtype);
 
     /// This routine makes the MeaSUREs VIP attributes follow CF.
     static void handle_modis_vip_special_attrs(const std::string& valid_range_value,const std::string& scale_factor_value, float& valid_min, float & valid_max);
@@ -180,11 +188,18 @@ struct HDFCFUtil
     // The special handling of AVHRR data is also included.
     static void handle_otherhdf_special_attrs(HDFSP::File *f, libdap::DAS &das);
 
+    // Add  missing CF attributes for non-CV varibles
+    static void add_missing_cf_attrs(HDFSP::File*f,libdap::DAS &das);
+
     // Handle Merra and CERES attributes with the BES key EnableCERESMERRAShortName.
-    static void handle_merra_ceres_attrs_with_bes_keys(HDFSP::File*f, libdap::DAS &das,std::string filename);
+    static void handle_merra_ceres_attrs_with_bes_keys(HDFSP::File*f, libdap::DAS &das,const std::string& filename);
 
     // Handle the attributes with the BES key EnableVdataDescAttr.
     static void handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das);
+
+    // Parse TRMM V7 GridHeaders
+    //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
+    static void parser_trmm_v7_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 };
 
 /// This inline routine will translate N dimensions into 1 dimension.

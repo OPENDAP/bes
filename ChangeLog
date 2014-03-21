@@ -1,3 +1,52 @@
+2014-03-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+        * HDF4RequestHandler.cc
+        * HDF4RequestHandler.h
+        * HDF4_DDS.h
+        * HDFCFUtil.cc
+        * HDFCFUtil.h
+        * HDFEOS2.cc
+        * HDFEOS2.h
+        * HDFEOS2ArrayGridGeoField.cc
+        * HDFEOS2ArrayGridGeoField.h
+        * HDFEOS2ArrayMissField.h
+        * HDFEOS2ArraySwathDimMapField.cc
+        * HDFEOS2ArraySwathDimMapField.h
+        * HDFEOS2ArraySwathGeoDimMapExtraField.cc
+        * HDFEOS2ArraySwathGeoDimMapExtraField.h
+        * HDFEOS2ArraySwathGeoField.cc
+        * HDFEOS2ArraySwathGeoField.h
+        * HDFEOS2Array_RealField.cc
+        * HDFEOS2Array_RealField.h
+        * HDFSP.cc
+        * HDFSP.h
+        * HDFSPArrayAddCVField.cc
+        * HDFSPArrayAddCVField.h
+        * HDFSPArrayGeoField.cc
+        * HDFSPArrayGeoField.h
+        * HDFSPArrayMissField.cc
+        * HDFSPArrayMissField.h
+        * HDFSPArray_RealField.cc
+        * HDFSPArray_RealField.h
+        * HDFSPArray_VDField.cc
+        * HDFSPArray_VDField.h
+        * HDFSPEnumType.h
+        * HE2CF.cc
+        * HE2CF.h
+        * Makefile.am
+        * NEWS
+        * README
+        * USAGE
+        * bes-testsuite
+        * data
+        * h4.conf.in
+        * hdf4_handler.spec
+        * hdf4_handler.spec.cf
+        * hdfdesc.cc
+        * hdfeos.yy
+        * misr_init.cc
+        * misrinv.cc:
+	Added support for TRMM version 7 products.
+
 2014-01-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	Optimized handler for MOD08_M3 and AIRS version 6 with new BES keys.

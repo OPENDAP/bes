@@ -1102,7 +1102,7 @@ namespace HDFEOS2
             public:
 
                 /// Read all the information in this file from the EOS2 APIs.
-                static File *Read (const char *path) throw (Exception);
+                static File *Read (const char *path,int32 gridfd,int32 swathfd) throw (Exception);
 
 
                 /// Read and prepare. This is the main method to make the DAP output CF-compliant.

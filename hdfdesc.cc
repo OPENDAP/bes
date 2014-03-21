@@ -121,6 +121,7 @@
 #include "HDFSPArray_RealField.h"
 #include "HDFSPArrayGeoField.h"
 #include "HDFSPArrayMissField.h"
+#include "HDFSPArrayAddCVField.h"    
 #include "HDFSPArray_VDField.h"
 #include "HDFCFUtil.h"
 
@@ -185,26 +186,27 @@ void read_dds(DDS & dds, const string & filename);
 
 // For the CF option
 // read_dds for HDF4 files. Some NASA non-eos2 HDF4 products are handled specifially to follow the CF conventions.
-bool read_dds_hdfsp(DDS & dds, const string & filename);
-bool read_das_hdfsp(DAS & das, const string & filename);
+bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid);
+bool read_das_hdfsp(DAS & das, const string & filename,int32 sdfd, int32 fileid);
 
 // read_dds for special NASA HDF-EOS2 hybrid(non-EOS2) objects
-bool read_dds_hdfhybrid(DDS & dds, const string & filename);
-bool read_das_hdfhybrid(DAS & das, const string & filename);
+bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid);
+bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fileid);
 
 // Functions to read special 1-d HDF-EOS2 grid. This grid can be built up quickly.
-bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename);
-bool read_das_special_eos2(DAS &das,const string & filename);
+//bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename,int32 sdfd, int32 fileid);
+bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename,int32 sdfd, int32 fileid);
+bool read_das_special_eos2(DAS &das,const string & filename,int32 sdid, int32 fileid);
 bool read_das_special_eos2_core(DAS &das, HDFSP::File *spf, const string & filename);
 
 // Functions to handle SDS fields for the CF option.
-void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SPType sptype); 
+void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDField *spsds, SPType sptype); 
 
 // Functions to handle Vdata fields for the CF option.
-void read_dds_spvdfields(DDS &dds,const string& filename,int32 vdref, int32 numrec,HDFSP::VDField *spvd); 
+void read_dds_spvdfields(DDS &dds,const string& filename, const int fileid,int32 vdref, int32 numrec,HDFSP::VDField *spvd); 
 
 // Check if this is a special HDF-EOS2 file that can be handled by HDF4 directly. Using HDF4 only can improve performance.
-int check_special_eosfile(const string&filename,string&grid_name);
+int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd,int32 fileid);
 
 
 // The following blocks only handle HDF-EOS2 objects based on HDF-EOS2 libraries.
@@ -229,23 +231,28 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
 // HDF-EOS2 but no need to use HDF-EOS2 lib: Have dimension scales for all dimensions
 // 5. MERRA 
 // Special handling for MERRA file as 0.
-int read_dds_hdfeos2(DDS & dds, const string & filename);
+int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd);
 
 // reas das for HDF-EOS2
-int read_das_hdfeos2(DAS & das, const string & filename);
+int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd);
 
 
 // read_dds for one grid or swath
-void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype)
+void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype,
+                                 int32 sdfd, int32 fileid, int32 gridfd,int32 swathfd)
 {
 
+    BESDEBUG("h4","Coming to read_dds_hdfeos2_grid_swath "<<endl);
     // grid_or_swath - 0: grid, 1: swath
     if(grid_or_swath < 0 ||  grid_or_swath > 1)
         throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
 
+    /// I. This section retrieve Swath dimension map info.
+
+    // Declare dim. map entry. The defination of dimmap_entry can be found at HDFCFUtil.h. 
     vector<struct dimmap_entry> dimmaps;
 
-    //The extra dim map file name
+    //The extra dim map file name(lat/lon of swath with dim. map can be found in a separate HDF file.
     string modis_geofilename="";
     bool geofile_has_dimmap = false;
     
@@ -253,7 +260,11 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
     // 2. Check if MODIS swath geo-location HDF-EOS2 file exists for the dimension map case of MODIS Swath
     if(grid_or_swath == 1) 
         HDFCFUtil::obtain_dimmap_info(filename,dataset,dimmaps,modis_geofilename,geofile_has_dimmap);
+    /// End of section I.
 
+#if 0
+    /// Not sure if we need to use this.
+    /// II. Obtain grid projection code 
     int32 projcode=-1;
  
     // Obtain the projection code for a grid
@@ -262,7 +273,10 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
         HDFEOS2::GridDataset *gd = static_cast<HDFEOS2::GridDataset *>(dataset);
         projcode = gd->getProjection().getCode();
     }
+    /// End of section II.
+#endif
 
+    /// Section III. Add swath geo-location fields to the data fields for Swath.
     const vector<HDFEOS2::Field*>& fields = (dataset)->getDataFields(); 
     vector<HDFEOS2::Field*> all_fields = fields;
     vector<HDFEOS2::Field*>::const_iterator it_f;
@@ -273,8 +287,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
         for (it_f = geofields.begin(); it_f != geofields.end(); it_f++) 
             all_fields.push_back(*it_f);
     }
+    /// End of Section III.
 
-    // First handling data fields
+    /// Section IV. Generate DDS and pass DDS info. to Data.
     for(it_f = all_fields.begin(); it_f != all_fields.end(); it_f++)
     {	
         BESDEBUG("h4","New field Name " <<(*it_f)->getNewName()<<endl);
@@ -342,7 +357,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     HDFEOS2Array_RealField *ar = NULL;
                     ar = new HDFEOS2Array_RealField(
                         (*it_f)->getRank(),
-                        filename,
+                        filename,false,sdfd,gridfd,
                         (dataset)->getName(), "", (*it_f)->getName(),
                         sotype,
                         (*it_f)->getNewName(), bt);
@@ -352,15 +367,20 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     delete bt;
                     delete ar;
                 }
-                // swath, the third-dimension field can be either under "geolocation fields" or "data fields"
+                // swath
                 else if(grid_or_swath==1){
 
                     string tempfieldname = (*it_f)->getName();
-//cerr<<"field name is = "<<tempfieldname <<endl;
 
+                    // This swath uses the dimension map
                     if((*it_f)->UseDimMap()) {
+                        // We also find that a separate geolocation file exists
+
                         if (!modis_geofilename.empty()) {
+
+                            // This field can be found in the geo-location file. The field name may be corrected.
                             if (true == HDFCFUtil::is_modis_dimmap_nonll_field(tempfieldname)) {
+
                                 if(false == geofile_has_dimmap) {
 
                                     // Here we have to use HDFEOS2Array_RealField since the field may
@@ -372,6 +392,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     ar = new HDFEOS2Array_RealField(
                                                                     (*it_f)->getRank(),
                                                                     modis_geofilename,
+                                                                    true,
+                                                                    sdfd,
+                                                                    swathfd,
                                                                     "", 
                                                                     "MODIS_Swath_Type_GEO", 
                                                                     tempfieldname,
@@ -397,6 +420,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     ar = new HDFEOS2ArraySwathDimMapField(
                                                                           (*it_f)->getRank(), 
                                                                           modis_geofilename, 
+                                                                          true,
+                                                                          sdfd,
+                                                                          swathfd,
                                                                           "", 
                                                                           "MODIS_Swath_Type_GEO", 
                                                                           tempfieldname, 
@@ -411,13 +437,44 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                     delete ar;
                                 }
                             }
+                            else { // This field cannot be found in the dimension map file.
+
+                                  HDFEOS2ArraySwathDimMapField * ar = NULL;
+ 
+                                  // Even if the dimension map file exists, it only applies to some
+                                  // specific data fields, if this field doesn't belong to these fields,
+                                  // we should still apply the dimension map rule to these fields.
+
+                                  ar = new HDFEOS2ArraySwathDimMapField(
+                                                                          (*it_f)->getRank(),
+                                                                          filename,
+                                                                          false,
+                                                                          sdfd,
+                                                                          swathfd,
+                                                                          "",
+                                                                          (dataset)->getName(),
+                                                                          tempfieldname,
+                                                                          dimmaps,
+                                                                          sotype,
+                                                                          (*it_f)->getNewName(),
+                                                                          bt);
+                                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                    dds.add_var(ar);
+                                    delete bt;
+                                    delete ar;
+
+
+                            }
                         }
                         else {// No dimension map file
-//cerr<<"coming to swath dim map "<<endl;
                             HDFEOS2ArraySwathDimMapField * ar = NULL;
                             ar = new HDFEOS2ArraySwathDimMapField(
                                                                   (*it_f)->getRank(), 
                                                                   filename, 
+                                                                  false,
+                                                                  sdfd,
+                                                                  swathfd,
                                                                   "", 
                                                                   (dataset)->getName(), 
                                                                   tempfieldname, 
@@ -439,6 +496,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         ar = new HDFEOS2Array_RealField(
                                                         (*it_f)->getRank(),
                                                         filename,
+                                                        false,
+                                                        sdfd,
+                                                        swathfd,
                                                         "", 
                                                         (dataset)->getName(), 
                                                         tempfieldname,
@@ -478,7 +538,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                      condenseddim,
                                                      speciallon,
                                                      specialformat,
-                                                     filename,
+                                                     gridfd,
                                                      (dataset)->getName(),
                                                      (*it_f)->getName(),
                                                      (*it_f)->getNewName(), 
@@ -531,6 +591,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                 ar = new HDFEOS2ArraySwathDimMapField(
                                                                       (*it_f)->getRank(), 
                                                                       modis_geofilename, 
+                                                                      true,
+                                                                      sdfd,
+                                                                      swathfd,
                                                                       "", 
                                                                       "MODIS_Swath_Type_GEO", 
                                                                       (*it_f)->getName(), 
@@ -553,6 +616,9 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                 ar = new HDFEOS2ArraySwathDimMapField(
                                                                       (*it_f)->getRank(), 
                                                                       filename, 
+                                                                      false,
+                                                                      sdfd,
+                                                                      swathfd,
                                                                       "", 
                                                                       (dataset)->getName(), 
                                                                       (*it_f)->getName(), 
@@ -568,12 +634,12 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                 delete ar;
                         }
                     }
-                    else {
+                    else {// No Dimension map
  
                         HDFEOS2ArraySwathGeoField * ar = NULL;
                         ar = new HDFEOS2ArraySwathGeoField(
                                                            (*it_f)->getRank(),
-                                                           filename,
+                                                           swathfd,
                                                            (dataset)->getName(), 
                                                            (*it_f)->getName(),
                                                            (*it_f)->getNewName(), 
@@ -618,7 +684,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 
 // Build DDS for HDF-EOS2 only.
 //bool read_dds_hdfeos2(DDS & dds, const string & filename) 
-int read_dds_hdfeos2(DDS & dds, const string & filename) 
+int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd) 
 {
 
     BESDEBUG("h4","Coming to read_dds_hdfeos2 "<<endl);
@@ -644,7 +710,7 @@ int read_dds_hdfeos2(DDS & dds, const string & filename)
     if(true == turn_on_enable_spec_eos_key) {
 
         string grid_name;
-        int ret_val = check_special_eosfile(filename,grid_name); 
+        int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
 
         // Expected AIRS level 3 case
         if(4== ret_val) 
@@ -658,35 +724,43 @@ int read_dds_hdfeos2(DDS & dds, const string & filename)
             // Very strange behavior for the HDF4 library, I have to obtain the ID here.
             // If defined inside the Read function, the id will be 0 and the output is 
             // unexpected. KY 2010-8-9
-            int32 myfileid = 0;
-            myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+            //int32 myfileid = 0;
+            //myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
 
-            HDFSP::File *spf; 
+            HDFSP::File *spf = NULL; 
+            try {
+                spf  = HDFSP::File::Read(filename.c_str(),sdfd,fileid);
+            }
+            catch (HDFSP::Exception &e)
+            {
+                if(spf != NULL)
+                    delete spf;
+                throw InternalErr(e.what());
+            }
+
             try {
 
-                //   string grid_name = f->get_first_grid_name();
-//cerr<<"grid name is "<<grid_name <<endl;
-                spf  = HDFSP::File::Read(filename.c_str(),myfileid);
-
                 if(2==ret_val) {  
+
                     if(spf->Check_if_special(grid_name)== true){
 
                         special_1d_grid = true;
 
                         // building  the normal DDS here.
-                        read_dds_special_1d_grid(dds,spf,filename);
+                        read_dds_special_1d_grid(dds,spf,filename,sdfd,fileid);
                     }
                 }
                 else {
                     airs_l3_v6 = true;
                     spf->Handle_AIRS_l3();
-                    read_dds_special_1d_grid(dds,spf,filename);
+                    read_dds_special_1d_grid(dds,spf,filename,sdfd,fileid);
                 }
                 delete spf;
 
-            } catch (HDFSP::Exception &e)
+            } catch (...)
             {   
-                throw InternalErr(e.what());
+                delete spf;
+                throw;
             }   
 
             if (true == special_1d_grid || true== airs_l3_v6)
@@ -696,14 +770,16 @@ int read_dds_hdfeos2(DDS & dds, const string & filename)
 
     }
  
-    HDFEOS2::File *f;
+    HDFEOS2::File *f = NULL;
     
     try {
         // Read all the information of EOS objects from an HDF-EOS2 file
-        f= HDFEOS2::File::Read(filename.c_str());
+        f= HDFEOS2::File::Read(filename.c_str(),gridfd,swathfd);
     } 
     catch (HDFEOS2::Exception &e){
 
+        if(f != NULL)
+            delete f;
         // If this file is not an HDF-EOS2 file, return false.
         if (!e.getFileType()){
             //return false;
@@ -722,7 +798,8 @@ int read_dds_hdfeos2(DDS & dds, const string & filename)
     }
 
     catch (HDFEOS2:: Exception &e) {
-        delete f;
+        if (f != NULL)
+            delete f;
         throw InternalErr(e.what());
     }
 
@@ -823,8 +900,14 @@ cerr<<"special_1d_grid is true "<<endl;
 
         // Obtain Scale and offset type. This is for MODIS products who use non-CF scale/offset rules.
         sotype = (*it_g)->getScaleType();
-        read_dds_hdfeos2_grid_swath(
-            dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype);
+        try {
+            read_dds_hdfeos2_grid_swath(
+                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype,sdfd,fileid,gridfd,swathfd);
+        }
+        catch(...) {
+            delete f;
+            throw;
+        }
     }
 
     // Iterate all the swaths of this file and map them to DAP DDS.
@@ -834,8 +917,14 @@ cerr<<"special_1d_grid is true "<<endl;
 
         // Obtain Scale and offset type. This is for MODIS products who use non-CF scale/offset rules.
         sotype = (*it_s)->getScaleType();
-        read_dds_hdfeos2_grid_swath(
-            dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype);//No global lat/lon for multiple swaths
+        try {
+            read_dds_hdfeos2_grid_swath(
+                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype,sdfd,fileid,gridfd,swathfd);//No global lat/lon for multiple swaths
+        }
+        catch(...) {
+            delete f;
+            throw;
+        }
     }
 
     // Clear the field name list of which the datatype is changed. KY 2012-8-1
@@ -851,25 +940,25 @@ cerr<<"special_1d_grid is true "<<endl;
 
 
 // The wrapper of building DDS of non-EOS fields and attributes in a hybrid HDF-EOS2 file.
-bool read_dds_hdfhybrid(DDS & dds, const string & filename)
+//bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,int32 gridfd,int32 swathfd)
+bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid)
 
 {
     // Set DDS dataset.
     dds.set_dataset_name(basename(filename));
 
-    // Very strange behavior for the HDF4 library, I have to obtain the ID here.
-    // If defined inside the Read function, the id will be 0 and the output is 
-    // unexpected. KY 2010-8-9
-    int32 myfileid;
-    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
 
-    HDFSP::File *f;
+    // Declare an non-EOS file pointer.
+    HDFSP::File *f = NULL;
 
     try {
         // Read all the non-EOS field and attribute information from the hybrid file.
-        f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
+        f = HDFSP::File::Read_Hybrid(filename.c_str(), sdfd,fileid);
     } catch (HDFSP::Exception &e)
     {
+
+        if (f != NULL)
+            delete f;
         throw InternalErr(e.what());
     }
 
@@ -879,7 +968,13 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
     // Read SDS 
     vector<HDFSP::SDField *>::const_iterator it_g;
     for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-        read_dds_spfields(dds,filename,(*it_g),f->getSPType());
+        try {
+            read_dds_spfields(dds,filename,sdfd,(*it_g),f->getSPType());
+        }
+        catch(...) {
+            delete f;
+            throw;
+        }
     }
 
     // Read Vdata fields.
@@ -901,7 +996,13 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
             for(vector<HDFSP::VDATA *>::const_iterator i = f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
                 if(false == (*i)->getTreatAsAttrFlag()){
                     for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
-                        read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+                        try {
+                            read_dds_spvdfields(dds,filename,fileid, (*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+                        }
+                        catch(...) {
+                            delete f;
+                            throw;
+                        }
                     }
                 }
             }
@@ -914,18 +1015,19 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
 
 
 // Build DAS for non-EOS objects in a hybrid HDF-EOS2 file.
-bool read_das_hdfhybrid(DAS & das, const string & filename)
+bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fileid)
 {
-    int32 myfileid = 0;
-    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
 
-    HDFSP::File *f;
+    // Declare a non-EOS file pointer
+    HDFSP::File *f = NULL;
     try {
         // Read non-EOS objects in a hybrid HDF-EOS2 file.
-        f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
+        f = HDFSP::File::Read_Hybrid(filename.c_str(), sdfd,fileid);
     } 
     catch (HDFSP::Exception &e)
     {
+        if(f!=NULL)
+            delete f;
         throw InternalErr(e.what());
     }
 
@@ -963,11 +1065,14 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
 
             // Handle string first.
             if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+
+                // Questionable use of string. KY 2014-02-12
                 string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
-                // We want to escape the possible special characters except the fullpath attribute. This may be overkilled since
-                // fullpath is only added for some CERES and MERRA data. We think people use fullpath really mean to keep their
-                // original names. So escaping them for the time being. KY 2013-10-14
+
+                // We want to escape the possible special characters except the fullpath attribute. 
+                // The fullpath is only added for some CERES and MERRA data. People use fullpath to keep their
+                // original names even their original name includes special characters.  KY 2014-02-12
                 at->append_attr((*i)->getNewName(), "String" , ((*i)->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
             }
             else {
@@ -982,7 +1087,13 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
         // with the variable datatype. Correct the fillvalue datatype if necessary. 
         if(at != NULL) {
             int32 var_type = (*it_g)->getType();
-            HDFCFUtil::correct_fvalue_type(at,var_type);
+            try {
+                HDFCFUtil::correct_fvalue_type(at,var_type);
+            }
+            catch(...) {
+                delete f;
+                throw;
+            }
         }
 
         // If H4.EnableCheckScaleOffsetType BES key is true,  
@@ -996,7 +1107,13 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
     }
 
     // Handle vdata attributes.
-    HDFCFUtil::handle_vdata_attrs_with_desc_key(f,das);
+    try {
+        HDFCFUtil::handle_vdata_attrs_with_desc_key(f,das);
+    }
+    catch(...) {
+        delete f;
+        throw;
+    }
 
     delete f;
     return true;
@@ -1005,28 +1122,44 @@ bool read_das_hdfhybrid(DAS & das, const string & filename)
 
 /// This is a wrapper to map HDF-EOS2,hybrid and HDF4 to DDS by using
 /// the HDF-EOS2 lib.
-void read_dds_use_eos2lib(DDS & dds, const string & filename)
+void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd)
 {
 
     BESDEBUG("h4","Coming to read_dds_use_eos2lib" <<endl);
-    int ret_value = read_dds_hdfeos2(dds,filename);
+
+    int ret_value = read_dds_hdfeos2(dds,filename,sdfd,fileid,gridfd,swathfd);
 
     BESDEBUG("h4","ret_value of read_dds_hdfeos2 is "<<ret_value<<endl);
 
+    // read_dds_hdfeos2 return value description:
+    // 0: general non-EOS2 pure HDF4
+    // 1: HDF-EOS2 hybrid 
+    // 2: MOD08_M3
+    //  HDF-EOS2 but no need to use HDF-EOS2 lib: no real dimension scales but have CVs for every dimension, treat differently
+    // 3: AIRS level 3 
+    //  HDF-EOS2 but no need to use HDF-EOS2 lib: 
+    //  have dimension scales but don’t have CVs for every dimension, also need to condense dimensions, treat differently
+    // 4. Expected AIRS level 3
+    // HDF-EOS2 but no need to use HDF-EOS2 lib: Have dimension scales for all dimensions
+    // 5. MERRA 
+    // Special handling for MERRA file as 0.
+
+
     // Treat MERRA and non-HDFEOS2 HDF4 products as pure HDF4 objects
-    // For Expected AIRS level 3 products, we temporarily handle in a generic HDF4 way.
-    if (ret_value == 0 || ret_value == 5 || ret_value == 4) {
-        if(read_dds_hdfsp(dds, filename))
+    // For Expected AIRS level 3 products, we temporarily handle them in a generic HDF4 way.
+    if (0 == ret_value  || 5 == ret_value  || 4 == ret_value ) {
+        if(true == read_dds_hdfsp(dds, filename,sdfd,fileid))
             return;
     }
     // Special handling
-    else if (ret_value == 1) {
+    else if ( 1 == ret_value ) {
+
          //  Map non-EOS2 objects to DDS
-        if(true == read_dds_hdfhybrid(dds,filename))
+        if(true ==read_dds_hdfhybrid(dds,filename,sdfd,fileid))
             return;
     }
     else {// ret_value = 2 and 3 are handled already
-            return;
+        return;
     }
 
 #if 0
@@ -1069,7 +1202,7 @@ void write_ecsmetadata(DAS& das, HE2CF& cf, const string& _meta)
     // ECS toolkit recommends data producers to use the format shown in the following coremetadata example:
     // coremetadata.0, coremetadata.1, etc.
     // Most NASA HDF-EOS2 products follow this naming convention.
-    // However, the toolkit also allows data producers to free name its metadata.
+    // However, the toolkit also allows data producers to freely name its metadata.
     // So we also find the following slightly different format:
     // (1) No suffix: coremetadata
     // (2) only have one such ECS attribute: coremetadata.0
@@ -1112,20 +1245,22 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     void *buf = hdfeos_string(metadata.c_str());
     parser_arg arg(at);
 
-    if (hdfeosparse(&arg) != 0)
+    if (hdfeosparse(&arg) != 0) {
+        hdfeos_delete_buffer(buf);
         throw Error("HDF-EOS parse error while processing a " + metadata + " HDFEOS attribute.");
+    }
 
     if (arg.status() == false) {
         (*BESLog::TheLog())<<  "HDF-EOS parse error while processing a "
-                           << metadata  << " HDFEOS attribute. (2)" << endl
-                           << arg.error()->get_error_message() << endl;
+                           << metadata  << " HDFEOS attribute. (2) " << endl;
+        //                 << arg.error()->get_error_message() << endl;
     }
 
     hdfeos_delete_buffer(buf);
 }
 
 // Build DAS for HDFEOS2 files.
-int read_das_hdfeos2(DAS & das, const string & filename)
+int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd)
 {
 
     BESDEBUG("h4","Coming to read_das_hdfeos2 " << endl);
@@ -1151,7 +1286,7 @@ int read_das_hdfeos2(DAS & das, const string & filename)
     if(true == turn_on_enable_spec_eos_key) {
 
         string grid_name;
-        int ret_val = check_special_eosfile(filename,grid_name); 
+        int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
 
         // Expected AIRS level 3
         if(4== ret_val) 
@@ -1163,16 +1298,18 @@ int read_das_hdfeos2(DAS & das, const string & filename)
         // AIRS level 3 version 6 or MOD08_M3-like products
         if(2 == ret_val || 3 == ret_val) {
 
-            // Very strange behavior for the HDF4 library, I have to obtain the ID here.
-            // If defined inside the Read function, the id will be 0 and the output is 
-            // unexpected. KY 2010-8-9
-            int32 myfileid = 0;
-            myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
-
-            HDFSP::File *spf; 
+            HDFSP::File *spf = NULL; 
             try {
+                spf  = HDFSP::File::Read(filename.c_str(),sdfd,fileid);
+            }
+            catch (HDFSP::Exception &e)
+            {
+                if (spf != NULL)
+                    delete spf;
+                throw InternalErr(e.what());
+            }
 
-                spf  = HDFSP::File::Read(filename.c_str(),myfileid);
+            try {
                 if( 2 == ret_val) {
 
                     // More check and build the relations if this is a special MOD08_M3-like file
@@ -1185,15 +1322,18 @@ int read_das_hdfeos2(DAS & das, const string & filename)
                     }
                 }
                 else {
+
                     airs_l3_v6 = true;
                     spf->Handle_AIRS_l3();
                     read_das_special_eos2_core(das,spf,filename);
                 }
                 delete spf;
 
-            } catch (HDFSP::Exception &e)
+            } 
+            catch (...)
             {   
-                throw InternalErr(e.what());
+                delete spf;
+                throw;
             }   
 
             if (true == special_1d_grid || true == airs_l3_v6)
@@ -1202,13 +1342,16 @@ int read_das_hdfeos2(DAS & das, const string & filename)
         }
     }
  
-    HDFEOS2::File *f;
+    HDFEOS2::File *f = NULL;
     
     try {
         // Read all the information of EOS objects from an HDF-EOS2 file
-        f= HDFEOS2::File::Read(filename.c_str());
+        f= HDFEOS2::File::Read(filename.c_str(),gridfd,swathfd);
     } 
     catch (HDFEOS2::Exception &e){
+       
+        if(f != NULL)
+            delete f;
 
         // If this file is not an HDF-EOS2 file, return 0.
         if (!e.getFileType()){
@@ -1228,13 +1371,21 @@ int read_das_hdfeos2(DAS & das, const string & filename)
     }
 
     catch (HDFEOS2:: Exception &e) {
-        delete f;
+        if(f!=NULL) 
+            delete f;
         throw InternalErr(e.what());
     }
 
     // HE2CF cf is used to handle hybrid SDS and SD attributes.
     HE2CF cf;
-    cf.open(filename);
+    
+    try {
+        cf.open(filename,sdfd,fileid);
+    }
+    catch(...) {
+        delete f;
+        throw;
+    }
     cf.set_DAS(&das);
 
     SOType sotype = DEFAULT_CF_EQU;
@@ -1262,7 +1413,7 @@ int read_das_hdfeos2(DAS & das, const string & filename)
             gridname_change_valid_range = true;
     }
 
-    // Obtain information to identify MODIS_SWATH_Type_L1B product. This product's scale and offse need to be handled properly. 
+    // Obtain information to identify MODIS_SWATH_Type_L1B product. This product's scale and offset need to be handled properly. 
     bool is_modis_l1b = false;
     // Since this is a swath product, we check swath only. 
     for (int i = 0; i<(int) f->getSwaths().size(); i++) {
@@ -1282,304 +1433,340 @@ int read_das_hdfeos2(DAS & das, const string & filename)
     bool turn_on_enable_check_scale_offset_key= false;
     turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
 
+    try {
 
-    // MAP grids to DAS.
-    for (int i = 0; i < (int) f->getGrids().size(); i++) {
+        // MAP grids to DAS.
+        for (int i = 0; i < (int) f->getGrids().size(); i++) {
 
-        HDFEOS2::GridDataset*  grid = f->getGrids()[i];
-        string gname = grid->getName();
-        sotype = grid->getScaleType();
+            HDFEOS2::GridDataset*  grid = f->getGrids()[i];
+            string gname = grid->getName();
+            sotype = grid->getScaleType();
       
-        const vector<HDFEOS2::Field*>gfields = grid->getDataFields();
-        vector<HDFEOS2::Field*>::const_iterator it_gf;
+            const vector<HDFEOS2::Field*>gfields = grid->getDataFields();
+            vector<HDFEOS2::Field*>::const_iterator it_gf;
 
-        for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
+            for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
 
-            bool change_fvtype = false;
+                bool change_fvtype = false;
 
-            // original field name
-            string fname = (*it_gf)->getName();
+                // original field name
+                string fname = (*it_gf)->getName();
 
-            //  new field name that follows CF
-            string newfname = (*it_gf)->getNewName();
+                //  new field name that follows CF
+                string newfname = (*it_gf)->getNewName();
 
-            BESDEBUG("h4","Original field name: " <<  fname << endl);
-            BESDEBUG("h4","Corrected field name: " <<  newfname << endl);
+                BESDEBUG("h4","Original field name: " <<  fname << endl);
+                BESDEBUG("h4","Corrected field name: " <<  newfname << endl);
 
-            // whether coordinate variable or data variables
-            int fieldtype = (*it_gf)->getFieldType(); 
+                // whether coordinate variable or data variables
+                int fieldtype = (*it_gf)->getFieldType(); 
 
-            // 0 means that the data field is NOT a coordinate variable.
-            if (fieldtype == 0){
+                // 0 means that the data field is NOT a coordinate variable.
+                if (fieldtype == 0){
 
-                // If you don't find any _FillValue through generic API.
-                if((*it_gf)->haveAddedFillValue()) {
-                    BESDEBUG("h4","Has an added fill value." << endl);
-                    float addedfillvalue = 
-                        (*it_gf)->getAddedFillValue();
-                    int type = 
-                        (*it_gf)->getType();
-                    BESDEBUG("h4","Added fill value = "<<addedfillvalue);
-                    cf.write_attribute_FillValue(newfname, 
-                                                 type, addedfillvalue);
-                }
-                string coordinate = (*it_gf)->getCoordinate();
-                BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
-                if (coordinate != "") 
-                    cf.write_attribute_coordinates(newfname, coordinate);
-            }
-
-            // This will override _FillValue if it's defined on the field.
-            cf.write_attribute(gname, fname, newfname, 
-                               f->getGrids().size(), fieldtype);  
-
-            // For fieldtype values:
-            // 0 is general fields
-            // 1 is latitude.
-            // 2 is longtitude.    
-            // 3 is defined level.
-            // 4 is an inserted natural number.
-            // 5 is time.
-            if(fieldtype > 0){
-
-                // MOD13C2 is treated specially. 
-                if(fieldtype == 1 && ((*it_gf)->getSpecialLLFormat())==3)
-                    tempstrflag = true;
-
-                // Don't change the units if the 3-rd dimension field exists.(fieldtype =3)
-                // KY 2013-02-15
-                if (fieldtype !=3) {
-                    string tempunits = (*it_gf)->getUnits();
-                    BESDEBUG("h4",
-                             "fieldtype " << fieldtype 
-                             << " units" << tempunits 
-                             << endl);
-                    cf.write_attribute_units(newfname, tempunits);
-                }
-            }
-
-	    //Rename attributes of MODIS products.
-            AttrTable *at = das.get_table(newfname);
-
-            // No need for CF scale and offset equation.
-            if(sotype!=DEFAULT_CF_EQU && at!=NULL)
-            {
-                bool has_Key_attr = false;
-                AttrTable::Attr_iter it = at->attr_begin();
-                while (it!=at->attr_end())
-                {
-                    if(at->get_name(it)=="Key")
-                    {
-                        has_Key_attr = true;
-                        break;
+                    // If you don't find any _FillValue through generic API.
+                    if((*it_gf)->haveAddedFillValue()) {
+                        BESDEBUG("h4","Has an added fill value." << endl);
+                        float addedfillvalue = 
+                            (*it_gf)->getAddedFillValue();
+                        int type = 
+                            (*it_gf)->getType();
+                        BESDEBUG("h4","Added fill value = "<<addedfillvalue);
+                        cf.write_attribute_FillValue(newfname, 
+                                                     type, addedfillvalue);
                     }
-                    it++;
+                    string coordinate = (*it_gf)->getCoordinate();
+                    BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
+                    if (coordinate != "") 
+                        cf.write_attribute_coordinates(newfname, coordinate);
                 }
 
-                if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
-                    HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename), true, newfname,sotype);
-                else {
+                // This will override _FillValue if it's defined on the field.
+                cf.write_attribute(gname, fname, newfname, 
+                                   f->getGrids().size(), fieldtype);  
+
+                // For fieldtype values:
+                // 0 is general fields
+                // 1 is latitude.
+                // 2 is longtitude.    
+                // 3 is defined level.
+                // 4 is an inserted natural number.
+                // 5 is time.
+                if(fieldtype > 0){
+
+                    // MOD13C2 is treated specially. 
+                    if(fieldtype == 1 && ((*it_gf)->getSpecialLLFormat())==3)
+                        tempstrflag = true;
+
+                    // Don't change the units if the 3-rd dimension field exists.(fieldtype =3)
+                    // KY 2013-02-15
+                    if (fieldtype !=3) {
+                        string tempunits = (*it_gf)->getUnits();
+                        BESDEBUG("h4",
+                                 "fieldtype " << fieldtype 
+                                 << " units" << tempunits 
+                                 << endl);
+                        cf.write_attribute_units(newfname, tempunits);
+                    }
+                }
+
+	        //Rename attributes of MODIS products.
+                AttrTable *at = das.get_table(newfname);
+
+                // No need for CF scale and offset equation.
+                if(sotype!=DEFAULT_CF_EQU && at!=NULL)
+                {
+                    bool has_Key_attr = false;
+                    AttrTable::Attr_iter it = at->attr_begin();
+                    while (it!=at->attr_end())
+                    {
+                        if(at->get_name(it)=="Key")
+                        {
+                            has_Key_attr = true;
+                            break;
+                        }
+                        it++;
+                    }
+
+                    if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                        HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename), true, newfname,sotype);
+                    else {
 
 //cerr<<"coming to computation "<<endl;
-                    // Check if the datatype of this field needs to be changed.
-                    bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
+                        // Check if the datatype of this field needs to be changed.
+                        bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
 
-                    // Build up the field name list if the datatype of the field needs to be changed.
-                    if (true == changedtype) 
-                        ctype_field_namelist.push_back(newfname);
+                        // Build up the field name list if the datatype of the field needs to be changed.
+                        if (true == changedtype) 
+                            ctype_field_namelist.push_back(newfname);
 
 //cerr<<"coming to computation 2"<<endl;
-                    HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+                        HDFCFUtil::handle_modis_special_attrs(at,basename(filename),true, newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
           
-                }
-            }
-
-            // Handle AMSR-E attributes.
-            HDFCFUtil::handle_amsr_attrs(at);
-
-            // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
-            // with the variable datatype. Correct the fillvalue datatype if necessary. 
-            if((false == change_fvtype) && at != NULL) {
-                int32 var_type = (*it_gf)->getType();
-                HDFCFUtil::correct_fvalue_type(at,var_type);
-            }
-
-            // if h4.enablecheckscaleoffsettype bes key is true, 
-            //    if yes, check if having scale_factor and add_offset attributes;
-            //       if yes, check if scale_factor and add_offset attribute types are the same;
-            //          if no, make add_offset's datatype be the same as the datatype of scale_factor.
-            // (cf requires the type of scale_factor and add_offset the same).
-            if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
-                HDFCFUtil::correct_scale_offset_type(at);
-        }
-    }
-
-    // MAP Swath attributes to DAS.
-    for (int i = 0; i < (int) f->getSwaths().size(); i++) {
-
-        HDFEOS2::SwathDataset*  swath = f->getSwaths()[i];
-
-        // Swath includes two parts: "Geolocation Fields" and "Data Fields".
-        // The all_fields vector includes both.
-        const vector<HDFEOS2::Field*> geofields = swath->getGeoFields();
-        vector<HDFEOS2::Field*> all_fields = geofields;
-        vector<HDFEOS2::Field*>::const_iterator it_f;
-
-        const vector<HDFEOS2::Field*> datafields = swath->getDataFields();
-        for (it_f = datafields.begin(); it_f != datafields.end(); it_f++)
-            all_fields.push_back(*it_f);
-
-        int total_geofields = geofields.size();
-
-        string gname = swath->getName();
-        BESDEBUG("h4","Swath name: " << gname << endl);
-
-        sotype = swath->getScaleType();
-
-        // field_counter is only used to separate geo field from data field.
-        int field_counter = 0;
-
-        for(it_f = all_fields.begin(); it_f != all_fields.end(); it_f++)
-        {
-            bool change_fvtype = false;
-            string fname = (*it_f)->getName();
-            string newfname = (*it_f)->getNewName();
-            BESDEBUG("h4","Original Field name: " <<  fname << endl);
-            BESDEBUG("h4","Corrected Field name: " <<  newfname << endl);
-
-            int fieldtype = (*it_f)->getFieldType();
-            if (fieldtype == 0){
-                string coordinate = (*it_f)->getCoordinate();
-                BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
-                if (coordinate != "")
-                    cf.write_attribute_coordinates(newfname, coordinate);
-            }
-
-            // 1 is latitude.
-            // 2 is longitude.
-            // Don't change "units" if a non-latlon coordinate variable  exists.
-            //if(fieldtype >0 )
-            if(fieldtype >0 && fieldtype !=3){
-                string tempunits = (*it_f)->getUnits();
-                BESDEBUG("h4",
-                    "fieldtype " << fieldtype 
-                    << " units" << tempunits << endl);
-                cf.write_attribute_units(newfname, tempunits);
-                
-            }
-            BESDEBUG("h4","Field Name: " <<  fname << endl);
-
-            // coordinate "fillvalue" attribute
-            // This operation should only apply to data fields.
-            if (field_counter >=total_geofields) {
-                if((*it_f)->haveAddedFillValue()){
-                    float addedfillvalue = 
-                        (*it_f)->getAddedFillValue();
-                    int type = 
-                        (*it_f)->getType();
-                    BESDEBUG("h4","Added fill value = "<<addedfillvalue);
-                    cf.write_attribute_FillValue(newfname, type, addedfillvalue);
-                }
-            }
-
-            cf.write_attribute(gname, fname, newfname, 
-                               f->getSwaths().size(), fieldtype); 
-
-	    AttrTable *at = das.get_table(newfname);
-
-            // No need for CF scale and offset equation.
-            if(sotype!=DEFAULT_CF_EQU && at!=NULL)
-            {
-
-                bool has_Key_attr = false;
-                AttrTable::Attr_iter it = at->attr_begin();
-                while (it!=at->attr_end())
-                {
-                    if(at->get_name(it)=="Key")
-                    {
-                        has_Key_attr = true;
-                        break;
                     }
-                    it++;
                 }
 
-                if((false == is_modis_l1b) && (false == gridname_change_valid_range) && (true == turn_on_disable_scale_comp_key)) 
-                    HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename),false,newfname,sotype);
-                else {
+                // Handle AMSR-E attributes.
+                HDFCFUtil::handle_amsr_attrs(at);
 
-                    // Check if the datatype of this field needs to be changed.
-                    bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
-
-                    // Build up the field name list if the datatype of the field needs to be changed.
-                    if (true == changedtype) 
-                        ctype_field_namelist.push_back(newfname);
-               
-                    // Handle MODIS special attributes such as valid_range, scale_factor and add_offset etc.
-                    HDFCFUtil::handle_modis_special_attrs(at,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+                // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
+                // with the variable datatype. Correct the fillvalue datatype if necessary. 
+                if((false == change_fvtype) && at != NULL) {
+                    int32 var_type = (*it_gf)->getType();
+                    HDFCFUtil::correct_fvalue_type(at,var_type);
                 }
+
+                // if h4.enablecheckscaleoffsettype bes key is true, 
+                //    if yes, check if having scale_factor and add_offset attributes;
+                //       if yes, check if scale_factor and add_offset attribute types are the same;
+                //          if no, make add_offset's datatype be the same as the datatype of scale_factor.
+                // (cf requires the type of scale_factor and add_offset the same).
+                if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
+                    HDFCFUtil::correct_scale_offset_type(at);
             }
-
-            // Handle AMSR-E attributes
-            HDFCFUtil::handle_amsr_attrs(at);
-
-            // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
-            // with the variable datatype. Correct the fillvalue datatype if necessary. 
-            if((false == change_fvtype) && at != NULL) {
-                int32 var_type = (*it_f)->getType();
-                HDFCFUtil::correct_fvalue_type(at,var_type);
-            }
-
-            // If H4.EnableCheckScaleOffsetType BES key is true,  
-            //    if yes, check if having scale_factor and add_offset attributes; 
-            //       if yes, check if scale_factor and add_offset attribute types are the same; 
-            //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
-            // (CF requires the type of scale_factor and add_offset the same). 
-            if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
-                HDFCFUtil::correct_scale_offset_type(at); 
-
-            field_counter++;
         }
     }
+    catch(...) {
+        delete f;
+        throw;
+    }
+
+    try {
+        // MAP Swath attributes to DAS.
+        for (int i = 0; i < (int) f->getSwaths().size(); i++) {
+
+            HDFEOS2::SwathDataset*  swath = f->getSwaths()[i];
+
+            // Swath includes two parts: "Geolocation Fields" and "Data Fields".
+            // The all_fields vector includes both.
+            const vector<HDFEOS2::Field*> geofields = swath->getGeoFields();
+            vector<HDFEOS2::Field*> all_fields = geofields;
+            vector<HDFEOS2::Field*>::const_iterator it_f;
+
+            const vector<HDFEOS2::Field*> datafields = swath->getDataFields();
+            for (it_f = datafields.begin(); it_f != datafields.end(); it_f++)
+                all_fields.push_back(*it_f);
+
+            int total_geofields = geofields.size();
+
+            string gname = swath->getName();
+            BESDEBUG("h4","Swath name: " << gname << endl);
+
+            sotype = swath->getScaleType();
+
+            // field_counter is only used to separate geo field from data field.
+            int field_counter = 0;
+
+            for(it_f = all_fields.begin(); it_f != all_fields.end(); it_f++)
+            {
+                bool change_fvtype = false;
+                string fname = (*it_f)->getName();
+                string newfname = (*it_f)->getNewName();
+                BESDEBUG("h4","Original Field name: " <<  fname << endl);
+                BESDEBUG("h4","Corrected Field name: " <<  newfname << endl);
+
+                int fieldtype = (*it_f)->getFieldType();
+                if (fieldtype == 0){
+                    string coordinate = (*it_f)->getCoordinate();
+                    BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
+                    if (coordinate != "")
+                        cf.write_attribute_coordinates(newfname, coordinate);
+                }
+
+                // 1 is latitude.
+                // 2 is longitude.
+                // Don't change "units" if a non-latlon coordinate variable  exists.
+                //if(fieldtype >0 )
+                if(fieldtype >0 && fieldtype !=3){
+                    string tempunits = (*it_f)->getUnits();
+                    BESDEBUG("h4",
+                        "fieldtype " << fieldtype 
+                        << " units" << tempunits << endl);
+                    cf.write_attribute_units(newfname, tempunits);
+                
+                }
+                BESDEBUG("h4","Field Name: " <<  fname << endl);
+
+                // coordinate "fillvalue" attribute
+                // This operation should only apply to data fields.
+                if (field_counter >=total_geofields) {
+                    if((*it_f)->haveAddedFillValue()){
+                        float addedfillvalue = 
+                            (*it_f)->getAddedFillValue();
+                        int type = 
+                            (*it_f)->getType();
+                        BESDEBUG("h4","Added fill value = "<<addedfillvalue);
+                        cf.write_attribute_FillValue(newfname, type, addedfillvalue);
+                    }
+                }
+
+                cf.write_attribute(gname, fname, newfname, 
+                                   f->getSwaths().size(), fieldtype); 
+
+	        AttrTable *at = das.get_table(newfname);
+
+                // No need for CF scale and offset equation.
+                if(sotype!=DEFAULT_CF_EQU && at!=NULL)
+                {
+
+                    bool has_Key_attr = false;
+                    AttrTable::Attr_iter it = at->attr_begin();
+                    while (it!=at->attr_end())
+                    {
+                        if(at->get_name(it)=="Key")
+                        {
+                            has_Key_attr = true;
+                            break;
+                        }
+                        it++;
+                    }
+
+                    if((false == is_modis_l1b) && (false == gridname_change_valid_range) &&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
+                        HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename),false,newfname,sotype);
+                    else {
+
+                        // Check if the datatype of this field needs to be changed.
+                        bool changedtype = HDFCFUtil::change_data_type(das,sotype,newfname);
+
+                        // Build up the field name list if the datatype of the field needs to be changed.
+                        if (true == changedtype) 
+
+                            ctype_field_namelist.push_back(newfname);
+               
+                        // Handle MODIS special attributes such as valid_range, scale_factor and add_offset etc.
+                        // Need to catch the exception since this function calls handle_modis_vip_special_attrs that may 
+                        // throw an exception.
+                        HDFCFUtil::handle_modis_special_attrs(at,basename(filename), false,newfname,sotype,gridname_change_valid_range,changedtype,change_fvtype);
+                    }
+                }
+
+                // Handle AMSR-E attributes
+                HDFCFUtil::handle_amsr_attrs(at);
+
+                // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
+                // with the variable datatype. Correct the fillvalue datatype if necessary. 
+                if((false == change_fvtype) && at != NULL) {
+                    int32 var_type = (*it_f)->getType();
+                    HDFCFUtil::correct_fvalue_type(at,var_type);
+                }
+
+                // If H4.EnableCheckScaleOffsetType BES key is true,  
+                //    if yes, check if having scale_factor and add_offset attributes; 
+                //       if yes, check if scale_factor and add_offset attribute types are the same; 
+                //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
+                // (CF requires the type of scale_factor and add_offset the same). 
+                if (true == turn_on_enable_check_scale_offset_key && at !=NULL)  
+                    HDFCFUtil::correct_scale_offset_type(at); 
+
+                field_counter++;
+            }
+        }
+    }
+    catch(...) {
+        delete f;
+        throw;
+    } 
     
 
-    // Handle ECS metadata. The following metadata are what we found so far.
-    write_ecsmetadata(das,cf, "CoreMetadata");
+    try {
+        // Handle ECS metadata. The following metadata are what we found so far.
+        write_ecsmetadata(das,cf, "CoreMetadata");
 
-    write_ecsmetadata(das,cf, "coremetadata");
+        write_ecsmetadata(das,cf, "coremetadata");
 
-    write_ecsmetadata(das,cf,"ArchiveMetadata");
+        write_ecsmetadata(das,cf,"ArchiveMetadata");
 
-    write_ecsmetadata(das,cf,"archivemetadata");
+        write_ecsmetadata(das,cf,"archivemetadata");
 
-    write_ecsmetadata(das,cf,"ProductMetadata");
+        write_ecsmetadata(das,cf,"ProductMetadata");
 
-    write_ecsmetadata(das,cf,"productmetadata");
+        write_ecsmetadata(das,cf,"productmetadata");
 
-    // This cause a problem for a MOD13C2 file, So turn it off temporarily. KY 2010-6-29
-    if(false == tempstrflag) 
-        write_ecsmetadata(das, cf, "StructMetadata");
+        // This cause a problem for a MOD13C2 file, So turn it off temporarily. KY 2010-6-29
+        if(false == tempstrflag) 
+            write_ecsmetadata(das, cf, "StructMetadata");
 
-    // Write other HDF global attributes, this routine must be called after all ECS metadata are handled.
-    write_non_ecsmetadata_attrs(cf);
+        // Write other HDF global attributes, this routine must be called after all ECS metadata are handled.
+        write_non_ecsmetadata_attrs(cf);
 
-    cf.close();
+        cf.close();
+    }
+    catch(...) {
+        delete f;
+        throw;
+    }
     delete f;
     //return true;
     return 1;
 }    
 
 //The wrapper of building HDF-EOS2 and special HDF4 files. 
-void read_das_use_eos2lib(DAS & das, const string & filename)
+void read_das_use_eos2lib(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd)
 {
 
     BESDEBUG("h4","Coming to read_das_use_eos2lib" << endl);
 
-    int ret_value = read_das_hdfeos2(das,filename);
+    int ret_value = read_das_hdfeos2(das,filename,sdfd,fileid, gridfd, swathfd);
+
     BESDEBUG("h4","ret_value of read_das_hdfeos2 is "<<ret_value <<endl);
+
+    // read_das_hdfeos2 return value description:
+    // 0: general non-EOS2 pure HDF4
+    // 1: HDF-EOS2 hybrid 
+    // 2: MOD08_M3
+    //  HDF-EOS2 but no need to use HDF-EOS2 lib: no real dimension scales but have CVs for every dimension, treat differently
+    // 3: AIRS level 3 
+    //  HDF-EOS2 but no need to use HDF-EOS2 lib: 
+    //  have dimension scales but don’t have CVs for every dimension, also need to condense dimensions, treat differently
+    // 4. Expected AIRS level 3
+    // HDF-EOS2 but no need to use HDF-EOS2 lib: Have dimension scales for all dimensions
+    // 5. MERRA 
+    // Special handling for MERRA file as 0.
+
 
     // Treat as pure HDF4 objects
     if (ret_value == 4) {
-        if(read_das_special_eos2(das, filename))
+        if(true == read_das_special_eos2(das, filename,sdfd,fileid))
             return;
     }
     // Special handling, already handled
@@ -1587,12 +1774,13 @@ void read_das_use_eos2lib(DAS & das, const string & filename)
         return;
     }
     else if (ret_value == 1) {
-         //  Map non-EOS2 objects to DDS
-        if(true == read_das_hdfhybrid(das,filename))
+
+        //  Map non-EOS2 objects to DDS
+        if(true == read_das_hdfhybrid(das,filename,sdfd,fileid))
             return;
     }
     else {// ret_value is 0(pure HDF4) or 5(Merra)
-        if(true == read_das_hdfsp(das, filename))
+        if(true == read_das_hdfsp(das, filename,sdfd, fileid))
             return;
     }
 
@@ -1621,23 +1809,23 @@ void read_das_use_eos2lib(DAS & das, const string & filename)
 #endif // #ifdef USE_HDFEOS2_LIB
 
 // The wrapper of building DDS function.
-bool read_dds_hdfsp(DDS & dds, const string & filename)
+//bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd)
+bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid)
 {
+
+    BESDEBUG("h4","Coming to read_dds_sp "<<endl);
     dds.set_dataset_name(basename(filename));
 
-    // Very strange behavior for the HDF4 library, I have to obtain the ID here.
-    // If defined inside the Read function, the id will be 0 and the output is 
-    // unexpected. KY 2010-8-9
-    int32 myfileid;
-    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
-    HDFSP::File *f;
+    HDFSP::File *f = NULL;
 
     try {
         // Read all the information of the HDF4 file
-        f = HDFSP::File::Read(filename.c_str(), myfileid);
+        f = HDFSP::File::Read(filename.c_str(), sdfd,fileid);
     } 
     catch (HDFSP::Exception &e)
     {
+        if(f != NULL) 
+            delete f;
         throw InternalErr(e.what());
     }
     
@@ -1662,8 +1850,15 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
         // When Has_Dim_NoScale_Field is false, it only happens to the OTHERHDF case. 
         // For the OTHERHDF case, we will not map the dimension_no_dim_scale (empty) field. This is equivalent to 
         // (0 == (*it_g)->getFieldType()) || (true == (*it_g)->IsDimScale()) 
-        if (false == f->Has_Dim_NoScale_Field() || (0 == (*it_g)->getFieldType()) || (true == (*it_g)->IsDimScale()))
-            read_dds_spfields(dds,filename,(*it_g),f->getSPType());
+        if (false == f->Has_Dim_NoScale_Field() || (0 == (*it_g)->getFieldType()) || (true == (*it_g)->IsDimScale())){
+            try {
+                read_dds_spfields(dds,filename,sdfd,(*it_g),f->getSPType());
+            }
+            catch(...) {
+                delete f;
+                throw;
+            }
+        }
     }
 
     // Read Vdata fields.
@@ -1687,8 +1882,15 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
     if(true == output_vdata_flag) {
         for(vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
             if(!(*i)->getTreatAsAttrFlag()){
-                for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) 
-                    read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+                for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                    try {
+                        read_dds_spvdfields(dds,filename,fileid,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+                    }
+                    catch(...) {
+                        delete f;
+                        throw;
+                    }
+                }
             }
         }
     }
@@ -1699,24 +1901,23 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
 
 // Follow CF to build DAS for non-HDFEOS2 HDF4 products. This routine also applies
 // to all HDF4 products when HDF-EOS2 library is not configured in.
-bool read_das_hdfsp(DAS & das, const string & filename) 
+//bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd) 
+bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid) 
 {
 
     BESDEBUG("h4","Coming to read_das_sp "<<endl);
 
-    // HDF4 H interface ID
-    int32 myfileid;
-    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
-
     // Define a file pointer
-    HDFSP::File *f;
+    HDFSP::File *f = NULL;
     try {
 
         // Obtain all the necesary information from HDF4 files.
-        f = HDFSP::File::Read(filename.c_str(), myfileid);
+        f = HDFSP::File::Read(filename.c_str(), sdfd,fileid);
     } 
     catch (HDFSP::Exception &e)
     {
+        if (f != NULL)
+            delete f;
         throw InternalErr(e.what());
     }
         
@@ -1766,7 +1967,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
             // So turn it off.
             // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
-            if(f->getSPType() != TRMML2 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
+            if(f->getSPType() != TRMML2_V6 && f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG)
                 archive_metadata.append(tempstring);
         }
         else if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
@@ -1775,7 +1976,7 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
             // So turn it off
             // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
-            if(f->getSPType() != TRMML2 && 
+            if(f->getSPType() != TRMML2_V6 && 
                f->getSPType() != CER_AVG && 
                f->getSPType() != CER_ES4 && 
                f->getSPType() !=CER_SRB && 
@@ -1814,7 +2015,6 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     // Coremetadata, structmetadata and archive metadata need special parsers.
 
     // Write coremetadata.
-//cerr<<"core_metadata "<<endl;
     if(core_metadata.size() > 0){
         AttrTable *at = das.get_table("CoreMetadata");
         if (!at)
@@ -1823,14 +2023,17 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         void *buf = hdfeos_string(core_metadata.c_str());
         parser_arg arg(at);
 
-        if (hdfeosparse(&arg) != 0)
+        if (hdfeosparse(&arg) != 0) {
+            delete f;
+            hdfeos_delete_buffer(buf);
             throw Error("Parse error while processing a CoreMetadata attribute.");
+        }
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
 //cerr<<"parsing error "<<endl;
-            (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2)" << endl
-                << arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2) " << endl;
+        //        << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -1844,13 +2047,16 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(archive_metadata.c_str());
         parser_arg arg(at);
-        if (hdfeosparse(&arg) != 0)
+        if (hdfeosparse(&arg) != 0){
+            delete f;
+            hdfeos_delete_buffer(buf);
             throw Error("Parse error while processing an ArchiveMetadata attribute.");
+        }
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            (*BESLog::TheLog())<< "Parse error while processing an ArchiveMetadata attribute. (2)" << endl
-                << arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog())<< "Parse error while processing an ArchiveMetadata attribute. (2) " << endl;
+ //               << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -1864,14 +2070,24 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(struct_metadata.c_str());
         parser_arg arg(at);
-        if (hdfeosparse(&arg) != 0)
+        if (hdfeosparse(&arg) != 0){
+            delete f;
+            hdfeos_delete_buffer(buf);
             throw Error("Parse error while processing a StructMetadata attribute.");
+        }
+
+        if (arg.status() == false) {
+            (*BESLog::TheLog())<< "Parse error while processing a StructMetadata attribute.  (2)" << endl;
+        }
+
 
         // Errors returned from here are ignored.
+#if 0
         if (arg.status() == false) {
             (*BESLog::TheLog())<< "Parse error while processing a StructMetadata attribute. (2)" << endl
                 << arg.error()->get_error_message() << endl;
         }
+#endif
 
         hdfeos_delete_buffer(buf);
     }
@@ -1924,8 +2140,31 @@ bool read_das_hdfsp(DAS & das, const string & filename)
             }
         }
 
-        if(false == long_name_flag) 
-            at->append_attr("long_name", "String", (*it_g)->getName());
+        if(false == long_name_flag) {
+            if (f->getSPType() == TRMML2_V7)  {
+                if((*it_g)->getFieldType() == 1) 
+                    at->append_attr("standard_name","String","latitude");
+                else if ((*it_g)->getFieldType() == 2) {
+                    at->append_attr("standard_name","String","longitude");
+
+                }
+
+            }
+            else if (f->getSPType() == TRMML3S_V7 || f->getSPType() == TRMML3M_V7) {
+                if((*it_g)->getFieldType() == 1) {
+                    at->append_attr("long_name","String","latitude");
+                    at->append_attr("standard_name","String","latitude");
+
+                }
+                else if ((*it_g)->getFieldType() == 2) {
+                    at->append_attr("long_name","String","longitude");
+                    at->append_attr("standard_name","String","longitude");
+                }
+
+            }
+            else 
+                at->append_attr("long_name", "String", (*it_g)->getName());
+        }
 
         // For some OBPG files that only provide slope and intercept at the file level, 
         // we need to add the global slope and intercept to all fields and change their names to scale_factor and add_offset.
@@ -1989,10 +2228,13 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         // Handle special CF attributes such as units, valid_range and coordinates 
         // Overwrite units if fieldtype is latitude.
         if((*it_g)->getFieldType() == 1){
+
             at->del_attr("units");      // Override any existing units attribute.
             at->append_attr("units", "String",(*it_g)->getUnits());
             if (f->getSPType() == CER_ES4) // Drop the valid_range attribute since the value will be interpreted wrongly by CF tools
                 at->del_attr("valid_range");
+
+                
         }
         // Overwrite units if fieldtype is longitude
         if((*it_g)->getFieldType() == 2){
@@ -2023,9 +2265,12 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         }
     }
 
+
     // For OTHERHDF products, add units for latitude and longitude; also change unit to units.
     HDFCFUtil::handle_otherhdf_special_attrs(f,das);
 
+    // For NASA products, add missing CF attributes if possible
+    HDFCFUtil::add_missing_cf_attrs(f,das);
 
     string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
     bool turn_on_enable_check_scale_offset_key= false;
@@ -2038,7 +2283,13 @@ bool read_das_hdfsp(DAS & das, const string & filename)
         AttrTable *at = das.get_table((*it_g)->getNewName());
         if (at != NULL) {
             int32 var_type = (*it_g)->getType();
-            HDFCFUtil::correct_fvalue_type(at,var_type);
+            try {
+                HDFCFUtil::correct_fvalue_type(at,var_type);
+            }
+            catch(...) {
+                delete f;
+                throw;
+            }
         }
 
         // If H4.EnableCheckScaleOffsetType BES key is true,  
@@ -2056,7 +2307,13 @@ bool read_das_hdfsp(DAS & das, const string & filename)
     // Check the EnableVdataDescAttr key. If this key is turned on, the handler-added attribute VDdescname and
     // the attributes of vdata and vdata fields will be outputed to DAS. Otherwise, these attributes will
     // not outputed to DAS. The key will be turned off by default to shorten the DAP output. KY 2012-09-18
-    HDFCFUtil::handle_vdata_attrs_with_desc_key(f,das);
+    try {
+        HDFCFUtil::handle_vdata_attrs_with_desc_key(f,das);
+    }
+    catch(...) {
+        delete f;
+        throw;
+    }
         
     delete f;
     return true;
@@ -2070,23 +2327,27 @@ bool read_das_hdfsp(DAS & das, const string & filename)
 // this code is not used. We still keep it for the future usage.
 // KY 2014-01-29
 
-bool read_das_special_eos2(DAS &das,const string& filename) {
+bool read_das_special_eos2(DAS &das,const string& filename,int32 sdfd,int32 fileid) {
 
     BESDEBUG("h4","Coming to read_das_special_eos2 " << endl);
 
+#if 0
     // HDF4 H interface ID
     int32 myfileid;
     myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+#endif
 
     // Define a file pointer
-    HDFSP::File *f;
+    HDFSP::File *f = NULL;
     try {
 
         // Obtain all the necesary information from HDF4 files.
-        f = HDFSP::File::Read(filename.c_str(), myfileid);
+        f = HDFSP::File::Read(filename.c_str(), sdfd,fileid);
     } 
     catch (HDFSP::Exception &e)
     {
+        if (f!= NULL)
+            delete f;
         throw InternalErr(e.what());
     }
         
@@ -2100,8 +2361,17 @@ bool read_das_special_eos2(DAS &das,const string& filename) {
         throw InternalErr(e.what());
     }
 
-    read_das_special_eos2_core(das, f, filename);
+    try {
+        read_das_special_eos2_core(das, f, filename);
+    }
+    catch(...) {
+        delete f;
+        throw;
+    }
     delete f;
+
+    // The return value is a dummy value, not used.
+    return true;
 }
 
 // This routine is for special EOS2 that can be tuned to build up DAS and DDS quickly.
@@ -2178,17 +2448,19 @@ bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename) 
         void *buf = hdfeos_string(core_metadata.c_str());
         parser_arg arg(at);
 
-        if (hdfeosparse(&arg) != 0)
+        if (hdfeosparse(&arg) != 0) {
+            hdfeos_delete_buffer(buf);
             throw Error("Parse error while processing a CoreMetadata attribute.");
+        }
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-//cerr<<"parsing error "<<endl;
-            (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2)" << endl
-                << arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog()) << "Parse error while processing a CoreMetadata attribute. (2)" << endl;
+//                << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
+
     }
             
     // Write archive metadata.
@@ -2199,13 +2471,15 @@ bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename) 
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(archive_metadata.c_str());
         parser_arg arg(at);
-        if (hdfeosparse(&arg) != 0)
+        if (hdfeosparse(&arg) != 0) {
+            hdfeos_delete_buffer(buf);
             throw Error("Parse error while processing an ArchiveMetadata attribute.");
+        }
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            (*BESLog::TheLog())<< "Parse error while processing an ArchiveMetadata attribute. (2)" << endl
-                << arg.error()->get_error_message() << endl;
+            (*BESLog::TheLog())<< "Parse error while processing an ArchiveMetadata attribute. (2)" << endl;
+        //        << arg.error()->get_error_message() << endl;
         }
 
         hdfeos_delete_buffer(buf);
@@ -2267,13 +2541,15 @@ bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename) 
             }
         }
 
-
     }
 
+    return true;
 }
 
 // Function to build special AIRS level 3 and MOD08_M3 DDS. Doing this way is for performance reasons.
-bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename) {
+bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, int32 sdid, int32 fileid) {
+
+   BESDEBUG("h4","Coming to read_dds_special_1d_grid "<<endl);
 
    SPType sptype = OTHERHDF;
    const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
@@ -2315,15 +2591,22 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename) 
             vector<HDFSP::Dimension*>::const_iterator it_d;
 
             HDFSPArray_RealField *ar = NULL;
-            ar = new HDFSPArray_RealField(
-                                          (*it_g)->getRank(),
-                                          filename,
-                                          (*it_g)->getSDSref(),
-                                          (*it_g)->getType(),
-                                          sptype,
-                                          (*it_g)->getName(),
-                                          (*it_g)->getNewName(),
-                                          bt);
+
+            try {
+                ar = new HDFSPArray_RealField(
+                                              (*it_g)->getRank(),
+                                              sdid,
+                                              (*it_g)->getFieldRef(),
+                                              (*it_g)->getType(),
+                                              sptype,
+                                              (*it_g)->getName(),
+                                              (*it_g)->getNewName(),
+                                              bt);
+            }
+            catch(...) {
+                delete bt;
+                InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+            }
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
             dds.add_var(ar);
@@ -2338,8 +2621,9 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename) 
 }
 
 // Read SDS fields
-void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SPType sptype) {
+void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDField *spsds, SPType sptype) {
 
+    BESDEBUG("h4","Coming to read_dds_spfields "<<endl);
     // Ignore the dimension variable that is empty for non-special handling NASA HDF products
     if(OTHERHDF == sptype && (true == spsds->IsDimNoScale()))
         return;
@@ -2380,15 +2664,23 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
         if(fieldtype == 0 || fieldtype == 3 ) {
 
             HDFSPArray_RealField *ar = NULL;
-            ar = new HDFSPArray_RealField(
-                                          spsds->getRank(),
-                                          filename,
-                                          spsds->getSDSref(),
-                                          spsds->getType(),
-                                          sptype,
-                                          spsds->getName(),
-                                          spsds->getNewName(),
-                                          bt);
+
+            try {
+                ar = new HDFSPArray_RealField(
+                                              spsds->getRank(),
+                                              sdfd,
+                                              spsds->getFieldRef(),
+                                              spsds->getType(),
+                                              sptype,
+                                              spsds->getName(),
+                                              spsds->getNewName(),
+                                              bt);
+            }
+            catch(...) {
+                delete bt;
+                InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+            }
+
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
             dds.add_var(ar);
@@ -2399,18 +2691,27 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
         // For latitude and longitude
         if(fieldtype == 1 || fieldtype == 2) {
 
-            if(sptype == MODISARNSS) { 
+            if(sptype == MODISARNSS || sptype == TRMML2_V7) { 
 
                 HDFSPArray_RealField *ar = NULL;
-                ar = new HDFSPArray_RealField(
-                                              spsds->getRank(),
-                                              filename,
-                                              spsds->getSDSref(),
-                                              spsds->getType(),
-                                              sptype,
-                                              spsds->getName(),
-                                              spsds->getNewName(),
-                                              bt);
+
+                try {
+                    ar = new HDFSPArray_RealField(
+                                                  spsds->getRank(),
+                                                  sdfd,
+                                                  spsds->getFieldRef(),
+                                                  spsds->getType(),
+                                                  sptype,
+                                                  spsds->getName(),
+                                                  spsds->getNewName(),
+                                                  bt);
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,
+                                "Unable to allocate the HDFSPArray_RealField instance.");
+                }
+
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -2423,16 +2724,24 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
 
                 HDFSPArrayGeoField *ar = NULL;
 
-                ar = new HDFSPArrayGeoField(
-                                            spsds->getRank(),
-                                            filename,
-                                            spsds->getSDSref(),
-                                            spsds->getType(),
-                                            sptype,
-                                            fieldtype,
-                                            spsds->getName(),
-                                            spsds->getNewName(), 
-                                            bt);
+                try {
+                    ar = new HDFSPArrayGeoField(
+                                                spsds->getRank(),
+                                                sdfd,
+                                                spsds->getFieldRef(),
+                                                spsds->getType(),
+                                                sptype,
+                                                fieldtype,
+                                                spsds->getName(),
+                                                spsds->getNewName(), 
+                                                bt);
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,
+                                "Unable to allocate the HDFSPArray_RealField instance.");
+                }
+
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                     ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                 dds.add_var(ar);
@@ -2450,11 +2759,20 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
             int nelem = (spsds->getDimensions()[0])->getSize();
                         
             HDFSPArrayMissGeoField *ar = NULL;
-            ar = new HDFSPArrayMissGeoField(
+
+            try {
+                ar = new HDFSPArrayMissGeoField(
                                             spsds->getRank(),
                                             nelem,
                                             spsds->getNewName(),
                                             bt);
+            }
+            catch(...) {                
+                delete bt;
+                InternalErr(__FILE__,__LINE__,
+                                "Unable to allocate the HDFSPArrayMissGeoField instance.");
+            }   
+
 
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -2462,13 +2780,49 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
             delete bt;
             delete ar;
         }
+        // fieldtype =5 originally keeps for time. Still keep it for a while.
+
+        if(fieldtype == 6) { //Coordinate variables added from the product specification
+
+            if(spsds->getRank()!=1){
+                delete bt;
+                throw InternalErr(__FILE__, __LINE__, "The rank of added coordinate variable  must be 1");
+            }
+            int nelem = (spsds->getDimensions()[0])->getSize();
+
+            HDFSPArrayAddCVField *ar = NULL;
+            try {
+                ar = new HDFSPArrayAddCVField(
+                                            spsds->getType(),
+                                            sptype,
+                                            spsds->getName(),
+                                            nelem,
+                                            spsds->getNewName(),
+                                            bt);
+            }
+            catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,
+                                "Unable to allocate the HDFSPArrayAddCVField instance.");
+            }
+
+
+            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+            dds.add_var(ar);
+            delete bt;
+            delete ar;
+        }
+
                    
     }
 
 }
 
 // Read Vdata fields.
-void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numrec,HDFSP::VDField *spvd) {
+void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int32 objref,int32 numrec,HDFSP::VDField *spvd) {
+
+    BESDEBUG("h4","Coming to read_dds_spvdfields "<<endl);
 
     // First map the HDF4 datatype to DAP2
     BaseType *bt=NULL;
@@ -2506,7 +2860,7 @@ void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numr
         int vdrank = ((spvd->getFieldOrder())>1)?2:1;
         ar = new HDFSPArray_VDField(
                                     vdrank,
-                                    filename,
+                                    fileid,
                                     objref,
                                     spvd->getType(),
                                     spvd->getFieldOrder(),
@@ -2533,22 +2887,23 @@ void read_dds_spvdfields(DDS &dds,const string& filename,int32 objref,int32 numr
 
 // This routine will check if this is a special EOS2 file that we can improve the performance
 // Currently AIRS level 3 version 6 and MOD08_M3-like products are what we can serve. KY 2014-01-29
-int check_special_eosfile(const string & filename, string& grid_name) {
+int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd,int32 fileid ) {
 
-    int32 sdid     = 0;
+    //int32 sdid     = 0;
     int32 sds_id   = 0;
-    int n_sds      = 0;
-    int n_sd_attrs = 0;
+    int32 n_sds      = 0;
+    int32 n_sd_attrs = 0;
     bool is_eos    = false;
     int ret_val    = 1;
 
+#if 0
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (sdid <0)
         throw InternalErr(__FILE__, __LINE__, "The SD interface cannot be open.");
+#endif
 
     // Obtain number of SDS objects and number of SD(file) attributes
-    if (SDfileinfo (sdid, &n_sds, &n_sd_attrs) == FAIL){
-        SDend(sdid);
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
 
@@ -2559,8 +2914,7 @@ int check_special_eosfile(const string & filename, string& grid_name) {
 
     // Is this an HDF-EOS2 file? 
     for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
-        if(SDattrinfo(sdid,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
-            SDend(sdid);
+        if(SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
             throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
         }
 
@@ -2573,10 +2927,10 @@ int check_special_eosfile(const string & filename, string& grid_name) {
     if(true == is_eos) {
 
         int sds_index  = 0;
-        int sds_rank   = 0;
+        int32 sds_rank   = 0;
         int32 dim_sizes[H4_MAX_VAR_DIMS];
         int32 sds_dtype = 0;
-        int  n_sds_attrs = 0;
+        int32  n_sds_attrs = 0;
         char sds_name[H4_MAX_NC_NAME];
         char xdim_name[] ="XDim";
         char ydim_name[] ="YDim";
@@ -2588,11 +2942,10 @@ int check_special_eosfile(const string & filename, string& grid_name) {
 
 
         // The following for-loop checks if this is a MOD08_M3-like HDF-EOS2 product.
-        for (sds_index = 0; sds_index < n_sds; sds_index++) {
+        for (sds_index = 0; sds_index < (int)n_sds; sds_index++) {
         
-            sds_id = SDselect (sdid, sds_index);
+            sds_id = SDselect (sdfd, sds_index);
             if (sds_id == FAIL) {
-                SDend(sdid);
                 throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
             }
 
@@ -2601,7 +2954,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                                               &sds_dtype, &n_sds_attrs);
             if (status == FAIL) {
                 SDendaccess(sds_id);
-                SDend(sdid);
                 throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
             }
 
@@ -2612,7 +2964,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 sds_dimid = SDgetdimid(sds_id,0);          
                     if(sds_dimid == FAIL) {
                         SDendaccess(sds_id);
-                        SDend(sdid);
                         throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
                     }
                     char dim_name[H4_MAX_NC_NAME];
@@ -2621,7 +2972,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        SDend(sdid);
                         throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
                     }
 
@@ -2648,7 +2998,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 sds_dimid = SDgetdimid(sds_id,0);          
                     if(sds_dimid == FAIL) {
                         SDendaccess (sds_id);
-                        SDend(sdid);
                         throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
                     }
                     char dim_name[H4_MAX_NC_NAME];
@@ -2657,7 +3006,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        SDend(sdid);
                         throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
                     }
 
@@ -2677,10 +3025,10 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                 }
             }
 
+            SDendaccess(sds_id);
             if((true == xdim_is_cv_flag) && (true == ydim_is_cv_flag ))
               break;
 
-            SDendaccess(sds_id);
         }
 
         // If one-grid and variable XDim/YDim exist and also they don't have dim. scales,we treat this as MOD08-M3-like products
@@ -2700,9 +3048,8 @@ int check_special_eosfile(const string & filename, string& grid_name) {
             // Go through the SDS object and check if this file has dimension scales.
             for (sds_index = 0; sds_index < n_sds; sds_index++) {
         
-                sds_id = SDselect (sdid, sds_index);
+                sds_id = SDselect (sdfd, sds_index);
                 if (sds_id == FAIL) {
-                    SDend(sdid);
                     throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
                 }
 
@@ -2711,7 +3058,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                                               &sds_dtype, &n_sds_attrs);
                 if (status == FAIL) {
                     SDendaccess(sds_id);
-                    SDend(sdid);
                     throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
                 }
 
@@ -2720,7 +3066,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 sds_dimid = SDgetdimid(sds_id,dim_index);          
                     if(sds_dimid == FAIL) {
                         SDendaccess(sds_id);
-                        SDend(sdid);
                         throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
                     }
 
@@ -2730,7 +3075,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        SDend(sdid);
                         throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
                     }
 
@@ -2810,7 +3154,6 @@ int check_special_eosfile(const string & filename, string& grid_name) {
         }
     }
 
-    SDend(sdid);
     return ret_val;
 }
 
@@ -3238,8 +3581,6 @@ void AddHDFAttr(DAS & das, const string & varname,
 
                 // tell lexer to scan attribute string
                 void *buf = hdfeos_string(attv[j].c_str());
-// TESTING BES DEbug
-BESDEBUG("h4","Testing Debug message "<<endl);
 
                 // cerr << "About to print attributes to be parsed..." << endl;
                 // TODO: remove when done!
@@ -3257,18 +3598,16 @@ BESDEBUG("h4","Testing Debug message "<<endl);
                 // features and not this older parser. jhrg 8/18/11
                 //
                 // TODO: How to log (as opposed to using BESDEBUG)?
-                if (hdfeosparse(&arg) != 0)
+                if (hdfeosparse(&arg) != 0){
+                    hdfeos_delete_buffer(buf);
                     throw Error("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute.");
+                }
 
+                // We don't use the parse_error for this case since it generates memory leaking. KY 2014-02-25
                 if (arg.status() == false) {
-#if 0
-                    cerr << "HDF-EOS parse error while processing a "
-                    << container_name << " HDFEOS attribute. (2)" << endl
-                    << arg.error()->get_error_message() << endl;
-#endif
                     (*BESLog::TheLog())<< "HDF-EOS parse error while processing a "
-                    << container_name << " HDFEOS attribute. (2)" << endl
-                    << arg.error()->get_error_message() << endl;
+                    << container_name << " HDFEOS attribute. (2)" << endl;
+                    //<< arg.error()->get_error_message() << endl;
                 }
 
                 hdfeos_delete_buffer(buf);

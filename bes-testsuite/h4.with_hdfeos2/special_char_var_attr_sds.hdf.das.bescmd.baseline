@@ -1,0 +1,13 @@
+Attributes {
+    sds {
+        String long_name "sds";
+        String sds_attr_name "Storm_track_data&w
+<e>	winds";
+    }
+    sds_dim_0 {
+        String name "fakeDim0";
+    }
+    sds_dim_1 {
+        String name "fakeDim1";
+    }
+}

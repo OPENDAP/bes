@@ -36,8 +36,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
     int32 vrefid = Vfind(file_id, (char*)_gname.c_str());
     if (FAIL == vrefid) {
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<"cannot obtain the reference number for vgroup "<<_gname;
         throw_error(error.str());
@@ -47,8 +45,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
     int32 vgroup_id = Vattach(file_id, vrefid, "r");
     if (FAIL == vgroup_id) {
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<"cannot obtain the group id for vgroup "<<_gname;
         throw_error(error.str());
@@ -62,8 +58,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
     if(npairs < 0){
         Vdetach(vgroup_id);
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error << "Got " << npairs
               << " npairs for " << _gname;
@@ -81,8 +75,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
             // I believe this is wrong. Use DAP's internal error to throw an error.KY 2011-4-26 
             Vdetach(vgroup_id);
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error  << "failed to get tag / ref";
             throw_error(error.str());
@@ -100,8 +92,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error  << "cannot obtain the vgroup id";
                 throw_error(error.str());
@@ -115,8 +105,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
                 Vdetach(vgroup_cid);
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error  << "cannot obtain the vgroup id";
                 throw_error(error.str());
@@ -134,8 +122,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
             if (FAIL == Vdetach(vgroup_cid)) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error  << "cannot close the vgroup "<< cvgroup_name <<"Successfully";
                 throw_error(error.str());
@@ -149,8 +135,6 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 
     if (FAIL == Vdetach(vgroup_id)) {
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error  << "cannot close the vgroup "<< _gname <<"Successfully";
         throw_error(error.str());
@@ -160,32 +144,17 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 }
 
 bool 
-HE2CF::open_sd(const string& _filename)
+HE2CF::open_sd(const string& _filename,const int sd_id_in)
 {
     int32 num_datasets = -1;
 
-    sd_id = SDstart(_filename.c_str(), DFACC_READ);
-    if(sd_id == FAIL){
-        if(file_id != -1) {
-            Vend(file_id);
-            Hclose(file_id);
-        }
-        ostringstream error;
-        error << "Failed to call SDstart() on "
-              << _filename
-              <<  " file.";
-        throw_error(error.str());        
-        return false;
-    }
-    
+    sd_id = sd_id_in;
     if(SDfileinfo(sd_id, &num_datasets, &num_global_attributes)
         == FAIL){
 
-        if(file_id != -1) {
+        if(file_id != -1) 
             Vend(file_id);
-            Hclose(file_id);
-        }
-        SDend(sd_id);
+        
         ostringstream error;
         error << "Failed to call SDfileinfo() on "
               << _filename
@@ -197,19 +166,11 @@ HE2CF::open_sd(const string& _filename)
 }
 
 bool 
-HE2CF::open_vgroup(const string& _filename)
+HE2CF::open_vgroup(const string& _filename,const int file_id_in)
 {
 
-    if ((file_id = Hopen(_filename.c_str(), DFACC_RDONLY, 0)) < 0){
-        if (sd_id != -1) 
-            SDend(sd_id);
-        ostringstream error;        
-        error << "Failed to call Hopen on " << _filename << endl;
-        throw_error(error.str());
-        return false;
-    }
+    file_id = file_id_in;
     if (Vstart(file_id) < 0){
-        Hclose(file_id);
         ostringstream error;        
         error << "Failed to call Vstart on " << _filename << endl;
         throw_error(error.str());        
@@ -379,12 +340,10 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 
         // H4_MAX_NC_NAME is from the user guide example. It's 256.
         char temp_name[H4_MAX_NC_NAME];     
-        int32 attr_type=0;
+        int32 attr_type = 0;
         int32 attr_count = 0;
         if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error <<  "Fail to obtain SDS global attribute info."  << endl;
             throw_error(error.str());
@@ -399,28 +358,45 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
             continue;
             
 
-        char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
+        // USE VECTOR
+        //char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
+        vector<char>attr_data;
+        attr_data.resize((attr_count+1) *DFKNTsize(attr_type));
+#if 0
         if(attr_data == NULL){
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error <<  "Fail to calloc memory"  << endl;
             throw_error(error.str());
         }
+#endif
 
-        if(SDreadattr(sd_id, i, attr_data) == FAIL){
+        //if(SDreadattr(sd_id, i, attr_data) == FAIL){
+        if(SDreadattr(sd_id, i, &attr_data[0]) == FAIL){
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
-            delete[] attr_data;
+            //delete[] attr_data;
             ostringstream error;
             error <<  "Fail to read SDS global attributes"  << endl;
             throw_error(error.str());
 
         }
-            
-        attr_data[attr_count] = '\0';
+#if 0
+if (1==attr_count && DFNT_INT32==attr_type) {
+cerr<<"attr_name is "<< attr_namestr<<endl;
+cerr<<"attr value is "<<*(int*)&attr_data[0] <<endl;
+}
+#endif
+
+
+        // Handle character type attribute as a string.
+	if (attr_type == DFNT_CHAR || attr_type == DFNT_UCHAR) {
+	    //*(value + n_values) = '\0';
+        //    value[n_values] = '\0';
+	    //n_values = 1;
+            attr_data[attr_count] = '\0';
+            attr_count = 1;
+	}
+ 
              
         AttrTable *at = das->get_table("HDF_GLOBAL");
         if (!at)
@@ -428,6 +404,7 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 
         attr_namestr = HDFCFUtil::get_CF_string(attr_namestr);
 
+#if 0
         if(attr_type == DFNT_UCHAR || attr_type == DFNT_CHAR){
             string tempstring2(attr_data);
             string tempfinalstr= string(tempstring2.c_str());
@@ -437,17 +414,18 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
             at->append_attr(attr_namestr, "String" , HDFCFUtil::escattr(tempfinalstr));
         }
     
-        else {
-            for (int loc=0; loc < attr_count ; loc++) {
-                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)attr_data );
+#endif
+        
+        for (int loc=0; loc < attr_count ; loc++) {
+                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)&attr_data[0] );
                 at->append_attr(attr_namestr, HDFCFUtil::print_type(attr_type), print_rep);
-            }
-
         }
 
+        
 
-        delete[] attr_data;                    
-        attr_data = NULL;
+
+        //delete[] attr_data;                    
+        //attr_data = NULL;
 
     }
 
@@ -481,8 +459,6 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
         int32 attr_count = 0;
         if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error <<  "Fail to obtain SDS global attribute info."  << endl;
             throw_error(error.str());
@@ -594,8 +570,6 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
     int32 sds_index = SDfindattr(sd_id, attrname.c_str());
     if(sds_index == FAIL){
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "Failed to obtain the SDS global attribute"  << attrname << endl;
         throw InternalErr(__FILE__, __LINE__,error.str());
@@ -608,8 +582,6 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
 
     if(SDattrinfo(sd_id, sds_index, temp_name, &type, &count) == FAIL) {
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "Failed to obtain the SDS global attribute"  << attrname << "information" << endl;
         throw InternalErr(__FILE__, __LINE__,error.str());
@@ -620,8 +592,6 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
 
     if(SDreadattr(sd_id, sds_index, &attrvalue[0]) == FAIL){
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "Failed to read the SDS global attribute"  << attrname << endl;
         throw InternalErr(__FILE__, __LINE__,error.str());
@@ -649,9 +619,7 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 //cerr<<"before Vattach ref id "<<_refid <<endl;
     int32 vgroup_id = Vattach(file_id, _refid, "r");
     if (FAIL == vgroup_id) {
-        SDend(sd_id);
         Vend(file_id);
-        Hclose(file_id);
         ostringstream error;
         error <<  "Fail to attach the vgroup " ;
         throw_error(error.str());
@@ -663,8 +631,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
     if (FAIL == npairs) {
         Vdetach(vgroup_id);
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "Fail to obtain the number of objects in a group " ;
         throw_error(error.str());
@@ -679,8 +645,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
         if (Vgettagref(vgroup_id, i, &tag2, &ref2) < 0){
             Vdetach(vgroup_id);
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error <<  "Vgettagref failed for vgroup_id=."  << vgroup_id;
             throw_error(error.str());
@@ -693,8 +657,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
             if (FAIL == sds_index) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "Cannot obtain the SDS index ";
                 throw_error(error.str());
@@ -706,8 +668,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "Cannot obtain the SDS ID ";
                 throw_error(error.str());
@@ -724,8 +684,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "Cannot obtain the SDS info.";
                 throw_error(error.str());
@@ -743,8 +701,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "VSattach failed for file_id=."  << file_id;
                 throw_error(error.str());
@@ -753,8 +709,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "VSgetname failed for file_id=."  << file_id;
                 throw_error(error.str());
@@ -764,8 +718,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;
                 error <<  "VSdetach failed for file_id=."  << file_id;
                 throw_error(error.str());
@@ -776,8 +728,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
     if (FAIL == Vdetach(vgroup_id)){
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "VSdetach failed for file_id=."  << file_id;
         throw_error(error.str());
@@ -841,9 +791,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
     if (FAIL == status) {
 
         Vend(file_id);
-        Hclose(file_id);
         SDendaccess(_sds_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "Cannot obtain the SDS info. ";
         throw_error(error.str());
@@ -859,9 +807,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
         if (status < 0){
 
             Vend(file_id);
-            Hclose(file_id);
             SDendaccess(_sds_id);
-            SDend(sd_id);
 
             ostringstream error;
             error << "SDattrinfo() failed on " << buf_attr;
@@ -877,17 +823,17 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
             at = das->add_table(_newfname, new AttrTable);
         }
 
-        //char* value = new char [(n_values+1) * sizeof(datatype)];
-        char* value = new char [(n_values+1) * DFKNTsize(datatype)];
-        status = SDreadattr(_sds_id, j, value);
+        // USE VECTOR
+        //char* value = new char [(n_values+1) * DFKNTsize(datatype)];
+        vector<char> value;
+        value.resize((n_values+1) * DFKNTsize(datatype));
+        //status = SDreadattr(_sds_id, j, value);
+        status = SDreadattr(_sds_id, j, &value[0]);
 
         if (status < 0){
 
             Vend(file_id);
-            Hclose(file_id);
             SDendaccess(_sds_id);
-            SDend(sd_id);
-
             ostringstream error;
             error << "SDreadattr() failed on " << buf_attr << endl;
             throw_error(error.str());
@@ -895,7 +841,8 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 
         // Handle character type attribute as a string.
 	if (datatype == DFNT_CHAR || datatype == DFNT_UCHAR) {
-	    *(value + n_values) = '\0';
+	    //*(value + n_values) = '\0';
+            value[n_values] = '\0';
 	    n_values = 1;
 	}
         
@@ -904,7 +851,8 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
         string attr_cf_name = string(buf_attr,strlen(buf_attr));
         attr_cf_name = HDFCFUtil::get_CF_string(attr_cf_name);
 	for (int loc=0; loc < n_values ; loc++) {
-	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)value);
+	    //string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)value);
+	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)&value[0]);
 
             // Override any existing _FillValue attribute.
             // if(!strncmp(buf_attr, "_FillValue", H4_MAX_NC_NAME)){
@@ -925,7 +873,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 
 	}
         status = SDendaccess(_sds_id); 
-        delete[] value;
+        //delete[] value;
     }
     return true;
 }
@@ -940,8 +888,6 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
     if ((vid = VSattach(file_id, _vd_id, "r")) < 0) {
 
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
        
         ostringstream error;
         error <<  "VSattach failed.";
@@ -956,8 +902,6 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
 
         VSdetach(vid);
         Vend(file_id);
-        Hclose(file_id);
-        SDend(sd_id);
         ostringstream error;
         error <<  "VSfnattrs failed.";
         throw_error(error.str());
@@ -975,39 +919,40 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
 
             VSdetach(vid);
             Vend(file_id);
-            Hclose(file_id);
-            SDend(sd_id);
             ostringstream error;
             error << "VSattrinfo failed.";
             throw_error(error.str());
         }
-        char *data = NULL;
 
-        try {
+     //   char *data = NULL;
+        vector<char> data;     
 
-            data = new char [(count_v+1) * DFKNTsize(number_type)];
-            if (VSgetattr(vid, _HDF_VDATA, i, data) < 0) {
+      //  try {
+
+        //    data = new char [(count_v+1) * DFKNTsize(number_type)];
+            data.resize((count_v+1) * DFKNTsize(number_type));
+            if (VSgetattr(vid, _HDF_VDATA, i, &data[0]) < 0) {
 
                 // problem: clean up and throw an exception
-
+                //delete []data;
                 VSdetach(vid);
                 Vend(file_id);
-                Hclose(file_id);
-                SDend(sd_id);
                 ostringstream error;            
                 error << "VSgetattr failed.";
                 throw_error(error.str());
             }
             // Handle character type attribute as a string.
 	    if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
-	        *(data + count_v) = '\0';
+	        //*(data + count_v) = '\0';
+                data[count_v] ='\0';  
 	        count_v = 1;
 	    }
         
         
             for(int j=0; j < count_v ; j++){
 
-	        string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data);
+	        //string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data);
+	        string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)&data[0]);
 
                 // Override any existing _FillValue attribute.
                 if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
@@ -1019,16 +964,23 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
                 }
 
                 string vdataname(buf);
+//cerr<<"vdata name "<<vdataname <<endl;
+//cerr<<"vdata value "<<print_rep << endl;
 	        at->append_attr(HDFCFUtil::get_CF_string(buf), HDFCFUtil::print_type(number_type), print_rep);
 
             }
-        }
 
+           // if(data != NULL)
+            //    delete[] data;
+        //}
+
+#if 0
         catch (...) {
             if (data != NULL) 
                 delete[] data;
             throw_error("Cannot allocate enough memory for the data buffer");
         }
+#endif
         
     } // for 
     //  We need to call VFnfields to process fields as well in near future.
@@ -1065,18 +1017,9 @@ HE2CF::~HE2CF()
 bool
 HE2CF::close()
 {
-    // Close SD interface.
-    int32 istat = SDend(sd_id);
-
-    if(istat == FAIL){
-        ostringstream error;                
-        error << "Failed to call SDend in HE2CF::close.";
-        throw_error(error.str());        
-        return false;
-    }
     
     // Close Vgroup interface.
-    istat = Vend(file_id);
+    int istat = Vend(file_id);
     if(istat == FAIL){
         ostringstream error;                
         error << "Failed to call Vend in HE2CF::close.";
@@ -1084,13 +1027,6 @@ HE2CF::close()
         return false;
     }
     
-    istat =  Hclose(file_id);
-    if(istat == FAIL){
-        ostringstream error;                
-        error << "Failed to call Hclose in HE2CF::close.";
-        throw_error(error.str());        
-        return false;
-    }
     return true;
 }
 
@@ -1104,7 +1040,7 @@ HE2CF::get_metadata(const string& _name, bool& suffix_is_number,vector<string>&m
 }
 
 bool
-HE2CF::open(const string& _filename)
+HE2CF::open(const string& _filename,const int sd_id, const int file_id)
 {
     if(_filename == ""){
         ostringstream error;                
@@ -1113,14 +1049,14 @@ HE2CF::open(const string& _filename)
         return false;
     }
     
-    if(!open_vgroup(_filename)){
+    if(!open_vgroup(_filename,file_id)){
         ostringstream error;                
         error << "=open(): failed to open vgroup.";
         throw_error(error.str());        
         return false;        
     }
     
-    if(!open_sd(_filename)){
+    if(!open_sd(_filename,sd_id)){
         ostringstream error;                
         error << "=open(): failed to open sd.";
         throw_error(error.str());        

@@ -101,10 +101,10 @@ class HE2CF
         bool get_vgroup_field_refids(const string&  _gname, int32* _ref_df, int32* _ref_gf);
 
         // Open SD 
-        bool open_sd(const string& filename);
+        bool open_sd(const string& filename,const int sd_id);
 
         // Open vgroup
-        bool open_vgroup(const string& filename);
+        bool open_vgroup(const string& filename,const int fileid);
 
         // Combine ECS metadata coremetadata.0, coremetadata.1 etc. into one string.
         bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
@@ -148,7 +148,7 @@ class HE2CF
         bool set_non_ecsmetadata_attrs();
 
         /// openes \afilename  HDF4 file.
-        bool   open(const string& filename);
+        bool   open(const string& filename,const int sd_id, const int file_id);
 
         /// sets DAS pointer so that we can bulid attribute tables.
         void   set_DAS(DAS* das);

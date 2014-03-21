@@ -1,0 +1,7 @@
+The data:
+Int16 SDS_None[fakeDim0 = 3][fakeDim1 = 4] = {{1, 1, 2, 2},{3, 3, 0, 4},{0, 0, 6, 6}};
+Int16 SDS_RLE[fakeDim2 = 3][fakeDim3 = 4] = {{1, 1, 2, 2},{3, 3, 0, 4},{0, 0, 6, 6}};
+Int16 SDS_N_bit[fakeDim4 = 3][fakeDim5 = 4] = {{1, 1, 2, 2},{3, 3, 0, 4},{0, 0, 6, 6}};
+Int16 SDS_Skip_Huffman[fakeDim6 = 3][fakeDim7 = 4] = {{1, 1, 2, 2},{3, 3, 0, 4},{0, 0, 6, 6}};
+Int16 SDS_Deflate[fakeDim8 = 3][fakeDim9 = 4] = {{1, 1, 2, 2},{3, 3, 0, 4},{0, 0, 6, 6}};
+

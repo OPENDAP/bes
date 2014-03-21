@@ -48,4 +48,8 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool hdf4_build_version(BESDataHandlerInterface & dhi);
 };
 
+
+void close_fileid(const int sdfd, const int fileid,const int gridfd, const int swathfd); 
+void close_hdf4_fileid(const int sdfd,const int fileid);
+
 #endif

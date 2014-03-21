@@ -8,7 +8,7 @@ Attributes {
         Byte Vdata_field_dUINT8 0, 1, 255, 1, 5, 4, 1;
         Float32 Vdata_field_dFLOAT32 0.000000000, 1.000000000, -1.000000000, 3.402823466e+38, 1.401298464e-45, -3.402823466e+38, -1.401298464e-45;
         Float64 Vdata_field_dFLOAT64 0.0000000000000000, 1.0000000000000000, -1.0000000000000000, 1.7976931348623157e+308, 4.9406564584124654e-324, -1.7976931348623157e+308, -4.9406564584124654e-324;
-        String Vdata_field_dCHAR8 "";
-        String Vdata_field_dUCHAR8 "";
+        String Vdata_field_dCHAR8 "\000\001\377\177\200\004\002";
+        String Vdata_field_dUCHAR8 "\000\001\377\001\005\004\001";
     }
 }

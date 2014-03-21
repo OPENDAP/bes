@@ -1,94 +1,106 @@
-Version 3.11.3
+Version 3.11.4 (1 April 2014)
 
-Optimized handler for MOD08 M3 and AIRS version 6 products with new BES keys.
+  Added support for TRMM version 7 products. 
 
-Version 3.11.2
+Version 3.11.3 (1 February 2014)
 
-Works with libdap 3.12.1 and the documented behavior for BaseType::read().
+  Optimized handler for MOD08 M3 and AIRS version 6 products with new BES keys.
 
-Version 3.11.1
+Version 3.11.2 (18 October 2013)
 
-Internal code refinements.
+  Works with libdap 3.12.1 and the documented behavior for BaseType::read().
 
-Version 3.11.0
+Version 3.11.1 (10 September 2013)
+
+  Internal code refinements.
+
+Version 3.11.0 (30 May 2013)
+
   This version fixed several bugs in handling MODIS (including version 6) and 
 MEaSUREs VIP products. It also improved the CF attributes handling such as 
 valid_range and scale/offset and the archive metadata handling. It provides a 
 new testsuite that users can download and test sample NASA files. The codes
  are cleaned up as well to improve readibility.
 
-Version 3.10.1
+Version 3.10.1 (27 Nov 2012)
+
   This version changes the _FillValue datatype to be consistent with the 
 variable datatype. This is not required by CF, however, netCDF-3 has this 
 requirement. This change makes fileout_netcdf work smoothly for some NASA 
 products.
 
 
-Version 3.10.0
+Version 3.10.0 (30 Sep 2012)
 
-Added BESkey for enabling CF option. 
-Fixed many bugs in handling NASA products under CF option.
-Using HDF-EOS2 library is now optional for pure HDF4 products to genereate
+  Added BESkey for enabling CF option. 
+
+  Fixed many bugs in handling NASA products under CF option.
+
+  Using HDF-EOS2 library is now optional for pure HDF4 products to genereate
 outputs that meet CF-conventions. Configuring with HDF-EOS2 library is
 strongly recommended for all HDF-EOS2 products and HDF4+HDF-EOS2 hybrid 
 products.
-Please read README for new features, bug fixes, limitations and known issues.
 
-Version 3.9.4
+  Please read README for new features, bug fixes, limitations and known issues.
 
-Fixed the bug in uint16/uint32 type attribute handling.
-Correced the handling the scale/offset for MODIS products because the 
+Version 3.9.4 (19 Jan, 2011)
+
+  Fixed the bug in uint16/uint32 type attribute handling.
+
+  Correced the handling the scale/offset for MODIS products because the 
 MODIS scale/offset equation is quite different from the CF standard.
-Added the support for LAMAZ projection data.
-Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
+
+  Added the support for LAMAZ projection data.
+
+  Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
 string:string Map.
 
-Version 3.9.3
+Version 3.9.3 (21 Aug. 2011)
 
-Fixed tickets 1793 (HDF-EOS parse error when the hanfdler is not
+  Fixed tickets 1793 (HDF-EOS parse error when the hanfdler is not
 linked with the hdf-eos2 library) and 1797 (dim_0 attribute container
 added twice to the same variable); these two issues caused a host of
 problems so other bugs like the gateway not working or the netcdf
 fileout ersponse not working (for hdf4 files) are now fixed.
 
-Version 3.9.2
+Version 3.9.2 (17 Mar. 2011)
 
-Build fixes, particularly for HDF-EOS2 on OS/X
+  Build fixes, particularly for HDF-EOS2 on OS/X
 
-Support the extra SDS objects for a hybrid HDF-EOS2 files.
+  Support the extra SDS objects for a hybrid HDF-EOS2 files.
 
-Add support to treat HDF-EOS2 files as HDF4 files(for MERRA data)
+  Add support to treat HDF-EOS2 files as HDF4 files(for MERRA data)
 
-Add support for HDF4 files that use SDS dimension scales. The HDF4
+  Add support for HDF4 files that use SDS dimension scales. The HDF4
 files should kind of follow CF conventions. I have to patch for AVHRR
 files. They use "unit" instead of "units".
 
 Version 3.9.1.eospatch (16 Mar 2011)
 
-This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+  This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
 
 Version 3.9.1 (14 Sept 2010)
 
-This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+  This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
 
 Version 3.9.0 (26 August 2010)
 
-The handler now supports the access of many NASA HDF-EOS2 and HDF4
+  The handler now supports the access of many NASA HDF-EOS2 and HDF4
 products via visualization clients. To take advantage of this, one
 must configure with the HDF-EOS2 library and use the correct RPMs.
 
 Version 3.8.1 (5 May 2010)
 
-The handler now implements its own transfer_attributes code to merge
+  The handler now implements its own transfer_attributes code to merge
 attributes from its DAS response into the DDS.
 
 Version 3.8.0 (1 Feb 2010)
 
-Bug fixes from the last release.
+  Bug fixes from the last release.
 
 Version 3.7.15 (5 Oct 2009)
 
-This version builds with the Hyrax 1.5.x libdap & bes and contains
+  This version builds with the Hyrax 1.5.x libdap & bes and contains
 special tests for HDF-EOS2 files. To use these options, or rather, to
 build the handler so they are supported, use the --enable-cf and
 --with-hdfeos2=<path to library> options to configure. In other words,
@@ -97,36 +109,36 @@ have the hdfeos2 library as well.
 
 Version 3.7.14 (9 June 2009)
 
-Fix for the tests - missing baseline file.
+  Fix for the tests - missing baseline file.
 
-Fixes for gcc 4.3 (missing include files)
+  Fix for gcc 4.3 (missing include files)
 
 Version 3.7.13 (12 May 2009)
+  
+  Build fix.
 
-Build fix.
-
-String attributes now cache correctly - before quotes were being added to the
+  String attributes now cache correctly - before quotes were being added to the
 values. Also, it's now possible to turn off caching by setting hte value of
 HDF4.CacheDir to an empty value (HDF4.CacheDir="").
 
 Version 3.7.12 (8 April 2009)
 
-Many memory leaks found and fixed. A bug reported by Fan Fang where the
+  Many memory leaks found and fixed. A bug reported by Fan Fang where the
 handler's performance degraded for large files accessed repeatedly has been
 fixed. There re likely leaks still from opening the file, but that are
 'fixed' size leaks.
 
 version 3.7.11 (16 March 2009)
 
-Fixes for the constraint, service interface and XML responses.
+  Fixes for the constraint, service interface and XML responses.
 
 Version 3.7.10 (29 Jan 2009)
 
-Bug fixes and updates for the new versions of libdap and bes.
+  Bug fixes and updates for the new versions of libdap and bes.
 
 Version 3.7.8 (14 March 2008)
 
-This version (3.7.8) contains a know problem when several SDSs use the same
+  This version (3.7.8) contains a know problem when several SDSs use the same
 name. This bug is encountered when a Vgroup contains a Vgroup and that inner
 Vgroup contains an SDS, if that SDS's name matches the name of another SDS
 nested in a *second set of objects with the same structure*, the 'first' SDS
@@ -136,43 +148,28 @@ number of data sets, we're releasing this version now and will release an
 update in a few weeks. It's likely that this bug has been present for some
 time if not since the handler was first written.
 
-OS/X Build improved.
+  OS/X Build improved.
 
-Many fixes, Escpecially in the error/exception processing software.
+  Many fixes, Escpecially in the error/exception processing software.
 
-Works with BES 3.6.0 (and thus as part of Hyrax 1.4).
+  Works with BES 3.6.0 (and thus as part of Hyrax 1.4).
 
 Version 3.7.7 (14 Nov 2007)
 
-pkg and rpm build fixes
+  pkg and rpm build fixes
 
 Version 3.7.6 (14 Nov 2007)
 
-Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
+  Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
 script and the bes-conf make target in README.
 
-pkg-config support added
+  pkg-config support added
 
-Various bug fixes.
-
-Version 3.7.6 (?)
-
-Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
-script and the bes-conf make target in README.
-
-Version 3.7.6 (?)
-
-Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
-script and the bes-conf make target in README.
-
-Version 3.7.6 (?)
-
-Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
-script and the bes-conf make target in README.
+  Various bug fixes.
 
 Version 3.7.5 (13 March 2007)
 
-Added automatic configuration of the handler using 'make install.' Now the
+  Added automatic configuration of the handler using 'make install.' Now the
 handler is automatically configured in the bes.conf file in the default
 location. Test data are also installed, so after installing this handler
 Hyrax will have data to serve providing an easy way to test your new install
@@ -183,49 +180,49 @@ the BES and OLFS.
 
 Version 3.7.4
 
-Build fixes.
+  Build fixes.
 
-Added test data.
+  Added test data.
 
 Version 3.7.3
 
-Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
+  Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
 leak fixes, and performance enhencements.
 
 Version 3.7.2
 
-Now builds and works on OS/X
+  Now builds and works on OS/X
 
-Now works with the netcdf handler.
+  Now works with the netcdf handler.
 
-Now the handler name is set inthe BES, not hardcoded here.
+  Now the handler name is set inthe BES, not hardcoded here.
 
-Now builds as a (libtool) module
+  Now builds as a (libtool) module
 
 Version 3.7.1
 
-Build fixes (now finds the BES using the same logic as the netcdf and
+  Build fixes (now finds the BES using the same logic as the netcdf and
 freeform handlers).
 
-The hdfclass library is shared, not static to avoid a warning about potential
+  The hdfclass library is shared, not static to avoid a warning about potential
 incompatibilities. 
 
-Fixes to the help response.
+  Fixes to the help response.
 
-Removed an extraneous directory.
+  Removed an extraneous directory.
 
 Version 3.7.0
 
-The handler now builds with BES 3.1. The build makes a Server3 executable
+  The handler now builds with BES 3.1. The build makes a Server3 executable
 (but has not been tested) and a Server4 shared object module.
 
-If the HDF4 handler's cache directory is not passed to the handler, the
+  If the HDF4 handler's cache directory is not passed to the handler, the
 default  is now to not cache the files. The old behavior was to throwing an
 exception. 
 
 Version 3.6.1
 
-The handler has never been very good about situations where the cache
+  The handler has never been very good about situations where the cache
 directory is bad or missing. That is, if the handler was not told where to
 write files it caches, it was writing them in same directory that holds the
 data. The problem with this is/was that the server often does not have write
@@ -240,38 +237,38 @@ the httpd error log.
 
 Version 3.6.0
 
-Due to a fix in the handling of HDFEOS files, this handler requires at least
+  Due to a fix in the handling of HDFEOS files, this handler requires at least
 libdap 3.6.0.
 
 Version 3.5.0
 
-This handler can return the DDX response (which is an experimental feature,
+  This handler can return the DDX response (which is an experimental feature,
 not to be relied upon).
 
-This version of the software has been converted to work with the 3.5.x version
+  This version of the software has been converted to work with the 3.5.x version
 of the OPeNDAP data server.
 
-It uses automake and includes a spec file that can be used to build RPM
+  It uses automake and includes a spec file that can be used to build RPM
 packages.
 
-Some of the test files have been modified because they included images 
+  Some of the test files have been modified because they included images 
 compressed using a lossy algorithm (JPEG). It's hard to verify that the 
 values in the files are correct, so I've removed those from the files.
 
-Known problems:
+  Known problems:
 
-An issue with HDF 4.2r1 and earlier versions of HDF4 has been discovered. In
+  An issue with HDF 4.2r1 and earlier versions of HDF4 has been discovered. In
 some cases a file written using an older vesion of HDF4 that contains CHAR8
 or UCHAR8 SDSs may not be correctly represented as a DAP2 Grid. Instead it
 show up as an Array.
 
-Bug #61: Vlens (which are one-dimensional arrays with an undeclared length
+  Bug #61: Vlens (which are one-dimensional arrays with an undeclared length
 and cannot be subsampled) appear as Sequences. In version 3.4 access to
 these using the [] array access notation was broken. Requesting [0:4] returned 
 the first four elements, not the first five. That problem has been fixed, but
 the larger issue of representing vlens as sequences has not. 
 
-Bug #71: The dot (.) character is 'overloaded' in that it can be both a 
+  Bug #71: The dot (.) character is 'overloaded' in that it can be both a 
 separater and a regular character in an identifier. If a Structure name 
 contains a dot, trying to access a field using 'name.field' breaks since
 'name' contians a dot itself and the parser thinks it's a separator. The 

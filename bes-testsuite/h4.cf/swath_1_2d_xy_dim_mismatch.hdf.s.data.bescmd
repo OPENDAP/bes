@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="swath_1_2d_xy_dim_mismatch" space="catalog">/data/swath_1_2d_xy_dim_mismatch.hdf</setContainer>
+     <define name="d">
+ 	<container name="swath_1_2d_xy_dim_mismatch">
+            <constraint>
+Swath_Data_Fields_temperature[0:1:1][0:3:7]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

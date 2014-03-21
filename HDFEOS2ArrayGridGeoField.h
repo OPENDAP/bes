@@ -23,11 +23,10 @@
 #include "HdfEosDef.h"
 
 using namespace libdap;
-
 class HDFEOS2ArrayGridGeoField:public Array
 {
     public:
-        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, const std::string & filename, const std::string & gridname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
             fieldtype (fieldtype),
@@ -36,9 +35,10 @@ class HDFEOS2ArrayGridGeoField:public Array
             condenseddim (condenseddim),
             speciallon (speciallon),
             specialformat (specialformat),
-            filename (filename), 
+            gridfd(gridfd),
             gridname (gridname), 
-            fieldname (fieldname) {
+            fieldname (fieldname)
+        {
         }
         virtual ~ HDFEOS2ArrayGridGeoField ()
         {
@@ -50,8 +50,77 @@ class HDFEOS2ArrayGridGeoField:public Array
             return new HDFEOS2ArrayGridGeoField (*this);
         }
 
+        virtual bool read ();
+
+    private:
+
+        // Field array rank
+        int  rank;
+       
+        // Distinguish coordinate variables from general variables.
+        // For fieldtype values:
+        // 0 the field is a general field
+        // 1 the field is latitude.
+        // 2 the field is longtitude.    
+        // 3 the field is a coordinate variable defined as level.
+        // 4 the field is an inserted natural number.
+        // 5 the field is time.
+        int  fieldtype;
+       
+        // The flag to indicate if lat/lon is an existing field in the file or needs to be calculated.
+        bool llflag;
+
+        // Flag to check if this lat/lon field is YDim major(YDim,XDim). This is necessary to use GDij2ll
+        bool ydimmajor;
+
+        // Flag to check if this 2-D lat/lon can be condensed to 1-D lat/lon
+        bool condenseddim;
+
+        // Flag to check if this file's longitude needs to be handled specially.
+        // Note: longitude values range from 0 to 360 for some fields. We need to map the values to -180 to 180.
+        bool speciallon;
+
+        // Latitude and longitude values of some HDF-EOS2 grids need to be handled in special ways.
+        // There are four cases that we need to calculate lat/lon differently.
+        // This number is used to distinguish them.      
+        // 1) specialformat = 1 
+        // Projection: Geographic
+        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
+        // Instead, they simply represent lat/lon values as -180.0 or -90.0.
+        // Products: mostly MODIS MCD Grid
+
+        // 2) specialformat = 2
+        // Projection: Geographic
+        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
+        // Instead, their upleft or lowright are simply represented as default(-1).
+        // Products: mostly TRMM CERES Grid
+
+        // 3) specialformat = 3
+        // One MOD13C2 doesn't provide project code 
+        // The upperleft and lowerright coordinates are all -1
+        // We have to calculate lat/lon by ourselves.
+        // Since it doesn't provide the project code, we double check their information
+        // and find that it covers the whole globe with 0.05 degree resolution.
+        // Lat. is from 90 to -90 and Lon is from -180 to 180.
+
+        // 4) specialformat = 4
+        // Projection: Space Oblique Mercator(SOM) 
+        // The lat/lon needs to be handled differently for the SOM projection
+        // Products: MISR
+        int  specialformat;
+
+        // Temp here: HDF-EOS2 file name
+        //std::string filename;
+        
+        int gridfd;
+
+        // HDF-EOS2 grid name
+        std::string gridname; 
+
+        // HDF-EOS2 field name
+        std::string fieldname;
         // Calculate Lat and Lon based on HDF-EOS2 library.
-        void CalculateLatLon (int32 gfid, int fieldtype, int specialformat, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
+        void CalculateLatLon (int32 gridid, int fieldtype, int specialformat, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
         // Calculate Special Latitude and Longitude.
         //One MOD13C2 file doesn't provide projection code
@@ -60,10 +129,10 @@ class HDFEOS2ArrayGridGeoField:public Array
         // Since it doesn't provide the project code, we double check their information
         // and find that it covers the whole globe with 0.05 degree resolution.
         // Lat. is from 90 to -90 and Lon is from -180 to 180.
-        void CalculateSpeLatLon (int32 gfid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
+        void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
         // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
-        void CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms);
+        void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms);
         // test for undefined values returned by longitude-latitude calculation
         bool isundef_lat(double value)
         {
@@ -208,73 +277,6 @@ class HDFEOS2ArrayGridGeoField:public Array
         // Helper function to handle the case that lat. and lon. contain fill value.
         template < class T > int findfirstfv (T * array, int start, int end, int fillvalue);
 
-        virtual bool read ();
-
-    private:
-
-        // Field array rank
-        int  rank;
-       
-        // Distinguish coordinate variables from general variables.
-        // For fieldtype values:
-        // 0 the field is a general field
-        // 1 the field is latitude.
-        // 2 the field is longtitude.    
-        // 3 the field is a coordinate variable defined as level.
-        // 4 the field is an inserted natural number.
-        // 5 the field is time.
-        int  fieldtype;
-       
-        // The flag to indicate if lat/lon is an existing field in the file or needs to be calculated.
-        bool llflag;
-
-        // Flag to check if this lat/lon field is YDim major(YDim,XDim). This is necessary to use GDij2ll
-        bool ydimmajor;
-
-        // Flag to check if this 2-D lat/lon can be condensed to 1-D lat/lon
-        bool condenseddim;
-
-        // Flag to check if this file's longitude needs to be handled specially.
-        // Note: longitude values range from 0 to 360 for some fields. We need to map the values to -180 to 180.
-        bool speciallon;
-
-        // Latitude and longitude values of some HDF-EOS2 grids need to be handled in special ways.
-        // There are four cases that we need to calculate lat/lon differently.
-        // This number is used to distinguish them.      
-        // 1) specialformat = 1 
-        // Projection: Geographic
-        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
-        // Instead, they simply represent lat/lon values as -180.0 or -90.0.
-        // Products: mostly MODIS MCD Grid
-
-        // 2) specialformat = 2
-        // Projection: Geographic
-        // upleft and lowright coordinates don't follow EOS's DDDMMMSSS conventions.
-        // Instead, their upleft or lowright are simply represented as default(-1).
-        // Products: mostly TRMM CERES Grid
-
-        // 3) specialformat = 3
-        // One MOD13C2 doesn't provide project code 
-        // The upperleft and lowerright coordinates are all -1
-        // We have to calculate lat/lon by ourselves.
-        // Since it doesn't provide the project code, we double check their information
-        // and find that it covers the whole globe with 0.05 degree resolution.
-        // Lat. is from 90 to -90 and Lon is from -180 to 180.
-
-        // 4) specialformat = 4
-        // Projection: Space Oblique Mercator(SOM) 
-        // The lat/lon needs to be handled differently for the SOM projection
-        // Products: MISR
-        int  specialformat;
-
-        // HDF-EOS2 file name
-        std::string filename;
-
-        // HDF-EOS2 grid name
-        std::string gridname; 
-
-        // HDF-EOS2 field name
-        std::string fieldname;
 };
 #endif
 #endif

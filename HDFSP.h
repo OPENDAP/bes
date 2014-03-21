@@ -5,8 +5,12 @@
 ///
 /// It currently provides the CF-compliant support for the following NASA HDF4 products.
 /// Other HDF4 products can still be mapped to DAP but they are not CF-compliant.
-///   TRMM Level2 1B21,2A12,2B31,2A25
-///   TRMM Level3 3B42,3B43
+/// TRMM version 6 Level2 1B21,2A12,2B31,2A25
+/// TRMM version 6 Level3A 3A46 
+/// TRMM version 6 Level3B 3B42,3B43
+/// TRMM version 6 Level3C CSH
+//  TRMM version 7 Level2
+//  TRMM version 7 Level3
 /// CERES  CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS
 /// CERES CER_ES4_Aqua-FM3_Edition1-CV
 /// CERES CER_ISCCP-D2like-Day_Aqua-FM3-MODIS
@@ -61,8 +65,10 @@
 #define CER_ZAVG_NAME "CER_ZAVG"
 
 
-///TRMML2: TRMM Level2 1B21,2A12,2B31,2A25
-///TRMML3: TRMM Level3 3B42,3B43
+///TRMML2_V6: TRMM Level2 1B21,2A12,2B31,2A25
+///TRMML3A_V6: TRMM Level3 3A46 
+///TRMML3C_V6: TRMM Level3 CSH
+///TRMML3B_V6: TRMM Level3 3B42,3B43
 ///CERES
 /// CER_AVG: CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS
 /// CER_ES4: CER_ES4_Aqua-FM3_Edition1-CV
@@ -339,7 +345,7 @@ namespace HDFSP
     {
          public:
             SDField ()
-                :fieldtype (0), sdsref (-1), condenseddim (false),is_noscale_dim(false),is_dim_scale(false)
+                :fieldtype (0), fieldref (-1), condenseddim (false),is_noscale_dim(false),is_dim_scale(false)
             {
             }
             ~SDField ();
@@ -396,9 +402,9 @@ namespace HDFSP
             }
         
             // Get the SDS reference number
-            int32 getSDSref () const
+            int32 getFieldRef () const
             {
-                return this->sdsref;
+                return this->fieldref;
             }
 
             /// Get the list of dimensions
@@ -468,7 +474,7 @@ namespace HDFSP
             std::string special_product_fullpath;
 
             /// SDS reference number. This and the object tag are a key to identify a SDS object.
-            int32 sdsref;
+            int32 fieldref;
 
             /// condenseddim is to condense 2-D lat/lon to 1-D lat/lon for geographic projections. This can greatly reduce the access time of visualization clients.
             bool condenseddim;
@@ -721,12 +727,12 @@ namespace HDFSP
         public:
 
             /// Retrieve SDS and Vdata information from the HDF4 file.
-            static File *Read (const char *path, int32 myfileid) throw (Exception);
+            static File *Read (const char *path, int32 sdid,int32 fileid) throw (Exception);
 
             /// Retrieve SDS and Vdata information from the hybrid HDF-EOS file.
             /// Currently we only support the access of additional SDS objects.
-            static File *Read_Hybrid (const char *path,
-                                                   int32 myfileid) throw (Exception);
+            static File *Read_Hybrid (const char *path, int32 sdid,
+                                                   int32 fileid) throw (Exception);
 
             /// The main step to make HDF4 SDS objects CF-complaint. 
             /// All dimension(coordinate variables) information need to be ready.
@@ -737,59 +743,6 @@ namespace HDFSP
 
             void Handle_AIRS_l3() throw(Exception);
 
-            ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
-            void CheckSDType () throw (Exception);
-
-            /// Latitude and longitude are stored in one array(geolocation). Need to separate.
-            void PrepareTRMML2 () throw (Exception);
-
-            /// Special method to prepare TRMM Level 3 latitude and longitude information.
-            void PrepareTRMML3 () throw (Exception);
-
-            /// Special method to prepare CERES AVG (CER_AVG_???) and CERES SYN(CER_SYN_???) latitude and longitude information.
-            /// Latitude and longitude are provided; some redundant CO-Latitude and longitude are removed from the final DDS.
-            void PrepareCERAVGSYN () throw (Exception);
-
-            /// Special method to prepare CERES ES4 (CER_ES4_???) and CERES ISCCP GEO(CER_ISCCP__???GEO) latitude and longitude information.
-            /// Essentially the lat/lon need to be condensed to 1-D for the geographic projection.
-            void PrepareCERES4IG () throw (Exception);
-
-            /// Special method to prepare CERES SAVG (CER_SAVG_???) and CERES ISCCP DAYLIKE(CER_ISCCP__???DAYLIKE) latitude and longitude information.
-            /// Essentially nested CERES 2-d  lat/lon need to be provided.
-            void PrepareCERSAVGID () throw (Exception);
-
-            /// Special method to prepare CERES Zonal Average latitude and longitude information.
-            void PrepareCERZAVG () throw (Exception);
-
-            /// Special method to prepare OBPG Level 2 latitude and longitude information. The latitude and longitude need to be interpolated.
-            void PrepareOBPGL2 () throw (Exception);
-
-            /// Special method to prepare OBPG Level 3 latitude and longitude information. The latitude and longitude are calculated by using the attributes.
-            void PrepareOBPGL3 () throw (Exception);
-
-            /// MODISARNSS is a special MODIS product saved as pure HDF4 files. Dimension names of different fields need to be 
-            /// changed to be consistent with lat/lon.
-            void PrepareMODISARNSS () throw (Exception);
-
-            /// We still provide a hook for other HDF data product although no CF compliant is followed.
-            void PrepareOTHERHDF () throw (Exception);
-
-            /// Handle non-attribute lone vdatas.
-            void ReadLoneVdatas(File*) throw(Exception);
-
-            /// Handle non-attribute non-lone vdatas. Note: this function is only used for
-            /// handling hybrid Vdata functions.
-            void ReadHybridNonLoneVdatas(File*) throw(Exception);
-
-
-            /// The full path of SDS and Vdata will be obtained.
-            void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
-
-            /// The internal function used by InsertOrigFieldPath_ReadVgVdata.
-            void obtain_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref) throw (Exception);
-
-            /// The internal function used to obtain the path for hybrid non-lone vdata.
-            void obtain_vdata_path(int32 file_id, char *full_path, int32 pobj_ref) throw (Exception);
 
             /// Obtain special HDF4 product type
             SPType getSPType () const
@@ -867,6 +820,81 @@ namespace HDFSP
 
             /// Handle Vdata
             void handle_vdata() throw(Exception);
+
+            ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
+            void CheckSDType () throw (Exception);
+
+            /// Latitude and longitude are stored in one array(geolocation). Need to separate.
+            void PrepareTRMML2_V6 () throw (Exception);
+
+            /// Special method to prepare TRMM Level 3A46 latitude and longitude information.
+            void PrepareTRMML3A_V6 () throw (Exception);
+
+            /// Special method to prepare TRMM Level 3B latitude and longitude information.
+            void PrepareTRMML3B_V6 () throw (Exception);
+
+            /// Special method to prepare TRMM Level 3 CSH latitude,longitude and Height information.
+            void PrepareTRMML3C_V6 () throw (Exception);
+
+
+            void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Exception);
+            bool Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, const int lonsize, std::string& latname, std::string& lonname) throw(Exception);
+
+            /// Latitude and longitude are stored in different fields. Need to separate.
+            void PrepareTRMML2_V7 () throw (Exception);
+
+            /// Special method to prepare TRMM single grid Level 3 geolocation fields(latitude,longitude,etc) information.
+            void PrepareTRMML3S_V7 () throw (Exception);
+
+            /// Special method to prepare TRMM multiple grid Level 3 geolocation fields(latitude,longitude,etc) information.
+            void PrepareTRMML3M_V7 () throw (Exception);
+
+
+            /// Special method to prepare CERES AVG (CER_AVG_???) and CERES SYN(CER_SYN_???) latitude and longitude information.
+            /// Latitude and longitude are provided; some redundant CO-Latitude and longitude are removed from the final DDS.
+            void PrepareCERAVGSYN () throw (Exception);
+
+            /// Special method to prepare CERES ES4 (CER_ES4_???) and CERES ISCCP GEO(CER_ISCCP__???GEO) latitude and longitude information.
+            /// Essentially the lat/lon need to be condensed to 1-D for the geographic projection.
+            void PrepareCERES4IG () throw (Exception);
+
+            /// Special method to prepare CERES SAVG (CER_SAVG_???) and CERES ISCCP DAYLIKE(CER_ISCCP__???DAYLIKE) latitude and longitude information.
+            /// Essentially nested CERES 2-d  lat/lon need to be provided.
+            void PrepareCERSAVGID () throw (Exception);
+
+            /// Special method to prepare CERES Zonal Average latitude and longitude information.
+            void PrepareCERZAVG () throw (Exception);
+
+            /// Special method to prepare OBPG Level 2 latitude and longitude information. The latitude and longitude need to be interpolated.
+            void PrepareOBPGL2 () throw (Exception);
+
+            /// Special method to prepare OBPG Level 3 latitude and longitude information. The latitude and longitude are calculated by using the attributes.
+            void PrepareOBPGL3 () throw (Exception);
+
+            /// MODISARNSS is a special MODIS product saved as pure HDF4 files. Dimension names of different fields need to be 
+            /// changed to be consistent with lat/lon.
+            void PrepareMODISARNSS () throw (Exception);
+
+            /// We still provide a hook for other HDF data product although no CF compliant is followed.
+            void PrepareOTHERHDF () throw (Exception);
+
+            /// Handle non-attribute lone vdatas.
+            void ReadLoneVdatas(File*) throw(Exception);
+
+            /// Handle non-attribute non-lone vdatas. Note: this function is only used for
+            /// handling hybrid Vdata functions.
+            void ReadHybridNonLoneVdatas(File*) throw(Exception);
+
+
+            /// The full path of SDS and Vdata will be obtained.
+            void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
+
+            /// The internal function used by InsertOrigFieldPath_ReadVgVdata.
+            void obtain_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref) throw (Exception);
+
+            /// The internal function used to obtain the path for hybrid non-lone vdata.
+            void obtain_vdata_path(int32 file_id, char *full_path, int32 pobj_ref) throw (Exception);
+
 
         private:
 

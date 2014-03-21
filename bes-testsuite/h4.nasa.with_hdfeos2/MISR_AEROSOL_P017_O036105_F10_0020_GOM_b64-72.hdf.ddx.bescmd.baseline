@@ -3907,7 +3907,7 @@
             <value>125</value>
             <value>126</value>
             <value>127</value>
-            <value>0</value>
+            <value>128</value>
             <value>129</value>
             <value>130</value>
             <value>131</value>
@@ -4047,7 +4047,7 @@
             <value>6378137.0000000000</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_ellipsoid_e2" type="Float64">
-            <value>0.0066943479999964474</value>
+            <value>0.0066943480000000001</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_orbit_aprime" type="Float64">
             <value>1.0000000000000000</value>
@@ -4062,16 +4062,16 @@
             <value>233</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_orbit_ro" type="Float64">
-            <value>7078040.7999878405</value>
+            <value>7078040.7999999998</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_orbit_i" type="Float64">
-            <value>1.7157253262848964</value>
+            <value>1.7157253262878522</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_orbit_P2P1" type="Float64">
-            <value>0.068666666666105339</value>
+            <value>0.068666666666666668</value>
         </Attribute>
         <Attribute name="SOM_parameters_som_orbit_lambda0" type="Float64">
-            <value>1.7983786319819550</value>
+            <value>1.7983786319875825</value>
         </Attribute>
         <Attribute name="Origin_block_ulc_x" type="Float64">
             <value>7460750.0000000000</value>

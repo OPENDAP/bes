@@ -46,26 +46,27 @@
 #include <InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
-#include <ConstraintEvaluator.h>
+//#include <ConstraintEvaluator.h>
 #include <Ancillary.h>
 #include "config_hdf.h"
 
 #define HDF4_NAME "h4"
 #include "HE2CF.h"
+#include "HDF4_DDS.h"
 
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
 
-bool read_dds_hdfsp(DDS & dds, const string & filename);
+extern bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid);
 
-bool read_das_hdfsp(DAS & das, const string & filename);
+extern bool read_das_hdfsp(DAS & das, const string & filename,int32 sdfd, int32 fileid);
 
 
 #ifdef USE_HDFEOS2_LIB
 
-void read_das_use_eos2lib(DAS & das, const string & filename);
-void read_dds_use_eos2lib(DDS & dds, const string & filename);
+void read_das_use_eos2lib(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd);
+void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd);
 
 #endif
 
@@ -113,40 +114,69 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
          
         if (true == usecf) {
 
-            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
-            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
-            // KY 2012-6-29
-            // Don't need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
-            // KY 2012-09-18
+            int32 sdfd   = -1;
+            int32 fileid = -1;
+            int32 gridfd  = -1;
+            int32 swathfd = -1;
+
+            // Obtain HDF4 file IDs
+            //SDstart
+            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if( -1 == sdfd)
+                throw Error(cannot_read_file,"HDF4 SDstart error");
+
+            // H open
+            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            if (-1 == fileid) {
+                SDend(sdfd);
+                throw Error(cannot_read_file,"HDF4 Hopen error");
+            }
 
 
 #ifdef USE_HDFEOS2_LIB
 
-            string key = "H4.EnableMODAPSFile";
-            string doset;
-            bool found = false;
-            bool ADD_FILE_HANDLE = false;
-            int32 sd_id;
-            TheBESKeys::TheKeys()->get_value(key,doset,found);
-            if(true == found) {
-                if(doset == "true")
-                  ADD_FILE_HANDLE = true;
+            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
+            
+            // Grid open 
+            gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == gridfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
-#if 0
-if(true == ADD_FILE_HANDLE)
-cerr<<"Extra file open in DAS"<<endl;
-#endif
 
-            if(true == ADD_FILE_HANDLE)
-               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            // Swath open 
+            swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == swathfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                GDclose(gridfd);
+                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+            }
+            
+            try {
+                read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd);
+            }
+            catch(...) {
+                close_fileid(sdfd,fileid,gridfd,swathfd);
+                throw;
+                //throw InternalErr(__FILE__,__LINE__,"read_das_use_eos2lib error");
+            }
+            GDclose(gridfd);
+            SWclose(swathfd);
 
-            read_das_use_eos2lib(*das, accessed);
-
-            if(true == ADD_FILE_HANDLE)
-                SDend(sd_id);
 #else
-            read_das_hdfsp(*das,accessed);
+            try {
+                read_das_hdfsp(*das,accessed,sdfd,fileid);
+            }
+            catch(...) {
+               close_hdf4_fileid(sdfd,fileid); 
+               throw;
+               //throw InternalErr(__FILE__,__LINE__,"read_das_hdfsp error");
+            }
 #endif
+            SDend(sdfd);
+            Hclose(fileid);
         }
         else 
             read_das(*das,accessed);
@@ -200,7 +230,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
         DDS *dds = bdds->get_dds();
-        ConstraintEvaluator & ce = bdds->get_ce();
+        //ConstraintEvaluator & ce = bdds->get_ce();
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
@@ -211,49 +241,78 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
         if (true == usecf) {
 
+            int32 sdfd   = -1;
+            int32 fileid = -1;
+            int32 gridfd  = -1;
+            int32 swathfd = -1;
 
+            // Obtain HDF4 file IDs
+            //SDstart
+            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if( -1 == sdfd)
+                throw Error(cannot_read_file,"HDF4 SDstart error");
 
-            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
-            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
-            // KY 2012-6-29
-            // Don't need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
-            // KY 2012-09-18
+            // H open
+            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            if (-1 == fileid) {
+                SDend(sdfd);
+                throw Error(cannot_read_file,"HDF4 Hopen error");
+            }
+
 
 #ifdef USE_HDFEOS2_LIB        
 
-            string key = "H4.EnableMODAPSFile";
-            string doset;
-            bool found = false;
-            bool ADD_FILE_HANDLE = false;
-            int32 sd_id;
-            TheBESKeys::TheKeys()->get_value(key,doset,found);
-            if(true == found) {
-                if(doset == "true")
-                  ADD_FILE_HANDLE = true;
+            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
+            
+            // Grid open 
+            gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == gridfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
-#if 0
-if(true == ADD_FILE_HANDLE)
-cerr<<"Extra file open in DDS"<<endl;
-#endif
-             
-            if(true == ADD_FILE_HANDLE)  
-               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
 
+            // Swath open 
+            swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == swathfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                GDclose(gridfd);
+                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+            }
  
-            read_das_use_eos2lib(*das, accessed);
-            Ancillary::read_ancillary_das(*das, accessed);
+            try {
+                read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd);
+                Ancillary::read_ancillary_das(*das, accessed);
 
-            read_dds_use_eos2lib(*dds, accessed);
-
-            if(true == ADD_FILE_HANDLE)
-                SDend(sd_id);
+                read_dds_use_eos2lib(*dds, accessed,sdfd,fileid,gridfd,swathfd);
+            }
+            catch(...) {
+                close_fileid(sdfd,fileid,gridfd,swathfd);
+                throw;
+                //throw InternalErr(__FILE__,__LINE__,"read_dds_use_eos2lib error");
+            }
+            GDclose(gridfd);
+            SWclose(swathfd);
 
 #else
-            read_das_hdfsp(*das, accessed);
-            Ancillary::read_ancillary_das(*das, accessed);
+            try {
+                read_das_hdfsp(*das, accessed,sdfd,fileid);
+                Ancillary::read_ancillary_das(*das, accessed);
 
-            read_dds_hdfsp(*dds, accessed);
+                read_dds_hdfsp(*dds, accessed,sdfd,fileid);
+            }
+            catch(...) {
+                close_hdf4_fileid(sdfd,fileid);
+                throw;
+                //throw InternalErr(__FILE__,__LINE__,"read_dds_hdfsp error");
+            }
+
 #endif
+
+            SDend(sdfd);
+            Hclose(fileid);
+ 
         }
         else {
             read_das(*das, accessed);
@@ -296,8 +355,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     string key="H4.EnableCF";
     string doset;
 
-    int ADD_FILE_HANDLE = false;
-    int32 sd_id = -1;
+    int32 sdfd   = -1;
+    int32 fileid = -1;
+    int32 gridfd  = -1;
+    int32 swathfd = -1;
+
 
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found )
@@ -318,11 +380,20 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
-        DataDDS *dds = bdds->get_dds();
-        ConstraintEvaluator & ce = bdds->get_ce();
+
+        HDF4DDS *hdds = new HDF4DDS(bdds->get_dds());
+
+        delete bdds->get_dds();
+
+        bdds->set_dds(hdds);
+
+        //ConstraintEvaluator & ce = bdds->get_ce();
+
+        // Not sure why keep the following line, it is not used.
+        //ConstraintEvaluator & ce = bdds->get_ce();
 
         string accessed = dhi.container->access();
-        dds->filename(accessed);
+        hdds->filename(accessed);
 
         DAS *das = new DAS;
         BESDASResponse bdas(das);
@@ -330,69 +401,91 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
         if (true == usecf) {
 
-            // OPeNDAP implements a NcML module. So we won't support our NcML module for the time being.
-            // We still want to leave the source code(HE2CF.cc etc.) in the package in case we go back to this in the future.
-            // KY 2012-6-29
-            // No need to keep the source code for the NcML part. If we need them, we can go back to the subversion.
-            // KY 2012-09-18
+            // Obtain HDF4 file IDs
+            //SDstart
+            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if( -1 == sdfd)
+                throw Error(cannot_read_file,"HDF4 SDstart error");
+
+            // H open
+            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            if (-1 == fileid) {
+                SDend(sdfd);
+                throw Error(cannot_read_file,"HDF4 Hopen error");
+            }
 
 
 #ifdef USE_HDFEOS2_LIB        
 
-            string key = "H4.EnableMODAPSFile";
-            string doset;
-            bool found = false;
-//            bool ADD_FILE_HANDLE = false;
-//            int32 sd_id;
-            TheBESKeys::TheKeys()->get_value(key,doset,found);
-            if(true == found) {
-                if(doset == "true")
-                  ADD_FILE_HANDLE = true;
+            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
+            
+            // Grid open 
+            gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == gridfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
-#if 0
-if(true == ADD_FILE_HANDLE)
-cerr<<"Extra file open in DATA"<<endl;
-#endif
 
-            if(true == ADD_FILE_HANDLE)
-               sd_id = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            // Swath open 
+            swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
+            if (-1 == swathfd) {
+                SDend(sdfd);
+                Hclose(fileid);
+                GDclose(gridfd);
+                throw Error(cannot_read_file,"HDF-EOS SWopen error");
+            }
 
-            read_das_use_eos2lib(*das, accessed);
+            hdds->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
+ 
+            // No need to use a try-catch block since we will not close the file IDs.
+            // The low-level error messages will just be popped out.
+            read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd);
             Ancillary::read_ancillary_das(*das, accessed);
 
-            read_dds_use_eos2lib(*dds, accessed);
+            read_dds_use_eos2lib(*hdds, accessed,sdfd,fileid,gridfd,swathfd);
 
 
 #else
-            read_das_hdfsp(*das, accessed);
+            hdds->setHDF4Dataset(sdfd,fileid);
+            read_das_hdfsp(*das, accessed,sdfd,fileid);
             Ancillary::read_ancillary_das(*das, accessed);
 
 
-            read_dds_hdfsp(*dds, accessed);
+            read_dds_hdfsp(*hdds, accessed,sdfd,fileid);
 #endif
+
+
         }
         else {
             read_das(*das, accessed);
             Ancillary::read_ancillary_das(*das, accessed);
-            read_dds(*dds, accessed);
+            read_dds(*hdds, accessed);
         }
 
 
-        Ancillary::read_ancillary_dds(*dds, accessed);
+        Ancillary::read_ancillary_dds(*hdds, accessed);
 
-        dds->transfer_attributes(das);
+        hdds->transfer_attributes(das);
 
         bdds->set_constraint(dhi);
 
         bdds->clear_container();
 
-#ifdef USE_HDFEOS2_LIB        
-        if(true == usecf) 
-             if(true == ADD_FILE_HANDLE)
-                SDend(sd_id);
+
+// File IDs are closed by the derived class.
+#if 0
+        if(true == usecf) {     
+#ifdef USE_HDFEOS2_LIB
+            GDclose(gridfd);
+            SWclose(swathfd);
+
 #endif
-        
-    } 
+            SDend(sdfd);  
+            Hclose(fileid);
+        }
+#endif
+    }
 
     catch (BESError & e) {
         throw;
@@ -443,4 +536,27 @@ bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi) {
 	info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
 
 	return true;
+}
+
+void close_fileid(int sdfd, int fileid,int gridfd, int swathfd) {
+
+    if(sdfd != -1)
+        SDend(sdfd);
+    if(fileid != -1)
+        Hclose(fileid);
+#ifdef USE_HDFEOS2_LIB
+    if(gridfd != -1)
+        GDclose(gridfd);
+    if(swathfd != -1)
+        SWclose(swathfd);
+#endif
+
+}
+void close_hdf4_fileid(int sdfd, int fileid) {
+
+    if(sdfd != -1)
+        SDend(sdfd);
+    if(fileid != -1)
+        Hclose(fileid);
+
 }

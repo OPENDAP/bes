@@ -1,0 +1,12 @@
+grid_*.hdf
+swath_*.hdf
+h_*.hdf
+sds_*.hdf
+special_*.hdf
+* These small files are created by hyoklee@hdfgroup.org. Sources are available
+upon request.
+
+t*.hdf
+* These files are added from hdf-4.2.10/(mf)hdf/test/. The files are created
+  with 'testhdf -c'.
+

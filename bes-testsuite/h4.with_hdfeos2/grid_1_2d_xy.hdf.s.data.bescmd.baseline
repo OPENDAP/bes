@@ -1,0 +1,5 @@
+The data:
+Float32 Latitude[Latitude = 4] = {1, 2, 3, 4};
+Float32 Longitude[Longitude = 3] = {1, 4, 7};
+Float32 temperature[Latitude = 4][Longitude = 3] = {{10, 10, 10},{11, 11, 11},{12, 12, 12},{13, 13, 13}};
+

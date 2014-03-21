@@ -1,0 +1,33 @@
+Attributes {
+    DataSet_1 {
+        String long_name "DataSet_1";
+    }
+    DataSet_1_dim_0 {
+        Float32 Valid_range_1 2.000000000, 10.00000000;
+        String name "fakeDim0";
+    }
+    DataSet_1_dim_1 {
+        String name "fakeDim1";
+    }
+    DataSet_2 {
+        String long_name "DataSet_2";
+    }
+    DataSet_2_dim_0 {
+        String name "fakeDim2";
+    }
+    DataSet_2_dim_1 {
+        String Unit "Seconds";
+        String name "fakeDim3";
+    }
+    DataSet_3 {
+        String long_name "DataSet_3";
+    }
+    DataSet_3_dim_0 {
+        String name "fakeDim4";
+    }
+    DataSet_3_dim_1 {
+        String name "fakeDim5";
+    }
+    Vdata_1 {
+    }
+}

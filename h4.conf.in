@@ -60,13 +60,6 @@ HDF4.CacheDir=/tmp
 # important key to turn it on first.
 H4.EnableCF=true
 
-# By turning EnableMODAPSFile to be true, when HDF-EOS2 library is used,
-# an extra HDF file handle(by calling SDstart) will be generated at the 
-# beginning of DAS,DDS and Data build. This may be useful for a server that 
-# mounts its data over the network. If you are not sure about your server 
-# settings, always leave it as false or comment out this key. By default this
-# key is turned off.
-H4.EnableMODAPSFile=false
 
 # When turning on this key, the handler will handle AIRS level 3 version 6 
 # products and MOD08_M3-like products in a speedy way by taking advantage of 

@@ -1,0 +1,6 @@
+The data:
+Float32 Latitude[Latitude = 4] = {1, 2, 3, 4};
+Float32 Longitude[Longitude = 3] = {1, 4, 7};
+Float32 temperature[pressure = 2][Latitude = 4][Longitude = 3] = {{{0, 3, 6},{1, 4, 7},{2, 5, 8},{3, 6, 9}},{{1, 4, 7},{2, 5, 8},{3, 6, 9},{4, 7, 10}}};
+Float32 pressure[pressure = 2] = {1, 2};
+

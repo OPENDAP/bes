@@ -242,9 +242,13 @@ attribute: GROUP '=' STR
 #else
 		a->append_attr(name.c_str(), "String", "\"Error processing EOS attributes\"");
 #endif
-        string msg = "Could not parse item; was expecting a GROUP, OBJECT or String: ";
+        /*Using parse_error causes the memory leaking. So don't use this function. instead just
+          set the status to FALSE.  KY 2014-02-25*/
+                arg->set_status(FALSE);
+        /*string msg = "Could not parse item; was expecting a GROUP, OBJECT or String: ";
         msg += $1;
 		parse_error((parser_arg *)arg, msg.c_str());
+        */
 		/* Don't abort; keep parsing to try and pick up more
 		   attributes. 3/30/2000 jhrg */
  		/* YYABORT; */

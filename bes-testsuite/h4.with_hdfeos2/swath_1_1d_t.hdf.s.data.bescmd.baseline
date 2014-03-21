@@ -1,0 +1,4 @@
+The data:
+Float32 temperature[ZDim = 4] = {0, 1, 2, 3};
+Float32 Time[ZDim = 4] = {0, 1, 2, 3};
+

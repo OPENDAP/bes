@@ -1,0 +1,3 @@
+The data:
+Float32 Swath_Data_Fields_temperature[NDim_Swath = 3][_Swath = 4] = {{10, 10, 10, 10},{13, 13, 13, 13},{16, 16, 16, 16}};
+

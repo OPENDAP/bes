@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="special_char_file_attr_sds.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="file_attr_name" type="String">
+            <value>Storm_track_data&amp;w
+&#13;&lt;e&gt;	winds</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

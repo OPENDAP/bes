@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tvattr.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="vgname1_vsname1" type="Container">
+        <Attribute name="Vdata_field_fldname1" type="String">
+            <value>ACE</value>
+        </Attribute>
+        <Attribute name="Vdata_field_fldname2" type="String">
+            <value>BDF</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="vgname2_vsname0" type="Container">
+        <Attribute name="Vdata_field_fldname0" type="Int32">
+            <value>0</value>
+            <value>10</value>
+            <value>20</value>
+        </Attribute>
+        <Attribute name="Vdata_field_fldname1" type="Int32">
+            <value>-1</value>
+            <value>11</value>
+            <value>21</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

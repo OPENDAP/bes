@@ -1,20 +1,61 @@
-Updated for version 3.11.2 (18 Oct. 2013)
+Updated for version 3.11.4 (1 April 2014)
 
-BaseType::read() changes.
+  This version improves I/O by reducing the number of HDF4/HDF-EOS2 file open /
+ close requests.
+
+  The default BES key settings are changed. See USAGE document.
+
+  Support to TRMM version 7 (3B43, 3B42, 3B31, 3A26, 3A25, 3A12, 3A11, 2B31, 
+2A25, 2A23, 2A21, 2A12, 1C21, 1B21, 1B11 and 1B01) and some TRMM level 3 
+version 6(CSH and 3A46) products are added. The emphasis is on level 3 grid 
+products.
+
+  Some memory leaks detected by valgrind are fixed.
+ 
+  Error handling is greatly improved:resources are released properly when errors
+ occur. 
+
+  The testsuite is updated accordingly.
+
+  All the updates are solely applied to the CF option.
+
+  [Known Issues] 
+
+  Note:HFRHANDLER-??? means The HDF Group's JIRA ID.
+
+  HFRHANDLER-223:(U)CHAR8 type _FillValue attribute value conversion produces
+string representation, instead of real value when the dataset is in numeric
+type.
+
+  HFRHANDLER-224:Some attributes of Lat/Lon geolocation fields in HDF-EOS2 
+swath are dropped in DAS output. 
+
+
+Updated for version 3.11.3 (1 February 2014)
+
+  This version optimizes handler for MOD08 M3 and AIRS version 6 products with 
+new BES keys. See the USAGE document for the new BES keys for details.
+
+Updated for version 3.11.2 (18 October 2013)
+
+  This version changes BaseType::read().
 
 Updated for version 3.11.1 (10 September 2013)
 
-Addressed some issues in the code base.
+  This version addresses some issues in the code base.
 
 Updated for version 3.11.0 (30 May 2013)
 
- Limitation of handling MOD14 product is documented under USAGE. MOD14 is not
+  Limitation of handling MOD14 product is documented under USAGE. MOD14 is not
  an HDF-EOS2 product so having MOD03 geo-location file will not change the 
  output of the HDF4 handler.
 
+  This version fixes the 7.6 of "Known Issues" documented in README for version
+ 3.10.0. Search for "7.6" in this document for details. 
+
 Updated for version 3.10.1 (27 Nov 2012)
 
- This version fixes a bug for reading Int16 type dataset from NASA MODIS 09 
+  This version fixes a bug for reading Int16 type dataset from NASA MODIS 09 
  products.
 
 Updated for version 3.10.0 (30 Sep 2012)
@@ -421,7 +462,7 @@ equation) for OBPG CZCS Level 3 products.
 
   The handler doesn't insert or correct fill value attribute for some OBPG 
 products so their plots may include fill values if you visualize them. OPeNDAP 
-server administrator can fix these easily by using the NCML handler.
+server administrator can fix these easily by using the NcML handler.
 
   PO.DAAC AVHRR product 2006001-2006005.s0454pfrt-bsst.hdf has "add_off" and 
 doesn't specify fill value in attribute. Therefore, the final visualization 
@@ -438,14 +479,14 @@ perform such operation  so the final visualization image may not be correct.
 
  You cannot subset Latitude_1 and Longitude_1 datasets using the HTML form. 
 Checking the check box will not insert any array subscription text into the
-text box. 
+text box. Please see the OPeNDAP ticket #2075 for details.
 
 Kent Yang (myang6@hdfgroup.org)
 
   
 Updated for version 3.9.4 (19 Jan, 2011)
 
-  If your system is non-i368 such as64-bit architecture, please read 
+  If your system is non-i368 such as 64-bit architecture, please read 
 IMPORTANT NOTE on INSTALL document regarding '--with-pic' configuration option 
 (i.e., '-fPIC' compiler option). You need to install both HDF4 (and HDF-EOS2) 
 library with '--with-pic' option if you encounter a linking problem.
@@ -716,7 +757,7 @@ protocol="HTTP/1.1" maxHttpHeaderSize="819200"
   file by using the HDF4 APIs directly after the HDF-EOS2 file is
   created. The HDF-EOS2 API may not retrieve the added information. Up
   to this release, we found those information are mainly related to
-  metedata and those metadata may not be critical to visualize and
+  metadata and those metadata may not be critical to visualize and
   analyze the real physical data variables. So in this release, those
   objects are currently ignored. One should NOTE that attributes of
   existing HDF-EOS2 data variables are NOT ignored.

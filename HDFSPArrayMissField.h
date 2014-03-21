@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the missing fields for some special NASA HDF4 data products.
-// The products include TRMML2,TRMML3,CER_AVG,CER_ES4,CER_CDAY,CER_CGEO,CER_SRB,CER_SYN,CER_ZAVG,OBPGL2,OBPGL3
+// The products include TRMML2_V6,TRMML3B_V6,CER_AVG,CER_ES4,CER_CDAY,CER_CGEO,CER_SRB,CER_SYN,CER_ZAVG,OBPGL2,OBPGL3
 // To know more information about these products,check HDFSP.h.
 // Some third-dimension coordinate variable values are not provided.
 // What we do here is to provide natural number series(1,2,3, ...) for

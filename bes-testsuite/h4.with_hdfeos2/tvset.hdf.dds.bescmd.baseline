@@ -1,0 +1,6 @@
+Dataset {
+    Float32 vdata_Float_Vdata_vdf_FIELD_name_HERE[VDFDim0_vdata_Float_Vdata_vdf_FIELD_name_HERE = 100];
+    Int32 vdata_Integer_Vdata_vdf_DIFFERENT_FIELD_NAME[VDFDim0_vdata_Integer_Vdata_vdf_DIFFERENT_FIELD_NAME = 100][VDFDim1_vdata_Integer_Vdata_vdf_DIFFERENT_FIELD_NAME = 2];
+    Float32 vdata_Mixed_Vdata_vdf_A[VDFDim0_vdata_Mixed_Vdata_vdf_A = 100];
+    Int32 vdata_Mixed_Vdata_vdf_B[VDFDim0_vdata_Mixed_Vdata_vdf_B = 100];
+} tvset.hdf;

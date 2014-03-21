@@ -24,9 +24,9 @@ Attributes {
         Float64 Vdata_field_Field_DFNT_FLOAT64 0.0000000000000000, 1.0000000000000000, -1.0000000000000000, 1.7976931348623157e+308, 2.2250738585072014e-308, -1.7976931348623157e+308, -2.2250738585072014e-308;
     }
     Vdata_DFNT_CHAR8 {
-        String Vdata_field_Field_DFNT_CHAR8 "";
+        String Vdata_field_Field_DFNT_CHAR8 "\000\001\377\177\200";
     }
     Vdata_DFNT_UCHAR8 {
-        String Vdata_field_Field_DFNT_UCHAR8 "";
+        String Vdata_field_Field_DFNT_UCHAR8 "\000\001\377";
     }
 }

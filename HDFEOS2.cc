@@ -99,7 +99,8 @@ File::~File()
              i != grids.end(); ++i){
             delete *i;
         }
-        if((GDclose(gridfd))==-1) throw2("grid close",path);
+        // Grid file IDs will be closed in HDF4RequestHandler.cc.
+        ///if((GDclose(gridfd))==-1) throw2("grid close",path);
     }
 
     if(swathfd !=-1) {
@@ -108,44 +109,76 @@ File::~File()
             delete *i;
         }
 
-        if((SWclose(swathfd))==-1) throw2("swath close",path);
+        //if((SWclose(swathfd))==-1) throw2("swath close",path);
     }
+
+    for (vector<PointDataset *>::const_iterator i = points.begin();
+             i != points.end(); ++i){
+            delete *i;
+    }
+
 }
 
 /// Read all the information in this file from the EOS2 APIs.
-File * File::Read(const char *path) throw(Exception)
+File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Exception)
 {
-    File *file = new File(path);
 
+    File *file = new File(path);
+//cerr <<"File is opened" <<endl;
+
+    file->gridfd = mygridfd;
+    file->swathfd = myswathfd;
+
+#if 0
     // Read information of all Grid objects in this file.
     if ((file->gridfd = GDopen(const_cast<char *>(file->path.c_str()),
                                DFACC_READ)) == -1) {
         delete file;
         throw2("grid open", path);
     }
+#endif
 
     vector<string> gridlist;
-    if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist))
+    if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist)) {
+        delete file;
         throw2("grid namelist", path);
-    for (vector<string>::const_iterator i = gridlist.begin();
-         i != gridlist.end(); ++i)
-        file->grids.push_back(GridDataset::Read(file->gridfd, *i));
+    }
 
+    try {
+        for (vector<string>::const_iterator i = gridlist.begin();
+             i != gridlist.end(); ++i) 
+            file->grids.push_back(GridDataset::Read(file->gridfd, *i));
+    }
+    catch(...) {
+        delete file;
+        throw;
+    }
+
+#if 0
     // Read information of all Swath objects in this file
     if ((file->swathfd = SWopen(const_cast<char *>(file->path.c_str()),
                                 DFACC_READ)) == -1){
         delete file;
         throw2("swath open", path);
     }
+#endif
 
     vector<string> swathlist;
     if (!Utility::ReadNamelist(file->path.c_str(), SWinqswath, swathlist)){
         delete file;
         throw2("swath namelist", path);
     }
-    for (vector<string>::const_iterator i = swathlist.begin();
-         i != swathlist.end(); ++i)
-        file->swaths.push_back(SwathDataset::Read(file->swathfd, *i));
+
+    try {
+        for (vector<string>::const_iterator i = swathlist.begin();
+            i != swathlist.end(); ++i)
+            file->swaths.push_back(SwathDataset::Read(file->swathfd, *i));
+    }
+    catch(...) {
+        delete file;
+        throw;
+    }
+
 
     // We only obtain the name list of point objects but not don't provide
     // other information of these objects.
@@ -540,7 +573,8 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
  
             if((*j)->getName() == LATFIELDNAME) {
 
-                // set the flag to tell if this is lat or lon. The unit will be different for lat and lon.
+                // set the flag to tell if this is lat or lon. 
+                // The unit will be different for lat and lon.
                 (*j)->fieldtype = 1;
 
                 // Latitude rank should not be greater than 2.
@@ -549,15 +583,18 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                 // We are still investigating if Java clients work 
                 // when the rank of latitude and longitude is greater than 2.
                 if((*j)->getRank() > 2) 
-                    throw3("The rank of latitude is greater than 2",gdset->getName(),(*j)->getName());
+                    throw3("The rank of latitude is greater than 2",
+                            gdset->getName(),(*j)->getName());
 
                 if((*j)->getRank() != 1) {
 
-                    // Obtain the major dim. For most cases, it is YDim Major. But some cases may be not. Still need to check.
+                    // Obtain the major dim. For most cases, it is YDim Major. 
+                    // But still need to watch out the rare cases.
                     (*j)->ydimmajor = gdset->getCalculated().isYDimMajor();
 
                     // If the 2-D lat/lon can be condensed to 1-D.
-                    // For current HDF-EOS2 files, only GEO and CEA can be condensed. To gain performance,
+                    // For current HDF-EOS2 files, only GEO and CEA can be condensed. 
+                    // To gain performance,
                     // we don't check the real latitude values.
                     int32 projectioncode = gdset->getProjection().getCode();
                     if(projectioncode == GCTP_GEO || projectioncode ==GCTP_CEA) {
@@ -565,7 +602,8 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                     }
 
                     // Now we want to handle the dim and the var lists.
-                    // If the lat/lon can be condensed to 1-D array, COARD convention needs to be followed.
+                    // If the lat/lon can be condensed to 1-D array, 
+                    // COARD convention needs to be followed.
                     // Since COARD requires that the dimension name of lat/lon is the same as the field name of lat/lon,
                     // we still need to handle this case in the later step(in function handle_grid_coards).
 
@@ -604,14 +642,15 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                 (*j)->fieldtype = 2;
 
                 // longitude rank should not be greater than 2.
-                // Here I don't check if the rank of latitude and longitude is the same. Hopefully it never happens for HDF-EOS2 cases.
+                // Here I don't check if the rank of latitude and longitude is the same. 
+                // Hopefully it never happens for HDF-EOS2 cases.
                 // We are still investigating if Java clients work when the rank of latitude and longitude is greater than 2.
                 if((*j)->getRank() >2) 
                     throw3("The rank of Longitude is greater than 2",gdset->getName(),(*j)->getName());
 
                 if((*j)->getRank() != 1) {
 
-                    // Obtain the major dim. For most cases, it is YDim Major. But some cases may be not. Still need to check.
+                    // Obtain the major dim. For most cases, it is YDim Major. But still need to check for rare cases.
                     (*j)->ydimmajor = gdset->getCalculated().isYDimMajor();
 
                     // If the 2-D lat/lon can be condensed to 1-D.
@@ -690,8 +729,10 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
         int ydimsize = gdset->getInfo().getY();
 
         // Add dimensions. If it is YDim major,the dimension name list is "YDim XDim", otherwise, it is "XDim YDim". 
-        // For LAMAZ projection, Y dimension is always supposed to be major for calculating lat/lon, but for dimension order, it should be consistent with data fields. (LD -2012/01/16
-        bool dmajor=(gdset->getProjection().getCode()==GCTP_LAMAZ)? gdset->getCalculated().DetectFieldMajorDimension(): latfield->ydimmajor;
+        // For LAMAZ projection, Y dimension is always supposed to be major for calculating lat/lon, 
+        // but for dimension order, it should be consistent with data fields. (LD -2012/01/16
+        bool dmajor=(gdset->getProjection().getCode()==GCTP_LAMAZ)? gdset->getCalculated().DetectFieldMajorDimension()
+                                                                  : latfield->ydimmajor;
         //bool dmajor = latfield->ydimmajor;
 
         if(dmajor) { 
@@ -1205,7 +1246,8 @@ void File::handle_grid_coards() throw(Exception) {
                     this->iscoard = true;
                 correcteddims.clear();
             }
-            // 1-D lon to 1-D COARD lon (this code can be combined with the 2-D lon to 1-D lon case, should handle this later, KY 2013-07-10).
+            // 1-D lon to 1-D COARD lon 
+            // (this code can be combined with the 2-D lon to 1-D lon case, should handle this later, KY 2013-07-10).
             else if(((*j)->getRank()==1) &&((*j)->getName()==LONFIELDNAME) ) {
 
                 string templondimname;
@@ -1239,7 +1281,8 @@ void File::handle_grid_coards() throw(Exception) {
                     HDFCFUtil::insert_map(tempnewydimnamelist, (*i)->getName(), templondimname);
                 }
             }
-            // 1-D lat to 1-D COARD lat(this case can be combined with the 2-D lat to 1-D lat case, should handle this later. KY 2013-7-10).
+            // 1-D lat to 1-D COARD lat
+            // (this case can be combined with the 2-D lat to 1-D lat case, should handle this later. KY 2013-7-10).
             else if(((*j)->getRank()==1) &&((*j)->getName()==LATFIELDNAME) ) {
 
                 string templatdimname;
@@ -1476,8 +1519,6 @@ void File::handle_grid_cf_attrs() throw(Exception) {
     // This is the last round of looping through everything, 
     // we will match dimension name list to the corresponding dimension field name 
     // list for every field. 
-    // Since we find some swath files don't specify fillvalue when -9999.0 is found in the real data,
-    // we specify fillvalue for those fields. This is not in this routine. This is entirely artifical and we will evaluate this approach. KY 2010-3-3
            
     for (vector<GridDataset *>::const_iterator i = this->grids.begin();
         i != this->grids.end(); ++i){
@@ -1537,13 +1578,13 @@ void File::handle_grid_cf_attrs() throw(Exception) {
             // This also needs to be corrected since the Z-dimension may not always be "level".
             // KY 2012-6-13
             // We decide not to touch "units" when the Z-dimension is an existing field(fieldtype =3).
-            if(((*j)->fieldtype == 4)) {
+            if((*j)->fieldtype == 4) {
                 string tempunits ="level";
                 (*j)->setUnits(tempunits);
             }
             
             // The units of the time is not right. KY 2012-6-13(documented at jira HFRHANDLER-167)
-            if(((*j)->fieldtype == 5)) {
+            if((*j)->fieldtype == 5) {
                 string tempunits ="days since 1900-01-01 00:00:00";
                 (*j)->setUnits(tempunits);
             }
@@ -1642,7 +1683,10 @@ void File::handle_grid_SOM_projection() throw(Exception) {
                     cor_som_cvname = (*j)->newname;
                     delete (*j);
                     (*i)->datafields.erase(j);
-                    // When erasing the iterator, the iterator will automatically go to the next element, so we need to go back 1 in order not to miss the next element.
+                    // When erasing the iterator for the vector, the iterator will automatically go to the next element, 
+                    // so we need to go back 1 in order not to miss the next element.
+                    // Again, check stackoverflow and find this is true. So the following operation is valid.
+                    // KY 2014-02-27
                     j--;
                 }
             }
@@ -1804,9 +1848,11 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
     // A map <dimension name, dimension field name> will be created.
     // The name clashing handling for multiple swaths will not be done in this step. 
 
-    // 1.1 Obtain the dimension names corresponding to the latitude and longitude,save them to the <dimname, dimfield> map.
+    // 1.1 Obtain the dimension names corresponding to the latitude and longitude,
+    // save them to the <dimname, dimfield> map.
 
-    // We found a special MODIS product: the Latitude and Longitude are put under the Data fields rather than GeoLocation fields.
+    // We found a special MODIS product: the Latitude and Longitude are put under the Data fields 
+    // rather than GeoLocation fields.
     // So we need to go to the "Data Fields" to grab the "Latitude and Longitude".
 
     bool lat_in_geofields = false;
@@ -2003,9 +2049,11 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
         if (lat_in_datafields ^ lon_in_datafields) 
             throw1("Latitude and longitude must be both under Geolocation fields or Data fields");
 
-        // If lat,lon are not found under either "Data fields" or "Geolocation fields", we should not generate "coordiantes"
-        // However, this case should be handled in the future release. KY 2012-09-24
-        //**************** INVESTIGATE in the NEXT RELEASE ******************************
+        // If lat,lon are not found under either "Data fields" or "Geolocation fields", 
+        // we should not generate "coordiantes"
+        // However, this case should be handled in the future release if resources allow. 
+        // KY 2014-09-24
+        //**************** INVESTIGATE in the future if resources allow *******************
         //if (!lat_in_datafields && !lon_in_datafields)
         //  throw1("Latitude and longitude don't exist");
         //*********************************************************************************/
@@ -2034,7 +2082,8 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
         // data is read, nature number 1,2,3,.... will be filled!
         // NOTE: The latitude and longitude dim names are not handled yet.  
                
-        // Build a unique 1-D dimension name list.Now the list only includes dimension names of "latitude" and "longitude".
+        // Build a unique 1-D dimension name list.
+        // Now the list only includes dimension names of "latitude" and "longitude".
     
         pair<set<string>::iterator,bool> tempdimret;
         for(map<string,string>::const_iterator j = (*i)->dimcvarlist.begin(); 
@@ -2043,7 +2092,8 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
         }
 
         // Search the geofield group and see if there are any existing 1-D Z dimension data.
-        //  If 1-D field data with the same dimension name is found under GeoField, we still search if that 1-D field  is the dimension
+        //  If 1-D field data with the same dimension name is found under GeoField, 
+        // we still search if that 1-D field  is the dimension
         // field of a dimension name.
         for (vector<Field *>::const_iterator j =
             (*i)->getGeoFields().begin();
@@ -2491,14 +2541,14 @@ void File::handle_swath_cf_attrs() throw(Exception) {
             // We decide not touch the units if the third-dimension CV exists(fieldtype =3)
             // KY 2013-02-15
             //if(((*j)->fieldtype == 3)||((*j)->fieldtype == 4)) 
-            if(((*j)->fieldtype == 4)) {
+            if((*j)->fieldtype == 4) {
                 string tempunits ="level";
                 (*j)->setUnits(tempunits);
             }
 
             // Add units for "Time", 
             // Be aware that it is always "days since 1900-01-01 00:00:00"(JIRA HFRHANDLER-167)
-            if(((*j)->fieldtype == 5)) {
+            if((*j)->fieldtype == 5) {
                 string tempunits = "days since 1900-01-01 00:00:00";
                 (*j)->setUnits(tempunits);
             }
@@ -2564,7 +2614,7 @@ void File::handle_swath_cf_attrs() throw(Exception) {
 
             // Add units for "Time", Be aware that it is always "days since 1900-01-01 00:00:00"
             // documented at JIRA (HFRHANDLER-167)
-            if(((*j)->fieldtype == 5)) {
+            if((*j)->fieldtype == 5) {
                 string tempunits = "days since 1900-01-01 00:00:00";
                 (*j)->setUnits(tempunits);
             }
@@ -2702,11 +2752,11 @@ bool File::check_special_1d_grid() throw(Exception) {
 
     int numgrid = this->grids.size();
     int numswath = this->swaths.size();
-cerr<<"coming to check_special_1d_grid "<<endl;
+//cerr<<"coming to check_special_1d_grid "<<endl;
     
     if (numgrid != 1 || numswath != 0) 
         return false;
-cerr<<"after checking grid "<<endl;
+//cerr<<"after checking grid "<<endl;
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();
@@ -2815,8 +2865,10 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
     // the grid names change to MODIS_Grid_500m_2D. 
     // So add this one. KY 2012-11-20
  
-    // Find the grid name in one MCD43C1 file starts with "MCD_CMG_BRDF", however, the offset of the data is 0.
-    // So we may just leave this file since it follows the CF conventions. May need to double check them later. KY 2013-01-24 
+    // Find the grid name in one MCD43C1 file starts with "MCD_CMG_BRDF", 
+    // however, the offset of the data is 0.
+    // So we may not handle this file here since it follows the CF conventions. 
+    // May need to double check them later. KY 2013-01-24 
 
 
     if(EOS2ObjName.find("MOD")==0 || EOS2ObjName.find("mod")==0) 
@@ -2877,7 +2929,8 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
         }
     }
 
-    //  MEASuRES VIP files have the grid name VIP_CMG_GRID. This applies to all VIP version 2 files. KY 2013-01-24
+    //  MEASuRES VIP files have the grid name VIP_CMG_GRID. 
+    // This applies to all VIP version 2 files. KY 2013-01-24
     if (EOS2ObjName =="VIP_CMG_GRID")
         scaletype = MODIS_DIV_SCALE;
 }
@@ -2996,16 +3049,20 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             // Obtain most information of a field such as rank, dimension etc.
             if ((fldinfo(this->datasetid,
                          const_cast<char *>(field->name.c_str()),
-                         &field->rank, dimsize, &field->type, dimlist)) == -1)
+                         &field->rank, dimsize, &field->type, dimlist)) == -1){
+                delete field;
                 throw3("field info", this->name, field->name);
+            }
             {
                 vector<string> dimnames;
 
                 // Split the dimension name list for a field
                 HDFCFUtil::Split(dimlist, ',', dimnames);
-                if ((int)dimnames.size() != field->rank)
+                if ((int)dimnames.size() != field->rank) {
+                    delete field;
                     throw4("field rank", dimnames.size(), field->rank,
                            this->name);
+                }
                 for (int k = 0; k < field->rank; ++k) {
                     Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
                     field->dims.push_back(dim);
@@ -3066,8 +3123,10 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
 
             // Obtain the datatype and byte count of this attribute
             if (attrinfo(this->datasetid, const_cast<char *>
-                        (attr->name.c_str()), &attr->type, &count) == -1)
+                        (attr->name.c_str()), &attr->type, &count) == -1) {
+                delete attr;
                 throw3("attribute info", this->name, attr->name);
+            }
 
             attr->value.resize(count);
                         
@@ -3077,8 +3136,10 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
             // attribute value.
             if (readattr(this->datasetid,
                          const_cast<char *>(attr->name.c_str()),
-                         &attr->value[0]) == -1)
+                         &attr->value[0]) == -1) {
+                delete attr;
                 throw3("read attribute", this->name, attr->name);
+            }
 
             // Append this attribute to attrs list.
             attrs.push_back(attr);
@@ -3102,38 +3163,55 @@ GridDataset * GridDataset::Read(int32 fd, const string &gridname)
 
     // Open this Grid object 
     if ((grid->datasetid = GDattach(fd, const_cast<char *>(gridname.c_str())))
-        == -1)
+        == -1) {
+        delete grid;
         throw2("attach grid", gridname);
+    }
 
     // Obtain the size of XDim and YDim as well as latitude and longitude of
     // the upleft corner and the low right corner. 
     {
         Info &info = grid->info;
         if (GDgridinfo(grid->datasetid, &info.xdim, &info.ydim, info.upleft,
-                       info.lowright) == -1) throw2("grid info", gridname);
+                       info.lowright) == -1) {
+            delete grid;
+            throw2("grid info", gridname);
+        }
     }
 
     // Obtain projection information.
     {
         Projection &proj = grid->proj;
         if (GDprojinfo(grid->datasetid, &proj.code, &proj.zone, &proj.sphere,
-                       proj.param) == -1) 
+                       proj.param) == -1) { 
+            delete grid;
             throw2("projection info", gridname);
-        if (GDpixreginfo(grid->datasetid, &proj.pix) == -1)
+        }
+        if (GDpixreginfo(grid->datasetid, &proj.pix) == -1) {
+            delete grid;
             throw2("pixreg info", gridname);
-        if (GDorigininfo(grid->datasetid, &proj.origin) == -1)
+        }
+        if (GDorigininfo(grid->datasetid, &proj.origin) == -1){
+            delete grid;
             throw2("origin info", gridname);
+        }
     }
 
-    // Read dimensions
-    grid->ReadDimensions(GDnentries, GDinqdims, grid->dims);
+    try {
+        // Read dimensions
+        grid->ReadDimensions(GDnentries, GDinqdims, grid->dims);
 
-    // Read all fields of this Grid.
-    grid->ReadFields(GDnentries, GDinqfields, GDfieldinfo, GDreadfield,
-                     GDgetfillvalue, false, grid->datafields);
+        // Read all fields of this Grid.
+        grid->ReadFields(GDnentries, GDinqfields, GDfieldinfo, GDreadfield,
+                         GDgetfillvalue, false, grid->datafields);
 
-    // Read all attributes of this Grid.
-    grid->ReadAttributes(GDinqattrs, GDattrinfo, GDreadattr, grid->attrs);
+        // Read all attributes of this Grid.
+        grid->ReadAttributes(GDinqattrs, GDattrinfo, GDreadattr, grid->attrs);
+    }
+    catch (...) {
+        delete grid;
+        throw;
+    }
 
     return grid;
 }
@@ -3335,29 +3413,37 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
     // Open this Swath object
     if ((swath->datasetid = SWattach(fd,
         const_cast<char *>(swathname.c_str())))
-        == -1)
+        == -1) {
+        delete swath;
         throw2("attach swath", swathname);
+    }
 
-    // Read dimensions of this Swath
-    swath->ReadDimensions(SWnentries, SWinqdims, swath->dims);
-        
-    // Read all information related to data fields of this Swath
-    swath->ReadFields(SWnentries, SWinqdatafields, SWfieldinfo, SWreadfield,
-                      SWgetfillvalue, false, swath->datafields);
-        
-    // Read all information related to geo-location fields of this Swath
-    swath->ReadFields(SWnentries, SWinqgeofields, SWfieldinfo, SWreadfield,
-                      SWgetfillvalue, true, swath->geofields);
-        
-    // Read all attributes of this Swath
-    swath->ReadAttributes(SWinqattrs, SWattrinfo, SWreadattr, swath->attrs);
-        
-    // Read dimension map and save the number of dimension map for dim. subsetting
+    try {
 
-    swath->set_num_map(swath->ReadDimensionMaps(swath->dimmaps));
+        // Read dimensions of this Swath
+        swath->ReadDimensions(SWnentries, SWinqdims, swath->dims);
+        
+        // Read all information related to data fields of this Swath
+        swath->ReadFields(SWnentries, SWinqdatafields, SWfieldinfo, SWreadfield,
+                          SWgetfillvalue, false, swath->datafields);
+        
+        // Read all information related to geo-location fields of this Swath
+        swath->ReadFields(SWnentries, SWinqgeofields, SWfieldinfo, SWreadfield,
+                          SWgetfillvalue, true, swath->geofields);
+        
+        // Read all attributes of this Swath
+        swath->ReadAttributes(SWinqattrs, SWattrinfo, SWreadattr, swath->attrs);
+        
+        // Read dimension map and save the number of dimension map for dim. subsetting
+        swath->set_num_map(swath->ReadDimensionMaps(swath->dimmaps));
 
-    // Read index maps, we haven't found any files with the Index Maps.
-    swath->ReadIndexMaps(swath->indexmaps);
+        // Read index maps, we haven't found any files with the Index Maps.
+        swath->ReadIndexMaps(swath->indexmaps);
+    }
+    catch (...) {
+        delete swath;
+        throw;
+    }
 
     return swath;
 }

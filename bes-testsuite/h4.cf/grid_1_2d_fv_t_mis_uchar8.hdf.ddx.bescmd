@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d_fv_t_mis_uchar8" space="catalog">/data/grid_1_2d_fv_t_mis_uchar8.hdf</setContainer>
+    <define name="d">
+	<container name="grid_1_2d_fv_t_mis_uchar8" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

@@ -1,0 +1,72 @@
+Attributes {
+    pressure {
+        String long_name "pressure";
+    }
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Longitude {
+        String coordinates "Latitude";
+        String long_name "Longitude";
+    }
+    temperature {
+        String coordinates "pressure Latitude";
+        String long_name "temperature";
+        Float32 _FillValue 1.7976931348623157e+308;
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "Swath";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "ZDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "NDim";
+                        Int32 Size 8;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "pressure";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Latitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "NDim";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "Longitude";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "NDim";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "temperature";
+                        String DataType "DFNT_FLOAT32";
+                        String DimList "ZDim", "NDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

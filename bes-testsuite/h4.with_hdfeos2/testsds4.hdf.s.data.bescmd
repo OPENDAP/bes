@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="testsds4" space="catalog">/hdf-testfiles/testsds4.hdf</setContainer>
+     <define name="d">
+ 	<container name="testsds4">
+            <constraint>
+SDS_1[0:7:15][0:1:4],Y_Axis[0:7:15],X_Axis[0:1:4]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

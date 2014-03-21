@@ -1,0 +1,10 @@
+Attributes {
+    vgname1_vsname1 {
+        String Vdata_field_fldname1 "ACE";
+        String Vdata_field_fldname2 "BDF";
+    }
+    vgname2_vsname0 {
+        Int32 Vdata_field_fldname0 0, 10, 20;
+        Int32 Vdata_field_fldname1 -1, 11, 21;
+    }
+}

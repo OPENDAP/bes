@@ -15,12 +15,16 @@
 #include <BESDebug.h>
 #include "BESInternalError.h"
 #include "HDFCFUtil.h"
+
+using namespace std;
 #define SIGNED_BYTE_TO_INT32 1
 
 
 bool
 HDFSPArray_RealField::read ()
 {
+
+    BESDEBUG("h4","Coming to HDFSPArray_RealField read "<<endl);
     // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
@@ -48,9 +52,10 @@ HDFSPArray_RealField::read ()
     }
 
     // Initialize SD ID and SDS ID. 
-    int32 sdid = 0;
+    int32 sdid = sdfd;
     int32 sdsid = 0;
 
+#if 0
     // Obtain SD ID.
     sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (sdid < 0) {
@@ -58,11 +63,11 @@ HDFSPArray_RealField::read ()
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
+#endif
 
     // Obtain the SDS index based on the input sds reference number.
-    int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
+    int32 sdsindex = SDreftoindex (sdid, (int32) fieldref);
     if (sdsindex == -1) {
-        SDend (sdid);
         ostringstream eherr;
         eherr << "SDS index " << sdsindex << " is not right.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -71,7 +76,6 @@ HDFSPArray_RealField::read ()
     // Obtain this SDS ID.
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
-        SDend (sdid);
         ostringstream eherr;
         eherr << "SDselect failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -90,7 +94,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
                 eherr << "SDreaddata failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -118,7 +121,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -136,7 +138,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -144,7 +145,7 @@ HDFSPArray_RealField::read ()
             }
 
             // WILL HANDLE this later if necessary. KY 2010-8-17
-            //if(sptype == TRMML2) 
+            //if(sptype == TRMML2_V6) 
             // Find scale_factor, add_offset attributes
             // create a new val to float32, remember to change int16 at HDFSP.cc to float32
             // if(sptype == OBPGL3) 16-bit unsigned integer 
@@ -165,7 +166,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -182,7 +182,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -199,7 +198,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -215,7 +213,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -232,7 +229,6 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
-                SDend (sdid);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -244,19 +240,18 @@ HDFSPArray_RealField::read ()
             break;
         default:
             SDendaccess (sdsid);
-            SDend (sdid);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
     // Close the SDS interface
     r = SDendaccess (sdsid);
     if (r != 0) {
-        SDend (sdid);
         ostringstream eherr;
         eherr << "SDendaccess failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+#if 0
     // Close the SD interface
     r = SDend (sdid);
     if (r != 0) {
@@ -264,6 +259,7 @@ HDFSPArray_RealField::read ()
         eherr << "SDend failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
+#endif
 
     return true;
 }

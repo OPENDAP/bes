@@ -40,7 +40,7 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
-HDFCF_SRC = HDFCFUtil.cc HDFEOS2.cc HDFSP.cc HDFSPArrayGeoField.cc\
+HDFCF_SRC = HDFCFUtil.cc HDFEOS2.cc HDFSP.cc HDFSPArrayGeoField.cc HDFSPArrayAddCVField.cc\
 		HDFSPArrayMissField.cc HDFSPArray_RealField.cc HDFSPArray_VDField.cc\
 	          HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
@@ -56,7 +56,7 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 
 HDFCF_HDR = HDFEOS2.h HDFSP.h HDFCFUtil.h \
 	HDFSPEnumType.h \
-	HDFSPArrayGeoField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
+	HDFSPArrayGeoField.h HDFSPArrayAddCVField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
 	HDFEOS2EnumType.h HDFEOS2HandleType.h \
 	HDFEOS2Array_RealField.h \
 	HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
@@ -76,7 +76,7 @@ HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
-SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
+SERVER_HDR = HDF4RequestHandler.h HDF4Module.h HDF4_DDS.h
 
 EXTRA_DIST = data data.nasa hdf-testfiles \
 		hdfeos.yy hdfeos.lex \
@@ -142,23 +142,15 @@ rpm: dist
 	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
-
 # Build the HDF-EOS parser
 
 hdfeos.tab.cc hdfeos.tab.hh: hdfeos.yy
 	$(YACC) $(YFLAGS) $<
 
-# hdfeos.tab.hh
-#  $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc
-#	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
-
 # Build the HDF-EOS scanner
 
 lex.hdfeos.cc lex.hdfeos.hh: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
 	$(LEX) $(LFLAGS) $<
-
-# $(AM_LFLAGS) -Phdfeos
-#	mv lex.hdfeos.c lex.hdfeos.cc
 
 ###########################################################################
 

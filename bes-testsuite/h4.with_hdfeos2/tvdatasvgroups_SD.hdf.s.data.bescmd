@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="tvdatasvgroups_SD" space="catalog">/data/tvdatasvgroups_SD.hdf</setContainer>
+     <define name="d">
+ 	<container name="tvdatasvgroups_SD">
+            <constraint>
+DataSet_1[0:4:9][0:4:9],DataSet_2[0:4:9][0:4:9],DataSet_3[0:4:9][0:4:9]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

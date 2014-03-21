@@ -62,8 +62,8 @@ default, generic, and hdfeos2 for convenience.
 2.1 Pick the right RPM instead of building from source
 
    If you use Linux system that supports RPM package manager and have a super
- user privilege, the easiest way to install the HDF4 handler is using RPMs 
- provided by OPeNDAP, Inc. website. 
+ user privilege, the easiest way to install the HDF4 handler is using the latest
+ RPMs at hdfeos.org website.
 
   The OPeNDAP's download website provides two RPMs --- one with HDF-EOS and one
  without HDF-EOS. You should pick the one with HDF-EOS if you want to take 
@@ -77,13 +77,13 @@ default, generic, and hdfeos2 for convenience.
   o Install a new RPM package using 'rpm -i <package_name.rpm>'. 
 
 1) Download and install the latest "libdap", "BES", and "General purpose 
- handlers (aka dap-server)" RPMs first from
+ handlers (a.k.a. dap-server)" RPMs first from
 
    http://opendap.org/download/hyrax
 
 3) Download and install the latest "hdf4_handler" RPM from
 
-   http://opendap.org/download/hyrax
+   http://hdfeos.org/software/hdf4_handler.php#download
 
 4) (Optional) Configure the handler after reading the section 3 below.
 
@@ -125,8 +125,10 @@ key values in a configuration file called "h4.conf".
  If you used RPMs, you can find the h4.conf file in /etc/bes/modules/.
  If you built one, you can find the h4.conf file in {prefix}/etc/bes/modules.
 
+  Please refer to the file h4.conf.in for descriptions of the following keys.
+The default configuration values are specified after the "=" sign.
 
-3.1 H4.EnableCF (true)
+3.1 H4.EnableCF=true
 
   If this key's value is false, the handler will behave same as the default 
 handler. The output will not follow basic CF conventions. Object and attribute
@@ -138,16 +140,17 @@ conventions. Such tools include IDV and Panoply.
 "true" to ensure other keys to be valid. Thus, this is the most important key 
 to be turned on.
 
-3.2 BES keys added at this version
-Please refer to the file h4.conf.in for descriptions of these keys.
-The default configuration values are specified after the "=" sign.
+3.2 BES keys removed at this version
 
 H4.EnableMODAPSFile=false
+
+3.3 BES keys added at this version
+
 H4.EnableSpecialEOS=true
 H4.DisableScaleOffsetComp=true
 H4.EnableCheckScaleOffsetType=false
 
-3.3 BES keys added at the previous versions
+3.4 BES keys from the previous versions
 
 H4.EnableHybridVdata=true
 H4.EnableCERESVdata=false

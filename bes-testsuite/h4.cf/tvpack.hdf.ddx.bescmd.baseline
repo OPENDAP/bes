@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tvpack.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="myvdata" type="Container">
+        <Attribute name="Vdata_field_Ident" type="String">
+            <value>ABCDEabcde</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Temp" type="Float32">
+            <value>1.110000014</value>
+            <value>2.220000029</value>
+            <value>3.329999924</value>
+            <value>4.440000057</value>
+            <value>5.550000191</value>
+            <value>3.329999924</value>
+            <value>6.659999847</value>
+            <value>9.989999771</value>
+            <value>13.31999969</value>
+            <value>16.64999962</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Speed" type="Int16">
+            <value>0</value>
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>0</value>
+            <value>2</value>
+            <value>4</value>
+            <value>6</value>
+            <value>8</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Height" type="Float32">
+            <value>2.220000029</value>
+            <value>4.440000057</value>
+            <value>6.659999847</value>
+            <value>8.880000114</value>
+            <value>11.10000038</value>
+            <value>4.440000057</value>
+            <value>8.880000114</value>
+            <value>13.31999969</value>
+            <value>17.76000023</value>
+            <value>22.20000076</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

@@ -11,7 +11,6 @@
 #define HDFEOS2ARRAY_SWATHGEODIMMAPEXTRAFIELD_H
 
 #include "Array.h"
-
 #include "mfhdf.h"
 #include "hdf.h"
 #include "HdfEosDef.h"

@@ -20,10 +20,10 @@ using namespace libdap;
 class HDFSPArray_VDField:public Array
 {
     public:
-        HDFSPArray_VDField (int vdrank, const std::string & filename, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+        HDFSPArray_VDField (int vdrank, const int fileid, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (vdrank),
-            filename (filename),
+            fileid (fileid),
             vdref (objref),
             dtype (dtype), 
             fdorder (fieldorder), 
@@ -49,8 +49,8 @@ class HDFSPArray_VDField:public Array
         // Field array rank
         int rank;
 
-        // file name
-        std::string filename;
+        // file id
+        int32 fileid;
 
         // Vdata reference number
         int32 vdref;

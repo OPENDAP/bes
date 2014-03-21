@@ -21,6 +21,8 @@
 #include "HDFCFUtil.h"
 #include "InternalErr.h"
 #include "BESDebug.h"
+
+using namespace std;
 #define SIGNED_BYTE_TO_INT32 1
 
 
@@ -28,6 +30,7 @@ bool
 HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 {
 
+    BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoDimMapExtraField read "<<endl);
     // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
@@ -78,10 +81,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     int32 fileid = -1, swathid = -1; 
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (fileid < 0) {
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -95,7 +96,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     if (numswath == -1) {
         closefunc (fileid);
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot obtain the swath list.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -103,7 +103,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     if (numswath != 1) {
         closefunc (fileid);
         ostringstream eherr;
-
         eherr << " Currently we only support reading geo-location fields from one swath."
               << " This file has more than one swath. ";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -116,7 +115,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         delete[]swathname;
         closefunc (fileid);
         ostringstream eherr;
-
         eherr << "File " << filename.c_str () << " cannot obtain the swath list.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -125,7 +123,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     if (swathid < 0) {
         closefunc (fileid);
         ostringstream eherr;
-
         eherr << "Grid/Swath " << swathname << " cannot be attached.";
         delete[]swathname;
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -143,7 +140,6 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         detachfunc (swathid);
         closefunc (fileid);
         ostringstream eherr;
-
         eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -155,7 +151,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<int8>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -185,12 +182,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<uint>val;
             val.resize(nelms);
 
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -203,12 +200,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<int16>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -220,12 +217,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<uint16>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -237,12 +234,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<int32>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -254,12 +251,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<uint32>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -271,12 +268,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<float32>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
@@ -288,20 +285,24 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             vector<float64>val;
             val.resize(nelms);
-            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+            r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
+                               &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
                 ostringstream eherr;
-
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
             set_value ((dods_float64 *) &val[0], nelms);
         }
             break;
-        default:
+        default: 
+        {
+            detachfunc(swathid);
+            closefunc(fileid);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
+        }
     }
 
     r = detachfunc (swathid);

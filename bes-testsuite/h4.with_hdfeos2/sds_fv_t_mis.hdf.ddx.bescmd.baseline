@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="sds_fv_t_mis.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="data1_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim0</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="data1_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim1</value>
+        </Attribute>
+    </Attribute>
+    <Array name="data1">
+        <Attribute name="long_name" type="String">
+            <value>data1</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>2147483647</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="fakeDim0" size="10"/>
+        <dimension name="fakeDim1" size="5"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

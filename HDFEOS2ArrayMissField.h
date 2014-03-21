@@ -19,7 +19,7 @@ using namespace libdap;
 class HDFEOS2ArrayMissGeoField:public Array
 {
     public:
-        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
+        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", BaseType * v = 0):
             Array (n, v), rank (rank), tnumelm (tnumelm) {
             }
         virtual ~ HDFEOS2ArrayMissGeoField ()

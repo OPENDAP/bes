@@ -13,7 +13,7 @@ using namespace libdap;
 // For example, One may find a line H4.EnableCF=true at h4.conf.in.
 // That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
 bool 
-HDFCFUtil::check_beskeys(const string key) {
+HDFCFUtil::check_beskeys(const string& key) {
 
     bool found = false;
     string doset ="";
@@ -208,6 +208,7 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
             return rep.str();
         }
 
+    case DFNT_UCHAR:
     case DFNT_CHAR:
         {
             // Use the customized escattr function. Don't escape \n,\t and \r. KY 2013-10-14
@@ -389,6 +390,8 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
             find_fvalue = true;
             string fillvalue =""; 
             string fillvalue_type ="";
+            if((*at->get_attr_vector(it)).size() !=1) 
+                throw InternalErr(__FILE__,__LINE__,"The number of _FillValue must be 1.");
             fillvalue =  (*at->get_attr_vector(it)->begin());
             fillvalue_type = at->get_type(it);
             string var_type = HDFCFUtil::print_type(dtype);
@@ -470,7 +473,12 @@ bool HDFCFUtil::is_special_value(int32 dtype, float fillvalue, float realvalue) 
 
 }
 
-/// Check if the MODIS file has dimension map and return the number of dimension maps
+// Check if the MODIS file has dimension map and return the number of dimension maps
+// Note: This routine is only applied to a MODIS geo-location file when the corresponding
+// MODIS swath uses dimension maps and has the MODIS geo-location file under the same 
+// file directory. This is also restricted by turning on H4.EnableCheckMODISGeoFile to be true(file h4.conf.in).
+// By default, this key is turned off. Also this function is only used once in one service. So it won't
+// affect performance. KY 2014-02-18
 int HDFCFUtil::check_geofile_dimmap(const string & geofilename) {
 
     int32 fileid = SWopen(const_cast<char*>(geofilename.c_str()),DFACC_READ);
@@ -510,15 +518,17 @@ int HDFCFUtil::check_geofile_dimmap(const string & geofilename) {
 // back to HDFEOS2.cc. The code is a little better organized. If possible, we may think to overhaul
 // the handling of MODIS scale-offset part. KY 2012-6-19
 // 
-bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_name) 
+bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_field_name) 
 {
+
     AttrTable *at = das.get_table(new_field_name);
-// CODEING 2013-12-13
-// Change the following codes to two parts:
-// 1) For MODIS level 1B(using the swath name), check radiance,reflectance etc. 
-// If the DISABLESCALE key is true, no need to check scale and offset for other type.
-// Otherwise, continue checking the scale and offset names.
-//
+
+    // The following codes do these:
+    // For MODIS level 1B(using the swath name), check radiance,reflectance etc. 
+    // If the DISABLESCALE key is true, no need to check scale and offset for other types.
+    // Otherwise, continue checking the scale and offset names.
+    // KY 2013-12-13
+
     if(scaletype!=DEFAULT_CF_EQU && at!=NULL)
     {
         AttrTable::Attr_iter it = at->attr_begin();
@@ -561,7 +571,8 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_n
             it++;
         }
 
-        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
+        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) 
+            || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
             return true;
 		
         if(scale_factor_value.length()!=0) 
@@ -575,7 +586,9 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, string new_field_n
 }
 
 // Obtain the MODIS swath dimension map info.
-void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*dataset,  vector<struct dimmap_entry> & dimmaps, string & modis_geofilename, bool& geofile_has_dimmap) {
+void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*dataset,  
+                                   vector<struct dimmap_entry> & dimmaps, 
+                                   string & modis_geofilename, bool& geofile_has_dimmap) {
 
 
     HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
@@ -655,13 +668,15 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
                             if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
                                 modis_geofilename = dirfilename + "/"+ dirs->d_name;
                                 int num_dimmap = HDFCFUtil::check_geofile_dimmap(modis_geofilename);
-                                if (num_dimmap < 0) 
+                                if (num_dimmap < 0)  {
+                                    closedir(dirp);
                                     throw InternalErr(__FILE__,__LINE__,"this file is not a MODIS geolocation file.");
+                                }
                                 geofile_has_dimmap = (num_dimmap >0)?true:false;
-                                closedir(dirp);
                                 break;
                             }
                         }
+                        closedir(dirp);
                     }
                 }
             }
@@ -710,13 +725,17 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
 
     return modis_dimmap_nonll_field;
 }
-/// TEMP CODING
-void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, const string filename, bool is_grid, const string newfname, SOType sotype){
+
+/// Add comments.
+void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, 
+                                                              const string &filename, 
+                                                              bool is_grid, 
+                                                              const string & newfname, 
+                                                              SOType sotype){
 
     // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.
     string scale_factor_type;
     string add_offset_type;
-
 
     // Scale and offset values
     string scale_factor_value=""; 
@@ -762,22 +781,30 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, con
     // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
     // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
     // the similar cases so that we can verify with the corresponding product documents to see if this is true.
+    // More information, 
+    // We just verified with the data producer, the scale_factor for Range_1 and Range_c is 25 but the
+    // equation is still multiplication instead of division. So we have to make this as a special case that
+    // we don't want to change the scale and offset settings. 
+    // KY 2014-01-13
+
     
     if(scale_factor_value.length()!=0) {
         if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
             if (orig_scale_value > 1) {
 
+                bool need_change_scale = true;
                 if(true == is_grid) {
                     if ((filename.size() >5) && ((filename.compare(0,5,"MOD09") == 0)|| (filename.compare(0,5,"MYD09")==0))) {
                         if ((newfname.size() >5) && newfname.find("Range") != string::npos)
-                            ;
+                            need_change_scale = false;
                     }
                 }
-                else 
+                if(true == need_change_scale)  {
                     sotype = MODIS_DIV_SCALE;
-                (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
+                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                    << " Now change it to MODIS_DIV_SCALE. "<<endl;
+                }
             }
         }
 
@@ -830,7 +857,8 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, con
 
 }
 
-// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes such as Number_Type to make sure the CF is followed.
+// These routines will handle scale_factor,add_offset,valid_min,valid_max and other attributes 
+// such as Number_Type to make sure the CF is followed.
 // For example, For the case that the scale and offset rule doesn't follow CF, the scale_factor and add_offset attributes are renamed
 // to orig_scale_factor and orig_add_offset to keep the original field info.
 // Note: This routine should only be called when MODIS Scale and offset rules don't follow CF.
@@ -845,7 +873,10 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at, con
 /// Future  CODING reminder
 //  Divide this function into smaller functions:
 //
-void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname, SOType sotype,  bool gridname_change_valid_range, bool changedtype, bool & change_fvtype){
+void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filename, 
+                                           bool is_grid,const string & newfname, 
+                                           SOType sotype,  bool gridname_change_valid_range, 
+                                           bool changedtype, bool & change_fvtype){
 
     // Declare scale_factor,add_offset, fillvalue and valid_range type in string format.
     string scale_factor_type;
@@ -1027,7 +1058,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
                     if ("long_name" == (at->get_name(it))) {
                         orig_long_name_value = (*at->get_attr_vector(it)->begin());
                         if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
+                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), 
+                                                                 str_removed_from_long_name.size(),str_removed_from_long_name)) {
 
                                 modify_long_name_value = 
                                                 orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
@@ -1069,7 +1101,8 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
                     if ("long_name" == (at->get_name(it))) {
                         orig_long_name_value = (*at->get_attr_vector(it)->begin());
                         if (orig_long_name_value.find(str_removed_from_long_name)!=string::npos) {
-                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), str_removed_from_long_name.size(),str_removed_from_long_name)) {
+                            if(0 == orig_long_name_value.compare(orig_long_name_value.size()-str_removed_from_long_name.size(), 
+                                                                 str_removed_from_long_name.size(),str_removed_from_long_name)) {
 
                                 modify_long_name_value = 
                                     orig_long_name_value.substr(0,orig_long_name_value.size()-str_removed_from_long_name.size()); 
@@ -1128,12 +1161,35 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
             // is smaller than 1, the scale/offset should be the multiplication rule.(new_data =scale*(old_data-offset))
             // If the original scale factor is greater than 1, the scale/offset rule should be division rule.
             // New_data = (old_data-offset)/scale.
+            // We indeed find such a case. HDF-EOS2 Grid MODIS_Grid_1km_2D of MOD(or MYD)09GA is a MODIS_EQ_SCALE.
+            // However,
+            // the scale_factor of the variable Range_1 in the MOD09GA product is 25. According to our observation,
+            // this variable should be MODIS_DIV_SCALE.We verify this is true according to MODIS 09 product document
+            // http://modis-sr.ltdri.org/products/MOD09_UserGuide_v1_3.pdf.
+            // Since this conclusion is based on our observation, we would like to add a BESlog to detect if we find
+            // the similar cases so that we can verify with the corresponding product documents to see if this is true.
+            // More information, 
+            // We just verified with the data producer, the scale_factor for Range_1 and Range_c is 25 but the
+            // equation is still multiplication instead of division. So we have to make this as a special case that
+            // we don't want to change the scale and offset settings. 
+            // KY 2014-01-13
+
             if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
                 if (orig_scale_value > 1) {
-                    sotype = MODIS_DIV_SCALE;
-                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
+                  
+                    bool need_change_scale = true;
+                    if(true == is_grid) {
+                        if ((filename.size() >5) && ((filename.compare(0,5,"MOD09") == 0)|| (filename.compare(0,5,"MYD09")==0))) {
+                            if ((newfname.size() >5) && newfname.find("Range") != string::npos)
+                                need_change_scale = false;
+                        }
+                    }
+                    if(true == need_change_scale) {
+                        sotype = MODIS_DIV_SCALE;
+                        (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
                                  << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                  << " Now change it to MODIS_DIV_SCALE. "<<endl;
+                    }
                 }
             }
 
@@ -1189,7 +1245,9 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string newfname,
 
  // This routine makes the MeaSUREs VIP attributes follow CF.
 // valid_range attribute uses char type instead of the raw data's datatype.
-void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_value, const std::string& scale_factor_value,float& valid_min, float &valid_max) {
+void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_value, 
+                                               const std::string& scale_factor_value,
+                                               float& valid_min, float &valid_max) {
 
     int16 vip_orig_valid_min = 0;
     int16 vip_orig_valid_max = 0;
@@ -1273,7 +1331,9 @@ void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 
  // Check OBPG attributes. Specifically, check if slope and intercept can be obtained from the file level. 
  // If having global slope and intercept,  obtain OBPG scaling, slope and intercept values.
-void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, float & slope,bool &global_slope_flag,float & intercept, bool & global_intercept_flag){
+void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, 
+                                        float & slope,bool &global_slope_flag,
+                                        float & intercept, bool & global_intercept_flag){
 
     HDFSP::SD* spsd = f->getSD();
 
@@ -1339,7 +1399,12 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling, f
 // For some OBPG files that only provide slope and intercept at the file level, 
 // global slope and intercept are needed to add to all fields and their names are needed to be changed to scale_factor and add_offset.
 // For OBPG files that provide slope and intercept at the field level,  slope and intercept are needed to rename to scale_factor and add_offset.
-void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *onespsds, string& scaling, float& slope, bool& global_slope_flag, float& intercept,bool & global_intercept_flag) {
+void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
+                                       HDFSP::SDField *onespsds, 
+                                       string& scaling, float& slope, 
+                                       bool& global_slope_flag, 
+                                       float& intercept,
+                                       bool & global_intercept_flag) {
 
     AttrTable *at = das.get_table(onespsds->getNewName());
     if (!at)
@@ -1353,7 +1418,8 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,HDFSP::SDField *on
     bool intercept_flag = false;
 
     if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) {// Begin OPBG CF attribute handling(Checking "slope" and "intercept") 
-        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
+        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();
+                                                       i!=onespsds->getAttributes().end();i++) {
             if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
             {
                 slope_flag = true;
@@ -1550,6 +1616,572 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
 
 }
 
+// Add  missing CF attributes for non-CV varibles
+void
+HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
+
+
+    const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
+    vector<HDFSP::SDField *>::const_iterator it_g;
+
+
+    // TRMM level 3 grid
+    if(TRMML3A_V6== f->getSPType() || TRMML3C_V6==f->getSPType() || TRMML3S_V7 == f->getSPType() || TRMML3M_V7 == f->getSPType()) {
+
+        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+            if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
+
+                AttrTable *at = das.get_table((*it_g)->getNewName());
+                if (!at)
+                    at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                string print_rep = "-9999.9";
+                at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_FLOAT32),print_rep);
+
+            }
+        }
+
+        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+            if((*it_g)->getFieldType() == 0 && (((*it_g)->getType()==DFNT_INT32) || ((*it_g)->getType()==DFNT_INT16))) {
+
+                AttrTable *at = das.get_table((*it_g)->getNewName());
+                if (!at)
+                    at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                string print_rep = "-9999";
+                if((*it_g)->getType()==DFNT_INT32)
+                    at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT32),print_rep);
+                else 
+                    at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
+
+            }
+        }
+
+        // nlayer for TRMM single grid version 7, the units should be "km"
+        if(TRMML3S_V7 == f->getSPType()) {
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                if((*it_g)->getFieldType() == 6 && (*it_g)->getNewName()=="nlayer") {
+
+                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    at->append_attr("units","String","km");
+
+                }
+                else if((*it_g)->getFieldType() == 4) {
+
+                    if ((*it_g)->getNewName()=="nh3" ||
+                        (*it_g)->getNewName()=="ncat3" ||
+                        (*it_g)->getNewName()=="nthrshZO" ||
+                        (*it_g)->getNewName()=="nthrshHB" ||
+                        (*it_g)->getNewName()=="nthrshSRT")
+                     {
+
+                        string references =
+                           "http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
+                        string comment;
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+ 
+                        if((*it_g)->getNewName()=="nh3") {
+                            comment="Index number to represent the fixed heights above the earth ellipsoid,";
+                            comment= comment + " at 2, 4, 6 km plus one for path-average.";
+                        }
+
+                        else if((*it_g)->getNewName()=="ncat3") {
+                            comment="Index number to represent catgories for probability distribution functions.";
+                            comment=comment + "Check more information from the references.";
+                         }
+
+                         else if((*it_g)->getNewName()=="nthrshZO") 
+                            comment="Q-thresholds for Zero order used for probability distribution functions.";
+
+                         else if((*it_g)->getNewName()=="nthrshHB") 
+                            comment="Q-thresholds for HB used for probability distribution functions.";
+
+                         else if((*it_g)->getNewName()=="nthrshSRT") 
+                            comment="Q-thresholds for SRT used for probability distribution functions.";
+                    
+                        at->append_attr("comment","String",comment);
+                        at->append_attr("references","String",references);
+
+                    }
+
+                }
+                
+            }
+
+
+            // 3A26 use special values such as -666, -777,-999 in their fields. 
+            // Although the document doesn't provide range for some fields, the meaning of those fields should be greater than 0.
+            // So add valid_min = 0 and fill_value = -999 .
+            string base_filename;
+            size_t last_slash_pos = f->getPath().find_last_of("/");
+            if(last_slash_pos != string::npos)
+                base_filename = f->getPath().substr(last_slash_pos+1);
+            if(""==base_filename)
+                base_filename = f->getPath();
+            bool t3a26_flag = ((base_filename.find("3A26")!=string::npos)?true:false);
+ 
+            if(true == t3a26_flag) {
+            
+                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                    if((*it_g)->getFieldType() == 0 && ((*it_g)->getType()==DFNT_FLOAT32)) {
+                         AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at->del_attr("_FillValue");
+                        at->append_attr("_FillValue","Float32","-999");
+                        at->append_attr("valid_min","Float32","0");
+
+                    }
+                }
+            }
+
+        }
+
+        // nlayer for TRMM single grid version 7, the units should be "km"
+        if(TRMML3M_V7 == f->getSPType()) {
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                if((*it_g)->getFieldType() == 4 ) {
+
+                    string references ="http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
+                    if ((*it_g)->getNewName()=="nh1") {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                
+                        string comment="Number of fixed heights above the earth ellipsoid,";
+                               comment= comment + " at 2, 4, 6, 10, and 15 km plus one for path-average.";
+
+                        at->append_attr("comment","String",comment);
+                        at->append_attr("references","String",references);
+
+                    }
+                    if ((*it_g)->getNewName()=="nh3") {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                
+                        string comment="Number of fixed heights above the earth ellipsoid,";
+                               comment= comment + " at 2, 4, 6 km plus one for path-average.";
+
+                        at->append_attr("comment","String",comment);
+                        at->append_attr("references","String",references);
+
+                    }
+
+                    if ((*it_g)->getNewName()=="nang") {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                
+                        string comment="Number of ﬁxed incidence angles, at 0, 5, 10 and 15 degree and all angles.";
+                        references = "http://pps.gsfc.nasa.gov/Documents/ICSVol4.pdf";
+
+                        at->append_attr("comment","String",comment);
+                        at->append_attr("references","String",references);
+
+                    }
+
+                    if ((*it_g)->getNewName()=="ncat2") {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                
+                        string comment="Second number of categories for histograms (30). "; 
+                        comment=comment + "Check more information from the references.";
+
+                        at->append_attr("comment","String",comment);
+                        at->append_attr("references","String",references);
+
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+    // TRMM level 2 swath
+    else if(TRMML2_V7== f->getSPType()) {
+
+        string base_filename;
+        size_t last_slash_pos = f->getPath().find_last_of("/");
+        if(last_slash_pos != string::npos)
+            base_filename = f->getPath().substr(last_slash_pos+1);
+        if(""==base_filename)
+            base_filename = f->getPath();
+        bool t2b31_flag = ((base_filename.find("2B31")!=string::npos)?true:false);
+        bool t2a21_flag = ((base_filename.find("2A21")!=string::npos)?true:false);
+        bool t2a12_flag = ((base_filename.find("2A12")!=string::npos)?true:false);
+        bool t2a23_flag = ((base_filename.find("2A23")!=string::npos)?true:false);
+        bool t2a25_flag = ((base_filename.find("2A25")!=string::npos)?true:false);
+        bool t1c21_flag = ((base_filename.find("1C21")!=string::npos)?true:false);
+        bool t1b21_flag = ((base_filename.find("1B21")!=string::npos)?true:false);
+        bool t1b11_flag = ((base_filename.find("1B11")!=string::npos)?true:false);
+        bool t1b01_flag = ((base_filename.find("1B01")!=string::npos)?true:false);
+
+        // Handle scale and offset 
+
+        // group 1: 2B31,2A12,2A21
+        if(t2b31_flag || t2a12_flag || t2a21_flag) { 
+
+            // special for 2B31 
+            if(t2b31_flag) {
+
+                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+         
+                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+                        AttrTable::Attr_iter it = at->attr_begin();
+                        while (it!=at->attr_end()) {
+                            if(at->get_name(it)=="scale_factor")
+                            {
+                                // Scale type and value
+                                string scale_factor_value=""; 
+                                string scale_factor_type;
+
+                                scale_factor_value = (*at->get_attr_vector(it)->begin());
+                                scale_factor_type = at->get_type(it);
+
+                                if(scale_factor_type == "Float64") {
+                                    double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                                    at->del_attr("scale_factor");
+                                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
+                                    at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                                }
+                               
+                                if(scale_factor_type == "Float32") {
+                                    float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                                    at->del_attr("scale_factor");
+                                    string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
+                                    at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                                }
+                            
+                                break;
+                            }
+                            ++it;
+                        }
+                    }
+                }
+            }
+
+            // Special for 2A12
+            if(t2a12_flag==true) {
+
+                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                    if((*it_g)->getFieldType() == 6 && (*it_g)->getNewName()=="nlayer") {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at->append_attr("units","String","km");
+
+                    }
+
+                    // signed char maps to int32, so use int32 for the fillvalue.
+                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT8) {
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at->append_attr("_FillValue","Int32","-99");
+
+                    }
+
+                }
+            }
+
+ 
+            // for all 2A12,2A21 and 2B31
+            // Add fillvalues for float32 and int32.
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
+
+                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    string print_rep = "-9999.9";
+                    at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_FLOAT32),print_rep);
+
+                }
+            }
+
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+         
+                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+
+                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+                    string print_rep = "-9999";
+                    at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT32),print_rep);
+
+                }
+            }
+
+        }
+
+        // group 2: 2A21 and 2A25.
+        else if(t2a21_flag == true || t2a25_flag == true) {
+
+            // 2A25: handle reflectivity and rain rate scales
+            if(t2a25_flag == true) {
+
+                unsigned char handle_scale = 0;
+                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+                               bool has_dBZ = false;
+                    bool has_rainrate = false;
+                    bool has_scale = false;
+                    string scale_factor_value;
+                    string scale_factor_type;
+
+                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    AttrTable::Attr_iter it = at->attr_begin();
+                    while (it!=at->attr_end()) {
+                        if(at->get_name(it)=="units"){
+                            string units_value = (*at->get_attr_vector(it)->begin());
+                            if("dBZ" == units_value) { 
+                                has_dBZ = true;
+                            }
+
+                            else if("mm/hr" == units_value){
+                                has_rainrate = true;
+                            }
+                        }
+                            if(at->get_name(it)=="scale_factor")
+                        {
+                            scale_factor_value = (*at->get_attr_vector(it)->begin());
+                            scale_factor_type = at->get_type(it);
+                                has_scale = true;
+                        }
+                        ++it;
+ 
+                    }
+                        
+                    if((true == has_rainrate || true == has_dBZ) && true == has_scale) {
+
+                        handle_scale++;
+                        short valid_min = 0; 
+                        short valid_max = 0;
+                                 
+                        // Here just use 32-bit floating-point for the scale_factor, should be okay.
+                        if(true == has_rainrate) 
+                            valid_max = (short)(300*strtof(scale_factor_value.c_str(),NULL));
+                        else if(true == has_dBZ) 
+                            valid_max = (short)(80*strtof(scale_factor_value.c_str(),NULL));
+
+                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
+                        at->append_attr("valid_min","Int16",print_rep);
+                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
+                        at->append_attr("valid_max","Int16",print_rep);
+
+                        at->del_attr("scale_factor");
+                        if(scale_factor_type == "Float64") {
+                            double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
+                            at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                        }
+                               
+                        if(scale_factor_type == "Float32") {
+                            float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
+                            at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                        }
+
+
+                    }
+
+                    if(2 == handle_scale)
+                        break;
+
+                    }
+                }
+            }
+        }
+
+        // 1B21,1C21 and 1B11
+        else if(t1b21_flag || t1c21_flag || t1b11_flag) {
+
+            // 1B21,1C21 scale_factor to CF and valid_range for dBm and dBZ.
+            if(t1b21_flag || t1c21_flag) {
+
+                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+
+                        bool has_dBm = false;
+                        bool has_dBZ = false;
+
+                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        if (!at)
+                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        AttrTable::Attr_iter it = at->attr_begin();
+
+                        while (it!=at->attr_end()) {
+                            if(at->get_name(it)=="units"){
+                             
+                                string units_value = (*at->get_attr_vector(it)->begin());
+                                if("dBm" == units_value) { 
+                                    has_dBm = true;
+                                    break;
+                                }
+
+                                else if("dBZ" == units_value){
+                                    has_dBZ = true;
+                                    break;
+                                }
+                            }
+                            ++it;
+                        }
+
+                        if(has_dBm == true || has_dBZ == true) {
+                            it = at->attr_begin();
+                            while (it!=at->attr_end()) {
+                                if(at->get_name(it)=="scale_factor")
+                                {
+
+                                    string scale_value = (*at->get_attr_vector(it)->begin());
+                            
+                                    if(true == has_dBm) {
+                                       short valid_min = (short)(-120 *strtof(scale_value.c_str(),NULL));
+                                       short valid_max = (short)(-20 *strtof(scale_value.c_str(),NULL));
+                                       string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
+                                       at->append_attr("valid_min","Int16",print_rep);
+                                       print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
+                                       at->append_attr("valid_max","Int16",print_rep);
+                                       break;
+                                      
+                                    }
+
+                                    else if(true == has_dBZ){
+                                       short valid_min = (short)(-20 *strtof(scale_value.c_str(),NULL));
+                                       short valid_max = (short)(80 *strtof(scale_value.c_str(),NULL));
+                                       string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
+                                       at->append_attr("valid_min","Int16",print_rep);
+                                       print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
+                                       at->append_attr("valid_max","Int16",print_rep);
+                                       break;
+ 
+                                    }
+                                }
+                                ++it;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            // For all 1B21,1C21 and 1B11 int16-bit products,change scale to follow CF
+            // I find that one 1B21 variable binStormHeight has fillvalue -9999,
+            // so add _FillValue -9999 for int16-bit variables.
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+
+                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    AttrTable::Attr_iter it = at->attr_begin();
+
+
+                    while (it!=at->attr_end()) {
+
+                        if(at->get_name(it)=="scale_factor")
+                        {
+                            // Scale type and value
+                            string scale_factor_value=""; 
+                            string scale_factor_type;
+
+                            scale_factor_value = (*at->get_attr_vector(it)->begin());
+                            scale_factor_type = at->get_type(it);
+
+                            if(scale_factor_type == "Float64") {
+                                double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                                at->del_attr("scale_factor");
+                                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
+                                at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                            }
+                               
+                            if(scale_factor_type == "Float32") {
+                                float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                                at->del_attr("scale_factor");
+                                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
+                                at->append_attr("scale_factor", scale_factor_type,print_rep);
+
+                            }
+
+                            break;
+                            
+                        }
+                        ++it;
+
+                    }
+
+                    at->append_attr("_FillValue","Int16","-9999");
+
+                }
+            }
+        }
+
+        // For 1B01 product, just add the fillvalue.
+        else if(t1b01_flag == true) {
+            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
+                                           AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if (!at)
+                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+                    at->append_attr("_FillValue","Float32","-9999.9");
+
+                }
+            }
+
+        }
+
+        AttrTable *at = das.get_table("HDF_GLOBAL");
+        if (!at)
+            at = das.add_table("HDF_GLOBAL", new AttrTable);
+        string references ="http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
+        string comment="The HDF4 OPeNDAP handler adds _FillValue, valid_min and valid_max for some TRMM level 1 and level 2 products.";
+        comment= comment + " It also changes scale_factor to follow CF conventions. ";
+
+        at->append_attr("comment","String",comment);
+        at->append_attr("references","String",references);
+    
+    }
+
+}
+                
+
+
 //
 // Many CERES products compose of multiple groups
 // There are many fields in CERES data(a few hundred) and the full name(with the additional path)
@@ -1560,7 +2192,7 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
 // We still preserve the full path as an attribute in case users need to check them. 
 // Kent 2012-6-29
  
-void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,string filename) {
+void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,const string& filename) {
 
 
     string check_ceres_merra_short_name_key="H4.EnableCERESMERRAShortName";
@@ -1656,7 +2288,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
                         string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());
-                        at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                        at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                     }
                     else {
                         for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
@@ -1672,7 +2304,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
                 if (true == turn_on_vdata_desc_key) {
 
-                    //NOTE: for vdata field, we assume that no special characters are found 
+                    //NOTE: for vdata field, we assume that no special characters are found. We need to escape the special characters when the data type is char. 
                     for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
 
                         // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
@@ -1682,7 +2314,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
                                 string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
                                 string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , tempfinalstr);
+                                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                             }
                             else {
                                 for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
@@ -1704,8 +2336,9 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                     if((*j)->getFieldOrder() == 1) {
                         if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
                             string tempfinalstr;
+                            tempfinalstr.resize((*j)->getValue().size());
                             copy((*j)->getValue().begin(),(*j)->getValue().end(),tempfinalstr.begin());
-                            at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , tempfinalstr);
+                            at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                         }
                         else {
                             for ( int loc=0; loc < (*j)->getNumRec(); loc++) {
@@ -1724,7 +2357,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                             if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
                                 string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
                                 string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempfinalstr);
+                                at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
                             }
                             else {
                                 for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
@@ -1744,7 +2377,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                                     string tempstring2(tempit,tempit+(*j)->getFieldOrder());
                                     string tempfinalstr= string(tempstring2.c_str());
                                     string tempoutstring = "'"+tempfinalstr+"'";
-                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",tempoutstring);
+                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
                                 }
                             }
 
@@ -1769,7 +2402,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
                                 string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
                                 string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , tempfinalstr);
+                                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                             }
                             else {
                                 for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
@@ -1820,6 +2453,188 @@ string HDFCFUtil::escattr(string s)
 }
 
 
+void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value, 
+                                          int& latsize, int&lonsize, 
+                                          float& lat_start, float& lon_start,
+                                          float& lat_res, float& lon_res,
+                                          bool check_reg_orig ){
 
+     //bool cr_reg = false;
+     //bool sw_origin = true;
+     //float lat_res = 1.;
+     //float lon_res = 1.;
+     float lat_north = 0.;
+     float lat_south = 0.;
+     float lon_east = 0.;
+     float lon_west = 0.;
+     
+     vector<string> ind_elems;
+     char sep='\n';
+     HDFCFUtil::Split(&value[0],sep,ind_elems);
+     
+     /* The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.*/
+     if(ind_elems.size()!=10)
+        throw InternalErr(__FILE__,__LINE__,"The number of elements in the TRMM level 3 GridHeader is not right.");
 
+     if(false == check_reg_orig) {
+        if (0 != ind_elems[1].find("Registration=CENTER"))        
+            throw InternalErr(__FILE__,__LINE__,"The TRMM grid registration is not center.");
+     }
+        
+     if (0 == ind_elems[2].find("LatitudeResolution")){ 
 
+        size_t equal_pos = ind_elems[2].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[2].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+
+            string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lat_res = strtof(latres_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for TRMM level 3 products");
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LatitudeResolution doesn't exist.");
+
+    if (0 == ind_elems[3].find("LongitudeResolution")){ 
+
+        size_t equal_pos = ind_elems[3].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[3].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lon_res = strtof(lonres_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for TRMM level 3 products");
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LongitudeResolution doesn't exist.");
+
+    if (0 == ind_elems[4].find("NorthBoundingCoordinate")){ 
+
+        size_t equal_pos = ind_elems[4].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[4].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lat_north = strtof(north_bounding_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for TRMM level 3 products");
+ 
+    }
+     else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid NorthBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[5].find("SouthBoundingCoordinate")){ 
+
+            size_t equal_pos = ind_elems[5].find_first_of('=');
+            if(string::npos == equal_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+            size_t scolon_pos = ind_elems[5].find_first_of(';');
+            if(string::npos == scolon_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            if (equal_pos < scolon_pos){
+                string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
+                lat_south = strtof(lat_south_str.c_str(),NULL);
+            }
+            else 
+                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid SouthBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[6].find("EastBoundingCoordinate")){ 
+
+            size_t equal_pos = ind_elems[6].find_first_of('=');
+            if(string::npos == equal_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+            size_t scolon_pos = ind_elems[6].find_first_of(';');
+            if(string::npos == scolon_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            if (equal_pos < scolon_pos){
+                string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
+                lon_east = strtof(lon_east_str.c_str(),NULL);
+            }
+            else 
+                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid EastBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[7].find("WestBoundingCoordinate")){ 
+
+            size_t equal_pos = ind_elems[7].find_first_of('=');
+            if(string::npos == equal_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+            size_t scolon_pos = ind_elems[7].find_first_of(';');
+            if(string::npos == scolon_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            if (equal_pos < scolon_pos){
+                string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
+                lon_west = strtof(lon_west_str.c_str(),NULL);
+//cerr<<"latres str is "<<lon_west_str <<endl;
+//cerr<<"latres is "<<lon_west <<endl;
+            }
+            else 
+                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid WestBoundingCoordinate doesn't exist.");
+
+    if (false == check_reg_orig) {
+        if (0 != ind_elems[8].find("Origin=SOUTHWEST")) 
+            throw InternalErr(__FILE__,__LINE__,"The TRMM grid origin is not SOUTHWEST.");
+    }
+
+    // Since we only treat the case when the Registration is center, so the size should be the 
+    // regular number size - 1.
+    latsize =(int)((lat_north-lat_south)/lat_res);
+    lonsize =(int)((lon_east-lon_west)/lon_res);
+    lat_start = lat_south;
+    lon_start = lon_west;
+}
+
+#if 0
+void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd) {
+
+    if(sdfd != -1)
+        SDend(sdfd);
+    if(fileid != -1)
+        Hclose(fileid);
+    if(gridfd != -1)
+        GDclose(gridfd);
+    if(swathfd != -1)
+        SWclose(swathfd);
+
+}
+
+void HDFCFUtil::reset_fileid(int& sdfd, int& fileid,int& gridfd, int& swathfd) {
+
+    sdfd   = -1;
+    fileid = -1;
+    gridfd = -1;
+    swathfd = -1;
+
+}
+#endif
