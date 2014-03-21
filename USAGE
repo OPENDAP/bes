@@ -1,6 +1,6 @@
 
   This supplementary document explains how to use HDF5 handler to serve NASA 
-HDF4/HDF-EOS products in a manner that follows the CF conventions.
+HDF5/HDF-EOS5 products in a manner that follows the CF conventions.
 
 1. Using the NcML handler to modify attributes that do not follow the CF 
 conventions 
