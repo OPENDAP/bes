@@ -104,6 +104,73 @@ parse_dims(const string &shape)
 	return dims;
 }
 
+bool isValidTypeMatch(Type requestedType, Type argType){
+	bool typematch = false;
+    switch (requestedType) {
+    // All integer values are stored in Int32 DAP variables by the stock argument parser
+    // except values too large; those are stored in a UInt32
+    case dods_byte_c:
+    case dods_int16_c:
+    case dods_uint16_c:
+    case dods_int32_c:
+    case dods_uint32_c:
+    	{
+    		switch(argType){
+				case dods_byte_c:
+				case dods_int16_c:
+				case dods_uint16_c:
+				case dods_int32_c:
+				case dods_uint32_c:
+				{
+					typematch=true;
+				}
+					break;
+				default:
+					break;
+    		}
+    	}
+    	break;
+
+    case dods_float32_c:
+    case dods_float64_c:
+    {
+		switch(argType){
+				case dods_float32_c:
+				case dods_float64_c:
+				{
+					typematch=true;
+				}
+					break;
+				default:
+					break;
+		}
+    }
+    	break;
+
+    case dods_str_c:
+    case dods_url_c:
+    {
+		switch(argType){
+				case dods_str_c:
+				case dods_url_c:
+				{
+					typematch=true;
+				}
+					break;
+				default:
+					break;
+		}
+    }
+    	break;
+
+    default:
+    	throw InternalErr(__FILE__, __LINE__, "Unknown type error");
+    }
+
+    return typematch;
+
+}
+
 template<class DAP_Primitive, class DAP_BaseType>
 static void
 read_values(int argc, BaseType *argv[], Array *dest)
@@ -111,9 +178,19 @@ read_values(int argc, BaseType *argv[], Array *dest)
     vector<DAP_Primitive> values;
     values.reserve(argc-2); 	// The number of values/elements to read
 
+    string requestedTypeName = extract_string_argument(argv[0]);
+    Type requestedType = libdap::get_type(requestedTypeName.c_str());
+	BESDEBUG("functions", "Requested array type: " << requestedTypeName<< endl);
+
     // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
     for (int i = 2; i < argc; ++i) {
-    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(argv[i])->value() <<endl);
+   	    BESDEBUG("functions", "Adding value of type " <<  argv[i]->type_name() << endl);
+    	if(!isValidTypeMatch(requestedType,argv[i]->type())){
+        	throw Error(malformed_expr, "make_array(): Expected values to be of type " + requestedTypeName +
+        			" but argument " + long_to_string(i) +
+        			" evaluated into a type " + argv[i]->type_name() + " instead.");
+    	}
+   	    BESDEBUG("functions", "Adding value: " <<  static_cast<DAP_BaseType*>(argv[i])->value() << endl);
     	values.push_back(static_cast<DAP_BaseType*>(argv[i])->value());
     }
 
@@ -122,6 +199,41 @@ read_values(int argc, BaseType *argv[], Array *dest)
     // copy the values to the DAP Array
     dest->set_value(values, values.size());
 }
+
+template<class DAP_Primitive, class DAP_BaseType>
+static void
+read_values(D4RValueList *args, DMR &dmr, Array *dest)
+{
+    vector<DAP_Primitive> values;
+    values.reserve(args->size()-2); 	// The number of values/elements to read
+
+    string requestedTypeName = extract_string_argument(args->get_rvalue(0)->value(dmr));
+    Type requestedType = libdap::get_type(requestedTypeName.c_str());
+	BESDEBUG("functions", "Requested array type: " << requestedTypeName<< endl);
+
+    // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
+    for (unsigned int i = 2; i < args->size(); ++i) {
+
+   	    BESDEBUG("functions", "Adding value of type " <<  args->get_rvalue(i)->value(dmr)->type_name() << endl);
+    	if(!isValidTypeMatch(requestedType,args->get_rvalue(i)->value(dmr)->type())){
+        	throw Error(malformed_expr, "make_array(): Expected values to be of type " + requestedTypeName +
+        			" but argument " + long_to_string(i) +
+        			" evaluated into a type " + args->get_rvalue(i)->value(dmr)->type_name() + " instead.");
+    	}
+
+    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value() <<endl);
+    	values.push_back(static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value());
+    }
+
+    BESDEBUG("functions", "values size: " << values.size() << endl);
+
+    // copy the values to the DAP Array
+    dest->set_value(values, values.size());
+}
+
+
+
+
 
 /** Build a new DAP Array variable. Read the type, shape and values from the
  * arg list. The variable will be named anon<number> and is guaranteed not
@@ -146,6 +258,8 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
         return;
     }
 
+    BESDEBUG("functions", "function_make_dap2_array() -  argc: " << long_to_string(argc) << endl);
+
     // Check for two args or more. The first two must be strings.
     if (argc < 2)
     	throw Error(malformed_expr, "make_array(type,shape,[value0,...]) requires at least two arguments.");
@@ -153,8 +267,8 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     string type_name = extract_string_argument(argv[0]);
     string shape = extract_string_argument(argv[1]);
 
-    BESDEBUG("functions", "type: " << type_name << endl);
-    BESDEBUG("functions", "shape: " << shape << endl);
+    BESDEBUG("functions", "function_make_dap2_array() -  type: " << type_name << endl);
+    BESDEBUG("functions", "function_make_dap2_array() - shape: " << shape << endl);
 
     // get the DAP type; NB: In DAP4 this will include Url4 and Enum
     Type type = libdap::get_type(type_name.c_str());
@@ -241,24 +355,6 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 }
 
 
-template<class DAP_Primitive, class DAP_BaseType>
-static void
-read_values(D4RValueList *args, DMR &dmr, Array *dest)
-{
-    vector<DAP_Primitive> values;
-    values.reserve(args->size()-2); 	// The number of values/elements to read
-
-    // read argv[2]...argv[2+N-1] elements, convert them to type an load them in the Array.
-    for (unsigned int i = 2; i < args->size(); ++i) {
-    	BESDEBUG("functions", "Adding value: " << static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value() <<endl);
-    	values.push_back(static_cast<DAP_BaseType*>(args->get_rvalue(i)->value(dmr))->value());
-    }
-
-    BESDEBUG("functions", "values size: " << values.size() << endl);
-
-    // copy the values to the DAP Array
-    dest->set_value(values, values.size());
-}
 
 
 

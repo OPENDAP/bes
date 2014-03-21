@@ -461,7 +461,7 @@ public:
 		}
 
 		try {
-			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array()" << endl);
+			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too few parameters" << endl);
 			BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(!result);
 		}
@@ -477,7 +477,7 @@ public:
 		params.add_rvalue(new D4RValue((i++)*0.1));
 
 		try {
-			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array()" << endl);
+			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with too many parameters" << endl);
 			BaseType *result =  function_make_dap4_array(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(!result);
         }
@@ -485,6 +485,31 @@ public:
             DBG(cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message() << endl);
             CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
         }
+
+		// Now we try too many parameters (too many values for the array)
+
+        D4RValueList badTypeParams;
+        badTypeParams.add_rvalue(new D4RValue("Float32")); // type
+        badTypeParams.add_rvalue(new D4RValue(shape));
+
+		badTypeParams.add_rvalue(new D4RValue( 0.0));
+		badTypeParams.add_rvalue(new D4RValue( 0.1));
+		badTypeParams.add_rvalue(new D4RValue((long long int)2));
+		badTypeParams.add_rvalue(new D4RValue((long long int)3));
+		badTypeParams.add_rvalue(new D4RValue(double_to_string(0.4)));
+
+
+
+		try {
+			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap4_array() with type mismatched parameters" << endl);
+			BaseType *result =  function_make_dap4_array(&badTypeParams, *two_arrays_dmr);
+            CPPUNIT_ASSERT(!result);
+        }
+        catch (Error &e) {
+            DBG(cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message() << endl);
+            CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
+        }
+
 
 
         DBG(cerr << "make_array_test_bad_params() - END" << endl);
