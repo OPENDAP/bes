@@ -104,25 +104,26 @@ parse_dims(const string &shape)
 	return dims;
 }
 
+
+
 bool isValidTypeMatch(Type requestedType, Type argType){
-	bool typematch = false;
+	bool typematch_status = false;
     switch (requestedType) {
-    // All integer values are stored in Int32 DAP variables by the stock argument parser
-    // except values too large; those are stored in a UInt32
     case dods_byte_c:
     case dods_int16_c:
     case dods_uint16_c:
     case dods_int32_c:
     case dods_uint32_c:
     	{
+    	    // All integer values are stored in Int32 DAP variables by the stock argument parser
+    	    // except values too large; those are stored in a UInt32 these return the same size value
+    		// (i.e. casting one to the other is fine, at least I think)
+    		// FIXME - Verify this assumption
     		switch(argType){
-				case dods_byte_c:
-				case dods_int16_c:
-				case dods_uint16_c:
 				case dods_int32_c:
 				case dods_uint32_c:
 				{
-					typematch=true;
+					typematch_status=true;
 				}
 					break;
 				default:
@@ -131,14 +132,16 @@ bool isValidTypeMatch(Type requestedType, Type argType){
     	}
     	break;
 
+
     case dods_float32_c:
     case dods_float64_c:
     {
-		switch(argType){
-				case dods_float32_c:
+    	// All floating point values are stored as Float64 by the stock argument parser
+		// FIXME - Verify this assumption
+    	switch(argType){
 				case dods_float64_c:
 				{
-					typematch=true;
+					typematch_status=true;
 				}
 					break;
 				default:
@@ -150,11 +153,13 @@ bool isValidTypeMatch(Type requestedType, Type argType){
     case dods_str_c:
     case dods_url_c:
     {
+    	// Strings and Urls, like Int32 and UInt32 are pretty much the same
+		// FIXME - Verify this assumption
 		switch(argType){
 				case dods_str_c:
 				case dods_url_c:
 				{
-					typematch=true;
+					typematch_status=true;
 				}
 					break;
 				default:
@@ -167,7 +172,7 @@ bool isValidTypeMatch(Type requestedType, Type argType){
     	throw InternalErr(__FILE__, __LINE__, "Unknown type error");
     }
 
-    return typematch;
+    return typematch_status;
 
 }
 
@@ -264,15 +269,15 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     if (argc < 2)
     	throw Error(malformed_expr, "make_array(type,shape,[value0,...]) requires at least two arguments.");
 
-    string type_name = extract_string_argument(argv[0]);
+    string requested_type_name = extract_string_argument(argv[0]);
     string shape = extract_string_argument(argv[1]);
 
-    BESDEBUG("functions", "function_make_dap2_array() -  type: " << type_name << endl);
+    BESDEBUG("functions", "function_make_dap2_array() -  type: " << requested_type_name << endl);
     BESDEBUG("functions", "function_make_dap2_array() - shape: " << shape << endl);
 
     // get the DAP type; NB: In DAP4 this will include Url4 and Enum
-    Type type = libdap::get_type(type_name.c_str());
-    if (!is_simple_type(type))
+    Type requested_type = libdap::get_type(requested_type_name.c_str());
+    if (!is_simple_type(requested_type))
     	throw Error(malformed_expr, "make_array() can only build arrays of simple types (integers, floats and strings).");
 
     // parse the shape information. The shape expression form is [size0][size1]...[sizeN]
@@ -288,7 +293,7 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 
     Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(type));	// ... so use add_var_nocopy() to add it instead
+    dest->add_var_nocopy(btf.NewVariable(requested_type));	// ... so use add_var_nocopy() to add it instead
 
     unsigned long number_of_elements = 1;
     vector<int>::iterator i = dims.begin();
