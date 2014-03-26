@@ -165,9 +165,6 @@ string BESStoredDapResultCache::getStoredResultsDirFromConfig(){
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
 	BESDEBUG("cache", "BESStoreResultCache::BESStoreResultCache() -  BEGIN" << endl);
-#if 0
-	bool found;
-#endif
 
     string resultsDir = getStoredResultsDirFromConfig();
     string resultPrefix = getResultPrefixFromConfig();

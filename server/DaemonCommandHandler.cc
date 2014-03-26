@@ -135,7 +135,7 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config) :
 		vector<string> vals;
 		bool found = false;
 		TheBESKeys::TheKeys()->get_values("BES.Include", vals, found);
-		BESDEBUG("besdaemon", "besdaemon: found BES.Include: " << found << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler() - Found BES.Include: " << found << endl);
 
 		// Load the child config file/path names into d_pathnames.
 		if (found) {
@@ -147,7 +147,7 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config) :
 		map<string, string>::iterator i = d_pathnames.begin();
 		while (i != d_pathnames.end()) {
 			BESDEBUG("besdaemon",
-					"besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+					"DaemonCommandHandler() - d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
 			++i;
 		}
 	}
@@ -243,10 +243,10 @@ static void write_file(const string &name, const string &buffer)
 	ostringstream backup_name;
 	backup_name << name << "." << getpid();
 	if (access(backup_name.str().c_str(), F_OK) == -1) {
-		BESDEBUG("besdaemon", "besdaemon: No backup file yet" << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler()::write_file() - No backup file yet" << endl);
 		// Backup does not exist for this instance of the server; backup name
 		if (rename(name.c_str(), backup_name.str().c_str()) == -1) {
-			BESDEBUG("besdaemon", "besdaemon: Could not backup file " << name << " to " << backup_name.str() << endl);
+			BESDEBUG("besdaemon", "DaemonCommandHandler()::write_file() - : Could not backup file " << name << " to " << backup_name.str() << endl);
 			ostringstream err;
 			err << "(" << errno << ") " << strerror(errno);
 			throw BESInternalError("Could not backup config file: " + name + ": " + err.str(), __FILE__, __LINE__);
@@ -255,7 +255,7 @@ static void write_file(const string &name, const string &buffer)
 
 	// Now move the '.tmp' file to <name>
 	if (rename(tmp_name.c_str(), name.c_str()) == -1) {
-		BESDEBUG("besdaemon", "besdaemon: Could not complete write " << name << " to " << backup_name.str() << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler()::write_file() - : Could not complete write " << name << " to " << backup_name.str() << endl);
 		ostringstream err;
 		err << "(" << errno << ") " << strerror(errno);
 		throw BESInternalError("Could not write config file:" + name + ": " + err.str(), __FILE__, __LINE__);
@@ -303,7 +303,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 		infile.seekg((est_num_lines - num_lines) * BES_LOG_CHARS_EST_PER_LINE, ios::beg);
 		ifstream::pos_type start_from_pos = infile.tellg();
 
-		BESDEBUG("besdaemon", "beadaemon: end_pos: " << end_pos << " start_from_pos: " << start_from_pos << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - end_pos: " << end_pos << " start_from_pos: " << start_from_pos << endl);
 
 		// No laughing at my goto...
 		retry:
@@ -320,7 +320,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 		// if the start_from_pos is too far along (there are not num_lines
 		// left), scale it back and try again.
 		if (count < num_lines) {
-			BESDEBUG("besdaemon", "besdaemon: Retrying; Log length  (count)" << count << ", num_lines " << num_lines << endl);
+			BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Retrying; Log length  (count)" << count << ", num_lines " << num_lines << endl);
 			// 10 isa fudge factor...
 			long size = start_from_pos;
 			size -= ((num_lines - count + 10) * BES_LOG_CHARS_EST_PER_LINE);
@@ -331,7 +331,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 
 		infile.seekg(start_from_pos, ios::beg);
 
-		BESDEBUG("besdaemon", "besdaemon: Log length  (count)" << count << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Log length  (count)" << count << endl);
 
 		if (count > num_lines)
 		{
@@ -383,7 +383,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 	static ifstream::pos_type prev_end_pos = 0;
 	static long prev_line_count = 0;
 
-	BESDEBUG("besdaemon", "besdaemon: prev_line_count: " << prev_line_count << endl);
+	BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - prev_line_count: " << prev_line_count << endl);
 	// num_lines == 0 is special value that means get all the lines
 	if (num_lines > 0)
 	{
@@ -403,7 +403,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 
 		infile.seekg(0, ios::beg);
 
-		BESDEBUG("besdaemon", "besdaemon: Log length  " << count << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Log length  " << count << endl);
 
 		if (count > num_lines)
 		{
@@ -604,7 +604,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 		while (current_node) {
 			if (current_node->type == XML_ELEMENT_NODE) {
 				string node_name = (char *) current_node->name;
-				BESDEBUG("besdaemon", "besdaemon: looking for command " << node_name << endl);
+				BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Looking for command " << node_name << endl);
 				// ***
 				// cerr << "Processing  command " << node_name << endl;
 
@@ -614,7 +614,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 
 				switch (lookup_command(node_name)) {
 				case HAI_STOP_NOW:
-					BESDEBUG("besdaemon", "besdaemon: Received StopNow" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received StopNow" << endl);
 
 					if (stop_all_beslisteners(SIGTERM) == false) {
 						if (master_beslistener_status == BESLISTENER_RUNNING) {
@@ -635,7 +635,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					break;
 
 				case HAI_START: {
-					BESDEBUG("besdaemon", "besdaemon: Received Start" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received Start" << endl);
 					// start_master_beslistener assigns the mbes pid to a
 					// static global defined in daemon.cc that stop_all_bes...
 					// uses.
@@ -646,7 +646,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 
 					if (start_master_beslistener() == 0) {
 						BESDEBUG("besdaemon",
-								"besdaemon: Error starting; master_beslistener_status = " << master_beslistener_status << endl);
+								"DaemonCommandHandler::execute_command() - Error starting; master_beslistener_status = " << master_beslistener_status << endl);
 						if (master_beslistener_status == BESLISTENER_RUNNING) {
 							throw BESSyntaxUserError(
 									"Received Start command but the master beslistener is already running", __FILE__,
@@ -672,14 +672,14 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				}
 
 				case HAI_EXIT:
-					BESDEBUG("besdaemon", "besdaemon: Received Exit" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received Exit" << endl);
 					stop_all_beslisteners(SIGTERM);
 					unblock_signals(); // called here because we're about to exit
 					exit(0);
 					break;
 
 				case HAI_GET_CONFIG: {
-					BESDEBUG("besdaemon", "besdaemon: Received GetConfig" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received GetConfig" << endl);
 
 					if (d_pathnames.empty()) {
 						throw BESInternalFatalError("There are no known configuration files for this BES!", __FILE__,
@@ -691,7 +691,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					map<string, string>::iterator i = d_pathnames.begin();
 					while (i != d_pathnames.end()) {
 						BESDEBUG("besdaemon",
-								"besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+								"DaemonCommandHandler::execute_command() - Retrieving " << (*i).first << ": " << d_pathnames[(*i).first] << endl);
 
 						if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BesConfig") < 0)
 							throw BESInternalFatalError("Could not write <hai:Config> element ", __FILE__, __LINE__);
@@ -702,7 +702,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 
 						char *content = read_file(d_pathnames[(*i).first]);
 						try {
-							BESDEBUG("besdaemon_verbose", "besdaemon: content: " << content << endl);
+							BESDEBUG("besdaemon_verbose", "DaemonCommandHandler::execute_command() - content: " << content << endl);
 							if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
 								throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
@@ -727,7 +727,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				}
 
 				case HAI_SET_CONFIG: {
-					BESDEBUG("besdaemon", "besdaemon: Received SetConfig" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received SetConfig" << endl);
 					xmlChar *xml_char_module = xmlGetProp(current_node, (const xmlChar*) "module");
 					if (!xml_char_module) {
 						throw BESSyntaxUserError("SetConfig missing module ", __FILE__, __LINE__);
@@ -735,7 +735,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					string module = (const char *) xml_char_module;
 					xmlFree(xml_char_module);
 
-					BESDEBUG("besdaemon", "besdaemon: Received SetConfig; module: " << module << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received SetConfig; module: " << module << endl);
 
 					xmlChar *file_content = xmlNodeListGetString(doc, current_node->children, /* inLine = */true);
 					if (!file_content) {
@@ -744,7 +744,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					string content = (const char *) file_content;
 					xmlFree(file_content);
 					BESDEBUG("besdaemon_verbose",
-							"besdaemon: Received SetConfig; content: " << endl << content << endl);
+							"DaemonCommandHandler::execute_command() - Received SetConfig; content: " << endl << content << endl);
 
 					write_file(d_pathnames[module], content);
 
@@ -762,7 +762,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				}
 
 				case HAI_TAIL_LOG: {
-					BESDEBUG("besdaemon", "besdaemon: Received TailLog" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received TailLog" << endl);
 
 					xmlChar *xml_char_lines = xmlGetProp(current_node, (const xmlChar*) "lines");
 					if (!xml_char_lines) {
@@ -781,11 +781,11 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 						throw BESInternalFatalError("Could not write <hai:BesLog> element ", __FILE__, __LINE__);
 
 					BESDEBUG("besdaemon",
-							"besdaemon: TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
+							"DaemonCommandHandler::execute_command() - TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
 
 					char *content = get_bes_log_lines(d_log_file_name, num_lines);
 					try {
-						BESDEBUG("besdaemon_verbose", "besdaemon: Returned lines: " << content << endl);
+						BESDEBUG("besdaemon_verbose", "DaemonCommandHandler::execute_command() - Returned lines: " << content << endl);
 						if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
 							throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
@@ -808,10 +808,10 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				}
 
 				case HAI_GET_LOG_CONTEXTS: {
-					BESDEBUG("besdaemon", "besdaemon: Received GetLogContexts" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received GetLogContexts" << endl);
 
 					BESDEBUG("besdaemon",
-							"besdaemon: There are " << BESDebug::debug_map().size() << " Contexts" << endl);
+							"DaemonCommandHandler::execute_command() - There are " << BESDebug::debug_map().size() << " Contexts" << endl);
 					if (BESDebug::debug_map().size()) {
 						BESDebug::debug_citer i = BESDebug::debug_map().begin();
 						while (i != BESDebug::debug_map().end()) {
@@ -840,7 +840,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				}
 
 				case HAI_SET_LOG_CONTEXT: {
-					BESDEBUG("besdaemon", "besdaemon: Received SetLogContext" << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Received SetLogContext" << endl);
 
 					xmlChar *xml_char_module = xmlGetProp(current_node, (const xmlChar*) "name");
 					if (!xml_char_module) {
@@ -856,7 +856,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					bool state = strcmp((const char *) xml_char_module, "on") == 0;
 					xmlFree(xml_char_module);
 
-					BESDEBUG("besdaemon", "besdaemon: before setting " << name << " to " << state << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Before setting " << name << " to " << state << endl);
 					// ***
 					// cerr << "setting context  " << name << " to " << state << endl;
 
@@ -866,7 +866,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					// new settings to be passed onto new beslisteners.
 					BESDebug::Set(name, state);
 
-					BESDEBUG("besdaemon", "besdaemon: after setting " << name << " to " << state << endl);
+					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - After setting " << name << " to " << state << endl);
 
 					if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
 						throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
@@ -936,6 +936,17 @@ void DaemonCommandHandler::handle(Connection *c)
 		// When the client communicating with the besdaemon exits,
 		// return control to the PPTServer::initConnection() method which
 		// will listen for another connect request.
+		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Received PPT_EXIT_NOW in an extension chunk." << endl);
+
+		// This call closes the socket - it does minimal bookkeeping and
+		// calls the the kernel's close() function. NB: The method is
+		// implemented in PPTServer.cc and that calls Socket::close() on the
+		// Socket instance held by the Connection.
+		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Closing client connection." << endl);
+
+		c->closeConnection();
+
+		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Client connection has been closed." << endl);
 		return;
 	}
 
@@ -950,9 +961,10 @@ void DaemonCommandHandler::handle(Connection *c)
 	BESXMLWriter writer;
 
 	try {
-		BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);
+		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - cmd: " << ss.str() << endl);
 		// runs the command(s); throws on an error.
 		execute_command(ss.str(), writer);
+		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Transmitting response." << endl);
 
 		cout << writer.get_doc() << endl;
 		fds.finish();
@@ -971,7 +983,7 @@ void DaemonCommandHandler::handle(Connection *c)
 		switch (e.get_error_type()) {
 		case BES_INTERNAL_ERROR:
 		case BES_INTERNAL_FATAL_ERROR:
-			BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << e.get_message() << endl);
+			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Internal/Fatal ERROR: " << e.get_message() << endl);
 			extensions["exit"] = "true";
 			c->sendExtensions(extensions);
 			send_bes_error(writer, e);
@@ -988,14 +1000,14 @@ void DaemonCommandHandler::handle(Connection *c)
 
 		case BES_SYNTAX_USER_ERROR:
 			// cerr << "syntax error" << endl;
-			BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << e.get_message() << endl);
+			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Syntax ERROR: " << e.get_message() << endl);
 			c->sendExtensions(extensions);
 			// Send the BESError
 			send_bes_error(writer, e);
 			break;
 
 		default:
-			BESDEBUG("besdaemon", "besdaemon: Error (unknown command): " << ss.str() << endl);
+			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - ERROR (unknown command): " << ss.str() << endl);
 			extensions["exit"] = "true";
 			c->sendExtensions(extensions);
 			// Send the BESError
@@ -1008,6 +1020,7 @@ void DaemonCommandHandler::handle(Connection *c)
 		fds.finish(); // we are finished, send the last chunk
 		cout.rdbuf(holder); // reset the streams buffer
 	}
+	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Command Processing completed. Returning." << endl);
 }
 
 /** @brief dumps information about this object
