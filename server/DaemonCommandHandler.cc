@@ -546,9 +546,6 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
  */
 void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &writer)
 {
-	LIBXML_TEST_VERSION
-	;
-
 	xmlDoc *doc = NULL;
 	xmlNode *root_element = NULL;
 	xmlNode *current_node = NULL;
