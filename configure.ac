@@ -50,7 +50,7 @@ if test x"$FLEX" = x""; then
 	AC_MSG_ERROR([Please install flex])
 else
 	V=`$FLEX --version | awk '{print $NF}'`
-   	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) > 20535) || $3 == 4) print "no"}'`
+   	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535) || $3 == 4) print "no"}'`
    	if test "x$W" != x ; then
 	   AC_MSG_WARN([Adjust your FLEX environment variable])
       	   AC_MSG_ERROR([Flex version 2.5.35 or above is needed. You have $V])
