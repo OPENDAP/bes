@@ -31,9 +31,15 @@
 
 class BESDapResponseBuilder;
 
-class libdap::DDS;
-class libdap::ConstraintEvaluator;
-class libdap::BaseTypeFactory;
+// using the namespace in the forward declaration works with older g++ versions
+// because they are sensible and not literal. It should not work; the decl class
+// libdap::BaseType; tells the compiler go look i the 'libdap' namespace for 'BaseType'
+// but _while it's compiling this file_ there is no 'libdap' namespace. So we make one.
+namespace libdap {
+    class DDS;
+    class ConstraintEvaluator;
+    class BaseTypeFactory;
+}
 
 /**
  * This class is used to cache DAP2 response objects.
