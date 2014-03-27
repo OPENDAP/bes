@@ -916,6 +916,14 @@ static void send_bes_error(BESXMLWriter &writer, BESError &e)
 		throw BESInternalFatalError("Could not end <hai:OK> element ", __FILE__, __LINE__);
 }
 
+
+/**
+ * This particular handle() method is special because it will accept only a single
+ * command transmission from the connecting client. Once the command transmission
+ * has been processed the connection is closed and the method returns. This is done
+ * to ensure that the daemon is never tied up in some complex interaction with an admin
+ * client.
+ */
 void DaemonCommandHandler::handle(Connection *c)
 {
 #if 0
@@ -938,89 +946,90 @@ void DaemonCommandHandler::handle(Connection *c)
 		// will listen for another connect request.
 		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Received PPT_EXIT_NOW in an extension chunk." << endl);
 
-		// This call closes the socket - it does minimal bookkeeping and
-		// calls the the kernel's close() function. NB: The method is
-		// implemented in PPTServer.cc and that calls Socket::close() on the
-		// Socket instance held by the Connection.
-		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Closing client connection." << endl);
-
-		c->closeConnection();
-
-		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Client connection has been closed." << endl);
-		return;
 	}
+	else {
+		int descript = c->getSocket()->getSocketDescriptor();
+		unsigned int bufsize = c->getSendChunkSize();
+		PPTStreamBuf fds(descript, bufsize);
 
-	int descript = c->getSocket()->getSocketDescriptor();
-	unsigned int bufsize = c->getSendChunkSize();
-	PPTStreamBuf fds(descript, bufsize);
+		std::streambuf *holder;
+		holder = cout.rdbuf();
+		cout.rdbuf(&fds);
 
-	std::streambuf *holder;
-	holder = cout.rdbuf();
-	cout.rdbuf(&fds);
+		BESXMLWriter writer;
 
-	BESXMLWriter writer;
+		try {
+			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - cmd: " << ss.str() << endl);
+			// runs the command(s); throws on an error.
+			execute_command(ss.str(), writer);
+			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Transmitting response." << endl);
 
-	try {
-		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - cmd: " << ss.str() << endl);
-		// runs the command(s); throws on an error.
-		execute_command(ss.str(), writer);
-		BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Transmitting response." << endl);
-
-		cout << writer.get_doc() << endl;
-		fds.finish();
-		cout.rdbuf(holder);
-	}
-	catch (BESError &e) {
-		// an error has occurred.
-		// flush what we have in the stream to the client
-		cout << flush;
-
-		// Send the extension status=error to the client so that it
-		// can reset.
-		map<string, string> extensions;
-		extensions["status"] = "error";
-
-		switch (e.get_error_type()) {
-		case BES_INTERNAL_ERROR:
-		case BES_INTERNAL_FATAL_ERROR:
-			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Internal/Fatal ERROR: " << e.get_message() << endl);
-			extensions["exit"] = "true";
-			c->sendExtensions(extensions);
-			send_bes_error(writer, e);
-			// Send the BESError
-#if 0
-			// This seemed like a good idea, but really, no error is
-			// fatal, at least not yet.
 			cout << writer.get_doc() << endl;
-			fds.finish();// we are finished, send the last chunk
-			cout.rdbuf(holder);// reset the streams buffer
-			return;// EXIT; disconnects from client
-#endif
-			break;
+			fds.finish();
+			cout.rdbuf(holder);
+		}
+		catch (BESError &e) {
+			// an error has occurred.
+			// flush what we have in the stream to the client
+			cout << flush;
 
-		case BES_SYNTAX_USER_ERROR:
-			// cerr << "syntax error" << endl;
-			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Syntax ERROR: " << e.get_message() << endl);
-			c->sendExtensions(extensions);
-			// Send the BESError
-			send_bes_error(writer, e);
-			break;
+			// Send the extension status=error to the client so that it
+			// can reset.
+			map<string, string> extensions;
+			extensions["status"] = "error";
 
-		default:
-			BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - ERROR (unknown command): " << ss.str() << endl);
-			extensions["exit"] = "true";
-			c->sendExtensions(extensions);
-			// Send the BESError
-			send_bes_error(writer, e);
-			break;
+			switch (e.get_error_type()) {
+			case BES_INTERNAL_ERROR:
+			case BES_INTERNAL_FATAL_ERROR:
+				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Internal/Fatal ERROR: " << e.get_message() << endl);
+				extensions["exit"] = "true";
+				c->sendExtensions(extensions);
+				send_bes_error(writer, e);
+				// Send the BESError
+	#if 0
+				// This seemed like a good idea, but really, no error is
+				// fatal, at least not yet.
+				cout << writer.get_doc() << endl;
+				fds.finish();// we are finished, send the last chunk
+				cout.rdbuf(holder);// reset the streams buffer
+				return;// EXIT; disconnects from client
+	#endif
+				break;
 
+			case BES_SYNTAX_USER_ERROR:
+				// cerr << "syntax error" << endl;
+				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Syntax ERROR: " << e.get_message() << endl);
+				c->sendExtensions(extensions);
+				// Send the BESError
+				send_bes_error(writer, e);
+				break;
+
+			default:
+				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - ERROR (unknown command): " << ss.str() << endl);
+				extensions["exit"] = "true";
+				c->sendExtensions(extensions);
+				// Send the BESError
+				send_bes_error(writer, e);
+				break;
+
+			}
+
+			cout << writer.get_doc() << endl;
+			fds.finish(); // we are finished, send the last chunk
+			cout.rdbuf(holder); // reset the streams buffer
 		}
 
-		cout << writer.get_doc() << endl;
-		fds.finish(); // we are finished, send the last chunk
-		cout.rdbuf(holder); // reset the streams buffer
 	}
-	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Command Processing completed. Returning." << endl);
+	// This call closes the socket - it does minimal bookkeeping and
+	// calls the the kernel's close() function. NB: The method is
+	// implemented in PPTServer.cc and that calls Socket::close() on the
+	// Socket instance held by the Connection.
+	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Closing client connection." << endl);
+	c->closeConnection();
+	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Client connection has been closed." << endl);
+
+	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Command Processing completed. " << endl);
+	//}
 }
 
 /** @brief dumps information about this object
