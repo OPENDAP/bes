@@ -36,6 +36,7 @@
 #include <Error.h>
 #include <DDS.h>
 #include <DMR.h>
+#include <D4Group.h>
 #include <D4RValue.h>
 
 #include <debug.h>

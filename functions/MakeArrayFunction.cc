@@ -31,6 +31,7 @@
 #include <sstream>
 #include <vector>
 
+#include <Type.h>
 #include <BaseType.h>
 #include <Byte.h>
 #include <Int16.h>
@@ -41,15 +42,13 @@
 #include <Float64.h>
 #include <Str.h>
 #include <Url.h>
-
 #include <Array.h>
-
-
 #include <Error.h>
 #include <DDS.h>
-#include <DMR.h>
-#include <D4RValue.h>
 
+#include <DMR.h>
+#include <D4Group.h>
+#include <D4RValue.h>
 
 #include <debug.h>
 #include <util.h>
@@ -307,7 +306,7 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     if (number_of_elements + 2 != (unsigned long)argc)
     	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " parameters but found " + long_to_string(argc-2) + " instead.");
 
-    switch (type) {
+    switch (requested_type) {
     // All integer values are stored in Int32 DAP variables by the stock argument parser
     // except values too large; those are stored in a UInt32
     case dods_byte_c:
@@ -359,14 +358,7 @@ function_make_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     return;
 }
 
-
-
-
-
 BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
-
-
-
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
         Str *response = new Str("info");
@@ -374,7 +366,6 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
         // DAP4 function porting: return a BaseType* instead of using the value-result parameter
         return response;
     }
-
 
     // Check for 2 arguments
     DBG(cerr << "args.size() = " << args.size() << endl);
