@@ -34,9 +34,11 @@
 
 class BESDapResponseBuilder;
 
-class libdap::DDS;
-class libdap::ConstraintEvaluator;
-class libdap::BaseTypeFactory;
+namespace libdap {
+    class DDS;
+    class ConstraintEvaluator;
+    class BaseTypeFactory;
+}
 
 /**
  * This class is used to cache DAP2 response objects.

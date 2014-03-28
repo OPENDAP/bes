@@ -52,6 +52,13 @@
 #include <test/TestCommon.h>
 
 #include <DMR.h>
+
+// TODO if D4ParserSax2.h declares these, theses inlcudes might not
+// be needed. jhrg 3/28/14
+#include <D4Enumdefs.h>
+#include <D4Dimensions.h>
+#include <D4Group.h>
+
 #include <D4ParserSax2.h>
 
 #include <Ancillary.h>

@@ -61,7 +61,7 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool found;
     string response_size_limit = BESContextManager::TheManager()->get_context("max_response_size", found);
 	if (found && !response_size_limit.empty()) {
-		istringstream iss(response_size_limit);
+	    std::istringstream iss(response_size_limit);
 		long long rsl = -1;
 		iss >> rsl;
 		if (rsl == -1)

@@ -29,9 +29,11 @@
 
 class BESDapResponseCache;
 
-class libdap::ConstraintEvaluator;
-class libdap::DDS;
-class libdap::DAS;
+namespace libdap {
+    class ConstraintEvaluator;
+    class DDS;
+    class DAS;
+}
 
 /**
  * This class is used to build responses for/by the BES. This class replaces

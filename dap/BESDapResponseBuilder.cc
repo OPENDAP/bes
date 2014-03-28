@@ -56,6 +56,7 @@
 #include <XDRFileUnMarshaller.h>
 
 #include <DMR.h>
+#include <D4Group.h>
 #include <XMLWriter.h>
 #include <D4AsyncUtil.h>
 #include <D4StreamMarshaller.h>
@@ -83,14 +84,13 @@
 //#define CRLF "\r\n"             // Change here, expr-test.cc
 #define DAP_PROTOCOL_VERSION "3.2"
 
-
-
-
-
 const std::string CRLF = "\r\n";             // Change here, expr-test.cc
+#if 0
+// Unused jhrg 3/28/14
 const int chunk_size = 4096;
 const int8_t big_endian = 0x01;
 const int8_t little_endian = 0x00;
+#endif
 
 using namespace std;
 using namespace libdap;
@@ -1121,7 +1121,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
 /**
  * Serialize the DAP4 data response to the passed stream
  */
-void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers, bool filter)
+void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers, bool /*filter*/)
 {
 	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - BEGIN" << endl);
 

@@ -41,6 +41,13 @@
 #include <DapXmlNamespaces.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
+
+// These are needed because D4ParserSax2.h does not properly declare
+// the classes. I think. Check on that... jhrg 3/28/14
+#include <D4EnumDefs.h>
+#include <D4Dimensions.h>
+#include <D4Group.h>
+
 #include <D4ParserSax2.h>
 #include <XDRStreamMarshaller.h>
 #include <XDRStreamUnMarshaller.h>
