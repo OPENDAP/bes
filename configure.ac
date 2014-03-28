@@ -49,7 +49,11 @@ if test x"$FLEX" = x""; then
       	AC_MSG_WARN([No version of flex was found!])
 	AC_MSG_ERROR([Please install flex])
 else
-	V=`$FLEX --version | awk '{print $NF}'`
+	# Using 'print $NF' failed on OSX 10.9 because apple's version of
+	# flex 2.5.35 has some trailing text. jhrg 3/28/14
+	V=`$FLEX --version | awk '{print $2}'`
+	# Fixed the compare (was ... > 20535). ... not sure if the 
+	# '|| $3 == 4' is correct. jhrg 3/28/14
    	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535) || $3 == 4) print "no"}'`
    	if test "x$W" != x ; then
 	   AC_MSG_WARN([Adjust your FLEX environment variable])
