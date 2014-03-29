@@ -30,7 +30,7 @@
  * @param cn name of the current container being operated on
  */
 void
-BESDMRResponse::set_container( const string &cn )
+BESDMRResponse::set_container( const string &/*cn*/ )
 {
 	// FIXME Add container support
 #if 0

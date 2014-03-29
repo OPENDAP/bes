@@ -42,6 +42,7 @@
 #include <DDS.h>
 #include <DAS.h>
 #include <DMR.h>
+#include <D4Group.h>
 #include <D4ParserSax2.h>
 #include <D4BaseTypeFactory.h>
 #include <D4RValue.h>
@@ -88,7 +89,7 @@ private:
     D4BaseTypeFactory *d4_btf;
     ConstraintEvaluator ce;
 public:
-    Dap4_CEFunctionsTest()
+    Dap4_CEFunctionsTest() : two_arrays_dmr(0), d4_parser(0), d4_btf(0)
     {}
     ~Dap4_CEFunctionsTest()
     {}

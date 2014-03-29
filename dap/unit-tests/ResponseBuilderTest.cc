@@ -56,6 +56,7 @@
 #include <D4AsyncUtil.h>
 
 #include <DMR.h>
+#include <D4Group.h>
 #include <D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
 
