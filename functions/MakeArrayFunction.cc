@@ -372,17 +372,17 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     if (args->size() < 2)
         throw Error(malformed_expr,"Wrong number of arguments to make_array(). See make_array() for more information");
 
-    string type_name = extract_string_argument(args->get_rvalue(0)->value(dmr));
+    string requested_type_name = extract_string_argument(args->get_rvalue(0)->value(dmr));
     string shape = extract_string_argument(args->get_rvalue(1)->value(dmr));
 
 
-    BESDEBUG("functions", "type: " << type_name << endl);
+    BESDEBUG("functions", "type: " << requested_type_name << endl);
     BESDEBUG("functions", "shape: " << shape << endl);
 
 
     // get the DAP type; NB: In DAP4 this will include Url4 and Enum
-    Type type = libdap::get_type(type_name.c_str());
-    if (!is_simple_type(type))
+    Type requested_type = libdap::get_type(requested_type_name.c_str());
+    if (!is_simple_type(requested_type))
     	throw Error(malformed_expr, "make_array() can only build arrays of simple types (integers, floats and strings).");
 
     // parse the shape information. The shape expression form is [size0][size1]...[sizeN]
@@ -398,7 +398,7 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
 
     Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(type));	// ... so use add_var_nocopy() to add it instead
+    dest->add_var_nocopy(btf.NewVariable(requested_type));	// ... so use add_var_nocopy() to add it instead
 
     unsigned long number_of_elements = 1;
     vector<int>::iterator i = dims.begin();
@@ -412,7 +412,7 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr){
     if (number_of_elements + 2 != args->size())
     	throw Error(malformed_expr, "make_array(): Expected " + long_to_string(number_of_elements) + " parameters but found " + long_to_string(args->size()-2) + " instead.");
 
-    switch (type) {
+    switch (requested_type) {
     // All integer values are stored in Int32 DAP variables by the stock argument parser
     // except values too large; those are stored in a UInt32
     case dods_byte_c:
