@@ -81,7 +81,7 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h HDF4_DDS.h
 EXTRA_DIST = data data.nasa hdf-testfiles \
 		hdfeos.yy hdfeos.lex \
 		COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
-		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh
+		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh USAGE
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
