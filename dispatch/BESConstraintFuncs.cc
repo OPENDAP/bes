@@ -40,7 +40,7 @@ BESConstraintFuncs::pre_to_post_constraint( const string &name,
     string str = pre_constraint ;
     string new_name = name ;
     new_name.append( "." ) ;
-    if( str != "" )
+    if( !str.empty() /* != "" jhrg 4/1/14 */ )
     {
 	str.insert( 0, new_name ) ;
 	int pos = 0 ;

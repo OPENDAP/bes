@@ -136,7 +136,7 @@ BESRequestHandlerList::get_last_handler()
 string
 BESRequestHandlerList::get_handler_names()
 {
-    string ret ;
+    string ret = "";
     bool first_name = true ;
     BESRequestHandlerList::Handler_citer i = _handler_list.begin() ;
     for( ; i != _handler_list.end(); i++ )

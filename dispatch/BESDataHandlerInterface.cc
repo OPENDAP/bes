@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -43,7 +43,7 @@
  * not be copied. Each BESDataHandlerInterface should represent a
  * request/response, so each one should have it's own response handler.
  *
- * @param copy_from object to copy informatioon from
+ * @param copy_from object to copy information from
  */
 void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from)
 {
@@ -51,6 +51,37 @@ void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from
     this->output_stream = copy_from.output_stream;
     this->transmit_protocol = copy_from.transmit_protocol;
 }
+
+#if 0
+/** @brief Clone
+ * Unlike make_copy(), make an exact copy of the BESDataHandlerInterface object.
+ * The destination object it 'this'.
+ *
+ * @note This performs a shallow copy of the pointers unless those objects
+ * implement operator=() and perform a deep copy.
+ *
+ * @param rhs The instance to clone
+ */
+void BESDataHandlerInterface::clone(const BESDataHandlerInterface &rhs)
+{
+	output_stream = rhs.output_stream;
+	response_handler = rhs.response_handler;
+
+	containers = rhs.containers;
+	containers_iterator = rhs.containers_iterator;
+	container = rhs.container;
+
+	action = rhs.action;
+	action_name = rhs.action_name;
+	executed = rhs.executed;
+
+    transmit_protocol = rhs.transmit_protocol;
+
+	data = rhs.data;
+
+	error_info = rhs.error_info;
+}
+#endif
 
 /** @brief clean up any information created within this data handler
  * interface

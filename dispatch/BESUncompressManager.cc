@@ -160,7 +160,7 @@ BESUncompressManager::find_method( const string &name )
 string
 BESUncompressManager::get_method_names()
 {
-    string ret ;
+    string ret = "";
     bool first_name = true ;
     BESUncompressManager::UCIter i = _uncompress_list.begin() ;
     for( ; i != _uncompress_list.end(); i++ )

@@ -36,29 +36,23 @@
 #include "BESBasicTransmitter.h"
 //#include "BESDataHandlerInterface.h"
 
-class BESResponseObject ;
-class BESDataHandlerInterface ;
+class BESResponseObject;
+class BESDataHandlerInterface;
 
-class BESDapTransmit : public BESBasicTransmitter
-{
+class BESDapTransmit: public BESBasicTransmitter {
 public:
-    			BESDapTransmit() ;
-    virtual		~BESDapTransmit() ;
-    static void		send_basic_das( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dds( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_data( BESResponseObject *obj,
-    				         BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_ddx( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
+	BESDapTransmit();
+	virtual ~BESDapTransmit();
+	static void send_basic_das(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_basic_ddx(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 #if 0
-    static void		send_basic_dmr( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dap4data( BESResponseObject *obj,
-    				            BESDataHandlerInterface &dhi ) ;
+	static void send_basic_dmr( BESResponseObject *obj,
+			BESDataHandlerInterface &dhi );
+	static void send_basic_dap4data( BESResponseObject *obj,
+			BESDataHandlerInterface &dhi );
 #endif
-} ;
+};
 
 #endif // I_BESDapTransmit_h
-
