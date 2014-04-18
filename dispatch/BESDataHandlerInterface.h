@@ -61,12 +61,10 @@ class BESDataHandlerInterface: public BESObj {
 private:
 	ostream *output_stream;
 
-	// These were causing multiple compiler warnings, so I removed the implementations since
-	// it's clear they are private to be disallowed from auto generation for now
-	// and this just not declaring an impl solves it.  (mpj 2/26/10)
-	BESDataHandlerInterface(BESDataHandlerInterface &from);
-
-	BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
+	// I tried adding a complete 'clone the dhi' method to see if that
+	// would address the problem we're seeing on OSX 10.9. It didn't but
+	// we're not done yet, so maybe this will be useful still. jhrg 4/16/14
+	void clone(const BESDataHandlerInterface &copy_from);
 
 public:
 	BESDataHandlerInterface() :
@@ -74,14 +72,17 @@ public:
 	{
 	}
 
-	void make_copy(const BESDataHandlerInterface &copy_from);
+	// These were causing multiple compiler warnings, so I removed the implementations since
+	// it's clear they are private to be disallowed from auto generation for now
+	// and this just not declaring an impl solves it.  (mpj 2/26/10)
+	//
+	// I implemented these - and made clone() private, since that's a more common pattern.
+	// jhrg 4/18/14
+	BESDataHandlerInterface(const BESDataHandlerInterface &from);
+	BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
 
-#if 0
-	// I tried adding a complete 'clone the dhi' method to see if that
-	// would address the problem we're seeing on OSX 10.9. It didn't but
-	// we're not done yet, so maybe this will be useful still. jhrg 4/16/14
-	void clone(const BESDataHandlerInterface &copy_from);
-#endif
+	/// deprecated
+	void make_copy(const BESDataHandlerInterface &copy_from);
 
 	void clean();
 

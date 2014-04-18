@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -54,7 +54,7 @@ BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dh
             &lt;attributes&gt;list of attributes&lt;/attributes&gt;
         &lt;/container&gt;
 	&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
-    &lt;/define&gt; 
+    &lt;/define&gt;
  *
  * Requires the name property. The space property is optional. Requires at
  * least one container element. The container element requires the name
@@ -190,7 +190,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 void
 BESXMLDefineCommand::handle_container_element( const string &action,
 					       xmlNode *node,
-					       const string &value,
+					       const string &/*value*/,
 					       map<string,string> &props )
 {
     string name = props["name"] ;
@@ -285,8 +285,8 @@ BESXMLDefineCommand::handle_container_element( const string &action,
  */
 void
 BESXMLDefineCommand::handle_aggregate_element( const string &action,
-					       xmlNode *node,
-					       const string &value,
+					       xmlNode */*node*/,
+					       const string &/*value*/,
 					       map<string,string> &props )
 {
     string handler = props["handler"] ;
@@ -323,7 +323,7 @@ BESXMLDefineCommand::prep_request()
 	string store = _stores[(*i)] ;
 	if( !store.empty() )
 	{
-	    BESContainerStorage *cs = 
+	    BESContainerStorage *cs =
 		BESContainerStorageList::TheList()->find_persistence( store ) ;
 	    if( cs ) c = cs->look_for( (*i) ) ;
 	}
