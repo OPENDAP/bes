@@ -125,8 +125,8 @@ BESShowErrorResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESShowErrorResponseHandler::transmit( BESTransmitter *transmitter,
-				        BESDataHandlerInterface &dhi )
+BESShowErrorResponseHandler::transmit( BESTransmitter */*transmitter*/,
+				       BESDataHandlerInterface &/*dhi*/ )
 {
     string err = "An exception should have been thrown, nothing to transmit" ;
     throw BESInternalError( err, __FILE__, __LINE__ ) ;

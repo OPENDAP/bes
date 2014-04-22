@@ -141,8 +141,8 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESStreamResponseHandler::transmit( BESTransmitter *transmitter,
-                                    BESDataHandlerInterface &dhi )
+BESStreamResponseHandler::transmit( BESTransmitter */*transmitter*/,
+                                    BESDataHandlerInterface &/*dhi*/ )
 {
     // The Data is transmitted when it is read, dumped to stdout, so there is nothing
     // to transmot here.

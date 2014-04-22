@@ -285,7 +285,7 @@ BESHTMLInfo::dump( ostream &strm ) const
 }
 
 BESInfo *
-BESHTMLInfo::BuildHTMLInfo( const string &info_type )
+BESHTMLInfo::BuildHTMLInfo( const string &/*info_type*/ )
 {
     return new BESHTMLInfo( ) ;
 }

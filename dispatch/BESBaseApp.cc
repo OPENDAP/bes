@@ -91,7 +91,7 @@ BESBaseApp::main(int argC, char **argV)
  * @throws BESError if any exceptions or errors are encountered
  */
 int
-BESBaseApp::initialize(int argC, char **argV)
+BESBaseApp::initialize(int /*argC*/, char **/*argV*/)
 {
     _isInitialized = true ;
     return 0 ;

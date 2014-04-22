@@ -544,6 +544,8 @@ BESInterface::dump(ostream & strm) const
         BESIndent::Indent();
         init_iter i = _init_list.begin();
         for (; i != _init_list.end(); i++) {
+	    // TODO ISO C++ forbids casting between pointer-to-function and pointer-to-object
+	    // ...also below
             strm << BESIndent::LMarg << (void *) (*i) << endl;
         }
         BESIndent::UnIndent();

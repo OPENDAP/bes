@@ -121,7 +121,7 @@ BESInfo::~BESInfo()
  */
 void
 BESInfo::begin_response( const string &response_name,
-			 BESDataHandlerInterface &dhi )
+			 BESDataHandlerInterface &/*dhi*/ )
 {
     _response_started = true ;
     _response_name = response_name ;
@@ -140,7 +140,7 @@ BESInfo::end_response( )
 
 void
 BESInfo::begin_tag( const string &tag_name,
-		    map<string,string> *attrs )
+		    map<string,string> */*attrs*/ )
 {
     _tags.push( tag_name ) ;
 }

@@ -5,6 +5,7 @@
 #
 
 # AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
+AM_CXXFLAGS = -ansi -pedantic
 
 AUTOMAKE_OPTIONS = foreign check-news
 
