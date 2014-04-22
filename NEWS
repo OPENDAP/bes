@@ -1,3 +1,16 @@
+News for version 3.13.0
+
+Two significant bugs have been fixed in this version of the BES. Trac
+tickets 2176, 2158, 2139 and 2025 have been fixed. These correspond to
+problems building the code under OSX 10.9, requests with really long
+constraints, and a problem where the beslistener daemon failed to exit
+after the front end asked it to. The latter problem could result in
+'zombie' daemon processes that would not go away until the server was
+shutdown. 
+
+Also in this update: Updates to the copyright headers and a patch from
+Ezequiel Lara Gómez for long options.
+
 News for version 3.12.0
 
 There are several changes to the BES for this release.

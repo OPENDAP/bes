@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.61)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.12.0, support@opendap.org)
+AC_INIT(bes, 3.13.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -49,15 +49,6 @@ AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)
 LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
-
-# LIB_BESDAP_CURRENT=4
-# LIB_BESDAP_AGE=1
-# LIB_BESDAP_REVISION=5
-# AC_SUBST(LIB_BESDAP_CURRENT)
-# AC_SUBST(LIB_BESDAP_AGE)
-# AC_SUBST(LIB_BESDAP_REVISION)
-# LIBBES_DAP_VERSION="$LIB_BESDAP_CURRENT:$LIB_BESDAP_REVISION:$LIB_BESDAP_AGE"
-# AC_SUBST(LIBBES_DAP_VERSION)
 
 LIB_PPT_CURRENT=4
 LIB_PPT_AGE=0
@@ -271,6 +262,7 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
 AC_CONFIG_FILES([Makefile
+		 abi_checker.xml
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
 		 docs/Makefile
