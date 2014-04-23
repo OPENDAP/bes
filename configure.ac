@@ -80,7 +80,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.11.0],
+AC_CHECK_LIBDAP([3.13.0],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -106,7 +106,7 @@ AC_CHECK_HDF5(
   ]
 )
 
-AC_CHECK_BES([3.9.0],
+AC_CHECK_BES([3.13.0],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])

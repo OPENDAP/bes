@@ -1,3 +1,43 @@
+2014-03-28  James Gallagher <jgallagher@opendap.org>
+
+	Fixed another problem with the test for flex 2.5.35 that showed up on
+	OSX 10.9
+
+	M    configure.ac
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	Fixed check for flex version (test used '>' when it should have used '<')
+
+	M    configure.ac
+
+2014-03-21  hyoklee
+
+	corrected typo.
+
+2014-03-21  hyoklee
+
+	HFVHANDLER-108:cleaned up USAGE document to match hdf4_handler quality.
+
+2014-03-20  hyoklee
+
+	updated README file.
+
+2014-03-20  hyoklee
+
+	cleaned up codes and removed all compiler warnings except lex/yacc.
+
+2014-03-20  hyoklee
+
+	added a missing real nasa test autotest script.
+
+2014-03-20  hyoklee
+
+	updated for version 2.2.2 release.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2014-03-20  Hyo-Kyung  Lee  <hyoklee@hdfgroup.org>
         * HDF5CF.cc
         * HDF5CF.h

@@ -6,13 +6,13 @@ License:         LGPLv2+
 Group:           System Environment/Daemons 
 Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
-Requires:        libdap >= 3.11.0
-Requires:        bes >= 3.9.0
-Requires:        hdf5 => 1.8
+Requires:        libdap >= 3.13.0
+Requires:        bes >= 3.13.0
+Requires:        hdf5 => 1.8.8
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.11.0
-BuildRequires:	 bes-devel >= 3.9.0
+BuildRequires:   libdap-devel >= 3.13.0
+BuildRequires:	 bes-devel >= 3.13.0
 # BuildRequires:   hdf5-devel >= 1.8
 
 %description
