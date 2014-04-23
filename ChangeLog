@@ -1,3 +1,28 @@
+2014-04-08  hyoklee
+
+	added USAGE document for distribution.
+
+2014-03-31  James Gallagher <jgallagher@opendap.org>
+
+	M    Makefile.am
+
+2014-03-31  James Gallagher <jgallagher@opendap.org>
+
+	AM   data/3B42.980909.5.HDF
+	D    data/3B42.980909.5.HDF.gz
+
+2014-03-23  hyoklee
+
+	Updated version number.
+
+2014-03-21  hyoklee
+
+	added a missing file for the new 3.11.4 release.
+
+2014-03-21  hyoklee
+
+	updated for new 3.11.4 release.
+
 2014-03-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
         * HDF4RequestHandler.cc
         * HDF4RequestHandler.h
