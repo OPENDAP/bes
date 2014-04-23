@@ -71,8 +71,8 @@ AC_CHECK_LIBDAP([3.13.0],
  [ AC_MSG_ERROR([Cannot find libdap])
 ])
 
-echo "LIBS after check_libdap: $LIBS"
-echo "..and CPPFLAGS: $CPPFLAGS"
+dnl echo "LIBS after check_libdap: $LIBS"
+dnl echo "..and CPPFLAGS: $CPPFLAGS"
 
 AC_CHECK_HDF4(
    [
@@ -81,73 +81,43 @@ AC_CHECK_HDF4(
        CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
    ],
    [
-       echo "*** Use --with-hdf4 for the root hdf4 directory."
-       echo "*** Otherwise use --with-hdf4-include switch for includes directory"
-       echo "*** and --with-hdf4-libdir switch for libraries directory."
+       AC_MSG_NOTICE([*** Use --with-hdf4 for the root hdf4 directory.])
+       AC_MSG_NOTICE([*** Otherwise use --with-hdf4-include switch for includes directory])
+       AC_MSG_NOTICE([*** and --with-hdf4-libdir switch for libraries directory.])
        AC_MSG_ERROR([hdf4 library and hdf4 headers are required.])
    ]
 )
 
-AC_CHECK_BES([3.13.0],
-[
-],
-[ AC_MSG_ERROR([Cannot find bes])
-])
+AC_CHECK_BES([3.13.0], [], [ AC_MSG_ERROR([Cannot find bes]) ])
 
 OPENDAP_DEBUG_OPTION
 
 dnl check for an explict server cache pathname. If so, use that. Otherwise
 dnl use /usr/tmp.
 
-AC_ARG_WITH(cache_path,
-    [  --with-cache=DIR        Server's cache (default: /usr/tmp)],
-    HDF_CACHE=${withval}, HDF_CACHE=/usr/tmp)
-
-AC_MSG_RESULT(Setting the HDF server cache directory to $HDF_CACHE)
-AC_SUBST(HDF_CACHE)
-
-dnl setup the url for the testsuite.
-if test -f tests.conf
-then
-    default_url=`grep 'url:' tests.conf | sed 's/url:\(.*\)$/\1/'`
-else
-    default_url=http://localhost/dods-test/nph-dods/data/hdf/server-tests/
-fi
-
-AC_ARG_WITH(test-url,
-    [  --with-test-url=url     Test file base URL (default: http://localhost/dods-test/nph-dods/data/hdf/server-tests/)],
-    testurl=${withval}, testurl=$default_url)
-
-AC_MSG_RESULT(Setting the Test file base URL to $testurl)
-AC_SUBST(testurl)
-
-
-
 dnl ----------------------------------------------------------------------                                
 dnl Test for HDF-EOS2                                                                                     
-
-dnl TODO The next line should be removed
-AC_SUBST(H5_USE_HDFEOS2) H5_USE_HDFEOS2="no"
 
 AC_ARG_WITH([hdfeos2],
             [AC_HELP_STRING([--with-hdfeos2=DIR],
                             [Specify path to external hdfeos2 library.])],
-            [if test "$withval" != no; then
-               if test "$withval" != yes; then
-                 HDFEOS2_DIR=$withval
-               fi
+            [if test "x$withval" != "xno" -a "x$withval" != "xyes"; then
+               HDFEOS2_DIR=$withval
              fi])
-AM_CONDITIONAL([HDFEOS2], [false])
+
 if test -n "$HDFEOS2_DIR"; then
   CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
   LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
   HDFEOS2_LIBS="-lhdfeos -lGctp"
-dnl  AC_CHECK_LIB(Gctp, inv_init,, AC_MSG_ERROR([invalid Gctp in hdfeos2]))
-dnl  AC_CHECK_LIB(hdfeos, GDopen,, AC_MSG_ERROR([invalid hdfeos in hdfeos2]))
-dnl TODO The next line should be removed
-  H5_USE_HDFEOS2="yes"
+  dnl  AC_CHECK_LIB(Gctp, inv_init,, AC_MSG_ERROR([invalid Gctp in hdfeos2]))
+  dnl  AC_CHECK_LIB(hdfeos, GDopen,, AC_MSG_ERROR([invalid hdfeos in hdfeos2]))
+  AC_MSG_NOTICE([HDFEOS2 set to true])
   AM_CONDITIONAL([HDFEOS2], [true])
+else
+  AC_MSG_NOTICE([HDFEOS2 set to false])
+  AM_CONDITIONAL([HDFEOS2], [false])
 fi
+
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 

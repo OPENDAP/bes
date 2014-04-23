@@ -27,8 +27,8 @@
 # Author: Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 # Last Update: Mar 6, 2014
 # -----------------------------------------------------------------------------
-AT_INIT([bes.conf besstandalone getdap])
-# AT_COPYRIGHT([])
+
+AT_INIT([bes.with_hdfeos2.conf besstandalone getdap])
 
 AT_TESTED([besstandalone])
 
@@ -41,7 +41,7 @@ AT_KEYWORDS([bescmd])
 # AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -52,7 +52,7 @@ AT_KEYWORDS([bescmd])
 # AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 

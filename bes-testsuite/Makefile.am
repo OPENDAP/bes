@@ -1,8 +1,6 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-#DEJATOOL=besstandalone
-
 AM_CPPFLAGS = -I$(top_srcdir)
 
 # AM_CPPFLAGS =
@@ -15,30 +13,21 @@ AM_CPPFLAGS = -I$(top_srcdir)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes.with_hdfeos2.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = hdf4_handlerTest.at \
-	 hdf4_handlerTest.with_hdfeos2.at \
-	 hdf4_handlerTest.nasa.with_hdfeos2.at \
-	 h4 h4.with_hdfeos2 h4.nasa.with_hdfeos2 \
-	 $(TESTSUITE) \
-	 $(srcdir)/package.m4 \
-	 atlocal.in \
-	 bes.conf.in \
-	 bes.conf.with_hdfeos2.in \
-	 generate_metadata_baseline.sh.in
+EXTRA_DIST = hdf4_handlerTest.at hdf4_handlerTest.with_hdfeos2.at	\
+	 hdf4_handlerTest.nasa.with_hdfeos2.at h4 h4.with_hdfeos2	\
+	 h4.nasa.with_hdfeos2 $(srcdir)/package.m4 atlocal.in		\
+	 bes.conf.in bes.conf.with_hdfeos2.in				\
+	 generate_metadata_baseline.sh.in $(TESTSUITE)
 
-# bes-testsuite h4 besstandalone.h4 
+DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest	\
+	generate_metadata_baseline.sh bes.with_hdfeos2.conf	\
+	hdf4_handlerTest
 
-DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest \
-	generate_metadata_baseline.sh
-if HDFEOS2
-bes.conf: bes.conf.with_hdfeos2.in ../config.status
-else
 bes.conf: bes.conf.in ../config.status
-endif
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
@@ -49,11 +38,26 @@ endif
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 
+bes.with_hdfeos2.conf: bes.with_hdfeos2.conf.in ../config.status
+	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
+		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+		-e "s%[@]libdir[@]%${libdir}%" \
+		-e "s%[@]datadir[@]%${datadir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+		-e "s%[@]bindir[@]%${bindir}%" $< > bes.with_hdfeos2.conf
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
+if HDFEOS2 
+TESTSUITE = $(srcdir)/hdf4_handlerTest.with_hdfeos2
+else
 TESTSUITE = $(srcdir)/hdf4_handlerTest
+endif
 
 check-local: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -63,16 +67,32 @@ clean-local:
 
 distclean-local:
 	-rm atconfig
+	-rm $(srcdir)/hdf4_handlerTest.with_hdfeos2
+	-rm $(srcdir)/hdf4_handlerTest
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-if HDFEOS2 
-$(TESTSUITE): $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.with_hdfeos2.at
-else
-$(TESTSUITE): $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-endif 
-	mv $@.tmp $@
+
+# $(srcdir)/hdf4_handlerTest: $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
+# 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# $(srcdir)/hdf4_handlerTest.with_hdfeos2: $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
+# 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+% : %.at  $(srcdir)/package.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+# 	mv $@.tmp $@
+
+# if HDFEOS2 
+# $(TESTSUITE): $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
+# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.with_hdfeos2.at
+# else
+# $(TESTSUITE): $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
+# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+# endif 
+# 	mv $@.tmp $@
+
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
@@ -84,5 +104,3 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
-
