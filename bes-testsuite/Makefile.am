@@ -20,7 +20,7 @@ CLEANFILES = *.log *.sum site.exp
 EXTRA_DIST = hdf4_handlerTest.at hdf4_handlerTest.with_hdfeos2.at	\
 	 hdf4_handlerTest.nasa.with_hdfeos2.at h4 h4.with_hdfeos2	\
 	 h4.nasa.with_hdfeos2 $(srcdir)/package.m4 atlocal.in		\
-	 bes.conf.in bes.conf.with_hdfeos2.in				\
+	 bes.conf.in bes.with_hdfeos2.conf.in				\
 	 generate_metadata_baseline.sh.in $(TESTSUITE)
 
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest	\
@@ -72,27 +72,8 @@ distclean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-# $(srcdir)/hdf4_handlerTest: $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
-# 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-
-# $(srcdir)/hdf4_handlerTest.with_hdfeos2: $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
-# 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-
 % : %.at  $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-
-# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-# 	mv $@.tmp $@
-
-# if HDFEOS2 
-# $(TESTSUITE): $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
-# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.with_hdfeos2.at
-# else
-# $(TESTSUITE): $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
-# 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-# endif 
-# 	mv $@.tmp $@
-
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
