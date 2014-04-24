@@ -25,7 +25,7 @@ EXTRA_DIST = hdf4_handlerTest.at hdf4_handlerTest.with_hdfeos2.at	\
 
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest	\
 	generate_metadata_baseline.sh bes.with_hdfeos2.conf	\
-	hdf4_handlerTest
+	hdf4_handlerTest.with_hdfeos2
 
 bes.conf: bes.conf.in ../config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
