@@ -8,13 +8,13 @@ Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
 Requires:        libdap >= 3.13.0
 Requires:        bes >= 3.13.0
-Requires:        hdf4 >= 4.2
+Requires:        hdf >= 4.2
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:   libdap-devel >= 3.13.0
-BuildRequires:   hdf4-devel >= 4.2
+BuildRequires:   hdf-devel >= 4.2
 BuildRequires:   bes-devel >= 3.13.0
-BuildRequires:   hdf4 >= 4.2
+BuildRequires:   hdf >= 4.2
 
 %description
 This is the hdf4 data handler for our data server. It reads HDF4 and HDF-EOS2
