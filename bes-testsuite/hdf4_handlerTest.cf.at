@@ -313,6 +313,17 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_swath_fv_t_mis.hdf.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([h_swath_fv_t_mis.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([h_swath_fv_t_mis.hdf.ddx.bescmd])
 
+##HFRHANDLER-169 etc.: Map HDF4 char array to DAP string
+AT_BESCMD_RESPONSE_TEST([sds_char_data_int8_attr.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([sds_char_data_int8_attr.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([sds_char_data_int8_attr.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([sds_char_data_int8_attr.hdf.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([vdata_char_array.hdf.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([vdata_char_array.hdf.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([vdata_char_array.hdf.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([vdata_char_array.hdf.ddx.bescmd])
+
+
 # HFRHANDLER-19:subset test
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d_fv_t_mis.hdf.s.data.bescmd])
