@@ -185,6 +185,7 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
 
     union {
         char *cp;
+        unsigned char *ucp;
         short *sp;
         unsigned short *usp;
         int32 /*nclong*/ *lp;
@@ -198,13 +199,22 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
     // Mapping both DFNT_UINT8 and DFNT_INT8 to unsigned char 
     // may cause overflow. Documented at jira ticket HFRHANDLER-169.
     case DFNT_UINT8:
-    case DFNT_INT8:
         {
             unsigned char uc;
+            gp.ucp = (unsigned char *) vals;
+
+            uc = *(gp.ucp+loc);
+            rep << (int)uc;
+            return rep.str();
+        }
+
+    case DFNT_INT8:
+        {
+            char c;
             gp.cp = (char *) vals;
 
-            uc = *(gp.cp+loc);
-            rep << (int)uc;
+            c = *(gp.cp+loc);
+            rep << (int)c;
             return rep.str();
         }
 
@@ -395,9 +405,47 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
             fillvalue =  (*at->get_attr_vector(it)->begin());
             fillvalue_type = at->get_type(it);
             string var_type = HDFCFUtil::print_type(dtype);
+
             if(fillvalue_type != var_type){ 
+
                 at->del_attr("_FillValue");
-                at->append_attr("_FillValue",var_type,fillvalue);               
+
+                if (fillvalue_type == "String") {
+
+                    // String fillvalue is always represented as /+octal numbers when its type is forced to
+                    // change to string(check HFRHANDLER-223). So we have to retrieve it back.
+                    if(fillvalue.size() >1) {
+
+                        long int fillvalue_int = 0;
+                        vector<char> fillvalue_temp(fillvalue.size());
+                        char *pEnd;
+                        fillvalue_int = strtol((fillvalue.substr(1)).c_str(),&pEnd,8);
+                        stringstream convert_str;
+                        convert_str << fillvalue_int;
+                        at->append_attr("_FillValue",var_type,convert_str.str());               
+                    }
+                    else {
+
+                        // If somehow the fillvalue type is DFNT_CHAR or DFNT_UCHAR, and the size is 1,
+                        // that means the fillvalue type is wrongly defined, we treat as a 8-bit integer number.
+                        // Note, the code will only assume the value ranges from 0 to 128.(JIRA HFRHANDLER-248).
+                        // KY 2014-04-24
+                          
+                        short fillvalue_int = fillvalue.at(0);
+
+                        stringstream convert_str;
+                        convert_str << fillvalue_int;
+                        if(fillvalue_int <0 || fillvalue_int >128)
+                            throw InternalErr(__FILE__,__LINE__,
+                            "If the fillvalue is a char type, the value must be between 0 and 128.");
+
+
+                        at->append_attr("_FillValue",var_type,convert_str.str());               
+                    }
+                }
+                
+                else 
+                    at->append_attr("_FillValue",var_type,fillvalue);               
             }
         }
         it++;
@@ -2201,10 +2249,27 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
 
     turn_on_ceres_merra_short_name_key = HDFCFUtil::check_beskeys(check_ceres_merra_short_name_key);
 
+    bool merra_is_eos2 = false;
+    if(0== (base_filename.compare(0,5,"MERRA"))) {
+
+         for (vector < HDFSP::Attribute * >::const_iterator i = 
+            f->getSD()->getAttributes ().begin ();
+            i != f->getSD()->getAttributes ().end (); ++i) {
+
+            // CHeck if this MERRA file is an HDF-EOS2 or not.
+            if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
+                ((*i)->getName().compare(0, 14, "structmetadata" )== 0)) {
+                merra_is_eos2 = true;
+                break;
+            }
+
+        }
+    }
+
     if (true == turn_on_ceres_merra_short_name_key && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
         || CER_CDAY == f->getSPType() || CER_CGEO == f->getSPType() 
         || CER_SYN == f->getSPType() || CER_ZAVG == f->getSPType()
-        || CER_AVG == f->getSPType() || (0== (base_filename.compare(0,5,"MERRA"))))) {
+        || CER_AVG == f->getSPType() || (true == merra_is_eos2))) {
 
         const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
         vector<HDFSP::SDField *>::const_iterator it_g;

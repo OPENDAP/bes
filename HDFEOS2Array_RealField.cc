@@ -1583,7 +1583,6 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
 
             vector<uint8>val;
@@ -1841,7 +1840,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
 
             vector<uint8>val;

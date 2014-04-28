@@ -292,7 +292,6 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
             vector<uint8> val;
             val.resize(nelms);

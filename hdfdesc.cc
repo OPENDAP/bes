@@ -112,6 +112,7 @@
 #include "HDFUInt32.h"
 #include "HDFFloat32.h"
 #include "HDFFloat64.h"
+#include "HDFStr.h"
 
 // Routines that handle SDS and Vdata attributes for the HDF-EOS2 objects in a hybrid HDF-EOS2 file for the CF option
 #include "HE2CF.h"
@@ -123,6 +124,8 @@
 #include "HDFSPArrayMissField.h"
 #include "HDFSPArrayAddCVField.h"    
 #include "HDFSPArray_VDField.h"
+#include "HDFCFStrField.h"
+#include "HDFCFStr.h"
 #include "HDFCFUtil.h"
 
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
@@ -135,6 +138,8 @@
 #include "HDFEOS2ArraySwathDimMapField.h"
 //#include "HDFEOS2ArraySwathGeoDimMapField.h"
 #include "HDFEOS2ArraySwathGeoDimMapExtraField.h"
+#include "HDFEOS2CFStr.h"
+#include "HDFEOS2CFStrField.h"
 #include "HDFEOS2HandleType.h"
 #endif
 
@@ -326,6 +331,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
         break;
             HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
             HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+            HANDLE_CASE(DFNT_CHAR8,HDFStr);
 #ifndef SIGNED_BYTE_TO_INT32
             HANDLE_CASE2(DFNT_INT8, HDFByte);
 #else
@@ -337,7 +343,6 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
             HANDLE_CASE2(DFNT_INT32, HDFInt32);
             HANDLE_CASE2(DFNT_UINT32, HDFUInt32);
             HANDLE_CASE2(DFNT_UCHAR8, HDFByte);
-            HANDLE_CASE2(DFNT_CHAR8, HDFByte);
             default:
                 throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -349,8 +354,64 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
             const vector<HDFEOS2::Dimension*>& dims= (*it_f)->getCorrectedDimensions();
             vector<HDFEOS2::Dimension*>::const_iterator it_d;
 
+            if(DFNT_CHAR == (*it_f)->getType()) {
+
+                if((*it_f)->getRank() >1) {
+
+                    HDFEOS2CFStrField * ar = NULL;
+
+                    try {
+
+                        ar = new HDFEOS2CFStrField(
+                                                   (*it_f)->getRank() -1,
+                                                   (grid_or_swath ==0)?gridfd:swathfd,
+                                                   filename,
+                                                   (dataset)->getName(),
+                                                   (*it_f)->getName(),
+                                                   grid_or_swath,
+                                                   (*it_f)->getNewName(),
+                                                   bt);
+                    }
+                    catch(...) {
+                        delete bt;
+                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    }
+                    for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++){
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                    }
+                
+                    dds.add_var(ar);
+                    delete bt;
+                    if(ar != NULL) 
+                       delete ar;
+
+                }
+
+                else {
+                    HDFEOS2CFStr * sca_str = NULL;
+                    try {
+
+                        sca_str = new HDFEOS2CFStr(
+                                                   (grid_or_swath ==0)?gridfd:swathfd,
+                                                   filename,
+                                                   (dataset)->getName(),
+                                                   (*it_f)->getName(),
+                                                   (*it_f)->getNewName(),
+                                                   grid_or_swath);
+                    }
+                    catch(...) {
+                        delete bt;
+                        InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    }
+                    dds.add_var(sca_str);
+                    delete bt;
+                    delete sca_str; 
+                }
+ 
+            }
+
             // For general variables and non-lat/lon existing coordinate variables
-            if(fieldtype == 0 || fieldtype == 3 || fieldtype == 5) {
+            else if(fieldtype == 0 || fieldtype == 3 || fieldtype == 5) {
 
                 // grid 
                 if(grid_or_swath==0){
@@ -519,7 +580,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
             }
 
             // For latitude and longitude
-            if(fieldtype == 1 || fieldtype == 2) {
+            else if(fieldtype == 1 || fieldtype == 2) {
 
                 // For grid
                 if(grid_or_swath==0) {
@@ -655,7 +716,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
             }
                     
             //missing Z dimensional field
-            if(fieldtype == 4) { 
+            else if(fieldtype == 4) { 
 
                 if((*it_f)->getRank()!=1){
                     delete bt;
@@ -1723,8 +1784,16 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         write_ecsmetadata(das,cf,"productmetadata");
 
         // This cause a problem for a MOD13C2 file, So turn it off temporarily. KY 2010-6-29
-        if(false == tempstrflag) 
-            write_ecsmetadata(das, cf, "StructMetadata");
+        if(false == tempstrflag) {
+
+            string check_disable_smetadata_key ="H4.DisableStructMetaAttr";
+            bool is_check_disable_smetadata = false;
+            is_check_disable_smetadata = HDFCFUtil::check_beskeys(check_disable_smetadata_key);
+
+            if (false == is_check_disable_smetadata) {
+                write_ecsmetadata(das, cf, "StructMetadata");
+            }
+        }
 
         // Write other HDF global attributes, this routine must be called after all ECS metadata are handled.
         write_non_ecsmetadata_attrs(cf);
@@ -1972,16 +2041,24 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         }
         else if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
                 ((*i)->getName().compare(0, 14, "structmetadata" )== 0)){
-            string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
-            // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
-            // So turn it off
-            // Turn off CERES  data since it may choke JAVA clients KY 2010-7-9
-            if(f->getSPType() != TRMML2_V6 && 
-               f->getSPType() != CER_AVG && 
-               f->getSPType() != CER_ES4 && 
-               f->getSPType() !=CER_SRB && 
-               f->getSPType() != CER_ZAVG)
-                struct_metadata.append(tempstring);
+
+            string check_disable_smetadata_key ="H4.DisableStructMetaAttr";
+            bool is_check_disable_smetadata = false;
+            is_check_disable_smetadata = HDFCFUtil::check_beskeys(check_disable_smetadata_key);
+
+            if (false == is_check_disable_smetadata) {
+
+                string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
+
+                // Turn off TRMM "swath" verison 6 level 2 productsCERES  data since it may choke JAVA clients KY 2010-7-9
+                if(f->getSPType() != TRMML2_V6 && 
+                   f->getSPType() != CER_AVG && 
+                   f->getSPType() != CER_ES4 && 
+                   f->getSPType() !=CER_SRB && 
+                   f->getSPType() != CER_ZAVG)
+                    struct_metadata.append(tempstring);
+
+            }
         }        
         else {
             //  Process gloabal attributes
@@ -2196,7 +2273,24 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
 
         // MAP dimension info. to DAS(Currently this should only affect the OTHERHDF case when no dimension scale for some dimensions)
         // KY 2012-09-19
-        for(vector<HDFSP::AttrContainer *>::const_iterator i=(*it_g)->getDimInfo().begin();i!=(*it_g)->getDimInfo().end();i++) {
+
+        // For the type DFNT_CHAR, one dimensional char array is mapped to a scalar DAP string, 
+        //                         N dimensional char array is mapped to N-1 dimensional DAP string,
+        // So the number of dimension info stored in the attribute container should be reduced by 1.
+        // KY 2014-04-11
+ 
+        bool has_dim_info = true;
+        vector<HDFSP::AttrContainer *>::const_iterator it_end = (*it_g)->getDimInfo().end();
+        if((*it_g)->getType() == DFNT_CHAR) {
+            if((*it_g)->getRank() >1 && (*it_g)->getDimInfo().size() >1)            
+                it_end = (*it_g)->getDimInfo().begin()+(*it_g)->getDimInfo().size() -1;
+            else 
+                has_dim_info = false;
+        }
+        
+        if( true == has_dim_info) {
+        for(vector<HDFSP::AttrContainer *>::const_iterator i=(*it_g)->getDimInfo().begin();i!=it_end;i++) {
+        //for(vector<HDFSP::AttrContainer *>::const_iterator i=(*it_g)->getDimInfo().begin();i!=(*it_g)->getDimInfo().end();i++) {
 
             // Here a little surgory to add the field path(including) name before dim0, dim1, etc.
             string attr_container_name = (*it_g)->getNewName() + (*i)->getName();
@@ -2223,6 +2317,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
                 }
             }
 
+        }
         }
 
         // Handle special CF attributes such as units, valid_range and coordinates 
@@ -2566,6 +2661,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
         break;
         HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
         HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+        HANDLE_CASE(DFNT_CHAR, HDFStr);
 #ifndef SIGNED_BYTE_TO_INT32
         HANDLE_CASE(DFNT_INT8, HDFByte);
 #else
@@ -2577,7 +2673,6 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
         HANDLE_CASE(DFNT_INT32, HDFInt32);
         HANDLE_CASE(DFNT_UINT32, HDFUInt32);
         HANDLE_CASE(DFNT_UCHAR8, HDFByte);
-        HANDLE_CASE(DFNT_CHAR8, HDFByte);
         default:
             InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -2589,7 +2684,62 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
             const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
             //const vector<HDFSP::Dimension*>& dims= spsds->getCorrectedDimensions();
             vector<HDFSP::Dimension*>::const_iterator it_d;
+        if(DFNT_CHAR == (*it_g)->getType()) {
 
+            if(1 == (*it_g)->getRank()) {
+
+                HDFCFStr * sca_str = NULL;
+                try {
+
+                    sca_str = new HDFCFStr(
+                                          sdid,
+                                          (*it_g)->getFieldRef(),
+                                          filename,
+                                          (*it_g)->getName(),
+                                          (*it_g)->getNewName(),
+                                          false
+                                          );
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                }
+                dds.add_var(sca_str);
+                delete bt;
+                delete sca_str;
+            }
+
+            else {
+                HDFCFStrField *ar = NULL;
+                try {
+
+                    ar = new HDFCFStrField(
+                                           (*it_g)->getRank() -1 ,
+                                           filename,     
+                                           false,
+                                           sdid,
+                                           (*it_g)->getFieldRef(),
+                                           0,
+                                           (*it_g)->getName(),
+                                           (*it_g)->getNewName(),
+                                           bt);
+ 
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                }
+
+                for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
+                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                dds.add_var(ar);
+                delete bt;
+                delete ar;
+            }
+ 
+        }
+
+        else {
             HDFSPArray_RealField *ar = NULL;
 
             try {
@@ -2613,6 +2763,7 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
             delete bt;
             delete ar;
         }
+      }
 
     }
 
@@ -2630,24 +2781,27 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
     
     BaseType *bt=NULL;
     switch(spsds->getType()) {
+
 #define HANDLE_CASE(tid, type)                                          \
     case tid:                                           \
         bt = new (type)(spsds->getNewName(),filename); \
         break;
         HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
         HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+        HANDLE_CASE(DFNT_CHAR, HDFStr);
 #ifndef SIGNED_BYTE_TO_INT32
         HANDLE_CASE(DFNT_INT8, HDFByte);
+        //HANDLE_CASE(DFNT_CHAR, HDFByte);
 #else
         HANDLE_CASE(DFNT_INT8,HDFInt32);
+        //HANDLE_CASE(DFNT_CHAR, HDFInt32);
 #endif
         HANDLE_CASE(DFNT_UINT8, HDFByte); 
         HANDLE_CASE(DFNT_INT16, HDFInt16);
         HANDLE_CASE(DFNT_UINT16, HDFUInt16);
         HANDLE_CASE(DFNT_INT32, HDFInt32);
         HANDLE_CASE(DFNT_UINT32, HDFUInt32);
-        HANDLE_CASE(DFNT_UCHAR8, HDFByte);
-        HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        HANDLE_CASE(DFNT_UCHAR, HDFByte);
         default:
             InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -2660,8 +2814,63 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
         const vector<HDFSP::Dimension*>& dims= spsds->getCorrectedDimensions();
         vector<HDFSP::Dimension*>::const_iterator it_d;
 
+        if(DFNT_CHAR == spsds->getType()) {
+
+            if(1 == spsds->getRank()) {
+
+                HDFCFStr * sca_str = NULL;
+
+                try {
+
+                    sca_str = new HDFCFStr(
+                                          sdfd,
+                                          spsds->getFieldRef(),
+                                          filename,
+                                          spsds->getName(),
+                                          spsds->getNewName(),
+                                          false
+                                          );
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                }
+                dds.add_var(sca_str);
+                delete bt;
+                delete sca_str;
+            }
+            else {
+                HDFCFStrField *ar = NULL;
+                try {
+
+                    ar = new HDFCFStrField(
+                                           spsds->getRank() -1 ,
+                                           filename,     
+                                           false,
+                                           sdfd,
+                                           spsds->getFieldRef(),
+                                           0,
+                                           spsds->getName(),
+                                           spsds->getNewName(),
+                                           bt);
+ 
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                }
+
+                for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
+                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                dds.add_var(ar);
+                delete bt;
+                delete ar;
+            }
+ 
+        }
+
         // For non-CV variables and the existing non-lat/lon CV variables
-        if(fieldtype == 0 || fieldtype == 3 ) {
+        else if(fieldtype == 0 || fieldtype == 3 ) {
 
             HDFSPArray_RealField *ar = NULL;
 
@@ -2689,7 +2898,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
         }
 
         // For latitude and longitude
-        if(fieldtype == 1 || fieldtype == 2) {
+        else if(fieldtype == 1 || fieldtype == 2) {
 
             if(sptype == MODISARNSS || sptype == TRMML2_V7) { 
 
@@ -2751,7 +2960,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
         }
                     
                     
-        if(fieldtype == 4) { //missing Z dimensional field(or coordinate variables with missing values)
+        else if(fieldtype == 4) { //missing Z dimensional field(or coordinate variables with missing values)
             if(spsds->getRank()!=1){
                 delete bt;
                 throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
@@ -2782,7 +2991,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
         }
         // fieldtype =5 originally keeps for time. Still keep it for a while.
 
-        if(fieldtype == 6) { //Coordinate variables added from the product specification
+        else if(fieldtype == 6) { //Coordinate variables added from the product specification
 
             if(spsds->getRank()!=1){
                 delete bt;
@@ -2833,6 +3042,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
         break;
         HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
         HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
+        HANDLE_CASE(DFNT_CHAR8,HDFStr);
 #ifndef SIGNED_BYTE_TO_INT32
         HANDLE_CASE(DFNT_INT8, HDFByte);
 #else
@@ -2844,7 +3054,8 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
         HANDLE_CASE(DFNT_INT32, HDFInt32);
         HANDLE_CASE(DFNT_UINT32, HDFUInt32);
         HANDLE_CASE(DFNT_UCHAR8, HDFByte);
-        HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        //HANDLE_CASE(DFNT_CHAR8, HDFByte);
+        //HANDLE_CASE(DFNT_CHAR8, HDFByte);
         default:
             InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -2852,35 +3063,96 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
              
     if(bt)
     {
-        HDFSPArray_VDField *ar = NULL;
 
-        // If the field order is >1, the vdata field will be 2-D array
-        // with the number of elements along the fastest changing dimension
-        // as the field order.
-        int vdrank = ((spvd->getFieldOrder())>1)?2:1;
-        ar = new HDFSPArray_VDField(
-                                    vdrank,
-                                    fileid,
-                                    objref,
-                                    spvd->getType(),
-                                    spvd->getFieldOrder(),
-                                    spvd->getName(),
-                                    spvd->getNewName(),
-                                    bt);
+        if(DFNT_CHAR == spvd->getType()) {
 
-        string dimname1 = "VDFDim0_"+spvd->getNewName();
+            // If the field order is >1, the vdata field will be 2-D array
+            // with the number of elements along the fastest changing dimension
+            // as the field order.
+            int vdrank = ((spvd->getFieldOrder())>1)?2:1;
+            if (1 == vdrank) {
+ 
+                HDFCFStr * sca_str = NULL;
+                try {
+                    sca_str = new HDFCFStr(
+                                          fileid,
+                                          objref,
+                                          filename,
+                                          spvd->getName(),
+                                          spvd->getNewName(),
+                                          true
+                                          );
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                }
+                dds.add_var(sca_str);
+                delete bt;
+                delete sca_str;
+            }
 
-        string dimname2 = "VDFDim1_"+spvd->getNewName();
-        if(spvd->getFieldOrder() >1) {
-            ar->append_dim(numrec,dimname1);
-            ar->append_dim(spvd->getFieldOrder(),dimname2);
+            else {
+
+                HDFCFStrField *ar = NULL;
+                try {
+
+                    ar = new HDFCFStrField(
+                                           vdrank -1 ,
+                                           filename,     
+                                           true,
+                                           fileid,
+                                           objref,
+                                           spvd->getFieldOrder(),
+                                           spvd->getName(),
+                                           spvd->getNewName(),
+                                           bt);
+ 
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                }
+
+                string dimname0 = "VDFDim0_"+spvd->getNewName();  
+                ar->append_dim(numrec, dimname0);
+                dds.add_var(ar);
+                delete bt;
+                delete ar;
+
+            }
         }
-        else 
-            ar->append_dim(numrec,dimname1);
+        else {
+            HDFSPArray_VDField *ar = NULL;
 
-        dds.add_var(ar);
-        delete bt;
-        delete ar;
+            // If the field order is >1, the vdata field will be 2-D array
+            // with the number of elements along the fastest changing dimension
+            // as the field order.
+            int vdrank = ((spvd->getFieldOrder())>1)?2:1;
+            ar = new HDFSPArray_VDField(
+                                        vdrank,
+                                        fileid,
+                                        objref,
+                                        spvd->getType(),
+                                        spvd->getFieldOrder(),
+                                        spvd->getName(),
+                                        spvd->getNewName(),
+                                        bt);
+
+            string dimname1 = "VDFDim0_"+spvd->getNewName();
+
+            string dimname2 = "VDFDim1_"+spvd->getNewName();
+            if(spvd->getFieldOrder() >1) {
+                ar->append_dim(numrec,dimname1);
+                ar->append_dim(spvd->getFieldOrder(),dimname2);
+            }
+            else 
+                ar->append_dim(numrec,dimname1);
+
+            dds.add_var(ar);
+            delete bt;
+            delete ar;
+        }
     }
 
 }

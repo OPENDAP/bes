@@ -1139,7 +1139,6 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
             // Obtaining the total value and interpolating the data 
             // according to dimension map
@@ -1388,7 +1387,6 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
             // Obtaining the total value and interpolating the data according to dimension map
             vector < uint8 > total_val_u8;

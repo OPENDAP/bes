@@ -141,7 +141,6 @@ HDFSPArray_VDField::read ()
             break;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
-        case DFNT_CHAR8:
         {
 
             vector<uint8>val;

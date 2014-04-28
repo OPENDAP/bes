@@ -357,6 +357,12 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         if (true == is_eosmetadata(attr_namestr)) 
             continue;
             
+        // When DisableStructMetaAttr key is true, StructMetadata.0 is not in the
+        // ECS metadata list. So this routine will pick up this attribute and generate
+        // the DAP output here. Anyhow, 
+        // StructMetadata attribute should not be generated here. We will turn it off.
+        if (attr_namestr.compare(0,14, "StructMetadata" )== 0)
+            continue;
 
         // USE VECTOR
         //char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];

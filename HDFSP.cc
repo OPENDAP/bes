@@ -5829,11 +5829,26 @@ throw (Exception)
     // I need to trim them. Field name PLE, Dimension name: XDim.
     // KY 2012-7-2
 
- 
+    bool merra_is_eos2 = false;
     size_t found_forward_slash = file->path.find_last_of("/");
     if ((found_forward_slash != string::npos) && 
         (((file->path).substr(found_forward_slash+1).compare(0,5,"MERRA"))==0)){
 
+        for (std::vector < Attribute * >::const_iterator i =
+            file->sd->getAttributes ().begin ();
+            i != file->sd->getAttributes ().end (); ++i) {
+
+            // CHeck if this MERRA file is an HDF-EOS2 or not.
+            if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
+                ((*i)->getName().compare(0, 14, "structmetadata" )== 0)) {
+                merra_is_eos2 = true;
+                break;
+            }
+
+        }
+    }
+
+    if( true == merra_is_eos2) {
         vector <string> noneos_newnamelist; 
 
         // 1. Remove EOSGRID from the added-non-EOS field names(XDim:EOSGRID to XDim)
