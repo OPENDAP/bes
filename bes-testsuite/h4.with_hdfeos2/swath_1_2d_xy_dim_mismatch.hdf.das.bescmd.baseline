@@ -16,52 +16,6 @@ Attributes {
         Float32 _FillValue -9999.000000;
         String long_name "temperature";
     }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "Swath";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "Unlim";
-                        Int32 Size 0;
-                    }
-                    Dimension_2 {
-                        String DimensionName "NDim";
-                        Int32 Size 8;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Latitude";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "NDim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Longitude";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "NDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "temperature";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "Unlim", "NDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-    }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.18";
     }

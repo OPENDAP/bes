@@ -810,9 +810,8 @@
         <dimension name="VDFDim0_vdata_NSCAT_Rev_20_SwathIndex_vdf_begin" size="820"/>
     </Array>
     <Array name="vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time">
-        <Byte/>
+        <String/>
         <dimension name="VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time" size="458"/>
-        <dimension name="VDFDim1_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time" size="24"/>
     </Array>
     <Array name="vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Low_Wind_Speed_Flag">
         <UInt32/>

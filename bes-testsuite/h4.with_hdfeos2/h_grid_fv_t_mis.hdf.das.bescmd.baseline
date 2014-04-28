@@ -12,34 +12,6 @@ Attributes {
         String long_name "Longitude";
         String units "degrees_east";
     }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "GeoGrid";
-                Int32 XDim 8;
-                Int32 YDim 4;
-                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
-                Float64 LowerRightMtrs 8000000.000000, 0.000000;
-                String Projection "GCTP_GEO";
-                String GridOrigin "HDFE_GD_UR";
-                Dimension {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "temperature";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "YDim", "XDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-    }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.18";
     }

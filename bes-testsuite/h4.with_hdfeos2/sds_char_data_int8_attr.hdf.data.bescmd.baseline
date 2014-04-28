@@ -1,0 +1,4 @@
+The data:
+String char_1D = "ABCDE";
+String char_2D[fakeDim1 = 2] = {"bcdef", "defgh"};
+

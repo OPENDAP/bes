@@ -50,9 +50,6 @@ Attributes {
     SDS_DFNT_CHAR8 {
         String long_name "SDS_DFNT_CHAR8";
     }
-    SDS_DFNT_CHAR8_dim_0 {
-        String name "fakeDim8";
-    }
     SDS_DFNT_UCHAR8 {
         String long_name "SDS_DFNT_UCHAR8";
     }
