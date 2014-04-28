@@ -1,3 +1,7 @@
+Version 3.11.5 (25 April 2014)
+
+  Fixed the mapping of 8-bit HDF4 data type to DAP2.
+
 Version 3.11.4 (1 April 2014)
 
   This version improves I/O by reducing the number of HDF4/HDF-EOS2 file open /

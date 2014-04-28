@@ -40,9 +40,10 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
-HDFCF_SRC = HDFCFUtil.cc HDFEOS2.cc HDFSP.cc HDFSPArrayGeoField.cc HDFSPArrayAddCVField.cc\
+HDFCF_SRC = HDFCFUtil.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc HDFSP.cc \
+	       HDFSPArrayGeoField.cc HDFSPArrayAddCVField.cc\
 		HDFSPArrayMissField.cc HDFSPArray_RealField.cc HDFSPArray_VDField.cc\
-	          HDFEOS2Array_RealField.cc \
+	          HDFCFStrField.cc HDFEOS2CFStrField.cc HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
               HDFEOS2ArraySwathDimMapField.cc HDFEOS2ArraySwathGeoDimMapExtraField.cc \
 	     HE2CF.cc misr_init.cc misrinv.cc
@@ -55,9 +56,10 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 
 
 HDFCF_HDR = HDFEOS2.h HDFSP.h HDFCFUtil.h \
-	HDFSPEnumType.h \
-	HDFSPArrayGeoField.h HDFSPArrayAddCVField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
+	HDFSPEnumType.h HDFCFStr.h \
+	HDFCFStrField.h HDFSPArrayGeoField.h HDFSPArrayAddCVField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
 	HDFEOS2EnumType.h HDFEOS2HandleType.h \
+	HDFEOS2CFStr.h HDFEOS2CFStrField.h \
 	HDFEOS2Array_RealField.h \
 	HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
 	HDFEOS2ArraySwathDimMapField.h\

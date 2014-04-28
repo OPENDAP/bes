@@ -86,6 +86,8 @@ H4.EnableSpecialEOS=true
 # this key to be true. By default, this key should always be true.  
 H4.DisableScaleOffsetComp=true
 
+# Disable StructMetadata 
+H4.DisableStructMetaAttr=true
 # By turning on this key, the handler will check if the datatype of scale_factor
 # and offset is the same. This is required by CF. If they don't share the same
 # datatype, the handler will make the data type of offset be the same as that 

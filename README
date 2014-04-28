@@ -1,3 +1,21 @@
+Updated for version 3.11.5(25 April 2014)
+
+  In this version, we fix the following datatype mapping issues:
+
+  1) We make HDF4 DFNT_CHAR array map to DAP string for variables.
+     In the previous versions, DFNT_CHAR is mapped to DAP BYTE for variables.
+     This may cause some NASA HDF4 vdata DFNT_CHAR array to DAP BYTE array, which is not right.
+     The fix makes the vdata fields of some NASA MISR (MISR_AEROSOL etc.) products map correctly to DAP.
+  2) We fix the mapping of DFNT_INT8 attribute value to DAP.
+     In the previous versions, DFNT_INT8(signed 8-bit integer) is mapped to DAP BYTE(unsigned 8-bit integer).
+     This will cause misrepresentation when the value is < 0.
+     This fix will make some attribute values of some MODIS or MISR non-physical fields map correctly to DAP.
+  3) For attribute _FillValue, we enforce that it is always a number even if the attribute datatype is
+     DFNT_CHAR or DFNT_UCHAR. In this release,we make the string representation of a _FillValue to a number.
+
+  We also make turn on the H4.DisableStructMetaAttr key to be 'true'the default setting of h4.conf.in. This
+  will improve the performance to generate DAS.
+
 Updated for version 3.11.4 (1 April 2014)
 
   This version improves I/O by reducing the number of HDF4/HDF-EOS2 file open /
