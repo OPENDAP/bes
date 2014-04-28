@@ -117,7 +117,7 @@ Dataset {
     Float64 vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_y[VDFDim0_vdata_PerBlockMetadataCommon_vdf_Block_coor_lrc_som_meter_y = 161];
     Int32 vdata_PerBlockMetadataCommon_vdf_Data_flag[VDFDim0_vdata_PerBlockMetadataCommon_vdf_Data_flag = 161];
     Float64 vdata_Common_Per_Block_Metadata_vdf_Geometric_DQI[VDFDim0_vdata_Common_Per_Block_Metadata_vdf_Geometric_DQI = 161];
-    Byte vdata_PerBlockMetadataTime_vdf_BlockCenterTime[VDFDim0_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 161][VDFDim1_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 28];
+    String vdata_PerBlockMetadataTime_vdf_BlockCenterTime[VDFDim0_vdata_PerBlockMetadataTime_vdf_BlockCenterTime = 161];
     Byte vdata_RetrAppMask_Flag_Legend_vdf_Value[VDFDim0_vdata_RetrAppMask_Flag_Legend_vdf_Value = 13];
-    Byte vdata_RetrAppMask_Flag_Legend_vdf_Description[VDFDim0_vdata_RetrAppMask_Flag_Legend_vdf_Description = 13][VDFDim1_vdata_RetrAppMask_Flag_Legend_vdf_Description = 80];
+    String vdata_RetrAppMask_Flag_Legend_vdf_Description[VDFDim0_vdata_RetrAppMask_Flag_Legend_vdf_Description = 13];
 } MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf;

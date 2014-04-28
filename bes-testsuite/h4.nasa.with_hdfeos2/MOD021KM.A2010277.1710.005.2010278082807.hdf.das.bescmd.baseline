@@ -93,7 +93,7 @@ Attributes {
         String long_name "Earth View 250M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation";
         String units "none";
         Int32 valid_range 0, 28;
-        Int32 _FillValue 255;
+        Int32 _FillValue -1;
     }
     EV_500_Aggr1km_RefSB {
         String coordinates "Band_500M Latitude Longitude";
@@ -129,7 +129,7 @@ Attributes {
         String long_name "Earth View 500M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation";
         String units "none";
         Int32 valid_range 0, 6;
-        Int32 _FillValue 255;
+        Int32 _FillValue -1;
     }
     Height {
         String coordinates "Latitude Longitude";
@@ -541,198 +541,6 @@ Attributes {
             }
         }
     }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "MODIS_SWATH_Type_L1B";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "Band_250M";
-                        Int32 Size 2;
-                    }
-                    Dimension_2 {
-                        String DimensionName "Band_500M";
-                        Int32 Size 5;
-                    }
-                    Dimension_3 {
-                        String DimensionName "Band_1KM_RefSB";
-                        Int32 Size 15;
-                    }
-                    Dimension_4 {
-                        String DimensionName "Band_1KM_Emissive";
-                        Int32 Size 16;
-                    }
-                    Dimension_5 {
-                        String DimensionName "10*nscans";
-                        Int32 Size 2030;
-                    }
-                    Dimension_6 {
-                        String DimensionName "Max_EV_frames";
-                        Int32 Size 1354;
-                    }
-                    Dimension_7 {
-                        String DimensionName "2*nscans";
-                        Int32 Size 406;
-                    }
-                    Dimension_8 {
-                        String DimensionName "1KM_geo_dim";
-                        Int32 Size 271;
-                    }
-                }
-                DimensionMap {
-                    DimensionMap_1 {
-                        String GeoDimension "2*nscans";
-                        String DataDimension "10*nscans";
-                        Int32 Offset 2;
-                        Int32 Increment 5;
-                    }
-                    DimensionMap_2 {
-                        String GeoDimension "1KM_geo_dim";
-                        String DataDimension "Max_EV_frames";
-                        Int32 Offset 2;
-                        Int32 Increment 5;
-                    }
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Latitude";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Longitude";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "EV_1KM_RefSB";
-                        String DataType "DFNT_UINT16";
-                        String DimList "Band_1KM_RefSB", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_2 {
-                        String DataFieldName "EV_1KM_RefSB_Uncert_Indexes";
-                        String DataType "DFNT_UINT8";
-                        String DimList "Band_1KM_RefSB", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_3 {
-                        String DataFieldName "EV_1KM_Emissive";
-                        String DataType "DFNT_UINT16";
-                        String DimList "Band_1KM_Emissive", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_4 {
-                        String DataFieldName "EV_1KM_Emissive_Uncert_Indexes";
-                        String DataType "DFNT_UINT8";
-                        String DimList "Band_1KM_Emissive", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_5 {
-                        String DataFieldName "EV_250_Aggr1km_RefSB";
-                        String DataType "DFNT_UINT16";
-                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_6 {
-                        String DataFieldName "EV_250_Aggr1km_RefSB_Uncert_Indexes";
-                        String DataType "DFNT_UINT8";
-                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_7 {
-                        String DataFieldName "EV_250_Aggr1km_RefSB_Samples_Used";
-                        String DataType "DFNT_INT8";
-                        String DimList "Band_250M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_8 {
-                        String DataFieldName "EV_500_Aggr1km_RefSB";
-                        String DataType "DFNT_UINT16";
-                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_9 {
-                        String DataFieldName "EV_500_Aggr1km_RefSB_Uncert_Indexes";
-                        String DataType "DFNT_UINT8";
-                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_10 {
-                        String DataFieldName "EV_500_Aggr1km_RefSB_Samples_Used";
-                        String DataType "DFNT_INT8";
-                        String DimList "Band_500M", "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_11 {
-                        String DataFieldName "Height";
-                        String DataType "DFNT_INT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_12 {
-                        String DataFieldName "SensorZenith";
-                        String DataType "DFNT_INT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_13 {
-                        String DataFieldName "SensorAzimuth";
-                        String DataType "DFNT_INT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_14 {
-                        String DataFieldName "Range";
-                        String DataType "DFNT_UINT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_15 {
-                        String DataFieldName "SolarZenith";
-                        String DataType "DFNT_INT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_16 {
-                        String DataFieldName "SolarAzimuth";
-                        String DataType "DFNT_INT16";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_17 {
-                        String DataFieldName "gflags";
-                        String DataType "DFNT_UINT8";
-                        String DimList "2*nscans", "1KM_geo_dim";
-                    }
-                    DataField_18 {
-                        String DataFieldName "Band_250M";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "Band_250M";
-                    }
-                    DataField_19 {
-                        String DataFieldName "Band_500M";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "Band_500M";
-                    }
-                    DataField_20 {
-                        String DataFieldName "Band_1KM_RefSB";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "Band_1KM_RefSB";
-                    }
-                    DataField_21 {
-                        String DataFieldName "Band_1KM_Emissive";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "Band_1KM_Emissive";
-                    }
-                    DataField_22 {
-                        String DataFieldName "EV_Band26";
-                        String DataType "DFNT_UINT16";
-                        String DimList "10*nscans", "Max_EV_frames";
-                    }
-                    DataField_23 {
-                        String DataFieldName "EV_Band26_Uncert_Indexes";
-                        String DataType "DFNT_UINT8";
-                        String DimList "10*nscans", "Max_EV_frames";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-    }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.9";
         Float32 HDFEOS_FractionalOffset_10_nscans_MODIS_SWATH_Type_L1B 0.000000000;
@@ -764,7 +572,7 @@ Attributes {
         String Emissive_LUT_Serial_Number_and_Date_of_Last_Change "E232 2010:09:17:17:00";
         String QA_LUT_Serial_Number_and_Date_of_Last_Change "Q228 2010:09:17:17:00";
         Int32 Focal_Plane_Set_Point_State 1;
-        Int32 Doors_and_Screens_Configuration 224;
+        Int32 Doors_and_Screens_Configuration -32;
         Int32 Reflective_Bands_With_Bad_Data 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
         Int32 Emissive_Bands_With_Bad_Data 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
         Byte Noise_in_Black_Body_Thermistors 6, 1, 2, 2, 6, 2, 1, 4, 1, 5, 1, 4;
