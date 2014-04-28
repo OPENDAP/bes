@@ -15,7 +15,7 @@ Dataset {
     Int16 NSCAT_Rev_20_MLE_Likelihood[row = 458][WVC = 24][position = 4];
     Byte NSCAT_Rev_20_Num_Ambigs[row = 458][WVC = 24];
     Int16 vdata_NSCAT_Rev_20_SwathIndex_vdf_begin[VDFDim0_vdata_NSCAT_Rev_20_SwathIndex_vdf_begin = 820];
-    Byte vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time[VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time = 458][VDFDim1_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time = 24];
+    String vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time[VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time = 458];
     UInt32 vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Low_Wind_Speed_Flag[VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Low_Wind_Speed_Flag = 458];
     UInt32 vdata_NSCAT_Rev_20_NSCAT_L2_vdf_High_Wind_Speed_Flag[VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_High_Wind_Speed_Flag = 458];
 } S2000415.HDF;

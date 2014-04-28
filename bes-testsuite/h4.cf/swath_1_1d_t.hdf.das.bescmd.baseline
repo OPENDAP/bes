@@ -2,43 +2,6 @@ Attributes {
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.18";
     }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "Swath";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Time";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "ZDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "temperature";
-                        String DataType "DFNT_FLOAT32";
-                        String DimList "ZDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-    }
     Swath_Geolocation_Fields_Time {
         Float32 Vdata_field_Time 0.000000000, 1.000000000, 2.000000000, 3.000000000;
     }

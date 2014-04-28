@@ -7,6 +7,6 @@ Dataset {
     Byte SDS_DFNT_UINT8[fakeDim5 = 3];
     Float32 SDS_DFNT_FLOAT32[fakeDim6 = 7];
     Float64 SDS_DFNT_FLOAT64[fakeDim7 = 7];
-    Byte SDS_DFNT_CHAR8[fakeDim8 = 5];
+    String SDS_DFNT_CHAR8;
     Byte SDS_DFNT_UCHAR8[fakeDim9 = 3];
 } testsds1.hdf;

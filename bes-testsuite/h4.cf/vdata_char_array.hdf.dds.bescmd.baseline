@@ -1,0 +1,4 @@
+Dataset {
+    String vdata_Vdata2_characters_vdf_Fchar2_2d_array[VDFDim0_vdata_Vdata2_characters_vdf_Fchar2_2d_array = 12];
+    String vdata_Vdata2_characters_vdf_Fchar2_array;
+} vdata_char_array.hdf;

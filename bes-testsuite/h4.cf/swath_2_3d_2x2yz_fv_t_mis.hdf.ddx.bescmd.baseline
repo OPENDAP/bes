@@ -5,184 +5,6 @@
             <value>HDFEOS_V2.18</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-            <Attribute name="SWATH_1" type="Container">
-                <Attribute name="SwathName" type="String">
-                    <value>&quot;Swath1&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>4</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>4</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>8</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="GeoField" type="Container">
-                    <Attribute name="GeoField_1" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_2" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_3" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-            <Attribute name="SWATH_2" type="Container">
-                <Attribute name="SwathName" type="String">
-                    <value>&quot;Swath2&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>8</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>8</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>16</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="GeoField" type="Container">
-                    <Attribute name="GeoField_1" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_2" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_3" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DataType" type="String">
-                            <value>DFNT_FLOAT32</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;xtrack&quot;</value>
-                            <value>&quot;ytrack&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="GridStructure" type="Container"/>
-        <Attribute name="PointStructure" type="Container"/>
-    </Attribute>
     <Attribute name="Swath1_Geolocation_Fields_Latitude_dim_0" type="Container">
         <Attribute name="name" type="String">
             <value>xtrack:Swath1</value>
@@ -303,7 +125,7 @@
             <value>temperature</value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
-            <value>a</value>
+            <value>97</value>
         </Attribute>
         <Float32/>
         <dimension name="ZDim_Swath1" size="4"/>
@@ -337,7 +159,7 @@
             <value>temperature</value>
         </Attribute>
         <Attribute name="_FillValue" type="Float32">
-            <value>128</value>
+            <value>-128</value>
         </Attribute>
         <Float32/>
         <dimension name="ZDim_Swath2" size="8"/>

@@ -36,9 +36,9 @@
         <Attribute name="Vdata_field_Field_DFNT_INT8" type="Int32">
             <value>0</value>
             <value>1</value>
-            <value>255</value>
+            <value>-1</value>
             <value>127</value>
-            <value>128</value>
+            <value>-128</value>
         </Attribute>
     </Attribute>
     <Attribute name="Vdata_DFNT_UINT8" type="Container">
