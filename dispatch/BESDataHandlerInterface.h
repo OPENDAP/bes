@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -59,98 +59,107 @@ class BESInfo;
 
 class BESDataHandlerInterface: public BESObj {
 private:
-    ostream *output_stream;
+	ostream *output_stream;
 
-    // These were causing multiple compiler warnings, so I removed the implementations since
-    // it's clear they are private to be disallowed from auto generation for now
-    // and this just not declaring an impl solves it.  (mpj 2/26/10)
-    BESDataHandlerInterface(BESDataHandlerInterface &from);
-
-    BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
+	// I tried adding a complete 'clone the dhi' method to see if that
+	// would address the problem we're seeing on OSX 10.9. It didn't but
+	// we're not done yet, so maybe this will be useful still. jhrg 4/16/14
+	void clone(const BESDataHandlerInterface &copy_from);
 
 public:
-    BESDataHandlerInterface() :
-            output_stream(0), response_handler(0), container(0), executed(false), error_info(0)
-    {
-    }
+	BESDataHandlerInterface() :
+			output_stream(0), response_handler(0), container(0), executed(false), error_info(0)
+	{
+	}
 
-    void make_copy(const BESDataHandlerInterface &copy_from);
-    void clean();
+	// These were causing multiple compiler warnings, so I removed the implementations since
+	// it's clear they are private to be disallowed from auto generation for now
+	// and this just not declaring an impl solves it.  (mpj 2/26/10)
+	//
+	// I implemented these - and made clone() private, since that's a more common pattern.
+	// jhrg 4/18/14
+	BESDataHandlerInterface(const BESDataHandlerInterface &from);
+	BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
 
-    void set_output_stream(ostream *strm)
-    {
-        if (output_stream) {
-            string err = "output stream has already been set";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-        output_stream = strm;
-    }
+	/// deprecated
+	void make_copy(const BESDataHandlerInterface &copy_from);
 
-    ostream &get_output_stream()
-    {
-        if (!output_stream)
-            throw BESInternalError("output stream has not yet been set, cannot use", __FILE__, __LINE__);
-        return *output_stream;
-    }
+	void clean();
 
-    BESResponseHandler *response_handler;
-    BESResponseObject *get_response_object();
+	void set_output_stream(ostream *strm)
+	{
+		if (output_stream) {
+			string err = "output stream has already been set";
+			throw BESInternalError(err, __FILE__, __LINE__);
+		}
+		output_stream = strm;
+	}
 
-    list<BESContainer *> containers;
-    list<BESContainer *>::iterator containers_iterator;
+	ostream &get_output_stream()
+	{
+		if (!output_stream)
+			throw BESInternalError("output stream has not yet been set, cannot use", __FILE__, __LINE__);
+		return *output_stream;
+	}
 
-    /** @brief pointer to current container in this interface
-     */
-    BESContainer *container;
+	BESResponseHandler *response_handler;
+	BESResponseObject *get_response_object();
 
-    /** @brief set the container pointer to the first container in the containers list
-     */
-    void first_container()
-    {
-        containers_iterator = containers.begin();
-        if (containers_iterator != containers.end())
-            container = (*containers_iterator);
-        else
-            container = NULL;
-    }
+	list<BESContainer *> containers;
+	list<BESContainer *>::iterator containers_iterator;
 
-    /** @brief set the container pointer to the next * container in the list, null if at the end or no containers in list
-     */
-    void next_container()
-    {
-        containers_iterator++;
-        if (containers_iterator != containers.end())
-            container = (*containers_iterator);
-        else
-            container = NULL;
-    }
+	/** @brief pointer to current container in this interface
+	 */
+	BESContainer *container;
 
-    /** @brief the response object requested, e.g. das, dds
-     */
-    string action;
-    string action_name;
-    bool executed;
+	/** @brief set the container pointer to the first container in the containers list
+	 */
+	void first_container()
+	{
+		containers_iterator = containers.begin();
+		if (containers_iterator != containers.end())
+			container = (*containers_iterator);
+		else
+			container = NULL;
+	}
 
-    /** @brief request protocol, such as HTTP
-     */
-    string transmit_protocol;
+	/** @brief set the container pointer to the next * container in the list, null if at the end or no containers in list
+	 */
+	void next_container()
+	{
+		containers_iterator++;
+		if (containers_iterator != containers.end())
+			container = (*containers_iterator);
+		else
+			container = NULL;
+	}
 
-    /** @brief the map of string data that will be required for the current
-     * request.
-     */
-    map<string, string> data;
-    const map<string, string> &data_c() const
-    {
-        return data;
-    }
+	/** @brief the response object requested, e.g. das, dds
+	 */
+	string action;
+	string action_name;
+	bool executed;
 
-    typedef map<string, string>::const_iterator data_citer;
+	/** @brief request protocol, such as HTTP
+	 */
+	string transmit_protocol;
 
-    /** @brief error information object
-     */
-    BESInfo *error_info;
+	/** @brief the map of string data that will be required for the current
+	 * request.
+	 */
+	map<string, string> data;
+	const map<string, string> &data_c() const
+	{
+		return data;
+	}
 
-    void dump(ostream &strm) const;
+	typedef map<string, string>::const_iterator data_citer;
+
+	/** @brief error information object
+	 */
+	BESInfo *error_info;
+
+	void dump(ostream &strm) const;
 
 };
 

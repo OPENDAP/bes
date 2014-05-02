@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -43,7 +43,8 @@
 #include "BESDebug.h"
 
 BESXMLGetCommand::BESXMLGetCommand(const BESDataHandlerInterface &base_dhi) :
-		BESXMLCommand(base_dhi), _sub_cmd(0) {
+		BESXMLCommand(base_dhi), _sub_cmd(0)
+{
 }
 
 /** @brief parse a get command.
@@ -52,7 +53,8 @@ BESXMLGetCommand::BESXMLGetCommand(const BESDataHandlerInterface &base_dhi) :
  *
  * @param node xml2 element node pointer
  */
-void BESXMLGetCommand::parse_request(xmlNode *node) {
+void BESXMLGetCommand::parse_request(xmlNode *node)
+{
 	string name;
 	string value;
 	map<string, string> props;
@@ -75,8 +77,7 @@ void BESXMLGetCommand::parse_request(xmlNode *node) {
 		// the base dhi was copied to this instance's _dhi variable.
 		_sub_cmd = bldr(_dhi);
 		if (!_sub_cmd) {
-			string err = (string) "Failed to build command object for "
-					+ new_cmd;
+			string err = (string) "Failed to build command object for " + new_cmd;
 			throw BESInternalError(err, __FILE__, __LINE__);
 		}
 
@@ -95,10 +96,10 @@ void BESXMLGetCommand::parse_request(xmlNode *node) {
 	BESXMLCommand::set_response();
 }
 
-void BESXMLGetCommand::parse_basic_get(xmlNode *node, const string &name,
-		const string &type, const string &value, map<string, string> &props) {
+void BESXMLGetCommand::parse_basic_get(xmlNode */*node*/, const string &name, const string &type,
+		const string &/*value*/, map<string, string> &props)
+{
 	_str_cmd = (string) "get " + type;
-
 	_definition = props["definition"];
 	if (_definition.empty()) {
 		string err = name + " command: Must specify definition";
@@ -107,8 +108,7 @@ void BESXMLGetCommand::parse_basic_get(xmlNode *node, const string &name,
 	_str_cmd += " for " + _definition;
 
 	_space = props["space"];
-	if (!_space.empty())
-		_str_cmd += " in " + _space;
+	if (!_space.empty()) _str_cmd += " in " + _space;
 
 	string returnAs = props["returnAs"];
 	if (returnAs.empty()) {
@@ -116,29 +116,26 @@ void BESXMLGetCommand::parse_basic_get(xmlNode *node, const string &name,
 	}
 	_dhi.data[RETURN_CMD] = returnAs;
 
-
 	_dhi.data[STORE_RESULT] = props[STORE_RESULT];
 	_dhi.data[ASYNC] = props[ASYNC];
-
 
 	_str_cmd += " return as " + returnAs;
 
 	_dhi.action = "get.";
 	_dhi.action += BESUtil::lowercase(type);
-	BESDEBUG( "besxml", "Converted xml element name to command "
-			<< _dhi.action << endl );
-	}
+	BESDEBUG("besxml", "Converted xml element name to command " << _dhi.action << endl);
+}
 
-	/** @brief returns the BESDataHandlerInterface of either a sub command, if
-	 * one exists, or this command's
-	 *
-	 * @return BESDataHandlerInterface of sub command if it exists or this
-	 *         instances
-	 */
+/** @brief returns the BESDataHandlerInterface of either a sub command, if
+ * one exists, or this command's
+ *
+ * @return BESDataHandlerInterface of sub command if it exists or this
+ *         instances
+ */
 BESDataHandlerInterface &
-BESXMLGetCommand::get_dhi() {
-	if (_sub_cmd)
-		return _sub_cmd->get_dhi();
+BESXMLGetCommand::get_dhi()
+{
+	if (_sub_cmd) return _sub_cmd->get_dhi();
 
 	return _dhi;
 }
@@ -150,7 +147,8 @@ BESXMLGetCommand::get_dhi() {
  * the get request. It finds the definition specified in the element
  * and prepares all of the containers within that definition.
  */
-void BESXMLGetCommand::prep_request() {
+void BESXMLGetCommand::prep_request()
+{
 	// if there is a sub command then execute the prep request on it
 	if (_sub_cmd) {
 		_sub_cmd->prep_request();
@@ -160,12 +158,12 @@ void BESXMLGetCommand::prep_request() {
 	BESDefine *d = 0;
 
 	if (!_space.empty()) {
-		BESDefinitionStorage *ds =
-				BESDefinitionStorageList::TheList()->find_persistence(_space);
+		BESDefinitionStorage *ds = BESDefinitionStorageList::TheList()->find_persistence(_space);
 		if (ds) {
 			d = ds->look_for(_definition);
 		}
-	} else {
+	}
+	else {
 		d = BESDefinitionStorageList::TheList()->look_for(_definition);
 	}
 
@@ -180,9 +178,9 @@ void BESXMLGetCommand::prep_request() {
 		_dhi.containers.push_back(*i);
 		i++;
 	}
+
 	_dhi.data[AGG_CMD] = d->get_agg_cmd();
 	_dhi.data[AGG_HANDLER] = d->get_agg_handler();
-
 }
 
 /** @brief dumps information about this object
@@ -191,16 +189,17 @@ void BESXMLGetCommand::prep_request() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESXMLGetCommand::dump(ostream &strm) const {
-	strm << BESIndent::LMarg << "BESXMLGetCommand::dump - (" << (void *) this
-			<< ")" << endl;
+void BESXMLGetCommand::dump(ostream &strm) const
+{
+	strm << BESIndent::LMarg << "BESXMLGetCommand::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
 	BESXMLCommand::dump(strm);
 	BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLGetCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi) {
+BESXMLGetCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
+{
 	return new BESXMLGetCommand(base_dhi);
 }
 

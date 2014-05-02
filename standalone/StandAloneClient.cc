@@ -2,7 +2,9 @@
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
-
+//
+// Copyright (c) 2014 OPeNDAP, Inc.
+// 
 // Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
@@ -27,9 +29,10 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
+//
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
-
+//      hyoklee     Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 #include "config.h"
 
 #include <cstdlib>
@@ -360,11 +363,9 @@ StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 	istrm.clear( ) ;
 	istrm.seekg( 0, ios::beg ) ;
 	string cmd ;
-	while( !istrm.eof() )
+        string line ;
+	while(getline(istrm, line))
 	{
-	    char line[4096] ;
-	    line[0] = '\0' ;
-	    istrm.getline( line, 4096, '\n' ) ;
 	    cmd += line ;
 	}
 	this->executeCommand( cmd, 1 ) ;

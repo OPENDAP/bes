@@ -47,10 +47,8 @@ public:
 	static void send_basic_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_ddx(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-#if 1
 	static void send_basic_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_basic_dap4data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-#endif
 };
 
 #endif // I_BESDapTransmit_h

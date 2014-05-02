@@ -1,0 +1,17 @@
+<!-- How to use the abi checker:
+     Build the old and new code on a machine that uses gcc
+     Run the command 'abi-compliance-checker -lib NAME -old OLD.xml -new NEW.xml'
+     where OLD.xml, ..., is this file and lib NAME is libdap, ...
+     To get the abi checker, use git clone https://github.com/lvc/abi-compliance-checker -->
+     
+<version>
+    @PACKAGE_VERSION@
+</version>
+
+<headers>
+    @abs_top_srcdir@
+</headers>
+
+<libs>
+    @abs_top_builddir@/.libs
+</libs>

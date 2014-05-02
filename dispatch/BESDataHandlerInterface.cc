@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -43,13 +43,81 @@
  * not be copied. Each BESDataHandlerInterface should represent a
  * request/response, so each one should have it's own response handler.
  *
- * @param copy_from object to copy informatioon from
+ * @note deprecated Now calls the new clone() method that copies the
+ * whole object given that Patrick said he didn't know why it only copied
+ * a few parts and it's not really copying that much. Note that the 'data'
+ * field is copied/assigned even if copy_from.data and this->data are the
+ * same object, which is an issue on clang 5
+ *
+ * @param copy_from object to copy information from
  */
 void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from)
 {
+	clone(copy_from);
+#if 0
     this->data = copy_from.data;
     this->output_stream = copy_from.output_stream;
     this->transmit_protocol = copy_from.transmit_protocol;
+#endif
+}
+
+/** @brief Clone
+ * Unlike make_copy(), make an exact copy of the BESDataHandlerInterface object.
+ * The destination object it 'this'.
+ *
+ * @note This performs a shallow copy of the pointers unless those objects
+ * implement operator=() and perform a deep copy.
+ *
+ * @param rhs The instance to clone
+ */
+void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from)
+{
+	// Added because this can be called from make_copy() which is public.
+	// jhrg 4/18/14
+	if (this == &copy_from)
+		return;
+
+	output_stream = copy_from.output_stream;
+	response_handler = copy_from.response_handler;
+
+	containers = copy_from.containers;
+	containers_iterator = copy_from.containers_iterator;
+	container = copy_from.container;
+
+	action = copy_from.action;
+	action_name = copy_from.action_name;
+	executed = copy_from.executed;
+
+    transmit_protocol = copy_from.transmit_protocol;
+
+    // I do this because clang 5 (on OSX 10.9) will remove everything from 'data'
+    // if copy_from.data and 'data are the same object. Since the ncml handler uses
+	// make_copy() and may be using a reference to a DHI and/or the DHI's 'data' map,
+	// I'm leaving the test in here. That is, it could be building a new DHI instance
+    // that uses a reference to an existing 'data' field and then assign the original
+    // DHI instance to the new one. The DHIs are different, but the 'data' map are
+	// not. jhrg 4/18/14
+    if (&data != &copy_from.data)
+    	data = copy_from.data;
+
+	error_info = copy_from.error_info;
+}
+
+BESDataHandlerInterface::BESDataHandlerInterface(const BESDataHandlerInterface &from)
+{
+	clone(from);
+}
+
+BESDataHandlerInterface &
+BESDataHandlerInterface::operator=(const BESDataHandlerInterface &rhs)
+{
+	if (&rhs == this) {
+		return *this;
+	}
+
+	clone(rhs);
+
+	return *this;
 }
 
 /** @brief clean up any information created within this data handler

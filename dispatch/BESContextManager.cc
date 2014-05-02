@@ -69,7 +69,7 @@ BESContextManager::unset_context( const string &name )
 string
 BESContextManager::get_context( const string &name, bool &found )
 {
-    string ret;
+    string ret = "";
     found = false;
     BESContextManager::Context_iter i;
     i = _context_list.find(name);

@@ -208,9 +208,6 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
 	BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
-#if 0
-	bool found;
-#endif
 
 	d_storedResultsSubdir = getSubDirFromConfig();
 	d_dataRootDir = getBesDataRootDirFromConfig();

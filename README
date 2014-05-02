@@ -1,3 +1,10 @@
+Updated for version 3.13.0
+
+Important bug fixes - including a problem where the running server
+could create zombie processes. See the NEWS file for the ticket
+numbers, etc.
+
+Long options supported for the listener and main daemon.
 
 Updated for version 3.12.0
 

@@ -34,6 +34,10 @@
 
 class BESDapResponseBuilder;
 
+// using the namespace in the forward declaration works with older g++ versions
+// because they are sensible and not literal. It should not work; the decl class
+// libdap::BaseType; tells the compiler go look i the 'libdap' namespace for 'BaseType'
+// but _while it's compiling this file_ there is no 'libdap' namespace. So we make one.
 namespace libdap {
     class DDS;
     class ConstraintEvaluator;
@@ -52,13 +56,10 @@ private:
     static BESStoredDapResultCache * d_instance;
     static void delete_instance();
 
-
-
     string d_storedResultsSubdir;
     string d_dataRootDir;
     string d_resultFilePrefix;
     unsigned long d_maxCacheSize;
-
 
     /** Initialize the cache using the default values for the cache. */
     BESStoredDapResultCache();
@@ -95,7 +96,6 @@ public:
     libdap::DDS *get_cached_dap2_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
     libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename);
 
-
     virtual ~BESStoredDapResultCache() {}
 
     // Store the passed DDS to disk as a serialized DAP2 object.
@@ -106,7 +106,6 @@ public:
     virtual string store_dap4_result(libdap::DMR &dmr, const string &constraint, BESDapResponseBuilder *rb);
 
     // virtual void unlock_and_close(const std::string &cache_token);
-
 
     // Overrides parent
     virtual string get_cache_file_name(const string &src, bool mangle = false);

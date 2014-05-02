@@ -122,7 +122,7 @@ BESResponseHandlerList::find_handler( const string &handler_name )
 string
 BESResponseHandlerList::get_handler_names()
 {
-    string ret ;
+    string ret = "";
     bool first_name = true ;
     BESResponseHandlerList::Handler_citer i = _handler_list.begin() ;
     for( ; i != _handler_list.end(); i++ )

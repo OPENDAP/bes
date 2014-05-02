@@ -119,7 +119,7 @@ BESAggFactory::find_handler( string handler_name )
 string
 BESAggFactory::get_handler_names()
 {
-    string ret ;
+    string ret = "";
     bool first_name = true ;
     BESAggFactory::Handler_citer i = _handler_list.begin() ;
     for( ; i != _handler_list.end(); i++ )

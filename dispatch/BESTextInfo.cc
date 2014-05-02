@@ -259,7 +259,7 @@ BESTextInfo::dump( ostream &strm ) const
 }
 
 BESInfo *
-BESTextInfo::BuildTextInfo( const string &info_type )
+BESTextInfo::BuildTextInfo( const string &/*info_type*/ )
 {
     return new BESTextInfo( ) ;
 }

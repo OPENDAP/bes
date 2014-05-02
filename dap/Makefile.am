@@ -4,9 +4,7 @@
 # 01/22/2013 Hacked up by ndp
 #
 
-# AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
-
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign check-news 
 
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 

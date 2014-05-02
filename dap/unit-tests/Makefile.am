@@ -58,9 +58,6 @@ endif
 
 TEST_SRC = testFile.cc testFile.h
 
-# ../BESDapResponseBuilder.cc 
-#	../BESDapResponseCache.cc ../BESDAPCache.cc
-
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
 ResponseBuilderTest_LDADD = $(AM_LDADD) 
 
@@ -72,3 +69,6 @@ StoredDap2ResultTest_LDADD = $(AM_LDADD)
 
 StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
 StoredDap4ResultTest_LDADD = $(AM_LDADD)
+
+# StoredResultTest_SOURCES = StoredResultTest.cc  $(TEST_SRC)
+# StoredResultTest_LDADD = $(AM_LDADD)

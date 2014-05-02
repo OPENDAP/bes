@@ -1,3 +1,394 @@
+2014-04-18  James Gallagher <jgallagher@opendap.org>
+
+	fix for bug #2176; some unused parameters removed
+
+2014-04-16  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-04-16  James Gallagher <jgallagher@opendap.org>
+
+	Reformatting so I can read the code more easily; minor changes to
+	placate fortify
+
+2014-03-27  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Patched the daemon to handle only a single admin command
+	transmission at a time, and to properly close it's connection to
+	the admin client after command processing is complete.
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	namespace use fixes for C++ on OSX 10.9
+
+	M    dap/BESDapResponseCache.h
+	M    dap/BESStoredDapResultCache.h
+	M    dap/BESDapResponseBuilder.h
+
+2014-03-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added instrumentation to to the daemon in an effort to
+	understand it's behavior.
+
+2014-03-26  James Gallagher <jgallagher@opendap.org>
+
+	removed useless libxml version test
+
+2014-03-17  hyoklee
+
+	Bug fix for #2158.
+
+2014-03-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed the Stored Results Test
+
+2014-03-06  James Gallagher <jgallagher@opendap.org>
+
+	Added headers for strerror and errno (cerrno and cstring).
+
+2014-03-05  James Gallagher <jgallagher@opendap.org>
+
+	Refactored code in SocketListener and PPTServer so that key
+	methods no longer contain infinite loops so signal
+	processing (which I separated from signal reception) can be
+	centralized in each of ServerApp.cc and daemon.cc. Each of those
+	build servers/daemons that have specialized treatment of signals
+	like HUP, TERM and CHLD. This will close ticket 2025 and 2139.
+
+2014-03-04  James Gallagher <jgallagher@opendap.org>
+
+	I modified the Socket::receive() code along with
+	PPTConnection::readChunkHeader() to recognize EOF. Now
+	Socket::receive() returns 0 for EOF (as it should) and
+	PPTConnection::readChunkHeader() complains wehn it gets that and
+	it was not expected.
+
+2014-03-04  James Gallagher <jgallagher@opendap.org>
+
+	more changes to the way child process exits are caught.
+
+2014-03-04  James Gallagher <jgallagher@opendap.org>
+
+	Modifications to fix the 'zombie process' bug reported in ticket
+	2025. This problem - actually two problems - is documented there
+	in detail. There is a remaining problem to be fixed.
+
+2014-02-28  James Gallagher <jgallagher@opendap.org>
+
+	move readBuffer from private to protected so that
+	PPTServer.cc::welcomeClient() can use it.
+
+2014-02-27  James Gallagher <jgallagher@opendap.org>
+
+	Fix for ticket 2025. The code in welcomeClient() used a
+	non-blocking read to do the initial handshake with the connecting
+	client. It was the case that sometimes the non-blocking read would
+	not read the client's handshake under high load conditions. See
+	the ticket for the long version...
+
+2014-02-26  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-02-13  James Gallagher <jgallagher@opendap.org>
+
+	fixes for centos 6
+
+	M    conf/tr1_functional.m4
+	M    dap/BESStoredDapResultCache.cc
+
+2014-02-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added conditional checking for tr1/function hash thingy
+
+2014-02-13  James Gallagher <jgallagher@opendap.org>
+
+	svn ignores
+
+2014-02-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added conditional checking for tr1/function hash thingy
+
+2014-02-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added conditional checking for tr1/function hash thingy
+
+2014-02-12  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: added autoconf test for tr1/functional
+
+2014-02-12  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: added autoconf test for tr1/functional
+
+2014-02-12  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Completed unit tests for BESStoredDapResult.
+
+2014-02-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added a BESStoredDapResultCache with unit tests in
+	StoredResultTest. Cleaned up implmentations of BESFileLockingCache
+	and BESDAPResponseCache
+
+2014-02-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added a BESStoredDapResultCache with unit tests in
+	StoredResultTest. Cleaned up implmentations of BESFileLockingCache
+	and BESDAPResponseCache
+
+2014-02-05  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Refactored BESDapResponseCache to be a child of
+	BESFileLockingCache. Tests pass. woot.
+
+2014-02-05  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Created BESFileLockingCache class and converted
+	BESDapResponseCache to use it instead of BESDAPCache (which will
+	soon be deprecated)
+
+2014-02-04  James Gallagher <jgallagher@opendap.org>
+
+	Modified dap/unit-tests so that it links against the module
+	'library' file and does not try to build its own versions of the
+	classes its testing. This fixed a linkage issue that was really
+	quite bizarre where libbes_dispatch.dylib was referenced by an
+	absolute path. I also found two paces where OSX 10.9 required some
+	more headers (sys/select.h and unistd.h)
+
+2014-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Applied patch from Ezequiel Lara Gómez
+	<ezequiel.lara@qualitasremos.com> for long option support in
+	besstandalone.
+
+2013-12-17  James Gallagher <jgallagher@opendap.org>
+
+	I fixed a spelling error in a comment and a bad default value in
+	the dap.conf.in file. In the latter case the conf file was
+	providing a path value for the function cache that had double
+	quotes and those are not removed by the BES 'keys' code.
+
+2013-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation.
+
+2013-11-06  James Gallagher <jgallagher@opendap.org>
+
+	Fiddled with some comments
+
+2013-11-06  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: removed reference to DAP4 code
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	Removed the DAP4 DMR/Dap4Data code rom the bes trunk.
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	Commented out DAP4 code that made it into the BES on the trunk by
+	mistake.
+
+2013-11-05  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	test server: added a test (not working)
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	Added some initial attempts at support for the DMR response.
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	Initial version of the test server handler
+
+2013-11-05  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Fixed improperly cased include
+
+2013-11-05  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the exit condition bug. Also cleaned up some warnings.
+
+2013-11-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed what I suspect was/is my bush-league unix systems programming
+	error in Socket.cc:receive.
+
+2013-11-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed comment
+
+2013-11-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: More instrumentation for PPT_EXIT_NOW handling
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Added code to log receipt of the EXIT_NOW PPT token. Also, added
+	some more comments about where different parts of the socket I/O
+	code are implemented. I think these changes, combined with others
+	recently made, fix the issues we've seen on Linux where the OLFS
+	encounters I/O failures when it 'uses up' a BES and retires it for
+	a new beslistener child. This should also address the ticket that
+	requests a log entry when the BES 'dies' since the exit code and
+	signal handlers now log information.
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Modified Socket::receive() so that it handles EINTR and EAGAIN
+	correctly on read() calls to the socket.
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	The command line client now sends the zero-length chunk that
+	follows the EXIT_NOW extension chunk that indicates to the server
+	that the client has closed the PPT connection.
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the way the EXIT_NOW state/chunk is handled by the
+	BESServerHandler class (it should be looking for a trailing
+	zero-length chunk following the 'extension' chunk that indicates
+	'EXIT_NOW').
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	fixed the return code info for child processes; bescmdln now has
+	defaults for/of localhost and port 10022
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Commented out the calls to terminate/exit in the sig pipe handler
+	of the beslistener.
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Changed "besdaemon" and "server" to "beslistener" in the BESDEBUG
+	calls in ServerApp.cc
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Added catch of sig pipe and log output for all signal handlers.
+
+2013-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Fixed debugT to account for the change to BESDEBUG
+
+2013-10-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: minor changes to debug output.
+
+2013-10-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: minor changes to debug output.
+
+2013-10-28  James Gallagher <jgallagher@opendap.org>
+
+	gads - fixed some gross spelling errors...
+
+2013-10-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: modifying BESDEBUG output for more clarity.
+
+2013-10-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: modifying BESDEBUG output for more clarity.
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers; added missing
+	copyright information.
+
+2013-09-30  James Gallagher <jgallagher@opendap.org>
+
+	This checkin contains a fix for the conflicting definitions of
+	width() in BaseType, Vector and Array, where Array provided a
+	version/definition that clashes with the one in BaseType. BaseType
+	defined width() and Array defined width(bool constrained = true),
+	which shadowed the former. I changed BaseType width so that its
+	signature is width(bool constrained = false) and made that the
+	only version of the method. There are some changes to uses of
+	width() in libdap and the BES, but not in the handlers.
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the
+	new OSX compiler prints warnings about it and it seems to not make
+	a difference with newer g++ versions.
+
+2013-09-20  James Gallagher <jgallagher@opendap.org>
+
+	I found more places where the old (and no longer built) libbes_dap
+	was referenced - and removed those references.
+
+	M    conf/bes.m4
+	M    bin/besCreateModule.in
+	M    apache/conf/bes.m4
+	M    apache/libopendap.module.in
+	M    bes-config-pkgconfig
+	M    templates/conf/bes.m4
+	M    hello_world/conf/bes.m4
+
+2013-09-20  James Gallagher <jgallagher@opendap.org>
+
+	Removed the bes_dap.pc stiff - which was breaking rpm installs and builds.
+
+	M    configure.ac
+	D    bes_dap.pc.in
+	M    Makefile.am
+
+2013-09-17  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the comments in bes.conf.in regarding the CacheDir
+	parameter. Added much more instrumentation to the DAP handler,
+	specifically for server function result caching.
+
+2013-09-10  James Gallagher <jgallagher@opendap.org>
+
+	Updates for the release of 3.12.0
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2013-09-10  James Gallagher <jgallagher@opendap.org>
+
+	changes for distcheck
+
+	M    dap/unit-tests/Makefile.am
+	M    server/DaemonCommandHandler.cc
+	M    dispatch/TheBESKeys.h
+	M    xmlcommand/unit-tests/test_config.h.in
+	M    xmlcommand/unit-tests/buildT.cc
+	M    xmlcommand/unit-tests/Makefile.am
+
 2013-09-10  James Gallagher <jgallagher@opendap.org>
 
 	changes for distcheck

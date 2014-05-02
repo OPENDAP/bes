@@ -26,48 +26,48 @@ endif
 SUBDIRS = . tests
 
 lib_besdir=$(libdir)/bes
-lib_bes_LTLIBRARIES = libreader_module.la
+lib_bes_LTLIBRARIES = libdapreader_module.la
 
 BES_SRCS = DapModule.cc DapRequestHandler.cc
 
 BES_HDRS = DapModule.h DapRequestHandler.h 
 
-libreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
-libreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-libreader_module_la_LDFLAGS = -avoid-version -module 
-libreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types
+libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
+libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
+libdapreader_module_la_LDFLAGS = -avoid-version -module 
+libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data reader.conf.in
+EXTRA_DIST = data dapreader.conf.in
 
-CLEANFILES = *~ reader.conf
+CLEANFILES = *~ dapreader.conf
 
-sample_datadir = $(datadir)/hyrax/data/reader
+sample_datadir = $(datadir)/hyrax/data/dapreader
 sample_data_DATA = data/fnoc1.das data/fnoc1.dds data/fnoc1.data
 
-dap4_datadir = $(datadir)/hyrax/data/reader/dap4
+dap4_datadir = $(datadir)/hyrax/data/dapreader/dap4
 dap4_data_DATA = data/dap4/dap4.html data/dap4/test_simple_1.dmr 
 
-D4_xml_datadir = $(datadir)/hyrax/data/reader/dap4/D4-xml
+D4_xml_datadir = $(datadir)/hyrax/data/dapreader/dap4/D4-xml
 D4_xml_data_DATA = data/dap4/D4-xml/*.xml
 
-dmr_testsuite_datadir = $(datadir)/hyrax/data/reader/dap4/dmr-testsuite
+dmr_testsuite_datadir = $(datadir)/hyrax/data/dapreader/dap4/dmr-testsuite
 dmr_testsuite_data_DATA = data/dap4/dmr-testsuite/*.xml	 
 
-install-data-local: reader.conf
+install-data-local: dapreader.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/reader.conf \
-	    && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/reader.conf $(DESTDIR)$(sysconfdir)/bes/modules/reader.conf.$$currdate; \
-	$(INSTALL_DATA) reader.conf $(DESTDIR)$(sysconfdir)/bes/modules/reader.conf
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf \
+	    && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf.$$currdate; \
+	$(INSTALL_DATA) dapreader.conf $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf
 
 uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/reader.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf
 
-reader.conf: reader.conf.in $(top_builddir)/config.status
-	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > reader.conf
+dapreader.conf: dapreader.conf.in $(top_builddir)/config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dapreader.conf
 
 #reader.conf: reader.conf.in $(top_builddir)/config.status
 #	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \

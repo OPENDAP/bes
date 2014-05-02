@@ -65,9 +65,9 @@ BESSilentInfo::begin_response( const string &response_name,
  * @param attrs map of attributes to add to the tag
  */
 void
-BESSilentInfo::add_tag( const string &tag_name,
-			const string &tag_data,
-			map<string,string> *attrs )
+BESSilentInfo::add_tag( const string &/*tag_name*/,
+			const string &/*tag_data*/,
+			map<string,string> */*attrs*/ )
 {
 }
 
@@ -78,7 +78,7 @@ BESSilentInfo::add_tag( const string &tag_name,
  */
 void
 BESSilentInfo::begin_tag( const string &tag_name ,
-			  map<string,string> *attrs )
+			  map<string,string> */*attrs*/ )
 {
     BESInfo::begin_tag( tag_name ) ;
 }
@@ -102,7 +102,7 @@ BESSilentInfo::end_tag( const string &tag_name )
  * @param s information to be ignored
  */
 void
-BESSilentInfo::add_data( const string &s )
+BESSilentInfo::add_data( const string &/*s*/ )
 {
 }
 
@@ -113,7 +113,7 @@ BESSilentInfo::add_data( const string &s )
  * @param num_spaces number of spaces to add
  */
 void
-BESSilentInfo::add_space( unsigned long num_spaces )
+BESSilentInfo::add_space( unsigned long /*num_spaces*/ )
 {
 }
 
@@ -124,7 +124,7 @@ BESSilentInfo::add_space( unsigned long num_spaces )
  * @param num_breaks number of breaks to be added
  */
 void
-BESSilentInfo::add_break( unsigned long num_breaks )
+BESSilentInfo::add_break( unsigned long /*num_breaks*/ )
 {
 }
 
@@ -135,7 +135,7 @@ BESSilentInfo::add_break( unsigned long num_breaks )
  * loaded.
  */
 void
-BESSilentInfo::add_data_from_file( const string &key, const string &name )
+BESSilentInfo::add_data_from_file( const string &/*key*/, const string &/*name*/ )
 {
 }
 
@@ -160,8 +160,8 @@ BESSilentInfo::add_exception( BESError &, const string & )
  * @param dhi information to help with the transmission
  */
 void
-BESSilentInfo::transmit( BESTransmitter *transmitter,
-		         BESDataHandlerInterface &dhi )
+BESSilentInfo::transmit( BESTransmitter */*transmitter*/,
+		         BESDataHandlerInterface &/*dhi*/ )
 {
 }
 
@@ -172,7 +172,7 @@ BESSilentInfo::transmit( BESTransmitter *transmitter,
  * @param strm stream to send output to if not ignored.
  */
 void
-BESSilentInfo::print( ostream &strm )
+BESSilentInfo::print( ostream &/*strm*/ )
 {
 }
 
