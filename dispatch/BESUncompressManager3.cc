@@ -12,12 +12,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -96,14 +96,14 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
     return 0;
 }
 
-/** @brief If the file 'src' should be decompressed, do so and return a
+/** @brief If the file 'src' should be uncompressed, do so and return a
  *  new file name on the value-result param 'target'.
  *
- *  This code tests that the file named by 'src' really should be decompressed,
+ *  This code tests that the file named by 'src' really should be uncompressed,
  *  returning false if it clearly should not (i.e., it does not end in an
- *  extension like '.gz') or cannot. If the file is decompressed, this
+ *  extension like '.gz') or cannot. If the file is uncompressed, this
  *  code takes care of doing all the stuff that needs to happen as far as
- *  caching the decompressed data, ensuring that the file holding those
+ *  caching the uncompressed data, ensuring that the file holding those
  *  data is locked for read-only access.
  *
  *  When new data are added to the cache, this code checks the size and, if
@@ -142,7 +142,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
     string ext = src.substr(dot + 1, src.length() - dot);
 
     // If there's no match for the extension, the file is not compressed and we return false.
-    // Otherwise, 'p' points to a function that decompresses the data.
+    // Otherwise, 'p' points to a function that uncompresses the data.
     p_bes_uncompress p = find_method(ext);
     if (!p) {
         BESDEBUG( "uncompress2", "uncompress - not compressed " << endl );
@@ -162,12 +162,12 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             return true;
         }
 
-        // Now we actually try to decompress the file, given that there's not a decomp'd version
+        // Now we actually try to uncompress the file, given that there's not a decomp'd version
         // in the cache. First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(cfile, fd)) {
             BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
 
-            // decompress. Make sure that the decompression function does not close
+            // uncompress. Make sure that the decompression function does not close
             // the file descriptor.
             p(src, fd);
 

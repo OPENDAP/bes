@@ -98,13 +98,8 @@ void BESDapResponseBuilder::initialize()
 BESDapResponseCache *
 BESDapResponseBuilder::responseCache()
 {
-	// cerr << "***** BESDapResponseBuilder::responseCache() - BEGIN" << endl ;
-
 	if (!d_response_cache)
 		d_response_cache =  BESDapResponseCache::get_instance();
-
-	// cerr << "***** BESDapResponseBuilder::responseCache() Got BESDapResponseCache instance: " << endl << *d_response_cache << endl;
-	// cerr << "***** BESDapResponseBuilder::responseCache() - END" << endl ;
 
 	return d_response_cache;
 }

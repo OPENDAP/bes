@@ -15,12 +15,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -171,7 +171,10 @@ inline int BESDAPCache::m_get_descriptor(const string &file) {
 static void unlock(int fd)
 {
     if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
-        throw InternalErr(__FILE__, __LINE__, "An error occurred trying to unlock the file" + get_errno());
+        if (close(fd) == -1)
+            throw InternalErr(__FILE__, __LINE__, "Could neither close nor unlock the file.");
+
+        throw InternalErr(__FILE__, __LINE__, "An error occurred trying to unlock the file: " + get_errno());
     }
 
     if (close(fd) == -1)
@@ -596,7 +599,7 @@ void BESDAPCache::unlock_cache()
  * just unlocks whatever is named (or throws BESInternalError if the file
  * cannot be closed).
  *
- * @note This method assumes that the file was opend/locked using one of
+ * @note This method assumes that the file was opened/locked using one of
  * read_and_lock() or create_and_lock(). Those methods record the name/file-
  * descriptor pairs so that the files can be properly closed and locks
  * released.

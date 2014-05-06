@@ -11,12 +11,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -130,8 +130,13 @@ inline void BESCache3::m_record_descriptor(const string &file, int fd) {
     d_locks.insert(std::pair<string, int>(file, fd));
 }
 
+// Modified on 5/6/14 to support several open descriptors for a single file
+// name. jhrg
 inline int BESCache3::m_get_descriptor(const string &file) {
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
+    if (i == d_locks.end())
+    	return -1;
+
     int fd = i->second;
     BESDEBUG("cache", "BES Cache: getting descriptor: " << file << ", " << fd << endl);
     d_locks.erase(i);
@@ -505,7 +510,7 @@ bool BESCache3::get_read_lock(const string &target, int &fd)
 
     bool status = getSharedLock(target, fd);
 
-    BESDEBUG("cache_internal", "BES Cache: read_lock: " << target << "(" << status << ")" << endl);
+    BESDEBUG("cache_internal", "BES Cache: get_read_lock: " << target << "(" << status << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -629,7 +634,11 @@ void BESCache3::unlock_and_close(const string &file_name)
 {
     BESDEBUG("cache_internal", "BES Cache: unlock file: " << file_name << endl);
 
-    unlock(m_get_descriptor(file_name));
+    int fd = m_get_descriptor(file_name);	// returns -1 when no more files desp. remain
+    while (fd != -1) {
+    	unlock(fd);
+    	fd = m_get_descriptor(file_name);
+    }
 }
 
 /** Unlock the file. This does not do any name mangling; it

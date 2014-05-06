@@ -48,7 +48,7 @@ using std::endl ;
 #include "BESFileContainer.h"
 #include "BESContainerStorage.h"
 #include "BESContainerStorageFile.h"
-#include "BESCache.h"
+#include "BESFileLockingCache.h"
 #include "BESError.h"
 #include <test_config.h>
 
@@ -63,7 +63,7 @@ public:
     {
 	string bes_conf = (string)TEST_SRC_DIR + "/empty.ini" ;
 	TheBESKeys::ConfigFile = bes_conf ;
-    } 
+    }
 
     void tearDown()
     {
@@ -170,7 +170,7 @@ public:
 	cout << "try to find symbolic name that does exist, strict" << endl;
 	try
 	{
-	    BESContainer *c = 
+	    BESContainer *c =
 		BESContainerStorageList::TheList()->look_for( "sym1" ) ;
 	    CPPUNIT_ASSERT( c ) ;
 	    CPPUNIT_ASSERT( c->get_symbolic_name() == "sym1" ) ;
@@ -191,7 +191,7 @@ public:
 	cout << "try to find symbolic name that doesn't exist, nice" << endl;
 	try
 	{
-	    BESContainer *c = 
+	    BESContainer *c =
 		BESContainerStorageList::TheList()->look_for( "nosym" ) ;
 	    if( c )
 	    {
@@ -285,7 +285,7 @@ public:
 	{
 	    try
 	    {
-		BESCache cache( *(TheBESKeys::TheKeys()),
+		BESFileLockingCache cache( *(TheBESKeys::TheKeys()),
 				"BES.CacheDir", "BES.CachePrefix",
 				"BES.CacheSize" ) ;
 		string target ;
@@ -314,7 +314,7 @@ public:
 	{
 	    try
 	    {
-		BESCache cache( *(TheBESKeys::TheKeys()),
+		BESFileLockingCache cache( *(TheBESKeys::TheKeys()),
 				"BES.CacheDir", "BES.CachePrefix",
 				"BES.CacheSize" ) ;
 		string target ;
@@ -343,7 +343,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( containerT ) ;
 
-int 
+int
 main( int, char** )
 {
     CppUnit::TextTestRunner runner ;

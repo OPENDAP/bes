@@ -103,17 +103,19 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESFileLockingCache.cc \
-	BESCache3.cc BESUncompressManager3.cc \
+	BESCache3.cc \
+	BESUncompressManager3.cc \
 	BESUncompress3GZ.cc BESUncompress3BZ2.cc BESUncompress3Z.cc \
-	BESCache.cc BESUncompressManager.cc \
-	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc \
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc
+	BESCatalogResponseHandler.cc 
+
+#	 BESCache.cc BESUncompressManager.cc
+#	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
@@ -158,10 +160,9 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
 	BESDebug.h \
 	BESFileLockingCache.h \
-	BESCache3.h BESUncompressManager3.h \
+	BESCache3.h \
+	BESUncompressManager3.h \
 	BESUncompress3BZ2.h BESUncompress3Z.h BESUncompress3GZ.h \
-	BESCache.h BESUncompressManager.h \
-	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h \
 	BESTokenizer.h BESFSDir.h BESFSFile.h\
 	BESCatalogDirectory.h \
 	BESCatalog.h \
@@ -169,6 +170,9 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCatalogList.h \
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
+
+# 	BESCache.h BESUncompressManager.h 
+#	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h 
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
