@@ -1,3 +1,11 @@
+Updated for version 3.13.1
+
+Fixed a bug where too many accesses to cached files would cause the
+BES to 'hang'. The cached files were the result of uncompressing 
+gziped files. This is the only change in this bug-fix release and the
+ABI of the BES has not changed, so there's no need to update the 
+handlers.
+
 Updated for version 3.13.0
 
 Important bug fixes - including a problem where the running server
