@@ -20,21 +20,23 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = . unit-tests
 DIST_SUBDIRS = unit-tests
 
-if LIBDAP
 lib_LTLIBRARIES = libbes_dispatch.la 
-bin_PROGRAMS = besregtest
-else
-lib_LTLIBRARIES = libbes_dispatch.la
-endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
 	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
-besregtest_SOURCES = besregtest.cc
-besregtest_CPPFLAGS = $(AM_CPPFLAGS)
-besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
+# This test program is never used and introduces a libdap dependency
+# where there otherwise in none. jhrg 5/7/14
+#
+# if LIBDAP
+# bin_PROGRAMS = besregtest
+
+# besregtest_SOURCES = besregtest.cc
+# besregtest_CPPFLAGS = $(AM_CPPFLAGS)
+# besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
+# endif
 
 pkginclude_HEADERS = $(HDRS) 
 
