@@ -1,3 +1,7 @@
+News for version 3.13.2
+
+Changes to the cache software.
+
 News for version 3.13.1
 
 Fixed a bug where too many accesses to cached files would cause the
