@@ -1,3 +1,94 @@
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	3.13.2 changes
+
+2014-07-31  James Gallagher <jgallagher@opendap.org>
+
+	BESCache3 now uses BESFileLockingCache as a base class.
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Updated parameter name (we change the name from FunctionCache
+	to ResponseCache.
+
+	M    tests/bes.conf.in
+
+2014-07-30  James Gallagher <jgallagher@opendap.org>
+
+	Removed BESDAPCache
+
+2014-05-07  James Gallagher <jgallagher@opendap.org>
+
+	Updated for 3.13.1
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    NEWS
+	M    README
+	M    bes.spec
+
+2014-05-07  James Gallagher <jgallagher@opendap.org>
+
+	Remvoed the subdir-objects option - it was breaking distcheck
+
+	M    Makefile.am
+
+2014-05-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed a dependency on libdap
+
+	M    dispatch/Makefile.am
+
+2014-05-06  James Gallagher <jgallagher@opendap.org>
+
+	Quick fix for bug #2194 - the BES cache opens files twice but closes them only once when working with compressed files. This is a quick fix where both BESCache3 and BESFileLockingCache have been hacked. The tests are sort of hosed because they use the old caching code - which I have removed along with BESDAPCache. The old unused code made this problem take much longer to find. Next I'll try making BESCache3 a child of FileLockingCache.
+
+2014-04-22  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Removed spurious compiler flags
+
+2014-04-22  James Gallagher <jgallagher@opendap.org>
+
+	Removed -ansi and -pedantic from the bes/dap/Makefile.am - left in by mistake as part of the ticket #2025 bug hunt.
+
+2014-04-22  James Gallagher <jgallagher@opendap.org>
+
+	Updates for 3.13.0
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    ppt/SocketListener.cc
+	M    dap/unit-tests/Makefile.am
+	M    dap/Makefile.am
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESBaseApp.cc
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESShowErrorResponseHandler.cc
+	M    dispatch/BESStreamResponseHandler.cc
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+
+2014-04-22  James Gallagher <jgallagher@opendap.org>
+
+	Updates for 3.13.0 including new abi_checker.xml config file.
+
+	M    ChangeLog
+	M    INSTALL
+	M    NEWS
+	M    README
+	A    abi_checker.xml.in
+	M    bes.spec
+	M    configure.ac
+
+2014-04-18  James Gallagher <jgallagher@opendap.org>
+
+	fix for bug #2176; some unused parameters removed
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2014-04-18  James Gallagher <jgallagher@opendap.org>
 
 	fix for bug #2176; some unused parameters removed
