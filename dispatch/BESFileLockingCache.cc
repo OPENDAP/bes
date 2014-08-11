@@ -125,6 +125,9 @@ inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd)
 
 inline int BESFileLockingCache::m_get_descriptor(const string &file) {
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
+    if (i == d_locks.end())
+    	return -1;
+
     int fd = i->second;
     BESDEBUG("cache", "DAP Cache: getting descriptor: " << file << ", " << fd << endl);
     d_locks.erase(i);
@@ -562,9 +565,13 @@ void BESFileLockingCache::unlock_cache()
     }
 }
 
-/** Unlock the named file. This does not do any name mangling; it
- * just unlocks whatever is named (or throws BESBESInternalErroror if the file
- * cannot be closed).
+/** Unlock the named file.
+ *
+ * This does not do any name mangling; it just closes and unlocks whatever
+ * is named (or throws BESBESInternalErroror if the file cannot be closed).
+ * If the file was opened more than once, all descriptors are closed. If you
+ * need to close a specific descriptor, use the other version of
+ * unlock_and_close().
  *
  * @note This method assumes that the file was opend/locked using one of
  * read_and_lock() or create_and_lock(). Those methods record the name/file-
@@ -577,12 +584,16 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
 {
 	BESDEBUG("cache", "DAP Cache: unlock file: " << file_name << endl);
 
-    unlock(m_get_descriptor(file_name));
+    int fd = m_get_descriptor(file_name);	// returns -1 when no more files desp. remain
+    while (fd != -1) {
+    	unlock(fd);
+    	fd = m_get_descriptor(file_name);
+    }
 }
 
-/** Unlock the file. This does not do any name mangling; it
- * just unlocks whatever is named (or throws BESBESInternalErroror if the file
- * cannot be closed).
+/** Unlock the file.
+ *
+ * @see unlock_and_close(const string &)
  * @param fd The descriptor of the file to unlock.
  * @throws BESBESInternalErroror */
 void BESFileLockingCache::unlock_and_close(int fd)

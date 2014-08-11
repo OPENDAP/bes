@@ -47,7 +47,7 @@ typedef std::list<cache_entry> CacheFiles;
 
 /** @brief Implementation of a caching mechanism for compressed data.
  * This cache uses simple advisory locking found on most modern unix file systems.
- * Compressed files are decompressed and stored in a cache where they can be
+ * Compressed files are uncompressed and stored in a cache where they can be
  * used over and over until removed from the cache. Several processes can
  * share the cache with each reading from files. At the same time, new files
  * can be added and the cache can be purged, without disrupting the existing
@@ -100,7 +100,7 @@ private:
     int m_get_descriptor(const string &file);
 
     // map that relates files to the descriptor used to obtain a lock
-    typedef std::map<string, int> FilesAndLockDescriptors;
+    typedef std::multimap<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
 

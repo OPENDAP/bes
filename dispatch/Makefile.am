@@ -24,21 +24,23 @@ endif
 SUBDIRS = . unit-tests
 DIST_SUBDIRS = unit-tests
 
-if LIBDAP
 lib_LTLIBRARIES = libbes_dispatch.la 
-bin_PROGRAMS = besregtest
-else
-lib_LTLIBRARIES = libbes_dispatch.la
-endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
 	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
-besregtest_SOURCES = besregtest.cc
-besregtest_CPPFLAGS = $(AM_CPPFLAGS)
-besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
+# This test program is never used and introduces a libdap dependency
+# where there otherwise in none. jhrg 5/7/14
+#
+# if LIBDAP
+# bin_PROGRAMS = besregtest
+
+# besregtest_SOURCES = besregtest.cc
+# besregtest_CPPFLAGS = $(AM_CPPFLAGS)
+# besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
+# endif
 
 pkginclude_HEADERS = $(HDRS) 
 
@@ -107,17 +109,19 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESFileLockingCache.cc \
-	BESCache3.cc BESUncompressManager3.cc \
+	BESCache3.cc \
+	BESUncompressManager3.cc \
 	BESUncompress3GZ.cc BESUncompress3BZ2.cc BESUncompress3Z.cc \
-	BESCache.cc BESUncompressManager.cc \
-	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc \
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc
+	BESCatalogResponseHandler.cc 
+
+#	 BESCache.cc BESUncompressManager.cc
+#	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc 
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
@@ -162,10 +166,9 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
 	BESDebug.h \
 	BESFileLockingCache.h \
-	BESCache3.h BESUncompressManager3.h \
+	BESCache3.h \
+	BESUncompressManager3.h \
 	BESUncompress3BZ2.h BESUncompress3Z.h BESUncompress3GZ.h \
-	BESCache.h BESUncompressManager.h \
-	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h \
 	BESTokenizer.h BESFSDir.h BESFSFile.h\
 	BESCatalogDirectory.h \
 	BESCatalog.h \
@@ -173,6 +176,9 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESCatalogList.h \
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h
+
+# 	BESCache.h BESUncompressManager.h 
+#	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h 
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

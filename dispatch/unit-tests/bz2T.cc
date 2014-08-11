@@ -45,14 +45,14 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "BESUncompressBZ2.h"
-#include "BESCache.h"
+#include "BESUncompress3BZ2.h"
+#include "BESCache3.h"
 #include "BESError.h"
 #include "config.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
 
-#define BES_CACHE_CHAR '#' 
+#define BES_CACHE_CHAR '#'
 
 class bz2T: public TestFixture {
 private:
@@ -65,7 +65,7 @@ public:
     {
 	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
 	TheBESKeys::ConfigFile = bes_conf ;
-    } 
+    }
 
     void tearDown()
     {
@@ -91,7 +91,7 @@ public:
 	string target ;
 	try
 	{
-	    BESCache cache( cache_dir, "bz2_cache", 1 ) ;
+	    BESCache3 cache( cache_dir, "bz2_cache", 1 ) ;
 	    // get the target name and make sure the target file doesn't exist
 	    if( cache.is_cached( src_file, target ) )
 	    {
@@ -102,7 +102,7 @@ public:
 	    cout << "uncompress a test file" << endl ;
 	    try
 	    {
-		BESUncompressBZ2::uncompress( src_file, target ) ;
+		BESUncompress3BZ2::uncompress( src_file, target ) ;
 		ifstream strm( target.c_str() ) ;
 		CPPUNIT_ASSERT( strm ) ;
 
@@ -127,7 +127,7 @@ public:
 	    cout << "uncompress a test file that is already cached" << endl;
 	    try
 	    {
-		BESUncompressBZ2::uncompress( src_file, target ) ;
+		BESUncompress3BZ2::uncompress( src_file, target ) ;
 		ifstream strm( target.c_str() ) ;
 		CPPUNIT_ASSERT( strm ) ;
 
@@ -165,7 +165,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( bz2T ) ;
 
-int 
+int
 main( int, char** )
 {
     CppUnit::TextTestRunner runner ;
