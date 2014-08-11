@@ -1,3 +1,7 @@
+Updated for version 3.13.2
+
+Updates cache code and a fix for the BES key for functions.
+
 Updated for version 3.13.1
 
 Fixed a bug where too many accesses to cached files would cause the

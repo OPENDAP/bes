@@ -73,7 +73,7 @@ BES.DefaultResponseMethod=POST
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-DAP.FunctionCache.path=/tmp/dap_cache
-DAP.FunctionCache.prefix=func
-DAP.FunctionCache.size=20000
+DAP.ResponseCache.path=/tmp/dap_cache
+DAP.ResponseCache.prefix=func
+DAP.ResponseCache.size=20000
 
