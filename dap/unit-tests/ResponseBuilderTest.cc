@@ -94,7 +94,6 @@ static bool debug = false;
 
 static bool parser_debug = false;
 
-
 static void
 rb_simple_function(int, BaseType *[], DDS &, BaseType **btpp)
 {
@@ -150,7 +149,6 @@ private:
 	D4ParserSax2 *d4_parser;
 	D4TestTypeFactory *d4_ttf;
 	D4BaseTypeFactory *d4_btf;
-    string d_baseline_local_id;
 
     ostringstream oss;
     time_t now;
@@ -185,15 +183,14 @@ public:
                            drb6(0),
                            d_stored_result_subdir("/response_cache"),
                            test_05_dds(0),
-                           stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_17566926586167953453.data_ddx"),
+                           stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_16877844200208667996.data_ddx"),
                            cont_a(0),
                            das(0),
                            dds(0),
 						   test_01_dmr(0),
 						   d4_parser(0),
 					       d4_ttf(0),
-					       d4_btf(0),
-					       d_baseline_local_id("")
+					       d4_btf(0)
                            {
         now = time(0);
         ostringstream time_string;
@@ -210,7 +207,7 @@ public:
 
     void setUp() {
 		DBG(cerr << "setUp() - BEGIN" << endl);
-		DBG(BESDebug::SetUp("cerr,all"));
+		//DBG(BESDebug::SetUp("cerr,cache"));
 
         // Test pathname
         drb = new BESDapResponseBuilder();
@@ -288,20 +285,12 @@ public:
     	d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
     	DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-    	d_baseline_local_id = "/response_cache/result_17277261128882003653.dap";
-
-
-
-
-
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PATH_KEY,  (string)TEST_SRC_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PREFIX_KEY,  "dap_response");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::SIZE_KEY,    "100");
 
-
         DBG(cerr << "setUp() - END" << endl);
-
     }
 
     void tearDown() {
@@ -453,7 +442,7 @@ public:
             DBG(cerr << "store_dap2_result_test() - Baseline Document: " << endl << baseline << endl);
             CPPUNIT_ASSERT(candidateResponseDoc == baseline);
 
-            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_12638119030834692914.data_ddx";
+            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "my_result_16877844200208667996.data_ddx";
             DBG(cerr << "store_dap2_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
 
             TestTypeFactory ttf;
@@ -488,8 +477,6 @@ public:
             CPPUNIT_FAIL("ERROR: " + e.get_error_message());
         }
 
-
-
         /**
          * Clean up the keys and shut down the cache  for the next test (a key neutral footprint)
          */
@@ -500,8 +487,6 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "");
         TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "");
-
-
     }
 
 #if 1
@@ -604,7 +589,7 @@ public:
             baseline = readTestBaseline(stored_object_baseline_file);
 
 
-            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_12638119030834692914.dap";
+            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_9619561608535196802.dap";
             DBG(cerr << "store_dap4_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
 
     		BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance();
@@ -759,9 +744,7 @@ public:
         CPPUNIT_TEST(escape_code_test);
         CPPUNIT_TEST(invoke_server_side_function_test);
         CPPUNIT_TEST(store_dap2_result_test);
-#if 1
         CPPUNIT_TEST(store_dap4_result_test);
-#endif
 
 
     CPPUNIT_TEST_SUITE_END();

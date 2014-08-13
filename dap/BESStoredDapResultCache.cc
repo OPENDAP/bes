@@ -58,7 +58,6 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
 
-
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
 #include "BESInternalError.h"
@@ -73,15 +72,12 @@
 #define HASH_OBJ std::hash
 #endif
 
-
 #define CRLF "\r\n"
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
 
-
 using namespace std;
 using namespace libdap;
-
 
 BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
 const string BESStoredDapResultCache::SUBDIR_KEY = "DAP.StoredResultsCache.subdir";
@@ -161,11 +157,12 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
     return cacheDir;
 
 }
+
 string BESStoredDapResultCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  BEGIN" << endl);
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPart: "<< firstPart << endl);
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPart: "<< secondPart << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  BEGIN" << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPart: "<< firstPart << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPart: "<< secondPart << endl);
 
 	string firstPathFragment = firstPart;
 	string secondPathFragment = secondPart;
@@ -186,25 +183,22 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
     if(*firstPathFragment.rbegin() != '/'){
     	firstPathFragment += "/";
     }
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
 
 	// make sure second part does not BEGIN with a slash
 	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
 		secondPathFragment = secondPathFragment.substr(1);
 	}
 
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
 
 	string newPath = firstPathFragment + secondPathFragment;
 
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  newPath: "<< newPath << endl);
-	BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  END" << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  newPath: "<< newPath << endl);
+	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  END" << endl);
 
 	return newPath;
-
 }
-
-
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
 	BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
@@ -234,7 +228,6 @@ BESStoredDapResultCache::BESStoredDapResultCache( const string &data_root_dir, c
 	d_resultFilePrefix = result_file_prefix;
 	d_maxCacheSize = max_cache_size;
 	initialize(assemblePath(d_dataRootDir,stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
-
 }
 
 
@@ -273,14 +266,11 @@ BESStoredDapResultCache::get_instance()
 }
 
 
-
 void BESStoredDapResultCache::delete_instance() {
     BESDEBUG("cache","BESStoredDapResultCache::delete_instance() - Deleting singleton BESStoredDapResultCache instance." << endl);
     delete d_instance;
     d_instance = 0;
 }
-
-
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
@@ -341,12 +331,10 @@ bool BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file
 {
 	BESDEBUG("cache", "BESStoredDapResultCache::read_dap2_data_from_cache() - Opening cache file: " << cache_file_name << endl);
 
-
 	int fd = 1;
 
 	try {
 		if (get_read_lock(cache_file_name, fd)) {
-
 
 			ifstream data(cache_file_name.c_str());
 
@@ -397,29 +385,22 @@ bool BESStoredDapResultCache::read_dap2_data_from_cache(const string &cache_file
 		    }
 
 		    data.close();
-			unlock_and_close(fd);
+			unlock_and_close(cache_file_name /* was fd */);
 			return true;
-
 		}
 		else {
 	        BESDEBUG( "cache", "BESStoredDapResultCache - The requested file does not exist. File: " + cache_file_name);
 
 	        return false;
-
 		}
 	}
     catch (...) {
         BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - caught exception, unlocking cache and re-throw." << endl );
         // I think this call is not needed. jhrg 10/23/12
-        if(fd!=-1)
-			unlock_and_close(fd);
+        if (fd != -1)
+			unlock_and_close(cache_file_name /* was fd */);
         throw;
     }
-
-
-
-
-
 }
 
 /**
@@ -489,7 +470,7 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
 			BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - END" << endl);
 
 			in.close();
-			unlock_and_close(fd);
+			unlock_and_close(cache_file_name /* was fd */);
 
 			return true;
 
@@ -504,12 +485,11 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
     catch (...) {
         BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - caught exception, unlocking cache and re-throw." << endl );
         // I think this call is not needed. jhrg 10/23/12
-        if(fd!=-1)
-			unlock_and_close(fd);
+        if (fd != -1)
+			unlock_and_close(cache_file_name /* was fd */);
         throw;
     }
 }
-
 
 /**
  * Read data from cache. Allocates a new DDS using the given factory.
@@ -582,9 +562,6 @@ BESStoredDapResultCache::get_cached_dap4_data(const string &cache_file_name, lib
 
     return 0;
 }
-
-
-
 
 #if 0
 /**
@@ -708,9 +685,6 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
 }
 #endif
 
-
-
-
 /**
  *
  * @return The local ID (relative to the BES data root directory) of the stored dataset.
@@ -807,28 +781,19 @@ string BESStoredDapResultCache::store_dap2_result(DDS &dds, const string &constr
             throw InternalErr(__FILE__, __LINE__, "BESStoredDapResultCache::store_dap2_result() - Cache error during function invocation.");
         }
 
-
-
-        /**
-         * FIXME Is it cool to unlock and close the cache file at this point? I think so...
-         */
-        BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - unlocking and closing cache file "<< cache_file_name  << endl );
+        BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - unlocking and closing cache file "<< cache_file_name  << endl );
 		unlock_and_close(cache_file_name);
-
     }
     catch (...) {
-        BESDEBUG("cache", "BESStoredDapResultCache::cache_dap2_dataset() - caught exception, unlocking cache and re-throw." << endl );
+        BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - caught exception, unlocking cache and re-throw." << endl );
         // I think this call is not needed. jhrg 10/23/12
         unlock_cache();
         throw;
     }
 
-
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap2_result() - END (local_id=`"<< local_id << "')" << endl );
     return local_id;
 }
-
-
 
 /**
  * Use the dataset name and the function-part of the CE to build a name

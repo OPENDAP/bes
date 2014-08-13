@@ -213,11 +213,6 @@ void BESDapResponseBuilder::set_dap4function(string _func)
     d_dap4function = www2id(_func, "%", "%20");
 }
 
-
-
-
-
-
 std::string BESDapResponseBuilder::get_store_result() const
 {
 	return d_store_result;
@@ -233,18 +228,12 @@ std::string BESDapResponseBuilder::get_async_accepted() const
 {
 	return d_async_accepted;
 }
+
 void BESDapResponseBuilder::set_async_accepted(std::string _aa)
 {
 	d_async_accepted = _aa;
 	BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << _aa << endl);
 }
-
-
-
-
-
-
-
 
 /** The ``dataset name'' is the filename or other string that the
  filter program will use to access the data. In some cases this
@@ -658,9 +647,6 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 	return false;
 }
 
-
-
-
 /**
  * Build/return the BLOB part of the DAP2 data response.
  */
@@ -917,23 +903,8 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
-
-void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers, bool constrained)
+void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_headers, bool constrained)
 {
-#if 0
-    // earlier code, before the DAP4 CE parser was added to libdap. jhrg 11/28/13
-	if (!constrained) {
-        if (with_mime_headers)
-            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
-
-        XMLWriter xml;
-        dmr.print_dap4(xml, constrained);
-        out << xml.get_doc();
-        out << flush;
-        return;
-    }
-#endif
-
 	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
     // If the parser returns false, the expression did not parse. The parser may also
     // throw Error
@@ -945,8 +916,6 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
         bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok)
             throw Error("Constraint Expression failed to parse.");
-
-
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -961,114 +930,11 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, ConstraintEvaluator
     dmr.print_dap4(xml, constrained && !d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 
-	// FIXME Add support for constraints
-#if 0
-    // Set up the alarm.
-    establish_timeout(out);
-   // dds.set_timeout(d_timeout);
-
-    // Split constraint into two halves
-    split_ce(eval);
-
-    // If there are functions, parse them and eval.
-    // Use that DDS and parse the non-function ce
-    // Serialize using the second ce and the second dds
-    if (!d_dap4_btp_func_expr.empty()) {
-        string cache_token = "";
-        DMR *fdmr = 0;
-
-        if (responseCache()) {
-            DBG(cerr << "Using the cache for the server function CE" << endl);
-            fdmr = responseCache()->cache_dataset(dmr, d_dap4_btp_func_expr, this, &eval, cache_token);
-        }
-        else {
-            DBG(cerr << "Cache not found; (re)calculating" << endl);
-            eval.parse_constraint(d_dap4_btp_func_expr, dmr);
-            fdmr = eval.eval_function_clauses(dmr);
-        }
-
-        // Server functions might mark variables to use their read()
-        // methods. Clear that so the CE in d_dap2ce will control what is
-        // sent. If that is empty (there was only a function call) all
-        // of the variables in the intermediate DDS (i.e., the function
-        // result) will be sent.
-        fdmr->mark_all(false);
-
-        eval.parse_constraint(d_dap2ce, *fdmr);
-
-        if (with_mime_headers)
-            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
-
-        fdmr->print_constrained(out);
-
-        if (responseCache())
-        	responseCache()->unlock_and_close(cache_token);
-
-        delete fdmr;
-    }
-    else {
-        DBG(cerr << "Simple constraint" << endl);
-
-        eval.parse_constraint(d_dap2ce, dmr); // Throws Error if the ce doesn't parse.
-
-        if (with_mime_headers)
-            set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
-
-        dmr.print_constrained(out);
-    }
-#endif
-
     out << flush;
 }
 
-void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEvaluator &/*eval*/, bool with_mime_headers, bool filter)
+void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers, bool filter)
 {
-#if 0
-    // early code, before the D4 CE parser was added. jhrg 11/28/13
-	try {
-		// Set up the alarm.
-		establish_timeout(out);
-
-#if 0
-		bool filter = eval.parse_constraint(d_dap2ce, dmr); // Throws Error if the ce doesn't parse.
-#endif
-		if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
-			string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
-					+ "MB is too large; requests for this user are limited to "
-					+ long_to_string(dmr.response_limit() / 1024) + "MB.";
-			throw Error(msg);
-		}
-
-		if (with_mime_headers)
-			set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
-
-	    // Write the DMR
-	    XMLWriter xml;
-	    dmr.print_dap4(xml, filter);
-
-	    // the byte order info precedes the start of chunking
-	    char byte_order = is_host_big_endian() ? big_endian : little_endian; // is_host_big_endian is in util.cc
-	    out << byte_order << flush;
-
-	    // now make the chunked output stream
-	    chunked_ostream cos(out, chunk_size);
-	    // using flush means that the DMR and CRLF are in the first chunk (if it is smaller than chunk_size)
-	    cos << xml.get_doc() << CRLF << flush;
-
-	    // Write the data, chunked with checksums
-	    D4StreamMarshaller m(cos);
-	    dmr.root()->serialize(m, dmr, /*eval,*/ filter);
-
-		out << flush;
-
-		remove_timeout();
-	}
-	catch (...) {
-		remove_timeout();
-		throw;
-	}
-#endif
-
 	try {
         // Set up the alarm.
         establish_timeout(out);
@@ -1099,10 +965,9 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, ConstraintEva
             throw Error(msg);
         }
 
-    	if(!store_dap4_result(out,dmr)){
+    	if(!store_dap4_result(out, dmr)) {
             serialize_dap4_data(out, dmr, with_mime_headers, filter);
     	}
-
 
         remove_timeout();
     }

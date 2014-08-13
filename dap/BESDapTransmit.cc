@@ -230,13 +230,13 @@ private:
 	}
 };
 
-#if 1
 class SendDMR: public Sender {
 private:
 	virtual string get_request_type() const
 	{
 		return "DMR";
 	}
+
 	virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 	{
 		BESDEBUG("dap", "Entering SendDMR::send_internal ..." << endl);
@@ -247,7 +247,7 @@ private:
 		}
 
 		DMR *dmr = bdmr->get_dmr();
-		ConstraintEvaluator & ce = bdmr->get_ce();
+		//ConstraintEvaluator & ce = bdmr->get_ce();
 
 		dhi.first_container();
 		bool print_mime = get_print_mime();
@@ -261,8 +261,7 @@ private:
 		BESDEBUG("dap", "SendDMR::send_internal() -  dhi.data[DAP4_FUNCTION]: " << dhi.data[DAP4_FUNCTION] << endl);
 		rb.set_dap4function(dhi.data[DAP4_FUNCTION]);
 
-		// FIXME Remove extra args. 11/29/13 jhrg
-		rb.send_dmr(dhi.get_output_stream(), *dmr, ce, print_mime, true);
+		rb.send_dmr(dhi.get_output_stream(), *dmr, print_mime, true);
 	}
 };
 
@@ -282,7 +281,7 @@ private:
 			throw BESInternalError("cast error", __FILE__, __LINE__);
 		}
 		DMR *dmr = bdmr->get_dmr();
-		ConstraintEvaluator & ce = bdmr->get_ce();
+		// ConstraintEvaluator & ce = bdmr->get_ce();
 
 		dhi.first_container();
 		bool print_mime = get_print_mime();
@@ -298,10 +297,10 @@ private:
 
 		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
 		// FIXME Remove extra args. 11/29/13 jhrg
-		rb.send_dap4_data(dhi.get_output_stream(), *dmr, ce, print_mime, true);
+		rb.send_dap4_data(dhi.get_output_stream(), *dmr, print_mime, true);
 	}
 };
-#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 // Public Interface Impl
 
@@ -312,10 +311,9 @@ BESDapTransmit::BESDapTransmit() :
 	add_method(DDS_SERVICE, BESDapTransmit::send_basic_dds);
 	add_method(DDX_SERVICE, BESDapTransmit::send_basic_ddx);
 	add_method(DATA_SERVICE, BESDapTransmit::send_basic_data);
-#if 1
+
 	add_method(DMR_SERVICE, BESDapTransmit::send_basic_dmr);
 	add_method(DAP4DATA_SERVICE, BESDapTransmit::send_basic_dap4data);
-#endif
 }
 
 BESDapTransmit::~BESDapTransmit()
@@ -324,10 +322,9 @@ BESDapTransmit::~BESDapTransmit()
 	remove_method(DDS_SERVICE);
 	remove_method(DDX_SERVICE);
 	remove_method(DATA_SERVICE);
-#if 1
+
 	remove_method(DMR_SERVICE);
 	remove_method(DAP4DATA_SERVICE);
-#endif
 }
 
 void BESDapTransmit::send_basic_das(BESResponseObject * obj, BESDataHandlerInterface & dhi)
@@ -353,7 +350,7 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj, BESDataHandlerInte
 	SendDataDDS sender;
 	sender.send(obj, dhi);
 }
-#if 1
+
 void BESDapTransmit::send_basic_dmr(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 {
 	SendDMR sender;
@@ -365,4 +362,3 @@ void BESDapTransmit::send_basic_dap4data(BESResponseObject * obj, BESDataHandler
 	SendDap4Data sender;
 	sender.send(obj, dhi);
 }
-#endif

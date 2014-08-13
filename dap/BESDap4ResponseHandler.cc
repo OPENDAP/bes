@@ -65,23 +65,13 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 		long long rsl = -1;
 		iss >> rsl;
 		if (rsl == -1)
-			throw BESInternalError("The responseSizeLimit context value (" + response_size_limit + ") not read",
+			throw BESInternalError("The max_response_size context value (" + response_size_limit + ") not read",
 					__FILE__, __LINE__);
-#if 0
-		char *endptr;
-		errno = 0;
-		long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/10);
-		if (rsl == 0 && errno > 0) {
-			string err = strerror(errno);
-			delete dmr;
-			throw BESInternalError("The responseSizeLimit context value (" + response_size_limit + ") was bad: " + err,
-					__FILE__, __LINE__);
-		}
-#endif
 		dmr->set_response_limit(rsl); // The default for this is zero
 	}
 
 	_response = new BESDMRResponse(dmr);
+
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 

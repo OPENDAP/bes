@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
 AM_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types \
--L$(top_builddir)/dispatch -lbes_dispatch -L$(top_builddir)/dap -ldap_module
+$(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

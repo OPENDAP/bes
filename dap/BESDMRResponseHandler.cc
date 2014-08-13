@@ -39,7 +39,7 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
 {
 }
 
-/** @brief executes the command 'get dmr for &lt;def_name&gt;;' by executing
+/** @brief executes the command 'get dmr for def_name;' by executing
  * the request for each container in the specified definition.
  *
  * For each container in the specified definition go to the request

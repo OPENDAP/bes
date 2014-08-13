@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------#
-# OPeNDAP Dap Reader Module Configuration file             		#
+# OPeNDAP DAP Reader Module Configuration file             		#
 #-----------------------------------------------------------------------#
 
 #-----------------------------------------------------------------------#
@@ -11,16 +11,16 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=reader
-BES.module.reader=@bes_modules_dir@/libreader_module.so
+BES.modules+=dapreader
+BES.module.reader=@bes_modules_dir@/libdapreader_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data information
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
+BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
 
 #-----------------------------------------------------------------------#
-# Dap Reader module specific parameters
+# DAP Reader module specific parameters
 #-----------------------------------------------------------------------#
 
 # These keys control how the DapReader handler interprets the DDS, DMR, 

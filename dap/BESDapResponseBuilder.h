@@ -122,10 +122,6 @@ public:
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
-
-
-
-
 	virtual BESDapResponseCache *responseCache();
 
 	virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
@@ -146,19 +142,12 @@ public:
 	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
 
-	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval,
-			bool with_mime_headers = true, bool filter = false);
+	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true, bool filter = false);
 
-	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
-			bool with_mime_headers = true, bool filter = false);
+	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true, bool filter = false);
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true, bool filter = false);
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
-
-	// TODO
-	// Is this used by the code that caches function results? If not, remove.
-	//virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-	//		const std::string &start, const std::string &boundary, bool with_mime_headers = true);
 };
 
 #endif // _response_builder_h

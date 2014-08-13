@@ -49,15 +49,11 @@
 #include "BESDapResponseBuilder.h"
 #include "BESDebug.h"
 
-
 #include "testFile.h"
 #include "test_config.h"
 
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
-
-
-
 
 using namespace CppUnit;
 using namespace std;
@@ -143,7 +139,7 @@ public:
     	d4parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
     	DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-    	d_baseline_local_id = "/response_cache/result_17277261128882003653.dap";
+    	d_baseline_local_id = "/response_cache/result_1688151760629011709.dap";
 
 
     	// for these tests, set the filename to the dataset_name. ...keeps the cache names short

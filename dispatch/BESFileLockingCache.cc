@@ -80,22 +80,17 @@ static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
         d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size)
 {
-    // cerr << endl << "***** BESFileLockingCache::BESFileLockingCache(" << d_cache_dir << ", " << d_prefix << ", " << d_max_cache_size_in_bytes << ")" << endl;
-
     m_initialize_cache_info();
 }
 
-void BESFileLockingCache::initialize(const string &cache_dir, const string &prefix, unsigned long long size){
+void BESFileLockingCache::initialize(const string &cache_dir, const string &prefix, unsigned long long size)
+{
 	d_cache_dir = cache_dir;
 	d_prefix = prefix;
 	d_max_cache_size_in_bytes = size;
 
-    // cerr << endl << "***** BESFileLockingCache::initialize(" << d_cache_dir << ", " << d_prefix << ", " << d_max_cache_size_in_bytes << ")" << endl;
-
     m_initialize_cache_info();
 }
-
-
 
 static inline string get_errno() {
 	char *s_err = strerror(errno);
@@ -117,13 +112,13 @@ static inline struct flock *lock(int type) {
     return &lock;
 }
 
-
 inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd) {
     BESDEBUG("cache", "DAP Cache: recording descriptor: " << file << ", " << fd << endl);
     d_locks.insert(std::pair<string, int>(file, fd));
 }
 
 inline int BESFileLockingCache::m_get_descriptor(const string &file) {
+	BESDEBUG("cache", "BESFileLockingCache::m_get_descriptor; d_locks size: " << d_locks.size() << endl);
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
     if (i == d_locks.end())
     	return -1;
@@ -142,7 +137,7 @@ inline int BESFileLockingCache::m_get_descriptor(const string &file) {
 static void unlock(int fd)
 {
     if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
-        throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
+        throw BESInternalError( "An error occurred trying to unlock the file: " + get_errno(), __FILE__, __LINE__);
     }
 
     if (close(fd) == -1)
@@ -456,7 +451,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 
     bool status = getSharedLock(target, fd);
 
-    BESDEBUG("cache", "DAP Cache: read_lock: " << target << "(" << status << ")" << endl);
+    BESDEBUG("cache", "BESFileLockingCache: get_read_lock: " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -484,7 +479,7 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     bool status = createLockedFile(target, fd);
 
-    BESDEBUG("cache", "DAP Cache: create_and_lock: " << target << "(" << status << ")" << endl);
+    BESDEBUG("cache", "BESFileLockingCache: create_and_lock: " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -573,7 +568,7 @@ void BESFileLockingCache::unlock_cache()
  * need to close a specific descriptor, use the other version of
  * unlock_and_close().
  *
- * @note This method assumes that the file was opend/locked using one of
+ * @note This method assumes that the file was opened/locked using one of
  * read_and_lock() or create_and_lock(). Those methods record the name/file-
  * descriptor pairs so that the files can be properly closed and locks
  * released.
@@ -591,6 +586,13 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
     }
 }
 
+#if 0
+// I removed this because it will unlock() the file descriptor without
+// removing it from the list of registered fds. This can lead to errors
+// when the otehr version is called because a given descriptor appears
+// more than once in the list of descriptors or a fd in the list is no
+// longer open. jhrg 8/13/14
+
 /** Unlock the file.
  *
  * @see unlock_and_close(const string &)
@@ -604,6 +606,7 @@ void BESFileLockingCache::unlock_and_close(int fd)
 
     BESDEBUG("cache", "DAP Cache: unlock " << fd << " Success" << endl);
 }
+#endif
 
 /** @brief Update the cache info file to include 'target'
  *

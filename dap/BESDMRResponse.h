@@ -26,18 +26,20 @@
 #define I_BESDMRResponse 1
 
 #include <DMR.h>
-#include <ConstraintEvaluator.h>
+//#include <ConstraintEvaluator.h>
 
 #include "BESDapResponse.h"
 
 using namespace libdap;
+
+//class DMR;
 
 /** @brief Represents an OPeNDAP DMR DAP4 data object within the BES
  */
 class BESDMRResponse: public BESDapResponse {
 private:
 	DMR * _dmr;
-	ConstraintEvaluator _ce;
+	//ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
 public:
 	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
 	virtual ~BESDMRResponse() { delete _dmr ; }
@@ -47,10 +49,10 @@ public:
 
 	virtual void dump(ostream &strm) const;
 
-	DMR * get_dmr() { return _dmr; }
+	DMR *get_dmr() { return _dmr; }
 	void set_dmr(DMR *dmr) { _dmr = dmr; }
 
-    ConstraintEvaluator &get_ce() { return _ce; }
+    //onstraintEvaluator &get_ce() { return _ce; } // FIXME too...
 };
 
 #endif // I_BESDMRResponse
