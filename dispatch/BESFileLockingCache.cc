@@ -591,6 +591,13 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
     }
 }
 
+#if 0
+// I removed this because it will unlock() the file descriptor without
+// removing it from the list of registered fds. This can lead to errors
+// when the otehr version is called because a given descriptor appears
+// more than once in the list of descriptors or a fd in the list is no
+// longer open. jhrg 8/13/14
+
 /** Unlock the file.
  *
  * @see unlock_and_close(const string &)
@@ -604,6 +611,7 @@ void BESFileLockingCache::unlock_and_close(int fd)
 
     BESDEBUG("cache", "DAP Cache: unlock " << fd << " Success" << endl);
 }
+#endif
 
 /** @brief Update the cache info file to include 'target'
  *

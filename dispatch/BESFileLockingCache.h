@@ -119,7 +119,7 @@ public:
     virtual bool get_read_lock(const string &target, int &fd);
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const string &target);
-    virtual void unlock_and_close(int fd);
+    // Removed. See comments in the .cc file virtual void unlock_and_close(int fd);
 
     virtual void lock_cache_write();
     virtual void lock_cache_read();
