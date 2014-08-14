@@ -965,7 +965,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
             throw Error(msg);
         }
 
-    	if(!store_dap4_result(out, dmr)) {
+    	if (!store_dap4_result(out, dmr)) {
             serialize_dap4_data(out, dmr, with_mime_headers, filter);
     	}
 
@@ -975,7 +975,6 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
         remove_timeout();
         throw;
     }
-
 }
 
 /**
@@ -1006,7 +1005,6 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     out << flush;
 
-
 	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - END" << endl);
 }
 
@@ -1027,7 +1025,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 	    }
 
 		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-		if(resultCache == NULL){
+		if (resultCache == NULL) {
 
 			/**
 			 * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
@@ -1047,7 +1045,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 		}
 
 
-		if(get_async_accepted().length() != 0){
+		if (get_async_accepted().length() != 0) {
 
 			/**
 			 * Client accepts async responses so, woot! lets store this thing and tell them where to find it.

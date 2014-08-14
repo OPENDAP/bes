@@ -194,10 +194,8 @@ private:
 		rb.set_dataset_name(dds->filename());
 		rb.set_ce(dhi.data[POST_CONSTRAINT]);
 
-
 		rb.set_async_accepted(dhi.data[ASYNC]);
 		rb.set_store_result(dhi.data[STORE_RESULT]);
-
 
 		BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
 		rb.send_dap2_data(dhi.get_output_stream(), *dds, ce, print_mime);
@@ -242,26 +240,23 @@ private:
 		BESDEBUG("dap", "Entering SendDMR::send_internal ..." << endl);
 
 		BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
-		if (!bdmr) {
+		if (!bdmr)
 			throw BESInternalError("cast error", __FILE__, __LINE__);
-		}
 
 		DMR *dmr = bdmr->get_dmr();
-		//ConstraintEvaluator & ce = bdmr->get_ce();
 
 		dhi.first_container();
-		bool print_mime = get_print_mime();
 
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dhi.container->get_real_name());
 
-		BESDEBUG("dap", "SendDMR::send_internal() -  dhi.data[DAP4_CONSTRAINT]: " << dhi.data[DAP4_CONSTRAINT] << endl);
 		rb.set_dap4ce(dhi.data[DAP4_CONSTRAINT]);
-
-		BESDEBUG("dap", "SendDMR::send_internal() -  dhi.data[DAP4_FUNCTION]: " << dhi.data[DAP4_FUNCTION] << endl);
 		rb.set_dap4function(dhi.data[DAP4_FUNCTION]);
 
-		rb.send_dmr(dhi.get_output_stream(), *dmr, print_mime, true);
+		rb.set_async_accepted(dhi.data[ASYNC]);
+		rb.set_store_result(dhi.data[STORE_RESULT]);
+
+		rb.send_dmr(dhi.get_output_stream(), *dmr, get_print_mime(), true);
 	}
 };
 
@@ -277,14 +272,12 @@ private:
 		// some code harder to write, so this time I'll just use the DMR to hold data. jhrg
 		// 10/31/13
 		BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
-		if (!bdmr) {
+		if (!bdmr)
 			throw BESInternalError("cast error", __FILE__, __LINE__);
-		}
+
 		DMR *dmr = bdmr->get_dmr();
-		// ConstraintEvaluator & ce = bdmr->get_ce();
 
 		dhi.first_container();
-		bool print_mime = get_print_mime();
 
 		BESDapResponseBuilder rb;
 		rb.set_dataset_name(dmr->filename());
@@ -295,9 +288,7 @@ private:
 		rb.set_async_accepted(dhi.data[ASYNC]);
 		rb.set_store_result(dhi.data[STORE_RESULT]);
 
-		BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-		// FIXME Remove extra args. 11/29/13 jhrg
-		rb.send_dap4_data(dhi.get_output_stream(), *dmr, print_mime, true);
+		rb.send_dap4_data(dhi.get_output_stream(), *dmr, get_print_mime(), true);
 	}
 };
 
