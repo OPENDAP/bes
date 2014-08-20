@@ -29,6 +29,7 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
+#include "BESContextManager.h"
 
 BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
 		BESResponseHandler(name)
@@ -59,6 +60,12 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 
 	// Here we might set the dap and dmr version if they should be different from
 	// 4.0 and 1.0. jhrg 11/6/13
+
+	bool found = false;
+    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
+	if (found && !xml_base.empty()) {
+		dmr->set_request_xml_base(xml_base);
+	}
 
 	_response = new BESDMRResponse(dmr);
 	BESRequestHandlerList::TheList()->execute_each(dhi);
