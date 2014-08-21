@@ -12,7 +12,7 @@ BES.Include=dap.conf
 #-----------------------------------------------------------------------#
 
 BES.modules+=dapreader
-BES.module.reader=@bes_modules_dir@/libdapreader_module.so
+BES.module.dapreader=@bes_modules_dir@/libdapreader_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data information
