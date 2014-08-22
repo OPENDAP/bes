@@ -35,7 +35,13 @@ BES_HDRS = DapModule.h DapRequestHandler.h
 libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
-libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types
+libdapreader_module_la_LIBADD = $(BES_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
+
+# $(top_builddir)/dispatch/libbes_dispatch.la	\
+#	$(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/ppt/libbes_ppt.la $(OPENSSL_LIBS)
+
+# libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types $(abs_top_builddir)/dispatch/libbes_dispatch.la	\
+#	$(abs_top_builddir)/xmlcommand/libbes_xml_command.la $(abs_top_builddir)/ppt/libbes_ppt.la $(OPENSSL_LIBS)
 
 EXTRA_PROGRAMS = 
 
@@ -50,10 +56,49 @@ dap4_datadir = $(datadir)/hyrax/data/dapreader/dap4
 dap4_data_DATA = data/dap4/dap4.html data/dap4/test_simple_1.dmr 
 
 D4_xml_datadir = $(datadir)/hyrax/data/dapreader/dap4/D4-xml
-D4_xml_data_DATA = data/dap4/D4-xml/*.xml
+D4_xml_data_DATA = data/dap4/D4-xml/DMR_0.1.xml			\
+data/dap4/D4-xml/DMR_0.xml data/dap4/D4-xml/DMR_1.xml		\
+data/dap4/D4-xml/DMR_2.1.xml data/dap4/D4-xml/DMR_2.xml		\
+data/dap4/D4-xml/DMR_3.1.xml data/dap4/D4-xml/DMR_3.2.xml	\
+data/dap4/D4-xml/DMR_3.3.xml data/dap4/D4-xml/DMR_3.4.xml	\
+data/dap4/D4-xml/DMR_3.5.xml data/dap4/D4-xml/DMR_3.xml		\
+data/dap4/D4-xml/DMR_4.1.xml data/dap4/D4-xml/DMR_4.xml		\
+data/dap4/D4-xml/DMR_5.1.xml data/dap4/D4-xml/DMR_5.xml		\
+data/dap4/D4-xml/DMR_6.1.xml data/dap4/D4-xml/DMR_6.2.xml	\
+data/dap4/D4-xml/DMR_6.xml data/dap4/D4-xml/DMR_7.1.xml		\
+data/dap4/D4-xml/DMR_7.2.xml data/dap4/D4-xml/DMR_7.3.xml	\
+data/dap4/D4-xml/DMR_7.4.xml data/dap4/D4-xml/DMR_7.5.xml	\
+data/dap4/D4-xml/DMR_7.6.xml data/dap4/D4-xml/DMR_7.7.xml	\
+data/dap4/D4-xml/DMR_7.xml data/dap4/D4-xml/DMR_8.xml
 
 dmr_testsuite_datadir = $(datadir)/hyrax/data/dapreader/dap4/dmr-testsuite
-dmr_testsuite_data_DATA = data/dap4/dmr-testsuite/*.xml	 
+dmr_testsuite_data_DATA = data/dap4/dmr-testsuite/test_array_1.xml	\
+data/dap4/dmr-testsuite/test_array_10.xml				\
+data/dap4/dmr-testsuite/test_array_11.xml				\
+data/dap4/dmr-testsuite/test_array_2.xml				\
+data/dap4/dmr-testsuite/test_array_3.xml				\
+data/dap4/dmr-testsuite/test_array_4.xml				\
+data/dap4/dmr-testsuite/test_array_5.xml				\
+data/dap4/dmr-testsuite/test_array_6.xml				\
+data/dap4/dmr-testsuite/test_array_7.xml				\
+data/dap4/dmr-testsuite/test_array_8.xml				\
+data/dap4/dmr-testsuite/test_escaped_paths.xml				\
+data/dap4/dmr-testsuite/test_simple_1.xml				\
+data/dap4/dmr-testsuite/test_simple_10.xml				\
+data/dap4/dmr-testsuite/test_simple_2.xml				\
+data/dap4/dmr-testsuite/test_simple_3.xml				\
+data/dap4/dmr-testsuite/test_simple_3_error_1.xml			\
+data/dap4/dmr-testsuite/test_simple_3_error_2.xml			\
+data/dap4/dmr-testsuite/test_simple_3_error_3.xml			\
+data/dap4/dmr-testsuite/test_simple_4.xml				\
+data/dap4/dmr-testsuite/test_simple_5.xml				\
+data/dap4/dmr-testsuite/test_simple_6.xml				\
+data/dap4/dmr-testsuite/test_simple_7.xml				\
+data/dap4/dmr-testsuite/test_simple_8.xml				\
+data/dap4/dmr-testsuite/test_simple_9.1.xml				\
+data/dap4/dmr-testsuite/test_simple_9.2.xml				\
+data/dap4/dmr-testsuite/test_simple_9.xml
+
 
 install-data-local: dapreader.conf
 	@currdate=`date +"%y%m%d%H%M"`; \

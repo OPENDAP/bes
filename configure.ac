@@ -2,7 +2,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.69)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -297,12 +297,12 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
  		 functions/tests/package.m4
-		 functions/unit-tests/Makefile
+		 functions/unit-tests/Makefile])
 		 
-		 test_server/Makefile
-		 test_server/tests/Makefile
-         test_server/tests/atlocal
-         test_server/tests/package.m4])
+dnl		 test_server/Makefile
+dnl		 test_server/tests/Makefile
+dnl         test_server/tests/atlocal
+dnl         test_server/tests/package.m4])
 
 if test -n "$GDAL_FOUND"
 then

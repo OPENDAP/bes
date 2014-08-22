@@ -21,7 +21,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS =  . unit-tests
+SUBDIRS = . unit-tests
 # I've removed the tests because they break distcheck and fresh
 # builds. The best fix is to move this out of the BES OR to use
 # dapreader and *.dods files instead of the netcdf_handler (or both
@@ -29,7 +29,7 @@ SUBDIRS =  . unit-tests
 #
 # tests
 
-DIST_SUBDIRS = unit-tests tests
+DIST_SUBDIRS = tests unit-tests
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 

@@ -21,7 +21,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = test
+SUBDIRS = . test
 
 bin_PROGRAMS = beslistener besdaemon
 dist_bin_SCRIPTS = besctl hyraxctl

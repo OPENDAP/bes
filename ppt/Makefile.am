@@ -21,8 +21,8 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = unit-tests
-DIST_SUBDIRS = unit-tests
+SUBDIRS = . unit-tests
+# DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_ppt.la
 
