@@ -37,6 +37,7 @@
 #include <GetOpt.h>
 #include <GNURegex.h>
 #include <util.h>
+#include <mime_util.h>
 #include <debug.h>
 
 #include <DMR.h>
@@ -63,6 +64,7 @@ int test_variable_sleep_interval = 0;
 
 static bool debug = false;
 static bool parser_debug = false;
+static const string c_cache_name = "/dap4_result_cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -89,8 +91,8 @@ public:
                          test_01_dmr(0),
     					 d4parser(0),
     					 d_data_root_dir(string(TEST_SRC_DIR)),
-    					 d_stored_result_subdir("/response_cache"),
-    					 d_response_cache(string(TEST_SRC_DIR)+"/response_cache"),
+    					 d_stored_result_subdir(c_cache_name),
+    					 d_response_cache(string(TEST_SRC_DIR)+c_cache_name),
     					 d_baseline_local_id(""),
     					 d_test01_dmr_value_baseline(""){
     }
@@ -139,8 +141,7 @@ public:
     	d4parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
     	DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
-    	d_baseline_local_id = "/response_cache/result_1688151760629011709.dap";
-
+    	d_baseline_local_id = "/cache_baseline_files/result_1688151760629011709.dap";
 
     	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
         test_01_dmr->set_filename(test_01_dmr->name());
@@ -189,10 +190,6 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-
-
-
-
     bool re_match(Regex &r, const string &s) {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -206,11 +203,6 @@ public:
         DBG(cerr << "r.match(s): " << pos << endl);
         return pos > 0;
     }
-
-
-
-
-
 
     // Because setup() and teardown() clean out the cache directory, there should
     // never be a cached item; calling read_cached_dataset() should return a
@@ -241,10 +233,10 @@ public:
 			// Write it down
 			stored_result_local_id = cache->store_dap4_result(*test_01_dmr, "", &responseBuilder);
 
-			DBG(cerr << "cache_a_dap4_response() -  baseline_local_id: " << d_baseline_local_id << endl);
-			DBG(cerr << "cache_a_dap4_response() - Cached response id: " << stored_result_local_id << endl);
+			DBG(cerr << "cache_a_dap4_response() -  baseline_local_id: " << name_path(d_baseline_local_id) << endl);
+			DBG(cerr << "cache_a_dap4_response() - Cached response id: " << name_path(stored_result_local_id) << endl);
 
-			CPPUNIT_ASSERT(stored_result_local_id == d_baseline_local_id);
+			CPPUNIT_ASSERT(name_path(stored_result_local_id) == name_path(d_baseline_local_id));
 			// TODO Stat the cache file to check it's size
 			cache->delete_instance();
 		}
@@ -276,8 +268,8 @@ public:
 			// Write it down
 			stored_result_local_id = cache->store_dap4_result(*test_01_dmr, "", &responseBuilder);
 
-			DBG(cerr << "cache_and_read_a_dap4_response() - Cached response id: " << stored_result_local_id << endl);
-			CPPUNIT_ASSERT(stored_result_local_id == d_baseline_local_id);
+			DBG(cerr << "cache_and_read_a_dap4_response() - Cached response id: " << name_path(stored_result_local_id) << endl);
+			CPPUNIT_ASSERT(name_path(stored_result_local_id) == name_path(d_baseline_local_id));
 
 
 			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
@@ -310,18 +302,15 @@ public:
 
 			DBG(cerr << "cache_and_read_a_dap4_response() - d_test01_dmr_value_baseline: " << d_test01_dmr_value_baseline << endl);
 
-
 			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
 			// is a any single digit. The *Test classes implement a counter and return strings where
 			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
 			// values for <number>.
 			CPPUNIT_ASSERT(d_test01_dmr_value_baseline == oss.str());
 
-
 			delete cached_data; cached_data = 0;
 	    	// cache->delete_instance();
 			cache->delete_instance();
-
 		}
 		catch (Error &e) {
 			CPPUNIT_FAIL(e.get_error_message());

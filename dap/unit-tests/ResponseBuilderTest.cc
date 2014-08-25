@@ -254,7 +254,6 @@ public:
         dds->set_dap_major(3);
         dds->set_dap_minor(2);
 
-
     	string cid;
     	DDXParser dp(&ttf);
     	test_05_dds = new DDS(&ttf);
@@ -264,8 +263,6 @@ public:
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "setUp() - DDS Name: " << test_05_dds->get_dataset_name() << endl);
     	DBG(cerr << "setUp() - Intern CID: " << cid << endl);
-
-
 
         d4_parser = new D4ParserSax2();
     	DBG(cerr << "Built D4ParserSax2() " << endl);

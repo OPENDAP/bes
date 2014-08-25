@@ -63,6 +63,8 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static const string c_cache_name = "/dap2_result_cache";
+
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -85,8 +87,8 @@ private:
 
 public:
 	StoredDap2ResultTest() :
-			test_05_dds(0), dp(&ttf), d_data_root_dir(string(TEST_SRC_DIR)), d_stored_result_subdir("/response_cache"),
-			d_response_cache(string(TEST_SRC_DIR) + "/response_cache"), cache(0)
+			test_05_dds(0), dp(&ttf), d_data_root_dir(string(TEST_SRC_DIR)), d_stored_result_subdir(c_cache_name),
+			d_response_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0)
 	{
 	}
 

@@ -55,6 +55,7 @@ int test_variable_sleep_interval = 0;
 
 static bool debug = false;
 static bool clean = true;
+static const string c_cache_name = "/response_cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -75,7 +76,7 @@ private:
 
 public:
     ResponseCacheTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
-		d_response_cache(string(TEST_SRC_DIR) + "/response_cache"), cache(0) {
+		d_response_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0) {
     }
 
     ~ResponseCacheTest() {
@@ -420,7 +421,7 @@ int main(int argc, char*argv[]) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
-        case 'k':   // -k turns of cleaning the response_cache dir
+        case 'k':   // -k turns off cleaning the response_cache dir
             clean = false;
             break;
         default:
