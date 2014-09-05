@@ -166,7 +166,9 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 			if (!f.is_open() || f.bad() || f.eof()) throw Error((string) "Could not open: " + accessed);
 
 			Response r(&f, 0);
-			url->read_dmr(*dmr, r);
+			// use the read_data...() method because we need to process the special
+			// binary glop in the data responses.
+			url->read_data_no_mime(*dmr, r);
 		}
 		else {
 			throw Error("The dapreader module can only return DMR responses for files ending in .dmr, .xml or .dap");
@@ -225,11 +227,29 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 			throw Error("The reader handler can only return DAP4 data responses when UseTestTypes is true.");
 		}
 
+		if (extension_match(accessed, ".dmr") || extension_match(accessed, ".xml")) {
+			D4ParserSax2 parser;
+			ifstream in(accessed.c_str(), ios::in);
+			parser.intern(in, dmr);
+		}
+		else if (extension_match(accessed, ".dap")) {
+			auto_ptr<D4Connect> url(new D4Connect(accessed));
+
+			fstream f(accessed.c_str(), std::ios_base::in);
+			if (!f.is_open() || f.bad() || f.eof()) throw Error((string) "Could not open: " + accessed);
+
+			Response r(&f, 0);
+			url->read_data_no_mime(*dmr, r);
+		}
+		else {
+			throw Error("The dapreader module can only return DAP4 Data responses for files ending in .dmr, .xml or .dap");
+		}
+#if 0
 		D4ParserSax2 parser;
 		ifstream in(accessed.c_str(), ios::in);
 		parser.intern(in, dmr);
 		dmr->set_factory(0);
-
+#endif
 		if (d_use_series_values) {
 			dmr->root()->set_read_p(false);
 
