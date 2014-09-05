@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <string>
+#include <memory>
 
 #include "DapRequestHandler.h"
 
@@ -56,6 +57,7 @@
 // #include <D4Enumdefs.h>
 // #include <D4Dimensions.h>
 #include <D4Group.h>
+#include <D4Connect.h>
 
 #include <D4ParserSax2.h>
 
@@ -91,6 +93,12 @@ void DapRequestHandler::read_key_value(const std::string &key_name, bool &key_va
     }
 }
 
+static bool extension_match(const string &data_source, const string &extension)
+{
+	string::size_type pos = data_source.rfind(extension);
+	return pos != string::npos && pos + extension.length() == data_source.length();
+}
+
 DapRequestHandler::DapRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
@@ -111,6 +119,17 @@ DapRequestHandler::DapRequestHandler(const string &name) :
 const string module = "reader";
 
 // handle the DAP4 requests
+/**
+ * Given a request for the DMR response, look at the data source and
+ * parse it's DMR/XML information. If the data source is a .dmr or .xml
+ * file, assume that's all the data source contains and that the plain
+ * DMR parser can be used. If the data source is a .dap file, assume it
+ * is a DAP4 data response that has been dumped to a file, sans MIME
+ * headers. Use the code in libdap::Connect to read the DMR.
+ *
+ * @param dhi
+ * @return
+ */
 bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
 	BESDEBUG(module, "Entering dap_build_dmr..." << endl);
@@ -118,11 +137,9 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr)
-        throw BESInternalError("DMR cast error", __FILE__, __LINE__);
+        throw BESInternalError("BESDMRResponse cast error", __FILE__, __LINE__);
 
 	try {
-		// DMRs don't support containers yet - use groups? jhrg 11/6/13
-		// bdmr->set_container(dhi.container->get_symbolic_name());
 		DMR *dmr = bdmr->get_dmr();
 		string accessed = dhi.container->access();
 		dmr->set_filename(accessed);
@@ -137,14 +154,28 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 			dmr->set_factory(&BaseFactory);
 		}
 
-		D4ParserSax2 parser;
-		ifstream in(accessed.c_str(), ios::in);
-		parser.intern(in, dmr);
+		if (extension_match(accessed, ".dmr") || extension_match(accessed, ".xml")) {
+			D4ParserSax2 parser;
+			ifstream in(accessed.c_str(), ios::in);
+			parser.intern(in, dmr);
+		}
+		else if (extension_match(accessed, ".dap")) {
+			auto_ptr<D4Connect> url(new D4Connect(accessed));
+
+			fstream f(accessed.c_str(), std::ios_base::in);
+			if (!f.is_open() || f.bad() || f.eof()) throw Error((string) "Could not open: " + accessed);
+
+			Response r(&f, 0);
+			url->read_dmr(*dmr, r);
+		}
+		else {
+			throw Error("The dapreader module can only return DMR responses for files ending in .dmr, .xml or .dap");
+		}
+
 		dmr->set_factory(0);
 
 		bdmr->set_dap4_constraint(dhi);
 		bdmr->set_dap4_function(dhi);
-		// bdmr->clear_container(); FIXME see above
 	}
 	catch (BESError &e) {
         throw e;
@@ -180,8 +211,6 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         throw BESInternalError("DMR cast error", __FILE__, __LINE__);
 
 	try {
-		// DMRs don't support containers yet - use groups? jhrg 11/6/13
-		// bdmr->set_container(dhi.container->get_symbolic_name());
 		DMR *dmr = bdmr->get_dmr();
 		string accessed = dhi.container->access();
 		dmr->set_filename(accessed);
@@ -213,7 +242,6 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 
 		bdmr->set_dap4_constraint(dhi);
 		bdmr->set_dap4_function(dhi);
-		// bdmr->clear_container(); FIXME see above
 	}
 	catch (BESError &e) {
         throw e;

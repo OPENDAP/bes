@@ -31,8 +31,5 @@ BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)
 
 DR.UseTestTypes=true
 
-# Use the DAP4 types and work with DAP4 objects.
-DR.SupportDAP4=true
-
 # Use the 'series values' feature of the test types
 DR.UseSeriesValues=false
