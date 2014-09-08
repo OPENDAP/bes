@@ -1,0 +1,24 @@
+README
+ Created on: Sep 8, 2014
+     Author: jimg
+
+This module can be used by the BES to return DAP2 and DAP4 responses
+using simple input files. There are two ways to create the input files.
+The DDS & DAS or DMR files may be hand written and used to for both the
+metadata and data responses (the latter use the Test* classes defined in 
+libtest-types). Alternatively, the DAP2 or DAP4 data responses can be
+written to a file (sans MIME headers) and used to build the DDS, DMR,
+and respective data responses. These two options enable test code for 
+handlers to use both 'synthetic' and 'real' datasets for testing without
+requiring handlers (in the latter case) for given formats/data-stores
+be loaded by the BES. In theory, you could use libdap, PyDAP, etc., to
+build the data responses, although besstandalone is the probably easiest.
+
+The handler will recognize files with the extentions: .dds, .das, .dmr, 
+.xml, .dods, .data and .dap. Each extension means the obvious thing with the
+addition that .xml is a synonym for .dmr and .data is a synonym for .dods.
+
+TBD: Building DAP4 responses using DAP2 responses. This is possible, using
+the DMR ctor that takes a DDS, but the code that ctor uses will not copy
+data values, so there's some extra work to be done for the DAP4 data
+response from a DAP2 data response.

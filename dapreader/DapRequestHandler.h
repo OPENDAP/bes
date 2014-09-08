@@ -3,7 +3,7 @@
 // Copyright (c) 2013 OPeNDAP, Inc. Author: James Gallagher
 // <jgallagher@opendap.org>, Patrick West <pwest@opendap.org>
 // Nathan Potter <npotter@opendap.org>
-//                                                                            
+//
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2.1 of
 // the License, or (at your option) any later version.
@@ -27,12 +27,21 @@
 
 #include "BESRequestHandler.h"
 
+namespace libdap {
+	class DMR;
+	class DDS;
+}
+
 class DapRequestHandler: public BESRequestHandler {
 	static bool d_use_series_values;
 	static bool d_use_series_values_set;
 
 	static bool d_use_test_types;
 	static bool d_use_test_types_set;
+
+	// These are static because they are used by the static public methods.
+	static void build_dmr_from_file(const string& accessed, libdap::DMR* dmr);
+	static void build_dds_from_file(const string& accessed, libdap::DDS* dds);
 
 public:
 	DapRequestHandler(const string &name);
@@ -48,7 +57,6 @@ public:
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
 
-	virtual void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set);
 	virtual void dump(ostream &strm) const;
 };
 
