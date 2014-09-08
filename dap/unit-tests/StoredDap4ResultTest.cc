@@ -181,7 +181,7 @@ public:
     void tearDown() {
 		DBG(cerr << "tearDown() - BEGIN" << endl);
 
-		// clean_cache(d_response_cache, "result_");
+		clean_cache(d_response_cache, "result_");
 
         delete d4parser;
         delete test_01_dmr;
