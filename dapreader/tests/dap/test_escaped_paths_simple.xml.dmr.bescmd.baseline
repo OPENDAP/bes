@@ -4,9 +4,6 @@
         <Dim name="/g.@$/lon2."/>
     </Int32>
     <Group name="g.@$">
-        
-        <!-- FIXME See ticket #2247 -->
-        
         <Dimension name="lon2." size="20"/>
     </Group>
 </Dataset>
