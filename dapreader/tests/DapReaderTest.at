@@ -71,5 +71,11 @@ AT_BESCMD_RESPONSE_TEST([dap/test_simple_9.xml.dmr.bescmd])
 AT_BESCMD_DAP_RESPONSE_TEST([dap/test_simple_1.dmr.dap.bescmd])
 
 # These tests build DMR and Data responses using a .dap file
-AT_BESCMD_RESPONSE_TEST([one_int.dap.dmr.bescmd])
-AT_BESCMD_DAP_RESPONSE_TEST([one_int.dap.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/one_int.dap.dmr.bescmd])
+AT_BESCMD_DAP_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
+
+# These tests build DAP4 stuff from DAP2 responses
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.dds.dmr.bescmd])
+AT_BESCMD_DAP_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dmr.bescmd])
+

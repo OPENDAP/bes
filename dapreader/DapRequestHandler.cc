@@ -118,6 +118,7 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
 {
 	dmr->set_filename(accessed);
 	dmr->set_name(name_path(accessed));
+
 	D4TestTypeFactory TestFactory;
 	D4BaseTypeFactory BaseFactory;
 	if (d_use_test_types) {
@@ -126,6 +127,7 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
 	else {
 		dmr->set_factory(&BaseFactory);
 	}
+
 	if ((extension_match(accessed, ".dmr") || extension_match(accessed, ".xml")) && d_use_test_types) {
 		D4ParserSax2 parser;
 		ifstream in(accessed.c_str(), ios::in);
@@ -140,6 +142,13 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
 		// use the read_data...() method because we need to process the special
 		// binary glop in the data responses.
 		url->read_data_no_mime(*dmr, r);
+	}
+	else if (extension_match(accessed, ".dds") || extension_match(accessed, ".dods")
+			|| extension_match(accessed, ".data")) {
+		auto_ptr<DDS> dds(new DDS(0 /*factory*/));
+		build_dds_from_file(accessed, dds.get());
+
+		dmr->build_using_dds(*dds);
 	}
 	else {
 		dmr->set_factory(0);
@@ -300,6 +309,11 @@ void DapRequestHandler::build_dds_from_file(const string& accessed, DDS* dds)
 		if (!r.get_stream()) throw Error(string("The input source: ") + accessed + string(" could not be opened"));
 
 		url->read_data_no_mime(*dds, &r);
+
+        // mark everything as read.
+        for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; i++) {
+            (*i)->set_read_p(true);
+        }
 	}
 	else {
 		dds->set_factory(0);
@@ -365,11 +379,6 @@ bool DapRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
         string accessed = dhi.container->access();
 
 		build_dds_from_file(accessed, dds);
-
-        // mark everything as read.
-        for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; i++) {
-            (*i)->set_read_p(true);
-        }
 
         bdds->set_constraint(dhi);
 
