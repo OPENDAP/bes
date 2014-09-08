@@ -90,7 +90,7 @@ BES.DefaultResponseMethod=POST
 # These keys control how the DapReader handler interprets the DDS, DMR, 
 # etc., input files. By default it uses the BaseTypeFactory types - the
 # default type classes distributed with libdap - when instantiating variables.
-# By setting UseTyepTypes to true, the TestByte, ..., classes are used
+# By setting UseTestTypes to true, the TestByte, ..., classes are used
 # instead.  
 
 DR.UseTestTypes=true
