@@ -18,7 +18,9 @@ The handler will recognize files with the extentions: .dds, .das, .dmr,
 .xml, .dods, .data and .dap. Each extension means the obvious thing with the
 addition that .xml is a synonym for .dmr and .data is a synonym for .dods.
 
-TBD: Building DAP4 responses using DAP2 responses. This is possible, using
-the DMR ctor that takes a DDS, but the code that ctor uses will not copy
-data values, so there's some extra work to be done for the DAP4 data
-response from a DAP2 data response.
+Note that while the DAP2 'response files' can be used to build both DAP2 
+and DAP4 responses, the DAP4 response files (DMR & DAP4 Data) can be used
+for DAP4 responses only.
+
+Known issues: DAP4 data responses from DAP2 data response files that contain
+Structures and Sequences may not work.
