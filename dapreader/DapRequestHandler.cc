@@ -320,9 +320,11 @@ void DapRequestHandler::build_dds_from_file(const string& accessed, DDS* dds)
 		throw Error("The dapreader module can only return DDS/DODS responses for files ending in .dods, .data or .dds");
 	}
 
-	auto_ptr<DAS> das(new DAS);
-	Ancillary::read_ancillary_das(*das, accessed);
-	dds->transfer_attributes(das.get());
+	// If this fails, check that the bescmd file sets the Context dap2
+	// because wihtout that, explicit containers are used
+	DAS das;
+	Ancillary::read_ancillary_das(das, accessed);
+	dds->transfer_attributes(&das);
 
 	dds->set_factory(0);
 }
