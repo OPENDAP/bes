@@ -26,11 +26,11 @@ class HDFSPArrayAddCVField:public Array
 {
     public:
         HDFSPArrayAddCVField (int32 dtype, SPType sptype, const::string & fieldname, int tnumelm, const string & n = "", BaseType * v = 0):
-            Array (n, v), 
+            Array (n, v),
             dtype(dtype),
             sptype(sptype),
-            name(fieldname),
-            tnumelm (tnumelm)
+            tnumelm (tnumelm),
+            name(fieldname)
         {
         }
         virtual ~ HDFSPArrayAddCVField ()
@@ -38,7 +38,7 @@ class HDFSPArrayAddCVField:public Array
         }
 
         // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
-        // Return the number of elements to read. 
+        // Return the number of elements to read.
         int format_constraint (int *cor, int *step, int *edg);
 
         BaseType *ptr_duplicate ()
@@ -60,7 +60,7 @@ class HDFSPArrayAddCVField:public Array
 
         /// Field name(Different CV may have different names.)
         std::string name;
-     
+
         // TRMM version 7 nlayer values are from the document
         void Obtain_trmm_v7_layer(int, vector<int>&,vector<int>&,vector<int>&);
 

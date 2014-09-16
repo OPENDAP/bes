@@ -90,8 +90,6 @@ AC_CHECK_HDF4(
 
 AC_CHECK_BES([3.13.0], [], [ AC_MSG_ERROR([Cannot find bes]) ])
 
-OPENDAP_DEBUG_OPTION
-
 dnl check for an explict server cache pathname. If so, use that. Otherwise
 dnl use /usr/tmp.
 

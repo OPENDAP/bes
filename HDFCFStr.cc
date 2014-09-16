@@ -17,7 +17,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// Suite 203, Champaign, IL 61820
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDFCFStr.cc
@@ -36,10 +36,10 @@
 #include "InternalErr.h"
 #include "HDFCFStr.h"
 
-HDFCFStr::HDFCFStr(const int h4fd, int32 field_ref,const string &filename,const string &varname,const string &varnewname, bool is_vdata) 
+HDFCFStr::HDFCFStr(const int h4fd, int32 field_ref,const string &filename,const string &varname,const string &varnewname, bool is_vdata)
       : Str(varnewname, filename),
-        varname(varname),
         filename(filename),
+        varname(varname),
         h4fd(h4fd),
         field_ref(field_ref),
         is_vdata(is_vdata)
@@ -97,7 +97,7 @@ bool HDFCFStr::read()
             ostringstream eherr;
             eherr << "The rank of string doesn't match with the rank of character array";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
- 
+
         }
 
         vector<int32>offset32;

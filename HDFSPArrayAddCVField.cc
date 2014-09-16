@@ -37,7 +37,7 @@ HDFSPArrayAddCVField::read ()
     step.resize(1);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = format_constraint(&offset[0],&step[0],&count[0]); 
+    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
     if(sptype == TRMML3C_V6) {
 
@@ -65,7 +65,7 @@ HDFSPArrayAddCVField::read ()
 
         vector<float>val;
         val.resize(nelms);
-        
+
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
         set_value ((dods_float32 *) &val[0], nelms);
@@ -74,7 +74,7 @@ HDFSPArrayAddCVField::read ()
 
     if(sptype == TRMML3S_V7) {
 
-        
+
         if(dtype != DFNT_FLOAT32) {
             throw InternalErr (__FILE__, __LINE__,
                 "The Height datatype of TRMM CSH product should be float.");
@@ -93,7 +93,7 @@ HDFSPArrayAddCVField::read ()
 
     if(sptype == TRMML2_V7) {
 
-        
+
         if(dtype != DFNT_FLOAT32) {
             throw InternalErr (__FILE__, __LINE__,
                 "The Height datatype of TRMM CSH product should be float.");
@@ -107,7 +107,7 @@ HDFSPArrayAddCVField::read ()
         }
 
     }
-        
+
     return true;
 }
 
@@ -139,7 +139,7 @@ HDFSPArrayAddCVField::read ()
 
         vector<float>val;
         val.resize(nelms);
-        
+
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
         set_value ((dods_float32 *) &val[0], nelms);
@@ -149,7 +149,7 @@ HDFSPArrayAddCVField::read ()
 #endif
 
 
-void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,vector<int>&step,vector<int>&count) {
+void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,vector<int>&step,vector<int>&/*count*/) {
 
 
         vector<float>total_val;
@@ -172,7 +172,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
 
         vector<float>val;
         val.resize(nelms);
-        
+
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
         set_value ((dods_float32 *) &val[0], nelms);
@@ -180,13 +180,13 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
 }
 
 
-void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&offset,vector<int>&step,vector<int>&count) {
+void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&offset,vector<int>&step,vector<int>&/*count*/) {
 
     vector<float>total_val;
     total_val.resize(tnumelm);
 
     if(name =="nthrshZO") {
-        
+
         total_val[0] = 0.1;
         total_val[1] = 0.2;
         total_val[2] = 0.3;
@@ -213,9 +213,9 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
         total_val[3] = 0.6;
         total_val[4] = 0.4;
         total_val[5] = 0.1;
- 
+
     }
-    else 
+    else
         throw InternalErr (__FILE__, __LINE__,
                 "Unsupported coordinate variable names.");
 
@@ -229,7 +229,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
 
         vector<float>val;
         val.resize(nelms);
-        
+
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
         set_value ((dods_float32 *) &val[0], nelms);
@@ -239,7 +239,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
 
 
 // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
-// Return the number of elements to read. 
+// Return the number of elements to read.
 int
 HDFSPArrayAddCVField::format_constraint (int *offset, int *step, int *count)
 {
