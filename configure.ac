@@ -112,8 +112,6 @@ AC_CHECK_BES([3.13.0],
 [ AC_MSG_ERROR([Cannot find bes])
 ])
 
-OPENDAP_DEBUG_OPTION
-
 dnl autoheader macros; tack some text at the top and bottom of config_hdf5.h.in
 
 AH_TOP([#ifndef _config_hdf5_h
