@@ -46,7 +46,5 @@ AC_CHECK_BES([3.5.3],
 [ AC_MSG_ERROR([Cannot find bes])
 ])
 
-OPENDAP_DEBUG_OPTION
-
 AC_CONFIG_FILES([Makefile bes-testsuite/atlocal bes-testsuite/Makefile])
 AC_OUTPUT
