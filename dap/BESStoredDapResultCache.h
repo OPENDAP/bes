@@ -102,7 +102,7 @@ public:
     virtual string store_dap2_result(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval);
 
-    // Store the passed DDS to disk as a serialized DAP2 object.
+    // Store the passed DMR to disk as a serialized DAP4 object.
     virtual string store_dap4_result(libdap::DMR &dmr, const string &constraint, BESDapResponseBuilder *rb);
 
     // virtual void unlock_and_close(const std::string &cache_token);
