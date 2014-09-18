@@ -256,7 +256,7 @@ private:
 		rb.set_async_accepted(dhi.data[ASYNC]);
 		rb.set_store_result(dhi.data[STORE_RESULT]);
 
-		rb.send_dmr(dhi.get_output_stream(), *dmr, get_print_mime(), true);
+		rb.send_dmr(dhi.get_output_stream(), *dmr, get_print_mime());
 	}
 };
 
@@ -288,7 +288,7 @@ private:
 		rb.set_async_accepted(dhi.data[ASYNC]);
 		rb.set_store_result(dhi.data[STORE_RESULT]);
 
-		rb.send_dap4_data(dhi.get_output_stream(), *dmr, get_print_mime(), true);
+		rb.send_dap4_data(dhi.get_output_stream(), *dmr, get_print_mime());
 	}
 };
 

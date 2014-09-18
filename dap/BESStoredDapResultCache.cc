@@ -917,7 +917,7 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
             	throw InternalErr(__FILE__, __LINE__, "Could not open '" + cache_file_name + "' to write cached response.");
 
 			//data_stream << flush;
-			rb->serialize_dap4_data(data_stream, dmr, false, false);
+			rb->serialize_dap4_data(data_stream, dmr, false);
 			//data_stream << flush;
 
 			data_stream.close();

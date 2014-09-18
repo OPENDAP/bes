@@ -75,6 +75,8 @@ protected:
 	void initialize();
 	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 
+	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
+
 public:
 
 	/** Make an empty instance. Use the set_*() methods to load with needed
@@ -142,11 +144,11 @@ public:
 	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
 
-	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true, bool filter = false);
+	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 
-	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true, bool filter = false);
+	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true);
 
-	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true, bool filter = false);
+	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 };
 

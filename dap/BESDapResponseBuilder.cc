@@ -62,7 +62,11 @@
 #include <D4StreamMarshaller.h>
 #include <chunked_ostream.h>
 #include <chunked_istream.h>
-#include <D4CEDriver.h>
+#include <D4ConstraintEvaluator.h>
+#include <D4FunctionEvaluator.h>
+#include <D4BaseTypeFactory.h>
+
+#include <ServerFunctionsList.h>
 
 #include <debug.h>
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
@@ -81,7 +85,6 @@
 #include "BESStoredDapResultCache.h"
 #include "BESDebug.h"
 
-//#define CRLF "\r\n"             // Change here, expr-test.cc
 #define DAP_PROTOCOL_VERSION "3.2"
 
 const std::string CRLF = "\r\n";             // Change here, expr-test.cc
@@ -569,7 +572,20 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
-
+/**
+ * Should this result be returned using the asynchronous response mechanism?
+ * Look at the 'store_result' property and see if the code should return this
+ * using the asynchronous mechanism. If yes, it will try and return the correct
+ * response or an error if the serveris not configured or the client has not
+ * included the correct information in the request.
+ *
+ * @param out Write information to the client using this stream
+ * @param dds The DDS that hold information used to build the response. The
+ * response won't be built until some time in the future
+ * @param eval Use this to evaluate the CE associated with the response.
+ * @return True if the response should/will be returned asynchronously, false
+ * otherwise.
+ */
 bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval) {
 
 	if(get_store_result().length()!=0){
@@ -903,16 +919,16 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
     out << flush;
 }
 
-void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_headers, bool constrained)
+void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_headers)
 {
 	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
     // If the parser returns false, the expression did not parse. The parser may also
     // throw Error
-    if (constrained && !d_dap4ce.empty()) {
+    if (!d_dap4ce.empty()) {
 
     	BESDEBUG("dap", "BESDapResponseBuilder::send_dmr() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
 
-        D4CEDriver parser(&dmr);
+        D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok)
             throw Error("Constraint Expression failed to parse.");
@@ -920,56 +936,79 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
     // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
-    else if (constrained) {
+    else {
         dmr.root()->set_send_p(true);
     }
 
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     XMLWriter xml;
-    dmr.print_dap4(xml, constrained && !d_dap4ce.empty() /* true == constrained */);
+    dmr.print_dap4(xml, /*constrained &&*/ !d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 
     out << flush;
 }
 
-void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers, bool filter)
+void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
+{
+    if (!d_dap4ce.empty()) {
+    	D4ConstraintEvaluator parser(&dmr);
+        bool parse_ok = parser.parse(d_dap4ce);
+        if (!parse_ok)
+            throw Error("Constraint Expression (" + d_dap4ce + ") failed to parse.");
+    }
+    // with an empty CE, send everything. Even though print_dap4() and serialize()
+    // don't need this, other code may depend on send_p being set. This may change
+    // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
+    else {
+        dmr.root()->set_send_p(true);
+    }
+
+    if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
+        string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
+                + "MB is too large; requests for this user are limited to "
+                + long_to_string(dmr.response_limit() / 1024) + "MB.";
+        throw Error(msg);
+    }
+
+	if (!store_dap4_result(out, dmr)) {
+        serialize_dap4_data(out, dmr, with_mime_headers);
+	}
+}
+
+void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
 {
 	try {
         // Set up the alarm.
         establish_timeout(out);
 
-        // If the CE is not empty, parse it. The projections, etc., are set as a side effect.
-        // If the parser returns false, the expression did not parse. The parser may also
-        // throw Error
-        if (!d_dap4ce.empty()) {
+        // If a function was passed in with this request, evaluate it and use that DMR
+        // for the remainder of this request.
+        // TODO Add caching for these function invocations
+        if (!d_dap4function.empty()) {
+            D4BaseTypeFactory d4_factory;
+            DMR function_result(&d4_factory, "function_results");
 
-        	BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
+            // Function modules load their functions onto this list. The list is
+            // part of libdap, not the BES.
+            if (!ServerFunctionsList::TheList())
+            	throw Error("The function expression could not be evaluated because there are no server functions defined on this server");
 
-        	D4CEDriver parser(&dmr);
-            bool parse_ok = parser.parse(d_dap4ce);
-            if (!parse_ok)
-                throw Error("Constraint Expression failed to parse.");
-        }
-        // with an empty CE, send everything. Even though print_dap4() and serialize()
-        // don't need this, other code may depend on send_p being set. This may change
-        // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
-        else {
-            dmr.root()->set_send_p(true);
-        }
+            D4FunctionEvaluator parser(&dmr, ServerFunctionsList::TheList());
+    		bool parse_ok = parser.parse(d_dap4function);
+    		if (!parse_ok)
+    			throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
-        if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
-            string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
-                    + "MB is too large; requests for this user are limited to "
-                    + long_to_string(dmr.response_limit() / 1024) + "MB.";
-            throw Error(msg);
+			parser.eval(&function_result);
+
+			// Now use the results of running the functions for the remainder of the
+			// send_data operation.
+			send_dap4_data_using_ce(out, function_result, with_mime_headers);
         }
 
-    	if (!store_dap4_result(out, dmr)) {
-            serialize_dap4_data(out, dmr, with_mime_headers, filter);
-    	}
+    	send_dap4_data_using_ce(out, dmr, with_mime_headers);
 
-        remove_timeout();
+    	remove_timeout();
     }
     catch (...) {
         remove_timeout();
@@ -980,7 +1019,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
 /**
  * Serialize the DAP4 data response to the passed stream
  */
-void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers, bool /*filter*/)
+void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers)
 {
 	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - BEGIN" << endl);
 
@@ -1008,21 +1047,34 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - END" << endl);
 }
 
-bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
-
-
-	if(get_store_result().length()!=0){
+/**
+ * Should this DAP4 result be stored and the client sent an Asynchronous response?
+ * This code looks at the 'store_result' property to determine if the response should
+ * be asynchronous and then, if so, churns through the options, sorting out if the
+ * client sent the correct information indicating it knows how to process them. If
+ * the 'store_result' property is not set, then this method simply returns false,
+ * indicating that the response should be returned using the normal synchronous
+ * response pattern.
+ *
+ * @param out Write information about the response here
+ * @param dmr This DMR will be serialized to build the response, at some point in time
+ * @return True if the response will be Asynchronous, false if the DMR should be sent
+ * right away.
+ */
+bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
+{
+	if (get_store_result().length() != 0) {
 		string serviceUrl = get_store_result();
 
 		D4AsyncUtil d4au;
 		XMLWriter xmlWrtr;
 
 		bool found;
-		string *stylesheet_ref=0, ss_ref_value;
-	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
-	    if( found && ss_ref_value.length()>0) {
-	    	stylesheet_ref = &ss_ref_value;
-	    }
+		string *stylesheet_ref = 0, ss_ref_value;
+		TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
+		if (found && ss_ref_value.length() > 0) {
+			stylesheet_ref = &ss_ref_value;
+		}
 
 		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
 		if (resultCache == NULL) {
@@ -1032,7 +1084,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			 * Looks like need to reject the request and move on.
 			 *
 			 */
-			string msg =  "The Stored Result request cannot be serviced. ";
+			string msg = "The Stored Result request cannot be serviced. ";
 			msg += "Unable to acquire StoredResultCache instance. ";
 			msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
 
@@ -1041,9 +1093,9 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			out << xmlWrtr.get_doc();
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - Sent AsyncRequestRejected" << endl);
+
 			return true;
 		}
-
 
 		if (get_async_accepted().length() != 0) {
 
@@ -1052,12 +1104,13 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			 */
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - serviceUrl="<< serviceUrl << endl);
 
-			string storedResultId="";
+			string storedResultId = "";
 			storedResultId = resultCache->store_dap4_result(dmr, get_ce(), this);
 
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - storedResultId='"<< storedResultId << "'" << endl);
+			BESDEBUG("dap",
+					"BESDapResponseBuilder::store_dap4_result() - storedResultId='"<< storedResultId << "'" << endl);
 
-			string targetURL = resultCache->assemblePath(serviceUrl,storedResultId);
+			string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - targetURL='"<< targetURL << "'" << endl);
 
 			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
@@ -1076,8 +1129,10 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr) {
 			out << flush;
 			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
 		}
+
 		return true;
 	}
+
 	return false;
 }
 
