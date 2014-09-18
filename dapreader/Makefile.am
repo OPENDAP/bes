@@ -50,10 +50,10 @@ EXTRA_DIST = data dapreader.conf.in
 CLEANFILES = *~ dapreader.conf
 
 sample_datadir = $(datadir)/hyrax/data/dapreader
-sample_data_DATA = data/fnoc1.das data/fnoc1.dds data/fnoc1.data
+sample_data_DATA = data/dap2/fnoc1.das data/dap2/fnoc1.dds data/dap2/fnoc1.data
 
 dap4_datadir = $(datadir)/hyrax/data/dapreader/dap4
-dap4_data_DATA = data/dap4/dap4.html data/dap4/test_simple_1.dmr 
+dap4_data_DATA = data/dap4/dap4.html 
 
 D4_xml_datadir = $(datadir)/hyrax/data/dapreader/dap4/D4-xml
 D4_xml_data_DATA = data/dap4/D4-xml/DMR_0.1.xml			\
@@ -73,6 +73,7 @@ data/dap4/D4-xml/DMR_7.xml data/dap4/D4-xml/DMR_8.xml
 
 dmr_testsuite_datadir = $(datadir)/hyrax/data/dapreader/dap4/dmr-testsuite
 dmr_testsuite_data_DATA = data/dap4/dmr-testsuite/test_array_1.xml	\
+data/dap4/dmr-testsuite/test_simple_1.dmr 				\
 data/dap4/dmr-testsuite/test_array_10.xml				\
 data/dap4/dmr-testsuite/test_array_11.xml				\
 data/dap4/dmr-testsuite/test_array_2.xml				\
