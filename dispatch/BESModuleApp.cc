@@ -103,7 +103,16 @@ int BESModuleApp::loadModules()
     vector<string>::iterator l = vals.begin();
     vector<string>::iterator le = vals.end();
 
-    // FIXME: This is a kludge. But we want to be sure that the dap
+    // The following code was likely added before we had the 'Include'
+    // directive. Now all modules have a line in their .conf file to
+	// Include dap.conf and that makes this redundant. However, what
+    // was happening was a module named XdapX would match the find()
+    // call below and would wind up being loaded _before_ the dap module.
+    // That led to all sorts of runtime problems. See ticket 2258. Since
+    // we don't need this and it can cause problems, I'm removing it.
+    // jhrg 10/13/14
+#if 0
+    // This is a kludge. But we want to be sure that the dap
     // modules get loaded first.
     vector<string> ordered_list;
     for (; l != le; l++) {
@@ -120,6 +129,7 @@ int BESModuleApp::loadModules()
 
     l = ordered_list.begin();
     le = ordered_list.end();
+#endif
     for (; l != le; l++) {
         string mods = (*l);
         list<string> mod_list;
