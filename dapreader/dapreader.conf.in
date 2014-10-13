@@ -11,13 +11,13 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=dapreader
-BES.module.dapreader=@bes_modules_dir@/libdapreader_module.so
+BES.modules+=reader
+BES.module.reader=@bes_modules_dir@/libdapreader_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data information
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
+BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
 
 #-----------------------------------------------------------------------#
 # DAP Reader module specific parameters

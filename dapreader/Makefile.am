@@ -32,16 +32,18 @@ BES_SRCS = DapModule.cc DapRequestHandler.cc
 
 BES_HDRS = DapModule.h DapRequestHandler.h 
 
+# hack. This is probably not needed and is currently not used, but
+# I'm leaving it in for now. If there are run-time issues with this
+# module, add '$(BES_LIBS) $(OPENSSL_LIBS)' to LIBADD below.
+# jhrg 10/13/14 
+BES_LIBS = $(top_builddir)/xmlcommand/libbes_xml_command.la \
+$(top_builddir)/ppt/libbes_ppt.la \
+$(top_builddir)/dispatch/libbes_dispatch.la
+
 libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
-libdapreader_module_la_LIBADD = $(BES_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
-
-# $(top_builddir)/dispatch/libbes_dispatch.la	\
-#	$(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/ppt/libbes_ppt.la $(OPENSSL_LIBS)
-
-# libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types $(abs_top_builddir)/dispatch/libbes_dispatch.la	\
-#	$(abs_top_builddir)/xmlcommand/libbes_xml_command.la $(abs_top_builddir)/ppt/libbes_ppt.la $(OPENSSL_LIBS)
+libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types 
 
 EXTRA_PROGRAMS = 
 
