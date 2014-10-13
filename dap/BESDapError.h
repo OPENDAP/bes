@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,7 +37,7 @@
 #include "Error.h"
 #include "BESDataHandlerInterface.h"
 
-using namespace libdap;
+//using namespace libdap;
 
 /** @brief error object created from libdap error objects and can handle
  * those errors
@@ -50,13 +50,13 @@ using namespace libdap;
  */
 class BESDapError: public BESError {
 private:
-    ErrorCode _error_code;
+    libdap::ErrorCode _error_code;
 protected:
     BESDapError()
     {
     }
 public:
-    BESDapError(const string &s, bool fatal, ErrorCode ec, const string &file, int line) :
+    BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
             BESError(s, 0, file, line), _error_code(ec)
     {
         if (fatal)
@@ -64,9 +64,11 @@ public:
         else
             set_error_type(BES_INTERNAL_ERROR);
     }
+
     virtual ~BESDapError()
     {
     }
+
     virtual int get_error_code() const
     {
         return _error_code;
@@ -78,4 +80,4 @@ public:
     static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 };
 
-#endif // BESDapError_h_ 
+#endif // BESDapError_h_
