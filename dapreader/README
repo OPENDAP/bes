@@ -7,7 +7,7 @@ using simple input files. There are two ways to create the input files.
 The DDS & DAS or DMR files may be hand written and used to for both the
 metadata and data responses (the latter use the Test* classes defined in 
 libtest-types). Alternatively, the DAP2 or DAP4 data responses can be
-written to a file (sans MIME headers) and used to build the DDS, DMR,
+written to a file (sans MIME headers) and used to build the DDS, DAS, DMR,
 and respective data responses. These two options enable test code for 
 handlers to use both 'synthetic' and 'real' datasets for testing without
 requiring handlers (in the latter case) for given formats/data-stores
@@ -20,7 +20,12 @@ addition that .xml is a synonym for .dmr and .data is a synonym for .dods.
 
 Note that while the DAP2 'response files' can be used to build both DAP2 
 and DAP4 responses, the DAP4 response files (DMR & DAP4 Data) can be used
-for DAP4 responses only.
+for DAP4 responses only. Also note that while DMR responses (and DAP4 Data
+responses) contain attributes, the DAP2 data response does not. You can
+put an ancillary DAS file/response in the same directory as the .dods (or
+.data) file and the handler will merge those attributes into the binary
+stuff moved around inside the BES. This is useful when the code under test 
+needs data values and attributes, for example,in testing server functions.
 
 Known issues: DAP4 data responses from DAP2 data response files that contain
 Structures and Sequences may not work.

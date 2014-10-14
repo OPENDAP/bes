@@ -158,7 +158,6 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
 	dmr->set_factory(0);
 }
 
-// handle the DAP4 requests
 /**
  * Given a request for the DMR response, look at the data source and
  * parse it's DMR/XML information. If the data source is a .dmr or .xml
@@ -258,7 +257,13 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 	return false;
 }
 
-// Handle the DAP2 requests
+/**
+ * This method will look at the extension on the input file and assume
+ * that if it's .das, that file should be read and used to build the DAS
+ * object. If it's .data or .dods, then the _ancillary_ das file will be used.
+ * @param dhi
+ * @return
+ */
 bool DapRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -269,7 +274,17 @@ bool DapRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
         bdas->set_container(dhi.container->get_symbolic_name());
         DAS *das = bdas->get_das();
         string accessed = dhi.container->access();
-        das->parse(accessed);
+
+    	if (extension_match(accessed, ".das")) {
+    		das->parse(accessed);
+    	}
+    	else if (extension_match(accessed, ".dods") || extension_match(accessed, ".data")) {
+    		Ancillary::read_ancillary_das(*das, accessed);
+    	}
+    	else {
+    		throw Error("The dapreader module can only return DAS responses for files ending in .das or .dods/.data.\nIn the latter case there must be an ancillary das file present.");
+    	}
+
         bdas->clear_container();
     }
     catch (BESError &e) {
@@ -320,10 +335,16 @@ void DapRequestHandler::build_dds_from_file(const string& accessed, DDS* dds)
 		throw Error("The dapreader module can only return DDS/DODS responses for files ending in .dods, .data or .dds");
 	}
 
-	// If this fails, check that the bescmd file sets the Context dap2
-	// because wihtout that, explicit containers are used
+	// If this fails, check that the bescmd file sets the Context 'dap_explicit_containers'
+	// to 'no' because without that, explicit containers are used and this will fail.
 	DAS das;
 	Ancillary::read_ancillary_das(das, accessed);
+#if 0
+	cerr << "DAS in DapRequestHandler::build_dds_from_file: ";
+	das.print(cerr);
+	cerr << "DDS in DapRequestHandler::build_dds_from_file: ";
+	dds->print(cerr);
+#endif
 	dds->transfer_attributes(&das);
 
 	dds->set_factory(0);

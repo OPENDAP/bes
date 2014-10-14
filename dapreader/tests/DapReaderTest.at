@@ -79,6 +79,8 @@ AT_BESCMD_DAP_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.dds.dmr.bescmd])
 AT_BESCMD_DAP_RESPONSE_TEST([dap/test.fnoc1.dds.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([dap/test.fnoc1.data.dds.bescmd])
 
 # DAP4 functions - these use the 'functions' keyword
 AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func1.bescmd])

@@ -4,7 +4,7 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">data/sequence_2.dds</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">data/dap2/sequence_2.dds</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c"/>
