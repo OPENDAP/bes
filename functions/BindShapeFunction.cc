@@ -38,6 +38,7 @@
 #include <DDS.h>
 #include <DMR.h>
 #include <D4RValue.h>
+#include <D4Dimensions.h>
 #include <debug.h>
 #include <util.h>
 
@@ -78,11 +79,15 @@ BaseType *bind_shape_worker(string shape, BaseType *btp){
         if(array->is_dap4()){
         	DBG(cerr << "bind_shape_worker() - Adding DAP4 dimension." << endl);
 
-        	// FIXME - I think this creates a memory leak because the D4Dimension will never be deleted
-        	// by the current implementation of Array which only has a weak pointer to the D4Dimension.
+        	// FIXME - I think this creates a memory leak because
+        	// the D4Dimension will never be deleted by the
+        	// current implementation of Array which only has a
+        	// weak pointer to the D4Dimension.
         	//
-        	// NB: The likely fix is to find the Group that holds this variable and add the new
-        	// D4Dimension to its D4Dimensions object. That will enure it is deleted. jhrg 8/26/14
+        	// NB: The likely fix is to find the Group that holds
+        	// this variable and add the new D4Dimension to its
+        	// D4Dimensions object. That will enure it is
+        	// deleted. jhrg 8/26/14
         	D4Dimension *this_dim = new D4Dimension("",dimSize);
         	array->append_dim(this_dim);
         }
