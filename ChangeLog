@@ -1,78 +1,29 @@
-2014-04-08  hyoklee
+2014-10-27 MuQun Yang <myang6@hdfgroup.org>
 
-	added USAGE document for distribution.
+        * README: Added more information for this release.
+	* USAGE:  Emphasized the BES keys reading in the h4.conf.in.
+        * NEWS:   Added more information for this release.
 
-2014-03-31  James Gallagher <jgallagher@opendap.org>
+2014-10-17  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-	M    Makefile.am
+	* hdf4_handler.spec: changed version.
+	* hdf4_handler.spec.cf: changed version.
+	* README: changed the planned release date from 9/30/13 to 5/30/13.
+	* INSTALL: changed version and updated HDF4 version.
+	* configure.ac: changed version to 3.11.6
+	* NEWS:updated what's new.
+	* Makefile.am: added DIST_SBUDIRS.
 
-2014-03-31  James Gallagher <jgallagher@opendap.org>
 
-	AM   data/3B42.980909.5.HDF
-	D    data/3B42.980909.5.HDF.gz
+2014-03-06  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-2014-03-23  hyoklee
+	* HDFCFUtil.cc:added _FillValue attribute size checker.
 
-	Updated version number.
+2014-02-07  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
-2014-03-21  hyoklee
+	* bes-testsuite:NASA data w/ hdf-eos2 optoin testing uses the new key combination.
 
-	added a missing file for the new 3.11.4 release.
-
-2014-03-21  hyoklee
-
-	updated for new 3.11.4 release.
-
-2014-03-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
-        * HDF4RequestHandler.cc
-        * HDF4RequestHandler.h
-        * HDF4_DDS.h
-        * HDFCFUtil.cc
-        * HDFCFUtil.h
-        * HDFEOS2.cc
-        * HDFEOS2.h
-        * HDFEOS2ArrayGridGeoField.cc
-        * HDFEOS2ArrayGridGeoField.h
-        * HDFEOS2ArrayMissField.h
-        * HDFEOS2ArraySwathDimMapField.cc
-        * HDFEOS2ArraySwathDimMapField.h
-        * HDFEOS2ArraySwathGeoDimMapExtraField.cc
-        * HDFEOS2ArraySwathGeoDimMapExtraField.h
-        * HDFEOS2ArraySwathGeoField.cc
-        * HDFEOS2ArraySwathGeoField.h
-        * HDFEOS2Array_RealField.cc
-        * HDFEOS2Array_RealField.h
-        * HDFSP.cc
-        * HDFSP.h
-        * HDFSPArrayAddCVField.cc
-        * HDFSPArrayAddCVField.h
-        * HDFSPArrayGeoField.cc
-        * HDFSPArrayGeoField.h
-        * HDFSPArrayMissField.cc
-        * HDFSPArrayMissField.h
-        * HDFSPArray_RealField.cc
-        * HDFSPArray_RealField.h
-        * HDFSPArray_VDField.cc
-        * HDFSPArray_VDField.h
-        * HDFSPEnumType.h
-        * HE2CF.cc
-        * HE2CF.h
-        * Makefile.am
-        * NEWS
-        * README
-        * USAGE
-        * bes-testsuite
-        * data
-        * h4.conf.in
-        * hdf4_handler.spec
-        * hdf4_handler.spec.cf
-        * hdfdesc.cc
-        * hdfeos.yy
-        * misr_init.cc
-        * misrinv.cc:
-	Added support for TRMM version 7 products.
-
-2014-01-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+2014-01-28  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
 
 	Optimized handler for MOD08_M3 and AIRS version 6 with new BES keys.
 	* USAGE:updated to have NcML handler instruction.
