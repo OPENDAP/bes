@@ -364,6 +364,25 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         if (attr_namestr.compare(0,14, "StructMetadata" )== 0)
             continue;
 
+        // When DisableECSMetaDataAll key is true,  All ECS attributes(Coremetadata etc.)
+        // should not be in the 
+        // ECS metadata list. But this routine will pick up those attributes and generate
+        // the DAP output here. Anyhow, 
+        // these attributes should not be generated here. We will turn it off.
+        if (attr_namestr.compare(0,12, "CoreMetadata" )== 0)
+            continue;
+        if (attr_namestr.compare(0,12, "coremetadata" )== 0)
+            continue;
+        if (attr_namestr.compare(0,15, "ArchiveMetadata" )== 0)
+            continue;
+        if (attr_namestr.compare(0,15, "archivemetadata" )== 0)
+            continue;
+        if (attr_namestr.compare(0,15, "Productmetadata" )== 0)
+            continue;
+        if (attr_namestr.compare(0,15, "productmetadata" )== 0)
+            continue;
+
+
         // USE VECTOR
         //char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
         vector<char>attr_data;

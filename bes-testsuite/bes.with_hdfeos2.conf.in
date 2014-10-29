@@ -272,10 +272,6 @@ BES.DefaultResponseMethod=POST
 # HDF4 handler specific parameters
 # CacheDir: Cache directory used by the HDF4 data handler.
 # Suggestion: Consider making this '/tmp/bes'; see the comment at
-# BES.CacheDir above.
-HDF4.CacheDir=
-#-----------------------------------------------------------------------#
-# HDF4 handler specific parameters: 
 #-----------------------------------------------------------------------#
 # EnableCF: Handle HDF data to follow the CF conventions
 #          (true,yes|false,no, defaults to true)
@@ -290,13 +286,7 @@ HDF4.CacheDir=
 # important key to turn it on first.
 H4.EnableCF=true
 
-# By turning EnableMODAPSFile to be true, when HDF-EOS2 library is used,
-# an extra HDF file handle(by calling SDstart) will be generated at the beginning
-# of DAS,DDS and Data build. This may be useful for a server that mounts its
-# data over the network. If you are not sure about your server settings, always
-# leave it as false or comment out this key. By default this key is commented out.
-# H4.EnableMODAPSFile=true
-
+H4.EnablePassFileID=false
 
 
 # When turning on this key, the handler will handle AIRS level 3 version 6 products
@@ -327,7 +317,7 @@ H4.DisableScaleOffsetComp=true
 # if they don't share the same datatype, the handler will make the data type of offset be the same as that of scale_factor.
 #Since we haven't found the data type inconsistencies of scale_factor and offset, in order not affect the 
 # performance, this key will be set to false by default. 
-H4.EnableCheckScaleOffsetType=false
+H4.EnableCheckScaleOffsetType = false
 
 # Disable StructMetadata 
 H4.DisableStructMetaAttr=true
@@ -400,3 +390,28 @@ H4.DisableVdataNameclashingCheck=true
 #  will not appear in the attribute for that Vdata although the key is true.
 #     The attribute container of the Vdata will always appear regardless of this key.
 H4.EnableVdataDescAttr=false
+
+H4.EnableEOSGeoCacheFile=false
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+#The size of the cache in megabytes, currently ~20GB cache for lat,lon
+HDF4.Cache.latlon.size=20000
+#
+##By turning off this key, DAS output will NOT include vgroup attributes. Since
+##we haven't added the mapping of vgroup attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 vgroup attribute output.
+## we provide this key for data centers that don't want to
+## generate vgroup attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on.
+H4.EnableVgroupAttr=true
+#
+##By turning off this key, DAS output will NOT include grid and swath object attributes. Since
+##we haven't added the mapping of grid and swath object attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 grid and swath attribute output.
+## we provide this key for data centers that don't want to
+## generate grid and swath attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on. This key is only active when configuring with the HDF-EOS2 library.
+## Note: swath and grid object attributes are not the same as the swath/grid field attributes. We have supported
+## the mapping of swath and grid field attributes since the beginning of CF option support.
+H4.EnableSwathGridAttr=true
+#

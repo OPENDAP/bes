@@ -3,7 +3,7 @@
     <getDAS>
         <BESError>
             <Type>2</Type>
-            <Message>libdap exception building response: error_code = 1002: An internal error was encountered in HDFCFUtil.cc at line 404:
+            <Message>libdap exception building response: error_code = 1002: An internal error was encountered in HDFCFUtil.cc at line 406:
 The number of _FillValue must be 1.
 Please report this to support@opendap.org
 </Message>

@@ -28,6 +28,11 @@ HDFEOS2Array_RealField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
 
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
+
     // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
@@ -98,7 +103,7 @@ HDFEOS2Array_RealField::read ()
     int32 gfid = 0;
     int32 gridid = 0;
 
-    if (true == isgeofile) {
+    if (true == isgeofile || false == check_pass_fileid_key) {
 
         // Obtain the EOS object ID(either grid or swath)
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -107,6 +112,8 @@ HDFEOS2Array_RealField::read ()
             eherr << "File " << filename.c_str () << " cannot be open.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
+//cerr<<"filename is "<<filename <<endl;
+//cerr<<"coming to open grid "<<endl;
     }
     else 
         gfid = gsfd;
@@ -171,7 +178,7 @@ HDFEOS2Array_RealField::read ()
         // Obtain attribute values.
         int32 sdfileid = -1;
 
-        if (true == isgeofile)  {
+        if (true == isgeofile || false == check_pass_fileid_key)  {
 
             sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
 
@@ -216,7 +223,7 @@ HDFEOS2Array_RealField::read ()
 
         // Close the interfaces
         SDendaccess(sdsid);
-        if (true == isgeofile)
+        if (true == isgeofile || false == check_pass_fileid_key)
             SDend(sdfileid);
     }
 
@@ -244,7 +251,7 @@ HDFEOS2Array_RealField::read ()
     }
 
 
-    if(true == isgeofile) {
+    if(true == isgeofile || false == check_pass_fileid_key) {
         r = closefunc (gfid);
         if (r != 0) {
             ostringstream eherr;
@@ -267,6 +274,10 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     BESDEBUG("h4",
              "coming to HDFEOS2Array_RealField write_dap_data_scale_comp "
              <<endl);
+
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
 
     // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
@@ -316,8 +327,6 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
-//cerr<<"coming to write_dap_data_comp"<<endl;
 
     // The following chunk of code until switch(field_dtype) handles MODIS level 1B, 
     // MOD29E1D Key and VIP products. The reason to keep the code this way is due to 
@@ -379,6 +388,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     // we need to handle them in a special way.So set a flag here.
     bool  has_Key_attr = false;
 
+    int32 sdfileid = -1;
     if(sotype!=DEFAULT_CF_EQU) {
 
         bool field_is_vdata = false;
@@ -406,6 +416,20 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (1 == tmp_rank) 
                 field_is_vdata = true;
         }
+/// DEL LATER
+#if 0
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+
+cerr<<"tmp_rank is "<<tmp_rank <<endl;
+#endif
+ 
 
         // For swath, we don't see any MODIS 1-D fields that have scale,offset 
         // and fill value attributes that need to be changed.
@@ -420,8 +444,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             vector<char>  attrbuf;
 
             // Obtain attribute values.
-            int32 sdfileid = -1;
-            if(false == isgeofile) 
+            if(false == isgeofile || false == check_pass_fileid_key) 
                 sdfileid = sdfd;
             else {
                 sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -437,7 +460,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             int32 sdsid;
 	    sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
             if (FAIL == sdsindex) {
-                if(true == isgeofile) 
+                if(true == isgeofile || false == check_pass_fileid_key) 
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the index of " << fieldname;
@@ -446,7 +469,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
             sdsid = SDselect(sdfileid, sdsindex);
             if (FAIL == sdsid) {
-                if (true == isgeofile)
+                if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the SDS ID  of " << fieldname;
@@ -631,7 +654,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'scale_factor' in " 
@@ -644,7 +667,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -687,7 +710,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -701,7 +724,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -742,7 +765,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -756,7 +779,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -797,7 +820,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -811,7 +834,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -834,13 +857,13 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                         
                         if (string::npos == found){
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
                         }
                         if (found != found_from_end){
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,
                                               "Only one separator , should be available.");
@@ -871,13 +894,13 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                             if (string::npos == found){
                                 SDendaccess(sdsid);
-                                if(true == isgeofile)
+                                if(true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
                                 throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
                             }
                             if (found != found_from_end){
                                 SDendaccess(sdsid);
-                                if(true == isgeofile)
+                                if(true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
                                 throw InternalErr(__FILE__,__LINE__,
                                                   "Only one separator , should be available.");
@@ -896,7 +919,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                         }
                         else {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,
                                              "The number of attribute count should be greater than 1.");
@@ -910,7 +933,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -927,7 +950,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -944,7 +967,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -961,7 +984,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -978,7 +1001,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -995,7 +1018,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -1012,7 +1035,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     {
                         if (temp_attrcount != 2){
                             SDendaccess(sdsid);
-                            if(true == isgeofile)
+                            if(true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -1031,7 +1054,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     break;
                     default: {
                         SDendaccess(sdsid);
-                        if(true == isgeofile)
+                        if(true == isgeofile || false == check_pass_fileid_key)
                             SDend(sdfileid);
                         throw InternalErr(__FILE__,__LINE__,"Unsupported data type.");
                     }
@@ -1070,7 +1093,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () 
@@ -1083,7 +1106,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if (true == isgeofile)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () 
@@ -1095,7 +1118,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " 
@@ -1108,7 +1131,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " 
@@ -1157,7 +1180,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " 
@@ -1172,7 +1195,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " 
@@ -1187,7 +1210,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " 
@@ -1202,7 +1225,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if(true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " 
@@ -1233,9 +1256,35 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             }
 
             SDendaccess(sdsid);
-            if (true == isgeofile)
-                SDend(sdfileid);
+ /// DEL LATER
+#if 0
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
 
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+
+cerr<<"tmp_rank 3 is "<<tmp_rank <<endl;
+#endif
+      //if (true == isgeofile || false == check_pass_fileid_key)
+       //         SDend(sdfileid);
+ /// DEL LATER
+#if 0
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+
+cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
+#endif
+ 
             BESDEBUG("h4","scale is "<<scale <<endl);
             BESDEBUG("h4","offset is "<<field_offset <<endl);
             BESDEBUG("h4","fillvalue is "<<fillvalue <<endl);
@@ -1313,6 +1362,19 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                                << " Now change it to MODIS_MUL_SCALE. "<<endl;
         }
     }
+#if 0
+ /// DEL LATER
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+
+cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
+#endif
     
 #if 0
     // We need to loop through all datatpes to allocate the memory buffer for the data.
@@ -1320,8 +1382,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 // Some MODIS products use both valid_range(valid_min, valid_max) and fillvalues for data fields. When do recalculating,
 // I check fillvalue first, then check valid_min and valid_max if they are available. 
 // The middle check is_special_value addresses the MODIS L1B special value. 
-//**************************************************************************************
-//****    if((float)tmptr[l] != fillvalue ) \
+// ////////////////////////////////////////////////////////////////////////////////////
+//    if((float)tmptr[l] != fillvalue ) \
 //                    { \
 //                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
  //                       { \
@@ -1333,7 +1395,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
-//*******************************************************************************
+////
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
@@ -1439,8 +1501,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 // This restriction is in theory not necessary, but for more MODIS data products,
 // this restriction may be valid since valid_range pairs with scale/offset to identify
 // the valid data values. KY 2014-02-19
-//**************************************************************************************
-//****    if((float)tmptr[l] != fillvalue ) \
+////
+//    if((float)tmptr[l] != fillvalue ) \
 //                    { \
 //          f(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
  //                       { \
@@ -1452,7 +1514,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
-//*******************************************************************************
+////
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
@@ -1466,13 +1528,13 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         bool special_case = false; \
         if(scale_factor_attr_index==FAIL) \
             if(num_eles_of_an_attr==1) \
-                if(radiance_scales!=NULL && radiance_offsets!=NULL) \
+                if((radiance_scales!=NULL) && (radiance_offsets!=NULL)) \
                 { \
                     scale = radiance_scales[0]; \
                     field_offset = radiance_offsets[0];\
                     special_case = true; \
                 } \
-        if((scale_factor_attr_index!=FAIL && !(scale==1 && field_offset==0)) || special_case)  \
+        if(((scale_factor_attr_index!=FAIL) && !((scale==1) && (field_offset==0))) || special_case)  \
         { \
             float temp_scale = scale; \
             float temp_offset = field_offset; \
@@ -1491,7 +1553,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     { \
                         if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
                         { \
-                            if ((orig_valid_min<=tmpval[l] && orig_valid_max>=tmpval[l]) || (true==has_Key_attr))\
+                            if (((orig_valid_min<=tmpval[l]) && (orig_valid_max>=tmpval[l])) || (true==has_Key_attr))\
                             { \
                                         tmpval[l] = tmptr[l]*temp_scale + temp_offset; \
                            } \
@@ -1501,7 +1563,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             } \
             change_data_value = true; \
             set_value((dods_float32 *)&tmpval[0], nelms); \
-        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
+        } else 	if((num_eles_of_an_attr>1) && (((radiance_scales!=NULL) && (radiance_offsets!=NULL)) || ((reflectance_scales!=NULL) && (reflectance_offsets!=NULL)))) \
         { \
             size_t dimindex=0; \
             if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
@@ -1549,6 +1611,19 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         set_value ((DODS_CAST)VAL, nelms); \
     } \
 }
+#if 0
+/// DEL LATER
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+
+cerr<<"tmp_rank again is "<<tmp_rank <<endl;
+#endif
     switch (field_dtype) {
         case DFNT_INT8:
         {
@@ -1627,6 +1702,24 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         {
             vector<uint16>val;
             val.resize(nelms);
+#if 0
+cerr<<"gridid is "<<gridid <<endl;
+int32 tmp_rank = 0;
+char tmp_dimlist[1024];
+int32 tmp_dims[rank];
+int32 field_dtype = 0;
+intn r = 0;
+
+r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+if (r != 0) {
+        ostringstream eherr;
+
+        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+}
+#endif
+
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
@@ -1742,6 +1835,11 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     }
 #endif
 
+    // Somehow the macro RECALCULATE causes the interaction between gridid and sdfileid. SO
+    // If I close the sdfileid earlier, gridid becomes invalid. So close the sdfileid now. KY 2014-10-24
+    if (true == isgeofile || false == check_pass_fileid_key)
+                SDend(sdfileid);
+    //
     return false;
     
 }
@@ -2035,7 +2133,12 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
 void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) {
 
-    if(true == isgeofile) {
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
+
+    if(true == isgeofile || false == check_pass_fileid_key) {
 
         if(sdfileid != -1)
             SDend(sdfileid);

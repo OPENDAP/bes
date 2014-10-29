@@ -18,6 +18,7 @@
 #include <iomanip>
 #include <dirent.h>
 #include <libgen.h>
+#include <unistd.h>
 
 #include "mfhdf.h"
 #include "hdf.h"
@@ -63,7 +64,8 @@ struct HDFCFUtil
 
     /// Close HDF4 and HDF-EOS2 file IDs. For performance reasons, we want to keep HDF-EOS2/HDF4 IDs open
     /// for one operation(DDS,DAS or DATA). In case of exceptions, these IDs need to be closed.
-    //static void close_fileid(int sdfd,int file_id,int gridfd,int swathfd);
+    static void close_fileid(int32 sdfd,int32 file_id,int32 gridfd,int32 swathfd,bool pass_fileid_key);
+
     //static void reset_fileid(int& sdfd, int&file_id,int&gridfd,int&swathfd);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
@@ -200,6 +202,32 @@ struct HDFCFUtil
     // Parse TRMM V7 GridHeaders
     //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
     static void parser_trmm_v7_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
+
+    // Use to generate cache file name.
+    // Reverse the char array order
+    static void rev_str(char *str, int len);
+
+    // Return the index of the char array for the integer part 
+    static int int_to_str(int,char str[],int);
+
+    // Convert a double number to char array
+    static void dtoa(double,char *,int);
+
+    // Obtain the double number in the string format
+    static std::string get_double_str(double,int,int);
+
+    // Obtain the integer in the string format
+    static std::string get_int_str(int);
+     
+    //template<typename T> static size_t write_vector_to_file(const std::string &,const vector<T> &,size_t);
+   
+#if 0
+    static size_t write_vector_to_file(const std::string &,const vector<double> &,size_t);
+    static ssize_t write_vector_to_file2(const std::string &,const vector<double> &,size_t);
+#endif
+    // Read double-type data from a file to a vector of double type
+    static ssize_t read_vector_from_file(int fd,vector<double> &,size_t);
+     
 };
 
 /// This inline routine will translate N dimensions into 1 dimension.

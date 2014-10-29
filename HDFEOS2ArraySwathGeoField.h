@@ -20,9 +20,10 @@ using namespace libdap;
 class HDFEOS2ArraySwathGeoField:public Array
 {
     public:
-        HDFEOS2ArraySwathGeoField (int rank, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+        HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
+            filename(filename),
             swathfd (swathfd), 
             swathname (swathname), 
             fieldname (fieldname) {
@@ -48,7 +49,7 @@ class HDFEOS2ArraySwathGeoField:public Array
         int rank;
 
         // HDF-EOS2 file name 
-        //std::string filename;
+        std::string filename;
 
         int swathfd;
 

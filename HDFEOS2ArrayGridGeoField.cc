@@ -6,6 +6,9 @@
 #ifdef USE_HDFEOS2_LIB
 
 #include "HDFEOS2ArrayGridGeoField.h"
+#include <stdio.h>
+#include<stdlib.h>
+#include<sys/stat.h>
 #include <iostream>
 #include <sstream>
 #include <cassert>
@@ -18,6 +21,11 @@
 #include "misrproj.h"
 #include "errormacros.h"
 #include <proj.h>
+#include<sys/types.h>
+#include<fcntl.h>
+#include<unistd.h>
+
+#include "BESH4MCache.h"
 
 using namespace std;
 
@@ -36,6 +44,11 @@ HDFEOS2ArrayGridGeoField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFEOS2ArrayGridGeoField read "<<endl);
+
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
 
     // Currently The latitude and longitude rank from HDF-EOS2 grid must be either 1-D or 2-D.
     // However, For SOM projection the final rank will become 3. 
@@ -68,12 +81,14 @@ HDFEOS2ArrayGridGeoField::read ()
     // Define function pointers to handle both grid and swath Note: in
     // this code, we only handle grid, implementing this way is to
     // keep the same style as the read functions in other files.
+    int32 (*openfunc) (char *, intn);
     int32 (*attachfunc) (int32, char *);
     intn (*detachfunc) (int32);
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
     string datasetname;
+    openfunc      = GDopen;
     attachfunc    = GDattach;
     detachfunc    = GDdetach;
     fieldinfofunc = GDfieldinfo;
@@ -83,26 +98,393 @@ HDFEOS2ArrayGridGeoField::read ()
     int32 gfid   = -1;
     int32 gridid = -1;
 
-    gfid = gridfd;
+    /* Declare projection code, zone, etc grid parameters. */
+    int32 projcode = -1; 
+    int32 zone     = -1;
+    int32 sphere   = -1;
+    float64 params[16];
+
+    int32 xdim = 0;
+    int32 ydim = 0;
+
+    float64 upleft[2];
+    float64 lowright[2];
+
+    string cache_fpath="";
+    bool use_cache = false;
+
+    // Check if passing file IDs to data
+    if(true == check_pass_fileid_key)
+        gfid = gridfd;
+    else {
+        gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
+        if (gfid < 0) {
+            ostringstream eherr;
+            eherr << "File " << filename.c_str () << " cannot be open.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+    }
 
     // Attach the grid id; make the grid valid.
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
     if (gridid < 0) {
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Grid " << datasetname.c_str () << " cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    // SOM projection should be handled differently. 
+    if(false == llflag) {
+
+        // Cache
+        // Check if a BES key H4.EnableEOSGeoCacheFile is true, if yes, we will check
+        // if a lat/lon cache file exists and if we can read lat/lon from this file.
+        string check_eos_geo_cache_key = "H4.EnableEOSGeoCacheFile";
+        bool enable_eos_geo_cache_key = false;
+        enable_eos_geo_cache_key = HDFCFUtil::check_beskeys(check_eos_geo_cache_key);
+
+        if(true == enable_eos_geo_cache_key) {
+
+            use_cache = true;
+            BESH4Cache *llcache = BESH4Cache::get_instance();
+
+            // Here we have a sanity check for the cached parameters:Cached directory,file prefix and cached directory size.
+            // Supposedly Hyrax BES cache feature should check this and the code exists. However, the
+            // current hyrax 1.9.7 doesn't provide this feature. KY 2014-10-24
+            string bescachedir= llcache->getCacheDirFromConfig();
+            string bescacheprefix = llcache->getCachePrefixFromConfig();
+            unsigned int cachesize = llcache->getCacheSizeFromConfig();
+
+            if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+            }
+            else {
+                struct stat sb;
+                if(stat(bescachedir.c_str(),&sb) !=0) {
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                    string err_mesg="The cached directory " + bescachedir;
+                    err_mesg = err_mesg + " doesn't exist.  ";
+                    throw InternalErr(__FILE__,__LINE__,err_mesg);
+                    
+                }
+                else { 
+                     if(true == S_ISDIR(sb.st_mode)) {
+                        if(access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
+                        //if(access(bescachedir.c_str(),R_OK) == -1) 
+                            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                            string err_mesg="The cached directory " + bescachedir;
+                            err_mesg = err_mesg + " can NOT be read,written or executable.";
+                            throw InternalErr(__FILE__,__LINE__,err_mesg);
+                        }
+
+                    }
+                    else {
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                        string err_mesg="The cached directory " + bescachedir;
+                        err_mesg = err_mesg + " is not a directory.";
+                        throw InternalErr(__FILE__,__LINE__,err_mesg);
+
+                    }
+                }
+            }
+
+            string cache_fname=llcache->getCachePrefixFromConfig();
+
+            intn r = -1;
+            r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
+            if (r!=0) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
+            }
+
+            // Retrieve dimensions and X-Y coordinates of corners
+            if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                           lowright) == -1) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw InternalErr (__FILE__, __LINE__, "GDgridinfo failed");
+            }
+
+            // Retrieve pixel registration information 
+            int32 pixreg = 0; 
+            r = GDpixreginfo (gridid, &pixreg);
+            if (r != 0) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                ostringstream eherr;
+                eherr << "cannot obtain grid pixel registration info.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            //Retrieve grid pixel origin 
+            int32 origin = 0; 
+            r = GDorigininfo (gridid, &origin);
+            if (r != 0) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                ostringstream eherr;
+                eherr << "cannot obtain grid origin info.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+
+            // Projection code,zone,sphere,pix,origin
+            cache_fname +=HDFCFUtil::get_int_str(projcode);
+            cache_fname +=HDFCFUtil::get_int_str(zone);
+            cache_fname +=HDFCFUtil::get_int_str(sphere);
+            cache_fname +=HDFCFUtil::get_int_str(pixreg);
+            cache_fname +=HDFCFUtil::get_int_str(origin);
+
+
+            // Xdimsize and ydimsize. Although it is rare, need to consider dim major.
+            // Whether latlon is ydim,xdim or xdim,ydim.
+            if(ydimmajor) { 
+                cache_fname +=HDFCFUtil::get_int_str(ydim);
+                cache_fname +=HDFCFUtil::get_int_str(xdim);
+                    
+            }
+            else {
+                cache_fname +=HDFCFUtil::get_int_str(xdim);
+                cache_fname +=HDFCFUtil::get_int_str(ydim);
+            }
+
+            // upleft,lowright
+            // HDF-EOS upleft,lowright,params use DDDDMMMSSS.6 digits. So choose %17.6f.
+            cache_fname +=HDFCFUtil::get_double_str(upleft[0],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(upleft[1],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(lowright[0],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(lowright[1],17,6);
+
+            // According to HDF-EOS2 document, only 13 parameters are used.
+            for(int ipar = 0; ipar<13;ipar++) {
+//cerr<<"params["<<ipar<<"] is "<<params[ipar]<<endl;
+                cache_fname+=HDFCFUtil::get_double_str(params[ipar],17,6);
+            }
+            
+            cache_fpath = bescachedir + "/"+ cache_fname;
+#if 0
+cerr<<"cache file path is  "<<cache_fpath <<endl;
+cerr<<"obtain file path from BESMCache "<<endl;
+cerr<<"Name is "<<llcache->get_cache_file_name_h4(cache_fpath,false) <<endl;
+int fd;
+llcache->get_read_lock(cache_fpath,fd);
+cerr<<"after testing get_read_lock"<<endl;
+#endif
+            
+            try {
+                do  {
+                    int expected_file_size = 0;
+                    if(GCTP_CEA == projcode || GCTP_GEO == projcode) 
+                        expected_file_size = (xdim+ydim)*sizeof(double);
+                    else if(GCTP_SOM == projcode)
+                        expected_file_size = xdim*ydim*NBLOCK*2*sizeof(double);
+                    else
+                        expected_file_size = xdim*ydim*2*sizeof(double);
+
+                    int fd = 0;
+                    bool latlon_from_cache = llcache->get_data_from_cache(cache_fpath, expected_file_size,fd);
+#if 0
+if(true == latlon_from_cache)
+    cerr<<"the cached file exists: "<<endl;
+else
+    cerr<<"the cached file doesn't exist "<< endl;
+#endif
+                    if(false == latlon_from_cache) 
+                        break;
+ 
+                    // Get the offset of lat/lon in the cached file. Since lat is stored first and lon is stored second, 
+                    // so offset_1d for lat/lon is different.   
+                    // We still need to consider different projections. 1D,2D,3D reading.Need also to consider dim major and special format.
+                    size_t offset_1d = 0;
+
+                    // Get the count of the lat/lon from the cached file.
+                    // Notice the data is read continuously. So starting from the offset point, we have to read all elements until the
+                    // last points. The total count for the data point is bigger than the production of count and step.
+                    int count_1d = 1;
+
+                    if(GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
+
+                        // It seems that for 1-D lat/lon, regardless of xdimmajor or ydimmajor. It is always Lat[YDim],Lon[XDim}, check getCorrectSubset
+                        // So we don't need to consider the dimension major case.
+                        offset_1d = (fieldtype == 1) ?offset[0] :(ydim+offset[0]);
+#if 0
+                        if(true == ydimmajor) {
+                            offset_1d = (fieldtype == 1) ?offset[0] :(ydim*sizeof(double)+offset[0]);
+                        }
+                        else {
+                            offset_1d = (fieldtype == 1) ?offset[0] :(xdim*sizeof(double)+offset[0]);
+                        }
+#endif
+                        count_1d = 1+(count[0]-1)*step[0];
+                    }
+                    else if (GCTP_SOM == projcode) {
+
+                        if(true == ydimmajor) {
+                            offset_1d = (fieldtype == 1)?(offset[0]*xdim*ydim+offset[1]*xdim+offset[2])
+                                                        :(offset[0]*xdim*ydim+offset[1]*xdim+offset[2]+expected_file_size/2/sizeof(double));
+                        }
+                        else {
+                            offset_1d = (fieldtype == 1)?(offset[0]*xdim*ydim+offset[1]*ydim+offset[2])
+                                                        :(offset[0]*xdim*ydim+offset[1]*ydim+offset[2]+expected_file_size/2/sizeof(double));
+                        }
+
+                        int total_count_dim0  = (count[0]-1)*step[0];
+                        int total_count_dim1  = (count[1]-1)*step[1];
+                        int total_count_dim2  = (count[2]-1)*step[2];
+                        int total_dim1 = (true ==ydimmajor)?ydim:xdim;
+                        int total_dim2 = (true ==ydimmajor)?xdim:ydim;
+
+                        // Flatten the 3-D index to 1-D 
+                        // This calculation can be generalized from nD to 1D
+                        // but since we only use it here. Just keep it this way.
+                        count_1d = 1 + total_count_dim0*total_dim1*total_dim2 + total_count_dim1*total_dim2 + total_count_dim2;
+                                  
+                    }
+                    else {// 2-D lat/lon case
+                        if (true == ydimmajor) 
+                            offset_1d = (fieldtype == 1) ?(offset[0] * xdim + offset[1]):(expected_file_size/2/sizeof(double)+offset[0]*xdim+offset[1]);
+                        else 
+                            offset_1d = (fieldtype == 1) ?(offset[0] * ydim + offset[1]):(expected_file_size/2/sizeof(double)+offset[0]*ydim+offset[1]);
+
+                        // Flatten the 2-D index to 1-D 
+                        int total_count_dim0  = (count[0]-1)*step[0];
+                        int total_count_dim1  = (count[1]-1)*step[1];
+                        int total_dim1 = (true ==ydimmajor)?xdim:ydim;
+
+                        count_1d = 1 + total_count_dim0*total_dim1 + total_count_dim1;
+                    }
+
+                    // Assign a vector to store lat/lon
+                    vector<double> latlon_1d;
+                    latlon_1d.resize(count_1d);
+                    
+                   // Read lat/lon from the file. 
+                   //int fd;
+                   //fd = open(cache_fpath.c_str(),O_RDONLY,0666);
+                   // TODO: Use BESLog to report that the cached file cannot be read.
+                   off_t fpos = lseek(fd,sizeof(double)*offset_1d,SEEK_SET);
+                   if (-1 == fpos) {
+                       llcache->unlock_and_close(cache_fpath);
+                       llcache->purge_file(cache_fpath);
+                       break;
+                   }
+                   ssize_t read_size = HDFCFUtil::read_vector_from_file(fd,latlon_1d,sizeof(double));
+                   llcache->unlock_and_close(cache_fpath);
+                   if((-1 == read_size) || ((size_t)read_size != count_1d*sizeof(double))) {
+                       llcache->purge_file(cache_fpath);
+                       break;
+                   }
+                    
+// Leave the debugging comments for the time being.
+#if 0
+                    // ONLY READ the subset
+                    FILE *pFile;
+                    pFile = fopen(cache_fpath.c_str(),"rb");
+                    if(NULL == pFile)
+                        break;
+                    
+                    int ret_value = fseek(pFile,sizeof(double)*offset_1d,SEEK_SET);
+                    if(ret_value != 0) {
+                        // fall back to the original calculation.
+                        fclose(pFile);
+                        break;
+                    }
+cerr<<"field name is "<<fieldname <<endl;
+cerr<<"fread is checked "<<endl;
+cerr<<"offset_1d is "<<offset_1d <<endl;
+cerr<<"count_1d is "<<count_1d <<endl;
+ 
+                    
+                    ret_value = fread(&latlon_1d[0],sizeof(double),count_1d,pFile);
+                    if(0 == ret_value) {
+                        // fall back to the original calculation
+ cerr<<"fread fails "<<endl;
+                        fclose(pFile);
+                        break;
+                    }
+#endif
+#if 0
+for(int i =0;i<count_1d;i++)
+cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
+#endif
+
+                    int total_count = 1;
+                    for (int i_rank = 0; i_rank<final_rank;i_rank++) 
+                        total_count = total_count*count[i_rank];
+                    
+                    // We will see if there is a shortcut that the lat/lon is accessed with
+                    // one-big-block. Actually this is the most common case. If we find
+                    // such a case, we simply read the whole data into the latlon buffer and
+                    // send it to BES.
+                    if(total_count == count_1d) {
+                        set_value((dods_float64*)&latlon_1d[0],nelms);
+                        detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                        return false;
+                    }
+ 
+                    vector<double>latlon;
+                    latlon.resize(total_count);
+
+                    // Retrieve latlon according to the projection 
+                    if(GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
+                        for (int i = 0; i <total_count;i++)
+                            latlon[i] = latlon_1d[i*step[0]];
+
+                    }
+                    else if (GCTP_SOM == projcode) {
+                        
+                        for (int i =0; i<count[0];i++)
+                            for(int j =0;j<count[1];j++)
+                                for(int k=0;k<count[2];k++) 
+                                    latlon[i*count[1]*count[2]+j*count[2]+k]=(true == ydimmajor)
+                                         ?latlon_1d[i*ydim*xdim*step[0]+j*xdim*step[1]+k*step[2]]
+                                         :latlon_1d[i*ydim*xdim*step[0]+j*ydim*step[1]+k*step[2]];
+                    }
+                    else {
+                        for (int i =0; i<count[0];i++)
+                            for(int j =0;j<count[1];j++)
+                                    latlon[i*count[1]+j]=(true == ydimmajor)
+                                    ?latlon_1d[i*xdim*step[0]+j*step[1]]
+                                    :latlon_1d[i*ydim*step[0]+j*step[1]];
+                    
+                    }
+
+                    set_value((dods_float64*)&latlon[0],nelms);
+                    detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                    return false;
+
+                } while (0);
+
+            }
+            catch(...) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw;
+            }
+            //detachfunc(gridid);
+                
+        }
+        
+    }
+
+
+    // In this step, if use_cache is true, we always need to write the lat/lon into the cache.
+    // SOM projection should be calculated differently. If turning on the lat/lon cache feature, it also needs to be handled  differently. 
     if(specialformat == 4) {// SOM projection
         try {
-            CalculateSOMLatLon(gridid, &offset[0], &count[0], &step[0], nelms);
+            CalculateSOMLatLon(gridid, &offset[0], &count[0], &step[0], nelms,cache_fpath,use_cache);
         }
         catch(...) {
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
             throw;
         }
         detachfunc(gridid);
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         return false;
     }
 
@@ -124,6 +506,7 @@ HDFEOS2ArrayGridGeoField::read ()
     }
     catch(...) {
         detachfunc(gridid);
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         throw;
     }
 
@@ -133,29 +516,51 @@ HDFEOS2ArrayGridGeoField::read ()
         vector<float64>latlon;
         latlon.resize(nelms);
 
-        int32 projcode = -1; 
-        int32 zone     = -1;
-        int32 sphere   = -1;
-        float64 params[16];
-        intn r = -1;
+        // If projection code etc. is not retrieved, retrieve them.
+        // When specialformat is 3, the file is a file of which the project code is set to -1, we need to skip it. KY 2014-09-11
+        if(projcode == -1 && specialformat !=3) {
 
-        r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
-        if (r!=0) {
-            detachfunc(gridid);
-            throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
-        }
+            
+            intn r = 0;
+            r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
+            if (r!=0) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
+            }
 
-        // Handle LAMAZ projection first.
-        if (GCTP_LAMAZ == projcode) { 
+            // Retrieve dimensions and X-Y coordinates of corners
+            if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                           lowright) == -1) {
+                detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
+                throw InternalErr (__FILE__, __LINE__, "GDgridinfo failed");
+            }
+       }
+
+        
+       // Handle LAMAZ projection first.
+       if (GCTP_LAMAZ == projcode) { 
             try {
-                CalculateLAMAZLatLon(gridid, fieldtype, &latlon[0], &offset[0], &count[0], &step[0], nelms);
+                vector<double>latlon_all;
+                latlon_all.resize(xdim*ydim*2);
+
+                CalculateLAMAZLatLon(gridid, fieldtype, &latlon[0], &latlon_all[0],&offset[0], &count[0], &step[0], nelms,use_cache);
+                if(true == use_cache) {
+
+                    BESH4Cache *llcache = BESH4Cache::get_instance();
+                    llcache->write_cached_data(cache_fpath,xdim*ydim*2*sizeof(double),latlon_all);
+
+                }
             }
             catch(...) {
                 detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw;
             }
             set_value ((dods_float64 *) &latlon[0], nelms);
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
             return false;
         }
          
@@ -163,14 +568,34 @@ HDFEOS2ArrayGridGeoField::read ()
         if (specialformat == 1) {
 
             try {
-                CalculateLargeGeoLatLon(gridid, fieldtype,&latlon[0], &offset[0], &count[0], &step[0], nelms);
+                vector<double>latlon_all;
+                latlon_all.resize(xdim+ydim);
+
+                CalculateLargeGeoLatLon(gridid, fieldtype,&latlon[0], &latlon_all[0],&offset[0], &count[0], &step[0], nelms,use_cache);
+                if(true == use_cache) {
+
+                    BESH4Cache *llcache = BESH4Cache::get_instance();
+                    llcache->write_cached_data(cache_fpath,(xdim+ydim)*sizeof(double),latlon_all);
+
+//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) {
+#if 0
+                    if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim)*sizeof(double))) {
+                        if(remove(cache_fpath.c_str()) !=0) {
+                            throw InternalErr(__FILE__,__LINE__,"Cannot remove the cached file.");
+                        }
+                    }
+#endif
+                }
+
             }
             catch(...) {
                 detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw;
             }
             set_value((dods_float64 *)&latlon[0],nelms);
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
             
             return false;
         }
@@ -182,15 +607,40 @@ HDFEOS2ArrayGridGeoField::read ()
             }
             catch(...) {
                 detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw;
 
             }
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         }
         else {// This is mostly general case, it will calculate lat/lon with GDij2ll.
-            CalculateLatLon (gridid, fieldtype, specialformat, &latlon[0],
-                             &offset32[0], &count32[0], &step32[0], nelms);
+
+            // Cache: check the flag and decide whether to calculate the lat/lon.
+            vector<double>latlon_all;
+
+            if(GCTP_GEO == projcode || GCTP_CEA == projcode) 
+                latlon_all.resize(xdim+ydim);
+            else
+                latlon_all.resize(xdim*ydim*2);
+ 
+            CalculateLatLon (gridid, fieldtype, specialformat, &latlon[0],&latlon_all[0],
+                             &offset32[0], &count32[0], &step32[0], nelms,use_cache);
+            if(true == use_cache) {
+//                size_t num_item_to_write = HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double));
+
+                size_t num_item_expected = 0;
+                if(GCTP_GEO == projcode || GCTP_CEA == projcode) 
+                    num_item_expected = xdim + ydim;
+                else
+                    num_item_expected = xdim*ydim*2;
+
+                BESH4Cache *llcache = BESH4Cache::get_instance();
+                llcache->write_cached_data(cache_fpath,num_item_expected*sizeof(double),latlon_all);
+
+            }
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         }
 
         // Some longitude values need to be corrected.
@@ -217,35 +667,38 @@ HDFEOS2ArrayGridGeoField::read ()
 
     if (r != 0) {
         detachfunc(gridid);
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
     // Retrieve dimensions and X-Y coordinates of corners
-    int32 xdim = 0;
-    int32 ydim = 0;
+    //int32 xdim = 0;
+    //int32 ydim = 0;
 
-    float64 upleft[2];
-    float64 lowright[2];
+    //float64 upleft[2];
+    //float64 lowright[2];
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
         detachfunc(gridid);
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Grid " << datasetname.c_str () << " information cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
     // Retrieve all GCTP projection information
-    int32 projcode = -1;
-    int32 zone     = -1;
-    int32 sphere   = -1;
-    float64 params[16];
+    //int32 projcode = -1;
+    //int32 zone     = -1;
+    //int32 sphere   = -1;
+    //float64 params[16];
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     if (r != 0) {
         detachfunc(gridid);
+        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Grid " << datasetname.c_str () << " projection info. cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -263,6 +716,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -295,6 +749,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -315,6 +770,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -335,6 +791,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -354,6 +811,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -373,6 +831,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -391,6 +850,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -410,6 +870,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
                     detachfunc(gridid);
+                    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     ostringstream eherr;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -421,6 +882,7 @@ HDFEOS2ArrayGridGeoField::read ()
         default: 
             {
                 detachfunc(gridid);
+                HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 InternalErr (__FILE__, __LINE__, "unsupported data type.");
             }
 
@@ -457,6 +919,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -468,6 +931,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -480,6 +944,7 @@ HDFEOS2ArrayGridGeoField::read ()
 			&offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -530,6 +995,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -540,6 +1006,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -552,6 +1019,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -587,6 +1055,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -597,6 +1066,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -609,6 +1079,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -645,6 +1116,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -655,6 +1127,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
                 }
@@ -666,6 +1139,7 @@ HDFEOS2ArrayGridGeoField::read ()
 			&offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -704,6 +1178,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         ostringstream eherr;
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
                     }
@@ -713,6 +1188,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -725,6 +1201,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -761,6 +1238,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -772,6 +1250,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
                 }
@@ -783,6 +1262,7 @@ HDFEOS2ArrayGridGeoField::read ()
 			&offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -823,6 +1303,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -833,6 +1314,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -844,6 +1326,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -881,6 +1364,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -891,6 +1375,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     }
                     catch(...) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         throw;
                     }
 
@@ -903,6 +1388,7 @@ HDFEOS2ArrayGridGeoField::read ()
                         &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                     if (r != 0) {
                         detachfunc(gridid);
+                        HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         ostringstream eherr;
                         eherr << "field " << fieldname.c_str () << "cannot be read.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -918,6 +1404,7 @@ HDFEOS2ArrayGridGeoField::read ()
             break;
         default:
             detachfunc(gridid);
+            HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
 
@@ -931,6 +1418,7 @@ HDFEOS2ArrayGridGeoField::read ()
     }
 
 
+    HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
 #if 0
     r = closefunc (gfid);
     if (r != 0) {
@@ -1002,9 +1490,9 @@ HDFEOS2ArrayGridGeoField::format_constraint (int *offset, int *step,
 void
 HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                                            int specialformat,
-                                           float64 * outlatlon,
+                                           float64 * outlatlon,float64* latlon_all,
                                            int32 * offset, int32 * count,
-                                           int32 * step, int nelms)
+                                           int32 * step, int nelms,bool write_latlon_cache)
 {
 
     // Retrieve dimensions and X-Y coordinates of corners 
@@ -1132,6 +1620,70 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // ADDING CACHE file routine,save lon and lat to a cached file. lat first, lon second.
+    //vector<double>latlon_all;
+    if(true == write_latlon_cache) {
+        if(GCTP_CEA == projcode || GCTP_GEO == projcode) {
+            //latlon_all.resize(xdim+ydim);
+            vector<double>temp_lat;
+            vector<double>temp_lon;
+            int32 temp_offset[2];
+            int32 temp_count[2];
+            int32 temp_step[2];
+            temp_offset[0] = 0;
+            temp_offset[1] = 0;
+            temp_step[0]   = 1;
+            temp_step[1]   = 1;
+            if(ydimmajor) {
+                // Latitude 
+                temp_count[0] = ydim;
+                temp_count[1] = 1;
+                temp_lat.resize(ydim);
+                LatLon2DSubset(&temp_lat[0],ydim,xdim,&lat[0],temp_offset,temp_count,temp_step);
+              
+                // Longitude
+                temp_count[0] = 1;
+                temp_count[1] = xdim;
+                temp_lon.resize(xdim);
+                LatLon2DSubset(&temp_lon[0],ydim,xdim,&lon[0],temp_offset,temp_count,temp_step);
+
+                for(int i = 0; i<ydim;i++)
+                    latlon_all[i] = temp_lat[i];
+
+                for(int i = 0; i<xdim;i++)
+                    latlon_all[i+ydim] = temp_lon[i];
+
+            }
+            else {
+                // Latitude 
+                temp_count[1] = ydim;
+                temp_count[0] = 1;
+                temp_lat.resize(ydim);
+                LatLon2DSubset(&temp_lat[0],xdim,ydim,&lat[0],temp_offset,temp_count,temp_step);
+              
+                // Longitude
+                temp_count[1] = 1;
+                temp_count[0] = xdim;
+                temp_lon.resize(xdim);
+                LatLon2DSubset(&temp_lon[0],xdim,ydim,&lon[0],temp_offset,temp_count,temp_step);
+
+                for(int i = 0; i<ydim;i++)
+                    latlon_all[i] = temp_lat[i];
+
+                for(int i = 0; i<xdim;i++)
+                    latlon_all[i+ydim] = temp_lon[i];
+
+
+            }
+        }
+        else {
+            memcpy((char*)(&latlon_all[0]),&lat[0],xdim*ydim*sizeof(double));
+            memcpy((char*)(&latlon_all[0])+xdim*ydim*sizeof(double),&lon[0],xdim*ydim*sizeof(double));
+        //    memcpy(&latlon_all[0]+xdim*ydim*sizeof(double),&lon[0],xdim*ydim*sizeof(double));
+           
+        }
+    }
+
     // 2-D Lat/Lon, need to decompose the data for subsetting.
     if (nelms == (xdim * ydim)) {	// no subsetting return all, for the performance reason.
         if (fieldtype == 1)
@@ -1139,7 +1691,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
         else
             memcpy (outlatlon, &lon[0], xdim * ydim * sizeof (double));
     }
-    else {						// Messy subsetting case, needs to know the major dimension
+    else {	// Messy subsetting case, needs to know the major dimension
         if (ydimmajor) {
             if (fieldtype == 1) // Lat 
                 LatLon2DSubset (outlatlon, ydim, xdim, &lat[0], offset, count,
@@ -1520,7 +2072,7 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
 // This is according to the MISR Lat/lon calculation document 
 // at http://eosweb.larc.nasa.gov/PRODOCS/misr/DPS/DPS_v50_RevS.pdf
 void
-HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *count, int *step, int nelms)
+HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *count, int *step, int nelms,const string & cache_fpath,bool write_latlon_cache)
 {
     int32 projcode = -1;
     int32 zone = -1; 
@@ -1583,7 +2135,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
         throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
     // Change to vector in the future. KY 2012-09-20
-    double *latlon = NULL;
+    //double *latlon = NULL;
     double somx = 0.;
     double somy = 0.;
     double lat_r = 0.;
@@ -1600,30 +2152,93 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
     int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
     if(blockdim==0) //66.2263, 66.224, ....
     {
-        vector<double>latlon;
-        latlon.resize(nelms); //double[180*xdim*ydim];
-        int s1=start[0]+1, e1=s1+count[0]*step[0];
-        int s2=start[1],   e2=s2+count[1]*step[1];
-        int s3=start[2],   e3=s3+count[2]*step[2];
-        for(i=s1; i<e1; i+=step[0]) //i = 1; i<180+1; i++)
-            for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
-                for(k=s3; k<e3; k+=step[2])//k=0; k<ydim; k++)
-                {
-                    b = i;
-                    l = j;
-                    s = k;
-                    misrinv(b, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
-                    sominv(somx, somy, &lon_r, &lat_r); /* (X,Y) -> (lat,lon) */
-                    if(fieldtype==1)
-                        latlon[npts] = lat_r*R2D;
-                    else
-                        latlon[npts] = lon_r*R2D;
-                    npts++;
+
+        if(true == write_latlon_cache) {
+            vector<double>latlon_all;
+            latlon_all.resize(xdim*ydim*NBLOCK*2);
+            for(int i =1; i <NBLOCK+1;i++)
+                for(int j=0;j<xdim;j++)
+                    for(int k=0;k<ydim;k++) 
+            {
+                b = i;
+                l = j;
+                s = k;
+                misrinv(b, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
+                sominv(somx, somy, &lon_r, &lat_r); /* (X,Y) -> (lat,lon) */
+                latlon_all[npts] = lat_r*R2D;
+                latlon_all[xdim*ydim*NBLOCK+npts] = lon_r*R2D;
+                npts++;
+            
+            }
+#if 0
+             // Not necessary here, it will be handled by the cached class.
+            // Need to remove the file if the file size is not the size of the latlon array.
+            //if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != (xdim*ydim*NBLOCK*2)) {
+            if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != (xdim*ydim*NBLOCK*2)*sizeof(double)) {
+                if(remove(cache_fpath.c_str()) !=0) {
+                    throw InternalErr(__FILE__,__LINE__,"Cannot remove the cached file.");
                 }
-                set_value ((dods_float64 *) &latlon[0], nelms); //(180*xdim*ydim)); //nelms);
+            }
+#endif
+            BESH4Cache *llcache = BESH4Cache::get_instance();           
+            llcache->write_cached_data(cache_fpath,xdim*ydim*NBLOCK*2*sizeof(double),latlon_all);
+
+            // Send the subset of latlon to DAP.
+            vector<double>latlon;
+            latlon.resize(nelms); //double[180*xdim*ydim];
+            //int s1=start[0]+1, e1=s1+count[0]*step[0];
+            //int s2=start[1],   e2=s2+count[1]*step[1];
+            //int s3=start[2],   e3=s3+count[2]*step[2];
+            //int s1=start[0]+1; 
+            //int s2=start[1];  
+            //int s3=start[2]; 
+
+
+            npts =0;
+            for(int i=0; i<count[0]; i++) //i = 1; i<180+1; i++)
+                for(int j=0; j<count[1]; j++)//j=0; j<xdim; j++)
+                    for(int k=0; k<count[2]; k++)//k=0; k<ydim; k++)
+            {
+                if(fieldtype == 1) {
+                    latlon[npts] = latlon_all[start[0]*ydim*xdim+start[1]*ydim+start[2]+
+                                                 i*ydim*xdim*step[0]+j*ydim*step[1]+k*step[2]];
+                }
+                else {
+                    latlon[npts] = latlon_all[xdim*ydim*NBLOCK+start[0]*ydim*xdim+start[1]*ydim+start[2]+
+                                                 i*ydim*xdim*step[0]+j*ydim*step[1]+k*step[2]];
+
+                }
+                npts++;
+            }
+
+            set_value ((dods_float64 *) &latlon[0], nelms); //(180*xdim*ydim)); //nelms);
+        }
+        else {
+            vector<double>latlon;
+            latlon.resize(nelms); //double[180*xdim*ydim];
+            int s1=start[0]+1, e1=s1+count[0]*step[0];
+            int s2=start[1],   e2=s2+count[1]*step[1];
+            int s3=start[2],   e3=s3+count[2]*step[2];
+            for(i=s1; i<e1; i+=step[0]) //i = 1; i<180+1; i++)
+                for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
+                    for(k=s3; k<e3; k+=step[2])//k=0; k<ydim; k++)
+            {
+                        b = i;
+                        l = j;
+                        s = k;
+                        misrinv(b, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
+                        sominv(somx, somy, &lon_r, &lat_r); /* (X,Y) -> (lat,lon) */
+                        if(fieldtype==1)
+                            latlon[npts] = lat_r*R2D;
+                        else
+                            latlon[npts] = lon_r*R2D;
+                        npts++;
+            }
+                    set_value ((dods_float64 *) &latlon[0], nelms); //(180*xdim*ydim)); //nelms);
+        }
     } 
     //if (latlon != NULL)
-     //   delete [] latlon;
+    //   delete [] latlon;
 }
 
 // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
@@ -1632,7 +2247,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 // HDF-EOS2 library won't give the correct value based on these value.
 // We need to calculate the latitude and longitude values.
 void
-HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
+HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all,int *start, int *count, int *step, int nelms,bool write_latlon_cache)
 {
 
     int32 xdim = 0;
@@ -1663,6 +2278,16 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, 
     float lat_step = (lowright[1] - upleft[1])/ydim;
     float lon_step = (lowright[0] - upleft[0])/xdim;
 
+    if(true == write_latlon_cache) {
+
+        for(int i = 0;i<ydim;i++)
+            latlon_all[i] = upleft[1] + i*lat_step + lat_step/2;       
+
+        for(int i = 0;i<xdim;i++)
+            latlon_all[i+ydim] = upleft[0] + i*lon_step + lon_step/2;       
+
+    }
+
     // Treat the origin of the coordinate as the center of the cell.
     // This has been the setting of MCD43 data.  KY 2012-09-10
     if (1 == fieldtype) { //Latitude
@@ -1684,7 +2309,7 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, 
 // Calculate latitude and longitude for LAMAZ projection lat/lon products.
 // GDij2ll returns infinite numbers over the north pole or the south pole.
 void
-HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
+HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, int nelms,bool write_latlon_cache)
 {
     int32 xdim = 0;
     int32 ydim = 0;
@@ -1702,8 +2327,57 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
     int32 tmp3[] = {xdim, ydim};
     int32 tmp4[] = {1, 1};
 	
-    CalculateLatLon (gridid, fieldtype, specialformat, &tmp1[0], tmp2, tmp3, tmp4, xdim*ydim);
+    CalculateLatLon (gridid, fieldtype, specialformat, &tmp1[0], latlon_all, tmp2, tmp3, tmp4, xdim*ydim,write_latlon_cache);
 
+    if(write_latlon_cache == true) {
+
+        vector<float64> temp_lat_all,lat_all;
+        temp_lat_all.resize(xdim*ydim);
+        lat_all.resize(xdim*ydim);
+
+        vector<float64> temp_lon_all,lon_all;
+        temp_lon_all.resize(xdim*ydim);
+        lon_all.resize(xdim*ydim);
+
+        for(int w=0; w < xdim*ydim; w++){
+            temp_lat_all[w] = latlon_all[w];
+            lat_all[w]      = latlon_all[w];
+            temp_lon_all[w] = latlon_all[w+xdim*ydim];
+            lon_all[w]      = latlon_all[w+xdim*ydim];
+        }
+
+        // If we find infinite number among lat or lon values, we use the nearest neighbor method to calculate lat or lon.
+        if(ydimmajor) {
+            for(int i=0; i<ydim; i++)//Lat
+                for(int j=0; j<xdim; j++)
+                    if(isundef_lat(lat_all[i*xdim+j]))
+                        lat_all[i*xdim+j]=nearestNeighborLatVal(&temp_lat_all[0], i, j, ydim, xdim);
+            for(int i=0; i<ydim; i++)
+                for(int j=0; j<xdim; j++)
+                    if(isundef_lon(lon_all[i*xdim+j]))
+                        lon_all[i*xdim+j]=nearestNeighborLonVal(&temp_lon_all[0], i, j, ydim, xdim);
+        }
+        else { // end if(ydimmajor)
+            for(int i=0; i<xdim; i++)
+                for(int j=0; j<ydim; j++)
+                    if(isundef_lat(lat_all[i*ydim+j]))
+                        lat_all[i*ydim+j]=nearestNeighborLatVal(&temp_lat_all[0], i, j, xdim, ydim);
+         
+            for(int i=0; i<xdim; i++)
+                for(int j=0; j<ydim; j++)
+                    if(isundef_lon(lon_all[i*ydim+j]))
+                        lon_all[i*ydim+j]=nearestNeighborLonVal(&temp_lon_all[0], i, j, xdim, ydim);
+        
+        }
+
+        for(int i = 0; i<xdim*ydim;i++) {
+            latlon_all[i] = lat_all[i];
+            latlon_all[i+xdim*ydim] = lon_all[i];
+        }
+
+    }
+
+    // Need to optimize the access of LAMAZ subset
     vector<float64> tmp5;
     tmp5.resize(xdim*ydim);
 
@@ -1727,13 +2401,13 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
         if(fieldtype==1) {
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
-                    if(isundef_lat(tmp1[i*xdim+j]))
-                        tmp1[i*xdim+j]=nearestNeighborLatVal(&tmp5[0], i, j, ydim, xdim);
+                    if(isundef_lat(tmp1[i*ydim+j]))
+                        tmp1[i*ydim+j]=nearestNeighborLatVal(&tmp5[0], i, j, xdim, ydim);
             } else if(fieldtype==2) {
                 for(int i=0; i<xdim; i++)
                     for(int j=0; j<ydim; j++)
-                        if(isundef_lon(tmp1[i*xdim+j]))
-                            tmp1[i*xdim+j]=nearestNeighborLonVal(&tmp5[0], i, j, ydim, xdim);
+                        if(isundef_lon(tmp1[i*ydim+j]))
+                            tmp1[i*ydim+j]=nearestNeighborLonVal(&tmp5[0], i, j, xdim, ydim);
             }
     }
 

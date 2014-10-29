@@ -1,38 +1,17 @@
+Version 3.11.6 (15 November 2014)
+
+  Added support for geo-location cache for HDF-EOS2 products.
+  Implement an option not to pass file ids for the compatibility with NcML modules.
+  Performance tuning for DDS/DAS builds
+  Support the mapping of vgroup and HDF-EOS2 swath/grid object(vgroup-like) attributes to DAP.
+     
 Version 3.11.5 (25 April 2014)
 
   Fixed the mapping of 8-bit HDF4 data type to DAP2.
 
 Version 3.11.4 (1 April 2014)
 
-  This version improves I/O by reducing the number of HDF4/HDF-EOS2 file open /
- close requests.
-
-  The default BES key settings are changed. See USAGE document.
-
-  Support to TRMM version 7 (3B43, 3B42, 3B31, 3A26, 3A25, 3A12, 3A11, 2B31, 
-2A25, 2A23, 2A21, 2A12, 1C21, 1B21, 1B11 and 1B01) and some TRMM level 3 
-version 6(CSH and 3A46) products are added. The emphasis is on level 3 grid 
-products.
-
-  Some memory leaks detected by valgrind are fixed.
- 
-  Error handling is greatly improved:resources are released properly when errors
- occur. 
-
-  The testsuite is updated accordingly.
-
-  All the updates are solely applied to the CF option.
-
-  [Known Issues] 
-
-  Note:HFRHANDLER-??? means The HDF Group's JIRA ID.
-
-  HFRHANDLER-223:(U)CHAR8 type _FillValue attribute value conversion produces
-string representation, instead of real value when the dataset is in numeric
-type.
-
-  HFRHANDLER-224:Some attributes of Lat/Lon geolocation fields in HDF-EOS2 
-swath are dropped in DAS output. 
+  Added support for TRMM version 7 products. 
 
 Version 3.11.3 (1 February 2014)
 

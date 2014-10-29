@@ -26,7 +26,7 @@ using namespace libdap;
 class HDFEOS2ArrayGridGeoField:public Array
 {
     public:
-        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", BaseType * v = 0):
+        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, /*short field_cache,*/const std::string &filename, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
             fieldtype (fieldtype),
@@ -35,6 +35,8 @@ class HDFEOS2ArrayGridGeoField:public Array
             condenseddim (condenseddim),
             speciallon (speciallon),
             specialformat (specialformat),
+            /*field_cache(field_cache),*/
+            filename(filename),
             gridfd(gridfd),
             gridname (gridname), 
             fieldname (fieldname)
@@ -109,8 +111,10 @@ class HDFEOS2ArrayGridGeoField:public Array
         // Products: MISR
         int  specialformat;
 
+        //short field_cache;
+
         // Temp here: HDF-EOS2 file name
-        //std::string filename;
+        std::string filename;
         
         int gridfd;
 
@@ -120,7 +124,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         // HDF-EOS2 field name
         std::string fieldname;
         // Calculate Lat and Lon based on HDF-EOS2 library.
-        void CalculateLatLon (int32 gridid, int fieldtype, int specialformat, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
+        void CalculateLatLon (int32 gridid, int fieldtype, int specialformat, float64 * outlatlon, float64* latlon_all, int32 * offset, int32 * count, int32 * step, int nelms,bool write_latlon_cache);
 
         // Calculate Special Latitude and Longitude.
         //One MOD13C2 file doesn't provide projection code
@@ -132,7 +136,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
         // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
-        void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms);
+        void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, int nelms,bool write_latlon_cache);
         // test for undefined values returned by longitude-latitude calculation
         bool isundef_lat(double value)
         {
@@ -252,10 +256,10 @@ class HDFEOS2ArrayGridGeoField:public Array
         // Based on our current understanding, the third dimension size is always 180. 
         // This is according to the MISR Lat/lon calculation document 
         // at http://eosweb.larc.nasa.gov/PRODOCS/misr/DPS/DPS_v50_RevS.pdf
-        void CalculateSOMLatLon(int32, int*, int*, int*, int);
+        void CalculateSOMLatLon(int32, int*, int*, int*, int,const string &, bool);
 
         // Calculate Latitude and Longitude for LAMAZ Projection.
-        void CalculateLAMAZLatLon(int32, int, float64*, int*, int*, int*, int);
+        void CalculateLAMAZLatLon(int32, int, float64*, float64*,int*, int*, int*, int,bool);
 
         // Subsetting the latitude and longitude.
         template <class T> void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);

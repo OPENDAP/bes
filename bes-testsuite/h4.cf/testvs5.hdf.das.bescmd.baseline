@@ -1,4 +1,19 @@
 Attributes {
+    Main_Vgroup {
+        String Main_Attr "Hello";
+    }
+    Main_Vgroup_Array_Vgroup {
+        String Array_Attr "Hello";
+    }
+    Main_Vgroup_Grid_Vgroup {
+        String Grid_Attr "Hello";
+    }
+    Main_Vgroup_GR_Vgroup {
+        String GR_Attr "Hello";
+    }
+    Main_Vgroup_Vdata_Vgroup {
+        String Vdata_Attr "Hello";
+    }
     Main_Vgroup_Array_Vgroup_SDS_Array {
         String long_name "SDS_Array";
     }

@@ -58,10 +58,10 @@ class HDFEOS2CFStr:public Str {
     virtual bool read();
 
   private:
+    int32 gsfd;
     std::string filename;
     std::string objname;
     std::string varname;
-    int32 gsfd;
     int grid_or_swath;
    
 };

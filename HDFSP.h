@@ -413,11 +413,12 @@ namespace HDFSP
                 return this->dims;
             }
 
-            /// Get the list of attribute container information
+            /// Get the list of OHTERHDF dimension attribute container information
             const std::vector < AttrContainer * >&getDimInfo () const
             {
                 return this->dims_info;
             }
+
 
             /// Is this field a dimension without dimension scale(or empty[no data]dimension variable)
             bool IsDimNoScale() const
@@ -446,8 +447,9 @@ namespace HDFSP
             /// dimension names. 
             std::vector < Dimension * >correcteddims;
 
-            ///  Attribute container information. See the description of the class AttrContainer.
+            ///  OTHERHDF dimension information. See the description of the class AttrContainer.
             std::vector<AttrContainer *>dims_info;
+
             std::string coordinates;
 
             /// This flag will specify the fieldtype.
@@ -739,9 +741,9 @@ namespace HDFSP
             /// All special arrangements need to be done in this step.
             void Prepare() throw(Exception);
 
-            bool Check_if_special(const std::string &gridname) throw(Exception);
+            bool Check_update_special(const std::string &gridname) throw(Exception);
 
-            void Handle_AIRS_l3() throw(Exception);
+            void Handle_AIRS_L23() throw(Exception);
 
 
             /// Obtain special HDF4 product type
@@ -778,6 +780,13 @@ namespace HDFSP
                 return this->vds;
             }
 
+            /// Get attributes for all vgroups
+            const std::vector<AttrContainer *> &getVgattrs () const
+            {
+                return this->vg_attrs;
+            }
+
+
 
         protected:
             File (const char *path)
@@ -795,6 +804,9 @@ namespace HDFSP
 
             /// Vdata objects in this file
             std::vector < VDATA * >vds;
+
+            ///  Vgroup attribute information. See the description of the class AttrContainer.
+            std::vector<AttrContainer *>vg_attrs;
 
             /// Check name clashing for fields. Borrowed from HDFEOS.cc, unused.
             ///bool check_field_name_clashing (bool bUseDimNameMatching) const;
@@ -860,6 +872,7 @@ namespace HDFSP
 
             /// Special method to prepare CERES SAVG (CER_SAVG_???) and CERES ISCCP DAYLIKE(CER_ISCCP__???DAYLIKE) latitude and longitude information.
             /// Essentially nested CERES 2-d  lat/lon need to be provided.
+            /// https://eosweb.larc.nasa.gov/sites/default/files/project/ceres/quality_summaries/srbavg_ed2d/nestedgrid.pdf  
             void PrepareCERSAVGID () throw (Exception);
 
             /// Special method to prepare CERES Zonal Average latitude and longitude information.
@@ -885,6 +898,8 @@ namespace HDFSP
             /// handling hybrid Vdata functions.
             void ReadHybridNonLoneVdatas(File*) throw(Exception);
 
+            /// Obtain vgroup attributes.
+            void ReadVgattrs(int32 vgroup_id, char *fullpath) throw(Exception);
 
             /// The full path of SDS and Vdata will be obtained.
             void InsertOrigFieldPath_ReadVgVdata () throw (Exception);

@@ -260,7 +260,7 @@ namespace HDFEOS2
     {
         public:
             Field ()
-                :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)
+                :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)/*, field_cache(0)*/
 
             {
             }
@@ -419,6 +419,19 @@ namespace HDFEOS2
                 return this->dmap;
             }
 
+//No need to check field_cache in the DDS level. 
+//May remove the debugging info. totally in the next release.
+//KY 2014-10-23
+#if 0
+            /// Have field cache or not
+            // 2 exactly cached 
+            // 1 maybe cached, need to check the 
+            // file size when accessing the data
+            const short UseFieldCache () const
+            {
+                return this->field_cache;
+            }
+#endif
         protected:
 
             // field name
@@ -501,6 +514,9 @@ namespace HDFEOS2
             // Check if this swath uses the dimension map. 
             bool dmap;
 
+            // Flag to indicate the field cache. Now this only applies to some HDF-EOS2 grid lat/lon fields.
+            //short field_cache;
+
             /// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
             /// KY 2009-12-3
             // This may not necessary. Check in the next release. KY 2012-09-20
@@ -549,6 +565,12 @@ namespace HDFEOS2
                 return this->type;
             }
 
+            /// Get the number of elements of this attribute
+            int32 getCount () const
+            {
+                return this->count;
+            }
+
             /// Obtain the attribute values(in vector <char> form)
             const std::vector < char >&getValue () const
             {
@@ -565,6 +587,9 @@ namespace HDFEOS2
 
             /// Attribute datatype(in HDF4 representation)
             int32 type;
+
+            /// Attribute number of elements
+            int32 count;
 
             /// Attribute value
             std::vector < char >value;

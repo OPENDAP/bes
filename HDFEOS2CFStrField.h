@@ -57,8 +57,8 @@ class HDFEOS2CFStrField:public Array {
         Array (n, v),
         rank(rank),
         gsfd(gsfd),
-        objname(objname),
         filename(filename),
+        objname(objname),
         varname(varname),
         grid_or_swath(grid_or_swath)
     {
@@ -76,11 +76,11 @@ class HDFEOS2CFStrField:public Array {
 
     virtual bool read();
   private:
+    int   rank;
+    int32 gsfd;
     std::string filename;
     std::string objname;
     std::string varname;
-    int32 gsfd;
-    int   rank;
     int grid_or_swath;
    
 };

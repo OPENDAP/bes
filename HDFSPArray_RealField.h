@@ -20,9 +20,10 @@ using namespace libdap;
 class HDFSPArray_RealField:public Array
 {
     public:
-        HDFSPArray_RealField (int32 rank, const int sdfd, int32 fieldref, int32 dtype, SPType & sptype, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
+        HDFSPArray_RealField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType & sptype, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
+            filename(filename),
             sdfd (sdfd),
             fieldref (fieldref), 
             dtype (dtype), 
@@ -43,7 +44,7 @@ class HDFSPArray_RealField:public Array
 
     private:
         int32 rank;
-        //string filename;
+        string filename;
         int32 sdfd;
         int32 fieldref;
         int32 dtype;

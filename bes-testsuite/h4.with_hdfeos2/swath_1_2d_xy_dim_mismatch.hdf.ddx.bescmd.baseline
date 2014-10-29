@@ -47,7 +47,7 @@
             <value>Unlim(fake)</value>
         </Attribute>
         <Int32/>
-        <dimension name="Unlim" size="0"/>
+        <dimension name="Unlim" size="2"/>
     </Array>
     <dataBLOB href=""/>
 </Dataset>

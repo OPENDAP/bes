@@ -15,6 +15,7 @@
 #include <map>
 #include <set>
 #include<math.h>
+#include<sys/stat.h>
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2.h"
@@ -455,6 +456,9 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     string DIMXNAME = this->get_geodim_x_name();
     string DIMYNAME = this->get_geodim_y_name();   
 
+    bool missingfield_unlim_flag = false;
+    Field *missingfield_unlim = NULL;
+
     // This is a big assumption, it may be wrong since not every 1-D field 
     // with the third dimension(name and size) is a coordinate
     // variable. We have to watch the products we've supported. KY 2012-6-13
@@ -527,10 +531,16 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
 
                 // Provide information for the missing data, since we need to calculate the data, so
                 // the information is different than a normal field.
-                int missingdatarank =1;
-                int missingdatatypesize = 4;
+                //int missingdatarank =1;
+                //int missingdatatypesize = 4;
                 int missingdimsize[1];
                 missingdimsize[0]= (*j)->getSize();
+                if(0 == (*j)->getSize()) {
+//cerr<<"missing field name is "<<missingfield->getName() << " dimension name is "<< dim->name <<endl;
+                    missingfield_unlim_flag = true;
+                    missingfield_unlim = missingfield;
+                }
+                
 
                 // added Z-dimension coordinate variable with nature number
                 missingfield->fieldtype = 4; 
@@ -546,6 +556,32 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
                                    missingfield->name);
  
             }
+        }
+    }
+
+    //Correct the unlimited dimension size.
+    if(true == missingfield_unlim_flag) {
+        for (vector<Field *>::const_iterator i =
+             gdset->getDataFields().begin();
+             i != gdset->getDataFields().end(); ++i) {
+
+            for (vector<Dimension *>::const_iterator j =
+                gdset->getDimensions().begin(); j!= gdset->getDimensions().end();++j){
+                
+                if((*j)->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
+                    if((*j)->getSize()!= 0) {
+                        Dimension *dim = missingfield_unlim->getDimensions()[0];
+                        dim->dimsize = (*j)->getSize();
+                        missingfield_unlim_flag = false;
+                        break;
+                    }
+                }
+
+                if(false == missingfield_unlim_flag) 
+                    break;
+            }
+            if(false == missingfield_unlim_flag) 
+                break;
         }
     }
 
@@ -830,6 +866,96 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
             lonfield->condenseddim = true;
             latfield->condenseddim = true;
         }
+
+#if 0
+        // Cache
+        // Check if a BES key H4.EnableEOSGeoCacheFile is true, if yes, we will check 
+        // if a lat/lon cache file exists for this lat/lon.
+        string check_eos_geo_cache_key = "H4.EnableEOSGeoCacheFile";
+        bool enable_eos_geo_cache_key = false;
+        enable_eos_geo_cache_key = HDFCFUtil::check_beskeys(check_eos_geo_cache_key);
+        if(true == enable_eos_geo_cache_key) {
+            // Build the cache file name based on the projection parameters.
+            string cache_fname;
+            
+            // Projection code, zone,sphere,pix,origin
+            cache_fname =HDFCFUtil::get_int_str(gdset->getProjection().getCode());          
+            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getZone());          
+            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getSphere());          
+            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getPix());          
+            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getOrigin());          
+            
+  
+            // Xdim size, ydim size
+            if(dmajor) {
+                cache_fname +=HDFCFUtil::get_int_str(ydimsize);
+                cache_fname +=HDFCFUtil::get_int_str(xdimsize);
+            }
+            else {
+                cache_fname +=HDFCFUtil::get_int_str(xdimsize);
+                cache_fname +=HDFCFUtil::get_int_str(ydimsize);
+            }
+
+            
+            // upleft,lowright
+            cache_fname +=HDFCFUtil::get_double_str(upleft[0],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(upleft[1],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(lowright[0],17,6);
+            cache_fname +=HDFCFUtil::get_double_str(lowright[1],17,6);
+
+
+            // obtain param
+            float64* params;
+            params = const_cast<float64 *>(gdset->getProjection().getParam());
+            // According to HDF-EOS2 document, only 13 parameters are used.
+            //for(int ipar = 0; ipar<16;ipar++)
+            for(int ipar = 0; ipar<13;ipar++)
+                cache_fname+=HDFCFUtil::get_double_str(params[ipar],17,6);
+//cerr<<"cache_fname is "<<cache_fname <<endl;
+            
+            // Check if this cache file exists and the file size, then set the flag. 
+            // 0: The file doesn't exist. 1: The file size is not the same as the lat/lon size.
+            // 2: The file size is the same as the lat/lon size.
+
+            // Check the status of the file
+            struct stat st;
+            string cache_fpath = "/tmp/"+cache_fname;
+            int result = stat(cache_fpath.c_str(), &st);
+            if(result == 0){
+                int actual_file_size = st.st_size;
+cerr<<"HDF-EOS2 actual_file_size is "<<actual_file_size <<endl;
+                int expected_file_size = 0;
+                if(gdset->getProjection().getCode() == GCTP_SOM) 
+                    expected_file_size = xdimsize*ydimsize*2*sizeof(double)*NBLOCK;
+                else if(gdset->getProjection().getCode() == GCTP_CEA ||
+                        gdset->getProjection().getCode() == GCTP_GEO)
+                    expected_file_size = (xdimsize+ydimsize)*sizeof(double);
+                else
+                    expected_file_size = xdimsize*ydimsize*2*sizeof(double);
+
+cerr<<"HDF-EOS2 expected_file_size is "<<expected_file_size <<endl;
+                if(actual_file_size != expected_file_size){
+cerr<<"field_cache is 1 "<<endl;
+                    lonfield->field_cache = 1;
+                    latfield->field_cache = 1;
+                }
+                else {
+cerr<<"field cache is 2 "<<endl;
+                    lonfield->field_cache = 2;
+                    latfield->field_cache = 2;
+                }
+            }
+ 
+
+            //FILE* pFile;
+            //pFile = fopen(cache_fname.c_str(),"rb");
+            // struct stat st;
+            // int result = stat(filename, &st);
+ 
+
+        }
+#endif
+        
 
         // Add latitude and longitude fields to the field list.
         gdset->datafields.push_back(latfield);
@@ -2162,6 +2288,10 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 
         // S1.2.3 Handle the missing fields 
         // Loop through all dimensions of this swath to search the missing fields
+        //
+        bool missingfield_unlim_flag = false;
+        Field *missingfield_unlim = NULL;
+
         for (vector<Dimension *>::const_iterator j =
             (*i)->getDimensions().begin(); j!= (*i)->getDimensions().end();++j){
 
@@ -2187,10 +2317,16 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 
                 // Provide information for the missing data, since we need to calculate the data, so
                 // the information is different than a normal field.
-                int missingdatarank =1;
-                int missingdatatypesize = 4;
+                //int missingdatarank =1;
+                //int missingdatatypesize = 4;
                 int missingdimsize[1];
                 missingdimsize[0]= (*j)->getSize();
+                
+                if(0 == (*j)->getSize()) {
+//cerr<<"missing field name is "<<missingfield->getName() << " dimension name is "<< dim->name <<endl;
+                    missingfield_unlim_flag = true;
+                    missingfield_unlim = missingfield;
+                }
 
                 //added Z-dimension coordinate variable with nature number
                 missingfield->fieldtype = 4; 
@@ -2200,9 +2336,36 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
                                      (missingfield->getDimensions())[0]->getName(), missingfield->name);
             }
         }
+
+        //Correct the unlimited dimension size.
+        if(true == missingfield_unlim_flag) {
+             for (vector<Field *>::const_iterator j =
+                (*i)->getDataFields().begin();
+                j != (*i)->getDataFields().end(); ++j) {
+
+                for (vector<Dimension *>::const_iterator k =
+                    (*j)->getDimensions().begin(); k!= (*j)->getDimensions().end();++k){
+                
+                    if((*k)->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
+                        if((*k)->getSize()!= 0) {
+                            Dimension *dim = missingfield_unlim->getDimensions()[0];
+                            dim->dimsize = (*k)->getSize();
+                            missingfield_unlim_flag = false;
+                            break;
+                        }
+                    }
+
+                    if(false == missingfield_unlim_flag) 
+                        break;
+                }
+                if(false == missingfield_unlim_flag) 
+                    break;
+            }
+        }
+
         (*i)->nonmisscvdimlist.clear();// clear this set.
 
-    }// End of dealing with missing fields
+    }// End of handling non-latlon cv 
 
 }
 
@@ -2673,8 +2836,9 @@ void File::Prepare(const char *path) throw(Exception)
 
         // Handle the third-dimension(both existing and missing) coordinate variables
         for (vector<GridDataset *>::const_iterator i = this->grids.begin();
-                i != this->grids.end(); ++i) 
+                i != this->grids.end(); ++i) { 
                 handle_one_grid_zdim(*i);
+        }
         
         // Handle lat/lon fields for the case of which all grids have one dedicated lat/lon grid.
         if (true == this->onelatlon) 
@@ -2747,6 +2911,24 @@ void File::Prepare(const char *path) throw(Exception)
     }// End of handling swath
    
 }
+
+#if 0
+void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
+
+    for (vector<Field *>::const_iterator j =
+        gdset->getDataFields().begin();
+        j != gdset->getDataFields().end(); ++j) {
+
+            //We only need to search those 1-D fields
+            if ((*j)->getRank()==1 && (*j)->){
+
+
+
+            }
+
+    }
+}
+#endif
 
 bool File::check_special_1d_grid() throw(Exception) {
 
@@ -3128,7 +3310,9 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
                 throw3("attribute info", this->name, attr->name);
             }
 
+            attr->count = count/DFKNTsize(attr->type);
             attr->value.resize(count);
+            
                         
             // Obtain the attribute value. Note that this function just
             // provides a copy of all attribute values. 
@@ -3342,6 +3526,8 @@ void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
 // they are necessary in the future. KY 2012-09-19
 // The internal utility method to check if two vectors have overlapped.
 // If not, return true.
+// Not used. Temporarily comment out to avoid the compiler warnings.
+#if 0
 static bool IsDisjoint(const vector<Field *> &l,
                        const vector<Field *> &r)
 {
@@ -3387,6 +3573,7 @@ static bool IsSubset(vector<pair<Field *, string> > &s, const vector<Field *> &b
     return true;
 }
 
+#endif
 // Destructor, release resources
 SwathDataset::~SwathDataset()
 {

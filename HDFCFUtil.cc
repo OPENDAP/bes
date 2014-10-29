@@ -1,6 +1,7 @@
 #include "HDFCFUtil.h"
 #include <BESDebug.h>
 #include <BESLog.h>
+#include <math.h>
 
 #define SIGNED_BYTE_TO_INT32 1
 using namespace std;
@@ -29,6 +30,7 @@ HDFCFUtil::check_beskeys(const string& key) {
     return false;
 
 }
+
 
 // From a string separated by a separator to a list of string,
 // for example, split "ab,c" to {"ab","c"}
@@ -1829,7 +1831,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                         if (!at)
                             at = das.add_table((*it_g)->getNewName(), new AttrTable);
                 
-                        string comment="Number of ﬁxed incidence angles, at 0, 5, 10 and 15 degree and all angles.";
+                        string comment="Number of fixed incidence angles, at 0, 5, 10 and 15 degree and all angles.";
                         references = "http://pps.gsfc.nasa.gov/Documents/ICSVol4.pdf";
 
                         at->append_attr("comment","String",comment);
@@ -1870,7 +1872,8 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
         bool t2b31_flag = ((base_filename.find("2B31")!=string::npos)?true:false);
         bool t2a21_flag = ((base_filename.find("2A21")!=string::npos)?true:false);
         bool t2a12_flag = ((base_filename.find("2A12")!=string::npos)?true:false);
-        bool t2a23_flag = ((base_filename.find("2A23")!=string::npos)?true:false);
+        // 2A23 is temporarily not supported perhaps due to special fill values
+        //bool t2a23_flag = ((base_filename.find("2A23")!=string::npos)?true:false);
         bool t2a25_flag = ((base_filename.find("2A25")!=string::npos)?true:false);
         bool t1c21_flag = ((base_filename.find("1C21")!=string::npos)?true:false);
         bool t1b21_flag = ((base_filename.find("1B21")!=string::npos)?true:false);
@@ -2365,29 +2368,39 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                 }
             }
 
-            if(!((*i)->getTreatAsAttrFlag())){ 
+            if(false == ((*i)->getTreatAsAttrFlag())){ 
 
                 if (true == turn_on_vdata_desc_key) {
 
                     //NOTE: for vdata field, we assume that no special characters are found. We need to escape the special characters when the data type is char. 
+                    // We need to create a DAS container for each field so that the attributes can be put inside.
                     for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
 
                         // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
-                        for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+                        // First check if the field has attributes, if it doesn't have attributes, no need to create a container.
+                        
+                        if((*j)->getAttributes().size() !=0) {
 
-                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                            AttrTable *at_v = das.get_table((*j)->getNewName());                           
+                            if(!at_v) 
+                                at_v = das.add_table((*j)->getNewName(),new AttrTable);
 
-                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
-                                string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-                            }
-                            else {
-                                for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                                    at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                            for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+
+                                if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+                                    string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                    string tempfinalstr= string(tempstring2.c_str());
+                                    at_v->append_attr((*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                                 }
-                            }
+                                else {
+                                    for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                                        string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+                                        at_v->append_attr((*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                    }
+                                }
 
+                            }
                         }
                     }
                 }
@@ -2680,6 +2693,208 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
     lon_start = lon_west;
 }
 
+// Somehow the conversion of double to c++ string with sprintf causes the memory error in
+// the testing code. I used the following code to do the conversion. Most part of the code
+// in reverse, int_to_str and dtoa are adapted from geeksforgeeks.org
+
+// reverses a string 'str' of length 'len'
+void HDFCFUtil::rev_str(char *str, int len)
+{
+    int i=0;
+    int j=len-1;
+    int temp = 0;
+    while (i<j)
+    {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++; 
+        j--;
+    }
+}
+ 
+// Converts a given integer x to string str[].  d is the number
+// of digits required in output. If d is more than the number
+// of digits in x, then 0s are added at the beginning.
+int HDFCFUtil::int_to_str(int x, char str[], int d)
+{
+    int i = 0;
+    while (x)
+    {
+        str[i++] = (x%10) + '0';
+        x = x/10;
+    }
+ 
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < d)
+        str[i++] = '0';
+ 
+    rev_str(str, i);
+    str[i] = '\0';
+    return i;
+}
+ 
+// Converts a double floating point number to string.
+void HDFCFUtil::dtoa(double n, char *res, int afterpoint)
+{
+    // Extract integer part
+    int ipart = (int)n;
+ 
+    // Extract the double part
+    double fpart = n - (double)ipart;
+ 
+    // convert integer part to string
+    int i = int_to_str(ipart, res, 0);
+ 
+    // check for display option after point
+    if (afterpoint != 0)
+    {
+        res[i] = '.';  // add dot
+ 
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter is needed
+        // to handle cases like 233.007
+        fpart = fpart * pow(10, afterpoint);
+ 
+        // A round-error of 1 is found when casting to the integer for some numbers.
+        // We need to correct it.
+        int final_fpart = (int)fpart;
+        if(fpart -(int)fpart >0.5)
+            final_fpart = (int)fpart +1;
+        int_to_str(final_fpart, res + i + 1, afterpoint);
+    }
+}
+
+
+string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
+    
+    string str;
+    if(x!=0) {
+        char res[total_digit];
+        for(int i = 0; i<total_digit;i++)
+           res[i] = '\0';
+        if (x<0) { 
+           str.push_back('-');
+           dtoa(-x,res,after_point);
+           for(int i = 0; i<total_digit;i++) {
+               if(res[i] != '\0')
+                  str.push_back(res[i]);
+           }
+        }
+        else {
+           dtoa(x, res, after_point);
+           for(int i = 0; i<total_digit;i++) {
+               if(res[i] != '\0')
+                  str.push_back(res[i]);
+           }
+        }
+    
+    }
+    else 
+       str.push_back('0');
+        
+//std::cerr<<"str length is "<<str.size() <<std::endl;
+//std::cerr<<"str is "<<str <<std::endl;
+    return str;
+
+}
+
+string HDFCFUtil::get_int_str(int x) {
+
+   string str;
+   if(x > 0 && x <10)   
+      str.push_back(x+'0');
+   
+   else if (x >10 && x<100) {
+      str.push_back(x/10+'0');
+      str.push_back(x%10+'0');
+   }
+   else {
+      int num_digit = 0;
+      int abs_x = (x<0)?-x:x;
+      while(abs_x/=10) 
+         num_digit++;
+      if(x<=0)
+         num_digit++;
+      char buf[num_digit];
+      sprintf(buf,"%d",x);
+      str.assign(buf);
+
+   }      
+
+//cerr<<"int str is "<<str<<endl;
+   return str;
+
+}
+ 
+#if 0
+template<typename T>
+size_t HDFCFUtil::write_vector_to_file(const string & fname, const vector<T> &val, size_t dtypesize) {
+#endif
+#if 0
+size_t HDFCFUtil::write_vector_to_file(const string & fname, const vector<double> &val, size_t dtypesize) {
+
+    size_t ret_val;
+    FILE* pFile;
+cerr<<"Open a file with the name "<<fname<<endl;
+    pFile = fopen(fname.c_str(),"wb");
+    ret_val = fwrite(&val[0],dtypesize,val.size(),pFile);
+cerr<<"ret_val for write is "<<ret_val <<endl;
+//for (int i=0;i<val.size();i++)
+//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
+    fclose(pFile);
+    return ret_val;
+}
+ssize_t HDFCFUtil::write_vector_to_file2(const string & fname, const vector<double> &val, size_t dtypesize) {
+
+    ssize_t ret_val;
+    //int fd = open(fname.c_str(),O_RDWR|O_CREAT|O_TRUNC,0666);
+    int fd = open(fname.c_str(),O_RDWR|O_CREAT|O_EXCL,0666);
+cerr<<"The first val is "<<val[0] <<endl;
+    ret_val = write(fd,&val[0],dtypesize*val.size());
+    close(fd);
+cerr<<"ret_val for write is "<<ret_val <<endl;
+//for (int i=0;i<val.size();i++)
+//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
+    return ret_val;
+}
+#endif
+ssize_t HDFCFUtil::read_vector_from_file(int fd, vector<double> &val, size_t dtypesize) {
+
+    ssize_t ret_val;
+    //FILE* pFile;
+    ret_val = read(fd,&val[0],val.size()*dtypesize);
+    
+#if 0
+cerr<<"Open a file with the name "<<fname<<endl;
+    pFile = fopen(fname.c_str(),"wb");
+    ret_val = fwrite(&val[0],dtypesize,val.size(),pFile);
+cerr<<"ret_val for write is "<<ret_val <<endl;
+//for (int i=0;i<val.size();i++)
+//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
+    fclose(pFile);
+#endif
+    return ret_val;
+}
+
+void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd,bool pass_fileid) {
+
+    if(false == pass_fileid) {
+        if(sdfd != -1)
+            SDend(sdfd);
+        if(fileid != -1)
+            Hclose(fileid);
+#ifdef USE_HDFEOS2_LIB
+        if(gridfd != -1)
+            GDclose(gridfd);
+        if(swathfd != -1)
+            SWclose(swathfd);
+        
+#endif
+    }
+
+}
 #if 0
 void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd) {
 

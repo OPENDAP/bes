@@ -1,0 +1,6 @@
+The data:
+Float32 temperature[Unlim = 2][NDim = 3] = {{10, 10, 10},{11, 11, 11}};
+Float32 Latitude[NDim = 3] = {0, 3, 6};
+Float32 Longitude[NDim = 3] = {0, 3, 6};
+Int32 Unlim[Unlim = 1] = {0};
+

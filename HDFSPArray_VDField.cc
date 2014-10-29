@@ -28,6 +28,11 @@ HDFSPArray_VDField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_VDField read "<<endl);
+
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
     // Declaration of offset,count and step
     vector<int>offset;
     offset.resize(rank);
@@ -39,20 +44,25 @@ HDFSPArray_VDField::read ()
     // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(&offset[0],&step[0],&count[0]);
 
-    int32 file_id = fileid;
-    int32 vdata_id = 0;
+    int32 file_id = -1;
 
-#if 0
-    // Open the file
-    file_id = Hopen (filename.c_str (), DFACC_READ, 0);
-    if (file_id < 0) {
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    if(true == check_pass_fileid_key) 
+        file_id = fileid;
+
+    else {
+        // Open the file
+        file_id = Hopen (filename.c_str (), DFACC_READ, 0);
+        if (file_id < 0) {
+            ostringstream eherr;
+            eherr << "File " << filename.c_str () << " cannot be open.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
     }
-#endif
+
     // Start the Vdata interface
+    int32 vdata_id = 0;
     if (Vstart (file_id) < 0) {
+        HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "This file cannot be open.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -62,327 +72,312 @@ HDFSPArray_VDField::read ()
     vdata_id = VSattach (file_id, vdref, "r");
     if (vdata_id == -1) {
         Vend (file_id);
+        HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Vdata cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    int32 r = -1;
+    try {
+        int32 r = -1;
 
-    // Seek the position of the starting point
-    if (VSseek (vdata_id, (int32) offset[0]) == -1) {
-        VSdetach (vdata_id);
-        Vend (file_id);
-        ostringstream eherr;
-        eherr << "VSseek failed at " << offset[0];
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
+        // Seek the position of the starting point
+        if (VSseek (vdata_id, (int32) offset[0]) == -1) {
+            ostringstream eherr;
+            eherr << "VSseek failed at " << offset[0];
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-    // Prepare the vdata field
-    if (VSsetfields (vdata_id, fdname.c_str ()) == -1) {
-        VSdetach (vdata_id);
-        Vend (file_id);
-        ostringstream eherr;
-        eherr << "VSsetfields failed with the name " << fdname;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
+        // Prepare the vdata field
+        if (VSsetfields (vdata_id, fdname.c_str ()) == -1) {
+            ostringstream eherr;
+            eherr << "VSsetfields failed with the name " << fdname;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-    int32 vdfelms = fdorder * count[0] * step[0];
+        int32 vdfelms = fdorder * count[0] * step[0];
 
-    // Loop through each data type
-    switch (dtype) {
-        case DFNT_INT8:
-        {
-            vector<int8> val;
-            val.resize(nelms);
+        // Loop through each data type
+        switch (dtype) {
+            case DFNT_INT8:
+            {
+                vector<int8> val;
+                val.resize(nelms);
 
-            vector<int8>orival;
-            orival.resize(vdfelms);
+                vector<int8>orival;
+                orival.resize(vdfelms);
 
-            // Read the data
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                // Read the data
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
 
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
 
-            // Obtain the subset portion of the data
-            if (fdorder > 1) {
-               for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =
-                        orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
+                // Obtain the subset portion of the data
+                if (fdorder > 1) {
+                   for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =
+                            orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
 
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) &val[0], nelms);
+                set_value ((dods_byte *) &val[0], nelms);
 #else
-            vector<int32>newval;
-            newval.resize(nelms);
+                vector<int32>newval;
+                newval.resize(nelms);
 
-            for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (int32) (val[counter]);
+                for (int counter = 0; counter < nelms; counter++)
+                    newval[counter] = (int32) (val[counter]);
 
-            set_value ((dods_int32 *) &newval[0], nelms);
+                set_value ((dods_int32 *) &newval[0], nelms);
 
 #endif
-        }
+            }
 
-            break;
-        case DFNT_UINT8:
-        case DFNT_UCHAR8:
-        {
+                break;
+            case DFNT_UINT8:
+            case DFNT_UCHAR8:
+            {
 
-            vector<uint8>val;
-            val.resize(nelms);
+                vector<uint8>val;
+                val.resize(nelms);
           
-            vector<uint8>orival;
-            orival.resize(vdfelms);
+                vector<uint8>orival;
+                orival.resize(vdfelms);
 
-            r = VSread (vdata_id, &orival[0], 1+(count[0] -1)* step[0], FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                r = VSread (vdata_id, &orival[0], 1+(count[0] -1)* step[0], FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_byte *) &val[0], nelms);
             }
 
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
+                break;
 
-            set_value ((dods_byte *) &val[0], nelms);
+            case DFNT_INT16:
+            {
+                vector<int16>val;
+                val.resize(nelms);
+                vector<int16>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_int16 *) &val[0], nelms);
+            }
+                break;
+
+            case DFNT_UINT16:
+
+            {
+                vector<uint16>val;
+                val.resize(nelms);
+
+                vector<uint16>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_uint16 *) &val[0], nelms);
+            }
+                break;
+            case DFNT_INT32:
+            {
+                vector<int32>val;
+                val.resize(nelms);
+                vector<int32>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_int32 *) &val[0], nelms);
+            }
+                break;
+
+            case DFNT_UINT32:
+            {
+    
+                vector<uint32>val;
+                val.resize(nelms);
+
+                vector<uint32>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_uint32 *) &val[0], nelms);
+            }
+                break;
+            case DFNT_FLOAT32:
+            {
+                vector<float32>val;
+                val.resize(nelms);
+                vector<float32>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_float32 *) &val[0], nelms);
+            }
+                break;
+            case DFNT_FLOAT64:
+            {
+
+                vector<float64>val;
+                val.resize(nelms);
+
+                vector<float64>orival;
+                orival.resize(vdfelms);
+
+                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                        FULL_INTERLACE);
+                if (r == -1) {
+                    ostringstream eherr;
+                    eherr << "VSread failed.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                if (fdorder > 1) {
+                    for (int i = 0; i < count[0]; i++)
+                        for (int j = 0; j < count[1]; j++)
+                            val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+                }
+                else {
+                    for (int i = 0; i < count[0]; i++)
+                        val[i] = orival[i * step[0]];
+                }
+
+                set_value ((dods_float64 *) &val[0], nelms);
+            }
+                break;
+            default:
+                InternalErr (__FILE__, __LINE__, "unsupported data type.");
         }
 
-            break;
-
-        case DFNT_INT16:
-        {
-            vector<int16>val;
-            val.resize(nelms);
-            vector<int16>orival;
-            orival.resize(vdfelms);
-
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_int16 *) &val[0], nelms);
+        if (VSdetach (vdata_id) == -1) {
+            ostringstream eherr;
+            eherr << "VSdetach failed.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-            break;
 
-        case DFNT_UINT16:
+        if (Vend (file_id) == -1) {
+            ostringstream eherr;
 
-        {
-            vector<uint16>val;
-            val.resize(nelms);
-
-            vector<uint16>orival;
-            orival.resize(vdfelms);
-
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_uint16 *) &val[0], nelms);
+            eherr << "VSdetach failed.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-            break;
-        case DFNT_INT32:
-        {
-            vector<int32>val;
-            val.resize(nelms);
-            vector<int32>orival;
-            orival.resize(vdfelms);
+        HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
+   }
+   catch(...) {
+        VSdetach(vdata_id);
+        Vend(file_id);
+        HDFCFUtil::close_fileid(-1,fileid,-1,-1,check_pass_fileid_key);
+        throw;
 
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_int32 *) &val[0], nelms);
-        }
-            break;
-
-        case DFNT_UINT32:
-        {
-
-            vector<uint32>val;
-            val.resize(nelms);
-
-            vector<uint32>orival;
-            orival.resize(vdfelms);
-
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_uint32 *) &val[0], nelms);
-        }
-            break;
-        case DFNT_FLOAT32:
-        {
-            vector<float32>val;
-            val.resize(nelms);
-            vector<float32>orival;
-            orival.resize(vdfelms);
-
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_float32 *) &val[0], nelms);
-        }
-            break;
-        case DFNT_FLOAT64:
-        {
-
-            vector<float64>val;
-            val.resize(nelms);
-
-            vector<float64>orival;
-            orival.resize(vdfelms);
-
-            r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
-                FULL_INTERLACE);
-            if (r == -1) {
-                VSdetach (vdata_id);
-                Vend (file_id);
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
-
-            if (fdorder > 1) {
-                for (int i = 0; i < count[0]; i++)
-                    for (int j = 0; j < count[1]; j++)
-                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
-            }
-            else {
-                for (int i = 0; i < count[0]; i++)
-                    val[i] = orival[i * step[0]];
-            }
-
-            set_value ((dods_float64 *) &val[0], nelms);
-        }
-            break;
-        default:
-            VSdetach (vdata_id);
-            Vend (file_id);
-            InternalErr (__FILE__, __LINE__, "unsupported data type.");
-    }
-
-    if (VSdetach (vdata_id) == -1) {
-        Vend (file_id);
-
-        ostringstream eherr;
-
-        eherr << "VSdetach failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-
-    if (Vend (file_id) == -1) {
-        ostringstream eherr;
-
-        eherr << "VSdetach failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
+   }
 
 #if 0
     if (Hclose (file_id) == -1) {

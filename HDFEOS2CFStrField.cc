@@ -26,6 +26,10 @@ HDFEOS2CFStrField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStrField read "<<endl);
 
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
     // Note that one dimensional character array is one string,
     // so the rank for character arrays should be rank from string+1 
     // offset32,step32 and count32 will be new subsetting parameters for
@@ -93,8 +97,25 @@ HDFEOS2CFStrField::read ()
         inqfunc = SWinqswath;
     }
 
-    int32 gsid = attachfunc (gsfd, const_cast < char *>(objname.c_str ()));
+    int32 gfid = -1;
+    if (false == check_pass_fileid_key) {
+
+        // Obtain the EOS object ID(either grid or swath)
+        gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
+        if (gfid < 0) {
+            ostringstream eherr;
+            eherr << "File " << filename.c_str () << " cannot be open.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+
+    }
+    else
+        gfid = gsfd;
+
+    int32 gsid = attachfunc (gfid, const_cast < char *>(objname.c_str ()));
     if (gsid < 0) {
+        if(false == check_pass_fileid_key)
+            closefunc(gfid);
         ostringstream eherr;
         eherr << "Grid/Swath " << objname.c_str () << " cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -111,6 +132,8 @@ HDFEOS2CFStrField::read ()
                 &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
         detachfunc(gsid);
+        if(false == check_pass_fileid_key)
+            closefunc(gfid);
         ostringstream eherr;
         eherr << "Field " << varname.c_str () << " information cannot be obtained.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -129,6 +152,8 @@ HDFEOS2CFStrField::read ()
 
     if (r != 0) {
         detachfunc(gsid);
+        if(false == check_pass_fileid_key)
+            closefunc(gfid);
         ostringstream eherr;
         eherr << "swath or grid readdata failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -149,6 +174,8 @@ HDFEOS2CFStrField::read ()
     set_value(&final_val[0],nelms);
 
     detachfunc(gsid);
+    if(false == check_pass_fileid_key)
+        closefunc(gfid);
 
     return false;
 }

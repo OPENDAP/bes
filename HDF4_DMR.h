@@ -6,8 +6,8 @@
 // The idea is borrowed from GDAL OPeNDAP handler that is implemented by
 // James Gallagher<jgallagher@opendap.org>
 
-#ifndef HDF4_DDS_H_
-#define HDF4_DDS_H_
+#ifndef HDF4_DMR_H_
+#define HDF4_DMR_H_
 
 #include "config.h"
 
@@ -18,14 +18,17 @@
 #include "HdfEosDef.h"
 #endif
 
-#include <DataDDS.h>
+//#define USE_DAP4 1
+//#undef USE_DAP4
+#ifdef USE_DAP4
+#include <DMR.h>
 #include <InternalErr.h>
 
 using namespace libdap;
 
 /**
- * This specialization of DDS is used to manage the 'resource' of the open
- * HDF4 dataset handle so that the BES will close that handle once the
+ * This specialization of DMR is used to manage the 'resource' of the open
+ * HDF4 file handle so that the BES will close that handle once the
  * framework is done working with the file. This provides a way for the
  * code in HDF4RequestHandler.cc to read data of HDF4 and HDF-EOS2 objects.
  * when HDF4/HDF-EOS2 file IDs are opened to fetch information to build DDS 
@@ -33,18 +36,18 @@ using namespace libdap;
  * multiple file open/close calls can be reduced to speed up the access
  * performance. This works well when using file netCDF module with an
  * HDF-EOS2 or HDF4 file that have many variables.
- * When the DDS is deleted by the BES, the HDF4DDS()
+ * When the DMR is deleted by the BES, the HDF4DMR()
  * destructor closes the file.
  *
  */
-class HDF4DDS : public DataDDS {
+class HDF4DMR : public libdap::DMR {
 private:
     int sdfd;
     int fileid;
     int gridfd;
     int swathfd;
 
-    void m_duplicate(const HDF4DDS &src) 
+    void m_duplicate(const HDF4DMR &src) 
     { 
         sdfd = src.sdfd; 
         fileid = src.fileid;
@@ -53,22 +56,24 @@ private:
     }
 
 public:
-    HDF4DDS(DataDDS *ddsIn) : DataDDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    HDF4DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    HDF4DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
-    HDF4DDS(const HDF4DDS &rhs) : DataDDS(rhs) {
+    HDF4DMR(const HDF4DMR &rhs) : libdap::DMR(rhs) {
         m_duplicate(rhs);
     }
 
-    HDF4DDS & operator= (const HDF4DDS &rhs) {
+    HDF4DMR & operator= (const HDF4DMR &rhs) {
         if (this == &rhs)
             return *this;
 
+        dynamic_cast<libdap::DMR &>(*this) = rhs;
         m_duplicate(rhs);
 
         return *this;
     }
 
-    ~HDF4DDS() {
+    ~HDF4DMR() {
 
         if (sdfd != -1)
             SDend(sdfd);
@@ -95,6 +100,7 @@ public:
         fileid = fileid_in;
     }
 };
+#endif
 
 #endif
 

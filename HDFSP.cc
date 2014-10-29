@@ -36,6 +36,7 @@
 #include<libgen.h>
 #include "HDFCFUtil.h"
 #include "HDFSP.h"
+#include "dodsutil.h"
 
 const char *_BACK_SLASH= "/";
 
@@ -117,8 +118,13 @@ File::~File ()
 	     i != this->vds.end (); ++i) {
              delete *i;
         }
-        Vend (this->fileid);
 
+        for (vector < AttrContainer * >::const_iterator i = this->vg_attrs.begin ();
+             i != this->vg_attrs.end (); ++i) {
+             delete *i;
+        }
+
+        Vend (this->fileid);
         // No need to close H interface since for performance reasons 
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc) 
         //Hclose (this->fileid);
@@ -525,9 +531,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
     int32 file_id        = -1;
     int32 vgroup_id      = -1;
     int32 vdata_id       = -1;
-    int32 vgroup_ref     = -1;
-    int32 obj_index      = -1;
-    int32 num_of_vg_objs = -1;
+    //int32 vgroup_ref     = -1;
+    //int32 obj_index      = -1;
+    //int32 num_of_vg_objs = -1;
     int32 obj_tag        = -1;
     int32 obj_ref        = -1;
 
@@ -809,13 +815,14 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
 // Check if this is a special SDS(MOD08_M3) that needs the connection between CVs and dimension names.
 // General algorithm:
-// Insert a set for fields' dimensions, in the mean time, insert a set for 1-D field
-// For each dimension in the set, search if one can find the corresponding field that has the same dimension name in the set.
+// 1. Insert a set for fields' dimensions, 
+// 2. in the mean time, insert a set for 1-D field
+// 3. For each dimension in the set, search if one can find the corresponding field that has the same dimension name in the set.
 // Return false if non-found occurs. 
 // Else return true.
 
 bool
-File::Check_if_special(const string& grid_name) throw(Exception) {
+File::Check_update_special(const string& grid_name) throw(Exception) {
 
     set<string> dimnameset;
     set<SDField*> fldset; 
@@ -840,7 +847,6 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
         for (vector < Dimension * >::const_iterator k =
             (*i)->getDimensions ().begin ();
             k != (*i)->getDimensions ().end (); ++k) {
-//cerr<<"dimension name is "<<(*k)->getName() <<endl;
             if((*k)->getName() !=FullXDim && (*k)->getName()!=FullYDim)
                dimnameset.insert((*k)->getName());
         }
@@ -859,9 +865,8 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
     if (fldset.size() < (dimnameset.size()+2))
         return false;
 
-//cerr<<"coming after size comparison"<<endl;
     int total_num_dims = 0;
-    int grid_name_size = grid_name.size();
+    size_t grid_name_size = grid_name.size();
     string reduced_dimname;
 
     for(set<SDField*>::const_iterator j =
@@ -875,9 +880,8 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
         }
     }
  
-    if(total_num_dims != (dimnameset.size()+2))
+    if((size_t)total_num_dims != (dimnameset.size()+2))
         return false;
-//cerr<<"coming after number of dimensions comparison"<<endl;
 
     // Updated dimension names for all variables: removing the grid_name prefix.
     for (vector < SDField * >::const_iterator i =
@@ -934,10 +938,41 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
 
 }
 
+#if 0
+// This routine is used to check if this grid is a special MOD08M3-like grid in DDS-build. 
+// Check_if_special is used when building DAS. The reason to separate is that we pass the 
+// File pointer from DAS to DDS to reduce the building time.
+// How to check: 
+// 1) 
+
+bool
+File::Check_if_special(const string& grid_name) throw(Exception) {
+
+
+     bool xdim_is_lon = false;
+     bool ydim_is_lat = false;
+     bool pre_unit_hpa = true;
+     for (vector < SDField * >::const_iterator i =
+        this->sd->getFields ().begin ();
+        i != this->sd->getFields ().end (); ++i) {
+        if (1==(*i)->getRank()) {
+            if(1 == ((*i)->fieldtype)) {
+                if("YDim" == (*j)->getName()
+
+            }
+
+        }
+    }
+}
+#endif
 void
-File::Handle_AIRS_l3() throw(Exception) {
+File::Handle_AIRS_L23() throw(Exception) {
 
     File *file = this;
+
+    bool airs_l3 = true;
+    if(basename(file->path).find(".L2.")!=string::npos)
+        airs_l3 = false;
 
     // set of names of dimensions that have dimension scales.
     set<string> scaled_dname_set;
@@ -946,7 +981,7 @@ File::Handle_AIRS_l3() throw(Exception) {
     set<string> non_scaled_dname_set;
     pair<set<string>::iterator,bool> ret;
 
-    // For dimensions that don't dimension scales, a map between dimension name and size.
+    // For dimensions that don't have dimension scales, a map between dimension name and size.
     map<string,int> non_scaled_dname_to_size;
 
     // 1.  Loop through SDS fields and remove suffixes(:???) of the dimension names and the variable names. 
@@ -955,7 +990,6 @@ File::Handle_AIRS_l3() throw(Exception) {
             file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
 
         string tempname = (*i)->name;
-//cerr<<"field original name is: "<<tempname <<endl;
         size_t found_colon = tempname.find_first_of(':');
         if(found_colon!=string::npos) 
             (*i)->newname = tempname.substr(0,found_colon);
@@ -968,17 +1002,14 @@ File::Handle_AIRS_l3() throw(Exception) {
             size_t found_colon = tempname.find_first_of(':');
             if(found_colon!=string::npos) 
                 (*k)->name = tempname.substr(0,found_colon);
-// cerr<<"dimension name "<<(*k)->name <<endl;
 
             if(0==(*k)->getType()) {
                 ret = non_scaled_dname_set.insert((*k)->name);
-//cerr<<"Not scaled dimension name "<<(*k)->name <<endl;
                 if (true == ret.second)
                     non_scaled_dname_to_size[(*k)->name] = (*k)->dimsize;
             }
             else{
                 scaled_dname_set.insert((*k)->name);
-//cerr<<"scaled dimension name "<<(*k)->name <<endl;
            }
                       
         }
@@ -993,9 +1024,14 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
 }
 #endif
 
+    // For AIRS level 3 only ****
     // 2. Remove potential redundant CVs
+    // For AIRS level 3 version 6 products, many dimension scale variables shared the same value. Physically they are the same.
+    // So to keep the performance optimal and reduce the non-necessary clutter, I remove the duplicate variables.
+    // An Example: StdPressureLev:asecending is the same as the StdPressureLev:descending, reduce to StdPressureLev 
 
     // Make a copy of the scaled-dim name set:scaled-dim-marker
+  if(true == airs_l3) {
     set<string>scaled_dname_set_marker = scaled_dname_set;
   
     // Loop through all the SDS objects, 
@@ -1033,6 +1069,7 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
         else 
             ++i;
     }
+  }
 
 #if 0
 for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
@@ -1076,8 +1113,10 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
         file->sd->sdfields.push_back (missingfield);
     }
 
+    // For AIRS level 3 only
     // Change XDim to Longitude and YDim to Latitude for field name and dimension names
 
+  if(true == airs_l3) {
     for (std::vector < SDField * >::const_iterator i =
             file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
 
@@ -1097,6 +1136,111 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
                 (*k)->name = "Latitude";
         }
 
+    }
+  }
+  
+    // For AIRS level 2 only
+    if(false == airs_l3) {
+
+        bool change_lat_unit = false;
+        bool change_lon_unit = false;
+        string ll_dimname1 = "";
+        string ll_dimname2 = "";
+
+        // 1. Assign the lat/lon units according to the CF conventions. 
+        // 2. Obtain dimension names of lat/lon.
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+            if(2 == (*i)->getRank()) {
+                if("Latitude" == (*i)->newname){
+                    (*i)->fieldtype = 1;
+                    change_lat_unit = true;
+                    string tempunits = "degrees_north";
+                    (*i)->setUnits(tempunits);
+                    ll_dimname1 = (*i)->getDimensions()[0]->getName();
+                    ll_dimname2 = (*i)->getDimensions()[1]->getName();
+
+                }
+                else if("Longitude" == (*i)->newname) {
+                    (*i)->fieldtype = 2;
+                    change_lon_unit = true;
+                    string tempunits = "degrees_east";
+                    (*i)->setUnits(tempunits);
+                }
+                if((true == change_lat_unit) && (true == change_lon_unit))
+                    break;
+            }
+        }
+
+        // 2. Generate the coordinate attribute
+        string tempcoordinates = "";
+        string tempfieldname   = "";
+        int tempcount = 0;
+        
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+
+            // We don't want to add "coordinates" attributes to all dimension scale variables.
+            bool dimscale_var = false;
+            dimscale_var = ((*i)->rank == 1) & (((*i)->newname) == ((*i)->getDimensions()[0]->getName()));
+           
+            if((0 ==(*i)->fieldtype) && (false == dimscale_var)) {
+
+                tempcount = 0;
+                tempcoordinates = "";
+                tempfieldname = "";
+
+                // First check if the dimension names of this variable include both ll_dimname1 and ll_dimname2.
+                bool has_lldim1 = false;
+                bool has_lldim2 = false;
+                for (std::vector < Dimension * >::const_iterator j =
+                    (*i)->getDimensions ().begin ();
+                    j != (*i)->getDimensions ().end (); ++j) {
+                    if((*j)->name == ll_dimname1)
+                        has_lldim1 = true;
+                    else if ((*j)->name == ll_dimname2)
+                        has_lldim2 = true;
+                    if((true == has_lldim1) && (true == has_lldim2))
+                        break;
+ 
+                }
+              
+               
+                if((true == has_lldim1) && (true == has_lldim2)) {
+                  for (std::vector < Dimension * >::const_iterator j =
+                    (*i)->getDimensions ().begin ();
+                    j != (*i)->getDimensions ().end (); ++j) {
+                    if((*j)->name == ll_dimname1)
+                        tempfieldname = "Latitude";
+                    else if ((*j)->name == ll_dimname2)
+                        tempfieldname = "Longitude";
+                    else 
+                        tempfieldname = (*j)->name;
+                
+                    if (0 == tempcount)
+                        tempcoordinates = tempfieldname;
+                    else
+                        tempcoordinates = tempcoordinates + " " + tempfieldname;
+                    tempcount++;
+                  }
+                }
+                else {
+                  for (std::vector < Dimension * >::const_iterator j =
+                    (*i)->getDimensions ().begin ();
+                    j != (*i)->getDimensions ().end (); ++j) {
+                    if (0 == tempcount)
+                        tempcoordinates = (*j)->name;
+                    else
+                        tempcoordinates = tempcoordinates + " " + (*j)->name;
+                    tempcount++;
+                  }
+
+                }
+                (*i)->setCoordinates (tempcoordinates);
+
+            }
+        }
     }
 }
 
@@ -1459,7 +1603,7 @@ throw (Exception)
     int32  dim_type      = 0; 
 
     // Number of dimension attributes(This is almost never used)
-    int32  num_dim_attrs = 0;
+    //int32  num_dim_attrs = 0;
 
     // Attribute value count
     int32  attr_value_count = 0;
@@ -2450,6 +2594,55 @@ throw (Exception)
     }
 }
 
+void 
+File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
+
+    intn status_n;
+    //int  n_attr_value = 0;
+    char attr_name[H4_MAX_NC_NAME];
+    AttrContainer *vg_attr = NULL;
+
+    intn n_attrs = Vnattrs(vgroup_id);
+    if(n_attrs == FAIL) 
+        throw1("Vnattrs failed");
+    if(n_attrs > 0) {
+        vg_attr = new AttrContainer();
+        string temp_container_name(fullpath);
+        vg_attr->name = HDFCFUtil::get_CF_string(temp_container_name);
+    }
+ 
+    for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
+
+        Attribute *attr = new Attribute();
+        int32 value_size_32 = 0;
+        status_n = Vattrinfo(vgroup_id, (intn)attr_index, attr_name, &attr->type, 
+                            &attr->count, &value_size_32);
+        if(status_n == FAIL) {
+            delete attr;
+            throw1("Vattrinfo failed.");
+        }
+        int value_size = value_size_32;
+
+	string tempname (attr_name);
+        attr->name = tempname;
+        tempname = HDFCFUtil::get_CF_string(tempname);
+        attr->newname = tempname;
+        attr->value.resize (value_size);
+
+        status_n = Vgetattr(vgroup_id,(intn)attr_index,&attr->value[0]);
+        if(status_n == FAIL) {
+            delete attr;
+            throw3("Vgetattr failed. ","The attribute name is ",attr->name);
+        }
+        vg_attr->attrs.push_back(attr);
+    }
+
+    if(vg_attr !=NULL)
+        vg_attrs.push_back(vg_attr);
+
+
+}
+
 // This code is used to obtain the full path of SDS and vdata.
 // Since it uses HDF4 library a lot, we keep the C style. KY 2010-7-13
 void
@@ -2588,6 +2781,15 @@ throw (Exception)
             memset(full_path,'\0',MAX_FULL_PATH_LEN);
             strncpy (full_path,_BACK_SLASH,strlen(_BACK_SLASH));
             strncat(full_path,vgroup_name,strlen(vgroup_name));
+            try {
+                ReadVgattrs(vgroup_id,full_path);
+
+            }
+            catch(...) {
+                Vdetach (vgroup_id);
+                free (full_path);
+                throw1 ("ReadVgattrs failed ");
+            }
             strncat(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
 
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
@@ -2615,7 +2817,6 @@ throw (Exception)
                     full_path[strlen(cfull_path)]='\0';
                     obtain_path (file_id, sd_id, full_path, obj_ref);
                 }
-
                 // This is a vdata
                 else if (Visvs (vgroup_id, obj_ref)) {
 
@@ -2652,7 +2853,7 @@ throw (Exception)
                     // is an attribute stored in vdata under vgroup SwathData that cannot 
                     // be retrieved by any attribute APIs. I suspect this is an HDF4 bug.
                     // This attribute is supposed to be an attribute under vgroup SwathData.
-                    // Since currently the information has be preserved by the handler,
+                    // Since currently the information has been preserved by the handler,
                     // so we don't have to handle this. It needs to be reported to the
                     // HDF4 developer. 2010-6-25 ky
 
@@ -2846,7 +3047,19 @@ throw (Exception)
 
     strncpy(cfull_path,full_path,strlen(full_path));
     strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
+    try {
+        ReadVgattrs(vgroup_pid,cfull_path);
+
+    }
+    catch(...) {
+        Vdetach (vgroup_pid);
+        free (cfull_path);
+        throw1 ("ReadVgattrs failed ");
+    }
+
     strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
+
+
 
     for (i = 0; i < num_gobjects; i++) {
 
@@ -3942,8 +4155,8 @@ void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Excep
 bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, 
                                        const int lonsize, string& latname, string& lonname) throw(Exception) {
 
-    bool latflag = false;
-    bool lonflag = false;
+//    bool latflag = false;
+//    bool lonflag = false;
 
     int latname_index = -1;
     int lonname_index = -1;
@@ -3973,9 +4186,9 @@ void File::PrepareTRMML2_V7() throw(Exception) {
     std::string tempnewdimname1, tempnewdimname2;
     std::string temppath;
 
-    int32 tempdimsize1, tempdimsize2;
-    SDField *longitude;
-    SDField *latitude;
+    //int32 tempdimsize1, tempdimsize2;
+    //SDField *longitude;
+    //SDField *latitude;
 
     // Create a temporary map from the dimension size to the dimension name
     std::set < int32 > tempdimsizeset;
@@ -5566,6 +5779,7 @@ throw (Exception)
 // We need provide nested CERES grid 2-D lat/lon.
 // The lat and lon should be calculated following:
 // http://eosweb.larc.nasa.gov/PRODOCS/ceres/SRBAVG/Quality_Summaries/srbavg_ed2d/nestedgrid.html
+// or https://eosweb.larc.nasa.gov/sites/default/files/project/ceres/quality_summaries/srbavg_ed2d/nestedgrid.pdf 
 // The dimension names and sizes are set according to the studies of these files.
 void
 File::PrepareCERSAVGID ()

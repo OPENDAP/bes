@@ -19,9 +19,10 @@ using namespace libdap;
 class HDFSPArrayGeoField:public Array
 {
     public:
-        HDFSPArrayGeoField (int32 rank, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
+        HDFSPArrayGeoField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
             Array (n, v),
             rank (rank),
+            filename(filename),
             sdfd(sdfd),
             fieldref (fieldref),
             dtype (dtype),
@@ -51,6 +52,7 @@ class HDFSPArrayGeoField:public Array
         int32 rank;
 
         /// File name
+        std::string filename;
         int sdfd;
 
         /// SDS reference number

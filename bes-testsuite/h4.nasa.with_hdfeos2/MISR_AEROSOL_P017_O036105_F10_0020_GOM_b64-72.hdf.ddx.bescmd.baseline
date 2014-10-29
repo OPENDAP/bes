@@ -2401,6 +2401,69 @@ END GROUP = SUBSET
 </value>
         </Attribute>
     </Attribute>
+    <Attribute name="RegParamsAer" type="Container">
+        <Attribute name="Block_size_resolution_x" type="Int32">
+            <value>17600</value>
+        </Attribute>
+        <Attribute name="Block_size_resolution_y" type="Int32">
+            <value>17600</value>
+        </Attribute>
+        <Attribute name="Block_size_size_x" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="Block_size_size_y" type="Int32">
+            <value>32</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="SubregParamsAer" type="Container">
+        <Attribute name="Block_size_resolution_x" type="Int32">
+            <value>1100</value>
+        </Attribute>
+        <Attribute name="Block_size_resolution_y" type="Int32">
+            <value>1100</value>
+        </Attribute>
+        <Attribute name="Block_size_size_x" type="Int32">
+            <value>128</value>
+        </Attribute>
+        <Attribute name="Block_size_size_y" type="Int32">
+            <value>512</value>
+        </Attribute>
+        <Attribute name="Min_WaterLeavEqReflExp" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Max_WaterLeavEqReflExp" type="Float32">
+            <value>0.2520000041</value>
+        </Attribute>
+        <Attribute name="Scale_WaterLeavEqReflExp" type="Float32">
+            <value>0.001000000047</value>
+        </Attribute>
+        <Attribute name="Offset_WaterLeavEqReflExp" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Fill_WaterLeavEqReflExp" type="Byte">
+            <value>253</value>
+        </Attribute>
+        <Attribute name="Underflow_WaterLeavEqReflExp" type="Byte">
+            <value>254</value>
+        </Attribute>
+        <Attribute name="Overflow_WaterLeavEqReflExp" type="Byte">
+            <value>255</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DomParamsAer" type="Container">
+        <Attribute name="Block_size_resolution_x" type="Int32">
+            <value>70400</value>
+        </Attribute>
+        <Attribute name="Block_size_resolution_y" type="Int32">
+            <value>70400</value>
+        </Attribute>
+        <Attribute name="Block_size_size_x" type="Int32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="Block_size_size_y" type="Int32">
+            <value>8</value>
+        </Attribute>
+    </Attribute>
     <Attribute name="PerBlockMetadataCommon" type="Container"/>
     <Attribute name="Common_Per_Block_Metadata" type="Container"/>
     <Attribute name="PerBlockMetadataTime" type="Container"/>

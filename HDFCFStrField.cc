@@ -25,6 +25,10 @@ HDFCFStrField::read ()
 
     BESDEBUG("h4","Coming to HDFCFStrField read "<<endl);
 
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
     // Note that one dimensional character array is one string,
     // so the rank for character arrays should be rank from string+1 
     // offset32,step32 and count32 will be new subsetting parameters for
@@ -69,11 +73,23 @@ HDFCFStrField::read ()
     // First SDS
     if(false == is_vdata) {
 
-        int32 sdid = h4fd;
+        int32 sdid = -1;
+        if(false == check_pass_fileid_key) {
+            sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
+            if (sdid < 0) {
+                ostringstream eherr;
+                eherr << "File " << filename.c_str () << " cannot be open.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+        }
+        else
+            sdid = h4fd;
+
         int32 sdsid = 0;
 
         int32 sdsindex = SDreftoindex (sdid, fieldref);
         if (sdsindex == -1) {
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "SDS index " << sdsindex << " is not right.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -82,6 +98,7 @@ HDFCFStrField::read ()
         // Obtain this SDS ID.
         sdsid = SDselect (sdid, sdsindex);
         if (sdsid < 0) {
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "SDselect failed.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -95,6 +112,7 @@ HDFCFStrField::read ()
                            &data_type, &n_attrs);
         if(r == FAIL) {
             SDendaccess(sdsid);
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "SDgetinfo failed.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -102,6 +120,7 @@ HDFCFStrField::read ()
 
         if(sds_rank != (rank+1)) {
             SDendaccess(sdsid);
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "The rank of string doesn't match with the rank of character array";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -118,6 +137,7 @@ HDFCFStrField::read ()
         r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
         if (r != 0) {
             SDendaccess (sdsid);
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "SDreaddata failed.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -138,21 +158,38 @@ HDFCFStrField::read ()
         }
         set_value(&final_val[0],nelms);
         SDendaccess(sdsid);
+        HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 
     }
     else {
 
+         int32 file_id = -1;
+
+         if(true == check_pass_fileid_key)
+            file_id = h4fd;
+         else {
+            // Open the file
+            file_id = Hopen (filename.c_str (), DFACC_READ, 0);
+            if (file_id < 0) {
+               ostringstream eherr;
+               eherr << "File " << filename.c_str () << " cannot be open.";
+               throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+         }
+
         // Start the Vdata interface
-        if (Vstart (h4fd) < 0) {
+        if (Vstart (file_id) < 0) {
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "This file cannot be open.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
         // Attach the vdata
-        int32 vdata_id = VSattach (h4fd, fieldref, "r");
+        int32 vdata_id = VSattach (file_id, fieldref, "r");
         if (vdata_id == -1) {
-            Vend (h4fd);
+            Vend (file_id);
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "Vdata cannot be attached.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -163,7 +200,8 @@ HDFCFStrField::read ()
         // Seek the position of the starting point
         if (VSseek (vdata_id, (int32) offset32[0]) == -1) {
             VSdetach (vdata_id);
-            Vend (h4fd);
+            Vend (file_id);
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "VSseek failed at " << offset32[0];
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -172,7 +210,8 @@ HDFCFStrField::read ()
         // Prepare the vdata field
         if (VSsetfields (vdata_id, fieldname.c_str ()) == -1) {
             VSdetach (vdata_id);
-            Vend (h4fd);
+            Vend (file_id);
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "VSsetfields failed with the name " << fieldname;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -189,7 +228,8 @@ HDFCFStrField::read ()
 
         if (r == -1) {
             VSdetach (vdata_id);
-            Vend (h4fd);
+            Vend (file_id);
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "VSread failed.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -207,8 +247,8 @@ HDFCFStrField::read ()
         }
         set_value(&final_val[0],nelms);
         VSdetach(vdata_id);
-        Vend(h4fd);
-    
+        Vend(file_id);
+        HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
 
     }
 

@@ -758,6 +758,31 @@ GROUP = SUBSET
 END GROUP = SUBSET
 ";
     }
+    RegParamsAer {
+        Int32 Block_size_resolution_x 17600;
+        Int32 Block_size_resolution_y 17600;
+        Int32 Block_size_size_x 8;
+        Int32 Block_size_size_y 32;
+    }
+    SubregParamsAer {
+        Int32 Block_size_resolution_x 1100;
+        Int32 Block_size_resolution_y 1100;
+        Int32 Block_size_size_x 128;
+        Int32 Block_size_size_y 512;
+        Float32 Min_WaterLeavEqReflExp 0.000000000;
+        Float32 Max_WaterLeavEqReflExp 0.2520000041;
+        Float32 Scale_WaterLeavEqReflExp 0.001000000047;
+        Float32 Offset_WaterLeavEqReflExp 0.000000000;
+        Byte Fill_WaterLeavEqReflExp 253;
+        Byte Underflow_WaterLeavEqReflExp 254;
+        Byte Overflow_WaterLeavEqReflExp 255;
+    }
+    DomParamsAer {
+        Int32 Block_size_resolution_x 70400;
+        Int32 Block_size_resolution_y 70400;
+        Int32 Block_size_size_x 2;
+        Int32 Block_size_size_y 8;
+    }
     PerBlockMetadataCommon {
     }
     Common_Per_Block_Metadata {

@@ -32,6 +32,10 @@ HDFEOS2ArraySwathDimMapField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathDimMapField read "<<endl);
 
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
     // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
@@ -92,7 +96,7 @@ HDFEOS2ArraySwathDimMapField::read ()
     int32 sfid = -1;
     int32 swathid = -1; 
 
-    if (true == isgeofile) {
+    if (true == isgeofile || false == check_pass_fileid_key) {
 
         // Open, attach and obtain datatype information based on HDF-EOS2 APIs.
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -236,7 +240,7 @@ HDFEOS2ArraySwathDimMapField::read ()
     }
 
 
-    if(true == isgeofile) {
+    if(true == isgeofile || false == check_pass_fileid_key) {
         r = closefunc (sfid);
         if (r != 0) {
             ostringstream eherr;
@@ -603,7 +607,11 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                                                         vector<int32>& step32) {
     
 
-     // Define function pointers to handle both grid and swath
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
+  // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
@@ -616,8 +624,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     attrinfofunc = SWattrinfo;
     readattrfunc = SWreadattr;
 
-    int32 attrtype = -1, attrcount = -1, attrcounts=0;
-    int32 attrindex = -1, attrindex2 = -1;
+    int32 attrtype = -1, attrcount = -1;
+    int32 attrindex = -1;
     int32 scale_factor_attr_index = -1, add_offset_attr_index =-1;
     float scale=1, offset2=0, fillvalue = 0.;
 
@@ -626,7 +634,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         // Obtain attribute values.
         int32 sdfileid = -1;
 
-        if (true == isgeofile) {
+        if (true == isgeofile || false == check_pass_fileid_key) {
             sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
             if (FAIL == sdfileid) {
                 ostringstream eherr;
@@ -640,7 +648,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         int32 sdsindex = -1, sdsid = -1; 
         sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
         if (FAIL == sdsindex) {
-            if(true == isgeofile) 
+            if(true == isgeofile || false == check_pass_fileid_key) 
                 SDend(sdfileid);
             ostringstream eherr;
             eherr << "Cannot obtain the index of " << fieldname;
@@ -649,7 +657,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
         sdsid = SDselect(sdfileid, sdsindex);
         if (FAIL == sdsid) {
-            if(true == isgeofile)
+            if(true == isgeofile || false == check_pass_fileid_key)
                 SDend(sdfileid);
             ostringstream eherr;
             eherr << "Cannot obtain the SDS ID  of " << fieldname;
@@ -667,7 +675,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute 'scale_factor' in " 
@@ -681,7 +689,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute 'scale_factor' in " 
@@ -717,7 +725,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute 'add_offset' in " 
@@ -730,7 +738,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute 'add_offset' in " 
@@ -760,7 +768,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute '_FillValue' in " 
@@ -773,7 +781,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             if (ret==FAIL)
             {
                 SDendaccess(sdsid);
-                if(true == isgeofile)
+                if(true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Attribute '_FillValue' in " 
@@ -971,7 +979,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         //cerr << "fillvalue=" << fillvalue << endl;
 	
         SDendaccess(sdsid);
-        if(true == isgeofile)
+        if(true == isgeofile || false == check_pass_fileid_key)
             SDend(sdfileid);
     }
 
@@ -1025,7 +1033,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         }
     }
 
-//*******************************************************************************
+////
 // RECALCULATE formula
 //                            if(sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
@@ -1033,7 +1041,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 //                                tmpval[l] = tmptr[l]*scale + field_offset; \
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
-//*******************************************************************************
+////
 
 
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
@@ -1548,7 +1556,11 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
 
 void HDFEOS2ArraySwathDimMapField::close_fileid(const int32 swfileid, const int32 sdfileid) {
 
-    if(true == isgeofile) {
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
+    if(true == isgeofile || false == check_pass_fileid_key) {
 
         if(sdfileid != -1)
             SDend(sdfileid);

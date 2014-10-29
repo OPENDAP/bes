@@ -1,6 +1,6 @@
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.11.4
+Updated for 3.11.6
 
 ---------------------------------------------------------------------------
 
@@ -25,9 +25,9 @@ before reporting problems. Thanks.
     Red Hat or CentOS) it was necessary to build HDF4. To do so I ran
     configure as './configure --with-pic --disable-fortran --disable-netcdf'
 
-    If hdf4_handler reports an error like "HDFEOS2.cc:112: grid open.." or 
-  fileout_netdf module dumps an netcdf file with size 0, please configure and 
-  build the HDF4 library with './configure --with-pic --disable-netcdf' option.
+   If hdf4_handler reports an error  or  fileout_nectdf module dumps an netcdf 
+   file with size 0, please configure and build the HDF4 library with
+   './configure --with-pic --disable-netcdf' option.
 
 1. In this version of the release, the handler is enhanced to support
    the access of many NASA HDF-EOS2 products and some NASA pure HDF4
@@ -48,15 +48,15 @@ before reporting problems. Thanks.
    some NASA pure HDF4 products work with CF-compliant visualization
    clients
 
-  Please add '--with-pic' option for 64-bit build.
+   Please add '--with-pic' option for 64-bit build.
 
-  To find the information on how to build the HDF-EOS2 library, please
-  check 
+   To find the information on how to build the HDF-EOS2 library, please
+   check 
 
        http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-eos2
 
-  Again, you need '--with-pic' option when you build the HDF-EOS2 library if 
-your system is not i386 Linux system.
+   Again, you need '--with-pic' option when you build the HDF-EOS2 library if 
+   your system is not i386 Linux system.
 
 1.2. Install from RPMs
 
@@ -101,7 +101,8 @@ your system is not i386 Linux system.
 7. Optional Testing
   
   After you build the handler with 'make' command, you can test the build
-  with 'make check'. 
+  with 'make check'. 'make check' may fail due to the double escaping bug in 
+  libdap. (See https://scm.opendap.org/trac/ticket/2016)
 
 7.1 If you want to test generic handler with sample files in the testsuite,
 please follow the steps below.
@@ -126,19 +127,15 @@ please follow the steps below.
 7.2 If you want to test real NASA sample files with the hdfeos2 handler, please 
 follow the steps below.
 
-7.2.1 Make sure that you have 1.0G of disk space and download files using
-
-   %cd data.nasa && ./download.sh
-
-   It will download all test data from The HDF Group FTP site and put it
-   under data.nasa/ directory.
+7.2.1 Make sure that you have 1.0G of disk space and "wget" or "curl" program 
+      is available.
 
 7.2.2 Edit the sample test.nasa.with_hdfeos2.sh script under the top level 
     source directory. You may need to adjust the paths in the shell script.
     
-    set path=(/hdfdap/hyrax-1.8.0/bin $path)
-    setenv LD_LIBRARY_PATH /hdfdap/hyrax-1.8.0/lib
-    setenv PKG_CONFIG_PATH /hdfdap/hyrax-1.8.0/lib/pkgconfig:/usr/lib/pkgconfig/
+    set path=(/hdfdap/hyrax/bin $path)
+    setenv LD_LIBRARY_PATH /hdfdap/hyrax/lib
+    setenv PKG_CONFIG_PATH /hdfdap/hyrax/lib/pkgconfig:/usr/lib/pkgconfig/
 
     The path should point to the Hyrax installation directory so that 
     besstandalone program and OPeNDAP libraries can be found. 
@@ -170,13 +167,16 @@ follow the steps below.
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.13.0 and BES version 3.13.0
-    to build and install this software. If you're using Linux, this
-    means either building form source or using the libdap-devel and
-    bes-devel RPM packages.
+  o You need the libdap library version 3.13.1 to build and install this
+    software. If you're using Linux, this means either building form source
+    or using the libdap and libdap-devel RPM packages.
+
+  o If you're planning on using this with the OPeNDAP 4 Data Server (Hyrax),
+    you'll need version 3.13.0 of the BES software. Make sure to build that 
+    first.
 
   o You also need a recent copy of HDF4. We've tested this server with
-    version 4.2.9, although any recent version should work fine. 
+    version 4.2.10, although any recent version should work fine. 
     In order to link with 4.2.9 on Linux (and maybe other platforms) I had to
     compile HDF4 using --without-fortran --with-pic and I also used 
     --disable-netcdf (because some sites need their HDF4 libraries built that

@@ -40,8 +40,8 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
-HDFCF_SRC = HDFCFUtil.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc HDFSP.cc \
-	       HDFSPArrayGeoField.cc HDFSPArrayAddCVField.cc\
+HDFCF_SRC = HDFCFUtil.cc BESH4MCache.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc HDFSP.cc \
+                HDFSPArrayGeoField.cc HDFSPArrayAddCVField.cc\
 		HDFSPArrayMissField.cc HDFSPArray_RealField.cc HDFSPArray_VDField.cc\
 	          HDFCFStrField.cc HDFEOS2CFStrField.cc HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
@@ -57,13 +57,15 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 
 HDFCF_HDR = HDFEOS2.h HDFSP.h HDFCFUtil.h \
 	HDFSPEnumType.h HDFCFStr.h \
-	HDFCFStrField.h HDFSPArrayGeoField.h HDFSPArrayAddCVField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
-	HDFEOS2EnumType.h HDFEOS2HandleType.h \
-	HDFEOS2CFStr.h HDFEOS2CFStrField.h \
+	HDFSPArrayGeoField.h HDFSPArrayAddCVField.h HDFSPArrayMissField.h HDFSPArray_RealField.h HDFSPArray_VDField.h \
+	HDFEOS2EnumType.h HDFEOS2HandleType.h BESH4MCache.h \
 	HDFEOS2Array_RealField.h \
 	HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
 	HDFEOS2ArraySwathDimMapField.h\
 	HDFEOS2ArraySwathGeoDimMapExtraField.h \
+        HDFCFStrField.h \
+	HDFEOS2CFStr.h \
+	HDFEOS2CFStrField.h \
 	HE2CF.h misrproj.h errormacros.h
 
 HDFTYPE_HDR += $(HDFCF_HDR)
@@ -78,7 +80,7 @@ HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
-SERVER_HDR = HDF4RequestHandler.h HDF4Module.h HDF4_DDS.h
+SERVER_HDR = HDF4RequestHandler.h HDF4Module.h HDF4_DDS.h HDF4_DMR.h
 
 EXTRA_DIST = data data.nasa hdf-testfiles \
 		hdfeos.yy hdfeos.lex \
@@ -89,7 +91,7 @@ CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990-S1700101.HDF.gz data/1990104h09da-gdm.hdf.gz \
-    data/1C21.19980101.00539.7.HDF.gz data/S2000415.HDF.gz data/foo2.hdf.gz data/3B42.980909.5.HDF
+    data/1C21.19980101.00539.7.HDF.gz data/S2000415.HDF.gz data/foo2.hdf.gz data/3B42.980909.5.HDF.gz
 
 install-data-local: h4.conf
 	@currdate=`date +"%y%m%d%H%M"`; \

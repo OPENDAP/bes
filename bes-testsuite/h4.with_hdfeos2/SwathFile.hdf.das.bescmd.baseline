@@ -45,4 +45,7 @@ Attributes {
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.0";
     }
+    Swath1 {
+        Int32 TestAttr 3, 5, 7, 11;
+    }
 }

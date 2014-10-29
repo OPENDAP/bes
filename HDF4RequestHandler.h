@@ -44,12 +44,19 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool hdf4_build_das(BESDataHandlerInterface & dhi);
     static bool hdf4_build_dds(BESDataHandlerInterface & dhi);
     static bool hdf4_build_data(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi);
+#ifdef USE_DAP4
+    static bool hdf4_build_dmr(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi);
+#endif
     static bool hdf4_build_help(BESDataHandlerInterface & dhi);
     static bool hdf4_build_version(BESDataHandlerInterface & dhi);
 };
 
 
+#if 0
 void close_fileid(const int sdfd, const int fileid,const int gridfd, const int swathfd); 
 void close_hdf4_fileid(const int sdfd,const int fileid);
+#endif
 
 #endif

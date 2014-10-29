@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.63)
-AC_INIT(hdf4_handler, 3.11.5, support@opendap.org)
+AC_INIT(hdf4_handler, 3.11.6, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -114,6 +114,12 @@ if test -n "$HDFEOS2_DIR"; then
 else
   AC_MSG_NOTICE([HDFEOS2 set to false])
   AM_CONDITIONAL([HDFEOS2], [false])
+fi
+
+dnl Check if having getdap4. If yes, link with DAP4.
+AC_CHECK_PROGS([GETDAP4],[getdap4])
+if test -n "$GETDAP4"; then
+    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
 fi
 
 AC_SUBST([HDFEOS2_LIBS])

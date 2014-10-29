@@ -25,6 +25,11 @@ HDFSPArray_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_RealField read "<<endl);
+    
+    string check_pass_fileid_key_str="H4.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
+
     // Declare offset, count and step
     vector<int>offset;
     offset.resize(rank);
@@ -51,23 +56,29 @@ HDFSPArray_RealField::read ()
         step32[i] = (int32) step[i];
     }
 
-    // Initialize SD ID and SDS ID. 
-    int32 sdid = sdfd;
+
+    int32 sdid = -1;
+
+    // Obtain SD ID.
+    if(false == check_pass_fileid_key) {
+        sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
+        if (sdid < 0) {
+            ostringstream eherr;
+            eherr << "File " << filename.c_str () << " cannot be open.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+    }
+    else 
+        sdid = sdfd;
+
+    // Initialize  SDS ID. 
     int32 sdsid = 0;
 
-#if 0
-    // Obtain SD ID.
-    sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-    if (sdid < 0) {
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-#endif
 
     // Obtain the SDS index based on the input sds reference number.
     int32 sdsindex = SDreftoindex (sdid, (int32) fieldref);
     if (sdsindex == -1) {
+        HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "SDS index " << sdsindex << " is not right.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -76,6 +87,7 @@ HDFSPArray_RealField::read ()
     // Obtain this SDS ID.
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
+        HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "SDselect failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -94,6 +106,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
                 eherr << "SDreaddata failed.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -120,6 +133,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -137,6 +151,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -165,6 +180,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -181,6 +197,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -197,6 +214,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -212,6 +230,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -228,6 +247,7 @@ HDFSPArray_RealField::read ()
             r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
             if (r != 0) {
                 SDendaccess (sdsid);
+                HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
                 ostringstream eherr;
 
                 eherr << "SDreaddata failed";
@@ -239,6 +259,7 @@ HDFSPArray_RealField::read ()
             break;
         default:
             SDendaccess (sdsid);
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             InternalErr (__FILE__, __LINE__, "unsupported data type.");
     }
 
@@ -249,6 +270,7 @@ HDFSPArray_RealField::read ()
         eherr << "SDendaccess failed.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
+    HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 
 #if 0
     // Close the SD interface

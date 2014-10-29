@@ -1,26 +1,46 @@
-Updated for version 3.11.5(25 April 2014)
+Updated for version 3.11.6 (15 November 2014)
+        
+  In this version, we added the following features:
+
+  1) Implement an option to cache HDF-EOS2 grid latitude and longitude values to improve performance.
+  2) Implement an option not to pass file ids for the compatibility with NcML modules.
+  3) Improve the access of DDS by using the file structure obtained in the stage of building DAS. 
+  4) Add the CF support of AIRS version 6 level 2(swath).
+  5) Support the mapping of vgroup attributes to DAP.
+  6) Support the mapping of HDF-EOS2 swath and grid object(like vgroup) attributes to DAP.
+  
+  Bug fixes:
+  1) Obtained the CF add_offset values for MOD/MYD08_M3 products. 
+  2) Fixed the wrong dimension size when a dimension is unlimited. 
+  3) Make vdata field attributes mapped to correct DAS container.
+
+  NASA HDF4 and HDF-EOS2 products that are supported up to this release:
+  HDF-EOS2: AIRS, MODIS, some MISR, some Merra, some MOPITT
+  HDF4: TRMM version 6 and version 7, some CERES, some OBPG
+  Performance enhancement: 
+  AIRS version 6 and MODIS O8_M3-like products 
+  HDF-EOS2 grid lat/lon are calculated via cache
+
+  You may need to read the information about BES keys in the file h4.conf.in to see if the default values 
+  need to be changed for your service.
+  
+Updated for version 3.11.5 (25 April 2014)
 
   In this version, we fix the following datatype mapping issues:
 
-  1) We make HDF4 DFNT_CHAR array map to DAP string for variables.
-     In the previous versions, DFNT_CHAR was mapped to DAP BYTE for variables.
-     This may cause some NASA HDF4 vdata DFNT_CHAR array to DAP BYTE array.
-     The fix makes the vdata fields of some NASA MISR (MISR_AEROSOL etc.) products map correctly to DAP2.
-  2) We fix the mapping of DFNT_INT8 attribute value to DAP2.
-     In the previous versions, DFNT_INT8(signed 8-bit integer) was mapped to DAP BYTE(unsigned 8-bit integer).
-     This will cause misrepresentation of 8-bit integer when the value is < 0.
+  1) We make HDF4 DFNT_CHAR array map to DAP string for variables. 
+     In the previous versions, DFNT_CHAR is mapped to DAP BYTE for variables.
+     This may cause some NASA HDF4 vdata DFNT_CHAR array to DAP BYTE array, which is not right.
+     The fix makes the vdata fields of some NASA MISR (MISR_AEROSOL etc.) products map correctly to DAP.
+  2) We fix the mapping of DFNT_INT8 attribute value to DAP. 
+     In the previous versions, DFNT_INT8(signed 8-bit integer) is mapped to DAP BYTE(unsigned 8-bit integer).
+     This will cause misrepresentation when the value is < 0.  
      This fix will make some attribute values of some MODIS or MISR non-physical fields map correctly to DAP.
   3) For attribute _FillValue, we enforce that it is always a number even if the attribute datatype is
      DFNT_CHAR or DFNT_UCHAR. In this release,we make the string representation of a _FillValue to a number.
 
-  We also turn on the H4.DisableStructMetaAttr key to be 'true' in the default setting of h4.conf.in. This
-  will improve the performance to generate DAS.
-
-  [Known Issues]
-  We found that the file netCDF module fails to generate a netCDF-4 file when a DAP string array is mapped to netCDF-4.
-  It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler or libdap and BES.
-
-  
+  We also make turn on the H4.DisableStructMetaAttr key to be 'true'the default setting of h4.conf.in. This
+  will improve the performance to generate DAS.  
 
 Updated for version 3.11.4 (1 April 2014)
 
@@ -53,6 +73,7 @@ type.
 
   HFRHANDLER-224:Some attributes of Lat/Lon geolocation fields in HDF-EOS2 
 swath are dropped in DAS output. 
+
 
 Updated for version 3.11.3 (1 February 2014)
 
