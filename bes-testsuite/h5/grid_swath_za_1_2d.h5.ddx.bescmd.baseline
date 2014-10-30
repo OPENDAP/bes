@@ -21,193 +21,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-            <Attribute name="SWATH_1" type="Container">
-                <Attribute name="SwathName" type="String">
-                    <value>&quot;Swath&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>4</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>8</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="GeoField" type="Container">
-                    <Attribute name="GeoField_1" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_2" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_3" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;NDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="ProfileField" type="Container"/>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="GridStructure" type="Container">
-            <Attribute name="GRID_1" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;GeoGrid&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>8</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>4</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>0.000000</value>
-                    <value>4000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>8000000.000000</value>
-                    <value>0.000000</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container"/>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container">
-            <Attribute name="ZA_1" type="Container">
-                <Attribute name="ZaName" type="String">
-                    <value>&quot;ZA&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>8</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>4</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;ZDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-            </Attribute>
-        </Attribute>
-    </Attribute>
     <Array name="GRIDS_Temperature">
         <Attribute name="units" type="String">
             <value>K</value>
@@ -219,7 +32,7 @@
             <value>/HDFEOS/GRIDS/GeoGrid/Data Fields/Temperature</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="GRIDS_lat" size="4"/>
@@ -236,7 +49,7 @@
             <value>/HDFEOS/SWATHS/Swath/Data Fields/Temperature</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>NDim </value>
+            <value>ZDim NDim</value>
         </Attribute>
         <Float32/>
         <dimension name="SWATHS_Pressure" size="4"/>
@@ -275,7 +88,7 @@
             <value>YDim</value>
         </Attribute>
         <Float32/>
-        <dimension size="8"/>
+        <dimension name="YDim" size="8"/>
     </Array>
     <Array name="ZAS_Pressure">
         <Attribute name="_FillValue" type="Float32">
@@ -294,7 +107,7 @@
             <value>ZDim</value>
         </Attribute>
         <Float32/>
-        <dimension size="4"/>
+        <dimension name="ZDim" size="4"/>
     </Array>
     <Array name="ZAS_Temperature">
         <Attribute name="_FillValue" type="Float32">
@@ -310,11 +123,11 @@
             <value>/HDFEOS/ZAS/ZA/Data Fields/Temperature</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>YDim </value>
+            <value>ZDim YDim</value>
         </Attribute>
         <Float32/>
-        <dimension size="4"/>
-        <dimension size="8"/>
+        <dimension name="ZDim" size="4"/>
+        <dimension name="YDim" size="8"/>
     </Array>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

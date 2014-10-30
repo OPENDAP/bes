@@ -47,6 +47,10 @@ BaseType *HDF5GMSPCFArray::ptr_duplicate()
 
 bool HDF5GMSPCFArray::read()
 {
+    BESDEBUG("h5","Coming to HDF5GMSPCFArray read "<<endl);
+    string check_pass_fileid_key_str="H5.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
 
     vector<int>offset;
     vector<int>count;
@@ -94,19 +98,18 @@ bool HDF5GMSPCFArray::read()
     hid_t dtypeid = -1;
     hid_t memtype = -1;
 
-#if 0
-    if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
-
-        ostringstream eherr;
-        eherr << "HDF5 File " << filename 
-              << " cannot be opened. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    if(false == check_pass_fileid_key) {
+        if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+            ostringstream eherr;
+            eherr << "HDF5 File " << filename 
+                  << " cannot be opened. "<<endl;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
     }
-#endif
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
 
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "HDF5 dataset " << varname
               << " cannot be opened. "<<endl;
@@ -116,7 +119,7 @@ bool HDF5GMSPCFArray::read()
     if ((dspace = H5Dget_space(dsetid))<0) {
 
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Space id of the HDF5 dataset " << varname
               << " cannot be obtained. "<<endl;
@@ -131,7 +134,7 @@ bool HDF5GMSPCFArray::read()
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
-            //H5Fclose(fileid);
+            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
                   << " fails. "<<endl;
@@ -142,7 +145,7 @@ bool HDF5GMSPCFArray::read()
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid);
-            //H5Fclose(fileid);
+            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
                   << " fails. "<<endl;
@@ -157,7 +160,7 @@ bool HDF5GMSPCFArray::read()
             H5Sclose(mspace);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Obtaining the datatype of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -171,7 +174,7 @@ bool HDF5GMSPCFArray::read()
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Obtaining the memory type of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -188,7 +191,7 @@ bool HDF5GMSPCFArray::read()
         H5Tclose(memtype);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Obtaining the type class of the HDF5 dataset " << varname
               << " fails. "<<endl;
@@ -203,7 +206,7 @@ bool HDF5GMSPCFArray::read()
         H5Tclose(memtype);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "The type class of the HDF5 dataset " << varname
               << " is not H5T_INTEGER. "<<endl;
@@ -218,7 +221,7 @@ bool HDF5GMSPCFArray::read()
         H5Tclose(memtype);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "The type size of the HDF5 dataset " << varname
               << " is not right. "<<endl;
@@ -246,7 +249,7 @@ bool HDF5GMSPCFArray::read()
         H5Tclose(memtype);
         H5Sclose(dspace);
         H5Dclose(dsetid);
-        //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Cannot read the HDF5 dataset " << varname
               <<" with type of 64-bit integer"<<endl;
@@ -282,7 +285,7 @@ bool HDF5GMSPCFArray::read()
     H5Tclose(memtype);
     H5Sclose(dspace);
     H5Dclose(dsetid);
-    //H5Fclose(fileid);
+    HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
     
     return true;
 }

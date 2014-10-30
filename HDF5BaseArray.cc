@@ -55,9 +55,11 @@ BaseType *HDF5BaseArray::ptr_duplicate()
     return new HDF5BaseArray(*this);
 }
 
-// Read in an Array from either an SDS or a GR in an HDF file.
+// Always return true. 
+// Data will be read from the missing coordinate variable class(HDF5GMCFMissNonLLCVArray etc.)
 bool HDF5BaseArray::read()
 {
+    BESDEBUG("h5","Coming to HDF5BaseArray read "<<endl);
     return true;
 }
 

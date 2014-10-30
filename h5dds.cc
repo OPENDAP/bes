@@ -540,7 +540,7 @@ static Structure *Get_structure(const string &varname,
 	    if (memb_name == NULL){
 		throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
 	    }
-            if (memb_cls < 0 | memb_type < 0) {
+            if ((memb_cls < 0) | (memb_type < 0)) {
                 // structure_ptr is deleted in the catch ... block
                 // below. So if this exception is thrown, it will
                 // get caught below and the ptr deleted.

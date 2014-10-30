@@ -30,13 +30,13 @@ HDF5DTYPE_HDRS = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h
 HDF5_SRCS = h5dds.cc h5das.cc h5get.cc HDF5PathFinder.cc 
 HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5get.h  HDF5PathFinder.h
 
-HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc \
+HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc HDF5GMCFSpecialCVArray.cc \
                    HDFEOS5CFMissLLArray.cc HDFEOS5CFMissNonLLCVArray.cc  HDFEOS5CFSpecialCVArray.cc \
                    HDF5CFArray.cc HDF5BaseArray.cc \
                    HDF5CFByte.cc HDF5CFUInt16.cc HDF5CFInt16.cc HDF5CFInt32.cc HDF5CFUInt32.cc \
 	           HDF5CFFloat32.cc HDF5CFFloat64.cc HDF5CFStr.cc   
 
-HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFFillIndexArray.h HDF5GMCFMissLLArray.h HDF5GMCFMissNonLLCVArray.h \
+HDF5CFDTYPE_HDRS =  HDF5GMSPCFArray.h HDF5GMCFFillIndexArray.h HDF5GMCFMissLLArray.h HDF5GMCFMissNonLLCVArray.h HDF5GMCFSpecialCVArray.h \
 	            HDFEOS5CFMissLLArray.h HDFEOS5CFMissNonLLCVArray.h  HDFEOS5CFSpecialCVArray.h HDF5CFArray.h HDF5BaseArray.h \
                     HDF5CFByte.h HDF5CFUInt16.h HDF5CFInt16.h HDF5CFInt32.h HDF5CFUInt32.h \
 	            HDF5CFFloat32.h HDF5CFFloat64.h HDF5CFStr.h 
@@ -50,7 +50,7 @@ HDF5CF_HDRS = h5cfdap.h HDF5CFModule.h  heos5cfdap.h h5gmcfdap.h h5commoncfdap.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
-SERVER_HDR = HDF5RequestHandler.h HDF5Module.h HDF5_DDS.h
+SERVER_HDR = HDF5RequestHandler.h HDF5Module.h HDF5_DDS.h HDF5_DMR.h
 
 libhdf5_module_la_SOURCES = $(HDF5DTYPE_SRCS) $(HDF5_SRCS) $(HDF5CFDTYPE_SRCS) $(HDF5CF_SRCS) $(SERVER_SRC) $(HDF5CFDTYPE_HDRS) $(HDF5CF_HDRS) $(HDF5DTYPE_HDRS) $(HDF5_HDRS) $(SERVER_HDR)
 libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)

@@ -37,6 +37,7 @@
 #include <sstream>
 #include <algorithm>
 #include <functional>
+#include <climits>
 #include "HDF5CF.h"
 
 
@@ -133,6 +134,7 @@ throw(Exception) {
     // Iterate through the file to see the members of the group from the root.
     H5G_info_t g_info;
     hsize_t nelems = 0;
+
     if (H5Gget_info(grp_id,&g_info) <0) 
         throw2 ("Counting hdf5 group elements error for ", gname);
     nelems = g_info.nlinks;
@@ -1181,6 +1183,140 @@ File:: Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_va
     memcpy(&(attr->value[0]),(void*)(&float_value),sizeof(float));
 }
 
+void
+File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) throw(Exception) {
+
+    
+    char *pEnd;
+    // string to long int number.
+    long int num_sli = 0;
+    if(attr->dtype != H5FSTRING) 
+        throw2("Currently we only convert fixed-size string to other datatypes. ", attr->name);
+    if(attr->count != 1)
+        throw4("The fixed-size string count must be 1 and the current count is ",attr->count, " for the attribute ",attr->name);
+
+    Retrieve_H5_Attr_Value(attr,var->fullpath);
+    string attr_value;
+    attr_value.resize(attr->value.size());
+    copy(attr->value.begin(),attr->value.end(),attr_value.begin());
+ 
+    switch(var->dtype) {
+
+        case H5UCHAR:
+        {
+            num_sli = strtol(&(attr->value[0]),&pEnd,10);
+            if(num_sli <0 || num_sli >UCHAR_MAX) 
+                throw5("Attribute type is unsigned char, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            else {
+                unsigned char num_suc =(unsigned char)num_sli;
+                attr->dtype = H5UCHAR; 
+                 //attr->count = 1;
+                attr->value.resize(sizeof(unsigned char));
+                memcpy(&(attr->value[0]),(void*)(&num_suc),sizeof(unsigned char));
+            }
+
+        }
+            break;
+        case H5CHAR:
+        {
+            num_sli = strtol(&(attr->value[0]),&pEnd,10);
+            if(num_sli <SCHAR_MIN || num_sli >SCHAR_MAX) 
+                throw5("Attribute type is signed char, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            else {
+                char num_sc = (char)num_sli;
+                attr->dtype = H5CHAR; 
+                 //attr->count = 1;
+                attr->value.resize(sizeof(char));
+                memcpy(&(attr->value[0]),(void*)(&num_sc),sizeof(char));
+            }
+
+        }
+            break;
+        case H5INT16:
+        {
+            num_sli = strtol(&(attr->value[0]),&pEnd,10);
+            if(num_sli <SHRT_MIN || num_sli >SHRT_MAX) 
+                throw5("Attribute type is 16-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            else {
+                short num_ss = (short)num_sli;
+                attr->dtype = H5INT16; 
+                //attr->count = 1;
+                attr->value.resize(sizeof(short));
+                memcpy(&(attr->value[0]),(void*)(&num_ss),sizeof(short));
+            }
+
+
+        }
+            break;
+        case H5UINT16:
+        {
+            num_sli = strtol(&(attr->value[0]),&pEnd,10);
+            if(num_sli <0 || num_sli >USHRT_MAX) 
+                throw5("Attribute type is unsigned 16-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            else {
+                unsigned short num_uss = (unsigned short)num_sli;
+                attr->dtype = H5UINT16; 
+                //attr->count = 1;
+                attr->value.resize(sizeof(unsigned short));
+                memcpy(&(attr->value[0]),(void*)(&num_uss),sizeof(unsigned short));
+            }
+        }
+            break;
+        case H5INT32:
+        {
+            num_sli = strtol(&(attr->value[0]),&pEnd,10);
+            if(num_sli <LONG_MIN || num_sli >LONG_MAX) 
+                throw5("Attribute type is 32-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            else {
+                attr->dtype = H5INT32; 
+                //attr->count = 1;
+                attr->value.resize(sizeof(long int));
+                memcpy(&(attr->value[0]),(void*)(&num_sli),sizeof(long int));
+            }
+
+        }
+            break;
+        case H5UINT32:
+        {
+            unsigned long int num_suli = strtoul(&(attr->value[0]),&pEnd,10);
+            if(num_suli >ULONG_MAX) 
+                throw5("Attribute type is 32-bit unsigned integer, the current attribute ",attr->name, " has the value ",num_suli, ". It is overflowed. ");
+            else {
+                attr->dtype = H5UINT32; 
+                //attr->count = 1;
+                attr->value.resize(sizeof(unsigned long int));
+                memcpy(&(attr->value[0]),(void*)(&num_suli),sizeof(unsigned long int));
+            }
+        }
+            break;
+        case H5FLOAT32:
+        {
+            float num_sf = strtof(&(attr->value[0]),NULL);
+            // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
+            attr->dtype = H5FLOAT32;
+            //attr->count = 1;
+            attr->value.resize(sizeof(float));
+            memcpy(&(attr->value[0]),(void*)(&num_sf),sizeof(float));
+        }
+            break;
+        case H5FLOAT64:
+        {
+            double num_sd = strtod(&(attr->value[0]),NULL);
+            // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
+            attr->dtype = H5FLOAT64;
+            //attr->count = 1;
+            attr->value.resize(sizeof(double));
+            memcpy(&(attr->value[0]),(void*)(&num_sd),sizeof(double));
+        }
+            break;
+
+        default:
+            throw4("Unsupported HDF5 datatype that the string is converted to for the attribute ",attr->name, " of the variable ",var->fullpath);
+    } // switch(var->dtype)
+
+
+}
+
 
 void 
 File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
@@ -1223,4 +1359,95 @@ File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
 
 }
 
-               
+// Variable target will not be deleted, but rather its contents are replaced.
+// We may make this as an operator = in the future.
+void
+File:: Replace_Var_Info(Var *src, Var *target) {
+
+
+#if 0
+    for_each (target->dims.begin (), target->dims.end (),
+                                     delete_elem ());
+    for_each (target->attrs.begin (), target->attrs.end (),
+                                     delete_elem ());
+#endif
+
+    target->newname = src->newname;
+    target->name = src->name;
+    target->fullpath = src->fullpath;
+    target->rank  = src->rank;
+    target->dtype = src->dtype;
+    target->unsupported_attr_dtype = src->unsupported_attr_dtype;
+    target->unsupported_dspace = src->unsupported_dspace;
+#if 0
+    for (vector<Attribute*>::iterator ira = target->attrs.begin();
+        ira!=target->attrs.end(); ++ira) {
+        delete (*ira);
+        target->attrs.erase(ira);
+        ira--;
+    }
+#endif
+    for (vector<Dimension*>::iterator ird = target->dims.begin();
+        ird!=target->dims.end(); ++ird) {
+        delete (*ird);
+        target->dims.erase(ird);
+        ird--;
+    }
+ 
+    // Somehow attributes cannot be replaced. 
+#if 0
+    for (vector<Attribute*>::iterator ira = src->attrs.begin();
+        ira!=src->attrs.end(); ++ira) {
+        Attribute* attr= new Attribute();
+        attr->name = (*ira)->name;
+        attr->newname = (*ira)->newname;
+        attr->dtype =(*ira)->dtype;
+        attr->count =(*ira)->count;
+        attr->strsize = (*ira)->strsize;
+        attr->fstrsize = (*ira)->fstrsize;
+        attr->value =(*ira)->value;
+        target->attrs.push_back(attr);
+    }
+#endif
+
+    for (vector<Dimension*>::iterator ird = src->dims.begin();
+        ird!=src->dims.end(); ++ird) {
+        Dimension *dim = new Dimension((*ird)->size);
+        dim->name = (*ird)->name;
+        dim->newname = (*ird)->newname;
+        target->dims.push_back(dim);
+    }
+
+}
+
+ void
+File:: Replace_Var_Attrs(Var *src, Var *target) {
+
+
+#if 0
+    for_each (target->dims.begin (), target->dims.end (),
+                                     delete_elem ());
+    for_each (target->attrs.begin (), target->attrs.end (),
+                                     delete_elem ());
+#endif
+
+    for (vector<Attribute*>::iterator ira = target->attrs.begin();
+        ira!=target->attrs.end(); ++ira) {
+        delete (*ira);
+        target->attrs.erase(ira);
+        ira--;
+    }
+    for (vector<Attribute*>::iterator ira = src->attrs.begin();
+        ira!=src->attrs.end(); ++ira) {
+        Attribute* attr= new Attribute();
+        attr->name = (*ira)->name;
+        attr->newname = (*ira)->newname;
+        attr->dtype =(*ira)->dtype;
+        attr->count =(*ira)->count;
+        attr->strsize = (*ira)->strsize;
+        attr->fstrsize = (*ira)->fstrsize;
+        attr->value =(*ira)->value;
+        target->attrs.push_back(attr);
+    }
+
+}              

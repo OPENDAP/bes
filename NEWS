@@ -1,3 +1,10 @@
+News for version 2.2.3
+
+This version implement an option not to pass HDF5 file ID from DDS/DAS service
+to data service since the NcML may not work when the file ID is passed.
+
+Add the CF support for NASA GPM, OBPG l3m and MOPITT level 3 products.
+
 News for version 2.2.2
 
 This version fixes memory leak and improves performance by reducing the number

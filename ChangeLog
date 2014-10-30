@@ -1,43 +1,48 @@
-2014-03-28  James Gallagher <jgallagher@opendap.org>
+2014-10-27  MuQun Yang <myang6@hdfgroup.org>
+        * HDF5CF.cc
+        * HDF5CF.h
+        * HDF5CFArray.cc
+        * HDF5CFArray.h
+        * HDF5CFUtil.cc
+        * HDF5CFUtil.h
+        * HDF5GCFProduct.cc
+        * HDF5GMCF.cc
+        * HDF5GMCFMissLLArray.cc
+        * HDF5GMCFMissLLArray.h
+        * HDF5GMCFMissNonLLArray.cc
+        * HDF5GMCFMissNonLLArray.h
+        * HDF5GMCFSpecialCVArray.cc
+        * HDF5GMCFSpecialCVArray.h
+        * HDF5GMSPCFArray.cc
+        * HDF5GMSPCFArray.h
+        * HDF5RequestHandler.cc
+        * HDF5RequestHandler.h
+        * HDF5_DDS.h
+	* HDF5_DMR.h
+        * HDFEOS5CF.cc
+        * HDFEOS5CFMissLLArray.cc
+        * HDFEOS5CFMissLLArray.h
+        * HDFEOS5CFSpecialCVArray.cc
+        * HDFEOS5CFSpecialCVArray.h
+        * Makefile.am
+        * NEWS
+        * USAGE
+	* TODO
+        * README
+	* h5.conf.in
+        * configure.ac
+        * h5cfdap.cc
+        * h5commoncfdap.cc
+        * h5commoncfdap.h
+        * h5gmcfdap.cc
+        * h5gmcfdap.h
+        * hdf5_handler.spec
+        * heos5cfdap.cc
+        * heos5cfdap.h:
+	Implemented an option not to pass HDF5 file ID from DDS to Data.
+	Added CF support for NASA GPM, OBPG level 3m, MOPITT level 3 products.
 
-	Fixed another problem with the test for flex 2.5.35 that showed up on
-	OSX 10.9
 
-	M    configure.ac
-
-2014-03-26  James Gallagher <jgallagher@opendap.org>
-
-	Fixed check for flex version (test used '>' when it should have used '<')
-
-	M    configure.ac
-
-2014-03-21  hyoklee
-
-	corrected typo.
-
-2014-03-21  hyoklee
-
-	HFVHANDLER-108:cleaned up USAGE document to match hdf4_handler quality.
-
-2014-03-20  hyoklee
-
-	updated README file.
-
-2014-03-20  hyoklee
-
-	cleaned up codes and removed all compiler warnings except lex/yacc.
-
-2014-03-20  hyoklee
-
-	added a missing real nasa test autotest script.
-
-2014-03-20  hyoklee
-
-	updated for version 2.2.2 release.
-
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2014-03-20  Hyo-Kyung  Lee  <hyoklee@hdfgroup.org>
         * HDF5CF.cc
         * HDF5CF.h

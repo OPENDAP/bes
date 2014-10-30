@@ -49,6 +49,8 @@ BaseType *HDFEOS5CFMissLLArray::ptr_duplicate()
 
 bool HDFEOS5CFMissLLArray::read()
 {
+
+    BESDEBUG("h5","Coming to HDFEOS5CFMissLLArray read "<<endl);
     int nelms = -1;
     vector<int>offset;
     vector<int>count;

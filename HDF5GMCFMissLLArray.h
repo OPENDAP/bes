@@ -44,10 +44,10 @@ using namespace libdap;
 
 class HDF5GMCFMissLLArray:public Array {
     public:
-        HDF5GMCFMissLLArray(int rank, /*const string & filename*/ const hid_t fileid, H5DataType dtype, const string &varfullpath, H5GCFProduct product_type, CVType cvartype, const string & n="",  BaseType * v = 0):
+        HDF5GMCFMissLLArray(int rank, const string & filename, const hid_t fileid, H5DataType dtype, const string &varfullpath, H5GCFProduct product_type, CVType cvartype, const string & n="",  BaseType * v = 0):
         Array(n,v),
         rank(rank),
-        //filename(filename),
+        filename(filename),
         fileid(fileid),
         dtype(dtype),
         varname(varfullpath),
@@ -61,18 +61,24 @@ class HDF5GMCFMissLLArray:public Array {
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     int format_constraint (int *cor, int *step, int *edg);
-    //template<class T> 
-    template<typename T> 
-    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string& s_attr_name, T& attr_value);
+    
 
     private:
         int rank;
-        //string filename;
+        string filename;
         hid_t fileid;
         H5DataType dtype;
         string varname;
         H5GCFProduct product_type;
         CVType cvartype;    
+
+    //template<class T> 
+    template<typename T> 
+    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
+    
+    void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms);
+
+    void obtain_gpm_l3_ll(int* offset,int* step,int nelms);
 };
 
 #endif                          // _HDF5GMCFMissLLARRAY_H

@@ -53,6 +53,7 @@ BaseType *HDF5GMCFFillIndexArray::ptr_duplicate()
 bool HDF5GMCFFillIndexArray::read()
 {
 
+    BESDEBUG("h5","Coming to HDF5GMCFFillIndexArray read "<<endl);
     int nelms = 0;
 
 #if 0

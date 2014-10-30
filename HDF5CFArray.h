@@ -45,7 +45,7 @@ class HDF5CFArray:public Array {
     public:
         HDF5CFArray(int rank, 
                     const hid_t file_id,
-                    //const string & filename, 
+                    const string & filename, 
                     H5DataType dtype, 
                     const string &varfullpath, 
                     const string & n="",  
@@ -53,7 +53,7 @@ class HDF5CFArray:public Array {
                     Array(n,v),
                     rank(rank),
                     fileid(file_id),
-                    //filename(filename),
+                    filename(filename),
                     dtype(dtype),
                     varname(varfullpath) 
         {
@@ -67,8 +67,8 @@ class HDF5CFArray:public Array {
 
   private:
         int rank;
-        //string filename;
         hid_t fileid;
+        string filename;
         H5DataType dtype;
         string varname;
 };

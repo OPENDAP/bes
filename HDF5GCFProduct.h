@@ -41,7 +41,7 @@ using namespace std;
 
 
 enum H5GCFProduct
-{ General_Product,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,ACOS_L2S,SMAP };
+{ General_Product,GPM_L1, GPMS_L3,GPMM_L3,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,OBPG_L3,ACOS_L2S,SMAP };
 
 // Currently we only need to support four NASA generic HDF5 products for
 // the access of NASA data via CF-compliant vis. tools(IDV and Panoply) 
@@ -55,6 +55,17 @@ enum H5GCFProduct
 
 // For all products 
 static const char ROOT_NAME[] ="/";
+
+// GPM 
+static const char GPM_ATTR1_NAME[] ="FileHeader";
+// GPM level 3
+static const char GPM_GRID_GROUP_NAME1[]="Grid";
+static const char GPM_GRID_GROUP_NAME2[]="GRID";
+static const char GPM_GRID_MULTI_GROUP_NAME[]="Grids";
+static const char GPM_ATTR2_NAME[] ="GridHeader";
+// GPM level 1
+static const char GPM_SWATH_ATTR2_NAME[] ="SwathHeader";
+
 
 // MEaSUREs SeaWiFS level 2 and 3  
 static const char SeaWiFS_ATTR1_NAME[] ="instrument_short_name";
@@ -76,6 +87,13 @@ static const char Aquarius_ATTR2_NAME[] ="Title";
 static const string Aquarius_ATTR1_VALUE ="Aquarius";
 static const string Aquarius_ATTR2_PVALUE ="Level-3";
 
+// OBPG level 3
+static const char Obpgl3_ATTR1_NAME[] ="processing_level";
+static const string Obpgl3_ATTR1_VALUE ="L3 Mapped";
+static const char Obpgl3_ATTR2_NAME[] ="cdm_data_type";
+static const string Obpgl3_ATTR2_VALUE ="grid";
+
+
 // SMAP simulation and ACOS L2S 
 static const char SMAC2S_META_GROUP_NAME[] ="Metadata";
 static const char SMAP_ATTR_NAME[] ="ProjectID";
@@ -95,6 +113,14 @@ static const string Ozone_ATTR2_VALUE ="Nadir Profile and Total Column Ozone";
 // Function to check the product type
 H5GCFProduct check_product(hid_t fileid);
 
+// Function to check if the product is GPM level 1
+bool check_gpm_l1(hid_t root_id);
+
+// Function to check if the product is GPM level 3
+bool check_gpmm_l3(hid_t root_id);
+
+bool check_gpms_l3(hid_t root_id);
+
 // Function to check if the product is MeaSure seaWiFS 
 // The returned integer reference of level will tell the level
 // of the SeaWiFS product.
@@ -104,6 +130,9 @@ bool check_measure_seawifs(hid_t root_id,int& level);
 // The returned integer reference of level will tell the level
 // of the Aquarius product.
 bool check_aquarius(hid_t root_id,int & level);
+
+// Check if this product is an OBPG HDF5 file
+bool check_obpg(hid_t root_id,int & level);
 
 // Function to check if the product is ACOS Level 2 or SMAP.
 //  which_product tells if the product is SMAP or ACOSL2S. 

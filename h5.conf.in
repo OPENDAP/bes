@@ -35,7 +35,7 @@ BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 # % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
 # expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
 
-BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 
 #-----------------------------------------------------------------------#
 # HDF5 handler specific parameters: 
@@ -54,7 +54,39 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
 # I set the EnableCF to be true, KY 2011-8-4
 #
 H5.EnableCF=true
+
+# The following keys only work when H5.EnableCF is set to true.
+# ######################################
+#
+#
+# When this key is set to true, HDF5 file ID is passed from metadata to data
+# services. This may improve performance. However, it may cause NcML module
+# fail to access different granules. So set this key to false by default.
+H5.EnablePassFileID=false
+
+# ECS Struct metadata attribute is not mapped to DAP
+# The handler makes metadata to follow CF based on this attribute
+H5.DisableStructMetaAttr=true
+
+# When this key is set to true, the handler will check if
+# there are name clashings among variables and attributes. 
+# For NASA HDF5 and HDF-EOS5 products, we don't see any
+# name clashings for variables and attributes. In fact,
+# unlike HDF4, it is very rare to have name clashing for HDF5.
+# So to reduce performance overhead, we set this key to false by default. 
+# Users can set this key to true if it becomes necessary.
 H5.EnableCheckNameClashing=false
+
+# When this key is set to true, the original path of the HDF5 objects is
+# kept as an attribute. Users can set this key to false if users don't
+# care about the absolute path of object names. Performance may get improved.
 H5.EnableAddPathAttrs=true
+
+
+# We find netCDF java has a string size limit(currently 32767). If an HDF5 string size
+# is greater than this limit, visualization tools(Panoply etc.) that depend on
+# the netCDF Java may not open the HDF5 file. So this key is set to be true to
+# skip the HDF5 string of which size is greater than 32767. Users should set this
+# key to false if that long string information is necessary or visualization clients
+# are not used.
 H5.EnableDropLongString=true
-H5.DisableStructMetaAttr=false

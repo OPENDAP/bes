@@ -541,11 +541,19 @@ namespace HDF5CF
             /// Handle special variables 
             virtual void Handle_SpVar() = 0;
 
+            /// Handle special variable attributes
+            virtual void Handle_SpVar_Attr() = 0;
+
+
             /// Adjust object names based on different products
             virtual void Adjust_Obj_Name() = 0;
 
             /// Adjust dimension names based on different products
             virtual void Adjust_Dim_Name() = 0;
+
+            /// Handle dimension name clashing. Since COARDS requires the change of cv names,
+            /// So we need to handle dimension name clashing specially.
+            virtual void Handle_DimNameClashing() = 0;
 
        	    /// Obtain the HDF5 file ID
 	    const hid_t getFileID () const
@@ -601,9 +609,12 @@ namespace HDF5CF
             void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,string name,hsize_t size) throw(Exception);
 
             virtual string get_CF_string(string);
+            virtual void Replace_Var_Info(Var* src, Var *target);
+            virtual void Replace_Var_Attrs(Var *src, Var*target);
 
             void Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception);
             void Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception);
+            void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) throw(Exception);
  
 
         protected:
@@ -690,6 +701,10 @@ namespace HDF5CF
             /// Handle special variables for general NASA HDF5 products
             void Handle_SpVar()throw(Exception);
 
+            /// Handle special variable attributes for general NASA HDF5 products
+            void Handle_SpVar_Attr()throw(Exception);
+
+
             /// Adjust object names based on different general NASA HDF5 products
             void Adjust_Obj_Name() throw(Exception);
 
@@ -699,8 +714,11 @@ namespace HDF5CF
             /// Handle object name clashing for general NASA HDF5 products
             void Handle_Obj_NameClashing(bool) throw(Exception);
 
+
             /// Adjust dimension name for general NASA HDF5 products
             void Adjust_Dim_Name() throw(Exception);
+
+            void Handle_DimNameClashing() throw(Exception);
 
             /// Add supplemental attributes such as fullpath and original name for general NASA HDF5 products
             void Add_Supplement_Attrs(bool) throw(Exception);
@@ -709,6 +727,7 @@ namespace HDF5CF
             void Handle_Coor_Attr();
 
         protected: 
+            void Add_Dim_Name_GPM() throw(Exception);
             void Add_Dim_Name_Mea_SeaWiFS() throw(Exception);
             void Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var*)throw(Exception);
             void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *,Attribute*)throw(Exception);
@@ -718,6 +737,7 @@ namespace HDF5CF
 
 
             void Add_Dim_Name_Aqu_L3()throw(Exception);
+            void Add_Dim_Name_OBPG_L3()throw(Exception);
             void Add_Dim_Name_SMAP()throw(Exception);
             void Add_Dim_Name_ACOS_L2S()throw(Exception);
 
@@ -727,23 +747,29 @@ namespace HDF5CF
             void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) throw(Exception);
             void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
 
+            void Handle_CVar_GPM_L1() throw(Exception);
+            void Handle_CVar_GPM_L3() throw(Exception);
             void Handle_CVar_Mea_SeaWiFS() throw(Exception);
             void Handle_CVar_Aqu_L3() throw(Exception);
+            void Handle_CVar_OBPG_L3() throw(Exception);
             void Handle_CVar_SMAP() throw(Exception);
             void Handle_CVar_Mea_Ozone() throw(Exception);
             void Handle_SpVar_ACOS() throw(Exception);
             void Handle_CVar_Dimscale_General_Product() throw(Exception);
 
             void Adjust_Mea_Ozone_Obj_Name() throw(Exception);
+            void Adjust_GPM_L3_Obj_Name() throw(Exception);
 
             void Handle_GMCVar_NameClashing(set<string> &) throw(Exception);
             void Handle_GMCVar_AttrNameClashing() throw(Exception);
             void Handle_GMSPVar_NameClashing(set<string> &) throw(Exception);
             void Handle_GMSPVar_AttrNameClashing() throw(Exception);
-            void Handle_DimNameClashing() throw(Exception);
             template <typename T> void GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
  
             string get_CF_string(string s);
+
+            void Handle_GPM_l1_Coor_Attr() throw(Exception);
+            void Add_GPM_Attrs() throw(Exception);
             void Add_Aqu_Attrs() throw(Exception);
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
@@ -905,6 +931,10 @@ namespace HDF5CF
             /// Handle special variables for HDF-EOS5 files
             void Handle_SpVar()throw(Exception) ;
 
+            /// Handle special variables for HDF-EOS5 files
+            void Handle_SpVar_Attr()throw(Exception) ;
+
+
             /// Adjust variable dimension names before the flattening for HDF-EOS5 files.
             void Adjust_Var_Dim_NewName_Before_Flattening() throw(Exception);
 
@@ -931,6 +961,7 @@ namespace HDF5CF
             /// Adjust the dimension name for HDF-EOS5 products
             void Adjust_Dim_Name() throw(Exception);
 
+            void Handle_DimNameClashing() throw(Exception);
 
         protected:
             void Adjust_H5_Attr_Value(Attribute *attr) throw (Exception);
@@ -938,7 +969,7 @@ namespace HDF5CF
             void Adjust_EOS5Dim_List(vector<HE5Dim>&) throw(Exception);
             void Condense_EOS5Dim_List(vector<HE5Dim>&) throw(Exception);
             void Remove_NegativeSizeDims(vector<HE5Dim>&) throw(Exception);
-            void Adjust_EOS5VarDim_Info(vector<HE5Dim>&, vector<HE5Dim>&) throw(Exception);
+            void Adjust_EOS5VarDim_Info(vector<HE5Dim>&, vector<HE5Dim>&,const string &, EOS5Type) throw(Exception);
 
             void EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist,EOS5Type,string groupname, map<string,string>& dnamesgeo1dvnames) throw(Exception);
             template <class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var>& eos5varlist) throw(Exception);
@@ -991,9 +1022,10 @@ namespace HDF5CF
             void Handle_EOS5CVar_Special_Attr() throw(Exception);
 
             string get_CF_string(string s);
+            void   Replace_Var_Info(EOS5CVar *src, EOS5CVar *target);
+            void   Replace_Var_Attrs(EOS5CVar *src, EOS5CVar *target);
             void Handle_EOS5CVar_NameClashing(set<string> &) throw(Exception);
             void Handle_EOS5CVar_AttrNameClashing() throw(Exception);
-            void Handle_DimNameClashing() throw(Exception);
             template <typename T> void EOS5Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
             void Adjust_CF_attr() throw(Exception);
             template <typename T> void Create_Missing_CV(T*, EOS5CVar*,const string &, EOS5Type, int) throw(Exception);
@@ -1011,6 +1043,7 @@ namespace HDF5CF
              bool grids_multi_latloncvs;
              bool isaura;
              int orig_num_grids;
+             multimap<string,string>dimname_to_dupdimnamelist;
     };
 }
 #endif

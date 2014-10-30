@@ -36,12 +36,14 @@
 #include <mime_util.h>
 #include "config_hdf5.h"
 #include "h5cfdap.h"
+#include <BESDebug.h>
 
 void read_cfdds(DDS&,const string&,hid_t);
 void read_cfdas(DAS&, const string&,hid_t);
 
 void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
+    BESDEBUG("h5","Coming to CF DDS read function read_cfdds "<<endl);
     // Set the DDS name be the file name
     dds.set_dataset_name(name_path(filename));
 
@@ -80,6 +82,7 @@ void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
 void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
 
+    BESDEBUG("h5","Coming to CF DAS read function read_cfdas "<<endl);
     hid_t fileid = myfile_id;
     H5CFModule moduletype;
 

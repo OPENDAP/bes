@@ -38,6 +38,7 @@
 
 #include "Str.h"
 #include "HDF5CFArray.h"
+//#include "h5cfdaputil.h"
 
 
 
@@ -49,6 +50,11 @@ BaseType *HDF5CFArray::ptr_duplicate()
 // Read in an HDF5 Array 
 bool HDF5CFArray::read()
 {
+
+    BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
+    string check_pass_fileid_key_str="H5.EnablePassFileID";
+    bool check_pass_fileid_key = false;
+    check_pass_fileid_key = HDF5CFDAPUtil::check_beskeys(check_pass_fileid_key_str);
 
     vector<int>offset;
     vector<int>count;
@@ -88,18 +94,21 @@ bool HDF5CFArray::read()
     hid_t memtype = -1;
 
    
-#if 0
-    if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
-        ostringstream eherr;
-        eherr << "HDF5 File " << filename 
-              << " cannot be opened. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+//#if 0
+    if(false == check_pass_fileid_key) {
+        if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+            ostringstream eherr;
+            eherr << "HDF5 File " << filename 
+                  << " cannot be opened. "<<endl;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
     }
-#endif
+//#endif
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
 
         //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "HDF5 dataset " << varname
               << " cannot be opened. "<<endl;
@@ -110,6 +119,7 @@ bool HDF5CFArray::read()
 
         H5Dclose(dsetid);
         //H5Fclose(fileid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         ostringstream eherr;
         eherr << "Space id of the HDF5 dataset " << varname
               << " cannot be obtained. "<<endl;
@@ -124,6 +134,7 @@ bool HDF5CFArray::read()
             H5Sclose(dspace);
             H5Dclose(dsetid);
             //H5Fclose(fileid);
+            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
             ostringstream eherr;
             eherr << "The selection of hyperslab of the HDF5 dataset " << varname
                   << " fails. "<<endl;
@@ -134,6 +145,7 @@ bool HDF5CFArray::read()
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid); 
+            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
             //H5Fclose(fileid);
             ostringstream eherr;
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
@@ -149,6 +161,7 @@ bool HDF5CFArray::read()
             H5Sclose(mspace);
         H5Sclose(dspace);
         H5Dclose(dsetid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         //H5Fclose(fileid);
         ostringstream eherr;
         eherr << "Obtaining the datatype of the HDF5 dataset " << varname
@@ -164,6 +177,7 @@ bool HDF5CFArray::read()
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         H5Dclose(dsetid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         //H5Fclose(fileid);
         ostringstream eherr;
         eherr << "Obtaining the memory type of the HDF5 dataset " << varname
@@ -198,6 +212,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -229,6 +244,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -266,6 +282,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -294,6 +311,7 @@ bool HDF5CFArray::read()
                     H5Tclose(dtypeid);
                     H5Sclose(dspace);
                     H5Dclose(dsetid);
+                    HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                     //H5Fclose(fileid);
                     ostringstream eherr;
                     eherr << "Cannot read the HDF5 dataset " << varname
@@ -322,6 +340,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -350,6 +369,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -379,6 +399,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -408,6 +429,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -430,6 +452,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the size of the fixed size HDF5 string of the dataset " 
@@ -451,6 +474,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -495,6 +519,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the size of the fixed size HDF5 string of the dataset "
@@ -515,6 +540,7 @@ bool HDF5CFArray::read()
                 H5Tclose(dtypeid);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -549,6 +575,7 @@ bool HDF5CFArray::read()
                     H5Tclose(dtypeid);
                     H5Sclose(dspace);
                     H5Dclose(dsetid);
+                    HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                     //H5Fclose(fileid);
                     ostringstream eherr;
                     eherr << "Cannot reclaim the memory buffer of the HDF5 variable length string of the dataset "
@@ -589,6 +616,7 @@ bool HDF5CFArray::read()
                     H5Sclose(mspace);
                 H5Sclose(dspace);
                 H5Dclose(dsetid);
+                HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
                 //H5Fclose(fileid);
                 ostringstream eherr;
                 eherr << "Cannot read the HDF5 dataset " << varname
@@ -603,6 +631,7 @@ bool HDF5CFArray::read()
         H5Sclose(mspace);
     H5Sclose(dspace);
     H5Dclose(dsetid);
+    HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
     //H5Fclose(fileid);
     
     return true;

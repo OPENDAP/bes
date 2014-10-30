@@ -32,6 +32,9 @@
 #include "HDF5CFUtil.h"
 #include <set>
 #include <sstream>
+#include <stdlib.h>
+#include<InternalErr.h>
+using namespace libdap;
 
 
 H5DataType
@@ -203,4 +206,198 @@ void HDF5CFUtil::gen_unique_name(string &str,set<string>& namelist, int&clash_in
 }
 
            
+// From a string separated by a separator to a list of string,
+// for example, split "ab,c" to {"ab","c"}
+void
+HDF5CFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
+{
+    names.clear();
+    for (int i = 0, j = 0; j <= len; ++j) {
+        if ((j == len && len) || s[j] == sep) {
+            string elem(s + i, j - i);
+            names.push_back(elem);
+            i = j + 1;
+            continue;
+        }
+    }
+}
     
+
+// Assume sz is Null terminated string.
+void
+HDF5CFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
+{
+    Split(sz, (int)strlen(sz), sep, names);
+}
+
+void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value, 
+                                          int& latsize, int&lonsize, 
+                                          float& lat_start, float& lon_start,
+                                          float& lat_res, float& lon_res,
+                                          bool check_reg_orig ){
+
+    //bool cr_reg = false;
+    //bool sw_origin = true;
+    //float lat_res = 1.;
+    //float lon_res = 1.;
+    float lat_north = 0.;
+    float lat_south = 0.;
+    float lon_east = 0.;
+    float lon_west = 0.;
+     
+    vector<string> ind_elems;
+    char sep='\n';
+    HDF5CFUtil::Split(&value[0],sep,ind_elems);
+     
+    // The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.
+    if(ind_elems.size()!=10)
+        throw InternalErr(__FILE__,__LINE__,"The number of elements in the TRMM level 3 GridHeader is not right.");
+
+    if(false == check_reg_orig) {
+        if (0 != ind_elems[1].find("Registration=CENTER"))        
+            throw InternalErr(__FILE__,__LINE__,"The TRMM grid registration is not center.");
+    }
+        
+    if (0 == ind_elems[2].find("LatitudeResolution")){ 
+
+        size_t equal_pos = ind_elems[2].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[2].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+
+            string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lat_res = strtof(latres_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for TRMM level 3 products");
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LatitudeResolution doesn't exist.");
+
+    if (0 == ind_elems[3].find("LongitudeResolution")){ 
+
+        size_t equal_pos = ind_elems[3].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[3].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lon_res = strtof(lonres_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for TRMM level 3 products");
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LongitudeResolution doesn't exist.");
+
+    if (0 == ind_elems[4].find("NorthBoundingCoordinate")){ 
+
+        size_t equal_pos = ind_elems[4].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[4].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lat_north = strtof(north_bounding_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for TRMM level 3 products");
+ 
+    }
+     else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid NorthBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[5].find("SouthBoundingCoordinate")){ 
+
+            size_t equal_pos = ind_elems[5].find_first_of('=');
+            if(string::npos == equal_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+            size_t scolon_pos = ind_elems[5].find_first_of(';');
+            if(string::npos == scolon_pos)
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            if (equal_pos < scolon_pos){
+                string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
+                lat_south = strtof(lat_south_str.c_str(),NULL);
+            }
+            else 
+                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid SouthBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[6].find("EastBoundingCoordinate")){ 
+
+        size_t equal_pos = ind_elems[6].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[6].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lon_east = strtof(lon_east_str.c_str(),NULL);
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid EastBoundingCoordinate doesn't exist.");
+
+    if (0 == ind_elems[7].find("WestBoundingCoordinate")){ 
+
+        size_t equal_pos = ind_elems[7].find_first_of('=');
+        if(string::npos == equal_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+           
+        size_t scolon_pos = ind_elems[7].find_first_of(';');
+        if(string::npos == scolon_pos)
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+        if (equal_pos < scolon_pos){
+            string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lon_west = strtof(lon_west_str.c_str(),NULL);
+//cerr<<"latres str is "<<lon_west_str <<endl;
+//cerr<<"latres is "<<lon_west <<endl;
+        }
+        else 
+            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+ 
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The TRMM grid WestBoundingCoordinate doesn't exist.");
+
+    if (false == check_reg_orig) {
+        if (0 != ind_elems[8].find("Origin=SOUTHWEST")) 
+            throw InternalErr(__FILE__,__LINE__,"The TRMM grid origin is not SOUTHWEST.");
+    }
+
+    // Since we only treat the case when the Registration is center, so the size should be the 
+    // regular number size - 1.
+    latsize =(int)((lat_north-lat_south)/lat_res);
+    lonsize =(int)((lon_east-lon_west)/lon_res);
+    lat_start = lat_south;
+    lon_start = lon_west;
+}
+
+void HDF5CFUtil::close_fileid(hid_t file_id,bool pass_fileid) {
+    if(false == pass_fileid) {
+        if(file_id != -1)
+            H5Fclose(file_id);
+    }
+
+}
+
+

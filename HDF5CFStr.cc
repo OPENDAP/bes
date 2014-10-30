@@ -34,6 +34,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <BESDebug.h>
+
 #include "InternalErr.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFStr.h"
@@ -54,6 +56,8 @@ BaseType *HDF5CFStr::ptr_duplicate()
 
 bool HDF5CFStr::read()
 {
+
+    BESDEBUG("h5","Coming to HDF5CFStr read "<<endl);
     hid_t fileid = -1;
     hid_t dsetid = -1;
     hid_t dspace = -1;

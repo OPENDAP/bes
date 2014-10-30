@@ -21,7 +21,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/SWATHS/Swath/Data Fields/Temperature";
-        String orig_dimname_list "NDim ";
+        String orig_dimname_list "ZDim NDim";
     }
     Level {
         String units "hPa";
@@ -53,65 +53,5 @@ Attributes {
     }
     ZDim {
         String units "level";
-    }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "Swath";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                    Dimension_2 {
-                        String DimensionName "NDim";
-                        Int32 Size 8;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Level";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Latitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                    GeoField_4 {
-                        String GeoFieldName "Longitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "NDim";
-                        String MaxdimList "ZDim", "NDim";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
 }

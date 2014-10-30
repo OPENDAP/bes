@@ -38,6 +38,7 @@
 #include <sstream>
 
 #include <BESLog.h>
+#include <BESDebug.h>
 
 #include "parser.h"
 #include "heos5cfdap.h"
@@ -75,6 +76,7 @@ using namespace HDF5CF;
 
 void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
     string st_str ="";
     string core_str="";
     string arch_str="";
@@ -200,6 +202,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
         // For COARDS, the dimension name needs to be changed.
         f->Adjust_Dim_Name();
+        if(true == is_check_nameclashing)
+           f->Handle_DimNameClashing();
         // We need to turn off the very long string in the TES file to avoid
         // the choking of netCDF Java tools. So this special variable routine
         // is listed at last. We may need to turn off this if netCDF can handle
@@ -227,6 +231,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
 void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products DAS mapping function map_eos5_cfdas  "<<endl);
     string st_str ="";
     string core_str="";
     string arch_str="";
@@ -332,6 +337,8 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
         // Handle coordinate attributes
         f->Handle_Coor_Attr();
+
+        f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
         if(f != NULL)
@@ -356,6 +363,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
 void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function gen_eos5_cfdds  "<<endl);
     const vector<HDF5CF::Var *>& vars       = f->getVars();
     const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
     const string filename = f->getPath();
@@ -418,7 +426,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                     ar = new HDF5CFArray (
                                           cvar->getRank(),
                                           file_id,
-                                          //filename,
+                                          filename,
                                           cvar->getType(),
                                           cvar->getFullPath(),
                                           cvar->getNewName(),
@@ -450,7 +458,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                 try {
                     ar = new HDFEOS5CFMissLLArray (
                                     cvar->getRank(),
-                                    //filename,
+                                    filename,
                                     file_id,
                                     cvar->getFullPath(),
                                     cvar->getCVType(),
@@ -534,7 +542,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
                 try {
                     ar = new HDFEOS5CFSpecialCVArray(
                                                       cvar->getRank(),
-                                                      //filename,
+                                                      filename,
                                                       file_id,
                                                       cvar->getType(),
                                                       nelem,
@@ -572,6 +580,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
 
 void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products DAS generation function gen_eos5_cfdas  "<<endl);
     // cerr<<"read_cfdas()"<<endl;
 
     const vector<HDF5CF::Var *>& vars             = f->getVars();

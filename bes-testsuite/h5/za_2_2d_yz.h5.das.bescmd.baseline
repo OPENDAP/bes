@@ -38,7 +38,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/ZAS/ZA1/Data Fields/Temperature";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "ZDim YDim";
     }
     ZA2_Latitude {
         Float32 _FillValue 0.000000000;
@@ -59,88 +59,10 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/ZAS/ZA2/Data Fields/Temperature";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "ZDim YDim";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-            ZA_1 {
-                String ZaName "ZA1";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "YDim";
-                        Int32 Size 4;
-                    }
-                    Dimension_2 {
-                        String DimensionName "ZDim";
-                        Int32 Size 2;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "YDim";
-                        String MaxdimList "ZDim", "YDim";
-                    }
-                }
-            }
-            ZA_2 {
-                String ZaName "ZA2";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "YDim";
-                        Int32 Size 8;
-                    }
-                    Dimension_2 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "YDim";
-                        String MaxdimList "ZDim", "YDim";
-                    }
-                }
-            }
-        }
     }
 }

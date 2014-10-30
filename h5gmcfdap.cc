@@ -37,6 +37,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <BESDebug.h>
 #include <InternalErr.h>
 
 #include "h5cfdaputil.h"
@@ -53,12 +54,14 @@
 #include "HDF5GMCFMissLLArray.h"
 #include "HDF5GMCFFillIndexArray.h"
 #include "HDF5GMCFMissNonLLCVArray.h"
+#include "HDF5GMCFSpecialCVArray.h"
 #include "HDF5GMSPCFArray.h"
 
 using namespace HDF5CF;
 
 void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
+    BESDEBUG("h5","Coming to GM products DDS mapping function map_gmh5_cfdds  "<<endl);
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
@@ -113,6 +116,9 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
         // Adjust Dimension name 
         f->Adjust_Dim_Name();
+         if(General_Product == product_type ||
+           true == is_check_nameclashing)
+            f->Handle_DimNameClashing();
     }
     catch (HDF5CF::Exception &e){
         if (f != NULL)
@@ -137,6 +143,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
 void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
+    BESDEBUG("h5","Coming to GM products DAS mapping function map_gmh5_cfdas  "<<endl);
     string check_objnameclashing_key ="H5.EnableCheckNameClashing";
     bool is_check_nameclashing = false;
     is_check_nameclashing = HDF5CFDAPUtil::check_beskeys(check_objnameclashing_key);
@@ -212,6 +219,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
 void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
+    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds  "<<endl);
     // cerr <<"coming to gen_gmh5_cfdds "<<endl;
     const vector<HDF5CF::Var *>&      vars  = f->getVars();
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
@@ -243,6 +251,7 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
 void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
+    BESDEBUG("h5","Coming to GM DAS generation function gen_gmh5_cfdas  "<<endl);
     // cerr <<"coming to gen_gmh5_cfdas "<<endl;
 
     const vector<HDF5CF::Var *>& vars             = f->getVars();
@@ -299,6 +308,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                 gen_dap_oneobj_das(at,*it_ra,*it_v);
                     
         }
+
+        if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
+                                          || GPM_L1 == f->getProductType()) 
+            update_GPM_special_attrs(das,*it_v);
+        
     }
 
     for (it_cv = cvars.begin();
@@ -375,8 +389,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 try {
                     ar = new HDF5CFArray (
                                     cvar->getRank(),
-                                    //filename,
                                     file_id,
+                                    filename,
                                     cvar->getType(),
                                     cvar->getFullPath(),
                                     cvar->getNewName(),
@@ -408,7 +422,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 try {
                     ar = new HDF5GMCFMissLLArray (
                                     cvar->getRank(),
-                                    //filename,
+                                    filename,
                                     file_id,
                                     cvar->getType(),
                                     cvar->getFullPath(),
@@ -509,6 +523,35 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
 
             case CV_SPECIAL:
+             {
+                // Currently only handle 1-D special CV.
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
+                }
+                int nelem = (cvar->getDimensions()[0])->getSize();
+
+                HDF5GMCFSpecialCVArray * ar = NULL;
+                ar = new HDF5GMCFSpecialCVArray(
+                                                cvar->getType(),
+                                                nelem,
+                                                cvar->getFullPath(),
+                                                cvar->getPtType(),
+                                                cvar->getNewName(),
+                                                bt);
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName())
+                        ar->append_dim((*it_d)->getSize());
+                    else
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                dds.add_var(ar);
+                delete ar;
+
+            }
+            break;
             case CV_MODIFY:
             default: 
                 delete bt;
@@ -552,7 +595,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         try {
             ar = new HDF5GMSPCFArray (
                                  spvar->getRank(),
-                                 //filename,
+                                 filename,
                                  fileid,
                                  spvar->getType(),
                                  spvar->getFullPath(),
@@ -580,6 +623,65 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         delete ar;
     }
 
+}
+
+// When we add floating point fill value at HDF5CF.cc, the value will be changed
+// a little bit when it changes to string representation. 
+// For example, -9999.9 becomes -9999.9000123. To reduce the misunderstanding,we
+// just add fillvalue in the string type here. KY 2014-04-02
+void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var) {
+
+    if(H5FLOAT64 == var->getType() ||
+       H5FLOAT32 == var->getType() ||
+       H5INT16 == var->getType() ||
+       H5CHAR == var->getType()) {
+
+        AttrTable *at = das.get_table(var->getNewName());
+        if (NULL == at)
+            at = das.add_table(var->getNewName(), new AttrTable);
+        bool has_fillvalue = false;
+        AttrTable::Attr_iter it = at->attr_begin();
+        while (it!=at->attr_end() && false==has_fillvalue) {
+            if (at->get_name(it) =="_FillValue")
+            {
+                has_fillvalue = true;
+                string fillvalue ="";
+                if(H5FLOAT32 == var->getType()) {
+                    const string cor_fill_value = "-9999.9";
+                    fillvalue =  (*at->get_attr_vector(it)->begin());
+                    if((fillvalue.find(cor_fill_value) == 0) && (fillvalue!= cor_fill_value)) {
+                        at->del_attr("_FillValue");
+                        at->append_attr("_FillValue","Float32",cor_fill_value);
+                    }
+                }
+                else if(H5FLOAT64 == var->getType()) {
+                    const string cor_fill_value = "-9999.9";
+                    const string exist_fill_value_substr = "-9999.8999";
+                    fillvalue =  (*at->get_attr_vector(it)->begin());
+                    if((fillvalue.find(exist_fill_value_substr) == 0) && (fillvalue!= cor_fill_value)) {
+                        at->del_attr("_FillValue");
+                        at->append_attr("_FillValue","Float64",cor_fill_value);
+                    }
+             
+                }
+            }
+            it++;
+        }
+
+        // Add the fill value
+        if (has_fillvalue != true ) {
+            
+            if(H5FLOAT32 == var->getType()) 
+                at->append_attr("_FillValue","Float32","-9999.9");
+            else if(H5FLOAT64 == var->getType())
+                at->append_attr("_FillValue","Float64","-9999.9");
+            else if (H5INT16 == var->getType()) 
+                at->append_attr("_FillValue","Int16","-9999");
+            else if (H5CHAR == var->getType())// H5CHAR maps to DAP int16
+                at->append_attr("_FillValue","Int16","-99");
+        
+        }
+    }
 }
 
                

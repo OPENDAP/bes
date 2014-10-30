@@ -27,7 +27,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/SWATHS/Swath1/Data Fields/Temperature";
-        String orig_dimname_list "NDim ";
+        String orig_dimname_list "ZDim NDim";
     }
     Swath1_Longitude {
         String units "degrees_east";
@@ -39,7 +39,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/SWATHS/Swath2/Data Fields/Temperature";
-        String orig_dimname_list "NDim ";
+        String orig_dimname_list "ZDim NDim";
     }
     Swath2_Longitude {
         String units "degrees_east";
@@ -74,105 +74,5 @@ Attributes {
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/Swath2/Geolocation Fields/Pressure";
         String orig_dimname "ZDim";
-    }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "Swath1";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                    Dimension_2 {
-                        String DimensionName "NDim";
-                        Int32 Size 8;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Latitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Longitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "NDim";
-                        String MaxdimList "ZDim", "NDim";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-            SWATH_2 {
-                String SwathName "Swath2";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "ZDim";
-                        Int32 Size 2;
-                    }
-                    Dimension_2 {
-                        String DimensionName "NDim";
-                        Int32 Size 4;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Latitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Longitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "NDim";
-                        String MaxdimList "ZDim", "NDim";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
 }

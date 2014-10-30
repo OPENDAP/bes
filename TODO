@@ -1,4 +1,4 @@
-o Add more BESDEBUG and DBG statement.
+o May cache file structures in a file to improve the peformance.
 o Handle more unsupported data types in the CF option.
 o Break loop in the CF option.
 

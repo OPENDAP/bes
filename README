@@ -35,10 +35,25 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.2.3
+----------------------------
+For the CF option: 
+ -  Implement an option not to pass HDF5 file ID from DDS/DAS service to data service
+    since NcML may not work when the file ID is passed.
+ -  Add support for several NASA HDF5 products:
+    GES DISC GPM level 1, level 2, level 3 DPR, level 3 GPROF, and level 3 IMERGE products
+    GES DISC some netCDF-4 like MEaSUREs products
+    OBPG level 3m HDF5 and MOPITT level 3 proudcts
+ -  Performanc tuning: Add a BES option not to generate StructMetadata for HDF-EOS5-like files. 
+ -  Correct the values for the predefined attribute orig_dimname_list.
+ -  Read the description of BES keys in the file h5.conf.in to see if the default values need
+    to be changed for your service. 
+
+
 What's new for version 2.2.2
 ----------------------------
 For the CF option: 
- -  Improve file I/O by reducing the number of HDF4/HDF-EOS2 file open/close 
+ -  Improve file I/O by reducing the number of HDF5 file open/close 
 requests. 
  -  Error handling is greatly improved: resources are released properly when 
 errors occur.
@@ -270,6 +285,17 @@ Limitations for the CF option
         and coordinate variables, ignoring the mapping of these attributes 
         doesn't lose any essential information for OPeNDAP users.
 
+        o fileout_netcdf prints H5Fclose() internal error message on CentOS6 
+        with Hyrax-1.8.8 and hdf5-1.8.5.patch1-7.el6.x86_64.rpm:
+
+        HDF5-DIAG: Error detected in HDF5 (1.8.5-patch1) thread 0:
+        #000: ../../src/H5F.c line 1957 in H5Fclose(): invalid file identifier
+        major: Invalid arguments to routine
+        minor: Inappropriate type
+
+        However, users can still get HDF5 as either NetCDF-3 or NetCDF-4
+        successfully. We strongly recommend you to use the latest HDF5 and
+        NetCDF RPMs.
 
 Limitations in default option
 -----------------------------

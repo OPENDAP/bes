@@ -41,7 +41,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/ZAS/ZA/Data Fields/Temperature";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "TDim ZDim YDim";
     }
     Time {
         Float32 _FillValue 0.000000000;
@@ -53,63 +53,5 @@ Attributes {
     StructMetadata_0 {
         String origname "StructMetadata.0";
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-            ZA_1 {
-                String ZaName "ZA";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "YDim";
-                        Int32 Size 8;
-                    }
-                    Dimension_2 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                    Dimension_3 {
-                        String DimensionName "TDim";
-                        Int32 Size 2;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Time";
-                        String DimList "TDim";
-                        String MaxdimList "TDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Date";
-                        String DimList "TDim";
-                        String MaxdimList "TDim";
-                    }
-                    DataField_4 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                    DataField_5 {
-                        String DataFieldName "Temperature";
-                        String DimList "TDim", "ZDim", "YDim";
-                        String MaxdimList "TDim", "ZDim", "YDim";
-                    }
-                }
-            }
-        }
     }
 }

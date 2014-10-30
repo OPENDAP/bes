@@ -23,13 +23,13 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/GRIDS/GeoGrid1/Data Fields/Temperature";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     GeoGrid2_Temperature {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/GRIDS/GeoGrid2/Data Fields/Temperature";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
@@ -52,63 +52,5 @@ Attributes {
         String origname "Longitude";
         String fullnamepath "/HDFEOS/GRIDS/GeoGrid2/Data Fields/Longitude";
         String orig_dimname "XDim";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "GeoGrid1";
-                Int32 XDim 8;
-                Int32 YDim 4;
-                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
-                Float64 LowerRightMtrs 8000000.000000, 0.000000;
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-            GRID_2 {
-                String GridName "GeoGrid2";
-                Int32 XDim 8;
-                Int32 YDim 4;
-                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
-                Float64 LowerRightMtrs 8000000.000000, 0.000000;
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Longitude";
-                        String DimList "XDim";
-                        String MaxdimList "XDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
 }

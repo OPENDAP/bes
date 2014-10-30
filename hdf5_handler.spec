@@ -1,6 +1,6 @@
 Summary:         HDF5 data handler for the OPeNDAP Data server
 Name:            hdf5_handler
-Version:         2.2.2
+Version:         2.2.3
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 
@@ -13,7 +13,7 @@ Requires:        hdf5 => 1.8
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:   libdap-devel >= 3.13.0
 BuildRequires:	 bes-devel >= 3.13.0
-BuildRequires:   hdf5-devel >= 1.8
+# BuildRequires:   hdf5-devel >= 1.8
 
 %description
 This is the hdf5 data handler for our data server. It reads HDF5

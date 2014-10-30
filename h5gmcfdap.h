@@ -43,5 +43,5 @@ void gen_gmh5_cfdds(DDS &, HDF5CF::GMFile *);
 void gen_gmh5_cfdas(DAS &, HDF5CF::GMFile *);
 void gen_dap_onegmcvar_dds(DDS &,const HDF5CF::GMCVar*,const hid_t, const string &);
 void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const string & filename);
-
+void update_GPM_special_attrs(DAS &, const HDF5CF::Var* var);
 #endif

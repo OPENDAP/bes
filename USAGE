@@ -2,7 +2,10 @@
   This supplementary document explains how to use HDF5 handler to serve NASA 
 HDF5/HDF-EOS5 products in a manner that follows the CF conventions.
 
-1. Using the NcML handler to modify attributes that do not follow the CF 
+1. Please refer to h5.conf.in for the descriptions of different BES keys for 
+   the CF option.
+
+2. Using the NcML handler to modify attributes that do not follow the CF 
 conventions 
 
   Although the HDF5 handler tries to make attributes follow the CF conventions 

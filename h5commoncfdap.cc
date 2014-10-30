@@ -82,6 +82,7 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
 
         const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
+//cerr<<"coming to the variable "<<endl;
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
         if (0 == dims.size()) { 
             if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
@@ -108,8 +109,8 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
             try {
                 ar = new HDF5CFArray (
                                     var->getRank(),
-                                    //filename,
                                     file_id,
+                                    filename,
                                     var->getType(),
                                     var->getFullPath(),
                                     var->getNewName(),
@@ -120,7 +121,9 @@ void gen_dap_onevar_dds(DDS &dds,const HDF5CF::Var* var, const hid_t file_id, co
                 throw InternalErr(__FILE__,__LINE__,"Cannot allocate the HDF5CFStr.");
             }
 
+//cerr<<"dims size "<<dims.size() <<endl;
             for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+//cerr<<"Dimen name "<<(*it_d)->getNewName() <<endl;
                if (""==(*it_d)->getNewName()) 
                     ar->append_dim((*it_d)->getSize());
                else 

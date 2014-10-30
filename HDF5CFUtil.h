@@ -66,17 +66,29 @@ struct HDF5CFUtil {
 
                /// Trim the string with many NULL terms or garbage characters to simply a string
                /// with a NULL terminator. This method will not handle the NULL PAD case.
-               static string trim_string(hid_t dtypeid,const string s, int num_sect, size_t section_size, vector<size_t>& sect_newsize);
+               static std::string trim_string(hid_t dtypeid,const std::string s, int num_sect, size_t section_size, std::vector<size_t>& sect_newsize);
 
-               static string obtain_string_after_lastslash(const string s);
+               static std::string obtain_string_after_lastslash(const std::string s);
                static bool cf_strict_support_type(H5DataType dtype); 
 
                // Obtain the unique name for the clashed names and save it to set namelist.
-               static void gen_unique_name(string &str, set<string>&namelist,int&clash_index);
+               static void gen_unique_name(std::string &str, std::set<std::string>&namelist,int&clash_index);
 
+               /// From a string separated by a separator to a list of string,
+               /// for example, split "ab,c" to {"ab","c"}
+               static void Split (const char *s, int len, char sep,
+                                  std::vector < std::string > &names);
 
-               
+               /// Assume sz is Null terminated string.
+               static void Split (const char *sz, char sep,
+                            std::vector < std::string > &names);
 
+               // Parse GPM Level 3 GridHeaders
+               //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
+               static void parser_gpm_l3_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, 
+                                                    float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
+
+               static void close_fileid(hid_t,bool);
 };
 
 #endif

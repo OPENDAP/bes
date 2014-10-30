@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(hdf5_handler, 2.2.2, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 2.2.3, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
@@ -49,11 +49,7 @@ if test x"$FLEX" = x""; then
       	AC_MSG_WARN([No version of flex was found!])
 	AC_MSG_ERROR([Please install flex])
 else
-	# Using 'print $NF' failed on OSX 10.9 because apple's version of
-	# flex 2.5.35 has some trailing text. jhrg 3/28/14
 	V=`$FLEX --version | awk '{print $2}'`
-	# Fixed the compare (was ... > 20535). ... not sure if the 
-	# '|| $3 == 4' is correct. jhrg 3/28/14
    	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535) || $3 == 4) print "no"}'`
    	if test "x$W" != x ; then
 	   AC_MSG_WARN([Adjust your FLEX environment variable])
@@ -80,7 +76,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.13.0],
+AC_CHECK_LIBDAP([3.11.0],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -106,11 +102,18 @@ AC_CHECK_HDF5(
   ]
 )
 
-AC_CHECK_BES([3.13.0],
+dnl AC_CHECK_PROGS([GETDAP4],[getdap4])
+dnl if test -n "$GETDAP4"; then
+dnl    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
+dnl fi
+
+AC_CHECK_BES([3.9.0],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])
 ])
+
+OPENDAP_DEBUG_OPTION
 
 dnl autoheader macros; tack some text at the top and bottom of config_hdf5.h.in
 

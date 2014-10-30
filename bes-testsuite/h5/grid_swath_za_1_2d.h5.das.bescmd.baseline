@@ -33,13 +33,13 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Temperature";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     SWATHS_Temperature {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/SWATHS/Swath/Data Fields/Temperature";
-        String orig_dimname_list "NDim ";
+        String orig_dimname_list "ZDim NDim";
     }
     SWATHS_Longitude {
         String units "degrees_east";
@@ -66,7 +66,7 @@ Attributes {
         String units "K";
         String origname "Temperature";
         String fullnamepath "/HDFEOS/ZAS/ZA/Data Fields/Temperature";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "ZDim YDim";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
@@ -89,113 +89,5 @@ Attributes {
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Pressure";
         String orig_dimname "ZDim";
-    }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "Swath";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                    Dimension_2 {
-                        String DimensionName "NDim";
-                        Int32 Size 8;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Latitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Longitude";
-                        String DimList "NDim";
-                        String MaxdimList "NDim";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "NDim";
-                        String MaxdimList "ZDim", "NDim";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "GeoGrid";
-                Int32 XDim 8;
-                Int32 YDim 4;
-                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
-                Float64 LowerRightMtrs 8000000.000000, 0.000000;
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Temperature";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-        ZaStructure {
-            ZA_1 {
-                String ZaName "ZA";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "YDim";
-                        Int32 Size 8;
-                    }
-                    Dimension_2 {
-                        String DimensionName "ZDim";
-                        Int32 Size 4;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Pressure";
-                        String DimList "ZDim";
-                        String MaxdimList "ZDim";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Temperature";
-                        String DimList "ZDim", "YDim";
-                        String MaxdimList "ZDim", "YDim";
-                    }
-                }
-            }
-        }
     }
 }

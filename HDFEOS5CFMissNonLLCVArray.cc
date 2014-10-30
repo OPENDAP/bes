@@ -46,6 +46,7 @@ BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 
 bool HDFEOS5CFMissNonLLCVArray::read()
 {
+    BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
     write_nature_number_buffer(rank,tnumelm);
     return true;
 }

@@ -51,7 +51,7 @@ H5GCFProduct check_product(hid_t file_id) {
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    // First check if the product is MEaSUREs SeaWiFS
+    // Check if the product is MEaSUREs SeaWiFS
     int s_level = -1;
 
     // Also set Aquarius level, although we only support
@@ -59,7 +59,24 @@ H5GCFProduct check_product(hid_t file_id) {
     // level 2.
     int a_level = -1;
 
-    if (true == check_measure_seawifs(root_id,s_level)) {
+
+    // Check if the product is GPM level 1, if yes, just return.
+    if (true == check_gpm_l1(root_id)){     
+//cerr<<"Find GPM level 1 "<<endl;
+        product_type = GPM_L1;
+    }
+
+    // Check if the product is GPM level 3, if yes, just return.
+    else if (true == check_gpms_l3(root_id)){     
+        product_type = GPMS_L3;
+    }
+
+    else if (true == check_gpmm_l3(root_id)) {
+        product_type = GPMM_L3;
+
+    }
+
+    else if (true == check_measure_seawifs(root_id,s_level)) {
         // cerr <<"after check seawifs " <<endl << " level is "<< s_level <<endl;
         if (2 == s_level) product_type =  Mea_SeaWiFS_L2;
         if (3 == s_level) product_type =  Mea_SeaWiFS_L3;
@@ -68,6 +85,10 @@ H5GCFProduct check_product(hid_t file_id) {
     else if (true == check_aquarius(root_id,a_level)){
         // cerr <<"after check aquarius" <<endl << " level is "<< a_level <<endl;
         if (3 == a_level) product_type =  Aqu_L3;
+    }
+    else if (true == check_obpg(root_id,a_level)){
+        // cerr <<"after check aquarius" <<endl << " level is "<< a_level <<endl;
+        if (3 == a_level) product_type =  OBPG_L3;
     }
 
     else if (true == check_measure_ozone(root_id)) {
@@ -93,6 +114,343 @@ H5GCFProduct check_product(hid_t file_id) {
 
     H5Gclose(root_id);
     return product_type;
+}
+
+// Function to check if the product is GPM level 1
+bool check_gpm_l1(hid_t s_root_id) {
+
+    htri_t has_gpm_l1_attr1 = -1;
+    bool   ret_flag = false;
+
+//cerr <<"coming to gpm level 3 "<<endl;
+
+    // Here we check the existence of attribute 1 first 
+    has_gpm_l1_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
+
+    if(has_gpm_l1_attr1 >0) {
+
+        H5G_info_t g_info;
+        hsize_t nelms = 0;
+
+        if(H5Gget_info(s_root_id,&g_info) <0) {
+            H5Gclose(s_root_id);
+            throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully");
+        }
+
+        nelms = g_info.nlinks;
+
+        hid_t cgroup = -1;
+        hid_t attrid = -1;
+
+        for (unsigned int i = 0; i<nelms; i++) {
+
+            try {
+
+                size_t dummy_name_len = 1;
+
+                // Query the length of object name.
+                ssize_t oname_size = 
+                          H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+                                             dummy_name_len, H5P_DEFAULT);
+                if (oname_size <= 0)
+                    throw InternalErr(__FILE__,__LINE__,"Error getting the size of the hdf5 object from the root group. ");
+
+                // Obtain the name of the object 
+                vector<char> oname;
+                oname.resize((size_t)oname_size+1);
+
+                if (H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+                    (size_t)(oname_size+1), H5P_DEFAULT) < 0)
+                    throw InternalErr(__FILE__,__LINE__,"Error getting the hdf5 object name from the root group. ");
+
+                // Check if it is the hard link or the soft link
+                H5L_info_t linfo;
+                if (H5Lget_info(s_root_id,&oname[0],&linfo,H5P_DEFAULT)<0)
+                    throw InternalErr (__FILE__,__LINE__,"HDF5 link name error from the root group. ");
+
+                // Ignore soft links and external links  
+                if(H5L_TYPE_SOFT == linfo.type  || H5L_TYPE_EXTERNAL == linfo.type)
+                    continue;
+
+                // Obtain the object type, such as group or dataset. 
+                H5O_info_t soinfo;
+                if(H5Oget_info_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
+                    throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully. ");
+
+                H5O_type_t obj_type = soinfo.type;
+
+                // We only need to check the group attribute.
+                if(obj_type == H5O_TYPE_GROUP) {
+
+                    // Check the attribute name of that group
+                    cgroup = H5Gopen(s_root_id,&oname[0],H5P_DEFAULT);
+                    if(cgroup < 0) 
+                        throw InternalErr(__FILE__,__LINE__,"Cannot open the group.");
+
+                    int num_attrs = soinfo.num_attrs;
+
+                    // Loop through all the attributes to see if the GPM level 1 swath header exists.
+                    for (int j = 0; j < num_attrs; j++) {
+
+                        // Obtain the attribute ID.
+                        if ((attrid = H5Aopen_by_idx(cgroup, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC,(hsize_t)j, H5P_DEFAULT, H5P_DEFAULT)) < 0)
+                            throw InternalErr(__FILE__,__LINE__,"Unable to open attribute by index " );
+
+                        // Obtain the size of the attribute name.
+                        ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+                        if (name_size < 0)
+                            throw InternalErr(__FILE__,__LINE__,"Unable to obtain the size of the hdf5 attribute name  " );
+
+                        string attr_name;
+                        attr_name.resize(name_size+1);
+
+                        // Obtain the attribute name.    
+                        if ((H5Aget_name(attrid, name_size+1, &attr_name[0])) < 0)
+                            throw InternalErr(__FILE__,__LINE__,"unable to obtain the hdf5 attribute name  ");
+
+                        string swathheader(GPM_SWATH_ATTR2_NAME);
+                        if(attr_name.rfind(swathheader) !=string::npos) {
+                            H5Aclose(attrid);
+                            ret_flag = true;
+                            break;
+                        }
+                        H5Aclose(attrid);
+                    }
+
+                    if(true == ret_flag){
+                        H5Gclose(cgroup);
+                        break;
+                    }
+                    H5Gclose(cgroup);
+                }
+            }
+            catch(...) {
+                if(s_root_id != -1)
+                    H5Gclose(s_root_id);
+                if(cgroup != -1)
+                    H5Gclose(cgroup);
+                if(attrid != -1)
+                    H5Aclose(attrid);
+                throw;
+            }
+        }
+ 
+    }
+
+    return ret_flag;
+
+}
+
+
+// Function to check if the product is GPM level 3
+bool check_gpms_l3(hid_t s_root_id) {
+
+    htri_t has_gpm_l3_attr1 = -1;
+    bool   ret_flag = false;
+
+//cerr <<"coming to gpm level 3 "<<endl;
+
+    // Here we check the existence of attribute 1 first 
+    has_gpm_l3_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
+
+    if(has_gpm_l3_attr1 >0) {
+
+        htri_t has_gpm_grid_group = -1;
+
+// cerr <<"coming to gpm grid "<<endl;
+        has_gpm_grid_group = H5Lexists(s_root_id,GPM_GRID_GROUP_NAME1,H5P_DEFAULT);
+
+        hid_t s_group_id = -1;
+        if (has_gpm_grid_group >0){
+
+            // Open the group
+            if ((s_group_id = H5Gopen(s_root_id, GPM_GRID_GROUP_NAME1,H5P_DEFAULT))<0) {
+                string msg = "Cannot open the HDF5 Group  ";
+                msg += string(GPM_GRID_GROUP_NAME1);
+                H5Gclose(s_root_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+        }
+        else {
+
+            if(H5Lexists(s_root_id,GPM_GRID_GROUP_NAME2,H5P_DEFAULT) >0) {
+                // Open the group
+                if ((s_group_id = H5Gopen(s_root_id, GPM_GRID_GROUP_NAME2,H5P_DEFAULT))<0) {
+                    string msg = "Cannot open the HDF5 Group  ";
+                    msg += string(GPM_GRID_GROUP_NAME2);
+                    H5Gclose(s_root_id);
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+ 
+            }
+
+        }
+        if (s_group_id >0) {
+            htri_t has_gpm_l3_attr2 = -1;
+            has_gpm_l3_attr2 = H5Aexists(s_group_id,GPM_ATTR2_NAME);
+            if (has_gpm_l3_attr2 >0) 
+                ret_flag = true;
+
+            H5Gclose(s_group_id);
+        }
+
+
+    }
+
+    return ret_flag;
+
+}
+
+
+bool check_gpmm_l3(hid_t s_root_id) {
+
+    htri_t has_gpm_l3_attr1 = -1;
+    bool   ret_flag = false;
+
+//cerr <<"coming to gpm level 3 "<<endl;
+
+    // Here we check the existence of attribute 1 first 
+    has_gpm_l3_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
+
+    if(has_gpm_l3_attr1 >0) {
+
+            if(H5Lexists(s_root_id,GPM_GRID_MULTI_GROUP_NAME,H5P_DEFAULT) >0) {
+                hid_t cgroup_id = -1;
+//cerr<<"coming to check multi-groups 2"<<endl;
+                // Open the group
+                if ((cgroup_id = H5Gopen(s_root_id, GPM_GRID_MULTI_GROUP_NAME,H5P_DEFAULT))<0) {
+                    string msg = "Cannot open the HDF5 Group  ";
+                    msg += string(GPM_GRID_MULTI_GROUP_NAME);
+                    H5Gclose(s_root_id);
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+
+                H5G_info_t g_info;
+                hsize_t nelms = 0;
+
+                if(H5Gget_info(cgroup_id,&g_info) <0) {
+                    H5Gclose(cgroup_id);
+                    H5Gclose(s_root_id);
+                    throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully");
+                }
+
+                nelms = g_info.nlinks;
+//cerr<<"nelms is "<<nelms <<endl;
+
+                hid_t cgroup2_id = -1;
+                hid_t attrid = -1;
+
+                for (unsigned int i = 0; i<nelms; i++) {
+
+                    try {
+
+                        size_t dummy_name_len = 1;
+
+                        // Query the length of object name.
+                        ssize_t oname_size = 
+                                  H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+                                                     dummy_name_len, H5P_DEFAULT);
+                        if (oname_size <= 0)
+                            throw InternalErr(__FILE__,__LINE__,"Error getting the size of the hdf5 object from the grid group. ");
+
+                        // Obtain the name of the object 
+                        vector<char> oname;
+                        oname.resize((size_t)oname_size+1);
+
+                        if (H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+                                    (size_t)(oname_size+1), H5P_DEFAULT) < 0)
+                            throw InternalErr(__FILE__,__LINE__,"Error getting the hdf5 object name from the root group. ");
+
+                        // Check if it is the hard link or the soft link
+                        H5L_info_t linfo;
+                        if (H5Lget_info(cgroup_id,&oname[0],&linfo,H5P_DEFAULT)<0)
+                            throw InternalErr (__FILE__,__LINE__,"HDF5 link name error from the root group. ");
+
+                        // Ignore soft links and external links  
+                        if(H5L_TYPE_SOFT == linfo.type  || H5L_TYPE_EXTERNAL == linfo.type)
+                            continue;
+
+                        // Obtain the object type, such as group or dataset. 
+                        H5O_info_t soinfo;
+                        if(H5Oget_info_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
+                            throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully. ");
+
+                        H5O_type_t obj_type = soinfo.type;
+
+                        // We only need to check the group attribute.
+                        if(obj_type == H5O_TYPE_GROUP) {
+
+                            // Check the attribute name of that group
+                            cgroup2_id = H5Gopen(cgroup_id,&oname[0],H5P_DEFAULT);
+                            if(cgroup2_id < 0)
+                                throw InternalErr(__FILE__,__LINE__,"Cannot open the group.");
+
+//string onamestr(oname.begin(),oname.end());
+//cerr<<"object name is "<<onamestr <<endl;
+
+                            htri_t has_gpm_l3_attr2;
+                            has_gpm_l3_attr2 = H5Aexists(cgroup2_id,GPM_ATTR2_NAME);
+                            if (has_gpm_l3_attr2 >0) { 
+                                ret_flag = true;
+                                H5Gclose(cgroup2_id);
+                                break;
+                            }
+                            else {
+
+                                int num_attrs = soinfo.num_attrs;
+
+                                // Loop through all the attributes to see if the GPM level 1 swath header exists.
+                                for (int j = 0; j < num_attrs; j++) {
+
+                                    // Obtain the attribute ID.
+                                    if ((attrid = H5Aopen_by_idx(cgroup2_id, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC,(hsize_t)j, H5P_DEFAULT, H5P_DEFAULT)) < 0)
+                                        throw InternalErr(__FILE__,__LINE__,"Unable to open attribute by index " );
+
+                                    // Obtain the size of the attribute name.
+                                    ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+                                    if (name_size < 0)
+                                        throw InternalErr(__FILE__,__LINE__,"Unable to obtain the size of the hdf5 attribute name  " );
+
+                                    string attr_name;
+                                    attr_name.resize(name_size+1);
+
+                                    // Obtain the attribute name.    
+                                    if ((H5Aget_name(attrid, name_size+1, &attr_name[0])) < 0)
+                                        throw InternalErr(__FILE__,__LINE__,"unable to obtain the hdf5 attribute name  ");
+
+//cerr<<"attrname is "<<attr_name <<endl;
+                                    string gridheader(GPM_ATTR2_NAME);
+                                    if(attr_name.find(gridheader) !=string::npos) {
+                                        ret_flag = true;
+                                        break;
+                                    }
+                                }
+
+                                if(true == ret_flag)
+                                    break;
+ 
+                            }
+
+                            H5Gclose(cgroup2_id);
+ 
+                        }
+                    }
+                    catch(...) {
+                        if(s_root_id != -1)
+                            H5Gclose(s_root_id);
+                        if(cgroup_id != -1)
+                            H5Gclose(cgroup_id);
+                        if(cgroup2_id != -1)
+                            H5Gclose(cgroup2_id);
+                        throw;
+                    }
+                }
+                H5Gclose(cgroup_id);
+            }
+        } 
+    return ret_flag;
+ 
+    
 }
 
 // Function to check if the product is MeaSure seaWiFS
@@ -277,6 +635,58 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
     return ret_flag;
 }       
 
+// Function to check if the product is OBPG level 3.
+// We leave a flag to indicate if this product is level 3 for 
+// possible level 2 support later.
+bool check_obpg(hid_t s_root_id,int & s_level) {
+
+    htri_t has_obpg_attr1 = -1;
+    bool ret_flag = false;
+//     cerr <<"coming to obpg "<<endl;
+
+    // Here we check the existence of attribute 1 first since
+    // attribute 1 will tell if the product is OBPG or not. 
+    // attribute 2 will tell its level.
+    has_obpg_attr1 = H5Aexists(s_root_id,Obpgl3_ATTR1_NAME);
+    if (has_obpg_attr1 >0) {
+        string attr1_value = "";
+        obtain_gm_attr_value(s_root_id, Obpgl3_ATTR1_NAME, attr1_value);
+        htri_t has_obpg_attr2 = -1;
+        has_obpg_attr2 = H5Aexists(s_root_id,Obpgl3_ATTR2_NAME);
+        if (has_obpg_attr2 >0) {
+            string attr2_value ="";
+            obtain_gm_attr_value(s_root_id,Obpgl3_ATTR2_NAME, attr2_value);
+            if ((0 == attr1_value.compare(Obpgl3_ATTR1_VALUE)) &&
+                (0 == attr2_value.compare(Obpgl3_ATTR2_VALUE))) {
+                    // Set it to level 3
+//cerr<<"This is OBPG product"<<endl;
+                    s_level = 3;
+                    ret_flag = true; 
+            }
+            
+            // else if long_name or short_name don't exist, not what we supported.
+            else if (0 == has_obpg_attr2)
+                ; // no op
+            else {
+                string msg = "Fail to determine if the HDF5 attribute  ";
+                msg += string(Obpgl3_ATTR2_NAME);
+                msg +=" exists ";
+                H5Gclose(s_root_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+        }
+    }
+    else if (0 == has_obpg_attr1) 
+        ;// no op
+    else {
+        string msg = "Fail to determine if the HDF5 attribute  ";
+        msg += string(Obpgl3_ATTR1_NAME);
+        msg +=" exists ";
+        H5Gclose(s_root_id);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+    return ret_flag;
+}
 // Function to check if the product is ACOS Level 2 or SMAP.
 bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
 

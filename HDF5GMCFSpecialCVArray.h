@@ -20,8 +20,8 @@
 // Suite 203, Champaign, IL 61820  
 
 /////////////////////////////////////////////////////////////////////////////
-/// \file HDFEOS5CFSpecialCVArray.h
-/// \brief This class specifies the retrieval of special coordinate variable  values for HDF-EOS5 products
+/// \file HDF5GMCFSpecialCVArray.h
+/// \brief This class specifies the retrieval of the missing lat/lon values for general HDF5 products
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
@@ -29,8 +29,8 @@
 ///
 /// All rights reserved.
 
-#ifndef _HDFEOS5CFSpecialCVARRAY_H
-#define _HDFEOS5CFSpecialCVARRAY_H
+#ifndef _HDF5GMCFSpecialCVARRAY_H
+#define _HDF5GMCFSpecialCVARRAY_H
 
 // STL includes
 #include <string>
@@ -38,34 +38,41 @@
 
 // DODS includes
 #include "HDF5CF.h"
-#include "HDF5BaseArray.h"
+#include <Array.h>
 
 using namespace libdap;
 
-class HDFEOS5CFSpecialCVArray:public HDF5BaseArray {
+class HDF5GMCFSpecialCVArray:public Array {
     public:
-        HDFEOS5CFSpecialCVArray(int rank, const string & filename, const hid_t fileid, H5DataType dtype, int num_elm, const string &varfullpath, const string & n="",  BaseType * v = 0):
-        HDF5BaseArray(n,v),
-        rank(rank),
-        filename(filename),
-        fileid(fileid),
+        HDF5GMCFSpecialCVArray(H5DataType dtype, int tnumelm, const string &varfullpath, H5GCFProduct product_type, const string & n="",  BaseType * v = 0):
+        Array(n,v),
         dtype(dtype),
-        total_num_elm(num_elm),
-        varname(varfullpath) {
+        tnumelm(tnumelm),
+        varname(varfullpath),
+        product_type(product_type)
+    {
     }
-
-    virtual ~ HDFEOS5CFSpecialCVArray() {
+        
+    virtual ~ HDF5GMCFSpecialCVArray() {
     }
     virtual BaseType *ptr_duplicate();
     virtual bool read();
+    int format_constraint (int *cor, int *step, int *edg);
+    
 
     private:
-        int rank;
-        string filename;
-        hid_t fileid;
         H5DataType dtype;
-        int total_num_elm;
+        int tnumelm;
         string varname;
+        H5GCFProduct product_type;
+        CVType cvartype;    
+        
+        // GPM version 7 nlayer values are from the document
+        void obtain_gpm_l3_layer(int, vector<int>&,vector<int>&,vector<int>&);
+        void obtain_gpm_l3_hgt(int, vector<int>&,vector<int>&,vector<int>&);
+        void obtain_gpm_l3_nalt(int, vector<int>&,vector<int>&,vector<int>&);
+
 };
 
-#endif // _HDFEOS5CFSpecialCVARRAY_H
+#endif                          // _HDF5GMCFSpecialCVARRAY_H
+
