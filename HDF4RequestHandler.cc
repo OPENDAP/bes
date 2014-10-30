@@ -147,8 +147,6 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
             int32 sdfd    = -1;
             int32 fileid  = -1;
-            int32 gridfd  = -1;
-            int32 swathfd = -1;
 
             HDFSP::File *h4file = NULL;
 
@@ -168,6 +166,8 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
 #ifdef USE_HDFEOS2_LIB
 
+            int32 gridfd  = -1;
+            int32 swathfd = -1;
             HDFEOS2::File *eosfile = NULL;
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             
@@ -291,8 +291,6 @@ gettimeofday(&start_time,NULL);
 
             int32 sdfd   = -1;
             int32 fileid = -1;
-            int32 gridfd  = -1;
-            int32 swathfd = -1;
             HDFSP::File *h4file = NULL;
 
             // Obtain HDF4 file IDs
@@ -309,8 +307,12 @@ gettimeofday(&start_time,NULL);
             }
 
 
+
 #ifdef USE_HDFEOS2_LIB        
 
+            int32 gridfd  = -1;
+            int32 swathfd = -1;
+ 
             HDFEOS2::File *eosfile = NULL;
 
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
@@ -424,8 +426,6 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
     int32 sdfd   = -1;
     int32 fileid = -1;
-    int32 gridfd  = -1;
-    int32 swathfd = -1;
 
 
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
@@ -490,6 +490,8 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 #ifdef USE_HDFEOS2_LIB        
 
+            int32 gridfd  = -1;
+            int32 swathfd = -1;
             HDFEOS2::File *eosfile = NULL;
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             
@@ -588,10 +590,10 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     int32 sdfd   = -1;
     int32 fileid = -1;
-    int32 gridfd  = -1;
-    int32 swathfd = -1;
     HDFSP::File *h4file = NULL;
 #ifdef USE_HDFEOS2_LIB
+    int32 gridfd  = -1;
+    int32 swathfd = -1;
     HDFEOS2::File *eosfile = NULL;
 #endif
 

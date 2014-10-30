@@ -117,10 +117,10 @@ else
 fi
 
 dnl Check if having getdap4. If yes, link with DAP4.
-AC_CHECK_PROGS([GETDAP4],[getdap4])
-if test -n "$GETDAP4"; then
-    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
-fi
+dnl AC_CHECK_PROGS([GETDAP4],[getdap4])
+dnl if test -n "$GETDAP4"; then
+dnl    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
+dnl fi
 
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
