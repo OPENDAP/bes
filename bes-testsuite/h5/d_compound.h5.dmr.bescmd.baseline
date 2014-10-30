@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_compound.h5">
+    <Structure name="/compound">
+        <Int32 name="Serial number"/>
+        <String name="Location"/>
+        <Float64 name="Temperature (F)"/>
+        <Float64 name="Pressure (inHg)"/>
+        <Dim size="4"/>
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <Value>/compound</Value>
+        </Attribute>
+    </Structure>
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="Dataset" type="String">
+            <Value>compound</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
