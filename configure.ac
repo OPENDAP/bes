@@ -102,10 +102,10 @@ AC_CHECK_HDF5(
   ]
 )
 
-dnl AC_CHECK_PROGS([GETDAP4],[getdap4])
-dnl if test -n "$GETDAP4"; then
-dnl    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
-dnl fi
+AC_CHECK_PROGS([GETDAP4],[getdap4])
+if test -n "$GETDAP4"; then
+    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
+fi
 
 AC_CHECK_BES([3.9.0],
 [
