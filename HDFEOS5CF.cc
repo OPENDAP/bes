@@ -3348,7 +3348,7 @@ void EOS5File:: Handle_SpVar() throw(Exception) {
 
     // First, if the duplicate dimension exists,
     if(dimname_to_dupdimnamelist.size() > 0) {
-cerr<<"coming to change duplicate var. type. "<<endl;
+//cerr<<"coming to change duplicate var. type. "<<endl;
 //        pair<multimap<string,string>::iterator,multimap<string,string>::iterator> mm_er_ret;
 //        multimap<string,string>::iterator itmm;
  //       for (itmm = dimname_to_dupdimnamelist.begin(); itmm!=dimname_to_dupdimnamelist.end();++itmm) {
