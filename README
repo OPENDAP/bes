@@ -49,6 +49,19 @@ For the CF option:
  -  Read the description of BES keys in the file h5.conf.in to see if the default values need
     to be changed for your service. 
 
+[Known Issues]
+
+  - We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
+  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF5 handler
+  or libdap and BES.
+  The detailed description of this issue can be found in OPeNDAP's trac ticket
+  http://scm.opendap.org/trac/ticket/2189 .
+
+  - We also found that "Get as NetCDF 4" function may not work with hdf5_handler especially when
+    you download the entire data on big HDF5 files without subsetting. One reason is that
+    the current CentOS 6 uses the old NetCDF-4 and HDF5 RPM packages.
+    Please contact RedHat directly to speed up the release of new RPM packages through EPEL.
+
 
 What's new for version 2.2.2
 ----------------------------
