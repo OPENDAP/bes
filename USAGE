@@ -138,20 +138,32 @@ conventions. Such tools include IDV and Panoply.
 
   The rest of keys below relies on this option. This key must be set to be 
 "true" to ensure other keys to be valid. Thus, this is the most important key 
-to be turned on.
+to be turned on. Please read h4.conf.in or h4.conf for detailed descriptions.
 
 3.2 BES keys removed at this version
-
-H4.EnableMODAPSFile=false
+none
 
 3.3 BES keys added at this version
+
+H4.EnablePassFileID=false
+H4.DisableStructMetaAttr=true
+H4.EnableEOSGeoCacheFile=false
+( If setting H4.EnableEOSGeoCacheFile, also need to use the following keys:
+  check h4.conf.in for detailed description.
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+HDF4.Cache.latlon.size=20000)
+
+H4.DisableECSMetaDataMin=true
+H4.DisableECSMetaDataAll=false
+H4.EnableVgroupAttr=true
+H4.EnableSwathGridAttr=true
+
+3.4 BES keys from the previous versions
 
 H4.EnableSpecialEOS=true
 H4.DisableScaleOffsetComp=true
 H4.EnableCheckScaleOffsetType=false
-
-3.4 BES keys from the previous versions
-
 H4.EnableHybridVdata=true
 H4.EnableCERESVdata=false
 H4.EnableVdata_to_Attr=true
