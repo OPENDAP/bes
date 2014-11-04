@@ -24,6 +24,15 @@ Updated for version 3.11.6 (15 November 2014)
   You may need to read the information about BES keys in the file h4.conf.in to see if the default values 
   need to be changed for your service.
   
+  [Known Issues]
+
+  We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
+  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler
+  or libdap and BES.
+  The detailed description of this issue can be found in OPeNDAP's trac ticket
+  http://scm.opendap.org/trac/ticket/2189 .
+
+  
 Updated for version 3.11.5 (25 April 2014)
 
   In this version, we fix the following datatype mapping issues:
