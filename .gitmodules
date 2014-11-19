@@ -1,0 +1,3 @@
+[submodule "modules/csv_handler"]
+	path = modules/csv_handler
+	url = https://github.com/opendap/csv_handler
