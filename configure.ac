@@ -22,7 +22,6 @@ AC_SUBST(PACKAGE_SUBMINOR_VERSION)
 dnl Add valgrind options
 DODS_GCOV_VALGRIND
 
-
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -261,6 +260,58 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
+## dap-mouldes is true by default; use --disable-dap-modules or
+## --enable-dap-modules=no to turn this off. jhrg 11/17/13
+
+AC_ARG_WITH([dap-modules],
+  [ AS_HELP_STRING([--without-dap-modules],[don't build the bundled dap modules]) ],
+  [ ],
+  [ with_dap_modules=yes ])
+
+DAP_MODULES=
+AS_IF([test "x$with_dap_modules" != xno],
+    [AM_CONDITIONAL([DAP_MODULES], [true])],
+    [AM_CONDITIONAL([DAP_MODULES], [false])])
+
+ac_bes_dependencies_prefix=
+AC_ARG_WITH([dependencies],
+  [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
+  [ 
+    AS_IF([test -n "$with_dependencies"], 
+    [ac_bes_dependencies_prefix=$with_dependencies
+    AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])
+  ],
+  [ ])
+
+## These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
+
+dnl AC_MSG_CHECKING([the netCDF library])
+
+dnl # CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS"
+dnl AC_CHECK_NETCDF(
+dnl    [AC_MSG_RESULT($NC_LIBS)],
+dnl    [echo "*** Use --with-netcdf for the root netcdf directory."
+dnl     echo "*** Otherwise use --with-netcdf-include switch for includes directory"
+dnl     echo "*** and --with-netcdf-libdir switch for libraries directory."
+dnl     AC_MSG_ERROR([netcdf library and netcdf headers are required.]) ],[3])
+
+dnl AC_MSG_CHECKING([the netCDF library version number])
+
+dnl echo "NC_CPPFLAGS: $NC_CPPFLAGS"
+
+dnl save_CPPFLAGS=$CPPFLAGS
+dnl CPPFLAGS="$NC_CPPFLAGS $CPPFLAGS"
+dnl AC_EGREP_HEADER(NC_FIRSTUSERTYPEID, netcdf.h, NETCDF_MAJOR_VERSION=4, NETCDF_MAJOR_VERSION=3)
+dnl CPPFLAGS=$save_CPPFLAGS
+
+dnl AC_DEFINE_UNQUOTED(NETCDF_VERSION, $NETCDF_MAJOR_VERSION, [What version of netcdf were we built with?])
+
+dnl AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
+
+dnl AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
+
+## End handler specific tests
+
 AC_CONFIG_FILES([Makefile
 		 abi_checker.xml
 		 dispatch/Makefile
@@ -302,16 +353,32 @@ then
     AC_CONFIG_FILES([functions/swath2grid/Makefile])
 fi
 
-AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh], [chmod +x cmdln/testsuite/generate_data_baseline.sh])
-AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh], [chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
+AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
+	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
+AC_CONFIG_FILES([cmdln/testsuite/generate_metadata_baseline.sh],
+	[chmod +x cmdln/testsuite/generate_metadata_baseline.sh])
 
-AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh], [chmod +x functions/tests/generate_data_baseline.sh])
-AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh], [chmod +x functions/tests/generate_metadata_baseline.sh])
+AC_CONFIG_FILES([functions/tests/generate_data_baseline.sh],
+	[chmod +x functions/tests/generate_data_baseline.sh])
+AC_CONFIG_FILES([functions/tests/generate_metadata_baseline.sh],
+	[chmod +x functions/tests/generate_metadata_baseline.sh])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([besd], [chmod +x besd]) 
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
 AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
+
+## Output files if building the emodules too
 		 
+AM_COND_IF([DAP_MODULES],
+    [AC_CONFIG_FILES([modules/Makefile
+     modules/csv_handler/Makefile
+     modules/csv_handler/bes-testsuite/Makefile
+     modules/csv_handler/bes-testsuite/atlocal
+     modules/csv_handler/bes-testsuite/bes.conf:modules/csv_handler/bes-testsuite/bes.conf.modules.in])])
+
+AM_COND_IF([DAP_MODULES],
+    [AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])])
+
 AC_OUTPUT
 
