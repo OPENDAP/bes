@@ -1,4 +1,3 @@
-
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
@@ -101,17 +100,18 @@ AC_PATH_PROG([CURL], [curl], [*** Where is curl? ***], [/bin:/usr/bin])
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h stdlib.h limits.h unistd.h pthread.h bzlib.h)
+AC_CHECK_HEADERS(fcntl.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_HEADER_STDBOOL
+AC_CHECK_TYPES([ptrdiff_t])
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(strdup strftime timegm mktime atexit strtol)
+AC_CHECK_FUNCS(strdup strftime timegm mktime atexit strtol strchr)
 AC_SYS_LARGEFILE
 
 BES_OLD_LIBS=$LIBS
@@ -424,14 +424,21 @@ AM_COND_IF([DAP_MODULES],
     modules/dap-server/asciival/Makefile
     modules/dap-server/asciival/unit-tests/Makefile
     modules/dap-server/asciival/unit-tests/test_config.h
-    modules/dap-server/www-interface/Makefile])
+    modules/dap-server/www-interface/Makefile
+
+    modules/fileout_json/Makefile
+    modules/fileout_json/unit-tests/Makefile 
+    modules/fileout_json/unit-tests/test_config.h
+    modules/fileout_json/bes-testsuite/Makefile 
+    modules/fileout_json/bes-testsuite/atlocal
+    modules/fileout_json/bes-testsuite/bes.conf:modules/fileout_json/bes-testsuite/bes.conf.modules.in])
 
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
+
+    AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
     ]
 )
-
-AM_COND_IF([DAP_MODULES],
-    [AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])])
 
 AC_OUTPUT
 
