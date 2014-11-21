@@ -25,7 +25,8 @@ DODS_GCOV_VALGRIND
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE(1.10)
+AM_INIT_AUTOMAKE
+
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
 AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [.])
 AC_CONFIG_TESTDIR(functions/tests, [.])
@@ -91,18 +92,26 @@ AC_PROG_LIBTOOL
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
+dnl Perl is  used by www-interface during the build
+AC_CHECK_PROG([PERL], [perl], [`which perl`])
+
+dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
+dnl macro is not needed.
+AC_PATH_PROG([CURL], [curl], [*** Where is curl? ***], [/bin:/usr/bin])
+
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h limits.h unistd.h pthread.h bzlib.h)
+AC_CHECK_HEADERS(fcntl.h stdlib.h limits.h unistd.h pthread.h bzlib.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
+AC_HEADER_STDBOOL
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(strdup strftime timegm mktime atexit)
+AC_CHECK_FUNCS(strdup strftime timegm mktime atexit strtol)
 AC_SYS_LARGEFILE
 
 BES_OLD_LIBS=$LIBS
@@ -128,11 +137,8 @@ dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
 
 
-##########################################################################################
-#                    Locate GDAL libraries if possible
-#
-
-dnl AC_MSG_NOTICE([********************** GDAL *****************************])
+## Locate GDAL libraries if possible
+##
 GDAL_FOUND=
 
 AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
@@ -166,9 +172,6 @@ else
     AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
     AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
 fi
-dnl AC_MSG_NOTICE([********************** GDAL *****************************])
-
-##########################################################################################
 
 # check for readline
 VL_LIB_READLINE
@@ -273,6 +276,7 @@ AS_IF([test "x$with_dap_modules" != xno],
     [AM_CONDITIONAL([DAP_MODULES], [true])],
     [AM_CONDITIONAL([DAP_MODULES], [false])])
 
+## FIXME Unused at the moment
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
   [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
@@ -283,7 +287,32 @@ AC_ARG_WITH([dependencies],
   ],
   [ ])
 
+BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
+AC_SUBST(BES_DISPATCH_LIB)
+BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
+AC_SUBST(BES_XML_CMD_LIB)
+BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
+AC_SUBST(BES_PPT_LIB)
+BES_HANDLER_LIBS="$LIBS $openssl_libs"
+AC_SUBST(BES_EXTRA_LIBS)
+
 ## These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
+
+# This is used by 'usage' which builds the .info response. It's likely 
+# old and should be removed
+AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
+AC_SUBST([DAP_PROTOCOL_VERSION])
+
+dods_HTML_Filter=no
+if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
+   dods_HTML_Filter=yes
+else 
+   dods_HTML_Filter=no
+fi
+
+if test "z$dods_HTML_Filter" = "zno"; then
+   AC_MSG_WARN([HTML::Filter not found. See INSTALL])
+fi  
 
 dnl AC_MSG_CHECKING([the netCDF library])
 
@@ -311,6 +340,19 @@ dnl AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
 dnl AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
 
 ## End handler specific tests
+
+dnl autoheader macros; tack some text at the top and bottom of config.h.in
+AH_TOP([#ifndef _config_h
+#define _config_h])
+
+AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
+#if defined(__GNUG__) || defined(__GNUC__)
+#define not_used __attribute__ ((unused))
+#else
+#define not_used 
+#endif /* __GNUG__ || __GNUC__ */
+
+#endif /* _config_h */])
 
 AC_CONFIG_FILES([Makefile
 		 abi_checker.xml
@@ -371,11 +413,22 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 ## Output files if building the emodules too
 		 
 AM_COND_IF([DAP_MODULES],
-    [AC_CONFIG_FILES([modules/Makefile
-     modules/csv_handler/Makefile
-     modules/csv_handler/bes-testsuite/Makefile
-     modules/csv_handler/bes-testsuite/atlocal
-     modules/csv_handler/bes-testsuite/bes.conf:modules/csv_handler/bes-testsuite/bes.conf.modules.in])])
+    [
+    AC_CONFIG_FILES([modules/Makefile
+    modules/csv_handler/Makefile
+    modules/csv_handler/bes-testsuite/Makefile
+    modules/csv_handler/bes-testsuite/atlocal
+    modules/csv_handler/bes-testsuite/bes.conf:modules/csv_handler/bes-testsuite/bes.conf.modules.in
+
+    modules/dap-server/Makefile
+    modules/dap-server/asciival/Makefile
+    modules/dap-server/asciival/unit-tests/Makefile
+    modules/dap-server/asciival/unit-tests/test_config.h
+    modules/dap-server/www-interface/Makefile])
+
+    AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
+    ]
+)
 
 AM_COND_IF([DAP_MODULES],
     [AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])])

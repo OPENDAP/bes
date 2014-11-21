@@ -1,3 +1,15 @@
 [submodule "modules/csv_handler"]
 	path = modules/csv_handler
 	url = https://github.com/opendap/csv_handler
+[submodule "modules/xml_data_handler"]
+	path = modules/xml_data_handler
+	url = https://github.com/opendap/xml_data_handler
+[submodule "modules/freeform_handler"]
+	path = modules/freeform_handler
+	url = https://github.com/opendap/freeform_handler
+[submodule "modules/fileout_json"]
+	path = modules/fileout_json
+	url = https://github.com/opendap/fileout_json
+[submodule "modules/dap-server"]
+	path = modules/dap-server
+	url = https://github.com/opendap/dap-server
