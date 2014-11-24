@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS = csv_handler dap-server fileout_json
+SUBDIRS = csv_handler dap-server fileout_json freeform_handler
 
 # fileout_json freeform_handler gateway xml_data_handler
 

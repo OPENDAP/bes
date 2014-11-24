@@ -8,6 +8,7 @@
 [submodule "modules/freeform_handler"]
 	path = modules/freeform_handler
 	url = https://github.com/opendap/freeform_handler
+	branch = modules
 [submodule "modules/fileout_json"]
 	path = modules/fileout_json
 	url = https://github.com/opendap/fileout_json

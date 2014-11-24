@@ -100,7 +100,7 @@ AC_PATH_PROG([CURL], [curl], [*** Where is curl? ***], [/bin:/usr/bin])
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h)
+AC_CHECK_HEADERS(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h trings.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -108,11 +108,23 @@ AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_HEADER_STDBOOL
 AC_CHECK_TYPES([ptrdiff_t])
+AC_STRUCT_TM
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime atexit strtol strchr)
+AC_CHECK_FUNCS(floor isascii memmove memset pow sqrt strcasecmp strchr strcspn strerror strncasecmp)
+AC_CHECK_FUNCS(strpbrk strrchr strspn strtoul)
+
 AC_SYS_LARGEFILE
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_MKTIME
+AC_FUNC_REALLOC
+AC_FUNC_SETVBUF_REVERSED
+AC_FUNC_STRTOD
+AC_FUNC_VPRINTF
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
@@ -314,6 +326,28 @@ if test "z$dods_HTML_Filter" = "zno"; then
    AC_MSG_WARN([HTML::Filter not found. See INSTALL])
 fi  
 
+## Freeform hacks
+
+FF_CPPFLAGS=
+AC_MSG_CHECKING([the OS type for the freeform code])
+case "$host" in
+    *linux*) FF_CPPFLAGS="-DLINUX" ;;
+    *hp*)    FF_CPPFLAGS="-DHP9000" ;;
+    *alpha*) FF_CPPFLAGS="-DDEC_ALPHA" ;;
+    *sun*)   FF_CPPFLAGS="-DSUN" ;;
+    *darwin*)   FF_CPPFLAGS="-DLINUX" ;;
+    *sgi*)   if test $ac_cv_sizeof_long -eq 4
+         then
+             FF_CPPFLAGS="-DIRIS4"
+         else       
+             FF_CPPFLAGS="-DIRIX"
+         fi ;;
+    *)  AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])
+        ;;
+esac
+AC_MSG_RESULT([set to $FF_CPPFLAGS])
+AC_SUBST(FF_CPPFLAGS)
+
 dnl AC_MSG_CHECKING([the netCDF library])
 
 dnl # CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS"
@@ -345,7 +379,7 @@ dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
 #define _config_h])
 
-AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
+AH_BOTTOM([/* Shorthand for the unused attribute feature */
 #if defined(__GNUG__) || defined(__GNUC__)
 #define not_used __attribute__ ((unused))
 #else
@@ -431,12 +465,19 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/bes-testsuite/Makefile 
     modules/fileout_json/bes-testsuite/atlocal
-    modules/fileout_json/bes-testsuite/bes.conf:modules/fileout_json/bes-testsuite/bes.conf.modules.in])
+    modules/fileout_json/bes-testsuite/bes.conf:modules/fileout_json/bes-testsuite/bes.conf.modules.in
+    
+    modules/freeform_handler/Makefile
+    modules/freeform_handler/bes-testsuite/Makefile
+    modules/freeform_handler/bes-testsuite/atlocal
+    modules/freeform_handler/FFND/Makefile
+    modules/freeform_handler/bes-testsuite/bes.conf:modules/freeform_handler/bes-testsuite/bes.conf.modules.in])
 
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
     ]
 )
 
