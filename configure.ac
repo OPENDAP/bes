@@ -1,7 +1,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.68)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -79,7 +79,9 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-AC_PROG_LEX
+dnl AC_PROG_LEX
+AM_PROG_LEX
+
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which doesn't know how to make the parsers 
 dnl we require. jhrg 6/15/05
@@ -348,6 +350,10 @@ esac
 AC_MSG_RESULT([set to $FF_CPPFLAGS])
 AC_SUBST(FF_CPPFLAGS)
 
+## xml_data_handler hack
+AC_DEFINE([ENABLE_UNIT_TESTS], [1], [Should the XML Data Handler unit-test support be compiled?])
+AC_SUBST(ENABLE_UNIT_TESTS)
+
 dnl AC_MSG_CHECKING([the netCDF library])
 
 dnl # CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS"
@@ -379,7 +385,7 @@ dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
 #define _config_h])
 
-AH_BOTTOM([/* Shorthand for the unused attribute feature */
+AH_BOTTOM([
 #if defined(__GNUG__) || defined(__GNUC__)
 #define not_used __attribute__ ((unused))
 #else
@@ -471,13 +477,27 @@ AM_COND_IF([DAP_MODULES],
     modules/freeform_handler/bes-testsuite/Makefile
     modules/freeform_handler/bes-testsuite/atlocal
     modules/freeform_handler/FFND/Makefile
-    modules/freeform_handler/bes-testsuite/bes.conf:modules/freeform_handler/bes-testsuite/bes.conf.modules.in])
+    modules/freeform_handler/bes-testsuite/bes.conf:modules/freeform_handler/bes-testsuite/bes.conf.modules.in
+
+	modules/xml_data_handler/Makefile
+    modules/xml_data_handler/unit-tests/Makefile
+    modules/xml_data_handler/unit-tests/test_config.h
+    modules/xml_data_handler/tests/Makefile
+    modules/xml_data_handler/tests/atlocal
+    modules/xml_data_handler/tests/bes.conf:modules/xml_data_handler/tests/bes.conf.modules.in])
+
+	dnl Move this into the autotest.at file using an autotest option.
+	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
+		[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
+	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
+		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     ]
 )
 
