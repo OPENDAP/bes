@@ -10,3 +10,7 @@ gateway_module
 if BUILD_NETCDF
 SUBDIRS += netcdf_handler fileout_netcdf
 endif
+
+if BUILD_GDAL
+SUBDIRS += fileout_gdal
+endif

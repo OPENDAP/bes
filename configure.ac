@@ -398,8 +398,66 @@ AC_SUBST(NC_BIN_PATH, $NC_BIN)
 
 AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
 
+## fileout_gdal tests
+
+# Which copy of GDAL should be used for the build?
+GDAL_FOUND=
+
+AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
+            with_gdal_prefix="$withval", with_gdal_prefix="")
+
+AS_IF([test -z "$with_gdal_prefix" -a -n "$ac_bes_dependencies_prefix"],
+	[with_gdal_prefix=$ac_bes_dependencies_prefix])
+	
+if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
+then
+    AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
+    GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
+    GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
+    GDAL_FOUND="yes"
+    
+    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
+elif test -n "$with_gdal_prefix"
+then
+    AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there. Not building GDAL-dependent modules.])
+else
+    AC_MSG_NOTICE([Looking for GDAL.])
+    AX_LIB_GDAL([1.10.0])
+    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
+        GDAL_FOUND="yes"
+    fi
+fi
+
+AM_CONDITIONAL([BUILD_GDAL], [test x"$GDAL_FOUND" = "xyes"])
+
+## Only look for the openjpeg2000 library if GDAL was found
+
+AM_COND_IF([BUILD_GDAL], [
+
+# Which copy of OpenJPEG should be used for the build?
+OPENJPEG_FOUND=
+
+AC_ARG_WITH(openjpeg, AS_HELP_STRING([--with-openjpeg], [Use the copy of openjpeg at this location]),
+            with_openjpeg_prefix="$withval", with_openjpeg_prefix="")
+
+AS_IF([test -z "$with_openjpeg_prefix" -a -n "$ac_bes_dependencies_prefix"],
+	[with_openjpeg_prefix=$ac_bes_dependencies_prefix])
+
+save_LIBS=$LIBS
+LIBS="-L$with_openjpeg_prefix/lib $LIBS"
+AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [])
+LIBS=$save_LIBS
+
+AM_CONDITIONAL([OPENJPEG_FOUND], [test "x$OPENJPEG_FOUND" = "xyes"])
+
+AS_IF([test "x$OPENJPEG_FOUND" = "xyes"], 
+  [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
+  [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
+
+]) # AND_CONF_IF([BUILD_GDAL] 
+
 ## End handler specific tests
-])	# AM_COND_IF DAP_MODULES
+])	# AM_COND_IF([DAP_MODULES]
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -450,10 +508,7 @@ AC_CONFIG_FILES([Makefile
  		 functions/tests/package.m4
 		 functions/unit-tests/Makefile])
 
-if test -n "$GDAL_FOUND"
-then
-    AC_CONFIG_FILES([functions/swath2grid/Makefile])
-fi
+AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
@@ -520,7 +575,13 @@ AM_COND_IF([DAP_MODULES],
 	modules/gateway_module/Makefile 
 	modules/gateway_module/bes-testsuite/Makefile 
 	modules/gateway_module/bes-testsuite/atlocal 
-	modules/gateway_module/bes-testsuite/bes.conf:modules/gateway_module/bes-testsuite/bes.conf.modules.in])
+	modules/gateway_module/bes-testsuite/bes.conf:modules/gateway_module/bes-testsuite/bes.conf.modules.in
+	
+	modules/fileout_gdal/Makefile
+	modules/fileout_gdal/tests/Makefile 
+	modules/fileout_gdal/tests/package.m4 
+	modules/fileout_gdal/tests/atlocal 
+	modules/fileout_gdal/tests/bes.conf:modules/fileout_gdal/tests/bes.conf.modules.in])
 
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -534,6 +595,9 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh], 
 		[chmod +x modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh])
 
+	AC_CONFIG_FILES([modules/fileout_gdal/tests/generate_data_baseline.sh], 
+		[chmod +x modules/fileout_gdal/tests/generate_data_baseline.sh])
+	
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
@@ -545,6 +609,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     ]
 )
 

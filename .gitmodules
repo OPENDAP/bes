@@ -30,3 +30,6 @@
 	path = modules/gateway_module
 	url = https://github.com/opendap/gateway_module
 	branch = modules
+[submodule "modules/fileout_gdal"]
+	path = modules/fileout_gdal
+	url = https://github.com/opendap/fileout_gdal
