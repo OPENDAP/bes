@@ -515,7 +515,12 @@ AM_COND_IF([DAP_MODULES],
 	modules/fileout_netcdf/Makefile 
 	modules/fileout_netcdf/unit-tests/Makefile 
 	modules/fileout_netcdf/unit-tests/test_config.h 
-	modules/fileout_netcdf/unit-tests/atlocal])
+	modules/fileout_netcdf/unit-tests/atlocal
+	
+	modules/gateway_module/Makefile 
+	modules/gateway_module/bes-testsuite/Makefile 
+	modules/gateway_module/bes-testsuite/atlocal 
+	modules/gateway_module/bes-testsuite/bes.conf:modules/gateway_module/bes-testsuite/bes.conf.modules.in])
 
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -539,12 +544,9 @@ AM_COND_IF([DAP_MODULES],
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
-    
+    AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     ]
 )
-
-## Removed; not used. jhrg 11/26/14
-## modules/fileout_netcdf/unit-tests/bes.conf:	modules/fileout_netcdf/unit-tests/bes.conf.modules.in
 
 AC_OUTPUT
 
