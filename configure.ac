@@ -89,7 +89,7 @@ AC_CHECK_PROG(YACC,[bison],[bison])
 
 dnl Use libtool instead?
 dnl AC_PROG_RANLIB
-AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
@@ -114,9 +114,9 @@ AC_STRUCT_TM
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(strdup strftime timegm mktime atexit strtol strchr)
-AC_CHECK_FUNCS(floor isascii memmove memset pow sqrt strcasecmp strchr strcspn strerror strncasecmp)
-AC_CHECK_FUNCS(strpbrk strrchr strspn strtoul)
+AC_CHECK_FUNCS(strdup strftime strtol strcasecmp strcspn strerror strncasecmp)
+AC_CHECK_FUNCS(strpbrk strchr strrchr strspn strtoul)
+AC_CHECK_FUNCS(timegm mktime atexit floor isascii memmove memset pow sqrt )
 
 AC_SYS_LARGEFILE
 AC_FUNC_ERROR_AT_LINE
@@ -389,6 +389,11 @@ AC_DEFINE_UNQUOTED(NETCDF_VERSION, $NETCDF_MAJOR_VERSION, [What version of netcd
 AC_MSG_CHECKING([the netCDF library version number])
 AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
 
+## This is needed for the fileout_netcdf handler
+NC_BIN=`echo $NC_LDFLAGS | sed 's@^-L\(.*\)/lib@\1/bin@g'`
+AC_MSG_NOTICE([NC_BIN is $NC_BIN])
+AC_SUBST(NC_BIN_PATH, $NC_BIN)
+
 ])	# AM_COND_IF BUILD_NETCDF
 
 AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
@@ -505,7 +510,12 @@ AM_COND_IF([DAP_MODULES],
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
 	modules/netcdf_handler/bes-testsuite/package.m4 
-	modules/netcdf_handler/bes-testsuite/bes.conf:modules/netcdf_handler/bes-testsuite/bes.conf.modules.in])
+	modules/netcdf_handler/bes-testsuite/bes.conf:modules/netcdf_handler/bes-testsuite/bes.conf.modules.in
+	
+	modules/fileout_netcdf/Makefile 
+	modules/fileout_netcdf/unit-tests/Makefile 
+	modules/fileout_netcdf/unit-tests/test_config.h 
+	modules/fileout_netcdf/unit-tests/atlocal])
 
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -528,8 +538,13 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    
     ]
 )
+
+## Removed; not used. jhrg 11/26/14
+## modules/fileout_netcdf/unit-tests/bes.conf:	modules/fileout_netcdf/unit-tests/bes.conf.modules.in
 
 AC_OUTPUT
 

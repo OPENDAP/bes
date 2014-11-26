@@ -7,5 +7,5 @@ AUTOMAKE_OPTIONS = foreign check-news
 SUBDIRS = csv_handler dap-server fileout_json freeform_handler xml_data_handler
 
 if BUILD_NETCDF
-SUBDIRS += netcdf_handler
+SUBDIRS += netcdf_handler fileout_netcdf
 endif

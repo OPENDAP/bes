@@ -22,3 +22,7 @@
 	path = modules/netcdf_handler
 	url = https://github.com/opendap/netcdf_handler
 	branch = modules
+[submodule "modules/fileout_netcdf"]
+	path = modules/fileout_netcdf
+	url = https://github.com/opendap/fileout_netcdf
+	branch = modules
