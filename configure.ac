@@ -290,6 +290,9 @@ AS_IF([test "x$with_dap_modules" != xno],
     [AM_CONDITIONAL([DAP_MODULES], [true])],
     [AM_CONDITIONAL([DAP_MODULES], [false])])
 
+## These are tests that only apply if the modules are being built too.
+AM_COND_IF([DAP_MODULES], [
+
 ## FIXME Unused at the moment
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
@@ -354,32 +357,44 @@ AC_SUBST(FF_CPPFLAGS)
 AC_DEFINE([ENABLE_UNIT_TESTS], [1], [Should the XML Data Handler unit-test support be compiled?])
 AC_SUBST(ENABLE_UNIT_TESTS)
 
-dnl AC_MSG_CHECKING([the netCDF library])
+AC_MSG_CHECKING([the netCDF library])
 
-dnl # CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS"
-dnl AC_CHECK_NETCDF(
-dnl    [AC_MSG_RESULT($NC_LIBS)],
-dnl    [echo "*** Use --with-netcdf for the root netcdf directory."
-dnl     echo "*** Otherwise use --with-netcdf-include switch for includes directory"
-dnl     echo "*** and --with-netcdf-libdir switch for libraries directory."
-dnl     AC_MSG_ERROR([netcdf library and netcdf headers are required.]) ],[3])
+## CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS
+AC_CHECK_NETCDF(
+   [AC_MSG_RESULT($NC_LIBS); BUILD_NETCDF=yes],
+   [AC_MSG_WARN([netcdf library and/or netcdf headers not found; will not build the netcdf modules.]); BUILD_NETCDF=no],
+   [3],
+   $ac_bes_dependencies_prefix)
 
-dnl AC_MSG_CHECKING([the netCDF library version number])
+AS_IF([test "x$BUILD_NETCDF" = "xyes"],
+	AM_CONDITIONAL([BUILD_NETCDF], [true]), 
+	AM_CONDITIONAL([BUILD_NETCDF], [false]))
+	
+AM_COND_IF([BUILD_NETCDF], [
 
-dnl echo "NC_CPPFLAGS: $NC_CPPFLAGS"
+save_LIBS=$LIBS
+LIBS="$NC_LDFLAGS $NC_LIBS $LIBS"
+AC_CHECK_LIB(netcdf, nc_inq_libvers, NETCDF_MAJOR_VERSION=4, NETCDF_MAJOR_VERSION=3, [])
+LIBS=$save_LIBS
 
-dnl save_CPPFLAGS=$CPPFLAGS
-dnl CPPFLAGS="$NC_CPPFLAGS $CPPFLAGS"
-dnl AC_EGREP_HEADER(NC_FIRSTUSERTYPEID, netcdf.h, NETCDF_MAJOR_VERSION=4, NETCDF_MAJOR_VERSION=3)
-dnl CPPFLAGS=$save_CPPFLAGS
+# save_CPPFLAGS=$CPPFLAGS
+# CPPFLAGS="$NC_CPPFLAGS $CPPFLAGS"
+# AC_EGREP_HEADER(NC_NETCDF4, netcdf.h, NETCDF_MAJOR_VERSION=4, NETCDF_MAJOR_VERSION=3)
+# CPPFLAGS=$save_CPPFLAGS
 
-dnl AC_DEFINE_UNQUOTED(NETCDF_VERSION, $NETCDF_MAJOR_VERSION, [What version of netcdf were we built with?])
+AC_DEFINE_UNQUOTED(NETCDF_VERSION, $NETCDF_MAJOR_VERSION, [What version of netcdf were we built with?])
 
-dnl AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
+## This is a bit hokey, since the real test - for nc_lib_vers 
+## was done above.
+AC_MSG_CHECKING([the netCDF library version number])
+AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
 
-dnl AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
+])	# AM_COND_IF BUILD_NETCDF
+
+AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
 
 ## End handler specific tests
+])	# AM_COND_IF DAP_MODULES
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -484,20 +499,35 @@ AM_COND_IF([DAP_MODULES],
     modules/xml_data_handler/unit-tests/test_config.h
     modules/xml_data_handler/tests/Makefile
     modules/xml_data_handler/tests/atlocal
-    modules/xml_data_handler/tests/bes.conf:modules/xml_data_handler/tests/bes.conf.modules.in])
+    modules/xml_data_handler/tests/bes.conf:modules/xml_data_handler/tests/bes.conf.modules.in
+    
+    modules/netcdf_handler/Makefile
+	modules/netcdf_handler/bes-testsuite/Makefile 
+	modules/netcdf_handler/bes-testsuite/atlocal 
+	modules/netcdf_handler/bes-testsuite/package.m4 
+	modules/netcdf_handler/bes-testsuite/bes.conf:modules/netcdf_handler/bes-testsuite/bes.conf.modules.in])
 
-	dnl Move this into the autotest.at file using an autotest option.
+    dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
+		
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_data_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_data_baseline.sh])
 
+	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh], 
+		[chmod +x modules/netcdf_handler/bes-testsuite/generate_metadata_baseline.sh])
+	AC_CONFIG_FILES([modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh], 
+		[chmod +x modules/netcdf_handler/bes-testsuite/generate_data_baseline.sh])
+
+	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
+    
+    AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
     ]
 )
 

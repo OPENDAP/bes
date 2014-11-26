@@ -5,6 +5,7 @@
 [submodule "modules/xml_data_handler"]
 	path = modules/xml_data_handler
 	url = https://github.com/opendap/xml_data_handler
+	branch = modules
 [submodule "modules/freeform_handler"]
 	path = modules/freeform_handler
 	url = https://github.com/opendap/freeform_handler
@@ -16,4 +17,8 @@
 [submodule "modules/dap-server"]
 	path = modules/dap-server
 	url = https://github.com/opendap/dap-server
+	branch = modules
+[submodule "modules/netcdf_handler"]
+	path = modules/netcdf_handler
+	url = https://github.com/opendap/netcdf_handler
 	branch = modules
