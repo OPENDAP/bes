@@ -286,9 +286,7 @@ AC_ARG_WITH([dap-modules],
   [ with_dap_modules=yes ])
 
 DAP_MODULES=
-AS_IF([test "x$with_dap_modules" != xno],
-    [AM_CONDITIONAL([DAP_MODULES], [true])],
-    [AM_CONDITIONAL([DAP_MODULES], [false])])
+AM_CONDITIONAL([DAP_MODULES], [test "x$with_dap_modules" = "xyes"])
 
 ## These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_MODULES], [
@@ -366,9 +364,7 @@ AC_CHECK_NETCDF(
    [3],
    $ac_bes_dependencies_prefix)
 
-AS_IF([test "x$BUILD_NETCDF" = "xyes"],
-	AM_CONDITIONAL([BUILD_NETCDF], [true]), 
-	AM_CONDITIONAL([BUILD_NETCDF], [false]))
+AM_CONDITIONAL([BUILD_NETCDF], [test "x$BUILD_NETCDF" = "xyes"]) 
 	
 AM_COND_IF([BUILD_NETCDF], [
 
@@ -454,6 +450,10 @@ AS_IF([test "x$OPENJPEG_FOUND" = "xyes"],
   [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
   [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
 
+],[
+## This is the else clause of AM_COND_IF([DAP_MODULES]; if we're not building
+## the gdal-related things, make sure that OPENJPEG_FOUND is defined and is false
+AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 ]) # AND_CONF_IF([BUILD_GDAL] 
 
 ## End handler specific tests
