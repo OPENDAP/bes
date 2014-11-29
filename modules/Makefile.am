@@ -14,3 +14,7 @@ endif
 if BUILD_GDAL
 SUBDIRS += fileout_gdal
 endif
+
+if BUILD_FITS
+SUBDIRS += fits_handler
+endif

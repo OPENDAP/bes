@@ -37,19 +37,19 @@ AC_DEFUN([AC_CHECK_NETCDF],
 
   AC_ARG_WITH([netcdf],
             [AS_HELP_STRING([--with-netcdf=ARG],[netcdf directory])],
-            [NC_PATH=$withval nc_user_arg=yes], 
+            [NC_PATH=$withval; nc_user_arg=yes], 
             [])
             
   AC_SUBST([NC_PATH])
 
   AC_ARG_WITH([netcdf_include],
             [AS_HELP_STRING([--with-netcdf-include=ARG],[netcdf include directory])],
-            [NC_PATH_INC=$withval nc_user_arg=yes], 
+            [NC_PATH_INC=$withval; nc_user_arg=yes], 
             [])
 
   AC_ARG_WITH([netcdf_libdir],
             [AS_HELP_STRING([--with-netcdf-libdir=ARG],[netcdf library directory])],
-            [NC_PATH_LIBDIR=$withval nc_user_arg=yes], 
+            [NC_PATH_LIBDIR=$withval; nc_user_arg=yes], 
             [])
 
   if test "$nc_user_arg" = "yes"; then

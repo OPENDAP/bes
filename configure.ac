@@ -458,6 +458,81 @@ AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
 ]) # AN_CONF_IF([BUILD_GDAL] 
 
+## Fits macro and test
+
+dnl Check for the cfits library.
+dnl Usage AC_CHECK_FITS action-if-found, action-if-not-found, default-path-to-check
+dnl if default-path-to-check is given and the --with-cfits option(s) are not used,
+dnl check the default path in addition to the current values of CPPFLAGS, etc.
+dnl Defines CFITS_CPPFLAGS, CFITS_LDFLAGS, CFITS_LIBS.
+
+AC_DEFUN([AC_CHECK_CFITS],
+[
+
+BES_DEPS_PREFIX=$3
+
+AC_ARG_WITH([cfits],
+            [AS_HELP_STRING([--with-cfits=ARG],[cfits directory])],
+            [CFITS_PATH=${withval}], 
+            [CFITS_PATH="$BES_DEPS_PREFIX"])
+
+AC_ARG_WITH([cfits_inc],
+            [AS_HELP_STRING([--with-cfits-include=ARG],[cfits include directory])],
+            [CFITS_PATH_INC=${withval}], 
+            [CFITS_PATH_INC=""]) dnl was "/usr/include/cfitsio"
+
+AC_ARG_WITH([cfits_libdir],
+            [AS_HELP_STRING([--with-cfits-libdir=ARG],[cfits library directory])],
+            [CFITS_PATH_LIBDIR=${withval}], 
+            [CFITS_PATH_LIBDIR=""])  dnl was "/usr/lib"
+
+AS_IF([test -n "$CFITS_PATH" -a -z "$CFITS_PATH_LIBDIR"],[CFITS_PATH_LIBDIR="$CFITS_PATH/lib"])
+AS_IF([test -n "$CFITS_PATH" -a -z "$CFITS_PATH_INC"],[CFITS_PATH_INC="$CFITS_PATH/include"])
+
+
+ac_cfits_save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -L$CFITS_PATH_LIBDIR"
+AC_CHECK_LIB(cfitsio, fits_is_url_absolute, 
+
+[ac_cfits_ok='yes'
+CFITS_LIBS="-lcfitsio"
+CFITS_LDFLAGS="-L${CFITS_PATH_LIBDIR}" 
+AC_SUBST([CFITS_LDFLAGS])
+AC_SUBST([CFITS_LIBS])],
+
+[ac_cfits_ok='no']
+)
+LDFLAGS="$ac_cfits_save_LDFLAGS"
+
+CFITS_CPPFLAGS=
+ac_cfits_h='no'
+ac_cfits_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I$CFITS_PATH_INC"
+AC_CHECK_HEADERS([fitsio.h],
+  [ac_cfits_h='yes'],
+  [ac_cfits_h='no']
+)
+CPPFLAGS=$ac_cfits_save_CPPFLAGS
+
+AS_IF([test "$ac_cfits_h" = 'yes' ],
+  [CFITS_CPPFLAGS="-I$CFITS_PATH_INC"]
+)
+AC_SUBST([CFITS_CPPFLAGS])
+
+AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
+  [m4_if([$2], [], [:], [$2])],
+  [m4_if([$1], [], [:], [$1])]
+)
+
+])
+
+AC_CHECK_CFITS(
+   [AM_CONDITIONAL([BUILD_FITS],[true])],
+   [AC_MSG_WARN([cfits library and cfits headers not found; not building the fit handler.])
+    AM_CONDITIONAL([BUILD_FITS],[false])],
+   $ac_bes_dependencies_prefix
+)
+
 ## End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
@@ -465,7 +540,8 @@ AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 AM_CONDITIONAL([BUILD_GDAL], [false])
 AM_CONDITIONAL([NETCDF4_TESTS], [false])
-AM_CONDITIONAL([BUILD_NETCDF], [false]) 
+AM_CONDITIONAL([BUILD_NETCDF], [false])
+AM_CONDITIONAL([BUILD_FITS],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
 
@@ -591,8 +667,13 @@ AM_COND_IF([DAP_MODULES],
 	modules/fileout_gdal/tests/Makefile 
 	modules/fileout_gdal/tests/package.m4 
 	modules/fileout_gdal/tests/atlocal 
-	modules/fileout_gdal/tests/bes.conf:modules/fileout_gdal/tests/bes.conf.modules.in])
-
+	modules/fileout_gdal/tests/bes.conf:modules/fileout_gdal/tests/bes.conf.modules.in
+	
+	modules/fits_handler/Makefile
+    modules/fits_handler/bes-testsuite/atlocal
+    modules/fits_handler/bes-testsuite/Makefile
+    modules/fits_handler/bes-testsuite/bes.conf:modules/fits_handler/bes-testsuite/bes.conf.modules.in])
+        
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
 		[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
@@ -608,6 +689,11 @@ AM_COND_IF([DAP_MODULES],
 	AC_CONFIG_FILES([modules/fileout_gdal/tests/generate_data_baseline.sh], 
 		[chmod +x modules/fileout_gdal/tests/generate_data_baseline.sh])
 	
+	AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh],
+	   [chmod +x modules/fits_handler/bes-testsuite/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_data_baseline.sh],
+        [chmod +x modules/fits_handler/bes-testsuite/generate_data_baseline.sh])
+	
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
@@ -620,6 +706,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
     ]
 )
 
