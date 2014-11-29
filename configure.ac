@@ -450,13 +450,23 @@ AS_IF([test "x$OPENJPEG_FOUND" = "xyes"],
   [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
   [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
 
-],[
-## This is the else clause of AM_COND_IF([DAP_MODULES]; if we're not building
-## the gdal-related things, make sure that OPENJPEG_FOUND is defined and is false
+],[ # else AN_CONF_IF([BUILD_GDAL]
+
+## if we're not building the gdal-related things, make sure that 
+##OPENJPEG_FOUND is defined and is false
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
-]) # AND_CONF_IF([BUILD_GDAL] 
+
+]) # AN_CONF_IF([BUILD_GDAL] 
 
 ## End handler specific tests
+
+],[ # else AM_COND_IF([DAP_MODULES]
+
+AM_CONDITIONAL([OPENJPEG_FOUND], [false])
+AM_CONDITIONAL([BUILD_GDAL], [false])
+AM_CONDITIONAL([NETCDF4_TESTS], [false])
+AM_CONDITIONAL([BUILD_NETCDF], [false]) 
+
 ])	# AM_COND_IF([DAP_MODULES]
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
