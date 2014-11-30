@@ -34,7 +34,11 @@
 	path = modules/fileout_gdal
 	url = https://github.com/opendap/fileout_gdal
 	branch = modules
-	
 [submodule "modules/fits_handler"]
 	path = modules/fits_handler
 	url = https://github.com/opendap/fits_handler
+	branch = modules
+[submodule "modules/gdal_handler"]
+	path = modules/gdal_handler
+	url = https://github.com/opendap/gdal_handler
+	branch = modules

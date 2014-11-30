@@ -82,6 +82,14 @@ AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
 
+dnl echo "CC = $CC"
+if test "$CC" = "gcc"
+then
+    AM_CONDITIONAL([COMPILER_IS_GCC],[true])
+else
+    AM_CONDITIONAL([COMPILER_IS_GCC],[false])
+fi
+
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which doesn't know how to make the parsers 
 dnl we require. jhrg 6/15/05
@@ -116,7 +124,10 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime strtol strcasecmp strcspn strerror strncasecmp)
 AC_CHECK_FUNCS(strpbrk strchr strrchr strspn strtoul)
-AC_CHECK_FUNCS(timegm mktime atexit floor isascii memmove memset pow sqrt )
+AC_CHECK_FUNCS(timegm mktime atexit floor isascii memmove memset pow sqrt)
+
+# Make sure we have the cctype library
+AC_SEARCH_LIBS([isdigit], [cctype])
 
 AC_SYS_LARGEFILE
 AC_FUNC_ERROR_AT_LINE
@@ -151,8 +162,9 @@ dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
 
 
-## Locate GDAL libraries if possible
-##
+dnl Locate GDAL libraries if possible; this test is here and not down with
+dnl the 'modules' tests because gdal is used by the functions module that 
+dnl has always been part of the bes.
 GDAL_FOUND=
 
 AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
@@ -249,9 +261,11 @@ AC_ARG_ENABLE([developer],
   ],
   [
     AM_CONDITIONAL([BES_DEVELOPER], [true])
+    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
   ],
   [
     AM_CONDITIONAL([BES_DEVELOPER], [false])
+    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
   ]
 )
 
@@ -277,8 +291,8 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
-## dap-mouldes is true by default; use --disable-dap-modules or
-## --enable-dap-modules=no to turn this off. jhrg 11/17/13
+dnl dap-mouldes is true by default; use --disable-dap-modules or
+dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
 
 AC_ARG_WITH([dap-modules],
   [ AS_HELP_STRING([--without-dap-modules],[don't build the bundled dap modules]) ],
@@ -288,10 +302,10 @@ AC_ARG_WITH([dap-modules],
 DAP_MODULES=
 AM_CONDITIONAL([DAP_MODULES], [test "x$with_dap_modules" = "xyes"])
 
-## These are tests that only apply if the modules are being built too.
+dnl These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_MODULES], [
 
-## FIXME Unused at the moment
+dnl FIXME Unused at the moment
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
   [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
@@ -311,7 +325,7 @@ AC_SUBST(BES_PPT_LIB)
 BES_HANDLER_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 
-## These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
+dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
 
 # This is used by 'usage' which builds the .info response. It's likely 
 # old and should be removed
@@ -329,7 +343,7 @@ if test "z$dods_HTML_Filter" = "zno"; then
    AC_MSG_WARN([HTML::Filter not found. See INSTALL])
 fi  
 
-## Freeform hacks
+dnl Freeform hacks
 
 FF_CPPFLAGS=
 AC_MSG_CHECKING([the OS type for the freeform code])
@@ -351,13 +365,13 @@ esac
 AC_MSG_RESULT([set to $FF_CPPFLAGS])
 AC_SUBST(FF_CPPFLAGS)
 
-## xml_data_handler hack
+dnl xml_data_handler hack
 AC_DEFINE([ENABLE_UNIT_TESTS], [1], [Should the XML Data Handler unit-test support be compiled?])
 AC_SUBST(ENABLE_UNIT_TESTS)
 
 AC_MSG_CHECKING([the netCDF library])
 
-## CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS
+dnl CHECK_NETCDF defines $NC_LIBS, $NC_LDFLAGS and $NC_CPPFLAGS
 AC_CHECK_NETCDF(
    [AC_MSG_RESULT($NC_LIBS); BUILD_NETCDF=yes],
    [AC_MSG_WARN([netcdf library and/or netcdf headers not found; will not build the netcdf modules.]); BUILD_NETCDF=no],
@@ -380,12 +394,12 @@ LIBS=$save_LIBS
 
 AC_DEFINE_UNQUOTED(NETCDF_VERSION, $NETCDF_MAJOR_VERSION, [What version of netcdf were we built with?])
 
-## This is a bit hokey, since the real test - for nc_lib_vers 
-## was done above.
+dnl This is a bit hokey, since the real test - for nc_lib_vers 
+dnl was done above.
 AC_MSG_CHECKING([the netCDF library version number])
 AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
 
-## This is needed for the fileout_netcdf handler
+dnl This is needed for the fileout_netcdf handler
 NC_BIN=`echo $NC_LDFLAGS | sed 's@^-L\(.*\)/lib@\1/bin@g'`
 AC_MSG_NOTICE([NC_BIN is $NC_BIN])
 AC_SUBST(NC_BIN_PATH, $NC_BIN)
@@ -394,7 +408,7 @@ AC_SUBST(NC_BIN_PATH, $NC_BIN)
 
 AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
 
-## fileout_gdal tests
+dnl fileout_gdal tests
 
 # Which copy of GDAL should be used for the build?
 GDAL_FOUND=
@@ -426,7 +440,7 @@ fi
 
 AM_CONDITIONAL([BUILD_GDAL], [test x"$GDAL_FOUND" = "xyes"])
 
-## Only look for the openjpeg2000 library if GDAL was found
+dnl Only look for the openjpeg2000 library if GDAL was found
 
 AM_COND_IF([BUILD_GDAL], [
 
@@ -452,13 +466,13 @@ AS_IF([test "x$OPENJPEG_FOUND" = "xyes"],
 
 ],[ # else AN_CONF_IF([BUILD_GDAL]
 
-## if we're not building the gdal-related things, make sure that 
-##OPENJPEG_FOUND is defined and is false
+dnl if we're not building the gdal-related things, make sure that 
+dnlOPENJPEG_FOUND is defined and is false
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
 ]) # AN_CONF_IF([BUILD_GDAL] 
 
-## Fits macro and test
+dnl Fits macro and test
 
 dnl Check for the cfits library.
 dnl Usage AC_CHECK_FITS action-if-found, action-if-not-found, default-path-to-check
@@ -533,7 +547,7 @@ AC_CHECK_CFITS(
    $ac_bes_dependencies_prefix
 )
 
-## End handler specific tests
+dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
 
@@ -611,7 +625,7 @@ AC_CONFIG_FILES([besd], [chmod +x besd])
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
 AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
 
-## Output files if building the emodules too
+dnl Output files if building the emodules too
 		 
 AM_COND_IF([DAP_MODULES],
     [
@@ -672,7 +686,14 @@ AM_COND_IF([DAP_MODULES],
 	modules/fits_handler/Makefile
     modules/fits_handler/bes-testsuite/atlocal
     modules/fits_handler/bes-testsuite/Makefile
-    modules/fits_handler/bes-testsuite/bes.conf:modules/fits_handler/bes-testsuite/bes.conf.modules.in])
+    modules/fits_handler/bes-testsuite/bes.conf:modules/fits_handler/bes-testsuite/bes.conf.modules.in
+    
+    
+    modules/gdal_handler/Makefile
+    modules/gdal_handler/tests/Makefile
+    modules/gdal_handler/tests/atlocal
+    modules/gdal_handler/tests/package.m4
+    modules/gdal_handler/tests/bes.conf:modules/gdal_handler/tests/bes.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -694,6 +715,11 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_FILES([modules/fits_handler/bes-testsuite/generate_data_baseline.sh],
         [chmod +x modules/fits_handler/bes-testsuite/generate_data_baseline.sh])
 	
+	AC_CONFIG_FILES([modules/gdal_handler/tests/generate_metadata_baseline.sh], 
+	   [chmod +x modules/gdal_handler/tests/generate_metadata_baseline.sh])
+    AC_CONFIG_FILES([modules/gdal_handler/tests/generate_data_baseline.sh], 
+        [chmod +x modules/gdal_handler/tests/generate_data_baseline.sh])
+
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
@@ -707,6 +733,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
     ]
 )
 

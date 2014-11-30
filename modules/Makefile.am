@@ -12,7 +12,7 @@ SUBDIRS += netcdf_handler fileout_netcdf
 endif
 
 if BUILD_GDAL
-SUBDIRS += fileout_gdal
+SUBDIRS += fileout_gdal gdal_handler
 endif
 
 if BUILD_FITS
