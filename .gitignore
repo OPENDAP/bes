@@ -108,3 +108,7 @@ xmlcommand/unit-tests/propsT
 xmlcommand/unit-tests/test_config.h
 /.cproject
 /.project
+
+dap/dap.conf
+dispatch/bes/bes.conf
+functions/functions.conf
