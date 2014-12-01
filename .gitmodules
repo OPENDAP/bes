@@ -46,3 +46,8 @@
 	path = modules/hdf4_handler
 	url = https://github.com/opendap/hdf4_handler
 	branch = modules
+[submodule "modules/hdf5_handler"]
+	path = modules/hdf5_handler
+	url = https://github.com/opendap/hdf5_handler
+	branch = modules
+	

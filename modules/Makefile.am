@@ -22,3 +22,7 @@ endif
 if BUILD_HDF4
 SUBDIRS += hdf4_handler
 endif
+
+if BUILD_HDF5
+SUBDIRS += hdf5_handler
+endif

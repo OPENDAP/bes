@@ -550,9 +550,11 @@ AC_CHECK_CFITS(
 dnl tests for HDF4 and HDFEOS2
 
 AC_CHECK_HDF4(
-   [AM_CONDITIONAL([BUILD_HDF4],[true])],
+   [AM_CONDITIONAL([BUILD_HDF4],[true])
+   ],
    [AC_MSG_WARN([The hdf4 library and/or hdf4 headers not found; not building the hdf4 handler.])
-    AM_CONDITIONAL([BUILD_HDF4],[false])],
+    AM_CONDITIONAL([BUILD_HDF4],[false])
+    ],
    $ac_bes_dependencies_prefix
 )
                               
@@ -579,6 +581,17 @@ AC_SUBST([HDFEOS2_LDFLAGS])
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 
+dnl HDF5 tests; We pass null for the tird argument - the interface number
+AC_CHECK_HDF5(
+  [AM_CONDITIONAL([BUILD_HDF5],[true])
+  ],
+  [AC_MSG_WARN([The hdf5 library and/or hdf5 headers not found; not building the hdf5 handler.])
+   AM_CONDITIONAL([BUILD_HDF5],[false])
+  ],
+  [],
+  $ac_bes_dependencies_prefix
+)
+
 dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
@@ -593,6 +606,7 @@ AM_CONDITIONAL([BUILD_NETCDF], [false])
 AM_CONDITIONAL([BUILD_FITS],[false])
 AM_CONDITIONAL([BUILD_HDF4],[false])
 AM_CONDITIONAL([HDFEOS2], [false])
+AM_CONDITIONAL([BUILD_HDF5],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
 
@@ -737,7 +751,13 @@ AM_COND_IF([DAP_MODULES],
     modules/hdf4_handler/bes-testsuite/Makefile
     modules/hdf4_handler/bes-testsuite/atlocal
     modules/hdf4_handler/bes-testsuite/bes.conf:modules/hdf4_handler/bes-testsuite/bes.conf.modules.in
-    modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf:modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf.modules.in])
+    modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf:modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf.modules.in
+    
+    modules/hdf5_handler/Makefile
+    modules/hdf5_handler/bes-testsuite/Makefile
+    modules/hdf5_handler/bes-testsuite/atlocal
+    modules/hdf5_handler/bes-testsuite/bes.conf:modules/hdf5_handler/bes-testsuite/bes.conf.modules.in 
+    modules/hdf5_handler/bes-testsuite/bes.default.conf:modules/hdf5_handler/bes-testsuite/bes.default.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -782,6 +802,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     ]
 )
 
