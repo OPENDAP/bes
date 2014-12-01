@@ -542,20 +542,57 @@ AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
 
 AC_CHECK_CFITS(
    [AM_CONDITIONAL([BUILD_FITS],[true])],
-   [AC_MSG_WARN([cfits library and cfits headers not found; not building the fit handler.])
+   [AC_MSG_WARN([The cfits library and/or cfits headers not found; not building the fit handler.])
     AM_CONDITIONAL([BUILD_FITS],[false])],
    $ac_bes_dependencies_prefix
 )
+
+dnl tests for HDF4 and HDFEOS2
+
+AC_CHECK_HDF4(
+   [AM_CONDITIONAL([BUILD_HDF4],[true])],
+   [AC_MSG_WARN([The hdf4 library and/or hdf4 headers not found; not building the hdf4 handler.])
+    AM_CONDITIONAL([BUILD_HDF4],[false])],
+   $ac_bes_dependencies_prefix
+)
+                              
+dnl Test for HDF-EOS2. If found, subst hdfeos2 symbols                                                                           
+
+AC_ARG_WITH([hdfeos2],
+            [AC_HELP_STRING([--with-hdfeos2=DIR], [Specify path to external hdfeos2 library.])],
+            [HDFEOS2_DIR=${withval}], 
+            [HDFEOS2_DIR="$ac_bes_dependencies_prefix"])
+
+AS_IF([test -n "$HDFEOS2_DIR"],
+    [HDFEOS2_CPPFLAGS="-I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
+    HDFEOS2_LDFLAGS="-L$HDFEOS2_DIR/lib"
+    HDFEOS2_LIBS="-lhdfeos -lGctp"
+    AC_MSG_NOTICE([HDFEOS2 set to true])
+    AM_CONDITIONAL([HDFEOS2], [true])],
+
+    [AC_MSG_NOTICE([HDFEOS2 set to false])
+    AM_CONDITIONAL([HDFEOS2], [false])]
+ )
+    
+AC_SUBST([HDFEOS2_CPPFLAGS])
+AC_SUBST([HDFEOS2_LDFLAGS])
+AC_SUBST([HDFEOS2_LIBS])
+AC_SUBST([HDFEOS2_DIR])
 
 dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
 
+dnl These are needed because the symbols are used in the modules' Makefile.am
+dnl files. It might be that if the generation of those Makefiles was also conditional,
+dnl then we could remove this block of code. jhrg 11/30/14
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 AM_CONDITIONAL([BUILD_GDAL], [false])
 AM_CONDITIONAL([NETCDF4_TESTS], [false])
 AM_CONDITIONAL([BUILD_NETCDF], [false])
 AM_CONDITIONAL([BUILD_FITS],[false])
+AM_CONDITIONAL([BUILD_HDF4],[false])
+AM_CONDITIONAL([HDFEOS2], [false])
 
 ])	# AM_COND_IF([DAP_MODULES]
 
@@ -693,7 +730,14 @@ AM_COND_IF([DAP_MODULES],
     modules/gdal_handler/tests/Makefile
     modules/gdal_handler/tests/atlocal
     modules/gdal_handler/tests/package.m4
-    modules/gdal_handler/tests/bes.conf:modules/gdal_handler/tests/bes.conf.modules.in])
+    modules/gdal_handler/tests/bes.conf:modules/gdal_handler/tests/bes.conf.modules.in
+    
+    modules/hdf4_handler/Makefile
+    modules/hdf4_handler/hdfclass/Makefile
+    modules/hdf4_handler/bes-testsuite/Makefile
+    modules/hdf4_handler/bes-testsuite/atlocal
+    modules/hdf4_handler/bes-testsuite/bes.conf:modules/hdf4_handler/bes-testsuite/bes.conf.modules.in
+    modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf:modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -720,6 +764,9 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_FILES([modules/gdal_handler/tests/generate_data_baseline.sh], 
         [chmod +x modules/gdal_handler/tests/generate_data_baseline.sh])
 
+    AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
+        [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
+    
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
@@ -734,6 +781,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     ]
 )
 

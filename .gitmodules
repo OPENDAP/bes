@@ -42,3 +42,7 @@
 	path = modules/gdal_handler
 	url = https://github.com/opendap/gdal_handler
 	branch = modules
+[submodule "modules/hdf4_handler"]
+	path = modules/hdf4_handler
+	url = https://github.com/opendap/hdf4_handler
+	branch = modules

@@ -18,3 +18,7 @@ endif
 if BUILD_FITS
 SUBDIRS += fits_handler
 endif
+
+if BUILD_HDF4
+SUBDIRS += hdf4_handler
+endif
