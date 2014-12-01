@@ -8,6 +8,8 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 
+AM_CONDITIONAL([DAP_MODULES], [false])
+
 # The handler is a shared object library, so we don't normally need
 # the static lib. Override this default by specifying `--enable-static',
 # which can make running unit tests with valgrind far more pleasant. 
@@ -128,7 +130,9 @@ AC_SUBST([HDFEOS2_DIR])
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
 		 bes-testsuite/atlocal
-                 hdfclass/Makefile])
+		 bes-testsuite/bes.conf
+		 bes-testsuite/bes.with_hdfeos2.conf
+         hdfclass/Makefile])
 AC_CONFIG_FILES(bes-testsuite/generate_metadata_baseline.sh, chmod +x bes-testsuite/generate_metadata_baseline.sh)
 
 dnl Add this later: hdf-testfiles/Makefile

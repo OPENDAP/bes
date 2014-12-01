@@ -21,33 +21,12 @@ EXTRA_DIST = hdf4_handlerTest.at hdf4_handlerTest.with_hdfeos2.at	\
 	 hdf4_handlerTest.nasa.with_hdfeos2.at h4 h4.with_hdfeos2	\
 	 h4.nasa.with_hdfeos2 $(srcdir)/package.m4 atlocal.in		\
 	 bes.conf.in bes.with_hdfeos2.conf.in				\
+	 bes.conf.modules.in bes.with_hdfeos2.conf.modules.in \
 	 generate_metadata_baseline.sh.in $(TESTSUITE)
 
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest	\
 	generate_metadata_baseline.sh bes.with_hdfeos2.conf	\
 	hdf4_handlerTest.with_hdfeos2
-
-bes.conf: bes.conf.in ../config.status
-	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
-
-bes.with_hdfeos2.conf: bes.with_hdfeos2.conf.in ../config.status
-	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.with_hdfeos2.conf
 
 ############## Autotest follows #####################
 
