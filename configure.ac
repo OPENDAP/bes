@@ -592,6 +592,26 @@ AC_CHECK_HDF5(
   $ac_bes_dependencies_prefix
 )
 
+dnl NCML module test
+dnl
+dnl Look for the minimum version of the icu libs and headers
+dnl This sets: ICU_CPPFLAGS with -Iicu-include-path and ICU_LIBS with 
+dnl -Licu-lib-path -licu-lib-1 ... 
+dnl Note: it also handles --with-icu-prefix=path_to_icu_install
+dnl in case there are multiple icu development environments on the machine
+dnl NOTE: LD_LIBRARY_PATH or DYLD_LIBRARY_PATH may need to be set for this
+dnl to work, however.
+AC_CHECK_ICU([3.6],
+	[AM_CONDITIONAL([BUILD_NCML],[true])
+	AC_MSG_NOTICE([ICU_CPPFLAGS=$ICU_CPPFLAGS])
+	AC_MSG_NOTICE([ICU_LIBS=$ICU_LIBS])
+	],
+	[AC_MSG_WARN([The icu library and/or icu headers not found; not building the NCML handler.])
+ 	AM_CONDITIONAL([BUILD_NCML],[false])
+	],
+	$ac_bes_dependencies_prefix
+)
+
 dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
@@ -607,6 +627,7 @@ AM_CONDITIONAL([BUILD_FITS],[false])
 AM_CONDITIONAL([BUILD_HDF4],[false])
 AM_CONDITIONAL([HDFEOS2], [false])
 AM_CONDITIONAL([BUILD_HDF5],[false])
+AM_CONDITIONAL([BUILD_NCML],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
 
@@ -757,7 +778,13 @@ AM_COND_IF([DAP_MODULES],
     modules/hdf5_handler/bes-testsuite/Makefile
     modules/hdf5_handler/bes-testsuite/atlocal
     modules/hdf5_handler/bes-testsuite/bes.conf:modules/hdf5_handler/bes-testsuite/bes.conf.modules.in 
-    modules/hdf5_handler/bes-testsuite/bes.default.conf:modules/hdf5_handler/bes-testsuite/bes.default.conf.modules.in])
+    modules/hdf5_handler/bes-testsuite/bes.default.conf:modules/hdf5_handler/bes-testsuite/bes.default.conf.modules.in
+    
+    modules/ncml_module/Makefile 
+    modules/ncml_module/tests/Makefile 
+    modules/ncml_module/tests/atlocal 
+    modules/ncml_module/tests/bes.conf:modules/ncml_module/tests/bes.conf.modules.in 
+    modules/ncml_module/tests/bes_no_nc_global.conf:modules/ncml_module/tests/bes_no_nc_global.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -803,6 +830,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     ]
 )
 

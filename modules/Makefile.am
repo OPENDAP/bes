@@ -26,3 +26,7 @@ endif
 if BUILD_HDF5
 SUBDIRS += hdf5_handler
 endif
+
+if BUILD_NCML
+SUBDIRS += ncml_module
+endif
