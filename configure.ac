@@ -612,6 +612,81 @@ AC_CHECK_ICU([3.6],
 	$ac_bes_dependencies_prefix
 )
 
+dnl Look for gridfields
+
+dnl When pkgconfig support is added, use this
+libdap_libgridfields_module='libgridfields >= 1.0.3'
+libgf_needed="1.0.3"
+
+libgf_ok="no"
+
+dnl NB: Hackery: if --with-gridfields is not given and ac_bes_dependencies_prefix 
+dnl is non-zero, use that as if --with-... was given. jhrg 12/1/14
+AC_ARG_WITH([gridfields],
+    AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.]),
+    [if test "$withval" = "yes"
+     then
+         AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])
+     else
+         AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
+         GF_LIBS="-L$withval/lib -lgridfields"
+         GF_CFLAGS="-I$withval/include"
+	 	 GF_PATH=$withval
+         AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+         libgf_ok="yes"
+     fi],
+    [AS_IF([test -n "$ac_bes_dependencies_prefix"],
+    	[AC_MSG_NOTICE([Using $ac_bes_dependencies_prefix as the GridFields prefix directory.])
+         GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
+         GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
+	 	 GF_PATH=$ac_bes_dependencies_prefix
+	 	 libgf_ok="yes"])
+    ])
+
+AC_ARG_ENABLE([gridfields],
+    AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
+    [],
+    [enable_gridfields=yes])
+
+if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
+then
+     
+AC_MSG_CHECKING([for libgridfields])
+if gridfields-config --version > /dev/null 2>&1
+then
+    version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
+    AX_COMPARE_VERSION([$version_libgf], [ge], [$libgf_needed], [libgf_ok='yes'], [libgf_ok='no'])
+
+    if test "$libgf_ok"="no"
+    then
+        AC_MSG_ERROR([must have libgf $libgf_needed or greater, found $version_libgf])
+    fi
+
+    GF_LIBS="`gridfields-config --libs`"
+    GF_CFLAGS="`gridfields-config --cflags`"
+    GF_PATH="`gridfields-config --prefix`"
+
+    AC_DEFINE([GRDIFIELDS],[1],[define if gridfields lib is present])
+    AC_MSG_RESULT([yes; used gridfields-config])
+else
+    AC_MSG_NOTICE([I could not find libgridfields])
+fi
+
+fi
+
+AC_SUBST([GF_LIBS])
+AC_SUBST([GF_CFLAGS])
+AC_SUBST([GF_PATH])
+
+if test "$libgf_ok" = "yes"
+then
+    echo "Set gridfields CFLAGS to $GF_CFLAGS"
+    echo "Set gridfields LIBS to $GF_LIBS"
+    AM_CONDITIONAL([USING_GRIDFIELDS],[true])
+else
+    AM_CONDITIONAL([USING_GRIDFIELDS],[false])
+fi
+
 dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_MODULES]
@@ -628,6 +703,7 @@ AM_CONDITIONAL([BUILD_HDF4],[false])
 AM_CONDITIONAL([HDFEOS2], [false])
 AM_CONDITIONAL([BUILD_HDF5],[false])
 AM_CONDITIONAL([BUILD_NCML],[false])
+AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
 
@@ -784,7 +860,15 @@ AM_COND_IF([DAP_MODULES],
     modules/ncml_module/tests/Makefile 
     modules/ncml_module/tests/atlocal 
     modules/ncml_module/tests/bes.conf:modules/ncml_module/tests/bes.conf.modules.in 
-    modules/ncml_module/tests/bes_no_nc_global.conf:modules/ncml_module/tests/bes_no_nc_global.conf.modules.in])
+    modules/ncml_module/tests/bes_no_nc_global.conf:modules/ncml_module/tests/bes_no_nc_global.conf.modules.in
+    
+    modules/ugrid_functions/Makefile 
+	modules/ugrid_functions/unit-tests/Makefile
+	modules/ugrid_functions/unit-tests/test_config.h
+	modules/ugrid_functions/tests/Makefile 
+	modules/ugrid_functions/tests/package.m4 
+	modules/ugrid_functions/tests/atlocal
+	modules/ugrid_functions/tests/bes.conf:modules/ugrid_functions/tests/bes.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -814,6 +898,11 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
     
+    AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_data_baseline.sh], 
+		[chmod +x modules/ugrid_functions/tests/generate_data_baseline.sh])
+	AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_metadata_baseline.sh],
+		[chmod +x modules/ugrid_functions/tests/generate_metadata_baseline.sh])
+    
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
@@ -831,6 +920,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     ]
 )
 

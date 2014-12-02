@@ -30,3 +30,7 @@ endif
 if BUILD_NCML
 SUBDIRS += ncml_module
 endif
+
+if USING_GRIDFIELDS
+SUBDIRS += ugrid_functions
+endif

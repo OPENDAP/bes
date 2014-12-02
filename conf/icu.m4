@@ -59,8 +59,8 @@ dnl set CPPFLAGS since that's what we really wanted here (include path), not CFL
 dnl ICU_LIBS should have -L and -l entries.
 
 ICU_CPPFLAGS=$ICU_CFLAGS
-echo "icu.m4   ICU_LIBS:     " $ICU_LIBS
-echo "icu.m4   ICU_CPPFLAGS: " $ICU_CPPFLAGS
+dnl echo "icu.m4   ICU_LIBS:     " $ICU_LIBS
+dnl echo "icu.m4   ICU_CPPFLAGS: " $ICU_CPPFLAGS
 AC_SUBST(ICU_CPPFLAGS)
 
 PATH=$save_PATH

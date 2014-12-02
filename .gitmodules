@@ -54,3 +54,6 @@
 [submodule "modules/ncml_module"]
 	path = modules/ncml_module
 	url = https://github.com/opendap/ncml_module
+[submodule "modules/ugrid_functions"]
+	path = modules/ugrid_functions
+	url = https://github.com/opendap/ugrid_functions
