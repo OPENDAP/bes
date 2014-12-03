@@ -146,7 +146,7 @@ exit 0
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
-%{_bindir}/besregtest
+# %{_bindir}/besregtest; jhrg 12/3/14
 %{_bindir}/bescmdln
 %{_libdir}/*.so.*
 %{_libdir}/bes/
