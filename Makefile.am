@@ -7,6 +7,11 @@
 AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
+
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=hdf4_handler
+M_VER=3.11.6
+
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
@@ -23,6 +28,8 @@ AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir)/hdfclass $(BES_
 LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(HDF4_LIBS) \
 $(BES_DAP_LIBS)
 endif
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = hdfclass . bes-testsuite
 # DIST_SUBDIRS = hdfclass bes-testsuite
