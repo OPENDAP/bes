@@ -6,6 +6,10 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=hdf5_handler
+M_VER=2.2.3
+
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
@@ -17,6 +21,9 @@ AM_CPPFLAGS = $(H5_CPPFLAGS) $(BES_CPPFLAGS)
 LIBADD = $(BES_DAP_LIBS) $(H5_LDFLAGS) $(H5_LIBS)
 # -L${hdf5_path}/lib -lhdf5 -lz
 endif
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
 BUILT_SOURCES = $(GRAM_SRCS)
 
 SUBDIRS = . bes-testsuite

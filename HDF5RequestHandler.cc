@@ -2,7 +2,7 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of hdf5_handler, a data handler for the OPeNDAP data
-// server. 
+// server.
 
 // Copyright (c) 2002,2003 OPeNDAP, Inc.
 // Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
@@ -12,12 +12,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,7 +38,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-//#undef USE_DAP4 
+//#undef USE_DAP4
 //#define USE_DAP4 1
 #ifdef USE_DAP4
 #include <DMR.h>
@@ -119,10 +119,10 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if(true ==found_key ) {
             // cerr<<"found it" <<endl;
         doset = BESUtil::lowercase( doset ) ;
-        if( doset == "true" || doset == "yes" ) 
+        if( doset == "true" || doset == "yes" )
             usecf = true;
     }
-         
+
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
 
@@ -162,7 +162,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             depth_first(fileid, "/", *das);
             close_fileid(fileid);
         }
-             
+
         Ancillary::read_ancillary_das( *das, filename ) ;
         bdas->clear_container() ;
     }
@@ -216,10 +216,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
- 
+
     // For the time being, not mess up CF's fileID with Default's fileID
     if(true == usecf) {
-           
+
         cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (cf_fileid < 0){
                 throw BESNotFoundError((string) "Could not open this hdf5 file: "
@@ -247,7 +247,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        if( true == usecf ) 
+        if( true == usecf )
             read_cfdds(*dds,filename,cf_fileid);
 
         else {
@@ -255,13 +255,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
         }
 
-        // Check semantics 
-        if (!dds->check_semantics()) {   // DDS didn't comply with the semantics 
+        // Check semantics
+        if (!dds->check_semantics()) {   // DDS didn't comply with the semantics
             dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined. ");
         }
-        
+
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;
@@ -272,9 +272,9 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
             // go to the CF option
             read_cfdas( *das,filename,cf_fileid);
- 
+
         }
-        else { 
+        else {
 
             find_gloattr(fileid, *das);
             depth_first(fileid, "/", *das);
@@ -286,7 +286,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         // memory leaking..
         // So adding H5close() will release all the resources HDF5 is using.
         // Should ask James to see if this makes sense. KY-2011-11-17
-        // 
+        //
             H5close();
         }
 
@@ -342,12 +342,12 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         // cerr<<"found it" <<endl;
         doset = BESUtil::lowercase( doset ) ;
         if( doset == "true" || doset == "yes" ) {
-            
+
            // This is the CF option, go to the CF function
             // cerr<<"go to CF option "<<endl;
             usecf = true;
         }
-    }    
+    }
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
@@ -356,8 +356,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     string filename = dhi.container->access();
 
-    if(true ==usecf) { 
-       
+    if(true ==usecf) {
+
         if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
             return hdf5_build_data_with_IDs(dhi);
 
@@ -369,7 +369,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     }
     else {
-        // Obtain the HDF5 file ID. 
+        // Obtain the HDF5 file ID.
         fileid = get_fileid(filename.c_str());
         if (fileid < 0) {
             throw BESNotFoundError(string("hdf5_build_data: ")
@@ -393,14 +393,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         delete bdds->get_dds();
 
         bdds->set_dds(hdds);
-        
+
         hdds->setHDF5Dataset(cf_fileid);
 #endif
         DataDDS* dds = bdds->get_dds();
         dds->filename(filename);
 
         // DataDDS *dds = bdds->get_dds();
-        if(true == usecf) { 
+        if(true == usecf) {
 
             // This is the CF option
             read_cfdds( *dds,filename,cf_fileid);
@@ -409,12 +409,12 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
             depth_first(fileid, (char*)"/", *dds, filename.c_str());
         }
 
-        if (!dds->check_semantics()) {   // DDS didn't comply with the DAP semantics 
+        if (!dds->check_semantics()) {   // DDS didn't comply with the DAP semantics
             dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
         }
-        
+
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;
@@ -428,7 +428,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         }
         else {
-            
+
             // Obtain the global attributes and map them to DAS
             find_gloattr(fileid, *das);
 
@@ -494,17 +494,17 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         delete bdds->get_dds();
 
         bdds->set_dds(hdds);
-        
+
         hdds->setHDF5Dataset(cf_fileid);
 
         read_cfdds( *hdds,filename,cf_fileid);
 
-        if (!hdds->check_semantics()) {   // DDS didn't comply with the DAP semantics 
+        if (!hdds->check_semantics()) {   // DDS didn't comply with the DAP semantics
             hdds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
         }
-        
+
         Ancillary::read_ancillary_dds( *hdds, filename ) ;
 
         DAS *das = new DAS ;
@@ -552,12 +552,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         // cerr<<"found it" <<endl;
         doset = BESUtil::lowercase( doset ) ;
         if( doset == "true" || doset == "yes" ) {
-            
+
            // This is the CF option, go to the CF function
             // cerr<<"go to CF option "<<endl;
             usecf = true;
         }
-    }    
+    }
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
@@ -566,8 +566,8 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
     string filename = dhi.container->access();
 
-    if(true ==usecf) { 
-       
+    if(true ==usecf) {
+
         if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
             return hdf5_build_dmr_with_IDs(dhi);
 
@@ -579,7 +579,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
     }
     else {
-        // Obtain the HDF5 file ID. 
+        // Obtain the HDF5 file ID.
         fileid = get_fileid(filename.c_str());
         if (fileid < 0) {
             throw BESNotFoundError(string("hdf5_build_dmr: ")
@@ -598,7 +598,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
     try {
 
-        if(true == usecf) { 
+        if(true == usecf) {
 
             // This is the CF option
             read_cfdds( dds,filename,cf_fileid);
@@ -607,12 +607,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             depth_first(fileid, (char*)"/", dds, filename.c_str());
         }
 
-        if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+        if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics
             dds.print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
         }
-        
+
         Ancillary::read_ancillary_dds( dds, filename ) ;
 
 
@@ -622,7 +622,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
         }
         else {
-            
+
             // Obtain the global attributes and map them to DAS
             find_gloattr(fileid, das);
 
@@ -712,12 +712,12 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         // This is the CF option
         read_cfdds( dds,filename,cf_fileid);
 
-        if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+        if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics
             dds.print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
         }
-        
+
         Ancillary::read_ancillary_dds( dds, filename ) ;
 
 
@@ -791,8 +791,12 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     map<string,string> attrs ;
-    attrs["name"] = PACKAGE_NAME ;
-    attrs["version"] = PACKAGE_VERSION ;
+    attrs["name"] = MODULE_NAME ;
+    attrs["version"] = MODULE_VERSION ;
+#if 0
+    attrs["name"] = PACKAGE_NAME;
+    attrs["version"] = PACKAGE_VERSION;
+#endif
     list<string> services ;
     BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
     if( services.size() > 0 )
@@ -812,8 +816,11 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
-    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
+
+#if 0
+    info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
+#endif
+    info->add_module(MODULE_NAME, MODULE_VERSION);
 
     return true;
 }
