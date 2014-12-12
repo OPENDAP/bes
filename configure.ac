@@ -127,12 +127,19 @@ dnl fi
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 
+## This sets up the special symbols used to build the bes.conf file for
+## the tests. Previously, this was done in the Makefile.am down in the
+## test directory, but building the bes.conf here works better with
+## autoconf overall and esp. with the 'modules' build. jhrg 11/19/14
+modulesdir=$BES_MODULE_DIR
+AC_SUBST(modulesdir)
+
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
 		 bes-testsuite/atlocal
 		 bes-testsuite/bes.conf
 		 bes-testsuite/bes.with_hdfeos2.conf
-         hdfclass/Makefile])
+         	 hdfclass/Makefile])
 AC_CONFIG_FILES(bes-testsuite/generate_metadata_baseline.sh, chmod +x bes-testsuite/generate_metadata_baseline.sh)
 
 dnl Add this later: hdf-testfiles/Makefile
