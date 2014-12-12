@@ -6,13 +6,28 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=hdf5_handler
+M_VER=2.2.3
+
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
+
+if DAP_MODULES
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS)
+else
+AM_CPPFLAGS = $(H5_CPPFLAGS) $(BES_CPPFLAGS)
+LIBADD = $(BES_DAP_LIBS) $(H5_LDFLAGS) $(H5_LIBS)
+# -L${hdf5_path}/lib -lhdf5 -lz
+endif
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 BUILT_SOURCES = $(GRAM_SRCS)
 
 SUBDIRS = . bes-testsuite
-DIST_SUBDIRS = . bes-testsuite
+# DIST_SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
@@ -28,7 +43,7 @@ HDF5DTYPE_HDRS = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h 
 
 HDF5_SRCS = h5dds.cc h5das.cc h5get.cc HDF5PathFinder.cc 
-HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5get.h  HDF5PathFinder.h
+HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5get.h  HDF5PathFinder.h config_hdf5.h
 
 HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc HDF5GMCFSpecialCVArray.cc \
                    HDFEOS5CFMissLLArray.cc HDFEOS5CFMissNonLLCVArray.cc  HDFEOS5CFSpecialCVArray.cc \
@@ -53,9 +68,9 @@ SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 SERVER_HDR = HDF5RequestHandler.h HDF5Module.h HDF5_DDS.h HDF5_DMR.h
 
 libhdf5_module_la_SOURCES = $(HDF5DTYPE_SRCS) $(HDF5_SRCS) $(HDF5CFDTYPE_SRCS) $(HDF5CF_SRCS) $(SERVER_SRC) $(HDF5CFDTYPE_HDRS) $(HDF5CF_HDRS) $(HDF5DTYPE_HDRS) $(HDF5_HDRS) $(SERVER_HDR)
-libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+# libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libhdf5_module_la_LDFLAGS = -avoid-version -module 
-libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
+libhdf5_module_la_LIBADD = $(LIBADD)
 
 EXTRA_DIST = he5das.yy he5dds.yy he5das.lex he5dds.lex OSX_Resources \
 	data data.nasa COPYING hdf5_handler.spec h5.conf.in test.nasa.sh
@@ -77,7 +92,7 @@ install-data-local: h5.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf
 
-h5.conf: h5.conf.in config.status
+h5.conf: h5.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h5.conf
 
 # Not nearly as clean as it could be, but this removes .svn directories

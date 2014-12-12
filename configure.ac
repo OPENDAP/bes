@@ -6,10 +6,13 @@ AC_INIT(hdf5_handler, 2.2.3, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
+
+AM_CONDITIONAL([DAP_MODULES], [false])
+
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([HDF5UInt32.h])
-AM_CONFIG_HEADER([config_hdf5.h])
+AM_CONFIG_HEADER([config.h])
 
 # The handler is a shared object library, so we don't normally need
 # the static lib. Override this default by specifying `--enable-static',
@@ -129,5 +132,5 @@ AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
 
 #endif /* _config_hdf5_h */])
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf bes-testsuite/bes.default.conf])
 AC_OUTPUT

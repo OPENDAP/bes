@@ -8,15 +8,14 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 BES.modules=dap,cmd,h5
-BES.module.dap=@modulesdir@/libdap_module.so
-BES.module.cmd=@modulesdir@/libdap_xml_module.so
-BES.module.h5=@abs_top_builddir@/.libs/libhdf5_module.so
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/hdf5_handler
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
-
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
