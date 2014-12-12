@@ -7,32 +7,53 @@
 AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
+
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=hdf4_handler
+M_VER=3.11.6
+
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
-SUBDIRS = hdfclass bes-testsuite
-DIST_SUBDIRS = hdfclass bes-testsuite
+if DAP_MODULES
+AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir)/modules/hdf4_handler/hdfclass \
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAG) $(HDF4_LIBS) \
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+# Maybe we don't need this anymore. jhrg 11/30/14
+# CC = $(HDF4_CC)
+else
+AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir)/hdfclass $(BES_CPPFLAGS)
+LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(HDF4_LIBS) \
+$(BES_DAP_LIBS)
+endif
 
-noinst_PROGRAMS = eosdas_test
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-WA_HDF4_LIBS="-whole-archive $(HDF4_LIBS) -no-whole-archive"
+SUBDIRS = hdfclass . bes-testsuite
+# DIST_SUBDIRS = hdfclass bes-testsuite
+
+# noinst_PROGRAMS = eosdas_test
+
+# WA_HDF4_LIBS="-whole-archive $(HDF4_LIBS) -no-whole-archive"
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf4_module.la
 
-libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC)  $(SERVER_SRC) \
-                            $(HDFTYPE_HDR) $(SERVER_HDR)
-libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
+libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC)  $(SERVER_SRC) $(HDFTYPE_HDR) $(SERVER_HDR)
+# libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
-libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) \
-                            $(HDF4_LIBS) $(BES_DAP_LIBS) 
+libhdf4_module_la_LIBADD = $(LIBADD) 
 
-eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
-	      $(HDFTYPE_HDR)
-eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
-eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
-eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
+# Listing all of the sources list this and above for the module, causes automake
+# 1.12 to have a fit because the same code is compiled twice, once for libtool and
+# once for ld. I'm not sure if this is used at all anymore. I tried building using
+# the module 'library' but that won't link on OSX (It might on linux). jhrg 11/30/14.  
+# eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR)
+# eosdas_test_LDADD = $(builddir)/hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
+# eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
+# eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
 HDFTYPE_SRC = 	$(GRAM_SRC) \
         HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
@@ -103,7 +124,7 @@ install-data-local: h4.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
 
-h4.conf: h4.conf.in config.status
+h4.conf: h4.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf
 
 # Not nearly as clean as it could be, but this removes .svn directories

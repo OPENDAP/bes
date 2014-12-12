@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-//#undef USE_DAP4 
+//#undef USE_DAP4
 //#define USE_DAP4 1
 #ifdef USE_DAP4
 #include <DMR.h>
@@ -68,7 +68,7 @@
 
 #ifdef USE_DAP4
 #include "HDF4_DMR.h"
-#endif 
+#endif
 
 #include "HDFCFUtil.h"
 
@@ -90,7 +90,7 @@ extern bool read_das_hdfsp(DAS & das, const string & filename,int32 sdfd, int32 
 
 void read_das_use_eos2lib(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd,bool ecs_metadata,HDFSP::File**h4file,HDFEOS2::File**eosfile);
 void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd,HDFSP::File*h4file,HDFEOS2::File*eosfile);
-void close_fileid(const int sdfd, const int fileid,const int gridfd, const int swathfd,HDFSP::File*h4file,HDFEOS2::File*eosfile); 
+void close_fileid(const int sdfd, const int fileid,const int gridfd, const int swathfd,HDFSP::File*h4file,HDFEOS2::File*eosfile);
 
 #endif
 
@@ -142,7 +142,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
         DAS *das = bdas->get_das();
 
         string accessed = dhi.container->access();
-         
+
         if (true == usecf) {
 
             int32 sdfd    = -1;
@@ -169,9 +169,9 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             int32 gridfd  = -1;
             int32 swathfd = -1;
             HDFEOS2::File *eosfile = NULL;
-            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-            
-            // Grid open 
+            // Obtain HDF-EOS2 file IDs  with the file open APIs.
+
+            // Grid open
             gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == gridfd) {
                 SDend(sdfd);
@@ -179,7 +179,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
                 throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
 
-            // Swath open 
+            // Swath open
             swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == swathfd) {
                 SDend(sdfd);
@@ -187,7 +187,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
                 GDclose(gridfd);
                 throw Error(cannot_read_file,"HDF-EOS SWopen error");
             }
-            
+
             try {
                 bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
 #if 0
@@ -207,37 +207,37 @@ cerr<<"Don't output ecs metadata "<<endl;
                 delete eosfile;
             GDclose(gridfd);
             SWclose(swathfd);
- 
+
 #else
             try {
                 read_das_hdfsp(*das,accessed,sdfd,fileid,&h4file);
             }
             catch(...) {
-                close_hdf4_fileid(sdfd,fileid,h4file); 
+                close_hdf4_fileid(sdfd,fileid,h4file);
                 throw;
                 //throw InternalErr(__FILE__,__LINE__,"read_das_hdfsp error");
             }
 #endif
             close_hdf4_fileid(sdfd,fileid,h4file);
         }
-        else 
+        else
             read_das(*das,accessed);
 
         Ancillary::read_ancillary_das(*das, accessed);
         bdas->clear_container();
-    } 
+    }
 
     catch (BESError & e) {
         throw;
-    } 
+    }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
 				__FILE__, __LINE__);
-    } 
+    }
     catch (Error & e) {
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
 				__FILE__, __LINE__);
-    } 
+    }
     catch (...) {
         string s = "unknown exception caught building HDF4 DAS";
 	throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -308,15 +308,15 @@ gettimeofday(&start_time,NULL);
 
 
 
-#ifdef USE_HDFEOS2_LIB        
+#ifdef USE_HDFEOS2_LIB
 
             int32 gridfd  = -1;
             int32 swathfd = -1;
- 
+
             HDFEOS2::File *eosfile = NULL;
 
-            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-            // Grid open 
+            // Obtain HDF-EOS2 file IDs  with the file open APIs.
+            // Grid open
             gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == gridfd) {
                 SDend(sdfd);
@@ -324,7 +324,7 @@ gettimeofday(&start_time,NULL);
                 throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
 
-            // Swath open 
+            // Swath open
             swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == swathfd) {
                 SDend(sdfd);
@@ -332,7 +332,7 @@ gettimeofday(&start_time,NULL);
                 GDclose(gridfd);
                 throw Error(cannot_read_file,"HDF-EOS SWopen error");
             }
- 
+
             try {
                 bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
@@ -340,7 +340,7 @@ gettimeofday(&start_time,NULL);
                 Ancillary::read_ancillary_das(*das, accessed);
 
 #if 0
-if(eosfile == NULL) 
+if(eosfile == NULL)
 cerr<<"HDFEOS2 file pointer is NULL "<<endl;
 if(h4file == NULL)
 cerr<<"HDF4 file pointer is NULL"<<endl;
@@ -396,18 +396,18 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 	bdds->set_constraint(dhi);
 
 	bdds->clear_container();
-    } 
+    }
     catch (BESError & e) {
         throw;
-    } 
+    }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
 				__FILE__, __LINE__);
-    } 
+    }
     catch (Error & e) {
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
 				__FILE__, __LINE__);
-    } 
+    }
     catch (...) {
         string s = "unknown exception caught building HDF4 DDS";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -443,7 +443,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     // causes the management of code structure messy, we first handle this with
     // another method.
     if(true == usecf) {
-       
+
         if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
             return hdf4_build_data_with_IDs(dhi);
 
@@ -488,14 +488,14 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
             }
 
 
-#ifdef USE_HDFEOS2_LIB        
+#ifdef USE_HDFEOS2_LIB
 
             int32 gridfd  = -1;
             int32 swathfd = -1;
             HDFEOS2::File *eosfile = NULL;
-            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-            
-            // Grid open 
+            // Obtain HDF-EOS2 file IDs  with the file open APIs.
+
+            // Grid open
             gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == gridfd) {
                 SDend(sdfd);
@@ -503,7 +503,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
                 throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
 
-            // Swath open 
+            // Swath open
             swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
             if (-1 == swathfd) {
                 SDend(sdfd);
@@ -514,17 +514,17 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
             try {
 
-                // Here we will check if ECS_Metadata key if set. For DataDDS, 
+                // Here we will check if ECS_Metadata key if set. For DataDDS,
                 // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
                 // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
                 bool ecs_metadata = true;
-                if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-                    || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+                if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin"))
+                    || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll")))
                     ecs_metadata = false;
 
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
                 Ancillary::read_ancillary_das(*das, accessed);
-                
+
                 // Pass file pointer(h4file, eosfile) from DAS to DDS.
                 read_dds_use_eos2lib(*dds, accessed,sdfd,fileid,gridfd,swathfd,h4file,eosfile);
             }
@@ -635,12 +635,12 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
             throw Error(cannot_read_file,"HDF4 Hopen error");
         }
 
-#ifdef USE_HDFEOS2_LIB        
+#ifdef USE_HDFEOS2_LIB
 
 
-        // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-            
-        // Grid open 
+        // Obtain HDF-EOS2 file IDs  with the file open APIs.
+
+        // Grid open
         gridfd = GDopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
         if (-1 == gridfd) {
             SDend(sdfd);
@@ -648,7 +648,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
             throw Error(cannot_read_file,"HDF-EOS GDopen error");
         }
 
-        // Swath open 
+        // Swath open
         swathfd = SWopen(const_cast < char *>(accessed.c_str()), DFACC_READ);
         if (-1 == swathfd) {
             SDend(sdfd);
@@ -659,14 +659,14 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         hdds->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
 
-        // Here we will check if ECS_Metadata key if set. For DataDDS, 
+        // Here we will check if ECS_Metadata key if set. For DataDDS,
         // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
         // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
         bool ecs_metadata = true;
-        if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-            || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+        if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin"))
+            || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll")))
             ecs_metadata = false;
-               
+
 
         read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
         //read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,true);
@@ -701,13 +701,13 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
 // File IDs are closed by the derived class.
 #if 0
-        if(true == usecf) {     
+        if(true == usecf) {
 #ifdef USE_HDFEOS2_LIB
             GDclose(gridfd);
             SWclose(swathfd);
 
 #endif
-            SDend(sdfd);  
+            SDend(sdfd);
             Hclose(fileid);
         }
 #endif
@@ -764,7 +764,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     int32 swathfd = -1;
 
 
-    // Check if CF option is turned on. 
+    // Check if CF option is turned on.
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found )
     {
@@ -779,7 +779,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // causes the management of code structure messy, we first handle this with
     // another method.
     if(true == usecf) {
-       
+
         if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
             return hdf4_build_dmr_with_IDs(dhi);
 
@@ -805,12 +805,12 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
                 throw Error(cannot_read_file,"HDF4 Hopen error");
             }
 
-#ifdef USE_HDFEOS2_LIB        
+#ifdef USE_HDFEOS2_LIB
 
             HDFEOS2::File *eosfile = NULL;
 
-            // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-            // Grid open 
+            // Obtain HDF-EOS2 file IDs  with the file open APIs.
+            // Grid open
             gridfd = GDopen(const_cast < char *>(data_path.c_str()), DFACC_READ);
             if (-1 == gridfd) {
                 SDend(sdfd);
@@ -818,7 +818,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
                 throw Error(cannot_read_file,"HDF-EOS GDopen error");
             }
 
-            // Swath open 
+            // Swath open
             swathfd = SWopen(const_cast < char *>(data_path.c_str()), DFACC_READ);
             if (-1 == swathfd) {
                 SDend(sdfd);
@@ -827,18 +827,18 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
                 throw Error(cannot_read_file,"HDF-EOS SWopen error");
             }
 
- 
-            // Here we will check if ECS_Metadata key if set. For DAP4's DMR, 
+
+            // Here we will check if ECS_Metadata key if set. For DAP4's DMR,
             // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
             // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
-            // This is one difference between DAP2 and DAP4 mapping. Since 
+            // This is one difference between DAP2 and DAP4 mapping. Since
             // people can use BES key to turn on the ECS metadata, so this is okay.
             // KY 2014-10-23
             bool ecs_metadata = true;
-            if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-                || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+            if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin"))
+                || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll")))
                 ecs_metadata = false;
-               
+
             try {
 
                 read_das_use_eos2lib(das, data_path,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
@@ -979,11 +979,11 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     }
 
 
-#ifdef USE_HDFEOS2_LIB        
+#ifdef USE_HDFEOS2_LIB
 
     HDFEOS2::File *eosfile = NULL;
-    // Obtain HDF-EOS2 file IDs  with the file open APIs. 
-    // Grid open 
+    // Obtain HDF-EOS2 file IDs  with the file open APIs.
+    // Grid open
     gridfd = GDopen(const_cast < char *>(data_path.c_str()), DFACC_READ);
     if (-1 == gridfd) {
         SDend(sdfd);
@@ -991,7 +991,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
         throw Error(cannot_read_file,"HDF-EOS GDopen error");
     }
 
-    // Swath open 
+    // Swath open
     swathfd = SWopen(const_cast < char *>(data_path.c_str()), DFACC_READ);
     if (-1 == swathfd) {
         SDend(sdfd);
@@ -999,18 +999,18 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
         GDclose(gridfd);
         throw Error(cannot_read_file,"HDF-EOS SWopen error");
     }
- 
-    // Here we will check if ECS_Metadata key if set. For DAP4's DMR, 
+
+    // Here we will check if ECS_Metadata key if set. For DAP4's DMR,
     // if either H4.DisableECSMetaDataMin or H4.DisableECSMetaDataAll is set,
     // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
-    // This is one difference between DAP2 and DAP4 mapping. Since 
+    // This is one difference between DAP2 and DAP4 mapping. Since
     // people can use BES key to turn on the ECS metadata, so this is okay.
     // KY 2014-10-23
     bool ecs_metadata = true;
-    if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-       || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+    if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin"))
+       || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll")))
         ecs_metadata = false;
-               
+
     try {
 
         read_das_use_eos2lib(das, data_path,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
@@ -1051,13 +1051,13 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
 // File IDs are closed by the derived class.
 #if 0
-        if(true == usecf) {     
+        if(true == usecf) {
 #ifdef USE_HDFEOS2_LIB
             GDclose(gridfd);
             SWclose(swathfd);
 
 #endif
-            SDend(sdfd);  
+            SDend(sdfd);
             Hclose(fileid);
         }
 #endif
@@ -1107,8 +1107,12 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
 	map < string, string > attrs;
-	attrs["name"] = PACKAGE_NAME;
-	attrs["version"] = PACKAGE_VERSION;
+    attrs["name"] = MODULE_NAME ;
+    attrs["version"] = MODULE_VERSION ;
+#if 0
+    attrs["name"] = PACKAGE_NAME;
+    attrs["version"] = PACKAGE_VERSION;
+#endif
 	list < string > services;
 	BESServiceRegistry::TheRegistry()->services_handled(HDF4_NAME, services);
 	if (services.size() > 0) {
@@ -1127,7 +1131,10 @@ bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi) {
 	if (!info)
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
+#if 0
+    info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
+#endif
+    info->add_module(MODULE_NAME, MODULE_VERSION);
 
 	return true;
 }

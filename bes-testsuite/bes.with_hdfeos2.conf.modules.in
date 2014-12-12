@@ -1,0 +1,210 @@
+
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,h4
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/hdf4_handler
+
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.ServerPort=10002
+BES.ServerSecure=no
+BES.ServerSecurePort=10003
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.txt
+
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.txt
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+
+BES.CacheDir=/tmp
+BES.CachePrefix=bes_cache
+BES.CacheSize=500
+
+BES.Container.Persistence=strict
+
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+BES.ProcessManagerMethod=multiple
+
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+# HDF4 handler specific parameters
+# CacheDir: Cache directory used by the HDF4 data handler.
+# Suggestion: Consider making this '/tmp/bes'; see the comment at
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#          (true,yes|false,no, defaults to true)
+# Since most centers  would like to handle HDF4 data that follows CF now,
+# EnableCF is set to be true, KY 2012-6-5
+#
+#   If this key's value is false, the handler will behave same as the default 
+#  handler. The output will not follow basic CF conventions and most of NASA 
+# products cannot be visualized by netCDF visualization tools such as IDV and 
+# Panoply. The rest of keys below relies on this option and it must be set
+# to be "true" to have effects on the handler's output. Thus, this is the most 
+# important key to turn it on first.
+H4.EnableCF=true
+
+H4.EnablePassFileID=false
+
+
+# When turning on this key, the handler will handle AIRS level 3 version 6 products
+# and MOD08_M3-like products in a speedy way by taking advantage of the special data
+# structures in these two products. Using this key requires the use of HDF-EOS2 lib.
+# now although HDF-EOS2 lib. will not be called. By turning on this key, potentially
+# HDF-EOS2 files that provide dimension scales for all dimensions may also be handled
+# quickly. By default, this key should be set to true.
+H4.EnableSpecialEOS=true
+
+# DisableScaleOffsetComp: Disable Scale and offset computation  
+#
+# Some NASA HDF4(MODIS etc.) products don't follow the CF rule to pack the data.
+# To avoid the confusion for OPeNDAP's clients , the handler may adopt the following two approaches:
+
+# 1) Apply the scale and offset computation to the individual data point if the scale 
+#    and offset rule doesn't follow CF in the handler.
+#
+# 2) If possible, transform the scale and offset rule to CF rule.
+#
+# Since approach 1 may degrade the performance of fetching large size data by heavy computation,
+# we recommend approach 2, which is indicated by setting this key to be true.   
+# By default, this key should always be true.  
+H4.DisableScaleOffsetComp=true
+
+# By turning on this key, the handler will check if the datatype of scale_factor and offset is the same.
+# This is required by CF.
+# if they don't share the same datatype, the handler will make the data type of offset be the same as that of scale_factor.
+#Since we haven't found the data type inconsistencies of scale_factor and offset, in order not affect the 
+# performance, this key will be set to false by default. 
+H4.EnableCheckScaleOffsetType = false
+
+# Disable StructMetadata 
+H4.DisableStructMetaAttr=true
+
+# This key is for MODIS swath that uses the dimension map.
+# If this key is set to be true, the handler will search the directory where the data files reside and see
+# if corresponding MODIS geolocation files(MOD03 or MYD03) can be found, if yes, the handler will use 
+# the corresponding MODIS geolocation files for latitude and longitude.
+H4.EnableCheckMODISGeoFile=false
+
+#   If this key's value is false, additional Vdata such as "Level 1B Swath 
+#  Metadta" in LAADS MYD021KM product will not be processed and visible 
+#  in the DAS/DDS output. Those additional Vdatas are added directly using 
+#  HDF4 APIs and HDF-EOS2 APIs cannot access them.
+H4.EnableHybridVdata=true
+
+# Some CERES products(CER_AVG,CER_ES4,CER_SRB and CER_ZAVG, see description
+# in the HDFSP.h) have  many SDS fields and some Vdata fields. Correspondingly,
+# the DDS and DAS page may be very long. The performance of accessing such
+# products with visualization clients may be greatly affected. 
+# It may potentially  even choke netCDF java clients.
+# To avoid such cases, we will not map vdata to DAP in such products by default.
+# Users can turn on this key to check vdata information of some CERES products.
+# This key will not affect the access of other products.
+H4.EnableCERESVdata=false
+
+#   If this key's value is false, small Vdata datasets will be mapped to 
+# arrays in DDS output instead of attributes in DAS. 
+#   If this key's value is true, Vdata is mapped to attribute if there are less than 
+# or equal to 10 records.
+H4.EnableVdata_to_Attr=true
+
+#   If this key's value is false, the short dataset name becomes long name with
+# Vgroup prefixed and fullpath attribute will not be printed in DAS output.
+#   For example, the DAS output for Region_Number dataset
+#
+#      Region_Number {
+#          String coordinates "Colatitude Longitude";
+#          String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
+# mber";
+#     }
+#
+# becomes
+#    
+#     Monthly_Hourly_Averages_Time_And_Position_Region_Number {
+#          String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
+# ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
+#     }
+#
+# in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
+H4.EnableCERESMERRAShortName=true
+
+#   If this key's value is false, handler will check if there's any Vdata that 
+#  has the same name as SDS. We haven't found such case in NASA products so it's 
+# safe to disable this to improve performance.
+H4.DisableVdataNameclashingCheck=true
+
+#   If this key's value is true, handler will generate Vdata's attributes. By 
+#     default, it's turned off because most NASA hybrid products do not seem to store
+#  important information in Vdata attributes. If you serve pure HDF4 files, it's 
+#     recommended to turn this value to true so that users can see all data. This
+#  key will not affect the behavior of the handler triggered by the 
+#     H4.EnableVdata_to_Attr key in section 3.3 except the Vdata attributes of
+#  small Vdatas that are mapped to DAS instead of DDS. They will be also turned
+#     off from the DAS output.
+#  If Vdata doesn't have any attribute or field attribute, the description
+
+#         String hdf4_vd_desc "This is an HDF4 Vdata.";
+
+#  will not appear in the attribute for that Vdata although the key is true.
+#     The attribute container of the Vdata will always appear regardless of this key.
+H4.EnableVdataDescAttr=false
+
+H4.EnableEOSGeoCacheFile=false
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+#The size of the cache in megabytes, currently ~20GB cache for lat,lon
+HDF4.Cache.latlon.size=20000
+#
+##By turning off this key, DAS output will NOT include vgroup attributes. Since
+##we haven't added the mapping of vgroup attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 vgroup attribute output.
+## we provide this key for data centers that don't want to
+## generate vgroup attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on.
+H4.EnableVgroupAttr=true
+#
+##By turning off this key, DAS output will NOT include grid and swath object attributes. Since
+##we haven't added the mapping of grid and swath object attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 grid and swath attribute output.
+## we provide this key for data centers that don't want to
+## generate grid and swath attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on. This key is only active when configuring with the HDF-EOS2 library.
+## Note: swath and grid object attributes are not the same as the swath/grid field attributes. We have supported
+## the mapping of swath and grid field attributes since the beginning of CF option support.
+H4.EnableSwathGridAttr=true
+#
