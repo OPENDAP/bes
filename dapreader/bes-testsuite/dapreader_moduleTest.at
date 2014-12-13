@@ -35,5 +35,9 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 
 AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
 AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
-AT_BESCMD_RESPONSE_TEST([test.02.bescmd])
+
+# This test looks at the showVersion output of the BES. It's almost always
+# going to be broken. jhrg 12/2/14
+# AT_BESCMD_RESPONSE_TEST([test.02.bescmd])
+
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.03.bescmd])

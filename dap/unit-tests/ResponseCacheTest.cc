@@ -116,8 +116,12 @@ public:
 
     void tearDown() {
 		DBG(cerr << "tearDown() - BEGIN" << endl);
-
-		clean_cache(d_response_cache, "rc");
+		try {
+			clean_cache(d_response_cache, "rc");
+		}
+		catch (Error &e) {
+			CPPUNIT_FAIL(e.get_error_message());
+		}
 		delete test_05_dds;
 		DBG(cerr << "tearDown() - END" << endl);
     }

@@ -1,7 +1,7 @@
 
 # Build bes command library, part of the BES code.
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 

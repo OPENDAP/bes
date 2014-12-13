@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-AM_CPPFLAGS = -I$(top_srcdir)
+# AM_CPPFLAGS = -I$(top_srcdir)
 
 # AM_CPPFLAGS =
 AM_CXXFLAGS =
@@ -21,7 +21,7 @@ EXTRA_DIST = dap dapreader_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/packa
 
 DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in ../../config.status
+bes.conf: bes.conf.in $(top_srcdir)/config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
@@ -36,10 +36,10 @@ bes.conf: bes.conf.in ../../config.status
 
 AUTOM4TE = autom4te
  
-#TESTSUITE = $(srcdir)/dapreader_moduleTest
-#
-#check-local: atconfig atlocal $(TESTSUITE)
-#	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+TESTSUITE = $(srcdir)/dapreader_moduleTest
+
+check-local: atconfig atlocal $(TESTSUITE)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

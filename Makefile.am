@@ -15,12 +15,15 @@
 # sys     0m23.857s
 
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 
 SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP
 SUBDIRS += dap dapreader functions
+endif
+if DAP_MODULES
+SUBDIRS += modules
 endif
 
 bin_SCRIPTS = besd bes-config bes-config-pkgconfig
