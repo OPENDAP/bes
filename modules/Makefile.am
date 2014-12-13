@@ -4,12 +4,16 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS = csv_handler dap-server fileout_json freeform_handler xml_data_handler \
-gateway_module
+SUBDIRS = csv_handler dap-server freeform_handler
 
 if BUILD_NETCDF
 SUBDIRS += netcdf_handler fileout_netcdf
 endif
+
+# Why are these here? Because they have tests that depend on
+# netcdf.
+# FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
+SUBDIRS += fileout_json gateway_module
 
 if BUILD_GDAL
 SUBDIRS += fileout_gdal gdal_handler
@@ -26,6 +30,9 @@ endif
 if BUILD_HDF5
 SUBDIRS += hdf5_handler
 endif
+
+# Same deal as above, but this uses HDF4/5 too... jhrg 12/12/14
+SUBDIRS += xml_data_handler
 
 if BUILD_NCML
 SUBDIRS += ncml_module

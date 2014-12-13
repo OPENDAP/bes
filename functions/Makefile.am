@@ -10,7 +10,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news
 
-SUBDIRS =  . unit-tests
+SUBDIRS = . unit-tests
 # I've removed the tests because they break distcheck and fresh
 # builds. The best fix is to move this out of the BES OR to use
 # dapreader and *.dods files instead of the netcdf_handler (or both
@@ -18,11 +18,10 @@ SUBDIRS =  . unit-tests
 #
 # tests
 
-DIST_SUBDIRS = unit-tests tests
+DIST_SUBDIRS = unit-tests tests swath2grid
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 
-DIST_SUBDIRS += swath2grid 
 endif
 
 lib_besdir=$(libdir)/bes

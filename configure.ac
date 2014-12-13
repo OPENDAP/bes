@@ -2,6 +2,7 @@ dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.68)
+AUTOMAKE=./local_automake.sh
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -26,11 +27,11 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE
 
-AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
-AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [.])
-AC_CONFIG_TESTDIR(functions/tests, [.])
+AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
+AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [standalone])
+AC_CONFIG_TESTDIR(functions/tests, [standalone])
 
-dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [.])
+dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [standalone])
 
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
@@ -322,7 +323,7 @@ BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
 AC_SUBST(BES_XML_CMD_LIB)
 BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
-BES_HANDLER_LIBS="$LIBS $openssl_libs"
+BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 
 dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
@@ -332,6 +333,7 @@ dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/1
 AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
 
+dnl This is used by the web form code. jhrg 12/11/14
 dods_HTML_Filter=no
 if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
    dods_HTML_Filter=yes
@@ -706,6 +708,12 @@ AM_CONDITIONAL([BUILD_NCML],[false])
 AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
+
+
+dnl 's/ \(.*\) \/ \(.[^\/]*\) \/ \.\. / \1/g'
+canonical_abs_top_srcdir=`echo ${ac_abs_top_srcdir} | sed 's@\(.*\)/.[^/]*/\.\.@\1@g'`
+echo "Setting canonical_abs_top_srcdir to $canonical_abs_top_srcdir (${ac_abs_top_srcdir})"
+
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h

@@ -16,7 +16,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = unit-tests testsuite
+SUBDIRS = . unit-tests testsuite
 DIST_SUBDIRS = unit-tests testsuite
 
 bin_PROGRAMS = bescmdln

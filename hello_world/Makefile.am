@@ -13,7 +13,7 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libsample_module.la
 dist_bin_SCRIPTS = bes-sample-data.sh
 
-SUBDIRS = bes-testsuite
+SUBDIRS = . bes-testsuite
 
 Sample_SRCS:=
 
