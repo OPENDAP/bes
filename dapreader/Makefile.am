@@ -24,11 +24,11 @@ libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
 libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS)
 
-#		\
-#	$(abs_top_builddir)/dispatch/libbes_dispatch.la	\
-#	$(abs_top_builddir)/xmlcommand/libbes_xml_command.la	\
-#	$(abs_top_builddir)/ppt/libbes_ppt.la			\
-#	$(OPENSSL_LIBS)
+# \
+#$(abs_top_builddir)/dispatch/libbes_dispatch.la	\
+#$(abs_top_builddir)/xmlcommand/libbes_xml_command.la	\
+#$(abs_top_builddir)/ppt/libbes_ppt.la			\
+#$(OPENSSL_LIBS)
 
 EXTRA_PROGRAMS = 
 

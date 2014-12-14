@@ -30,6 +30,17 @@
 
 AC_DEFUN([AC_CHECK_LIBDAP],
 [
+  AC_ARG_WITH([libdap],
+            [AS_HELP_STRING([--with-libdap=ARG],[libdap prefix directory])],
+            [LIBDAP_PATH=$withval; libdap_user_arg=yes], 
+            [])
+            
+  # Test this at the end of the macro and reset PATH if needed
+  save_PATH=
+    
+  AS_IF([test "x$libdap_user_arg" = "xyes"],
+  	[save_PATH=$PATH; export PATH=$LIBDAP_PATH/bin:$PATH])
+  	
   dap_min_version=m4_if([$1], [], [3.5.0], [$1])
   dap_no=
   dap_pkgconfig_libdap=yes 
@@ -124,6 +135,9 @@ AC_DEFUN([AC_CHECK_LIBDAP],
   AC_SUBST([DAP_STATIC_LIBS])
   AC_SUBST([DAP_CLIENT_STATIC_LIBS])
   AC_SUBST([DAP_SERVER_STATIC_LIBS])
+  
+  AS_IF([test -n "$save_PATH"], [export PATH=$save_PATH])
+  
 ]) 
 
 # AC_CHECK_DODS([ ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])

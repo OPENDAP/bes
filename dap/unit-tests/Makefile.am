@@ -27,7 +27,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-DIRS_EXTRA = response_cache
+DIRS_EXTRA = response_cache input-files
 
 EXTRA_DIST = $(DIRS_EXTRA) testFile.cc testFile.h test_config.h.in
 
