@@ -1,69 +1,11 @@
+
+README for the OpenDAP BES
+
 Updated for version 3.13.2
 
-Updates cache code and a fix for the BES key for functions.
-
-Updated for version 3.13.1
-
-Fixed a bug where too many accesses to cached files would cause the
-BES to 'hang'. The cached files were the result of uncompressing 
-gziped files. This is the only change in this bug-fix release and the
-ABI of the BES has not changed, so there's no need to update the 
-handlers.
-
-Updated for version 3.13.0
-
-Important bug fixes - including a problem where the running server
-could create zombie processes. See the NEWS file for the ticket
-numbers, etc.
-
-Long options supported for the listener and main daemon.
-
-Updated for version 3.12.0
-
-From the NEWS file:
-There are several changes to the BES for this release.
-
-The DAP operations have been moved to their own module, reducing the 
-amount of stuff hanging around in dispatch. Along with this change, new
-functionality for server-side functions has been added to the BES's
-DAP module. This supports, in conjunction with changes in the OLFS,
-the function syntax developed by COLA and used by the FTDS server. The
-BES can now run server functions and cache the results, providing a
-way for clients built using the netCDF library client toolkits to
-'open' such a URL and then make repeated subsetting requests against
-the result of that function.
-
-Note that libdap now supports new server function special forms that
-provide a way to pass large arrays into the server as constants in the
-constriant.
-
-Also note that we've redone how server functions are defined, making
-it simpler to write them correctly. The default set of functions is
-now bundled in a separate module (see the 'functions' directory).
-
-Updated for version 3.11.0
-
-Added a new method to the BESDDSResponse and BESDataDDSResponse classes
-so that the contained DDS/DataDDS object can be set/changed by a handler.
-This is used by the GDAL handler so that it can use a version of DDS that
-it has specialized.
-
-Updated for version 3.10.0
-
-This version of the BES supports the Hyrax Admin Interface features
-through a series of new BES-level commands.
-
-The Response Size Limit feature is now supported.
-
-Updated for version 3.9.1
-
-This version of the BES supports the new (experiemental) Keywords
-feature of DAP 3.3. It also contains a number of bug and build fixes.
-The default locataion for log files has moved to $prefix/var/bes.log.
-
-Updated for version 3.9.0 of the OPeNDAP BES.
-
-See the INSTALL file for build instructions.
+See the INSTALL file for build instructions, including special
+instructions for building from a (git) cloned repo. This code can
+build one of two disticnt ways and that requires a tiny bit setup.
 
 For more information on Hyrax and the BES, please visit our documentation
 wiki at docs.opendap.org. This will include the latest install and build
