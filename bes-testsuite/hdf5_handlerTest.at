@@ -25,6 +25,14 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], 
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
+m4_define([_AT_BESCMD_DAP4DATA_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
 ])
@@ -32,6 +40,11 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
 ])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
+])
+
 
 # Default handler test.
 m4_define([_AT_BESCMD_TEST_DEFAULT],   
@@ -48,12 +61,23 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - ||
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
+m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
 m4_define([AT_BESCMD_RESPONSE_TEST_DEFAULT],
 [_AT_BESCMD_TEST_DEFAULT([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
 ])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT],
 [_AT_BESCMD_BINARYDATA_TEST_DEFAULT([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
+])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT],
+[_AT_BESCMD_DAP4DATA_TEST_DEFAULT([$abs_srcdir/h5/$1], [$abs_srcdir/h5/$1.baseline])
 ])
 
 # Test generic cases.
@@ -305,3 +329,32 @@ AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
+
+# Test default cases for DAP4.
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.dmr.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_group.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_group.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_objref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_objref.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_regref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_regref.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int.h5.dap.bescmd])
+
+# Test HDF-EOS5 cases for DAP4.
+
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
+# the expression constraint in DAP4 causes memory leaking, so turning off the tests right now.
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])

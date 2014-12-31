@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.h5">
+    <Dimension name="lat" size="4"/>
+    <Dimension name="lon" size="8"/>
+    <Float32 name="temperature">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>5bdeef6d</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_GeoGrid" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_GeoGrid_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Float32 temperature[lat = 4][lon = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
+
