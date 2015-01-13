@@ -21,7 +21,7 @@ after the front end asked it to. The latter problem could result in
 shutdown. 
 
 Also in this update: Updates to the copyright headers and a patch from
-Ezequiel Lara Gómez for long options.
+Ezequiel Lara Gomez for long options.
 
 News for version 3.12.0
 

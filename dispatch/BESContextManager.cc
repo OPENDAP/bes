@@ -46,6 +46,17 @@ BESContextManager::set_context( const string &name, const string &value )
     _context_list[name] = value ;
 }
 
+/** @brief set context in the BES
+ *
+ * @param name name of the context
+ * @param value value the context is to take
+ */
+void
+BESContextManager::unset_context( const string &name )
+{
+    _context_list.erase(name);
+}
+
 /** @brief retrieve the value of the specified context from the BES
  *
  * Finds the specified context and returns its value

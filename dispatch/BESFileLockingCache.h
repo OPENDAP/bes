@@ -103,6 +103,7 @@ private:
     typedef std::multimap<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
+    // Removed; see comment in .cc file. void unlock_and_close(int fd);
 
 protected:
 
@@ -120,6 +121,8 @@ public:
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const string &target);
     // Removed. See comments in the .cc file virtual void unlock_and_close(int fd);
+
+    virtual bool getExclusiveLock(string file_name, int &ref_fd);
 
     virtual void lock_cache_write();
     virtual void lock_cache_read();

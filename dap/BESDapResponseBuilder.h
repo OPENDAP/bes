@@ -47,15 +47,35 @@ public:
 	friend class ResponseBuilderTest;
 
 protected:
-	std::string d_dataset;  		/// Name of the dataset/database
-	std::string d_ce;  		    /// Constraint expression
-	std::string d_btp_func_ce;   /// The BTP functions, extracted from the CE
-	int d_timeout;  		/// Response timeout after N seconds
+	std::string d_dataset;          /// Name of the dataset/database
+	std::string d_dap2ce;               /// DAP2 Constraint expression
+	std::string d_dap4ce;           /// DAP4 Constraint expression
+	std::string d_dap4function;     /// DAP4 Server Side Function expression
+	std::string d_btp_func_ce;      /// The BTP functions, extracted from the CE
+	int d_timeout;                  /// Response timeout after N seconds
 	std::string d_default_protocol;	/// Version std::string for the library's default protocol version
+
+	/**
+	 * Time, if any, that the client will wait for an async response.
+	 * An empty string (length=0) means the client didn't supply an async parameter
+	 */
+	std::string d_async_accepted;
+
+	/**
+	 * If set (i.e. non-null) then the client has asked for the result to be stored
+	 * for later retrieval. The value is the service URL used to construct
+	 * the stored result access URL to be returned to the client.
+	 * An empty string (length=0) means the client didn't supply a store_result async parameter
+	 */
+	std::string d_store_result;
+
 
 	BESDapResponseCache *d_response_cache;
 
 	void initialize();
+	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
+
+	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
 
 public:
 
@@ -71,6 +91,18 @@ public:
 
 	virtual std::string get_ce() const;
 	virtual void set_ce(std::string _ce);
+
+	virtual std::string get_dap4ce() const;
+	virtual void set_dap4ce(std::string _ce);
+
+	virtual std::string get_dap4function() const;
+	virtual void set_dap4function(std::string _func);
+
+	virtual std::string get_store_result() const;
+	virtual void set_store_result(std::string _sr);
+
+	virtual std::string get_async_accepted() const;
+	virtual void set_async_accepted(std::string _aa);
 
 	virtual std::string get_btp_func_ce() const
 	{
@@ -88,6 +120,7 @@ public:
 	int get_timeout() const;
 
 	virtual void establish_timeout(std::ostream &stream) const;
+	virtual void remove_timeout() const;
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
@@ -100,27 +133,23 @@ public:
 	virtual void send_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
 
-	virtual void dataset_constraint(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void serialize_dap2_data_dds(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool ce_eval = true);
-	virtual void send_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
+	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
 	virtual void send_ddx(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
 
-	virtual void dataset_constraint_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
+	virtual void serialize_dap2_data_ddx(std::ostream &out, libdap::DDS & dds, libdap::ConstraintEvaluator & eval,
 			const std::string &boundary, const std::string &start, bool ce_eval = true);
-#if 0
-	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, libdap::ConstraintEvaluator &eval, bool constrained =
-			false, bool with_mime_headers = true);
 
-	virtual void send_dap4_data(std::ostream &data_stream, libdap::DMR & dmr, libdap::ConstraintEvaluator & eval,
-			bool with_mime_headers);
-#endif
-	// TODO
-	// Is this used by the code that caches function results? If not, remove.
-	virtual void send_data_ddx(std::ostream &data_stream, libdap::DDS &dds, libdap::ConstraintEvaluator &eval,
-			const std::string &start, const std::string &boundary, bool with_mime_headers = true);
+	virtual void send_dmr(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
+
+	virtual void send_dap4_data(std::ostream &out, libdap::DMR & dmr, bool with_mime_headers = true);
+
+	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
+	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 };
 
 #endif // _response_builder_h

@@ -44,7 +44,5 @@ AC_CHECK_BES([3.8.3],
 [ AC_MSG_ERROR([Could not find bes library and headers])
 ])
 
-OPENDAP_DEBUG_OPTION
-
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

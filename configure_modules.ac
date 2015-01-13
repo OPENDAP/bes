@@ -2,7 +2,6 @@ dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.68)
-AUTOMAKE=./local_automake.sh
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -28,7 +27,7 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
-AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [standalone])
+AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
 
 dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [standalone])
@@ -751,8 +750,8 @@ AC_CONFIG_FILES([Makefile
 		 bes_xml_command.pc
 
 		 dapreader/Makefile
-		 dapreader/bes-testsuite/Makefile
-		 dapreader/bes-testsuite/atlocal
+		 dapreader/tests/Makefile
+		 dapreader/tests/atlocal
 
 		 dap/Makefile
 		 dap/unit-tests/Makefile
@@ -793,6 +792,7 @@ AM_COND_IF([DAP_MODULES],
 
     modules/dap-server/Makefile
     modules/dap-server/asciival/Makefile
+    modules/dap-server/asciival/tests/Makefile
     modules/dap-server/asciival/unit-tests/Makefile
     modules/dap-server/asciival/unit-tests/test_config.h
     modules/dap-server/www-interface/Makefile

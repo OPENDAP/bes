@@ -24,8 +24,6 @@
 
 #include "config.h"
 
-#include <dirent.h>
-
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -44,7 +42,8 @@
 
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
-#include "testFile.h"
+
+#include "test_utils.h"
 #include "test_config.h"
 
 using namespace CppUnit;
@@ -54,6 +53,8 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static bool clean = true;
+static const string c_cache_name = "/response_cache";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -64,7 +65,6 @@ class ResponseCacheTest: public TestFixture {
 private:
 	TestTypeFactory ttf;
 	DDS *test_05_dds;
-	//DDS test_06_dds;
 	DDXParser dp;
 	ConstraintEvaluator eval;
 	BESDapResponseBuilder rb;
@@ -73,33 +73,15 @@ private:
     BESDapResponseCache *cache;
 
 public:
-    ResponseCacheTest() : test_05_dds(0), /*test_06_dds(&ttf), */dp(&ttf),
-		d_response_cache(string(TEST_SRC_DIR) + "/response_cache"), cache(0) {
+    ResponseCacheTest() : test_05_dds(0), dp(&ttf),
+		d_response_cache(string(TEST_SRC_DIR) + c_cache_name), cache(0) {
     }
 
     ~ResponseCacheTest() {
     }
 
-    void clean_cache(const string &directory, const string &prefix) {
-        DIR *dip = opendir(directory.c_str());
-        if (!dip)
-            throw InternalErr(__FILE__, __LINE__, "Unable to open cache directory " + directory);
-
-        struct dirent *dit;
-        // go through the cache directory and collect all of the files that
-        // start with the matching prefix
-        while ((dit = readdir(dip)) != NULL) {
-            string dirEntry = dit->d_name;
-            if (dirEntry.compare(0, prefix.length(), prefix) == 0) {
-            	unlink(string(directory + "/" + dit->d_name).c_str());
-            }
-        }
-
-        closedir(dip);
-    }
-
     void setUp() {
-		DBG(cerr << "setUp() - BEGIN" << endl);
+    	DBG(cerr << "setUp() - BEGIN" << endl);
 
     	string cid;
     	test_05_dds = new DDS(&ttf);
@@ -111,20 +93,21 @@ public:
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
     	DBG(cerr << "DDS Name: " << test_05_dds->get_dataset_name() << endl);
     	DBG(cerr << "Intern CID: " << cid << endl);
-		DBG(cerr << "setUp() - END" << endl);
+
+    	clean_cache_dir(d_response_cache);
+
+    	DBG(cerr << "setUp() - END" << endl);
     }
 
-    void tearDown() {
+	void tearDown() {
 		DBG(cerr << "tearDown() - BEGIN" << endl);
-		try {
-			clean_cache(d_response_cache, "rc");
-		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
-		}
+
 		delete test_05_dds;
+
+		clean_cache_dir(d_response_cache);
+
 		DBG(cerr << "tearDown() - END" << endl);
-    }
+	}
 
     bool re_match(Regex &r, const string &s) {
         DBG(cerr << "s.length(): " << s.length() << endl);
@@ -243,10 +226,10 @@ public:
 			CPPUNIT_ASSERT(token == d_response_cache + "/rc#SimpleTypes#");
 			delete cache_dds; cache_dds = 0;
 
-			// DDS *get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
+			// DDS *get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &dataset)
 			// Force read from the cache file
 			cache_dds = cache->get_cached_data_ddx(token, &ttf, "test.05");
-			// The code cannot unlock the file because get_cached_data_ddx()
+			// The code cannot unlock the file because get_cached_dap2_data_ddx()
 			// does not lock the cached item.
 			//cache->unlock_and_close(token);
 
@@ -414,12 +397,15 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dk");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
+            break;
+        case 'k':   // -k turns off cleaning the response_cache dir
+            clean = false;
             break;
         default:
             break;

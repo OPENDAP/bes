@@ -27,6 +27,9 @@
 #define _bes_store_result_cache_h
 
 #include <string>
+
+#include <DapXmlNamespaces.h>
+#include <DMR.h>
 #include "BESFileLockingCache.h"
 
 class BESDapResponseBuilder;
@@ -51,48 +54,58 @@ class BESStoredDapResultCache: public BESFileLockingCache
 private:
 
     static BESStoredDapResultCache * d_instance;
+    static void delete_instance();
+
+    string d_storedResultsSubdir;
+    string d_dataRootDir;
+    string d_resultFilePrefix;
+    unsigned long d_maxCacheSize;
 
     /** Initialize the cache using the default values for the cache. */
     BESStoredDapResultCache();
-
     BESStoredDapResultCache(const BESStoredDapResultCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
-    void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+    bool read_dap2_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
+    bool read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
 
-    friend class StoredResultTest;
+    friend class StoredDap2ResultTest;
+    friend class StoredDap4ResultTest;
+    friend class ResponseBuilderTest;
 
-    static void delete_instance();
+    string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 
-    string build_stored_result_file_name(const string &dataset, const string &ce);
+    string getBesDataRootDirFromConfig();
+    string getSubDirFromConfig();
+    string getResultPrefixFromConfig();
+    unsigned long getCacheSizeFromConfig();
 
 protected:
 
-    BESStoredDapResultCache(const string &cache_dir, const string &prefix, unsigned long long size);
-
+    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
 
 public:
 	static const string SUBDIR_KEY;
 	static const string PREFIX_KEY;
 	static const string SIZE_KEY;
 
-    static BESStoredDapResultCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static BESStoredDapResultCache *get_instance();
+    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+
+    libdap::DDS *get_cached_dap2_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+    libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename);
 
     virtual ~BESStoredDapResultCache() {}
 
+    // Store the passed DDS to disk as a serialized DAP2 object.
+    virtual string store_dap2_result(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
+    		libdap::ConstraintEvaluator *eval);
 
-    // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
-    virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
-    		libdap::ConstraintEvaluator *eval, std::string &cache_token);
+    // Store the passed DMR to disk as a serialized DAP4 object.
+    virtual string store_dap4_result(libdap::DMR &dmr, const string &constraint, BESDapResponseBuilder *rb);
 
     // virtual void unlock_and_close(const std::string &cache_token);
-
-    static string getStoredResultsDirFromConfig();
-    static string getSubDirFromConfig();
-    static string getResultPrefixFromConfig();
-    static unsigned long getCacheSizeFromConfig();
 
     // Overrides parent
     virtual string get_cache_file_name(const string &src, bool mangle = false);

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Dataset name="test_array_5" dapVersion="4.0" dmrVersion="1.0" xml:base="file:dap4/test_array_5.xml"
+  xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+  xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
+  
+  <Dimension name="row" size="3"/>
+  <Dimension name="col" size="4"/>
+  
+  <dap:Int8 name="a">
+    <Dim name="row"/>
+    <Dim name="col"/>
+  </dap:Int8>
+  
+  <dap:UInt8 name="b">
+    <Dim name="row"/>
+    <Dim name="col"/>
+  </dap:UInt8>
+  
+  <dap:Int64 name="c">
+    <Dim name="row"/>
+    <Dim name="col"/>
+  </dap:Int64>
+  
+  <dap:UInt64 name="d">
+    <Dim name="row"/>
+    <Dim name="col"/>
+  </dap:UInt64>
+
+
+</Dataset>

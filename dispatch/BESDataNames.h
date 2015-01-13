@@ -42,6 +42,14 @@
 
 #define POST_CONSTRAINT "post_constraint"
 
+
+#define DAP4_FUNCTION "dap4Function"
+#define DAP4_CONSTRAINT "dap4Constraint"
+
+#define ASYNC "async"
+#define STORE_RESULT "store_result"
+
+
 #define RETURN_CMD "return_command"
 
 #define USER_ADDRESS "user_address"

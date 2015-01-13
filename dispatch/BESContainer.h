@@ -63,6 +63,8 @@ private:
     string _real_name;
     string _container_type;
     string _constraint;
+    string _dap4_constraint;
+    string _dap4_function;
     string _attributes;
 protected:
     BESContainer()
@@ -102,6 +104,24 @@ public:
     void set_constraint(const string &s)
     {
         _constraint = s;
+    }
+
+    /** @brief set the constraint for this container
+     *
+     * @param s constraint
+     */
+    void set_dap4_constraint(const string &s)
+    {
+        _dap4_constraint = s;
+    }
+
+    /** @brief set the constraint for this container
+     *
+     * @param s constraint
+     */
+    void set_dap4_function(const string &s)
+    {
+        _dap4_function = s;
     }
 
     /** @brief set the real name for this container, such as a file name
@@ -150,6 +170,24 @@ public:
     string get_constraint() const
     {
         return _constraint;
+    }
+
+    /** @brief retrieve the constraint expression for this container
+     *
+     * @return constraint expression for this execution for the symbolic name
+     */
+    string get_dap4_constraint() const
+    {
+        return _dap4_constraint;
+    }
+
+    /** @brief retrieve the constraint expression for this container
+     *
+     * @return constraint expression for this execution for the symbolic name
+     */
+    string get_dap4_function() const
+    {
+        return _dap4_function;
     }
 
     /** @brief retrieve the symbolic name for this container

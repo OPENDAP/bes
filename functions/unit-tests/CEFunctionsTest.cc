@@ -43,9 +43,12 @@
 
 #include <util.h>
 #include <debug.h>
+#include "dispatch/BESDebug.h"
 
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
+#include "BindNameFunction.h"
+#include "MakeArrayFunction.h"
 
 //#include "ce_functions.h"
 #include "test_config.h"
@@ -87,14 +90,19 @@ public:
     void setUp()
     {
         try {
+    		DBG(BESDebug::SetUp("cerr,all"));
+        	DBG(cerr << "setup() - BESDEBUG Enabled " << endl);
+
             dds = new DDS(&btf);
-	    string dds_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DDS ;
+            string dds_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DDS ;
             dds->parse(dds_file);
             DAS das;
-	    string das_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DAS ;
+            string das_file = (string)TEST_SRC_DIR + "/" + TWO_GRID_DAS ;
             das.parse(das_file);
             dds->transfer_attributes(&das);
             DBG(dds->print_xml(stderr, false, "noBlob"));
+
+
             // Load values into the grid variables
             Grid & a = dynamic_cast < Grid & >(*dds->var("a"));
             Array & m1 = dynamic_cast < Array & >(**a.map_begin());
@@ -151,6 +159,12 @@ public:
     CPPUNIT_TEST(linear_scale_grid_attributes_test);
     CPPUNIT_TEST(linear_scale_grid_attributes_test2);
     CPPUNIT_TEST(linear_scale_scalar_test);
+
+    CPPUNIT_TEST(bind_name_test);
+    CPPUNIT_TEST(make_array_test);
+    CPPUNIT_TEST(make_array_test_bad_args);
+
+
 #if 0
     // Not used and defined to throw by default. 2/23/11 jhrg
     CPPUNIT_TEST(function_dap_1_test);
@@ -401,7 +415,7 @@ public:
     void linear_scale_args_test() {
         try {
             BaseType *btp = 0;
-            function_linear_scale(0, 0, *dds, &btp);
+            function_dap2_linear_scale(0, 0, *dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
@@ -421,7 +435,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_array_c
                            && scaled->var()->type() == dods_float64_c);
             double *values = extract_double_array(dynamic_cast<Array*>(scaled));
@@ -446,7 +460,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -468,7 +482,7 @@ public:
             BaseType *argv[1];
             argv[0] = g;
             BaseType *scaled = 0;
-            function_linear_scale(1, argv, *dds, &scaled);
+            function_dap2_linear_scale(1, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_grid_c);
             Grid *g_s = dynamic_cast<Grid*>(scaled);
             CPPUNIT_ASSERT(g_s->get_array()->var()->type() == dods_float64_c);
@@ -491,7 +505,7 @@ public:
             BaseType *argv[1];
             argv[0] = g;
             BaseType *btp = 0;
-            function_linear_scale(1, argv, *dds, &btp);
+            function_dap2_linear_scale(1, argv, *dds, &btp);
             CPPUNIT_FAIL("Should not get here; no params passed and no attributes set for grid 'b'");
         }
         catch (Error &e) {
@@ -512,7 +526,7 @@ public:
             argv[2] = new Float64("");
             dynamic_cast<Float64*>(argv[2])->set_value(10);//b
             BaseType *scaled = 0;
-            function_linear_scale(3, argv, *dds, &scaled);
+            function_dap2_linear_scale(3, argv, *dds, &scaled);
             CPPUNIT_ASSERT(scaled->type() == dods_float64_c);
 
             CPPUNIT_ASSERT(dynamic_cast<Float64*>(scaled)->value() == 10.1);
@@ -521,6 +535,192 @@ public:
             DBG(cerr << e.get_error_message() << endl);
             CPPUNIT_ASSERT(!"Error in linear_scale_scalar_test()");
         }
+    }
+    void bind_name_test() {
+        DBG(cerr << "bind_name_test() - BEGIN" << endl);
+
+        try {
+
+        	string new_name = "new_name_for_you_buddy";
+            BaseType  *sourceVar  = dds->var("a");
+            DBG(cerr << "bind_name_test() - Source variable: "<< sourceVar->type_name()  << " " << sourceVar->name()<< endl);
+            BaseType *argv[2];
+
+            Str *name = new Str("");
+            name->set_value(new_name);
+            argv[0] = name;
+
+            argv[1] = sourceVar;
+            BaseType *result=0;
+
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap2()" << endl);
+
+            function_bind_name_dap2(2, argv, *dds, &result);
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap2() returned "<< result->type_name()  << " " << result->name()<< endl);
+            CPPUNIT_ASSERT(result->name() == new_name);
+
+            delete name;
+
+
+            Float64 myVar("myVar");
+            myVar.set_value((dods_float64) 1.1);
+            myVar.set_read_p(true);
+            myVar.set_send_p(true);
+
+            DBG(cerr << "bind_name_test() - function_bind_name_dap2() source variable: "<< myVar.type_name()  << " " << myVar.name()<< endl);
+
+            new_name = "new_name_for_myVar";
+            name = new Str("");
+            name->set_value(new_name);
+            argv[0] = name;
+
+            argv[1] = &myVar;
+
+
+            DBG(cerr << "bind_name_test() - Calling function_bind_name_dap4()" << endl);
+            BaseType *result2 = 0;
+
+            function_bind_name_dap2(2, argv, *dds, &result2);
+            DBG(cerr << "bind_name_test() - function_bind_name_dap4() returned "<< result2->type_name()  << " " << result2->name()<< endl);
+            CPPUNIT_ASSERT(result2->name() == new_name);
+
+            delete name;
+
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in bind_name_test()");
+        }
+        DBG(cerr << "bind_name_test() - END" << endl);
+    }
+
+    void make_array_test() {
+        DBG(cerr << "make_array_test() - BEGIN" << endl);
+
+        try {
+
+        	int dims[3] = {5,2,3};
+            string shape = "[5][2][3]";
+
+            BaseType *argv[32]; // two arguments plus all the values.
+            int argc = 32;
+
+        	Str *type_name = new Str("type_name");
+        	type_name->set_value("Float64");
+        	argv[0] = type_name;
+
+        	Str *shape_str = new Str("shape");
+        	shape_str->set_value(shape);
+        	argv[1] = shape_str;
+
+        	Float64 *array_value;
+            for(int i=2; i<argc ;i++){
+            	float value = cos(0.1*i);
+            	array_value = new Float64("array["+long_to_string(i)+"]");
+            	array_value->set_value(value);
+
+            	argv[i] = array_value;
+            }
+
+            DBG(cerr << "make_array_test() - Calling function_make_dap4_array()" << endl);
+
+            BaseType *result=0;
+            function_make_dap2_array(argc, argv, *dds, &result);
+
+            CPPUNIT_ASSERT(result!=0);
+
+
+            DBG(cerr << "make_array_test() - function_make_dap4_array() returned an "<< result->type_name() << endl);
+
+            CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+            Array *resultArray = dynamic_cast<Array*>(result);
+            DBG(cerr << "make_array_test() - resultArray has "+
+            		long_to_string(resultArray->dimensions(true))+
+            		" dimensions " << endl);
+
+            CPPUNIT_ASSERT(resultArray->dimensions(true) == 3);
+
+            Array::Dim_iter p = resultArray->dim_begin();
+            int i = 0;
+            while ( p != resultArray->dim_end() ) {
+                CPPUNIT_ASSERT(resultArray->dimension_size(p, true) == dims[i]);
+                DBG(cerr << "make_array_test() - dimension["<< long_to_string(i) << "]="<< long_to_string(dims[i]) << endl);
+                ++p;
+                i++;
+            }
+
+            for(int i=0; i<argc ;i++){
+            	delete argv[i];
+            }
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in make_array_test()");
+        }
+        DBG(cerr << "make_array_test() - END" << endl);
+    }
+
+
+    void make_array_test_bad_args() {
+        DBG(cerr << "make_array_test_bad_args() - BEGIN" << endl);
+
+        try {
+
+            string shape = "[5]";
+
+            BaseType *argv[7]; // two arguments plus all the values.
+            int argc = 7;
+
+        	Str *type_name = new Str("type_name");
+        	type_name->set_value("Float64");
+        	argv[0] = type_name;
+
+        	Str *shape_str = new Str("shape");
+        	shape_str->set_value(shape);
+        	argv[1] = shape_str;
+
+            Str *svalue;
+            Float64 *fvalue;
+            for(int i=2; i<argc ;i++){
+            	float value = cos(0.1*i);
+            	if(i==3){
+            		svalue = new Str("array["+long_to_string(i)+"]");
+            		svalue->set_value(double_to_string(value));
+                	argv[i] = svalue;
+            	}
+            	else {
+            		fvalue = new Float64("array["+long_to_string(i)+"]");
+            		fvalue->set_value(value);
+                	argv[i] = fvalue;
+            	}
+            }
+
+    		try {
+    			DBG(cerr << "make_array_test_bad_params() - Calling function_make_dap2_array() with incorrectly typed parameters" << endl);
+                BaseType *result=0;
+                function_make_dap2_array(argc, argv, *dds, &result);
+                CPPUNIT_ASSERT(!result);
+    		}
+            catch (Error &e) {
+                DBG(cerr << "make_array_test_bad_params() - Caught Expected Error. Message: " << e.get_error_message() << endl);
+                CPPUNIT_ASSERT("Expected Error in make_array_test_bad_params()");
+            }
+
+            for(int i=0; i<argc ;i++){
+            	delete argv[i];
+            }
+
+        }
+        catch (Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(!"Error in make_array_test_bad_params()");
+        }
+        DBG(cerr << "make_array_test_bad_params() - END" << endl);
     }
 
 #if 0

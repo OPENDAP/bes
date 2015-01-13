@@ -39,51 +39,61 @@
 #include "BESDataHandlerInterface.h"
 
 #if 0
-using namespace libdap ;
+using namespace libdap;
 #endif
 
 /** @brief Represents an OPeNDAP DAP response object within the BES
  */
 class BESDapResponse: public BESResponseObject {
-    private:
+private:
 #if 0
-        DAS * _das;
+	DAS * _das;
 #endif
-        string d_dap_client_protocol;
-        bool d_explicit_containers;
+	string d_dap_client_protocol;
+	bool d_explicit_containers;
 
-        string d_request_xml_base;
+	string d_request_xml_base;
 
-    protected:
-        bool is_dap2();
-        void read_contexts();
-    public:
-        BESDapResponse() :
-            BESResponseObject(), d_dap_client_protocol("2.0"),
-            d_explicit_containers(true), d_request_xml_base("")
-        {
-            read_contexts();
-        }
+protected:
+	bool is_dap2();
+	void read_contexts();
 
-        virtual ~BESDapResponse()
-        {
-        }
+public:
+	BESDapResponse() :
+			BESResponseObject(), d_dap_client_protocol("2.0"), d_explicit_containers(true), d_request_xml_base("")
+	{
+		read_contexts();
+	}
 
-        /// Return the dap version string sent by the client (e.g., the OLFS)
-        string get_dap_client_protocol() const { return d_dap_client_protocol; }
+	virtual ~BESDapResponse()
+	{
+	}
 
-        /// Should containers be explicitly represented in the DD* responses?
-        bool get_explicit_containers() const { return d_explicit_containers; }
+	/// Return the dap version string sent by the client (e.g., the OLFS)
+	string get_dap_client_protocol() const
+	{
+		return d_dap_client_protocol;
+	}
 
-        /// Return the xml:base URL for this request.
-        string get_request_xml_base() const { return d_request_xml_base; }
+	/// Should containers be explicitly represented in the DD* responses?
+	bool get_explicit_containers() const
+	{
+		return d_explicit_containers;
+	}
 
-        virtual void set_container(const string &cn) = 0;
-	virtual void set_constraint( BESDataHandlerInterface &dhi ) ;
-        virtual void clear_container() = 0;
+	/// Return the xml:base URL for this request.
+	string get_request_xml_base() const
+	{
+		return d_request_xml_base;
+	}
 
-        virtual void dump(ostream &strm) const;
+	virtual void set_container(const string &cn) = 0;
+	virtual void set_constraint(BESDataHandlerInterface &dhi);
+	virtual void set_dap4_constraint(BESDataHandlerInterface &dhi);
+	virtual void set_dap4_function(BESDataHandlerInterface &dhi);
+	virtual void clear_container() = 0;
+
+	virtual void dump(ostream &strm) const;
 };
 
 #endif // I_BESDapResponse
-

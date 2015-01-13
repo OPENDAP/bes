@@ -11,12 +11,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -100,28 +100,34 @@ private:
 
     /** Do not allow empty instances to be created.
      */
-    BESPlugin() throw (BESInternalError)
+    BESPlugin();
+#if 0
+    throw (BESInternalError)
     {
         throw BESInternalError("Unimplemented method", __FILE__, __LINE__);
     }
-
+#endif
     /** Do not allow clients to use the copy constructor. BESPlugin
      pointer (since doing so could result in calling dlclose too many
      times, something that is apt to be bad.
      */
-    BESPlugin(const BESPlugin &p) throw (BESInternalError)
+    BESPlugin(const BESPlugin &p);
+#if 0
+    throw (BESInternalError)
     {
         throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
     }
-
+#endif
     /** Do not allow clients to use the assignment operator.
      @see BESPlugin(const BESPlugin &p)
      */
-    BESPlugin &operator=(const BESPlugin &p) throw (BESInternalError)
+    BESPlugin &operator=(const BESPlugin &p);
+#if 0
+    throw (BESInternalError)
     {
         throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
     }
-
+#endif
     void *get_lib() throw (NoSuchLibrary)
     {
         if (!d_lib) {

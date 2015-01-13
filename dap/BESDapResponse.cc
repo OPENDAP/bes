@@ -123,17 +123,55 @@ bool BESDapResponse::is_dap2()
 void
 BESDapResponse::set_constraint( BESDataHandlerInterface &dhi )
 {
-    if( dhi.container )
-    {
-	if( is_dap2() )
+	if( dhi.container )
 	{
-	    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint() ;
+		if( is_dap2() )
+		{
+			dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint() ;
+		}
+		else
+		{
+			BESConstraintFuncs::post_append( dhi ) ;
+		}
 	}
-	else
+}
+
+/** @brief set the constraint depending on the context
+ *
+ * If the context is dap2 then the constraint will be the constraint of
+ * the current container. If not dap2 and we have multiple containers
+ * then the constraint of the current container must be added to the
+ * current post constraint
+ *
+ * @param dhi The BESDataHandlerInterface of the request. THis holds the
+ * current container and the current post constraint
+ */
+void
+BESDapResponse::set_dap4_constraint( BESDataHandlerInterface &dhi )
+{
+	if( dhi.container )
 	{
-	    BESConstraintFuncs::post_append( dhi ) ;
+        dhi.data[DAP4_CONSTRAINT] = dhi.container->get_dap4_constraint() ;
 	}
-    }
+}
+
+/** @brief set the constraint depending on the context
+ *
+ * If the context is dap2 then the constraint will be the constraint of
+ * the current container. If not dap2 and we have multiple containers
+ * then the constraint of the current container must be added to the
+ * current post constraint
+ *
+ * @param dhi The BESDataHandlerInterface of the request. THis holds the
+ * current container and the current post constraint
+ */
+void
+BESDapResponse::set_dap4_function( BESDataHandlerInterface &dhi )
+{
+	if( dhi.container )
+	{
+        dhi.data[DAP4_FUNCTION] = dhi.container->get_dap4_function() ;
+	}
 }
 
 /** @brief dumps information about this object

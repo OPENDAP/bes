@@ -34,7 +34,11 @@ class DDS;
 /**
  * The linear_scale() function applies the familiar y = mx + b equation to data.
  */
-void function_bind_name(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+void function_bind_name_dap2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+
+BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr);
+
+
 
 /**
  * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
@@ -49,7 +53,8 @@ public:
 		setUsageString("bind_name(name,variable)");
 		setRole("http://services.opendap.org/dap4/server-side-function/bind_name");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name");
-		setFunction(libdap::function_bind_name);
+		setFunction(libdap::function_bind_name_dap2);
+		setFunction(libdap::function_bind_name_dap4);
 		setVersion("1.0");
     }
     virtual ~BindNameFunction()

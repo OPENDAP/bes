@@ -4,14 +4,24 @@
 # 01/22/2013 Hacked up by ndp
 #
 
-# AM_CPPFLAGS = -I$(top_srcdir)/dispatch 
-AM_CXXFLAGS =
-
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign check-news 
 
 ACLOCAL_AMFLAGS = -I conf
+AM_CXXFLAGS = 
 
-SUBDIRS = . unit-tests 
+# These are not used by automake but are often useful for certain types of
+# debugging. The best way to use these is to run configure as:
+# ./configure --disable-shared CXXFLAGS=...
+# or ./configure --enable-developer --disable-shared
+# the --disable-shared is not required, but it seems to help with debuggers.
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
+TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+if BES_DEVELOPER
+AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+endif
+
+SUBDIRS = . unit-tests
 # tests
 
 lib_besdir=$(libdir)/bes
@@ -22,6 +32,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDDXResponseHandler.cc \
 	BESDataResponseHandler.cc \
 	BESDataDDXResponseHandler.cc \
+	BESDMRResponseHandler.cc \
+	BESDap4ResponseHandler.cc \
 	BESDapModule.cc \
 	BESDapRequestHandler.cc \
 	BESDapTransmit.cc \
@@ -29,12 +41,14 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDASResponse.cc \
 	BESDDSResponse.cc \
 	BESDataDDSResponse.cc \
+	BESDMRResponse.cc \
 	BESDapError.cc \
 	BESDapErrorInfo.cc \
 	BESDapService.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc \
 	BESStoredDapResultCache.cc
+#	BESDAPCache.cc 
 
 #	BESDAPCache.cc 
 
@@ -43,6 +57,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDXResponseHandler.h \
 	BESDataResponseHandler.h \
 	BESDataDDXResponseHandler.h \
+	BESDMRResponseHandler.h \
+	BESDap4ResponseHandler.h \
 	BESDapModule.h \
 	BESDapRequestHandler.h \
 	BESDapTransmit.h \
@@ -50,6 +66,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponse.h \
 	BESDASResponse.h \
 	BESDDSResponse.h \
+	BESDMRResponse.h \
 	BESDataDDSResponse.h \
 	BESDapError.h \
 	BESDapErrorInfo.h \
@@ -57,6 +74,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseBuilder.h \
 	BESDapResponseCache.h \
 	BESStoredDapResultCache.h
+#	BESDAPCache.h 
 
 #	BESDAPCache.h
 

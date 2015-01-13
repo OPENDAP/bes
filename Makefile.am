@@ -17,6 +17,7 @@
 
 AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
+AM_CXXFLAGS = 
 
 SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP

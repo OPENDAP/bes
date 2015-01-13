@@ -39,16 +39,16 @@
 
 #include "BESDebug.h"
 
-BESDDSResponseHandler::BESDDSResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESDDSResponseHandler::BESDDSResponseHandler(const string &name) :
+		BESResponseHandler(name)
 {
 }
 
-BESDDSResponseHandler::~BESDDSResponseHandler( )
+BESDDSResponseHandler::~BESDDSResponseHandler()
 {
 }
 
-/** @brief executes the command 'get dds for &lt;def_name&gt;;' by executing
+/** @brief executes the command 'get dds for def_name;' by executing
  * the request for each container in the specified definition.
  *
  * For each container in the specified definition go to the request
@@ -61,31 +61,33 @@ BESDDSResponseHandler::~BESDDSResponseHandler( )
  * @see BESDDSResponse
  * @see BESRequestHandlerList
  */
-void
-BESDDSResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    // NOTE: It is the responsibility of the specific request handler to set
-    // the BaseTypeFactory. It is set to NULL here
-    dhi.action_name = DDS_RESPONSE_STR ;
-    DDS *dds = new DDS( NULL, "virtual" ) ;
-    BESDDSResponse *bdds = new BESDDSResponse( dds ) ;
+	// NOTE: It is the responsibility of the specific request handler to set
+	// the BaseTypeFactory. It is set to NULL here
+	dhi.action_name = DDS_RESPONSE_STR;
+	DDS *dds = new DDS(NULL, "virtual");
+	BESDDSResponse *bdds = new BESDDSResponse(dds);
 
-    // Set the DAP protocol version requested by the client
+	// Set the DAP protocol version requested by the client
 
-    dhi.first_container();
-    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
-    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
-    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
+	dhi.first_container();
+	BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
 
-    if (dds->get_keywords().has_keyword("dap")) {
-	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-    }
-    else if (!bdds->get_dap_client_protocol().empty()) {
-	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
-    }
+	// Keywords were a hack to the protocol and have been dropped. We can get rid of
+	// this keyword code. jhrg 11/6/13
+	dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
+	BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
 
-    _response = bdds ;
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+	if (dds->get_keywords().has_keyword("dap")) {
+		dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+	}
+	else if (!bdds->get_dap_client_protocol().empty()) {
+		dds->set_dap_version(bdds->get_dap_client_protocol());
+	}
+
+	_response = bdds;
+	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
 /** @brief transmit the response object built by the execute command
@@ -100,14 +102,11 @@ BESDDSResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDDSResponseHandler::transmit( BESTransmitter *transmitter,
-                              BESDataHandlerInterface &dhi )
+void BESDDSResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( _response )
-    {
-	transmitter->send_response( DDS_SERVICE, _response, dhi ) ;
-    }
+	if (_response) {
+		transmitter->send_response(DDS_SERVICE, _response, dhi);
+	}
 }
 
 /** @brief dumps information about this object
@@ -116,19 +115,17 @@ BESDDSResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDDSResponseHandler::dump( ostream &strm ) const
+void BESDDSResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDDSResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+	strm << BESIndent::LMarg << "BESDDSResponseHandler::dump - (" << (void *) this << ")" << endl;
+	BESIndent::Indent();
+	BESResponseHandler::dump(strm);
+	BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDDSResponseHandler::DDSResponseBuilder( const string &name )
+BESDDSResponseHandler::DDSResponseBuilder(const string &name)
 {
-    return new BESDDSResponseHandler( name ) ;
+	return new BESDDSResponseHandler(name);
 }
 

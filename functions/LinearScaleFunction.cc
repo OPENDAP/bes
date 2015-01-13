@@ -33,6 +33,7 @@
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
+#include "D4RValue.h"
 
 #include <Error.h>
 #include <DDS.h>
@@ -40,9 +41,16 @@
 #include <debug.h>
 #include <util.h>
 
+#include "BESDebug.h"
+
 #include "LinearScaleFunction.h"
 
 namespace libdap {
+
+string linear_scale_info =
+string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
+"<function name=\"linear_scale\" version=\"1.0b1\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale\">\n" +
+"</function>";
 
 // These static functions could be moved to a class that provides a more
 // general interface for COARDS/CF someday. Assume each BaseType comes bundled
@@ -153,6 +161,98 @@ static double get_missing_value(BaseType *var)
     return get_attribute_double_value(var, "missing_value");
 }
 
+BaseType *function_linear_scale_worker(BaseType *bt, double m, double b, double missing, bool use_missing){
+
+
+    // Read the data, scale and return the result. Must replace the new data
+    // in a constructor (i.e., Array part of a Grid).
+    BaseType *dest = 0;
+    double *data;
+    if (bt->type() == dods_grid_c) {
+        // Grab the whole Grid; note that the scaling is done only on the array part
+        Grid &source = dynamic_cast<Grid&>(*bt);
+
+        BESDEBUG("function", "function_linear_scale_worker() - Grid send_p: " << source.send_p() << endl);
+        BESDEBUG("function", "function_linear_scale_worker() - Grid Array send_p: " << source.get_array()->send_p() << endl);
+
+
+        // Read the grid; set send_p since Grid is a kind of constructor and
+        // read will only be called on it's fields if their send_p flag is set
+        source.set_send_p(true);
+        source.read();
+
+        // Get the Array part and read the values
+        Array *a = source.get_array();
+        //a->read();
+        data = extract_double_array(a);
+
+        // Now scale the data.
+        int length = a->length();
+        for (int i = 0; i < length; ++i)
+            data[i] = data[i] * m + b;
+
+        // Copy source Grid to result Grid. Could improve on this by not using this
+        // trick since it copies all of 'source' to 'dest', including the main Array.
+        // The next bit of code will replace those values with the newly scaled ones.
+        Grid *result = new Grid(source);
+
+        // Now load the transferred values; use Float64 as the new type of the result
+        // Grid Array.
+        result->get_array()->add_var_nocopy(new Float64(source.name()));
+        result->get_array()->set_value(data, length);
+        delete[] data;
+
+        // FIXME result->set_send_p(true);
+        BESDEBUG("function", "function_linear_scale_worker() - Grid send_p: " << source.send_p() << endl);
+        BESDEBUG("function", "function_linear_scale_worker() - Grid Array send_p: " << source.get_array()->send_p() << endl);
+
+        dest = result;
+    }
+    else if (bt->is_vector_type()) {
+        Array &source = dynamic_cast<Array&>(*bt);
+        // If the array is really a map, make sure to read using the Grid
+        // because of the HDF4 handler's odd behavior WRT dimensions.
+        if (source.get_parent() && source.get_parent()->type() == dods_grid_c) {
+            source.get_parent()->set_send_p(true);
+            source.get_parent()->read();
+        }
+        else
+            source.read();
+
+        data = extract_double_array(&source);
+        int length = source.length();
+        for (int i = 0; i < length; ++i)
+            data[i] = data[i] * m + b;
+
+        Array *result = new Array(source);
+
+        result->add_var_nocopy(new Float64(source.name()));
+        result->set_value(data, length);
+
+        delete[] data; // val2buf copies.
+
+        dest = result;
+    }
+    else if (bt->is_simple_type() && !(bt->type() == dods_str_c || bt->type() == dods_url_c)) {
+        double data = extract_double_value(bt);
+        if (!use_missing || !double_eq(data, missing))
+            data = data * m + b;
+
+        Float64 *fdest = new Float64(bt->name());
+
+        fdest->set_value(data);
+        // dest->val2buf(static_cast<void*> (&data));
+        dest = fdest;
+    } else {
+        throw Error(malformed_expr,"The linear_scale() function works only for numeric Grids, Arrays and scalars.");
+    }
+
+    return dest;
+
+}
+
+
+
 /** Given a BaseType, scale it using 'y = mx + b'. Either provide the
  constants 'm' and 'b' or the function will look for the COARDS attributes
  'scale_factor' and 'add_offset'.
@@ -166,16 +266,12 @@ static double get_missing_value(BaseType *var)
  attributes cannot be found OR if the source variable is not a
  numeric scalar, Array or Grid. */
 void
-function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+function_dap2_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-    string info =
-    string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"linear_scale\" version=\"1.0b1\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale\">\n" +
-    "</function>";
 
     if (argc == 0) {
         Str *response = new Str("info");
-        response->set_value(info);
+        response->set_value(linear_scale_info);
         *btpp = response;
         return;
     }
@@ -222,190 +318,82 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         }
     }
 
-    DBG(cerr << "m: " << m << ", b: " << b << endl);DBG(cerr << "use_missing: " << use_missing << ", missing: " << missing << endl);
+    BESDEBUG("function", "function_dap2_linear_scale() - m: " << m << ", b: " << b << ", use_missing: " << use_missing << ", missing: " << missing << endl);
 
-    // Read the data, scale and return the result. Must replace the new data
-    // in a constructor (i.e., Array part of a Grid).
-    BaseType *dest = 0;
-    double *data;
-    if (argv[0]->type() == dods_grid_c) {
-#if 0
-        // For a Grid, the function scales only the Array part.
-        Array *source = dynamic_cast<Grid*>(argv[0])->get_array();
-        //argv[0]->set_send_p(true);
-             //source->set_send_p(true);
-        source->read();
-        data = extract_double_array(source);
-        int length = source->length();
-        for (int i = 0; i < length; ++i)
-            data[i] = data[i] * m + b;
-#if 0
-        int i = 0;
-        while (i < length) {
-            DBG2(cerr << "data[" << i << "]: " << data[i] << endl);
-            if (!use_missing || !double_eq(data[i], missing))
-                data[i] = data[i] * m + b;
-            DBG2(cerr << " >> data[" << i << "]: " << data[i] << endl);
-            ++i;
-        }
-#endif
-        // Vector::add_var will delete the existing 'template' variable
-        Float64 *temp_f = new Float64(source->name());
-        source->add_var(temp_f);
+    *btpp = function_linear_scale_worker(argv[0],m,b,missing,use_missing);
+}
+/** Given a BaseType, scale it using 'y = mx + b'. Either provide the
+ constants 'm' and 'b' or the function will look for the COARDS attributes
+ 'scale_factor' and 'add_offset'.
 
-#ifdef VAL2BUF
-        source.val2buf(static_cast<void*>(data), false);
-#else
-        source->set_value(data, length);
-#endif
-        delete [] data; // val2buf copies.
-        delete temp_f; // add_var copies and then adds.
-        dest = argv[0];
-        dest->set_send_p(true);
-#endif
-        // Grab the whole Grid; note that the scaling is done only on the array part
-        Grid &source = dynamic_cast<Grid&>(*argv[0]);
+ @param argc A count of the arguments
+ @param argv An array of pointers to each argument, wrapped in a child of BaseType
+ @param btpp A pointer to the return value; caller must delete.
 
-        DBG(cerr << "Grid send_p: " << source.send_p() << endl);
-        DBG(cerr << "Grid Array send_p: " << source.get_array()->send_p() << endl);
+ @return The scaled variable, represented using Float64
+ @exception Error Thrown if scale_factor is not given and the COARDS
+ attributes cannot be found OR if the source variable is not a
+ numeric scalar, Array or Grid. */
+BaseType *function_dap4_linear_scale(D4RValueList *args, DMR &dmr)
+{
+    BESDEBUG("function", "function_dap4_linear_scale()  BEGIN " << endl);
 
-        // Read the grid; set send_p since Grid is a kind of constructor and
-        // read will only be called on it's fields if their send_p flag is set
-        source.set_send_p(true);
-        source.read();
-
-        // Get the Array part and read the values
-        Array *a = source.get_array();
-        //a->read();
-        data = extract_double_array(a);
-
-        // Now scale the data.
-        int length = a->length();
-        for (int i = 0; i < length; ++i)
-            data[i] = data[i] * m + b;
-#if 0
-        // read the maps so that those values will be copied when the source Grid
-        // is copied to the dest Grid
-        Grid::Map_iter s = source.map_begin();
-        while (s != source.map_end()) {
-            static_cast<Array*>(*s)->read();
-            ++s;
-        }
-#endif
-        // Copy source Grid to result Grid. Could improve on this by not using this
-        // trick since it copies all of 'source' to 'dest', including the main Array.
-        // The next bit of code will replace those values with the newly scaled ones.
-        Grid *result = new Grid(source);
-
-        // Now load the transferred values; use Float64 as the new type of the result
-        // Grid Array.
-        result->get_array()->add_var_nocopy(new Float64(source.name()));
-        result->get_array()->set_value(data, length);
-        delete[] data;
-
-#if 0
-        // Now set the maps (NB: the copy constructor does not copy data)
-        Grid::Map_iter s = source.map_begin();
-        Grid::Map_iter d = result->map_begin();
-        while (s != source.map_end()) {
-            Array *a = static_cast<Array*>(*s);
-            a->read();
-            switch(a->var()->type()) {
-            case dods_byte_c: {
-                vector<dods_byte> v(a->length());
-                a->value(&v[0]);
-                static_cast<Array*>(*d)->set_value(v, v.size());
-                break;
-            }
-            case dods_float32_c: {
-                vector<dods_float32> v(a->length());
-                a->value(&v[0]);
-                static_cast<Array*>(*d)->set_value(v, a->length());
-                break;
-            }
-            default:
-                throw Error("Non-numeric Grid Map not supported by linear_scale().");
-            }
-            ++s; ++d;
-        }
-#endif
-
-        // FIXME result->set_send_p(true);
-        DBG(cerr << "Grid send_p: " << result->send_p() << endl);
-        DBG(cerr << "Grid Array send_p: " << result->get_array()->send_p() << endl);
-
-        dest = result;
+    // DAP4 function porting information: in place of 'argc' use 'args.size()'
+    if (args==0 || args->size() == 0) {
+        Str *response = new Str("info");
+        response->set_value(linear_scale_info);
+        // DAP4 function porting: return a BaseType* instead of using the value-result parameter
+        return response;
     }
-    else if (argv[0]->is_vector_type()) {
-#if 0
-        Array &source = dynamic_cast<Array&> (*argv[0]);
-        source.set_send_p(true);
-        // If the array is really a map, make sure to read using the Grid
-        // because of the HDF4 handler's odd behavior WRT dimensions.
-        if (source.get_parent() && source.get_parent()->type() == dods_grid_c)
-            source.get_parent()->read();
-        else
-            source.read();
 
-        data = extract_double_array(&source);
-        int length = source.length();
-        int i = 0;
-        while (i < length) {
-            if (!use_missing || !double_eq(data[i], missing))
-                data[i] = data[i] * m + b;
-            ++i;
-        }
 
-        Float64 *temp_f = new Float64(source.name());
-        source.add_var(temp_f);
+    // Check for 2 arguments
+    DBG(cerr << "args.size() = " << args.size() << endl);
+    if (!(args->size() == 1 || args->size() == 3 || args->size() == 4))
+        throw Error(malformed_expr,"Wrong number of arguments to linear_scale(). See linear_scale() for more information");
 
-        source.val2buf(static_cast<void*>(data), false);
-
-        delete [] data; // val2buf copies.
-        delete temp_f; // add_var copies and then adds.
-
-        dest = argv[0];
-#endif
-        Array &source = dynamic_cast<Array&>(*argv[0]);
-        // If the array is really a map, make sure to read using the Grid
-        // because of the HDF4 handler's odd behavior WRT dimensions.
-        if (source.get_parent() && source.get_parent()->type() == dods_grid_c) {
-            source.get_parent()->set_send_p(true);
-            source.get_parent()->read();
-        }
-        else
-            source.read();
-
-        data = extract_double_array(&source);
-        int length = source.length();
-        for (int i = 0; i < length; ++i)
-            data[i] = data[i] * m + b;
-
-        Array *result = new Array(source);
-
-        result->add_var_nocopy(new Float64(source.name()));
-        result->set_value(data, length);
-
-        delete[] data; // val2buf copies.
-
-        dest = result;
-    }
-    else if (argv[0]->is_simple_type() && !(argv[0]->type() == dods_str_c || argv[0]->type() == dods_url_c)) {
-        double data = extract_double_value(argv[0]);
-        if (!use_missing || !double_eq(data, missing))
-            data = data * m + b;
-
-        Float64 *fdest = new Float64(argv[0]->name());
-
-        fdest->set_value(data);
-        // dest->val2buf(static_cast<void*> (&data));
-        dest = fdest;
+    // Get m & b
+    bool use_missing = false;
+    double m, b, missing = 0.0;
+    if (args->size() == 4) {
+        m = extract_double_value(args->get_rvalue(1)->value(dmr));
+        b = extract_double_value(args->get_rvalue(2)->value(dmr));
+        missing = extract_double_value(args->get_rvalue(3)->value(dmr));
+        use_missing = true;
+    } else if (args->size() == 3) {
+        m = extract_double_value(args->get_rvalue(1)->value(dmr));
+        b = extract_double_value(args->get_rvalue(2)->value(dmr));
+        use_missing = false;
     } else {
-        throw Error(malformed_expr,"The linear_scale() function works only for numeric Grids, Arrays and scalars.");
-    }
+        m = get_slope(args->get_rvalue(0)->value(dmr));
 
-    *btpp = dest;
-    return;
+        // This is really a hack; on a fair number of datasets, the y intercept
+        // is not given and is assumed to be 0. Here the function looks and
+        // catches the error if a y intercept is not found.
+        try {
+            b = get_y_intercept(args->get_rvalue(0)->value(dmr));
+        }
+        catch (Error &e) {
+            b = 0.0;
+        }
+
+        // This is not the best plan; the get_missing_value() function should
+        // do something other than throw, but to do that would require mayor
+        // surgery on get_attribute_double_value().
+        try {
+            missing = get_missing_value(args->get_rvalue(0)->value(dmr));
+            use_missing = true;
+        }
+        catch (Error &e) {
+            use_missing = false;
+        }
+    }
+    BESDEBUG("function", "function_dap4_linear_scale() - m: " << m << ", b: " << b << ", use_missing: " << use_missing << ", missing: " << missing << endl);
+
+    BESDEBUG("function", "function_dap4_linear_scale()  END " << endl);
+
+    return function_linear_scale_worker(args->get_rvalue(0)->value(dmr),m,b,missing,use_missing);
+
 }
 
 } // namesspace libdap

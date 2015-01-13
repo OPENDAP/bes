@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -103,7 +103,16 @@ int BESModuleApp::loadModules()
     vector<string>::iterator l = vals.begin();
     vector<string>::iterator le = vals.end();
 
-    // FIXME: This is a kludge. But we want to be sure that the dap
+    // The following code was likely added before we had the 'Include'
+    // directive. Now all modules have a line in their .conf file to
+	// Include dap.conf and that makes this redundant. However, what
+    // was happening was a module named XdapX would match the find()
+    // call below and would wind up being loaded _before_ the dap module.
+    // That led to all sorts of runtime problems. See ticket 2258. Since
+    // we don't need this and it can cause problems, I'm removing it.
+    // jhrg 10/13/14
+#if 0
+    // This is a kludge. But we want to be sure that the dap
     // modules get loaded first.
     vector<string> ordered_list;
     for (; l != le; l++) {
@@ -120,6 +129,7 @@ int BESModuleApp::loadModules()
 
     l = ordered_list.begin();
     le = ordered_list.end();
+#endif
     for (; l != le; l++) {
         string mods = (*l);
         list<string> mod_list;
@@ -139,7 +149,7 @@ int BESModuleApp::loadModules()
                     return 1;
                 }
                 if (so == "") {
-                    cerr << "couldn't find the module for " << (*i) << endl;
+                    cerr << "Couldn't find the module for " << (*i) << endl;
                     return 1;
                 }
                 bes_module new_mod;

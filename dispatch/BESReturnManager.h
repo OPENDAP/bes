@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,42 +36,39 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
-class BESTransmitter ;
+class BESTransmitter;
 
 /** @brief ReturnManager holds the list of response object transmitter that
  * knows how to transmit response objects in particular ways.
  *
  */
-class BESReturnManager : public BESObj
-{
+class BESReturnManager: public BESObj {
 private:
-    static BESReturnManager *	_instance ;
+	static BESReturnManager * _instance;
 
-    map< string, BESTransmitter * > _transmitter_list ;
+	map<string, BESTransmitter *> _transmitter_list;
 protected:
-				BESReturnManager() ;
+	BESReturnManager();
 public:
-    virtual			~BESReturnManager() ;
+	virtual ~BESReturnManager();
 
-    typedef map< string, BESTransmitter * >::const_iterator Transmitter_citer ;
-    typedef map< string, BESTransmitter * >::iterator Transmitter_iter ;
+	typedef map<string, BESTransmitter *>::const_iterator Transmitter_citer;
+	typedef map<string, BESTransmitter *>::iterator Transmitter_iter;
 
-    virtual bool		add_transmitter( const string &name,
-						 BESTransmitter *transmitter );
-    virtual bool		del_transmitter( const string &name) ;
-    virtual BESTransmitter *	find_transmitter( const string &name ) ;
+	virtual bool add_transmitter(const string &name, BESTransmitter *transmitter);
+	virtual bool del_transmitter(const string &name);
+	virtual BESTransmitter * find_transmitter(const string &name);
 
-    virtual void		dump( ostream &strm ) const ;
+	virtual void dump(ostream &strm) const;
 
-    static BESReturnManager *	TheManager() ;
+	static BESReturnManager * TheManager();
 };
 
 #endif // I_BESReturnManager_h
-

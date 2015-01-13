@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
 AM_LDADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types \
--L$(top_builddir)/dispatch -lbes_dispatch -L$(top_builddir)/dap -ldap_module
+$(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -16,7 +16,7 @@ endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 # This determines what gets built by make check
@@ -43,8 +43,7 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest
-# Removed from the h 1.9 branch and the trunk StoredResultTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest StoredDap2ResultTest StoredDap4ResultTest
 else
 UNIT_TESTS =
 
@@ -57,13 +56,19 @@ check-local:
 	@echo ""
 endif
 
-TEST_SRC = testFile.cc testFile.h
+TEST_SRC = test_utils.cc test_utils.h
 
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
 ResponseBuilderTest_LDADD = $(AM_LDADD) 
 
 ResponseCacheTest_SOURCES = ResponseCacheTest.cc  $(TEST_SRC)
 ResponseCacheTest_LDADD = $(AM_LDADD)
+
+StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
+StoredDap2ResultTest_LDADD = $(AM_LDADD)
+
+StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
+StoredDap4ResultTest_LDADD = $(AM_LDADD)
 
 # StoredResultTest_SOURCES = StoredResultTest.cc  $(TEST_SRC)
 # StoredResultTest_LDADD = $(AM_LDADD)

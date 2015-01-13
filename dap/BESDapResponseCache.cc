@@ -314,8 +314,9 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
     string boundary = read_multipart_boundary(data);
     BESDEBUG("cache", "MPM Boundary: " << boundary << endl);
 
-    read_multipart_headers(data, "text/xml", dap4_ddx);
-
+    BESDEBUG("cache", "before read_multipart_headers" << endl);
+    read_multipart_headers(data, "text/xml", dods_ddx);
+    BESDEBUG("cache", "after read_multipart_headers" << endl);
     BESDEBUG("cache", "Read the multipart haeaders" << endl);
 
     // Parse the DDX, reading up to and including the next boundary.
@@ -337,7 +338,7 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
 
     // Read the data part's MPM part headers (boundary was read by
     // DDXParse::intern)
-    read_multipart_headers(data, "application/octet-stream", dap4_data, data_cid);
+    read_multipart_headers(data, "application/octet-stream", dods_data_ddx /* old value? dap4_data */, data_cid);
 
     // Now read the data
 
@@ -362,6 +363,7 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     fdds->filename(filename) ;
     //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
+    BESDEBUG("cache", "BESDapResponseCache::get_cached_data_ddx() -cache_file_name: " << cache_file_name << endl);
     read_data_from_cache(cache_file_name, fdds);
 
     BESDEBUG("cache", "DDS Filename: " << fdds->filename() << endl);
@@ -402,7 +404,7 @@ DDS *BESDapResponseCache::read_dataset(const string &filename, const string &con
     try {
         if (get_read_lock(cache_file_name, fd) && is_valid(cache_file_name, filename)) {
             BESDEBUG("cache", "function ce (change)- cached hit: " << cache_file_name << endl);
-            fdds = get_cached_data_ddx(cache_file_name, &factory, filename);
+            fdds = get_cached_dap2_data_ddx(cache_file_name, &factory, filename);
         }
     }
     catch (...) {
@@ -502,9 +504,9 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
             // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
             // CE, which is not necessary and will alter the values of the send_p property
             // of the DDS's variables.
-			set_mime_multipart(data_stream, boundary, start, dap4_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
+			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
 			//data_stream << flush;
-			rb->dataset_constraint_ddx(data_stream, *fdds, eval, boundary, start);
+			rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
 			//data_stream << flush;
 
 			data_stream << CRLF << "--" << boundary << "--" << CRLF;

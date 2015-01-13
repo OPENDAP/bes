@@ -31,7 +31,13 @@ namespace libdap {
 class BaseType;
 class DDS;
 
-void function_bind_shape(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+void function_bind_shape_dap2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+
+/**
+ * The linear_scale() function applies the familiar y = mx + b equation to data.
+ */
+BaseType *function_bind_shape_dap4(D4RValueList *args, DMR &dmr);
+
 
 class BindShapeFunction: public libdap::ServerFunction {
 public:
@@ -42,7 +48,8 @@ public:
 		setUsageString("bind_shape(shape,variable)");
 		setRole("http://services.opendap.org/dap4/server-side-function/bind_shape");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_shape");
-		setFunction(libdap::function_bind_shape);
+		setFunction(libdap::function_bind_shape_dap2);
+		setFunction(libdap::function_bind_shape_dap4);
 		setVersion("1.0");
     }
     virtual ~BindShapeFunction()

@@ -60,7 +60,7 @@ void DapFunctions::initialize(const string &)
 
 void DapFunctions::terminate(const string &)
 {
-    BESDEBUG( "dap_functions", "Removing DAP Modules (this does nothing)." << endl );
+    BESDEBUG( "dap_functions", "Removing DAP Functions (this does nothing)." << endl );
 }
 
 /** @brief dumps information about this object

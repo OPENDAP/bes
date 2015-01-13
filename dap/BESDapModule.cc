@@ -31,7 +31,7 @@
 
 #include <iostream>
 
-using std::endl ;
+using std::endl;
 
 #include "BESDapModule.h"
 
@@ -47,6 +47,8 @@ using std::endl ;
 #include "BESDataResponseHandler.h"
 #include "BESDDXResponseHandler.h"
 #include "BESDataDDXResponseHandler.h"
+#include "BESDMRResponseHandler.h"
+#include "BESDap4ResponseHandler.h"
 
 #include "BESCatalogResponseHandler.h"
 
@@ -62,89 +64,90 @@ using std::endl ;
 #include "BESExceptionManager.h"
 #include "BESDapError.h"
 
-void
-BESDapModule::initialize( const string &modname )
+void BESDapModule::initialize(const string &modname)
 {
-    BESDEBUG( "dap", "Initializing DAP Modules:" << endl ) ;
+	BESDEBUG("dap", "Initializing DAP Modules:" << endl);
 
-    BESDEBUG( "dap", "    adding " << modname << " request handler" << endl ) ;
-    BESRequestHandlerList::TheList()->add_handler( modname, new BESDapRequestHandler( modname ) ) ;
+	BESDEBUG("dap", "    adding " << modname << " request handler" << endl);
+	BESRequestHandlerList::TheList()->add_handler(modname, new BESDapRequestHandler(modname));
 
-    BESDEBUG( "dap", "    adding " << DAS_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder ) ;
-#if 0
-    BESDEBUG( "dap", "    adding " << DMR_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DMR_RESPONSE, BESDMRResponseHandler::DMRResponseBuilder ) ;
-#endif
-    BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder ) ;
+	BESDEBUG("dap", "    adding " << DAS_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder);
 
-    BESDEBUG( "dap", "    adding " << DDX_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DDX_RESPONSE, BESDDXResponseHandler::DDXResponseBuilder ) ;
+	BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " response handler" << endl );
+	BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder );
 
-    BESDEBUG( "dap", "    adding " << DATA_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder ) ;
+	BESDEBUG("dap", "    adding " << DDX_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DDX_RESPONSE, BESDDXResponseHandler::DDXResponseBuilder);
 
-    BESDEBUG( "dap", "    adding " << DATADDX_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( DATADDX_RESPONSE, BESDataDDXResponseHandler::DataDDXResponseBuilder ) ;
+	BESDEBUG("dap", "    adding " << DATA_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder);
 
-    BESDEBUG( "dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl ) ;
-    BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
+	BESDEBUG("dap", "    adding " << DATADDX_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DATADDX_RESPONSE, BESDataDDXResponseHandler::DataDDXResponseBuilder);
 
-    BESDEBUG( "dap", "Adding " << OPENDAP_SERVICE << " services:" << endl ) ;
-    BESServiceRegistry *registry = BESServiceRegistry::TheRegistry() ;
-    registry->add_service( OPENDAP_SERVICE ) ;
-    registry->add_to_service( OPENDAP_SERVICE, DAS_SERVICE,
-			      DAS_DESCRIPT, DAP2_FORMAT ) ;
-#if 0
-    registry->add_to_service( OPENDAP_SERVICE, DMR_SERVICE,
-			      DAS_DESCRIPT, DAP2_FORMAT ) ;
-#endif
-    registry->add_to_service( OPENDAP_SERVICE, DDS_SERVICE,
-			      DDS_DESCRIPT, DAP2_FORMAT ) ;
-    registry->add_to_service( OPENDAP_SERVICE, DDX_SERVICE,
-			      DDX_DESCRIPT, DAP2_FORMAT ) ;
-    registry->add_to_service( OPENDAP_SERVICE, DATA_SERVICE,
-			      DATA_DESCRIPT, DAP2_FORMAT ) ;
-    registry->add_to_service( OPENDAP_SERVICE, DATADDX_SERVICE,
-			      DATADDX_DESCRIPT, DAP2_FORMAT ) ;
+	BESDEBUG("dap", "    adding " << DMR_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DMR_RESPONSE, BESDMRResponseHandler::DMRResponseBuilder);
 
-    BESDEBUG( "dap", "Initializing DAP Basic Transmitters:" << endl ) ;
-    BESReturnManager::TheManager()->add_transmitter( DAP2_FORMAT,
-						     new BESDapTransmit( ) ) ;
+	BESDEBUG("dap", "    adding " << DAP4DATA_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(DAP4DATA_RESPONSE, BESDap4ResponseHandler::Dap4ResponseBuilder);
 
-    BESDEBUG( "dap", "    adding dap exception handler" << endl ) ;
-    BESExceptionManager::TheEHM()->add_ehm_callback( BESDapError::handleException ) ;
+	BESDEBUG("dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl);
+	BESResponseHandlerList::TheList()->add_handler(CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder);
 
-    BESDEBUG( "dap", "    adding dap debug context" << endl ) ;
-    BESDebug::Register( "dap" ) ;
+	BESDEBUG("dap", "Adding " << OPENDAP_SERVICE << " services:" << endl);
+	BESServiceRegistry *registry = BESServiceRegistry::TheRegistry();
+	registry->add_service(OPENDAP_SERVICE);
+	registry->add_to_service(OPENDAP_SERVICE, DAS_SERVICE, DAS_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DDS_SERVICE, DDS_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DDX_SERVICE, DDX_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DATA_SERVICE, DATA_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DATADDX_SERVICE, DATADDX_DESCRIPT, DAP2_FORMAT);
 
-    BESDEBUG( "dap", "Done Initializing DAP Modules:" << endl ) ;
+	registry->add_to_service(OPENDAP_SERVICE, DMR_SERVICE, DMR_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DAP4DATA_SERVICE, DAP4DATA_DESCRIPT, DAP2_FORMAT);
+
+	BESDEBUG("dap", "Initializing DAP Basic Transmitters:" << endl);
+	BESReturnManager::TheManager()->add_transmitter(DAP2_FORMAT, new BESDapTransmit());
+	// TODO ?? BESReturnManager::TheManager()->add_transmitter( DAP4_FORMAT, new BESDapTransmit( ) );
+
+	BESDEBUG("dap", "    adding dap exception handler" << endl);
+	BESExceptionManager::TheEHM()->add_ehm_callback(BESDapError::handleException);
+
+	BESDEBUG("dap", "    adding dap debug context" << endl);
+	BESDebug::Register("dap");
+
+	BESDEBUG("dap", "Done Initializing DAP Modules:" << endl);
 }
 
-void
-BESDapModule::terminate( const string &modname )
+void BESDapModule::terminate(const string &modname)
 {
-    BESDEBUG( "dap", "Removing DAP Modules:" << endl ) ;
+	BESDEBUG("dap", "Removing DAP Modules:" << endl);
 
-    BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
-    // BESResponseHandlerList::TheList()->remove_handler( DMR_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DATADDX_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
+	BESResponseHandlerList::TheList()->remove_handler(DAS_RESPONSE);
+	// BESResponseHandlerList::TheList()->remove_handler( DMR_RESPONSE ) ;
+	BESResponseHandlerList::TheList()->remove_handler(DDS_RESPONSE);
+	BESResponseHandlerList::TheList()->remove_handler(DDX_RESPONSE);
+	BESResponseHandlerList::TheList()->remove_handler(DATA_RESPONSE);
+	BESResponseHandlerList::TheList()->remove_handler(DATADDX_RESPONSE);
+	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
 
-    BESDEBUG( "dap", "    removing " << OPENDAP_SERVICE << " services" << endl ) ;
-    BESServiceRegistry::TheRegistry()->remove_service( OPENDAP_SERVICE ) ;
+	BESResponseHandlerList::TheList()->remove_handler(DMR_RESPONSE);
+	BESResponseHandlerList::TheList()->remove_handler(DAP4DATA_RESPONSE);
 
-    BESDEBUG( "dap", "    removing dap Request Handler " << modname << endl ) ;
-    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
-    if( rh ) delete rh ;
+	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
 
-    BESReturnManager::TheManager()->del_transmitter( DAP2_FORMAT );
+	BESDEBUG("dap", "    removing " << OPENDAP_SERVICE << " services" << endl);
+	BESServiceRegistry::TheRegistry()->remove_service(OPENDAP_SERVICE);
 
-    BESDEBUG( "dap", "Done Removing DAP Modules:" << endl ) ;
+	BESDEBUG("dap", "    removing dap Request Handler " << modname << endl);
+	BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
+	if (rh) delete rh;
+
+	BESReturnManager::TheManager()->del_transmitter(DAP2_FORMAT);
+	// TODO ?? BESReturnManager::TheManager()->del_transmitter( DAP4_FORMAT );
+
+	BESDEBUG("dap", "Done Removing DAP Modules:" << endl);
 }
 
 /** @brief dumps information about this object
@@ -153,18 +156,15 @@ BESDapModule::terminate( const string &modname )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDapModule::dump( ostream &strm ) const
+void BESDapModule::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDapModule::dump - ("
-			     << (void *)this << ")" << endl ;
+	strm << BESIndent::LMarg << "BESDapModule::dump - (" << (void *) this << ")" << endl;
 }
 
-extern "C"
+extern "C" {
+BESAbstractModule *maker()
 {
-    BESAbstractModule *maker()
-    {
-	return new BESDapModule ;
-    }
+	return new BESDapModule;
+}
 }
 
