@@ -148,13 +148,7 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     if (args->size() != 2)
         throw Error(malformed_expr,"bind_shape(shape,variable) requires two arguments.");
 
-    BaseType *arg0 = args->get_rvalue(0)->value(dmr);
-
-    // Remove double quotes. This is needed because of a parser difference in libdap.
-    // In the DAP2 parser, double quotes are removed for function arguments that are
-    // string constants, but not so in DAP4 because the string constant values are
-    // 'id' lexems and can be quoted. jhrg 1/12/15
-    string name = remove_quotes(extract_string_argument(arg0));
+    string name = extract_string_argument(args->get_rvalue(0)->value(dmr));
 
     DBG(cerr << "function_bind_name_dap4() - New name: " << name << endl);
 
