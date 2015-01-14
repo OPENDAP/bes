@@ -62,6 +62,8 @@ cmdln/bescmdln
 cmdln/unit-tests/translateT
 dap/unit-tests/ResponseBuilderTest
 dap/unit-tests/ResponseCacheTest
+dap/unit-tests/StoredDap2ResultTest
+dap/unit-tests/StoredDap4ResultTest
 dap/unit-tests/test_config.h
 dapreader/bes-testsuite/atconfig
 dapreader/bes-testsuite/atlocal

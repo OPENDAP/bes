@@ -25,6 +25,8 @@
 
 #include "config.h"
 
+//#define DODS_DEBUG
+
 #include <cassert>
 
 #include <sstream>
@@ -104,7 +106,7 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     // the CE Evaluator will make a DAP String variable with a value that is the string
     // passed into the function. So, either way argv[0] is a BaseType*. However, if it's
     // a variable in the dataset, its name() will be found by DDS::var().
-    if (dds.var(argv[0]->name()))
+    if (dds.var(/*argv[0]->name()*/ name))
     	throw Error(malformed_expr, "The name '" + name + "' is already in use.");
 
 
@@ -132,7 +134,6 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     return;
 }
 
-
 BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
@@ -142,14 +143,19 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
         return response;
     }
 
-
     // Check for 2 arguments
-    DBG(cerr << "args.size() = " << args.size() << endl);
+    DBG(cerr << "args->size() = " << args->size() << endl);
     if (args->size() != 2)
         throw Error(malformed_expr,"bind_shape(shape,variable) requires two arguments.");
 
     BaseType *arg0 = args->get_rvalue(0)->value(dmr);
-    string name = extract_string_argument(arg0);
+
+    // Remove double quotes. This is needed because of a parser difference in libdap.
+    // In the DAP2 parser, double quotes are removed for function arguments that are
+    // string constants, but not so in DAP4 because the string constant values are
+    // 'id' lexems and can be quoted. jhrg 1/12/15
+    string name = remove_quotes(extract_string_argument(arg0));
+
     DBG(cerr << "function_bind_name_dap4() - New name: " << name << endl);
 
     BaseType *sourceVar = args->get_rvalue(1)->value(dmr);
@@ -166,8 +172,8 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     // the CE Evaluator will make a DAP String variable with a value that is the string
     // passed into the function. So, either way args[0] is a BaseType*. However, if it's
     // a variable in the dataset, its name() will be found by DMR::root()->var().
-    if (dmr.root()->var(arg0->name()))
-    	throw Error(malformed_expr, "The name '" + arg0->name() + "' is already in use.");
+    if (dmr.root()->var(/*arg0->name()*/ name))
+    	throw Error(malformed_expr, "The name '" + /*arg0->name()*/ name + "' is already in use.");
 
 
     // If the variable is the return value of a function, just pass it back. If it is
