@@ -31,6 +31,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <string>
+
 //#undef USE_DAP4
 //#define USE_DAP4 1
 #ifdef USE_DAP4
