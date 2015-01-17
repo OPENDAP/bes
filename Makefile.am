@@ -127,12 +127,6 @@ uninstall-local:
 h4.conf: h4.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf
 
-# Not nearly as clean as it could be, but this removes .svn directories
-# in subdirs.
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
-
-# Copy the generated grammar files to the 'grammarfiles' directory.
 .PHONY: grammarfiles
 grammarfiles: $(GRAM_SRC)
 	for f in $(GRAM_SRC); do cp $$f grammarfiles; done
