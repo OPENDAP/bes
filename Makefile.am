@@ -38,19 +38,8 @@ dist_aclocal_DATA = conf/bes.m4
 EXTRA_DIST = apache hello_world doxy.conf bes.spec \
 		OSX_Resources bes-config-pkgconfig
 
-# Not nearly as clean as it could be, but this removes .svn directories
-# in subdirs.
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
-
-##############################################################################
-
 server-tests:
 	cd cmdln && make server-tests
-
-#########################################################################
-
-# docs
 
 .PHONY: docs
 docs:

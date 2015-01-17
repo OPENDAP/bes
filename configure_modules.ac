@@ -25,6 +25,7 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE
+LT_INIT
 
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
@@ -793,6 +794,10 @@ AM_COND_IF([DAP_MODULES],
     modules/dap-server/Makefile
     modules/dap-server/asciival/Makefile
     modules/dap-server/asciival/tests/Makefile
+    modules/dap-server/asciival/tests/atlocal
+    modules/dap-server/asciival/tests/package.m4
+    modules/dap-server/asciival/tests/bes.conf:modules/dap-server/asciival/tests/bes.conf.modules.in
+    
     modules/dap-server/asciival/unit-tests/Makefile
     modules/dap-server/asciival/unit-tests/test_config.h
     modules/dap-server/www-interface/Makefile
@@ -915,6 +920,7 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/dap-server/asciival/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])

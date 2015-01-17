@@ -25,6 +25,10 @@ lex.*.cc
 
 Makefile
 Makefile.in
+# Normally you would not ignore this, but here it is a symlink
+# to one of configure_modules.ac or configure_standard.ac
+configure.ac
+
 conf/compile
 conf/config.guess
 conf/config.sub
@@ -57,17 +61,28 @@ libtool
 abi_checker.xml
 bes-config
 besd
+
 bin/besCreateModule
+
 cmdln/bescmdln
 cmdln/unit-tests/translateT
+cmdln/testsuite/besTest
+cmdln/testsuite/package.m4
+
+dap/dap.conf
 dap/unit-tests/ResponseBuilderTest
 dap/unit-tests/ResponseCacheTest
 dap/unit-tests/StoredDap2ResultTest
 dap/unit-tests/StoredDap4ResultTest
 dap/unit-tests/test_config.h
+
 dapreader/bes-testsuite/atconfig
 dapreader/bes-testsuite/atlocal
 dapreader/bes-testsuite/bes.conf
+dapreader/tests/DapReaderTest
+dapreader/tests/bes.conf
+dapreader/tests/package.m4
+
 dispatch/unit-tests/BESCatalogListUnitTest
 dispatch/unit-tests/agglistT
 dispatch/unit-tests/catT
@@ -92,6 +107,9 @@ dispatch/unit-tests/test_config.h
 dispatch/unit-tests/testdir/
 dispatch/unit-tests/urlT
 dispatch/unit-tests/utilT
+dispatch/bes/bes.conf
+
+functions/functions.conf
 functions/tests/atconfig
 functions/tests/atlocal
 functions/tests/generate_data_baseline.sh
@@ -100,18 +118,21 @@ functions/tests/package.m4
 functions/unit-tests/CEFunctionsTest
 functions/unit-tests/GridGeoConstraintTest
 functions/unit-tests/test_config.h
+
 ppt/unit-tests/connT
 ppt/unit-tests/extT
 ppt/unit-tests/sbT
 ppt/unit-tests/sbT.out
+
 server/besctl
 server/besdaemon
 server/beslistener
 server/hyraxctl
+
 standalone/besstandalone
+
 xmlcommand/unit-tests/buildT
 xmlcommand/unit-tests/propsT
 xmlcommand/unit-tests/test_config.h
-dap/dap.conf
-dispatch/bes/bes.conf
-functions/functions.conf
+
+

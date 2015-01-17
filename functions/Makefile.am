@@ -102,11 +102,6 @@ functions.conf: functions.conf.in $(top_builddir)/config.status
 distclean-local:
 	-rm gse.tab.cc gse.tab.hh lex.gse.cc
 
-# Not nearly as clean as it could be, but this removes .svn directories
-# in subdirs.
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
-
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
