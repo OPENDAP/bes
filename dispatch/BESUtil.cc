@@ -51,11 +51,14 @@ using std::cout;
 using std::endl;
 
 #include "BESUtil.h"
+#include "BESDebug.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 
 #define CRLF "\r\n"
+
+#define debug_key "BesUtil"
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
 
@@ -233,6 +236,22 @@ void BESUtil::check_path(const string &path, const string &root,
 	if (path == "")
 		return;
 
+
+	// Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
+	// We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
+	// function for the eval operation.
+	int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
+	if(follow_sym_links){
+		BESDEBUG(debug_key,"eval_w10n_resourceId() - Using 'stat' function (follow_sym_links = true)" << endl);
+		ye_old_stat_function = &stat;
+	}
+	else {
+		BESDEBUG(debug_key,"eval_w10n_resourceId() - Using 'lstat' function (follow_sym_links = false)" << endl);
+		ye_old_stat_function = &lstat;
+	}
+
+
+
 	// make sure there are no ../ in the directory, backing up in any way is
 	// not allowed.
 	string::size_type dotdot = path.find("..");
@@ -261,7 +280,58 @@ void BESUtil::check_path(const string &path, const string &root,
 
 	// path checked so far
 	string checked;
+	while (!done) {
+		size_t slash = rem.find('/');
+		if (slash == string::npos) {
+			fullpath = fullpath + "/" + rem;
+			checked = checked + "/" + rem;
+			done = true;
+		} else {
+			fullpath = fullpath + "/" + rem.substr(0, slash);
+			checked = checked + "/" + rem.substr(0, slash);
+			rem = rem.substr(slash + 1, rem.length() - slash);
+		}
 
+		struct stat buf;
+		int statret = ye_old_stat_function(fullpath.c_str(), &buf);
+		if (statret == -1) {
+			int errsv = errno;
+			// stat failed, so not accessible. Get the error string,
+			// store in error, and throw exception
+			char *s_err = strerror(errsv);
+			string error = "Unable to access node " + checked + ": ";
+			if (s_err) {
+				error = error + s_err;
+			} else {
+				error = error + "unknown access error";
+			}
+
+			BESDEBUG(debug_key,"check_path() - error: "<< error << "   errno: " << errno << endl);
+
+			// ENOENT means that the node wasn't found.
+			// On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
+			// Otherwise, access is being denied for some other reason
+			if (errsv == ENOENT  || errsv == ENOTDIR) {
+				// On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
+				throw BESNotFoundError(error, __FILE__, __LINE__);
+			} else {
+				throw BESForbiddenError(error, __FILE__, __LINE__);
+			}
+		} else {
+			//The call to (stat | lstat) was successful, now check to see if it's a symlink.
+			// Note that if follow_symlinks is true then this will never evaluate as true
+			// because we'll be using 'stat' and not 'lstat' and stat will follow the link
+			// and return information about the file/dir pointed to by the symlink
+			if (S_ISLNK( buf.st_mode )) {
+				string error = "You do not have permission to access "
+						+ checked;
+				throw BESForbiddenError(error, __FILE__, __LINE__);
+			}
+		}
+	}
+
+
+#if 0
 	while (!done) {
 		size_t slash = rem.find('/');
 		if (slash == string::npos) {
@@ -329,6 +399,8 @@ void BESUtil::check_path(const string &path, const string &root,
 			}
 		}
 	}
+
+#endif
 }
 
 char *
