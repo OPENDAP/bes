@@ -111,7 +111,7 @@ AC_PATH_PROG([CURL], [curl], [*** Where is curl? ***], [/bin:/usr/bin])
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h trings.h)
+AC_CHECK_HEADERS(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h strings.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -401,7 +401,7 @@ dnl was done above.
 AC_MSG_CHECKING([the netCDF library version number])
 AC_MSG_RESULT($NETCDF_MAJOR_VERSION)
 
-dnl This is needed for the fileout_netcdf handler
+dnl This is needed for the fileout_netcdf handler unit tests
 NC_BIN=`echo $NC_LDFLAGS | sed 's@^-L\(.*\)/lib@\1/bin@g'`
 AC_MSG_NOTICE([NC_BIN is $NC_BIN])
 AC_SUBST(NC_BIN_PATH, $NC_BIN)
