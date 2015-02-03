@@ -14,6 +14,8 @@ develop new modules for the BES, and more.
 
 Contents
 
+  * DAP2 versus DAP4 support
+
   * What's here: What files are in the distribution
 
   * About the BES: What exactly is this
@@ -21,6 +23,19 @@ Contents
   * Configuration: How to configure the BES
 
   * Testing: Once built and configured, how do you know it works?
+
+* DAP2 versus DAP4
+
+The code on the master branch now supports both DAP2 and DAP4
+responses, and handlers that do the same. Because of that, it must be
+linked with libdap4, not libdap (libdap4 contains support for both
+DAP2 and DAP4, while the older 'libdap' supports only DAP2). If you
+need to get the DAP2-only version of the software, use the branch
+named 'dap2'. Please commit only fixes there.
+
+Each of the handlers, which can be built as submodules within this
+code, also has DAP2 and DAP4 support on their master branch and a
+'dap2' branch for the DAP2-only code.
 
 * What's here:
 

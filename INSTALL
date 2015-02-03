@@ -21,8 +21,10 @@ section! Thanks.
 
 BUILDING FROM A GIT CLONE
 
-These are brief instructions that I hope will cover most cases (added
-12/13/14). 
+Note that as of 2/3/15 the BES master branch software supports DAP4
+and DAP2, and thus requires libdap4. If you want to build the older
+DAP2-only software, checkout the 'dap2' branch here and for each of
+the modules.
 
 1. The BES repo on GitHub can be built two ways. The cloned
 repo can be configured to build the framework only or it can be
@@ -59,13 +61,14 @@ If you want all of the modules on a branch (e.g., 'master) use:
 4. Run './configure' It's quite likely you will want to set the
 install directory for the BES to be something other than
 /usr/local/bin, etc., so use --prefix to set the BES prefix. If you're
-building all of the modules, use --with-dependencies=<path> to
-provide the prefix to those packages if they are not installed in
-standard locations. There sre many more --with-* options including
-once for each individual thrid-party package; --help will list them
-all.
+building the modules and you have the dependenncies installed in a
+'non-standard' location, use --with-dependencies=<path> to provide the
+prefix to those packages. Note that we have a repo/tar-ball called
+'hyrax-dependencies' that will build all of the dependencies needed by
+hyrax. There are many more --with-* options including once for each
+individual thrid-party package; --help will list them all.
 
-5. Run 'make'. If you have several codes, use -j <n> to speed things
+5. Run 'make'. If you have several cores, use -j <n> to speed things
 up.
 
 6. Test it: 'make check'. Try -j here, but some of the tests may balk
@@ -74,7 +77,7 @@ at a parallel build. Without -j they should all pass or have an
 
 7. Install it: 'make install'
 
-BUILDING FROM A SOURCE DISTRIBUTION
+BUILDING FROM A SOURCE DISTRIBUTION (a tar.gz file)
 
 To build the BES software, follow these steps:
 
