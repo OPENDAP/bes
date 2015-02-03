@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,7 +36,7 @@
 #include "BESDataNames.h"
 #include "BESLog.h"
 
-map< string, p_xmlcmd_builder> BESXMLCommand::cmd_list ;
+map<string, p_xmlcmd_builder> BESXMLCommand::cmd_list;
 
 /** @brief Creates a BESXMLCommand document given a base data handler
  * interface object
@@ -45,30 +45,25 @@ map< string, p_xmlcmd_builder> BESXMLCommand::cmd_list ;
  * document, there can be multiple data handler interface objects
  * created. Use the one passed as the base interface handler object
  */
-BESXMLCommand::BESXMLCommand( const BESDataHandlerInterface &base_dhi )
+BESXMLCommand::BESXMLCommand(const BESDataHandlerInterface &base_dhi)
 {
-    _dhi.make_copy( base_dhi ) ;
+    _dhi.make_copy(base_dhi);
 }
 
 /** @brief The request has been parsed, use the command action name to
  * set the response handler
  */
-void
-BESXMLCommand::set_response()
+void BESXMLCommand::set_response()
 {
-    _dhi.response_handler =
-	BESResponseHandlerList::TheList()->find_handler( _dhi.action ) ;
-    if( !_dhi.response_handler )
-    {
-	string err( "Command " ) ;
-	err += _dhi.action + " does not have a registered response handler" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    _dhi.response_handler = BESResponseHandlerList::TheList()->find_handler(_dhi.action);
+    if (!_dhi.response_handler) {
+        string err("Command ");
+        err += _dhi.action + " does not have a registered response handler";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _dhi.data[DATA_REQUEST] = _str_cmd ;
-    *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
-			<< " from " << _dhi.data[REQUEST_FROM]
-			<< " [" << _str_cmd << "] received" << endl ;
-
+    _dhi.data[DATA_REQUEST] = _str_cmd;
+    *(BESLog::TheLog()) << _dhi.data[SERVER_PID] << " from " << _dhi.data[REQUEST_FROM] << " [" << _str_cmd
+            << "] received" << endl;
 }
 
 /** @brief Add a command to the possible commands allowed by this BES
@@ -81,10 +76,9 @@ BESXMLCommand::set_response()
  * @param cmd_str The name of the command
  * @param cmd The function to call to create the BESXMLCommand object
  */
-void
-BESXMLCommand::add_command( const string &cmd_str, p_xmlcmd_builder cmd )
+void BESXMLCommand::add_command(const string &cmd_str, p_xmlcmd_builder cmd)
 {
-    BESXMLCommand::cmd_list[cmd_str] = cmd ;
+    BESXMLCommand::cmd_list[cmd_str] = cmd;
 }
 
 /** @brief Deletes the command called cmd_str from the list of possible
@@ -92,27 +86,24 @@ BESXMLCommand::add_command( const string &cmd_str, p_xmlcmd_builder cmd )
  *
  * @param cmd_str The name of the command to remove from the list
  */
-bool
-BESXMLCommand::del_command( const string &cmd_str )
+bool BESXMLCommand::del_command(const string &cmd_str)
 {
-    bool ret = false ;
+    bool ret = false;
 
-    BESXMLCommand::cmd_iter iter = BESXMLCommand::cmd_list.find( cmd_str ) ;
-    if( iter != BESXMLCommand::cmd_list.end() )
-    {
-	BESXMLCommand::cmd_list.erase( iter ) ;
+    BESXMLCommand::cmd_iter iter = BESXMLCommand::cmd_list.find(cmd_str);
+    if (iter != BESXMLCommand::cmd_list.end()) {
+        BESXMLCommand::cmd_list.erase(iter);
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief Find the BESXMLCommand creation function with the given name
  *
  * @param cmd_str The name of the command creation function to find
  */
-p_xmlcmd_builder
-BESXMLCommand::find_command( const string &cmd_str )
+p_xmlcmd_builder BESXMLCommand::find_command(const string &cmd_str)
 {
-    return BESXMLCommand::cmd_list[cmd_str] ;
+    return BESXMLCommand::cmd_list[cmd_str];
 }
 
 /** @brief dumps information about this object
@@ -121,12 +112,10 @@ BESXMLCommand::find_command( const string &cmd_str )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLCommand::dump( ostream &strm ) const
+void BESXMLCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESIndent::UnIndent();
 }
 

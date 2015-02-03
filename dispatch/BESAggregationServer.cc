@@ -45,7 +45,7 @@ BESAggregationServer::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "BESAggregationServer::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name: " << _name << endl ;
+    strm << BESIndent::LMarg << "name: " << d_name << endl ;
     BESIndent::UnIndent() ;
 }
 

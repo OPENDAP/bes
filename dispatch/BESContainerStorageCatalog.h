@@ -46,8 +46,8 @@ class BESCatalogUtils;
  *
  * When a container is added to this container storage, the file extension
  * is used to determine the type of data using a set of regular expressions.
- * The regular expressions are retrieved from the BES configuraiton
- * file using TheBESKeys. It also gets the catalogs root directory for
+ * The regular expressions are retrieved from the BES configuration
+ * file using TheBESKeys. It also gets the catalog's root directory for
  * where the files exist. This way, the user need not know the root directory
  * or the type of data represented by the container.
  *

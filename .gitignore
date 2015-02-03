@@ -76,6 +76,7 @@ dap/unit-tests/StoredDap2ResultTest
 dap/unit-tests/StoredDap4ResultTest
 dap/unit-tests/test_config.h
 
+dapreader/dapreader.conf
 dapreader/bes-testsuite/atconfig
 dapreader/bes-testsuite/atlocal
 dapreader/bes-testsuite/bes.conf

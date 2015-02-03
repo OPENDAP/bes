@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,14 +36,14 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 
-class BESAggregationServer ;
+class BESAggregationServer;
 
-typedef BESAggregationServer * (*p_agg_handler)( string name ) ;
+typedef BESAggregationServer * (*p_agg_handler)(const string &name);
 
 /** @brief List of all registered aggregation handlers for this server
  *
@@ -52,30 +52,33 @@ typedef BESAggregationServer * (*p_agg_handler)( string name ) ;
  *
  * @see 
  */
-class BESAggFactory : public BESObj
+class BESAggFactory: public BESObj
 {
 private:
-    static BESAggFactory *	_instance ;
+    static BESAggFactory * _instance;
 
-    map< string, p_agg_handler > _handler_list ;
+    map<string, p_agg_handler> _handler_list;
 protected:
-				BESAggFactory(void) {}
+    BESAggFactory(void)
+    {
+    }
 public:
-    virtual			~BESAggFactory(void) {}
+    virtual ~BESAggFactory(void)
+    {
+    }
 
-    typedef map< string, p_agg_handler >::const_iterator Handler_citer ;
-    typedef map< string, p_agg_handler >::iterator Handler_iter ;
+    typedef map<string, p_agg_handler>::const_iterator Handler_citer;
+    typedef map<string, p_agg_handler>::iterator Handler_iter;
 
-    virtual bool		add_handler( string handler_name,
-					   p_agg_handler handler_method ) ;
-    virtual bool		remove_handler( string handler_name ) ;
-    virtual BESAggregationServer *find_handler( string handler_name ) ;
+    virtual bool add_handler(const string &handler_name, p_agg_handler handler_method);
+    virtual bool remove_handler(const string &handler_name);
+    virtual BESAggregationServer *find_handler(const string &handler_name);
 
-    virtual string		get_handler_names() ;
+    virtual string get_handler_names();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESAggFactory *	TheFactory() ;
+    static BESAggFactory * TheFactory();
 };
 
 #endif // I_BESAggFactory_h
