@@ -53,7 +53,8 @@ test_config.h: test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest
+UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
+TabularFunctionTest
 	
 else
 UNIT_TESTS =
@@ -77,4 +78,7 @@ Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  
 
 GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc
 GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+
+TabularFunctionTest_SOURCES = TabularFunctionTest.cc
+TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 

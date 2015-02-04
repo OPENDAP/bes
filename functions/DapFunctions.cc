@@ -38,6 +38,7 @@ using std::endl;
 #include "MakeArrayFunction.h"
 #include "BindNameFunction.h"
 #include "BindShapeFunction.h"
+#include "TabularFunction.h"
 
 #include "DapFunctions.h"
 
@@ -54,6 +55,9 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new BindShapeFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new VersionFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new TabularFunction());
+
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

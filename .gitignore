@@ -117,6 +117,7 @@ functions/tests/generate_metadata_baseline.sh
 functions/tests/package.m4
 functions/unit-tests/CEFunctionsTest
 functions/unit-tests/GridGeoConstraintTest
+functions/unit-tests/TabularFunctionTest
 functions/unit-tests/test_config.h
 
 ppt/unit-tests/connT
