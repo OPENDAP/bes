@@ -3,7 +3,7 @@ SUBDIRS =
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
@@ -79,6 +79,8 @@ Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  
 GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc
 GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 
-TabularFunctionTest_SOURCES = TabularFunctionTest.cc
+# If dist/distclean fails here, look at the ../ SOURCES and the value of subdir-objects.
+# It may be that subdir-objects must be set up higher in the chain of Makefiles.
+TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h TabularFunctionTest.cc
 TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 

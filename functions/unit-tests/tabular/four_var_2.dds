@@ -1,0 +1,6 @@
+Dataset {
+	Byte a[4][2];
+	Int32 b[4][2];
+	Float32 c[4][2];
+	Float64 d[4][2];
+} four_var_2;

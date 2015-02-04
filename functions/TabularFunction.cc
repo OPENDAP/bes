@@ -54,7 +54,7 @@ namespace libdap {
 vector<long long>
 compute_array_shape(Array *a)
 {
-    vector<long long>shape(a->dimensions());
+    vector<long long> shape;
 
     for (Array::Dim_iter i = a->dim_begin(), e = a->dim_end(); i != e; ++i) {
         shape.push_back(a->dimension_size(i));
@@ -71,7 +71,7 @@ compute_array_shape(Array *a)
  * @return True if the shapes match, False otherwise.
  */
 bool
-array_shape_matches(Array *a, vector<long long>shape)
+array_shape_matches(Array *a, vector<long long> shape)
 {
     // Same number of dims
     if (shape.size() != a->dimensions())
@@ -83,6 +83,7 @@ array_shape_matches(Array *a, vector<long long>shape)
     while (i != e && si != se) {
         if (*si != a->dimension_size(i))
             return false;
+        ++i; ++si;
     }
 
     return true;
@@ -112,9 +113,11 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
     auto_ptr<Sequence> response(new Sequence("table"));
 
     int num_arrays = argc;              // Might pass in other stuff...
-    vector<long long>shape;             // Holds shape info; used to test array sizes for uniformity
+    vector<long long> shape;             // Holds shape info; used to test array sizes for uniformity
     vector<Array*>the_arrays(num_arrays);
     Array *a = 0;
+
+    DBG(cerr << "num_arrays: " << num_arrays << endl);
 
     // Add support for N arrays, all of the same size
     for (int n = 0; n < num_arrays; ++n) {
@@ -129,17 +132,17 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
         if (n == 0)
             shape = compute_array_shape(a);
         else if (!array_shape_matches(a, shape))
-            throw Error("In tabular: Array '" + a->name() + "' does not match the shape of the initial Array '" + argv[0]->name() + ". Array shapes must match.");
-        else
-            assert(!"In function_dap2_tabular, should never get here");
+            throw Error("In tabular: Array '" + a->name() + "' does not match the shape of the initial Array '" + argv[0]->name() + "'. Array shapes must match.");
 
-        the_arrays.push_back(a);
+        the_arrays.at(n) = a;
         a->read();
         a->set_read_p(true);
 
         // Add the column prototype to the result Sequence
         response->add_var(a->var());
     }
+
+    DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
 
     // Now build the SequenceValues object; SequenceValues == vector<BaseTypeRow*>
     SequenceValues sv;
@@ -150,7 +153,8 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
         BaseTypeRow *row = new BaseTypeRow(num_arrays); // BaseTypeRow == vector<BaseType*>
 
         for (int j = 0; j < num_arrays; ++j) {
-            row->at(j) = the_arrays[j]->var(i);      // i == row number; j == column (or array) number
+            DBG(cerr << "the_arrays.at(" << j << ") " << the_arrays.at(j) << endl);
+            row->at(j) = the_arrays.at(j)->var(i);      // i == row number; j == column (or array) number
         }
 
         sv.push_back(row);
