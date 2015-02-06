@@ -21,13 +21,7 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
-SUBDIRS = . unit-tests
-# I've removed the tests because they break distcheck and fresh
-# builds. The best fix is to move this out of the BES OR to use
-# dapreader and *.dods files instead of the netcdf_handler (or both
-# ;-) jhrg 8/28/13
-#
-# tests
+SUBDIRS = . unit-tests tests
 
 DIST_SUBDIRS = unit-tests tests swath2grid
 
@@ -43,12 +37,14 @@ BUILT_SOURCES = gse.tab.cc gse.tab.hh lex.gse.cc
 SRCS = grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
 gse.tab.cc lex.gse.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
 LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
-BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc
+BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
+TabularSequence.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
 GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
-BindNameFunction.h BindShapeFunction.h TabularFunction.h
+BindNameFunction.h BindShapeFunction.h TabularFunction.h \
+TabularSequence.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

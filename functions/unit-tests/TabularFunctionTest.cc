@@ -152,7 +152,7 @@ public:
             CPPUNIT_ASSERT(i->value() == 123456789);
         }
     }
-#if 1
+
     void one_var_2_test() {
         // we know there's just one variable
         BaseType *btp = *(one_var_2_dds->var_begin());
@@ -190,9 +190,7 @@ public:
             DBG(cerr << "Seq.a, row " << long_to_string(j) << ": " << i->value() << endl);
             CPPUNIT_ASSERT(i->value() == 123456789);
         }
-
     }
-#endif
 
     void compute_array_shape_test() {
         BaseType *btp = *(four_var_dds->var_begin());
@@ -388,10 +386,40 @@ public:
         }
     }
 
+    void one_var_2_print_val_test() {
+        // we know there's just one variable
+        BaseType *btp = *(one_var_2_dds->var_begin());
+
+        CPPUNIT_ASSERT(btp->type() == dods_array_c);
+
+        // ... and it's an Int32 array
+        Array *a = static_cast<Array*>(btp);
+
+        // and it has four elements
+        CPPUNIT_ASSERT(a->length() == 12);
+
+        // call it; the function reads the values of the array
+        BaseType *argv[] = { a };
+        BaseType *result = 0;
+        function_dap2_tabular(1, argv, *one_var_dds, &result);
+
+
+        CPPUNIT_ASSERT(result->type() == dods_sequence_c);
+        Sequence *s = static_cast<Sequence*>(result);
+
+        ostringstream oss;
+        s->print_val_by_rows(oss);
+
+        DBG(cerr << "The sequence print rep: " << oss.str() << endl);
+
+        // compare it to a baseline file
+    }
+
     CPPUNIT_TEST_SUITE( TabularFunctionTest );
 
     CPPUNIT_TEST(one_var_test);
     CPPUNIT_TEST(one_var_2_test);
+    CPPUNIT_TEST(one_var_2_print_val_test);
 
     CPPUNIT_TEST(compute_array_shape_test);
     CPPUNIT_TEST(compute_array_shape_test_2);
