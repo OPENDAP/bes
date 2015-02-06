@@ -1,0 +1,10 @@
+
+The *.bescmd files in this directory are used to make *.dods, .das,
+etc., files that are then used by the dapreader handler for various
+tests so that we can test things like server functions on real data
+without needing the actual handlers that read the real data files.
+This decouples the handers' tests from other handlers.
+
+Use the besstandalone program with the 'build_responses.conf' file
+to make the .dods, ..., 'response files' and then use those with 
+dapreader to simulate reading actual HDF4, etc., files. 
