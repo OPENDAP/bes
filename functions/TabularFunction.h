@@ -30,8 +30,8 @@ class BaseType;
 class Array;
 class DDS;
 
-std::vector<long long>compute_array_shape(Array *a);
-bool array_shape_matches(Array *a, std::vector<long long> shape);
+std::vector<long long>array_shape(Array *a);
+bool shape_matches(Array *a, std::vector<long long> shape);
 
 void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
 BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);

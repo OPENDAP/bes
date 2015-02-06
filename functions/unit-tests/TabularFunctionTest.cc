@@ -196,7 +196,7 @@ public:
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = compute_array_shape(static_cast<Array*>(btp));
+        vector<long long>shape = array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
@@ -207,7 +207,7 @@ public:
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = compute_array_shape(static_cast<Array*>(btp));
+        vector<long long>shape = array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
@@ -220,18 +220,18 @@ public:
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = compute_array_shape(static_cast<Array*>(btp));
+        vector<long long>shape = array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
         CPPUNIT_ASSERT(shape[0] == 4);
 
-        CPPUNIT_ASSERT(array_shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
 
         btp = *(four_var_dds->var_begin() + 1);
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        CPPUNIT_ASSERT(array_shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
     }
 
     void array_shape_matches_test_2() {
@@ -239,19 +239,19 @@ public:
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = compute_array_shape(static_cast<Array*>(btp));
+        vector<long long>shape = array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
         CPPUNIT_ASSERT(shape[0] == 4);
         CPPUNIT_ASSERT(shape[1] == 2);
 
-        CPPUNIT_ASSERT(array_shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
 
         btp = *(four_var_2_dds->var_begin() + 1);
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        CPPUNIT_ASSERT(array_shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
     }
 
     void four_var_test() {
