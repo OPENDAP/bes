@@ -4,5 +4,5 @@ m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_0.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_1.dods.bescmd)
-
-
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_3.dods.bescmd)

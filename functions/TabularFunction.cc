@@ -147,7 +147,7 @@ build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector
  * object that is the value-result parameter.
  *
  * @param the_arrays Extract data from these arrays
- * @param num_values The number of values (rows)
+ * @param num_values The number of values (i.e, rows)
  * @param sv The destination object; a value-result parameter, passed
  * by reference. Note that DAP2's SequenceValues and DAP4's D4SeqValues
  * are both typedefs to a vector of vectors of BaseType pointers, so

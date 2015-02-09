@@ -118,27 +118,41 @@ TabularSequence::operator=(const TabularSequence &rhs)
 
 // This version ignores any constraint. jhrg 2/6/15
 bool
-TabularSequence::serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, bool /*ce_eval*/ /* true */)
+TabularSequence::serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, bool ce_eval /* true */)
 {
     DBG(cerr << "Entering TabularSequence::serialize for " << name() << endl);
 
     SequenceValues values = value();
-    SequenceValues::iterator i = values.begin(), e = values.end();
-    while (i != e) {
+    ce_eval = true;
+
+    for (SequenceValues::iterator i = values.begin(), e = values.end(); i != e; ++i) {
+
+        BaseTypeRow &btr = **i;
+
+        // Transfer values of the current row into the Seq's prototypes so the CE
+        // evaluator will find the values.
+        int j = 0;
+        for (BaseTypeRow::iterator vi = btr.begin(), ve = btr.end(); vi != ve; ++vi) {
+            void *val = 0;
+            (*vi)->buf2val(&val);
+            d_vars.at(j++)->val2buf(val);
+        }
+
+        // Evaluate the CE against this row; continue (skipping this row) if it fails
+        if (ce_eval && !eval.eval_selection(dds, dataset()))
+            continue;
+
+        // Write out this row of values
         write_start_of_instance(m);
 
-        BaseTypeRow &btrp = **i;
-
         // In this loop serialize will signal an error with an exception.
-        for (BaseTypeRow::iterator vi = btrp.begin(), ve = btrp.end(); vi != ve; ++vi) {
+        for (BaseTypeRow::iterator vi = btr.begin(), ve = btr.end(); vi != ve; ++vi) {
             DBG(cerr << "TabularSequence::serialize(), serializing " << (*vi)->name() << endl);
             if ((*vi)->send_p()) {
                 DBG(cerr << "Send P is true, sending " << (*vi)->name() << endl);
                 (*vi)->serialize(eval, dds, m, false);
             }
         }
-
-        ++i;
     }
 
     write_end_of_sequence(m);
