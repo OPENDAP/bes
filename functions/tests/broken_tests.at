@@ -1,0 +1,56 @@
+
+# Most of these are broken - return and fix when there is time
+# jhrg 2/6/15
+
+AT_BESCMD_RESPONSE_TEST(bescmd/versionFunction.dds.bescmd)
+
+# This test uses a pattern but tests only for one function.
+AT_BESCMD_PATTERN_DATA_RESPONSE_TEST(bescmd/versionFunction.dods.bescmd)
+
+# This is the 'help' call for the function and the test looks at the
+# response using a pattern.
+AT_BESCMD_PATTERN_DATA_RESPONSE_TEST(bescmd/grid.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/grid_2.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid.dods.bescmd)
+
+# These two requests ask for the same lat/lon box but do so using the
+# negative (-180 to 180) and positive (0 to 360) longitude conventions.
+# Even though the code does not test this, both should return the same
+# array values (the lon map's values are in the convention of the respective
+# request).
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid_3.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_3.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_3.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_5.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_6.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_7.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_8.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_3.dods.bescmd)
+# These tests fail when using developer mode
+AT_BESCMD_RESPONSE_TEST(bescmd/bind_name_2.dods.bescmd)
+AT_BESCMD_RESPONSE_TEST(bescmd/bind_name_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_name_5.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_1.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/fast_array_test_3.dods.bescmd)
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_1.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_3.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_5.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_6.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_7.dods.bescmd)

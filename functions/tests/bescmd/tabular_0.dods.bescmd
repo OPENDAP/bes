@@ -5,15 +5,18 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/fnoc.dods</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/fnoc.dods</bes:setContainer>
   
-  <bes:define name="d1" space="default">
-    <bes:container name="catalogContainer">
-      <!-- y = mx + b -->
-        <bes:constraint>bind_name(bar,v)</bes:constraint>
+  <!-- the purpose of this test is to see the values in lat - to
+       double check the dapreader handler and the fnoc.dods data
+       file -->
+       
+  <bes:define name="d1">
+    <bes:container name="c">
+      <bes:constraint>lat</bes:constraint>
     </bes:container>
   </bes:define>
   
-  <bes:get type="dods" definition="d1" />
+  <bes:get type="dods" definition="d1"/>
   
 </bes:request>
