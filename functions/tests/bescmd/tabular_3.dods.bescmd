@@ -5,12 +5,12 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/fnoc.dods</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/fnoc.dods</bes:setContainer>
   
   <bes:define name="d1" space="default">
-    <bes:container name="catalogContainer">
-      <!-- y = mx + b -->
-        <bes:constraint>bind_name(bar,v)</bes:constraint>
+    <bes:container name="c">
+      <!-- tabular(lat) & lat < 41 & lat > 19 (it seems the spaces don't break my parser)-->
+      <bes:constraint>tabular(lat) &amp; lat &lt; 41 &amp; lat &gt; 19</bes:constraint>
     </bes:container>
   </bes:define>
   

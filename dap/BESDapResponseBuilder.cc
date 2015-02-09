@@ -117,20 +117,19 @@ void BESDapResponseBuilder::initialize()
 BESDapResponseCache *
 BESDapResponseBuilder::responseCache()
 {
-	if (!d_response_cache)
-		d_response_cache =  BESDapResponseCache::get_instance();
+    if (!d_response_cache) d_response_cache = BESDapResponseCache::get_instance();
 
-	return d_response_cache;
+    return d_response_cache;
 }
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
-	if (d_response_cache) delete d_response_cache;
+    if (d_response_cache) delete d_response_cache;
 
-	// If an alarm was registered, delete it. The register code in SignalHandler
-	// always deletes the old alarm handler object, so only the one returned by
-	// remove_handler needs to be deleted at this point.
-	delete dynamic_cast<AlarmHandler*>(SignalHandler::instance()->remove_handler(SIGALRM));
+    // If an alarm was registered, delete it. The register code in SignalHandler
+    // always deletes the old alarm handler object, so only the one returned by
+    // remove_handler needs to be deleted at this point.
+    delete dynamic_cast<AlarmHandler*>(SignalHandler::instance()->remove_handler(SIGALRM));
 }
 
 /** Return the entire DAP2 constraint expression in a string.  This
@@ -182,7 +181,6 @@ void BESDapResponseBuilder::set_dap4ce(string _ce)
     d_dap4ce = www2id(_ce, "%", "%20");
 }
 
-
 /** Return the entire DAP4 server side function expression in a string.
  @brief Get the DAP4 server side function expression.
  @return A string object that contains the constraint expression. */
@@ -209,24 +207,24 @@ void BESDapResponseBuilder::set_dap4function(string _func)
 
 std::string BESDapResponseBuilder::get_store_result() const
 {
-	return d_store_result;
+    return d_store_result;
 }
 
 void BESDapResponseBuilder::set_store_result(std::string _sr)
 {
-	d_store_result = _sr;
-	BESDEBUG("dap", "BESDapResponseBuilder::set_store_result() - store_result: " << _sr << endl);
+    d_store_result = _sr;
+    BESDEBUG("dap", "BESDapResponseBuilder::set_store_result() - store_result: " << _sr << endl);
 }
 
 std::string BESDapResponseBuilder::get_async_accepted() const
 {
-	return d_async_accepted;
+    return d_async_accepted;
 }
 
 void BESDapResponseBuilder::set_async_accepted(std::string _aa)
 {
-	d_async_accepted = _aa;
-	BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << _aa << endl);
+    d_async_accepted = _aa;
+    BESDEBUG("dap", "BESDapResponseBuilder::set_async_accepted() - async_accepted: " << _aa << endl);
 }
 
 /** The ``dataset name'' is the filename or other string that the
@@ -275,7 +273,7 @@ int BESDapResponseBuilder::get_timeout() const
 
 /** Use values of this instance to establish a timeout alarm for the server.
  If the timeout value is zero, do nothing.
-*/
+ */
 void BESDapResponseBuilder::establish_timeout(ostream &stream) const
 {
 #ifndef WIN32
@@ -290,29 +288,27 @@ void BESDapResponseBuilder::establish_timeout(ostream &stream) const
 
 void BESDapResponseBuilder::remove_timeout() const
 {
-	alarm(0);
+    alarm(0);
 }
 
-static string::size_type
-find_closing_paren(const string &ce, string::size_type pos)
+static string::size_type find_closing_paren(const string &ce, string::size_type pos)
 {
-	// Iterate over the string finding all ( or ) characters until the matching ) is found.
-	// For each ( found, increment count. When a ) is found and count is zero, it is the
-	// matching closing paren, otherwise, decrement count and keep looking.
-	int count = 1;
-	do {
-		pos = ce.find_first_of("()", pos + 1);
-		if (pos == string::npos)
-			throw Error(malformed_expr, "Expected to find a matching closing parenthesis in " + ce);
+    // Iterate over the string finding all ( or ) characters until the matching ) is found.
+    // For each ( found, increment count. When a ) is found and count is zero, it is the
+    // matching closing paren, otherwise, decrement count and keep looking.
+    int count = 1;
+    do {
+        pos = ce.find_first_of("()", pos + 1);
+        if (pos == string::npos) throw Error(malformed_expr,
+                "Expected to find a matching closing parenthesis in " + ce);
 
-		if (ce[pos] == '(')
-			++count;
-		else
-			--count;	// must be ')'
+        if (ce[pos] == '(') ++count;
+        else
+            --count;	// must be ')'
 
-	} while (count > 0);
+    } while (count > 0);
 
-	return pos;
+    return pos;
 }
 
 /**
@@ -321,13 +317,11 @@ find_closing_paren(const string &ce, string::size_type pos)
  *  the rest of the CE (which can contain simple and slicing projection
  *  as well as other types of function calls).
  */
-void
-BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
+void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
 {
-	BESDEBUG("dap", "Entering ResponseBuilder::split_ce" << endl);
+    BESDEBUG("dap", "Entering ResponseBuilder::split_ce" << endl);
     string ce;
-    if (!expr.empty())
-        ce = expr;
+    if (!expr.empty()) ce = expr;
     else
         ce = d_dap2ce;
 
@@ -338,30 +332,25 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
     // open paren and the last closing paren to accommodate nested function calls
     string::size_type first_paren = ce.find("(", pos);
     string::size_type closing_paren = string::npos;
-    if (first_paren != string::npos)
-    	closing_paren = find_closing_paren(ce, first_paren); //ce.find(")", pos);
-
+    if (first_paren != string::npos) closing_paren = find_closing_paren(ce, first_paren); //ce.find(")", pos);
 
     while (first_paren != string::npos && closing_paren != string::npos) {
         // Maybe a BTP function; get the name of the potential function
-        string name = ce.substr(pos, first_paren-pos);
+        string name = ce.substr(pos, first_paren - pos);
 
         // is this a BTP function
         btp_func f;
         if (eval.find_function(name, &f)) {
             // Found a BTP function
-            if (!btp_function_ce.empty())
-                btp_function_ce += ",";
-            btp_function_ce += ce.substr(pos, closing_paren+1-pos);
-            ce.erase(pos, closing_paren+1-pos);
-            if (ce[pos] == ',')
-                ce.erase(pos, 1);
+            if (!btp_function_ce.empty()) btp_function_ce += ",";
+            btp_function_ce += ce.substr(pos, closing_paren + 1 - pos);
+            ce.erase(pos, closing_paren + 1 - pos);
+            if (ce[pos] == ',') ce.erase(pos, 1);
         }
         else {
             pos = closing_paren + 1;
             // exception?
-            if (pos < ce.length() && ce.at(pos) == ',')
-                ++pos;
+            if (pos < ce.length() && ce.at(pos) == ',') ++pos;
         }
 
         first_paren = ce.find("(", pos);
@@ -391,8 +380,7 @@ BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
  @deprecated */
 void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_headers) const
 {
-    if (with_mime_headers)
-        set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
+    if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
 
     das.print(out);
 
@@ -416,15 +404,15 @@ void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_head
  * @param constrained Should the result be constrained
  * @param with_mime_headers Should MIME headers be sent to out?
  */
-void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained, bool with_mime_headers)
+void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool constrained,
+        bool with_mime_headers)
 {
     // Set up the alarm.
     establish_timeout(out);
     dds.set_timeout(d_timeout);
 
     if (!constrained) {
-        if (with_mime_headers)
-            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
+        if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
 
         dds.print_das(out);
         out << flush;
@@ -446,25 +434,24 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
             fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
         }
         else {
-        	func_eval.parse_constraint(d_btp_func_ce, dds);
+            func_eval.parse_constraint(d_btp_func_ce, dds);
             fdds = func_eval.eval_function_clauses(dds);
         }
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         fdds->print_das(out);
 
-        if (responseCache())
-        	responseCache()->unlock_and_close(cache_token);
+        if (responseCache()) responseCache()->unlock_and_close(cache_token);
 
         delete fdds;
     }
     else {
         eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         dds.print_das(out);
     }
@@ -494,8 +481,8 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         bool with_mime_headers)
 {
     if (!constrained) {
-        if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         dds.print(out);
         out << flush;
@@ -534,21 +521,20 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 
         eval.parse_constraint(d_dap2ce, *fdds);
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         fdds->print_constrained(out);
 
-        if (responseCache())
-        	responseCache()->unlock_and_close(cache_token);
+        if (responseCache()) responseCache()->unlock_and_close(cache_token);
 
         delete fdds;
     }
     else {
         eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         dds.print_constrained(out);
     }
@@ -570,81 +556,81 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
  * @return True if the response should/will be returned asynchronously, false
  * otherwise.
  */
-bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval) {
+bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval)
+{
 
-	if(get_store_result().length()!=0){
-		string serviceUrl = get_store_result();
+    if (get_store_result().length() != 0) {
+        string serviceUrl = get_store_result();
 
-		XMLWriter xmlWrtr;
-		D4AsyncUtil d4au;
+        XMLWriter xmlWrtr;
+        D4AsyncUtil d4au;
 
-		bool found;
-		string *stylesheet_ref=0, ss_ref_value;
-	    TheBESKeys::TheKeys()->get_value( D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found ) ;
-	    if( found && ss_ref_value.length()>0) {
-	    	stylesheet_ref = &ss_ref_value;
-	    }
+        bool found;
+        string *stylesheet_ref = 0, ss_ref_value;
+        TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
+        if (found && ss_ref_value.length() > 0) {
+            stylesheet_ref = &ss_ref_value;
+        }
 
-		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-		if(resultCache == NULL){
+        BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+        if (resultCache == NULL) {
 
-			/**
-			 * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
-			 * Looks like need to reject the request and move on.
-			 *
-			 */
-			string msg =  "The Stored Result request cannot be serviced. ";
-			msg += "Unable to acquire StoredResultCache instance. ";
-			msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
+            /**
+             * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
+             * Looks like need to reject the request and move on.
+             *
+             */
+            string msg = "The Stored Result request cannot be serviced. ";
+            msg += "Unable to acquire StoredResultCache instance. ";
+            msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
 
-			BESDEBUG("dap", "[WARNING] " << msg << endl);
-			d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - Sent AsyncRequestRejected" << endl);
-			return true;
-		}
+            BESDEBUG("dap", "[WARNING] " << msg << endl);
+            d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - Sent AsyncRequestRejected" << endl);
+            return true;
+        }
 
+        if (get_async_accepted().length() != 0) {
 
-		if(get_async_accepted().length() != 0){
+            /**
+             * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
+             */
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - serviceUrl="<< serviceUrl << endl);
 
-			/**
-			 * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
-			 */
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - serviceUrl="<< serviceUrl << endl);
+            BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+            string storedResultId = "";
+            storedResultId = resultCache->store_dap2_result(dds, get_ce(), this, &eval);
 
-			BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-			string storedResultId="";
-			storedResultId = resultCache->store_dap2_result(dds, get_ce(), this, &eval);
+            BESDEBUG("dap",
+                    "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
 
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
+            string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
 
-			string targetURL = resultCache->assemblePath(serviceUrl,storedResultId);
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
+            XMLWriter xmlWrtr;
+            d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncAccepted response" << endl);
 
-			XMLWriter xmlWrtr;
-			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL,stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncAccepted response" << endl);
+        }
+        else {
+            /**
+             * Client didn't indicate a willingness to accept an async response
+             * So - we tell them that async is required.
+             */
+            d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
+        }
 
-		}
-		else {
-			/**
-			 * Client didn't indicate a willingness to accept an async response
-			 * So - we tell them that async is required.
-			 */
-			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0,stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
-		}
+        return true;
 
-
-		return true;
-
-	}
-	return false;
+    }
+    return false;
 }
 
 /**
@@ -652,22 +638,22 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
  */
 void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool ce_eval)
 {
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - BEGIN" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - BEGIN" << endl);
 
-	dds.print_constrained(out);
-	out << "Data:\n";
-	out << flush;
+    dds.print_constrained(out);
+    out << "Data:\n";
+    out << flush;
 
-	XDRStreamMarshaller m(out);
+    XDRStreamMarshaller m(out);
 
-	// Send all variables in the current projection (send_p())
-	for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++){
-		if ((*i)->send_p()) {
-			(*i)->serialize(eval, dds, m, ce_eval);
-		}
-	}
+    // Send all variables in the current projection (send_p())
+    for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+        if ((*i)->send_p()) {
+            (*i)->serialize(eval, dds, m, ce_eval);
+        }
+    }
 
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - END" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - END" << endl);
 }
 
 /**
@@ -677,39 +663,38 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
 void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
         const string &boundary, const string &start, bool ce_eval)
 {
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - BEGIN" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - BEGIN" << endl);
 
-	// Write the MPM headers for the DDX (text/xml) part of the response
-	libdap::set_mime_ddx_boundary(out, boundary, start, dods_ddx, x_plain);
+    // Write the MPM headers for the DDX (text/xml) part of the response
+    libdap::set_mime_ddx_boundary(out, boundary, start, dods_ddx, x_plain);
 
-	// Make cid
-	uuid_t uu;
-	uuid_generate(uu);
-	char uuid[37];
-	uuid_unparse(uu, &uuid[0]);
-	char domain[256];
-	if (getdomainname(domain, 255) != 0 || strlen(domain) == 0)
-		strncpy(domain, "opendap.org", 255);
+    // Make cid
+    uuid_t uu;
+    uuid_generate(uu);
+    char uuid[37];
+    uuid_unparse(uu, &uuid[0]);
+    char domain[256];
+    if (getdomainname(domain, 255) != 0 || strlen(domain) == 0) strncpy(domain, "opendap.org", 255);
 
-	string cid = string(&uuid[0]) + "@" + string(&domain[0]);
-	// Send constrained DDX with a data blob reference
-	dds.print_xml_writer(out, true, cid);
+    string cid = string(&uuid[0]) + "@" + string(&domain[0]);
+    // Send constrained DDX with a data blob reference
+    dds.print_xml_writer(out, true, cid);
 
-	// write the data part mime headers here
-	set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
+    // write the data part mime headers here
+    set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
 
-	XDRStreamMarshaller m(out);
+    XDRStreamMarshaller m(out);
 
-	// Send all variables in the current projection (send_p()). In DAP4,
-	// all of the top-level variables are serialized with their checksums.
-	// Internal variables are not.
-	for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
-		if ((*i)->send_p()) {
-			(*i)->serialize(eval, dds, m, ce_eval);
-		}
-	}
+    // Send all variables in the current projection (send_p()). In DAP4,
+    // all of the top-level variables are serialized with their checksums.
+    // Internal variables are not.
+    for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+        if ((*i)->send_p()) {
+            (*i)->serialize(eval, dds, m, ce_eval);
+        }
+    }
 
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - END" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - END" << endl);
 }
 
 /** Send the data in the DDS object back to the client program. The data is
@@ -728,11 +713,12 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
  @param with_mime_headers If true, include the MIME headers in the response.
  Defaults to true.
  @return void */
-void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
+void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, ConstraintEvaluator &eval,
+        bool with_mime_headers)
 {
-	BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BEGIN"<< endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BEGIN"<< endl);
 
-	// Set up the alarm.
+    // Set up the alarm.
     establish_timeout(data_stream);
     dds.set_timeout(d_timeout);
 
@@ -751,15 +737,14 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // on the DDS (fdds)
         ConstraintEvaluator func_eval;
         if (responseCache()) {
-        	BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
             fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
         }
         else {
-        	BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
-        	func_eval.parse_constraint(d_btp_func_ce, dds);
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
+            func_eval.parse_constraint(d_btp_func_ce, dds);
             fdds = func_eval.eval_function_clauses(dds);
         }
-        BESDEBUG("dap", "constrained DDS: " << endl; fdds->print_constrained(cerr));
 
         // Server functions might mark variables to use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
@@ -779,21 +764,20 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
             throw Error(msg);
         }
 
-        if (with_mime_headers)
-            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         BESDEBUG("dap", cerr << "BESDapResponseBuilder::send_dap2_data() - About to call dataset_constraint" << endl);
-    	if(!store_dap2_result(data_stream,dds,eval)){
-			serialize_dap2_data_dds(data_stream, *fdds, eval, false);
-    	}
+        if (!store_dap2_result(data_stream, dds, eval)) {
+            serialize_dap2_data_dds(data_stream, *fdds, eval, false);
+        }
 
-        if (responseCache())
-        	responseCache()->unlock_and_close(cache_token);
+        if (responseCache()) responseCache()->unlock_and_close(cache_token);
 
         delete fdds;
     }
     else {
-    	BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Simple constraint" << endl);
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Simple constraint" << endl);
 
         eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
@@ -806,18 +790,17 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
             throw Error(msg);
         }
 
-        if (with_mime_headers)
-            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
-		if (!store_dap2_result(data_stream, dds, eval)) {
-			serialize_dap2_data_dds(data_stream, dds, eval);
-		}
+        if (!store_dap2_result(data_stream, dds, eval)) {
+            serialize_dap2_data_dds(data_stream, dds, eval);
+        }
     }
 
     data_stream << flush;
 
-
-	BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - END"<< endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - END"<< endl);
 
 }
 
@@ -837,8 +820,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
     if (d_dap2ce.empty()) {
-        if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         dds.print_xml_writer(out, false /*constrained */, "");
         //dds.print(out);
@@ -878,21 +861,20 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 
         eval.parse_constraint(d_dap2ce, *fdds);
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         fdds->print_constrained(out);
 
-        if (responseCache())
-        	responseCache()->unlock_and_close(cache_token);
+        if (responseCache()) responseCache()->unlock_and_close(cache_token);
 
         delete fdds;
     }
     else {
         eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
 
-        if (with_mime_headers)
-            set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
+        if (with_mime_headers) set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset),
+                dds.get_dap_version());
 
         // dds.print_constrained(out);
         dds.print_xml_writer(out, true, "");
@@ -903,17 +885,16 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 
 void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_headers)
 {
-	// If the CE is not empty, parse it. The projections, etc., are set as a side effect.
+    // If the CE is not empty, parse it. The projections, etc., are set as a side effect.
     // If the parser returns false, the expression did not parse. The parser may also
     // throw Error
     if (!d_dap4ce.empty()) {
 
-    	BESDEBUG("dap", "BESDapResponseBuilder::send_dmr() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dmr() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
 
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok)
-            throw Error("Constraint Expression failed to parse.");
+        if (!parse_ok) throw Error("Constraint Expression failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -925,7 +906,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     XMLWriter xml;
-    dmr.print_dap4(xml, /*constrained &&*/ !d_dap4ce.empty() /* true == constrained */);
+    dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 
     out << flush;
@@ -934,10 +915,9 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
 {
     if (!d_dap4ce.empty()) {
-    	D4ConstraintEvaluator parser(&dmr);
+        D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok)
-            throw Error("Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok) throw Error("Constraint Expression (" + d_dap4ce + ") failed to parse.");
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -953,14 +933,14 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
         throw Error(msg);
     }
 
-	if (!store_dap4_result(out, dmr)) {
+    if (!store_dap4_result(out, dmr)) {
         serialize_dap4_data(out, dmr, with_mime_headers);
-	}
+    }
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
 {
-	try {
+    try {
         // Set up the alarm.
         establish_timeout(out);
 
@@ -973,24 +953,23 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
 
             // Function modules load their functions onto this list. The list is
             // part of libdap, not the BES.
-            if (!ServerFunctionsList::TheList())
-            	throw Error("The function expression could not be evaluated because there are no server functions defined on this server");
+            if (!ServerFunctionsList::TheList()) throw Error(
+                    "The function expression could not be evaluated because there are no server functions defined on this server");
 
             D4FunctionEvaluator parser(&dmr, ServerFunctionsList::TheList());
-    		bool parse_ok = parser.parse(d_dap4function);
-    		if (!parse_ok)
-    			throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
+            bool parse_ok = parser.parse(d_dap4function);
+            if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
-			parser.eval(&function_result);
+            parser.eval(&function_result);
 
-			// Now use the results of running the functions for the remainder of the
-			// send_data operation.
-			send_dap4_data_using_ce(out, function_result, with_mime_headers);
+            // Now use the results of running the functions for the remainder of the
+            // send_data operation.
+            send_dap4_data_using_ce(out, function_result, with_mime_headers);
         }
 
-    	send_dap4_data_using_ce(out, dmr, with_mime_headers);
+        send_dap4_data_using_ce(out, dmr, with_mime_headers);
 
-    	remove_timeout();
+        remove_timeout();
     }
     catch (...) {
         remove_timeout();
@@ -1003,10 +982,9 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
  */
 void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers)
 {
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - BEGIN" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - BEGIN" << endl);
 
-    if (with_mime_headers)
-        set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+    if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     // Write the DMR
     XMLWriter xml;
@@ -1015,7 +993,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     // now make the chunked output stream; set the size to be at least chunk_size
     // but make sure that the whole of the xml plus the CRLF can fit in the first
     // chunk. (+2 for the CRLF bytes).
-    chunked_ostream cos(out, max((unsigned int)CHUNK_SIZE, xml.get_doc_size()+2));
+    chunked_ostream cos(out, max((unsigned int) CHUNK_SIZE, xml.get_doc_size() + 2));
 
     // using flush means that the DMR and CRLF are in the first chunk.
     cos << xml.get_doc() << CRLF << flush;
@@ -1026,7 +1004,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     out << flush;
 
-	BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - END" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - END" << endl);
 }
 
 /**
@@ -1045,76 +1023,76 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
  */
 bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 {
-	if (get_store_result().length() != 0) {
-		string serviceUrl = get_store_result();
+    if (get_store_result().length() != 0) {
+        string serviceUrl = get_store_result();
 
-		D4AsyncUtil d4au;
-		XMLWriter xmlWrtr;
+        D4AsyncUtil d4au;
+        XMLWriter xmlWrtr;
 
-		bool found;
-		string *stylesheet_ref = 0, ss_ref_value;
-		TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
-		if (found && ss_ref_value.length() > 0) {
-			stylesheet_ref = &ss_ref_value;
-		}
+        bool found;
+        string *stylesheet_ref = 0, ss_ref_value;
+        TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
+        if (found && ss_ref_value.length() > 0) {
+            stylesheet_ref = &ss_ref_value;
+        }
 
-		BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-		if (resultCache == NULL) {
+        BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+        if (resultCache == NULL) {
 
-			/**
-			 * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
-			 * Looks like need to reject the request and move on.
-			 *
-			 */
-			string msg = "The Stored Result request cannot be serviced. ";
-			msg += "Unable to acquire StoredResultCache instance. ";
-			msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
+            /**
+             * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
+             * Looks like need to reject the request and move on.
+             *
+             */
+            string msg = "The Stored Result request cannot be serviced. ";
+            msg += "Unable to acquire StoredResultCache instance. ";
+            msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
 
-			BESDEBUG("dap", "[WARNING] " << msg << endl);
-			d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - Sent AsyncRequestRejected" << endl);
+            BESDEBUG("dap", "[WARNING] " << msg << endl);
+            d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - Sent AsyncRequestRejected" << endl);
 
-			return true;
-		}
+            return true;
+        }
 
-		if (get_async_accepted().length() != 0) {
+        if (get_async_accepted().length() != 0) {
 
-			/**
-			 * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
-			 */
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - serviceUrl="<< serviceUrl << endl);
+            /**
+             * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
+             */
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - serviceUrl="<< serviceUrl << endl);
 
-			string storedResultId = "";
-			storedResultId = resultCache->store_dap4_result(dmr, get_ce(), this);
+            string storedResultId = "";
+            storedResultId = resultCache->store_dap4_result(dmr, get_ce(), this);
 
-			BESDEBUG("dap",
-					"BESDapResponseBuilder::store_dap4_result() - storedResultId='"<< storedResultId << "'" << endl);
+            BESDEBUG("dap",
+                    "BESDapResponseBuilder::store_dap4_result() - storedResultId='"<< storedResultId << "'" << endl);
 
-			string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - targetURL='"<< targetURL << "'" << endl);
+            string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - targetURL='"<< targetURL << "'" << endl);
 
-			d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
+            d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
 
-		}
-		else {
-			/**
-			 * Client didn't indicate a willingness to accept an async response
-			 * So - we tell them that async is required.
-			 */
-			d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
-			out << xmlWrtr.get_doc();
-			out << flush;
-			BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
-		}
+        }
+        else {
+            /**
+             * Client didn't indicate a willingness to accept an async response
+             * So - we tell them that async is required.
+             */
+            d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
+            out << xmlWrtr.get_doc();
+            out << flush;
+            BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - sent AsyncAccepted" << endl);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 

@@ -1,28 +1,29 @@
 
+# This configuration file is used to build .dods, .das, .dmr, .dap responses
+# so that the dapreader handler can be used to test the function code, instead
+# of relying on handlerslike netcdf, etc., that may not be built when these
+# tests are rn.
+ 
 BES.User=user_name
 BES.Group=group_name
 
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-# BES.modules=dap,cmd,functions,nc,reader
-BES.modules=dap,cmd,functions,dapreader
+BES.modules=dap,cmd,nc
 
 # Load BES modules from the source dirs
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
-# I am trying this out with libreader for DAP4 stuff
-BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 
 # Load the netcdf module
-# BES.module.nc=@modulesdir@/libnc_module.so
+BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
 
-# BES.Catalog.catalog.TypeMatch=nc:.*.nc(.bz2|.gz|.Z)?$;
-BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
+BES.Catalog.catalog.TypeMatch=nc:.*.nc(.bz2|.gz|.Z)?$;
+# BES.Catalog.catalog.TypeMatch+=reader:.*\.(das|dds|data|data_ddx|dmr|dap|xml)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
