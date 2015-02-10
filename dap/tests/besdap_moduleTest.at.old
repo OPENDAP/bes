@@ -41,7 +41,7 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/besdap/$1], [$abs_srcdir/besdap/$1.baseline])
 ])
 
-# These tests read files using hte gateway from a machine at RPI. I'm not sure if they still 
+# These tests read files using the gateway from a machine at RPI. I'm not sure if they still 
 # work. jhrg 11/29/13
 # AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
 # AT_BESCMD_RESPONSE_TEST([test.01.bescmd])

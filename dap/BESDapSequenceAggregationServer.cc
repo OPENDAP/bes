@@ -39,6 +39,21 @@ void BESDapSequenceAggregationServer::aggregate(BESDataHandlerInterface &dhi)
 {
     // Print out the dhi info
     dhi.dump(std::cerr);
+#if 0
+    // Get the response object
+    BESResponseObject *response = dhi.response_handler->get_response_object() ;
+    BESDataDDSResponse *bes_data_dds = dynamic_cast < BESDataDDSResponse * >(response) ;
+    if( !bes_data_dds )
+       throw BESInternalError( "Expected a DataDDS", __FILE__, __LINE__ ) ;
+
+    // Test for a valid DataDDS - must have zero or more Structures and
+    // each Structure must contain one Sequence and each of those Sequences'
+    // elements must match in terms of number, type and name. Name is maybe
+    // not required. The Sequences can have different numbers of rows.
+
+    // Instead of building a new Sequence for the result, use the first
+    // Sequence and append values to it from the N-1 subsequent sequences
+#endif
 }
 
 void BESDapSequenceAggregationServer::dump(ostream &strm) const

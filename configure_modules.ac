@@ -27,12 +27,6 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-dnl AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
-dnl AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
-dnl AC_CONFIG_TESTDIR(functions/tests, [standalone])
-
-dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [standalone])
-
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
 dnl to default values otherwise.
@@ -755,6 +749,12 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/tests/atlocal
 
 		 dap/Makefile
+		 
+		 dap/tests/Makefile
+		 dap/tests/bes.conf
+		 dap/tests/package.m4
+		 dap/tests/atlocal
+		 
 		 dap/unit-tests/Makefile
 		 dap/unit-tests/test_config.h
 
@@ -762,7 +762,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
  		 functions/tests/package.m4
- 		 functions/tests/bes.conf:functions/tests/bes.conf.modules.in
+ 		 functions/tests/bes.conf
  		 functions/tests/data/build_responses.conf
 		 functions/unit-tests/Makefile])
 
@@ -786,6 +786,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(dap/tests, [standalone])
 
 dnl Output files if building the emodules too
 		 

@@ -56,6 +56,7 @@ using std::endl;
 
 // These I added to test the Null AggregationServer code jhrg 1/30/15
 #include "BESDapNullAggregationServer.h"
+#include "BESDapSequenceAggregationServer.h"
 #include "BESAggFActory.h"
 
 #include "BESDapTransmit.h"
@@ -120,7 +121,8 @@ void BESDapModule::initialize(const string &modname)
 
 	// Add the new 'Null' AggregationServer. jhrg 1/30/15
 	BESDEBUG("dap", "    adding null aggregation handler" << endl);
-	BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
+        BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
+        BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);
 
 	BESDEBUG("dap", "    adding dap debug context" << endl);
 	BESDebug::Register("dap");
