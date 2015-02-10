@@ -77,7 +77,7 @@ private:
     DDS *geo_dds_coads_lon;
 
 public:
-    GridGeoConstraintTest()
+    GridGeoConstraintTest() : geo_dds(0), geo_dds_3d(0), geo_dds_coads_lon(0)
     {}
     ~GridGeoConstraintTest()
     {}
