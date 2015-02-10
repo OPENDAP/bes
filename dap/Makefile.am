@@ -48,7 +48,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc \
 	BESStoredDapResultCache.cc \
-	BESDapNullAggregationServer.cc
+	BESDapNullAggregationServer.cc \
+	BESDapSequenceAggregationServer.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -72,7 +73,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseBuilder.h \
 	BESDapResponseCache.h \
 	BESStoredDapResultCache.h \
-	BESDapNullAggregationServer.h
+	BESDapNullAggregationServer.h \
+	BESDapSequenceAggregationServer.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -110,7 +112,6 @@ dap.conf: dap.conf.in $(top_builddir)/config.status
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
-
 
 C4_DIR=./cccc
 .PHONY: cccc
