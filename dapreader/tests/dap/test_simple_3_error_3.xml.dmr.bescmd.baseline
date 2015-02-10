@@ -1,15 +1,2 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <getDMR>
-        <BESError>
-            <Type>1</Type>
-            <Message>libdap exception building response: error_code = 1001: At line 1: In an Enumeration constant, the value '257' cannot fit in a variable of type 'UInt8'.
+libdap exception building response: error_code = 1001: At line 1: In an Enumeration constant, the value '257' cannot fit in a variable of type 'UInt8'.
 At line 1: The document contained unbalanced tags.</Message>
-            <Administrator>root@localhost</Administrator>
-            <Location>
-                <File>DapRequestHandler.cc</File>
-                <Line>196</Line>
-            </Location>
-        </BESError>
-    </getDMR>
-</response>
