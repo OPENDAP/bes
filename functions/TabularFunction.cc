@@ -194,8 +194,9 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
 void
 function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    // jhrg 2/5/15 auto_ptr<Sequence> response(new Sequence("table"));
-    unique_ptr<TabularSequence> response(new TabularSequence("table"));
+    // unique_ptr is not avialable on gcc 4.2. jhrg 2/11/15
+    // unique_ptr<TabularSequence> response(new TabularSequence("table"));
+    auto_ptr<TabularSequence> response(new TabularSequence("table"));
 
     int num_arrays = argc;              // Might pass in other stuff...
     vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
