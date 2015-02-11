@@ -237,7 +237,9 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr)
 {
-    unique_ptr<D4Sequence> response(new D4Sequence("table"));
+    // unique_ptr is not avialable on gcc 4.2. jhrg 2/11/15
+    //unique_ptr<D4Sequence> response(new D4Sequence("table"));
+    auto_ptr<D4Sequence> response(new D4Sequence("table"));
 
     int num_arrays = args->size();              // Might pass in other stuff...
     vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
