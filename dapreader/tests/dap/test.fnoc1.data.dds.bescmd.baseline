@@ -4,4 +4,4 @@ Dataset {
     Float32 lat[lat = 17];
     Float32 lon[lon = 21];
     Float32 time[time = 16];
-} fnoc1.nc;
+} fnoc1.data;

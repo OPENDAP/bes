@@ -73,7 +73,7 @@ bool DapRequestHandler::d_use_series_values_set = false;
 bool DapRequestHandler::d_use_test_types = true;
 bool DapRequestHandler::d_use_test_types_set = false;
 
-const string module = "reader";
+const string module = "dapreader";
 
 static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
 {
@@ -114,8 +114,100 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 }
 
-void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
+/** Read values from a DAP2 or DAP4 response
+ *
+ * @param accessed File that holds a 'frozen' DAP2 or DAP4 data response
+ * @param dds Value-result parameter; this DDS is loaded with new variables
+ * with values from the DAP2/4 data response.
+ */
+void DapRequestHandler::load_dds_from_data_file(const string &accessed, DDS &dds)
 {
+    BESDEBUG("dapreader", "In DapRequestHandler::load_dds_from_data_file; accessed: " << accessed << endl);
+
+    if (d_use_test_types)
+        dds.set_factory(new TestTypeFactory);   // DDS deletes the factory
+    else
+        dds.set_factory(new BaseTypeFactory);
+
+    auto_ptr<Connect> url(new Connect(accessed));
+    Response r(fopen(accessed.c_str(), "r"), 0);
+    if (!r.get_stream()) throw Error(string("The input source: ") + accessed + string(" could not be opened"));
+    url->read_data_no_mime(dds, &r);
+
+    auto_ptr<DAS> das(new DAS);
+    Ancillary::read_ancillary_das(*das, accessed);
+
+    if (das->get_size() > 0) dds.transfer_attributes(das.get());
+
+    // This is needed for the values read to show up. Without it the default
+    // behavior of the TestTypes will take over and the values from the data files
+    // will be ignored.
+    for (DDS::Vars_iter i = dds.var_begin(), e = dds.var_end(); i != e; i++) {
+        (*i)->set_read_p(true);
+    }
+}
+
+/** Given a .dds, .dods or .data file, build a DDS/DataDDS
+ *
+ * @param accessed The name of the Data file, a DAP2/DAP4 data response
+ * @param use_containers True if the 'explicit containers' context is set
+ * @param dds Value-result parameter. This should be the DDS bound to the
+ * BESDDSResponseObject or BESDDSDataResponseObject
+ */
+void DapRequestHandler::build_dds_from_file(const string &accessed, bool explicit_containers, DDS *dds)
+{
+    BESDEBUG("dapreader", "In DapRequestHandler::build_dds_from_file; accessed: " << accessed << endl);
+
+    if (extension_match(accessed, ".dds") && d_use_test_types) {
+        dds->set_factory(new TestTypeFactory);
+        dds->parse(accessed);   // This sets the dataset name based on what's in the file
+
+        DAS *das = new DAS;
+        //BESDASResponse bdas(das);           // BESDASResponse deletes the DAS
+        //bdas.set_container(container);      // sets the container field of the DAS held by the BESDASResponse
+        Ancillary::read_ancillary_das(*das, accessed);
+
+        if (das->get_size() > 0) dds->transfer_attributes(das);
+    }
+    else if (extension_match(accessed, ".dods") || extension_match(accessed, ".data")) {
+        if (explicit_containers) {
+            BESDEBUG("dapreader", "In DapRequestHandler::build_dds_from_file; in container code" << endl);
+            DDS local_dds(0);
+
+            // This function reads from a .dods, ..., 'frozen response' and loads
+            // the values into a DDS's variables. It then merges the Attributes read
+            // from a matching .das file into those variables. The code in Connect
+            // that reads the values is not 'container safe' so we use this function
+            // to read value into a 'local dds' and then transfer its variables to
+            // the real BESDDSResponseObject, which is the DDS passed to this function
+            load_dds_from_data_file(accessed, local_dds);
+
+            // Transfer variables just read into BESDDSResponse/BESDataDDSResponse's DDS
+            for (DDS::Vars_iter i = local_dds.var_begin(), e = local_dds.var_end(); i != e; i++) {
+                dds->add_var((*i)); // copy the variables; figure out how to not copy them
+            }
+        }
+        else {
+            BESDEBUG("dapreader", "In DapRequestHandler::build_dds_from_file; in plain code" << endl);
+            // In the non-container case, reading the values is pretty straightforward
+            load_dds_from_data_file(accessed, *dds);
+        }
+
+        dds->filename(accessed);
+        dds->set_dataset_name(name_path(accessed));
+    }
+    else {
+        throw Error("The dapreader module can only return DDS/DODS responses for files ending in .dods, .data or .dds");
+    }
+
+    BESDEBUG("dapreader2", "DDS/DDX in DapRequestHandler::build_dds_from_file: ");
+    if (BESDebug::IsSet("dapreader2")) dds->print_xml(*(BESDebug::GetStrm()), false);
+}
+
+void DapRequestHandler::build_dmr_from_file(const string& accessed, bool explicit_containers, DMR* dmr)
+{
+    BESDEBUG("dapreader", "In DapRequestHandler::build_dmr_from_file; accessed: " << accessed << endl);
+
     dmr->set_filename(accessed);
     dmr->set_name(name_path(accessed));
 
@@ -145,8 +237,10 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, DMR* dmr)
     }
     else if (extension_match(accessed, ".dds") || extension_match(accessed, ".dods")
             || extension_match(accessed, ".data")) {
+
         auto_ptr<DDS> dds(new DDS(0 /*factory*/));
-        build_dds_from_file(accessed, dds.get());
+
+        build_dds_from_file(accessed, explicit_containers, dds.get());
 
         dmr->build_using_dds(*dds);
     }
@@ -178,10 +272,7 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("BESDMRResponse cast error", __FILE__, __LINE__);
 
     try {
-        DMR *dmr = bdmr->get_dmr();
-        string accessed = dhi.container->access();
-
-        build_dmr_from_file(accessed, dmr);
+        build_dmr_from_file(dhi.container->access(), bdmr->get_explicit_containers(), bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -196,7 +287,7 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalFatalError("Unknown exception caught building DDS", __FILE__, __LINE__);
+        throw BESInternalFatalError("Unknown exception caught building a DMR", __FILE__, __LINE__);
     }
 
     BESDEBUG(module, "Leaving dap_build_dmr..." << endl);
@@ -216,19 +307,18 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
-    if (!bdmr) throw BESInternalError("DMR cast error", __FILE__, __LINE__);
+    if (!bdmr) throw BESInternalError("BESDMRResponse cast error", __FILE__, __LINE__);
 
     try {
         DMR *dmr = bdmr->get_dmr();
-        string accessed = dhi.container->access();
-
-        build_dmr_from_file(accessed, dmr);
+        build_dmr_from_file(dhi.container->access(), bdmr->get_explicit_containers(), dmr);
 
         if (d_use_series_values) {
             dmr->root()->set_read_p(false);
 
             TestCommon *tc = dynamic_cast<TestCommon*>(dmr->root());
-            if (tc) tc->set_series_values(true);
+            if (tc)
+                tc->set_series_values(true);
             else
                 throw Error("In the reader handler: Could not set UseSeriesValues");
         }
@@ -246,7 +336,7 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalFatalError("Unknown exception caught building DDS", __FILE__, __LINE__);
+        throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", __FILE__, __LINE__);
     }
 
     BESDEBUG(module, "Leaving dap_build_dap4data..." << endl);
@@ -300,55 +390,6 @@ bool DapRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
     return true;
 }
 
-void DapRequestHandler::build_dds_from_file(const string& accessed, DDS* dds)
-{
-    dds->filename(accessed);
-    dds->set_dataset_name(name_path(accessed));
-
-    TestTypeFactory test_factory;
-    BaseTypeFactory base_factory;
-    if (d_use_test_types) dds->set_factory(&test_factory);
-    else
-        dds->set_factory(&base_factory);
-
-    if (extension_match(accessed, ".dds") && d_use_test_types) {
-        dds->parse(accessed);
-    }
-    else if (extension_match(accessed, ".dods") || extension_match(accessed, ".data")) {
-        auto_ptr<Connect> url(new Connect(accessed));
-        Response r(fopen(accessed.c_str(), "r"), 0);
-        if (!r.get_stream()) throw Error(string("The input source: ") + accessed + string(" could not be opened"));
-
-        url->read_data_no_mime(*dds, &r);
-
-        // mark everything as read.
-        for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; i++) {
-            (*i)->set_read_p(true);
-        }
-    }
-    else {
-        dds->set_factory(0);
-        throw Error("The dapreader module can only return DDS/DODS responses for files ending in .dods, .data or .dds");
-    }
-
-    BESDEBUG("dapreader_2", "DDS in DapRequestHandler::build_dds_from_file: ");
-    if ( BESDebug::IsSet( "dapreader_2" ) )
-        dds->print(*(BESDebug::GetStrm()));
-
-    // If this fails, check that the bescmd file sets the Context 'dap_explicit_containers'
-    // to 'no' because without that, explicit containers are used and this will fail.
-    DAS das;
-    Ancillary::read_ancillary_das(das, accessed);
-
-    BESDEBUG("dapreader_2", "DAS in DapRequestHandler::build_dds_from_file: ");
-    if ( BESDebug::IsSet( "dapreader_2" ) )
-        das.print(*(BESDebug::GetStrm()));
-
-    if (das.get_size() > 0)
-        dds->transfer_attributes(&das);
-
-    dds->set_factory(0);
-}
 
 bool DapRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
 {
@@ -360,10 +401,8 @@ bool DapRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
 
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
-        DDS *dds = bdds->get_dds();
-        string accessed = dhi.container->access();
 
-        build_dds_from_file(accessed, dds);
+        build_dds_from_file(dhi.container->access(), bdds->get_explicit_containers(), bdds->get_dds());
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -396,13 +435,10 @@ bool DapRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
 
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
-        DataDDS *dds = bdds->get_dds();
-        string accessed = dhi.container->access();
 
-        build_dds_from_file(accessed, dds);
+        build_dds_from_file(dhi.container->access(), bdds->get_explicit_containers(), bdds->get_dds());
 
         bdds->set_constraint(dhi);
-
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -439,8 +475,8 @@ bool DapRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
     map<string, string> attrs;
-    attrs["name"] = PACKAGE_NAME;
-    attrs["version"] = PACKAGE_VERSION;
+    attrs["name"] = DAPREADER_PACKAGE /* PACKAGE_NAME */;
+    attrs["version"] = DAPREADER_VERSION /* PACKAGE_VERSION */;
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(module, services);
     if (services.size() > 0) {

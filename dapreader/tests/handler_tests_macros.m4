@@ -17,8 +17,8 @@ AT_ARG_OPTION_ARG([generate g],
 
 dnl echo "besstandalone -c bes.conf -i $at_arg_generate_dap  | getdap4 -D -M - > $at_arg_generate_dap.baseline"
 
-AT_ARG_OPTION_ARG([generate-dap a],
-    [  -a arg, --generate-dap=arg   Build the baseline file for test 'arg'],
+AT_ARG_OPTION_ARG([dap a],
+    [  -a arg, --dap=arg   Build the baseline file for test 'arg'],
     [if besstandalone -c bes.conf -i $at_arg_generate_dap  | getdap4 -D -M - > $at_arg_generate_dap.baseline; then
          echo "Built baseline for $at_arg_generate_dap"
      else
@@ -32,7 +32,9 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dap2 dap4])
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout], [], [ignore],[],[])
+# removed " || diff -b -B $abs_srcdir/$1.baseline stderr" from the above because
+# it made the output hard to read/decipher.
 AT_XFAIL_IF([test "$2" = "xfail"])
 AT_CLEANUP])
 
@@ -50,7 +52,8 @@ m4_define([AT_BESCMD_DATA_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dap2])
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout], [], [ignore],[],[])
+# See above re "|| diff -b -B $abs_srcdir/$1.baseline stderr"
 AT_XFAIL_IF([test "$2" = "xfail"])
 AT_CLEANUP])
 
@@ -68,7 +71,8 @@ m4_define([AT_BESCMD_DAP_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dap4])
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap4 -D -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout], [], [ignore],[],[])
+# See above ... "|| diff -b -B $abs_srcdir/$1.baseline stderr"
 AT_XFAIL_IF([test "$2" = "xfail"])
 AT_CLEANUP])
 
@@ -76,7 +80,8 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dap4 functions])
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap4 -D -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout || diff -b -B $abs_srcdir/$1.baseline stderr], [], [ignore],[],[])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout], [], [ignore],[],[])
+# see above ..." || diff -b -B $abs_srcdir/$1.baseline stderr"
 AT_XFAIL_IF([test "$2" = "xfail"])
 AT_CLEANUP])
 

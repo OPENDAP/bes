@@ -40,8 +40,9 @@ class DapRequestHandler: public BESRequestHandler {
 	static bool d_use_test_types_set;
 
 	// These are static because they are used by the static public methods.
-	static void build_dmr_from_file(const string& accessed, libdap::DMR* dmr);
-	static void build_dds_from_file(const string& accessed, libdap::DDS* dds);
+	static void build_dmr_from_file(const string& accessed, bool explicit_containers, libdap::DMR* dmr);
+	static void build_dds_from_file(const string& accessed, bool explicit_containers, libdap::DDS* dds);
+	static void load_dds_from_data_file(const string &accessed, libdap::DDS &dds);
 
 public:
 	DapRequestHandler(const string &name);
