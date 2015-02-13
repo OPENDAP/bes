@@ -1,3 +1,4 @@
 
 m4_include([handler_tests_macros.m4])
 
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggregation])

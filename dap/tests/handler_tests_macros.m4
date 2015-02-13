@@ -44,6 +44,26 @@ AT_ARG_OPTION_ARG([generate-data a],
      fi     
      exit],[])
 
+# Use these to actually run the tests.
+#
+# Usage: AT_BESCMD_*(<test> <keyword>)
+
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[AT_KEYWORD([$2])
+_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[AT_KEYWORD([$2])
+_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+])
+
+m4_define([AT_BESCMD_PATTERN_DATA_RESPONSE_TEST],
+[AT_KEYWORD([$2])
+_AT_BESCMD_PATTERN_DATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
+])
+
+# Helper code
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
 m4_define([_AT_BESCMD_TEST],   
@@ -66,21 +86,3 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], 
 AT_CHECK([grep -f $2 stdout], [], [ignore],[],[])
 AT_CLEANUP])
 
-# Use these to actually run the tests.
-#
-# Usage: AT_BESCMD_*(<test> <keyword>)
-
-m4_define([AT_BESCMD_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
-])
-
-m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
-])
-
-m4_define([AT_BESCMD_PATTERN_DATA_RESPONSE_TEST],
-[AT_KEYWORD([$2])
-_AT_BESCMD_PATTERN_DATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
-])
