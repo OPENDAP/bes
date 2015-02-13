@@ -27,19 +27,20 @@
 #include <DDS.h>
 #include <Structure.h>
 #include <Sequence.h>
-#include "ConstraintEvaluator.h"
+#include <ConstraintEvaluator.h>
+#include <mime_util.h>
 
-#include <BESResponseHandler.h>
-#include <BESDataHandlerInterface.h>
+#include "BESResponseHandler.h"
+#include "BESDataHandlerInterface.h"
 
-#include <BESDASResponse.h>
-#include <BESDDSResponse.h>
-#include <BESDataDDSResponse.h>
+#include "BESDASResponse.h"
+#include "BESDDSResponse.h"
+#include "BESDataDDSResponse.h"
 
-#include <BESDataNames.h>       // for POST_CONSTRAINT
-#include <BESSyntaxUserError.h>
+#include "BESDataNames.h"       // for POST_CONSTRAINT
+#include "BESSyntaxUserError.h"
 
-#include <BESDebug.h>
+#include "BESDebug.h"
 
 #include "BESDapSequenceAggregationServer.h"
 
@@ -242,8 +243,8 @@ void BESDapSequenceAggregationServer::aggregate(BESDataHandlerInterface &dhi)
     BESDEBUG("sequence.aggregation", "In BESDapSequenceAggregationServer::aggregate" << endl);
 
     // Print out the dhi info
-    BESDEBUG("sa2", "DHI: " << endl);
-    if (BESDebug::IsSet("sa2")) dhi.dump(*(BESDebug::GetStrm()));
+    BESDEBUG("sa3", "DHI: " << endl);
+    if (BESDebug::IsSet("sa3")) dhi.dump(*(BESDebug::GetStrm()));
 
     // Get the response object
     BESResponseObject *response = dhi.response_handler->get_response_object() ;
@@ -264,16 +265,18 @@ void BESDapSequenceAggregationServer::aggregate(BESDataHandlerInterface &dhi)
         if (!test_dds_for_suitability(bdds->get_dds()))
             throw BESSyntaxUserError("BESDapSequenceAggregationServer: The containers were not suitable for aggregation.", __FILE__, __LINE__);
 
+        // Evaluate the CE here? FIXME jhrg 2/13/15
+
         auto_ptr<DDS> agg_dds = build_new_dds(bdds->get_dds());
         agg_dds->filename("none");
-        agg_dds->set_dataset_name("Aggregation_FIXME_with_a_better_name");
+        string c1 = name_path((*dhi.containers.begin())->get_real_name());
+        string c2 = name_path((*dhi.containers.rbegin())->get_real_name());
+        agg_dds->set_dataset_name(c1 + "_to_" + c2);
 
         bdds->set_dds(agg_dds.get());
         agg_dds.release();
 
-        //bdds->set_constraint(dhi);
-
-        dhi.data[POST_CONSTRAINT] = ""; // FIXME Hack, but this makes it work...
+         dhi.data[POST_CONSTRAINT] = ""; // FIXME Hack, but this makes it work...
     }
     else if (dynamic_cast<BESDataDDSResponse*>(response)) { // typeid(response) == typeid(BESDataDDSResponse*)) {
         BESDataDDSResponse *bes_data_dds = static_cast<BESDataDDSResponse*>(response);
@@ -281,13 +284,23 @@ void BESDapSequenceAggregationServer::aggregate(BESDataHandlerInterface &dhi)
         if (!test_dds_for_suitability(bes_data_dds->get_dds()))
             throw BESSyntaxUserError("BESDapSequenceAggregationServer: The containers were not suitable for aggregation.", __FILE__, __LINE__);
 
+        bes_data_dds->get_dds()->mark_all(true);        // FIXME jhrg 2/13/15
+
         intern_all_data(bes_data_dds->get_dds(), bes_data_dds->get_ce());
+
+        BESDEBUG("sa2", "DDS (before aggregation): " << endl);
+        if (BESDebug::IsSet("sa2")) bes_data_dds->get_dds()->print_constrained(*(BESDebug::GetStrm()));
 
         auto_ptr<DataDDS> agg_data_dds = build_new_dds(bes_data_dds->get_dds());
         agg_data_dds->filename("none");
-        agg_data_dds->set_dataset_name("Aggregation_FIXME_with_a_better_name");
+        string c1 = name_path((*dhi.containers.begin())->get_real_name());
+        string c2 = name_path((*dhi.containers.rbegin())->get_real_name());
+        agg_data_dds->set_dataset_name(c1 + "_to_" + c2);
 
-        BESDEBUG("sa2", "DDS s: " << endl);
+        BESDEBUG("sa2", "DDS (after aggregation): " << endl);
+        if (BESDebug::IsSet("sa2")) agg_data_dds->print_constrained(*(BESDebug::GetStrm()));
+
+        BESDEBUG("sa2", "...and it's Sequence: " << endl);
         if (BESDebug::IsSet("sa2")) dynamic_cast<Sequence&>(*(agg_data_dds->get_var_index(0))).print_val_by_rows(*(BESDebug::GetStrm()));
 
         bes_data_dds->set_dds(agg_data_dds.get());
