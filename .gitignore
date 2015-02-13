@@ -22,6 +22,8 @@ lex.*.cc
 .settings
 .cproject
 .project
+.DS_Store
+*/.DS_Store
 
 Makefile
 Makefile.in
