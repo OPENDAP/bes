@@ -43,7 +43,8 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest StoredDap2ResultTest StoredDap4ResultTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest StoredDap2ResultTest \
+StoredDap4ResultTest SequenceAggregationServerTest
 else
 UNIT_TESTS =
 
@@ -69,6 +70,9 @@ StoredDap2ResultTest_LDADD = $(AM_LDADD)
 
 StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
 StoredDap4ResultTest_LDADD = $(AM_LDADD)
+
+SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
+SequenceAggregationServerTest_LDADD = $(AM_LDADD)
 
 # StoredResultTest_SOURCES = StoredResultTest.cc  $(TEST_SRC)
 # StoredResultTest_LDADD = $(AM_LDADD)

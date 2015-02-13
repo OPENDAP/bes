@@ -1,0 +1,8 @@
+Dataset {
+    Sequence {
+        Int32 i;
+        Int16 j;
+        Float32 k;
+    } s;
+} sequence_1;
+

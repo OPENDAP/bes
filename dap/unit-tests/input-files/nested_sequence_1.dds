@@ -1,0 +1,11 @@
+Dataset {
+    Sequence {
+        Int32 i;
+        Int32 j;
+        Sequence {
+            Float32 x;
+            Float32 y;
+        } inner;      
+    } outer;
+} sequence_1;
+
