@@ -120,6 +120,7 @@ void BESDapModule::initialize(const string &modname)
 	BESExceptionManager::TheEHM()->add_ehm_callback(BESDapError::handleException);
 
 	// Add the new 'Null' AggregationServer. jhrg 1/30/15
+	// TODO Add these names to BESDapNames.h
 	BESDEBUG("dap", "    adding null aggregation handler" << endl);
         BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
         BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);

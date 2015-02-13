@@ -27,6 +27,15 @@
 
 #include "BESAggregationServer.h"       // in dispatch
 
+class BESDDSResponse;
+class BESDataHandlerInterface;
+
+namespace libdap {
+class DDS;
+class DataDDS;
+class ConstraintEvaluator;
+}
+
 /** @brief When called, print out information about the DataHanderInterface object
  *
  * Aggregation is an inherent capability of the BES framework. However,
@@ -43,6 +52,15 @@ protected:
     BESDapSequenceAggregationServer( const string &name ): BESAggregationServer( name )
     {
     }
+
+    bool test_dds_for_suitability(libdap::DDS *dds, bool names_must_match = true);
+
+    std::auto_ptr<libdap::DDS> build_new_dds(libdap::DDS *source);
+
+    std::auto_ptr<libdap::DataDDS> build_new_dds(libdap::DataDDS *source);
+    void intern_all_data(libdap::DataDDS *source, libdap::ConstraintEvaluator &eval);
+
+    friend class SequenceAggregationServerTest;
 
 public:
     /**
@@ -62,7 +80,7 @@ public:
     // This method is abstract in the parent class
     virtual void aggregate(BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESDapSequenceAggregationServer_h
