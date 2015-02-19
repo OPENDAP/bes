@@ -163,8 +163,6 @@ void DapRequestHandler::build_dds_from_file(const string &accessed, bool explici
         dds->parse(accessed);   // This sets the dataset name based on what's in the file
 
         DAS *das = new DAS;
-        //BESDASResponse bdas(das);           // BESDASResponse deletes the DAS
-        //bdas.set_container(container);      // sets the container field of the DAS held by the BESDASResponse
         Ancillary::read_ancillary_das(*das, accessed);
 
         if (das->get_size() > 0) dds->transfer_attributes(das);
@@ -186,6 +184,8 @@ void DapRequestHandler::build_dds_from_file(const string &accessed, bool explici
             for (DDS::Vars_iter i = local_dds.var_begin(), e = local_dds.var_end(); i != e; i++) {
                 dds->add_var((*i)); // copy the variables; figure out how to not copy them
             }
+
+            dds->set_dataset_name(name_path(accessed));
         }
         else {
             BESDEBUG("dapreader", "In DapRequestHandler::build_dds_from_file; in plain code" << endl);
@@ -194,7 +194,6 @@ void DapRequestHandler::build_dds_from_file(const string &accessed, bool explici
         }
 
         dds->filename(accessed);
-        dds->set_dataset_name(name_path(accessed));
     }
     else {
         throw Error("The dapreader module can only return DDS/DODS responses for files ending in .dods, .data or .dds");
