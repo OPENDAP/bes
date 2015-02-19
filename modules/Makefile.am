@@ -13,7 +13,7 @@ endif
 # Why are these here? Because they have tests that depend on
 # netcdf.
 # FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
-SUBDIRS += fileout_json gateway_module
+SUBDIRS += fileout_json gateway_module w10n_handler
 
 if BUILD_GDAL
 SUBDIRS += fileout_gdal gdal_handler
