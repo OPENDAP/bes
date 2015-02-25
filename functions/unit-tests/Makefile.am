@@ -54,7 +54,7 @@ test_config.h: test_config.h.in Makefile
 
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
-TabularFunctionTest Dap4_TabularFunctionTest
+TabularFunctionTest Dap4_TabularFunctionTest BBoxFunctionTest
 	
 else
 UNIT_TESTS =
@@ -68,7 +68,8 @@ check-local:
 	@echo ""
 endif
 
-TEST_SRC = testFile.cc testFile.h
+# These are used to read in baselines from files
+TEST_SRC = test_utils.cc test_utils.h
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
 CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
@@ -87,3 +88,5 @@ TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -
 Dap4_TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h Dap4_TabularFunctionTest.cc
 Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 
+BBoxFunctionTest_SOURCES = ../BBoxFunction.cc ../BBoxFunction.h BBoxFunctionTest.cc $(TEST_SRC)
+BBoxFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
