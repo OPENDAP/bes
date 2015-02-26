@@ -19,6 +19,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+CXXFLAGS = 
 endif
 
 bin_PROGRAMS = besstandalone

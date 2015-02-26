@@ -19,6 +19,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+# Not sure why this is needed for the BES but not libdap...
+# With libdap, "CXXFLAGS = " is used all the time, with no
+# apparent ill effect, but here, when BES_DEVELOPER is not
+# true, including it shuts off the -g -O2 flags.
+# jhrg 2/26/15
+CXXFLAGS = 
 endif
 
 SUBDIRS = . unit-tests
