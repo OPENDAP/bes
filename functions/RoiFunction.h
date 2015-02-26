@@ -35,10 +35,10 @@ class DMR;
 void function_dap2_roi(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
 BaseType *function_dap4_roi(D4RValueList *args, DMR &dmr);
 
-class BBoxFunction: public libdap::ServerFunction
+class RoiFunction: public libdap::ServerFunction
 {
 public:
-    BBoxFunction()
+    RoiFunction()
     {
         setName("roi");
         setDescriptionString("The roi() function subsets N arrays using slicing information read from an Array of Structures like that produced by the bbox() function.");
@@ -49,7 +49,7 @@ public:
         setFunction(libdap::function_dap4_roi);
         setVersion("1.0");
     }
-    virtual ~BBoxFunction()
+    virtual ~RoiFunction()
     {
     }
 };
