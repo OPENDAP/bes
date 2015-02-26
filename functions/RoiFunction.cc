@@ -41,141 +41,13 @@
 #include <util.h>
 #include <ServerFunctionsList.h>
 
+#include <BESDebug.h>
+
 #include "RoiFunction.h"
 
 using namespace std;
 
 namespace libdap {
-
-#if 0
-/**
- * Build a vector of array dimension sizes used to compare with
- * other arrays to determine compatibility for the tabular function.
- *
- * @note Not a static function so it can be tested in the unit tests
- * @param a Read the size and number of dimensions from this array
- * @return The shape array
- */
-vector<long long>
-array_shape(Array *a)
-{
-    vector<long long> shape;
-
-    for (Array::Dim_iter i = a->dim_begin(), e = a->dim_end(); i != e; ++i) {
-        shape.push_back(a->dimension_size(i));
-    }
-
-    return shape;
-}
-
-/**
- * Does the given array match the shape of the vector? The vector
- * 'shape' is built at the start of tabular's run.
- *
- * @note Not a static function so it can be tested in the unit tests
- * @param a Test this array
- * @param shape The reference shape information
- * @return True if the shapes match, False otherwise.
- */
-bool
-shape_matches(Array *a, vector<long long> shape)
-{
-    // Same number of dims
-    if (shape.size() != a->dimensions())
-        return false;
-
-    // Each dim the same size
-    Array::Dim_iter i = a->dim_begin(), e = a->dim_end();
-    vector<long long>::iterator si = shape.begin(), se = shape.end();
-    while (i != e && si != se) {
-        if (*si != a->dimension_size(i))
-            return false;
-        ++i; ++si;
-    }
-
-    return true;
-}
-
-static long long
-shape_values(vector<long long> shape)
-{
-    long long size = 1;
-    vector<long long>::iterator si = shape.begin(), se = shape.end();
-    while (si != se) {
-        size *= *si++;
-    }
-    return size;
-}
-
-/** @brief Add the BaseTypes for the Sequence's columns.
- *
- * This function is passed the arguments of the function one at a time,
- * performs some simple testing, and adds them to a vector of Arrays.
- * This vector will be used to build the columns of the resulting
- * Sequence (or D4Sequence) and to read and build up the internal
- * store of values.
- *
- * @param n Column number
- * @param btp Pointer to the Basetype; must be an array
- * @param the_arrays Value-result parameter for the resulting BaseTypes
- * @param shape The array shape. Computer for the first array, subsequent
- * arrays must match it.
- */
-static void
-build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector<long long> &shape)
-{
-    if (btp->type() != dods_array_c)
-        throw Error( "In tabular(): Expected argument '" + btp->name() + "' to be an Array.");
-
-    // We know it's an Array; cast, test, save and read the values
-    Array *a = static_cast<Array*>(btp);
-    // For the first array, record the number of dims and their sizes
-    // for all subsequent arrays, test for a match
-    if (n == 0)
-        shape = array_shape(a);
-    else if (!shape_matches(a, shape))
-        throw Error("In tabular: Array '" + a->name() + "' does not match the shape of the initial Array.");
-
-    a->read();
-    a->set_read_p(true);
-
-    the_arrays.at(n) = a;
-}
-
-/** @brief Load the values into a vector of a vector of BaseType pointers.
- *
- * Given a vector of the arrays that will supply values for this Sequence,
- * build up the values and load them into the SequenceValues/D4SeqValues
- * object that is the value-result parameter.
- *
- * @param the_arrays Extract data from these arrays
- * @param num_values The number of values (i.e, rows)
- * @param sv The destination object; a value-result parameter, passed
- * by reference. Note that DAP2's SequenceValues and DAP4's D4SeqValues
- * are both typedefs to a vector of vectors of BaseType pointers, so
- * both D2 and D4 objects can use this code.
- */
-static void
-get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vector<BaseType*>* > &sv)
-{
-    // This can be optimized for most cases because we're storing objects for Byte, Int32, ...
-    // values where we could be storing native types. But this is DAP2 code... jhrg 2/3/15
-    for (int i = 0; i < num_values; ++i) {
-        // D4SeqRow, BaseTypeRow == vector<BaseType*>
-        vector<BaseType*> *row = new vector<BaseType*>(the_arrays.size());
-
-        for (unsigned long j = 0; j < the_arrays.size(); ++j) {
-            DBG(cerr << "the_arrays.at(" << j << ") " << the_arrays.at(j) << endl);
-            // i == row number; j == column (or array) number
-            row->at(j) = the_arrays.at(j)->var(i)->ptr_duplicate();
-            row->at(j)->set_send_p(true);
-            row->at(j)->set_read_p(true);
-        }
-
-        sv.at(i) = row;
-    }
-}
-#endif
 
 /**
  * Test for acceptable array types for the N-1 arguments of roi().
@@ -283,7 +155,7 @@ static void get_slice_data(Array *slices, unsigned int i, int &start, int &stop,
 void
 function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    auto_ptr<Structure> response(new Structure("Arrays"));
+    auto_ptr<Structure> response(new Structure("roi_subset"));
 
     // This is the rank of the Array of Slices, not the N-1 arrays to be sliced
     int rank = 0;
@@ -310,7 +182,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // foreach dimension of the array, apply the slice constraint.
         // Assume Array[]...[][X][Y] where the slice has dims X and Y
         // So find the last <rank> dimensions and check that their names
-        // match those of the slice (optionally ignore the name check?)
+        // match those of the slice
         unsigned int num_dims = the_array->dimensions();
         int d = num_dims-1;
         for (int i = rank-1; i >= 0; --i) {
@@ -322,6 +194,8 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             // Hack, should use reverse iterators, but Array does not have them
             Array::Dim_iter iter = the_array->dim_begin() + d;
 
+            // TODO Make this an option (i.e., turn of the test)?
+            // TODO Make a second option that will match names instead of position
             if (the_array->dimension_name(iter) != name)
                 throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
 
@@ -332,11 +206,19 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
         // Add the array to the Structure returned by the function
         the_array->set_send_p(true);    // include it
-        the_array->set_read_p(false);   // re-read the values
+
+        // TODO Why do we have to force this read? The libdap::BaseType::serialize()
+        // code should take care of it, but in the debugger the read_p property is
+        // showing  up as true. jhrg 2/26/15 Hack and move on...
+        if (!the_array->read_p())
+            the_array->read();
+        the_array->set_read_p(true);
+
         response->add_var(the_array);
     }
 
     response->set_send_p(true);
+    response->set_read_p(true);
 
     *btpp = response.release();
     return;

@@ -7,5 +7,9 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_1.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_2.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_3.dods.bescmd)
 
+# bbox() is not really intended as a standalone function, but it 
+# returns data values using DAP variables...
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bbox_1.dods.bescmd)
+
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_0.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_1.dods.bescmd)

@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
 AM_LDADD =  $(GF_LIBS) -L.. -lfunctions_module  $(top_builddir)/dispatch/libbes_dispatch.la
 # ../libfunctions_module.la
 
