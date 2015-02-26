@@ -103,10 +103,10 @@ private:
     TestTypeFactory btf;
     ConstraintEvaluator ce;
 
-    DDS *float32_array, *float32_2d_array;
+    DDS *float32_array, *float32_2d_array, *float32_array2;
 
 public:
-    RoiFunctionTest(): float32_array(0), float32_2d_array(0)
+    RoiFunctionTest(): float32_array(0), float32_2d_array(0), float32_array2(0)
     {}
     ~RoiFunctionTest()
     {}
@@ -121,6 +121,10 @@ public:
             float32_2d_array = new DDS(&btf);
             float32_2d_array->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_2d_array.dds");
             DBG2(float32_2d_array->print_xml(stderr, false, "No blob"));
+
+            float32_array2 = new DDS(&btf);
+            float32_array2->parse((string)TEST_SRC_DIR + "/ce-functions-testsuite/float32_array2.dds");
+            DBG2(float32_array2->print_xml(stderr, false, "No blob"));
         }
         catch (Error & e) {
             cerr << "SetUp: " << e.get_error_message() << endl;
@@ -132,6 +136,7 @@ public:
     {
         delete float32_array;
         delete float32_2d_array;
+        delete float32_array2;
     }
 
     void float32_array_test() {
@@ -152,7 +157,7 @@ public:
             // Must set up the args as per the CE parser
             Array *slices = get_empty_slices_array();
             slices->append_dim(1, "slices");
-            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "a_value"));
+            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "a_values"));
 
             BaseType *argv[] = { a, slices };
             function_dap2_roi(2, argv, *float32_array /* DDS & */, &result);
@@ -197,33 +202,9 @@ public:
         baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
 
         CPPUNIT_ASSERT(oss.str() == baseline);
-#if 0
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
-
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "a_values");
-#endif
     }
 
     void float32_2d_array_test() {
-#if 0
         BaseType *btp = *(float32_2d_array->var_begin());
 
         // It's an array
@@ -239,85 +220,129 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 *min = new Float64("min");
-            min->set_value(40.0);
-            min->set_read_p(true);
-            Float64 *max = new Float64("max");
-            max->set_value(60.0);
-            max->set_read_p(true);
+            Array *slices = get_empty_slices_array();
+            slices->append_dim(2, "slices");
+            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "rows"));
+            slices->set_vec_nocopy(1, get_new_slice_element(9, 18, "cols"));
 
-            BaseType *argv[] = { a, min, max };
-            function_dap2_bbox(3, argv, *float32_2d_array /* DDS & */, &result);
+            BaseType *argv[] = { a, slices };
+            function_dap2_roi(2, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
+        DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_ddx.baseline.xml");
+        // print_xml doesn't show the affect of the constraint, so use the same
+        // baseline as for the bbox tests
         CPPUNIT_ASSERT(oss.str() == baseline);
 
-        CPPUNIT_ASSERT(result->type() == dods_array_c);
+        CPPUNIT_ASSERT(result->type() == dods_structure_c);
 
-        Array *result_array = static_cast<Array*>(result);
+        Structure *result_struct = static_cast<Structure*>(result);
+        result_struct->read();
 
+        DBG(oss.str(""));
         DBG(oss.clear());
-        DBG(result->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+        // print the decl separately to see the constrained size
+        DBG(result_struct->print_decl(oss, "    ", true, false, true));
+        DBG(cerr << "Result decl, showing constraint: " << endl << oss.str() << endl);
 
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
+        Constructor::Vars_iter i = result_struct->var_begin();
+        CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
 
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
+        CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->var()->type() == dods_float32_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimensions() == 2);
+        Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
 
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
+        oss.str(""); oss.clear();
+        result_struct->print_val(oss, "    ", false);
+        DBG(cerr << "Result values: " << oss.str() << endl);
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline");
 
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "rows");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+    }
 
-        indices = static_cast<Structure*>(result_array->var(1));
-        CPPUNIT_ASSERT(indices != 0);
+    // Now test passing two arrays to roi()
+    // since this is so similar to the one array test, ...
+    void float32_array2_test() {
+        BaseType *btp = *float32_array2->var_begin();
+        // It's an array
+        CPPUNIT_ASSERT(btp->type() == dods_array_c);
+        // ... and it's an Float32 array
+        Array *a = static_cast<Array*>(btp);
+        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
 
-        i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
+        btp = *(float32_array2->var_begin()+1);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c);
+        // ... and it's an Float32 array
+        Array *b = static_cast<Array*>(btp);
+        CPPUNIT_ASSERT(b->var()->type() == dods_float32_c);
 
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            Array *slices = get_empty_slices_array();
+            slices->append_dim(1, "slices");
+            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "values"));
 
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
-#endif
+            BaseType *argv[] = { a, b, slices };
+            function_dap2_roi(3, argv, *float32_array2 /* DDS & */, &result);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
+        }
+
+        // string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
+
+        // print_xml doesn't show the affect of the constraint, so use the same
+        // baseline as for the bbox tests
+        //CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_structure_c);
+
+        Structure *result_struct = static_cast<Structure*>(result);
+        result_struct->read();
+
+        DBG(oss.str(""));
+        DBG(oss.clear());
+        // print the decl separately to see the constrained size
+        DBG(result_struct->print_decl(oss, "    ", true, false, true));
+        DBG(cerr << "Result decl, showing constraint: " << endl << oss.str() << endl);
+
+        Constructor::Vars_iter i = result_struct->var_begin();
+        CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
+
+        CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->var()->type() == dods_float32_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimensions() == 1);
+        Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
+
+        oss.str(""); oss.clear();
+        result_struct->print_val(oss, "    ", false);
+        DBG(cerr << "Result values: " << oss.str() << endl);
+        //baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
+
+        //CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
     CPPUNIT_TEST_SUITE( RoiFunctionTest );
 
     CPPUNIT_TEST(float32_array_test);
     CPPUNIT_TEST(float32_2d_array_test);
+    CPPUNIT_TEST(float32_array2_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

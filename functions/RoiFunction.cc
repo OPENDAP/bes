@@ -319,8 +319,12 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             // start, stop, name are value-result parameters
             get_slice_data(slices, i, start, stop, name);
 
-            // Hack, should use reverse iterators, but Array does not ahve them
+            // Hack, should use reverse iterators, but Array does not have them
             Array::Dim_iter iter = the_array->dim_begin() + d;
+
+            if (the_array->dimension_name(iter) != name)
+                throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
+
             // TODO Add stride option?
             the_array->add_constraint(iter, start, 1 /*stride*/, stop);
             --d;
