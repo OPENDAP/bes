@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Structure name="Arrays">
+    <Array name="a">
+        <Float32/>
+        <dimension name="values" size="30"/>
+    </Array>
+    <Array name="b">
+        <Float32/>
+        <dimension name="values" size="40"/>
+    </Array>
+</Structure>

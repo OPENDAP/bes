@@ -172,8 +172,6 @@ public:
 
         DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
 
-        // print_xml doesn't show the affect of the constraint, so use the same
-        // baseline as for the bbox tests
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_structure_c);
@@ -238,8 +236,6 @@ public:
 
         DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
 
-        // print_xml doesn't show the affect of the constraint, so use the same
-        // baseline as for the bbox tests
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_structure_c);
@@ -270,8 +266,6 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    // Now test passing two arrays to roi()
-    // since this is so similar to the one array test, ...
     void float32_array2_test() {
         BaseType *btp = *float32_array2->var_begin();
         // It's an array
@@ -300,15 +294,13 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        // string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
         DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
 
-        // print_xml doesn't show the affect of the constraint, so use the same
-        // baseline as for the bbox tests
-        //CPPUNIT_ASSERT(oss.str() == baseline);
+        CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_structure_c);
 
@@ -321,6 +313,7 @@ public:
         DBG(result_struct->print_decl(oss, "    ", true, false, true));
         DBG(cerr << "Result decl, showing constraint: " << endl << oss.str() << endl);
 
+        // Look at the first var
         Constructor::Vars_iter i = result_struct->var_begin();
         CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
 
@@ -330,12 +323,27 @@ public:
         Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
         CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
 
+        // Look at teh second var
+        ++i;
+        CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
+
+        CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->var()->type() == dods_float32_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimensions() == 1);
+        first_dim = static_cast<Array*>(*i)->dim_begin();
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
+
+        // That should be it
+        ++i;
+        CPPUNIT_ASSERT(i == result_struct->var_end());
+
+        // Now look at the values of structure that holds the results
         oss.str(""); oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
-        //baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline");
 
-        //CPPUNIT_ASSERT(oss.str() == baseline);
+        CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
     CPPUNIT_TEST_SUITE( RoiFunctionTest );
