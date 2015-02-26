@@ -62,13 +62,6 @@ namespace libdap {
  grid is read (using the Grid::read() method) at the time the argument list
  is built.
 
- @todo In order to be used by geogrid() , this code may have to be modified
- so that the maps and array are not re-read by the serialize() method. It
- might also be a good idea to change from the '?grid(SST,"10<time<20")'
- syntax in a URL to '?SST&grid(SST,"10<time<20")' even though it's more
- verbose in the URL, it would make the function a true 'selection operator'
- and allow several grids to be returned with selections in one request.
-
  @param argc The number of values in argv.
  @param argv An array of BaseType pointers which hold the arguments to be
  passed to geogrid. The arguments may be Strings, Integers, or Reals, subject

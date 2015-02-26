@@ -32,21 +32,21 @@ class DDS;
 class D4RValueList;
 class DMR;
 
-void function_dap2_bbox(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-BaseType *function_dap4_bbox(D4RValueList *args, DMR &dmr);
+void function_dap2_roi(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
+BaseType *function_dap4_roi(D4RValueList *args, DMR &dmr);
 
 class BBoxFunction: public libdap::ServerFunction
 {
 public:
     BBoxFunction()
     {
-        setName("bbox");
-        setDescriptionString("The bbox() function returns the indices for a bounding-box based on an Array variable's values.");
-        setUsageString("bbox(<array>, <float64>, <float64>)");
-        setRole("http://services.opendap.org/dap4/server-side-function/bbox");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bbox");
-        setFunction(libdap::function_dap2_bbox);
-        setFunction(libdap::function_dap4_bbox);
+        setName("roi");
+        setDescriptionString("The roi() function subsets N arrays using slicing information read from an Array of Structures like that produced by the bbox() function.");
+        setUsageString("roi(<array0>, <array1>, ..., <arrayn>, Structure slice[M]), where <array0>, ..., has M or more dimensions.");
+        setRole("http://services.opendap.org/dap4/server-side-function/roi");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#roi");
+        setFunction(libdap::function_dap2_roi);
+        setFunction(libdap::function_dap4_roi);
         setVersion("1.0");
     }
     virtual ~BBoxFunction()

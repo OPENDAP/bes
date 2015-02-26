@@ -54,7 +54,8 @@ test_config.h: test_config.h.in Makefile
 
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
-TabularFunctionTest Dap4_TabularFunctionTest BBoxFunctionTest
+TabularFunctionTest Dap4_TabularFunctionTest BBoxFunctionTest \
+RoiFunctionTest
 	
 else
 UNIT_TESTS =
@@ -90,3 +91,6 @@ Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIB
 
 BBoxFunctionTest_SOURCES = ../BBoxFunction.cc ../BBoxFunction.h BBoxFunctionTest.cc $(TEST_SRC)
 BBoxFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+
+RoiFunctionTest_SOURCES = ../RoiFunction.cc ../RoiFunction.h RoiFunctionTest.cc $(TEST_SRC)
+RoiFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types

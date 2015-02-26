@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Structure name="Arrays">
+    <Array name="a">
+        <Float32/>
+        <dimension name="a_values" size="30"/>
+    </Array>
+</Structure>

@@ -41,7 +41,7 @@
 #include <util.h>
 #include <ServerFunctionsList.h>
 
-#include "BBoxFunction.h"
+#include "RoiFunction.h"
 
 using namespace std;
 
@@ -178,19 +178,102 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
 #endif
 
 /**
- * @brief Return the bounding box for an array
+ * Test for acceptable array types for the N-1 arguments of roi().
+ * Throw Error if the array is not valid for this function
  *
- * Given an N-dimensional Array of simple types and two
- * minimum and maximum values, return the indices of a N-dimensional
- * bounding box. The indices are returned using an Array of
- * Structure, where each element of the array holds the name,
- * start index and stop index in fields with those names.
+ * @param btp Test this variable.
+ * @exception Error thrown if the array is not valid
+ */
+static void check_number_type_array(BaseType *btp, unsigned int rank)
+{
+    if (!btp)
+        throw InternalErr(__FILE__, __LINE__, "roi() function called with null variable.");
+
+    if (btp->type() != dods_array_c)
+        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array.");
+
+    Array *a = static_cast<Array *>(btp);
+    if (!a->var()->is_simple_type() || a->var()->type() == dods_str_c || a->var()->type() == dods_url_c)
+        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array of numeric types.");
+
+    if (a->dimensions() < rank)
+        throw Error("In function roi(): Expected the array '" + a->name() +"' to be rank " + long_to_string(rank) + " or greater.");
+}
+
+static void check_valid_slice(BaseType *btp)
+{
+    // we know it's a Structure * and it has one element because the test above passed
+    if (btp->type() != dods_structure_c)
+        throw Error("In function roi(): Expected an Array of Structures for the slice information.");
+
+    Structure *slice = static_cast<Structure*>(btp);
+
+    Constructor::Vars_iter i = slice->var_begin();
+    if (i == slice->var_end() || (*i)->name() != "start" || (*i)->type() != dods_int32_c)
+        throw Error("In function roi(): Could not find valid 'start' field in slice information");
+
+    ++i;
+    if (i == slice->var_end() || (*i)->name() != "stop" || (*i)->type() != dods_int32_c)
+        throw Error("In function roi(): Could not find valid 'stop' field in slice information");
+
+    ++i;
+    if (i == slice->var_end() || (*i)->name() != "name" || (*i)->type() != dods_str_c)
+        throw Error("In function roi(): Could not find valid 'name' field in slice information");
+}
+
+/**
+ * Is the slice array (an array of structures) correct? Throw Error
+ * if not.
  *
- * It is up to the caller to make use of the returned values; the
- * array is not modified in any way other than to read in it's
- * values (and set the variable's read_p property).
+ * @param btp Pointer to the Array of Structure that holds the slice information
+ * @return The number of slices in the slice array
+ * @exception Error Thrown if the array si not valid.
+ */
+static unsigned int valid_slice_array(BaseType *btp)
+{
+    if (!btp)
+        throw InternalErr(__FILE__, __LINE__, "roi() function called with null slice array.");
+
+    if (btp->type() != dods_array_c)
+        throw Error("In function roi(): Expected last argument to be an Array of slices.");
+
+    Array *slices = static_cast<Array*>(btp);
+    if (slices->dimensions() != 1)
+        throw Error("In function roi(): Expected last argument to be a one dimensional Array of slices.");
+
+    int rank = slices->dimension_size(slices->dim_begin());
+    for (int i = 0; i < rank; ++i) {
+        check_valid_slice(slices->var(i));
+    }
+
+    return rank;
+}
+
+/**
+ * This method extracts values from one element of the slices Array of Structures.
+ * It assumes that the input has been validated.
  *
- * @note There are both DAP2 and DAP4 versions of this function.
+ * @param slices
+ * @param i
+ * @param start
+ * @param stop
+ * @param name
+ */
+static void get_slice_data(Array *slices, unsigned int i, int &start, int &stop, string &name)
+{
+    BaseType *btp = slices->var(i);
+
+    Structure *slice = static_cast<Structure*>(btp);
+    Constructor::Vars_iter vi = slice->var_begin();
+
+    start = static_cast<Int32*>(*vi++)->value();
+    stop = static_cast<Int32*>(*vi++)->value();
+    name = static_cast<Str*>(*vi++)->value();
+}
+
+/**
+ * @brief Subset the N arrays using index slicing information
+ *
  *
  * @param argc Argument count
  * @param argv Argument vector - variable in the current DDS
@@ -198,78 +281,58 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
  * @param btpp Value-result parameter for the resulting Array of Structure
  */
 void
-function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    // Build the Structure and load it with the needed fields. The
-    // Array instances will have the same fields, but each instance
-    // will also be loaded with values.
-    Structure *proto = new Structure("bbox");
-    proto->add_var_nocopy(new Int32("start"));
-    proto->add_var_nocopy(new Int32("stop"));
-    proto->add_var_nocopy(new Str("name"));
-    // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
-    auto_ptr<Array> response(new Array("bbox", proto));
+    auto_ptr<Structure> response(new Structure("Arrays"));
+
+    // This is the rank of the Array of Slices, not the N-1 arrays to be sliced
+    int rank = 0;
 
     switch (argc) {
     case 0:
+    case 1:
+        // Must have 2 or more arguments
         throw Error("No help yet");
-    case 3:
-        // correct number of args
-        break;
     default:
-        throw Error(malformed_expr, "Wrong number of args to bbox()");
+        rank = valid_slice_array(argv[argc-1]); // throws if slice is not valid
+
+        for (int i = 0; i < argc-1; ++i)
+            check_number_type_array(argv[i], rank);      // throws if array is not valid
+        break;
     }
 
-    if (argv[0] && argv[0]->type() != dods_array_c)
-        throw Error("In function bbox(): Expected argument 1 to be an Array.");
-    if (!argv[0]->var()->is_simple_type() || argv[0]->var()->type() == dods_str_c || argv[0]->var()->type() == dods_url_c)
-        throw Error("In function bbox(): Expected argument 1 to be an Array of numeric types.");
+    Array *slices = static_cast<Array*>(argv[argc-1]);
 
-    // cast is safe given the above
-    Array *the_array = static_cast<Array*>(argv[0]);
+    for (int i = 0; i < argc-1; ++i) {
+        // cast is safe given the above
+        Array *the_array = static_cast<Array*>(argv[i]);
 
-    // Read the variable into memory
-    the_array->read();
-    the_array->set_read_p(true);
+        // foreach dimension of the array, apply the slice constraint.
+        // Assume Array[]...[][X][Y] where the slice has dims X and Y
+        // So find the last <rank> dimensions and check that their names
+        // match those of the slice (optionally ignore the name check?)
+        unsigned int num_dims = the_array->dimensions();
+        int d = num_dims-1;
+        for (int i = rank-1; i >= 0; --i) {
+            int start, stop;
+            string name;
+            // start, stop, name are value-result parameters
+            get_slice_data(slices, i, start, stop, name);
 
-    // Get the values as doubles
-    vector<double> the_values;
-    extract_double_array(the_array, the_values); // This function sets the size of dest
+            // Hack, should use reverse iterators, but Array does not ahve them
+            Array::Dim_iter iter = the_array->dim_begin() + d;
+            // TODO Add stride option?
+            the_array->add_constraint(iter, start, 1 /*stride*/, stop);
+            --d;
+        }
 
-    double min_value = extract_double_value(argv[1]);
-    double max_value = extract_double_value(argv[2]);
-
-    // Before loading the values, set the length of the response array
-    // This is a one-dimensional array (vector) with a set of start, stop
-    // and name tuples for each dimension of the first argument
-    response->append_dim(the_array->dimensions(), "indices");
-
-    int i = 0;
-    for(Array::Dim_iter di = the_array->dim_begin(), de = the_array->dim_end(); di != de; ++di) {
-        Structure *slice = new Structure("slice");
-
-        Int32 *start = new Int32("start");
-        // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
-        start->set_value(10);
-        slice->add_var_nocopy(start);
-
-        Int32 *stop = new Int32("stop");
-        stop->set_value(20);
-        slice->add_var_nocopy(stop);
-
-        Str *name = new Str("name");
-        name->set_value(the_array->dimension_name(di));
-        slice->add_var_nocopy(name);
-
-        slice->set_read_p(true);        // Sets all children too, as does set_send_p()
-        slice->set_send_p(true);        // Not sure this is needed, but it cannot hurt
-
-        response->set_vec_nocopy(i++, slice);
+        // Add the array to the Structure returned by the function
+        the_array->set_send_p(true);    // include it
+        the_array->set_read_p(false);   // re-read the values
+        response->add_var(the_array);
     }
 
-    response->set_length(i);
-    response->set_read_p(true);
-    response->set_read_p(true);
+    response->set_send_p(true);
 
     *btpp = response.release();
     return;
@@ -282,17 +345,13 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  * version is to use args->size() in place of argc and
  * args->get_rvalue(n)->value(dmr) in place of argv[n].
  *
- * @note Not yet implemented.
- *
  * @see function_dap2_bbox
  */
-BaseType *function_dap4_bbox(D4RValueList *args, DMR &)
+BaseType *function_dap4_roi(D4RValueList *, DMR &)
 {
-    auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
-
     throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
 
-    return response.release();
+    return 0;
 }
 
 } // namesspace libdap

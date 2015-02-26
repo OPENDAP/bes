@@ -49,7 +49,7 @@
 #include "test_config.h"
 #include "test_utils.h"
 
-#include "BBoxFunction.h"
+#include "RoiFunction.h"
 
 using namespace CppUnit;
 using namespace libdap;
@@ -68,7 +68,36 @@ static bool debug2 = false;
 namespace libdap
 {
 
-class BBoxFunctionTest:public TestFixture
+static Array *get_empty_slices_array()
+{
+    // Make the prototype
+    Structure *proto = new Structure("bbox");
+    proto->add_var_nocopy(new Int32("start"));
+    proto->add_var_nocopy(new Int32("stop"));
+    proto->add_var_nocopy(new Str("name"));
+
+    return new Array("bbox", proto);
+}
+
+static Structure *get_new_slice_element(int start, int stop, const string &name)
+{
+    Structure *proto = new Structure("bbox");
+    Int32 *istart = new Int32("start");
+    istart->set_value(start);
+    proto->add_var_nocopy(istart);
+
+    Int32 *istop = new Int32("stop");
+    istop->set_value(stop);
+    proto->add_var_nocopy(istop);
+
+    Str *iname = new Str("name");
+    iname->set_value(name);
+    proto->add_var_nocopy(iname);
+
+    return proto;
+}
+
+class RoiFunctionTest:public TestFixture
 {
 private:
     TestTypeFactory btf;
@@ -77,9 +106,9 @@ private:
     DDS *float32_array, *float32_2d_array;
 
 public:
-    BBoxFunctionTest(): float32_array(0), float32_2d_array(0)
+    RoiFunctionTest(): float32_array(0), float32_2d_array(0)
     {}
-    ~BBoxFunctionTest()
+    ~RoiFunctionTest()
     {}
 
     void setUp()
@@ -121,37 +150,54 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 *min = new Float64("min");
-            min->set_value(40.0);
-            min->set_read_p(true);
-            Float64 *max = new Float64("max");
-            max->set_value(60.0);
-            max->set_read_p(true);
+            Array *slices = get_empty_slices_array();
+            slices->append_dim(1, "slices");
+            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "a_value"));
 
-            BaseType *argv[] = { a, min, max };
-            function_dap2_bbox(3, argv, *float32_array /* DDS & */, &result);
+            BaseType *argv[] = { a, slices };
+            function_dap2_roi(2, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
+        DBG(cerr << "DDX of roi()'s response: " << endl << oss.str() << endl);
 
+        // print_xml doesn't show the affect of the constraint, so use the same
+        // baseline as for the bbox tests
         CPPUNIT_ASSERT(oss.str() == baseline);
 
-        CPPUNIT_ASSERT(result->type() == dods_array_c);
+        CPPUNIT_ASSERT(result->type() == dods_structure_c);
 
-        Array *result_array = static_cast<Array*>(result);
+        Structure *result_struct = static_cast<Structure*>(result);
+        result_struct->read();
 
         DBG(oss.str(""));
         DBG(oss.clear());
-        DBG(result->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+        // print the decl separately to see the constrained size
+        DBG(result_struct->print_decl(oss, "    ", true, false, true));
+        DBG(cerr << "Result decl, showing constraint: " << endl << oss.str() << endl);
 
+        Constructor::Vars_iter i = result_struct->var_begin();
+        CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
+
+        CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->var()->type() == dods_float32_c);
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimensions() == 1);
+        Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
+        CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
+
+        oss.str(""); oss.clear();
+        result_struct->print_val(oss, "    ", false);
+        DBG(cerr << "Result values: " << oss.str() << endl);
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
+
+        CPPUNIT_ASSERT(oss.str() == baseline);
+#if 0
         // we know it's a Structure * and it has one element because the test above passed
         Structure *indices = static_cast<Structure*>(result_array->var(0));
         CPPUNIT_ASSERT(indices != 0);
@@ -173,9 +219,11 @@ public:
         CPPUNIT_ASSERT((*i)->name() == "name");
         CPPUNIT_ASSERT((*i)->type() == dods_str_c);
         CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "a_values");
+#endif
     }
 
     void float32_2d_array_test() {
+#if 0
         BaseType *btp = *(float32_2d_array->var_begin());
 
         // It's an array
@@ -210,14 +258,13 @@ public:
 
         DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_ddx.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
 
         Array *result_array = static_cast<Array*>(result);
 
-        DBG(oss.str(""));
         DBG(oss.clear());
         DBG(result->print_val(oss));
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
@@ -264,9 +311,10 @@ public:
         CPPUNIT_ASSERT((*i)->name() == "name");
         CPPUNIT_ASSERT((*i)->type() == dods_str_c);
         CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
+#endif
     }
 
-    CPPUNIT_TEST_SUITE( BBoxFunctionTest );
+    CPPUNIT_TEST_SUITE( RoiFunctionTest );
 
     CPPUNIT_TEST(float32_array_test);
     CPPUNIT_TEST(float32_2d_array_test);
@@ -274,7 +322,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(RoiFunctionTest);
 
 } // namespace libdap
 
@@ -305,7 +353,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::BBoxFunctionTest::") + argv[i++];
+            test = string("libdap::RoiFunctionTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
