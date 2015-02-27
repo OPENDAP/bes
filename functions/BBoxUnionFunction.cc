@@ -41,7 +41,7 @@
 #include <util.h>
 #include <ServerFunctionsList.h>
 
-#include "BBoxFunction.h"
+#include "BBoxUnionFunction.h"
 #include "roi_utils.h"
 
 using namespace std;
@@ -49,17 +49,7 @@ using namespace std;
 namespace libdap {
 
 /**
- * @brief Return the bounding box for an array
- *
- * Given an N-dimensional Array of simple types and two
- * minimum and maximum values, return the indices of a N-dimensional
- * bounding box. The indices are returned using an Array of
- * Structure, where each element of the array holds the name,
- * start index and stop index in fields with those names.
- *
- * It is up to the caller to make use of the returned values; the
- * array is not modified in any way other than to read in it's
- * values (and set the variable's read_p property).
+ * @brief Combine several bounding boxes, forming their union.
  *
  * @note There are both DAP2 and DAP4 versions of this function.
  *
@@ -69,7 +59,7 @@ namespace libdap {
  * @param btpp Value-result parameter for the resulting Array of Structure
  */
 void
-function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
 #if 0
     // Build the Structure and load it with the needed fields. The
@@ -81,8 +71,6 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     proto->add_var_nocopy(new Str("name"));
     // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
     auto_ptr<Array> response(new Array("bbox", proto));
-#endif
-
 
     switch (argc) {
     case 0:
@@ -112,25 +100,18 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     double min_value = extract_double_value(argv[1]);
     double max_value = extract_double_value(argv[2]);
-#if 0
-    // Build the response
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox();
 
     // Before loading the values, set the length of the response array
     // This is a one-dimensional array (vector) with a set of start, stop
     // and name tuples for each dimension of the first argument
     response->append_dim(the_array->dimensions(), "indices");
-#endif
-    // Build the response
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(the_array->dimensions(), "indices");
 
     int i = 0;
     for(Array::Dim_iter di = the_array->dim_begin(), de = the_array->dim_end(); di != de; ++di) {
-        // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
-        Structure *slice = roi_bbox_build_slice(10, 20, the_array->dimension_name(di));
-#if 0
-        Int32 *start = new Int32("start");
+        Structure *slice = new Structure("slice");
 
+        Int32 *start = new Int32("start");
+        // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
         start->set_value(10);
         slice->add_var_nocopy(start);
 
@@ -144,7 +125,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
         slice->set_read_p(true);        // Sets all children too, as does set_send_p()
         slice->set_send_p(true);        // Not sure this is needed, but it cannot hurt
-#endif
+
         response->set_vec_nocopy(i++, slice);
     }
 
@@ -153,11 +134,60 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     response->set_send_p(true);
 
     *btpp = response.release();
+#endif
+
+    unsigned int rank = 0;
+
+    switch (argc) {
+    case 0:
+        // Must have 1 or more arguments
+        throw Error("No help yet");
+
+    default:
+        // Vet the input: All bbox variables must be the same shape
+        rank = roi_valid_bbox(argv[0]); // throws if bbox is not valid
+
+        // Actually, we could us names to for the unions - they don't
+        // really have to be the same shape, but this will do for now.
+        for (int i = 1; i < argc; ++i)
+            if (roi_valid_bbox(argv[0]) != rank)
+                throw Error("In function bbox_union(): All bounding boxes must be the same shape to form their union.");
+        break;
+    }
+
+    // Build the response
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, "indices");
+
+#if 0
+    // Build a new BBox variable to return
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox();
+    response->set_length(rank);
+#endif
+    // For each BBox, for each dimension, update the union,
+    // using the first BBox as a starting point
+
+    // Initialize...
+    for (unsigned int i = 0; i < rank; ++i) {
+        int start, stop;
+        string name;
+        // start, stop, name are value-result parameters; we know they are Array*
+        // because of the roi_valid_bbox() test.
+        roi_bbox_get_slice_data(static_cast<Array*>(argv[0]), i, start, stop, name);
+
+        Structure *slice = roi_bbox_build_slice(start, stop, name);
+
+        response->set_vec_nocopy(i, slice);
+    }
+
+    // Foreach BBox, for each dimension...
+
+    // Return the result
+    *btpp = response.release();
     return;
 }
 
 /**
- * @brief Return the bounding box for an array
+ * @brief Combine several bounding boxes, forming their union.
  *
  * @note The main difference between this function and the DAP2
  * version is to use args->size() in place of argc and
@@ -167,7 +197,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  *
  * @see function_dap2_bbox
  */
-BaseType *function_dap4_bbox(D4RValueList *args, DMR &)
+BaseType *function_dap4_bbox_union(D4RValueList *args, DMR &)
 {
     auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
 

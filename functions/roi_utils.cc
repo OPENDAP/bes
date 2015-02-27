@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#include <memory>
+
 #include <BaseType.h>
 #include <Structure.h>
 #include <Array.h>
@@ -112,6 +114,60 @@ void roi_bbox_get_slice_data(Array *slices, unsigned int i, int &start, int &sto
     start = static_cast<Int32*>(*vi++)->value();
     stop = static_cast<Int32*>(*vi++)->value();
     name = static_cast<Str*>(*vi++)->value();
+}
+
+Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name)
+{
+    Structure *slice = new Structure("slice");
+
+    Int32 *start = new Int32("start");
+    start->set_value(start_value);
+    slice->add_var_nocopy(start);
+
+    Int32 *stop = new Int32("stop");
+    stop->set_value(stop_value);
+    slice->add_var_nocopy(stop);
+
+    Str *name = new Str("name");
+    name->set_value(dim_name);
+    slice->add_var_nocopy(name);
+
+    slice->set_read_p(true);        // Sets all children too, as does set_send_p()
+    slice->set_send_p(true);
+
+    return slice;
+}
+
+auto_ptr<Array> roi_bbox_build_empty_bbox()
+{
+    // Build the Structure and load it with the needed fields. The
+    // Array instances will have the same fields, but each instance
+    // will also be loaded with values.
+    Structure *proto = new Structure("bbox");
+    proto->add_var_nocopy(new Int32("start"));
+    proto->add_var_nocopy(new Int32("stop"));
+    proto->add_var_nocopy(new Str("name"));
+    // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
+    auto_ptr<Array> response(new Array("bbox", proto));
+
+    return response;
+}
+
+auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &dim_name)
+{
+    // Build the Structure and load it with the needed fields. The
+    // Array instances will have the same fields, but each instance
+    // will also be loaded with values.
+    Structure *proto = new Structure("bbox");
+    proto->add_var_nocopy(new Int32("start"));
+    proto->add_var_nocopy(new Int32("stop"));
+    proto->add_var_nocopy(new Str("name"));
+    // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
+    auto_ptr<Array> response(new Array("bbox", proto));
+
+    response->append_dim(num_dim, dim_name);
+
+    return response;
 }
 
 } //namespace libdap
