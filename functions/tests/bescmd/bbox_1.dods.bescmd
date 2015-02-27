@@ -11,7 +11,7 @@
     <bes:container name="c">
       <!-- %22 is a double quote and %3E is greater than -->
       <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
-      <bes:constraint>bbox(Latitude,20,30)</bes:constraint>
+      <bes:constraint>bbox(Latitude,40,40.001)</bes:constraint>
     </bes:container>
   </bes:define>
   

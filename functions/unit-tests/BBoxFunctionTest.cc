@@ -45,6 +45,7 @@
 #include <debug.h>
 
 #include <test/TestTypeFactory.h>
+#include <test/TestCommon.h>
 
 #include "test_config.h"
 #include "test_utils.h"
@@ -118,6 +119,14 @@ public:
         //  it has thirty elements
         CPPUNIT_ASSERT(a->length() == 30);
 
+        TestCommon *tc = dynamic_cast<TestCommon*>(a);
+        CPPUNIT_ASSERT(tc != 0);
+        tc->set_series_values(true);
+
+        DBG2(a->read());
+        DBG2(cerr << "Array 'a': ");
+        DBG2(a->print_val(cerr));
+
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -125,7 +134,7 @@ public:
             min->set_value(40.0);
             min->set_read_p(true);
             Float64 *max = new Float64("max");
-            max->set_value(60.0);
+            max->set_value(50.0);
             max->set_read_p(true);
 
             BaseType *argv[] = { a, min, max };
@@ -160,13 +169,13 @@ public:
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "start");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 8);    // values are hardwired in the initial version of this function
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "stop");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 26);
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
@@ -188,6 +197,14 @@ public:
         //  it has thirty elements
         CPPUNIT_ASSERT(a->length() == 1020);
 
+        TestCommon *tc = dynamic_cast<TestCommon*>(a);
+        CPPUNIT_ASSERT(tc != 0);
+        tc->set_series_values(true);
+
+        DBG2(a->read());
+        DBG2(cerr << "Array 'a': ");
+        DBG2(a->print_val(cerr));
+
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -195,7 +212,7 @@ public:
             min->set_value(40.0);
             min->set_read_p(true);
             Float64 *max = new Float64("max");
-            max->set_value(60.0);
+            max->set_value(46.0);
             max->set_read_p(true);
 
             BaseType *argv[] = { a, min, max };
@@ -230,13 +247,13 @@ public:
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "start");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "stop");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 29);
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
@@ -251,13 +268,13 @@ public:
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "start");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 10);    // values are hardwired in the initial version of this function
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());
         CPPUNIT_ASSERT((*i)->name() == "stop");
         CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 20);
+        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 33);
 
         ++i;
         CPPUNIT_ASSERT(i != indices->var_end());

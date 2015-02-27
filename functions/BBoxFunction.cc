@@ -71,19 +71,6 @@ namespace libdap {
 void
 function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-#if 0
-    // Build the Structure and load it with the needed fields. The
-    // Array instances will have the same fields, but each instance
-    // will also be loaded with values.
-    Structure *proto = new Structure("bbox");
-    proto->add_var_nocopy(new Int32("start"));
-    proto->add_var_nocopy(new Int32("stop"));
-    proto->add_var_nocopy(new Str("name"));
-    // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
-    auto_ptr<Array> response(new Array("bbox", proto));
-#endif
-
-
     switch (argc) {
     case 0:
         throw Error("No help yet");
@@ -108,47 +95,131 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     // Get the values as doubles
     vector<double> the_values;
-    extract_double_array(the_array, the_values); // This function sets the size of dest
+    extract_double_array(the_array, the_values); // This function sets the size of the_values
 
     double min_value = extract_double_value(argv[1]);
     double max_value = extract_double_value(argv[2]);
-#if 0
+
     // Build the response
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox();
+    unsigned int rank = the_array->dimensions();
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, "indices");
 
-    // Before loading the values, set the length of the response array
-    // This is a one-dimensional array (vector) with a set of start, stop
-    // and name tuples for each dimension of the first argument
-    response->append_dim(the_array->dimensions(), "indices");
+    switch (rank) {
+    case 1: {
+        unsigned int X = the_array->dimension_size(the_array->dim_begin());
+
+        bool found_start = false;
+        unsigned int start = 0;
+        for (unsigned int i = 0; i < X && !found_start; ++i) {
+            if (the_values.at(i) >= min_value && the_values.at(i) <= max_value) {
+                start = i;
+                found_start = true;
+            }
+        }
+
+        // ! found_start == error?
+        if (!found_start) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+
+        bool found_stop = false;
+        unsigned int stop = X-1;
+        for (int i = X - 1; i >= 0 && !found_stop; --i) {
+            if (the_values.at(i) >= min_value && the_values.at(i) <= max_value) {
+                stop = (unsigned int)i;
+                found_stop = true;
+            }
+        }
+
+        // ! found_stop == error?
+        if (!found_stop)
+            throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
+
+        Structure *slice = roi_bbox_build_slice(start, stop, the_array->dimension_name(the_array->dim_begin()));
+        response->set_vec_nocopy(0, slice);
+        break;
+    }
+    case 2: {
+#if 1
+        // quick reminder: rows == y == j; cols == x == i
+        Array::Dim_iter rows = the_array->dim_begin(), cols = the_array->dim_begin()+1;
+        unsigned int Y = the_array->dimension_size(rows);
+        unsigned int X = the_array->dimension_size(cols);
+
+        unsigned int x_start = 0;
+        unsigned int y_start = 0;
+        bool found_y_start = false;
+        // Must look at all rows to find the 'left-most' col with value
+        for (unsigned int j = 0; j < Y; ++j) {
+            bool found_x_start = false;
+
+            for (unsigned int i = 0; i < X && !found_x_start; ++i) {
+                unsigned int ind = j * X + i;
+                if (the_values.at(ind) >= min_value && the_values.at(ind) <= max_value) {
+                    x_start = min(i, x_start);
+                    found_x_start = true;
+                    if (!found_y_start) {
+                        y_start = j;
+                        found_y_start = true;
+                    }
+                }
+            }
+        }
+
+        // ! found_y_start == error?
+        if (!found_y_start) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+
+        unsigned int x_stop = 0;
+        unsigned int y_stop = 0;
+        bool found_y_stop = false;
+        // Must look at all rows to find the 'left-most' col with value
+        for (int j = Y - 1; j >= (int)y_start; --j) {
+            bool found_x_stop = false;
+
+            for (int i = X - 1; i >= 0 && !found_x_stop; --i) {
+                unsigned int ind = j * X + i;
+                if (the_values.at(ind) >= min_value && the_values.at(ind) <= max_value) {
+                    x_stop = max((unsigned int)i, x_stop);
+                    found_x_stop = true;
+                    if (!found_y_stop) {
+                        y_stop = j;
+                        found_y_stop = true;
+                    }
+                }
+            }
+        }
+
+        // ! found_stop == error?
+        if (!found_y_stop)
+            throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
+
+        response->set_vec_nocopy(0, roi_bbox_build_slice(y_start, y_stop, the_array->dimension_name(rows)));
+        response->set_vec_nocopy(1, roi_bbox_build_slice(x_start, x_stop, the_array->dimension_name(cols)));
+        break;
+#else
+        int i = 0;
+        for (Array::Dim_iter di = the_array->dim_begin(), de = the_array->dim_end(); di != de; ++di) {
+            // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
+            //Structure *slice = roi_bbox_build_slice(10, 20, the_array->dimension_name(di));
+            //response->set_vec_nocopy(i++, slice);
+            response->set_vec_nocopy(i++, roi_bbox_build_slice(10, 20, the_array->dimension_name(di)));
+        }
+        break;
 #endif
-    // Build the response
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(the_array->dimensions(), "indices");
-
-    int i = 0;
-    for(Array::Dim_iter di = the_array->dim_begin(), de = the_array->dim_end(); di != de; ++di) {
-        // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
-        Structure *slice = roi_bbox_build_slice(10, 20, the_array->dimension_name(di));
-#if 0
-        Int32 *start = new Int32("start");
-
-        start->set_value(10);
-        slice->add_var_nocopy(start);
-
-        Int32 *stop = new Int32("stop");
-        stop->set_value(20);
-        slice->add_var_nocopy(stop);
-
-        Str *name = new Str("name");
-        name->set_value(the_array->dimension_name(di));
-        slice->add_var_nocopy(name);
-
-        slice->set_read_p(true);        // Sets all children too, as does set_send_p()
-        slice->set_send_p(true);        // Not sure this is needed, but it cannot hurt
-#endif
-        response->set_vec_nocopy(i++, slice);
+    }
+    case 3:
+        //break;
+    default:
+        throw Error("In function bbox(): Arrays with rank " + long_to_string(rank) + " are not yet supported.");
+        break;
     }
 
-    response->set_length(i);
     response->set_read_p(true);
     response->set_send_p(true);
 
@@ -167,7 +238,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  *
  * @see function_dap2_bbox
  */
-BaseType *function_dap4_bbox(D4RValueList *args, DMR &)
+BaseType *function_dap4_bbox(D4RValueList * /* args */, DMR & /* dmr */)
 {
     auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
 

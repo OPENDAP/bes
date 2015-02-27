@@ -11,7 +11,7 @@
     <bes:container name="c">
       <!-- %22 is a double quote and %3E is greater than -->
       <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
-      <bes:constraint>roi(Optical_Depth_Land_And_Ocean,Latitude,Longitude,bbox(Latitude,40,40.001))</bes:constraint>
+      <bes:constraint>roi(Optical_Depth_Land_And_Ocean,Latitude,Longitude,bbox_union(bbox(Latitude,40,40.001),bbox(Longitude,168,168.01),"inter"))</bes:constraint>
     </bes:container>
   </bes:define>
   

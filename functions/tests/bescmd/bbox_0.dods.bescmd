@@ -11,10 +11,10 @@
     <bes:container name="c">
       <!-- %22 is a double quote and %3E is greater than -->
       <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
-      <bes:constraint>roi(Optical_Depth_Land_And_Ocean,Latitude,Longitude,bbox(Latitude,40,40.001))</bes:constraint>
+      <bes:constraint>Latitude,Longitude</bes:constraint>
     </bes:container>
   </bes:define>
   
-  <bes:get type="dods" definition="d1" />
+  <bes:get type="dods" definition="d1"/>
   
 </bes:request>

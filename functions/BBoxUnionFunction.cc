@@ -51,6 +51,10 @@ namespace libdap {
 /**
  * @brief Combine several bounding boxes, forming their union.
  *
+ * This combines N BBox variables (Array of Structure) forming
+ * either their union or intersection, depending on the last
+ * parameter's value ("union" or "inter[section]")
+ *
  * @note There are both DAP2 and DAP4 versions of this function.
  *
  * @param argc Argument count
@@ -62,10 +66,12 @@ void
 function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
     unsigned int rank = 0;
+    string operation = "";
 
     switch (argc) {
     case 0:
-        // Must have 1 or more arguments
+    case 1:
+        // Must have 2 or more arguments
         throw Error("No help yet");
 
     default:
@@ -74,9 +80,11 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
         // Actually, we could us names to form the unions - they don't
         // really have to be the same shape, but this will do for now.
-        for (int i = 1; i < argc; ++i)
+        for (int i = 1; i < argc-1; ++i)
             if (roi_valid_bbox(argv[0]) != rank)
                 throw Error("In function bbox_union(): All bounding boxes must be the same shape to form their union.");
+
+        operation = extract_string_argument(argv[argc-1]);
         break;
     }
 
@@ -98,20 +106,17 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // because of the roi_valid_bbox() test.
         roi_bbox_get_slice_data(static_cast<Array*>(argv[0]), i, start, stop, name);
 
-        Structure *slice = roi_bbox_build_slice(start, stop, name);
-
-        //response->set_vec_nocopy(i, slice);
         result.at(i).start = start;
         result.at(i).stop = stop;
         result.at(i).name = name;
     }
 
     // For each BBox, for each dimension...
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 1; i < argc-1; ++i) {
         // cast is safe given the tests above
         Array *bbox = static_cast<Array*>(argv[i]);
 
-        for (int i = 0; i < rank; ++i) {
+        for (unsigned int i = 0; i < rank; ++i) {
             int start, stop;
             string name;
             // start, stop, name are value-result parameters
@@ -120,14 +125,21 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             if (result.at(i).name != name)
             	throw Error("In function bbox_union(): named dimensions must match in teh bounding boxes");
 
-            result.at(i).start = min(result.at(i).start, start);
-            result.at(i).stop = max(result.at(i).stop, stop);
+            if (operation == "union") {
+                result.at(i).start = min(result.at(i).start, start);
+                result.at(i).stop = max(result.at(i).stop, stop);
+            }
+            else if (operation == "inter" || operation == "intersection") {
+                result.at(i).start = max(result.at(i).start, start);
+                result.at(i).stop = min(result.at(i).stop, stop);
+
+            }
         }
     }
 
     // Build the response
     auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, "indices");
-    for (int i = 0; i < rank; ++i) {
+    for (unsigned int i = 0; i < rank; ++i) {
     	Structure *slice = roi_bbox_build_slice(result.at(i).start, result.at(i).stop, result.at(i).name);
     	response->set_vec_nocopy(i, slice);
     }
