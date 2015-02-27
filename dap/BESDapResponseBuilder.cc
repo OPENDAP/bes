@@ -546,7 +546,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
  * Should this result be returned using the asynchronous response mechanism?
  * Look at the 'store_result' property and see if the code should return this
  * using the asynchronous mechanism. If yes, it will try and return the correct
- * response or an error if the serveris not configured or the client has not
+ * response or an error if the server is not configured or the client has not
  * included the correct information in the request.
  *
  * @param out Write information to the client using this stream

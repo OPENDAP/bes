@@ -63,6 +63,8 @@ public:
 	virtual bool remove_method(string method_name);
 	virtual p_transmitter find_method(string method_name);
 
+	// TODO I think BESResponseObject may be superfluous here since it's in the DHI,
+	// but maybe not... should check. jhrg 2/20/15
 	virtual void send_response(const string &method, BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
 	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi) = 0;

@@ -263,12 +263,16 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 	// require a release of all modules.
 	dhi.container->access() ;
 
+	// TODO Do not need to use .c_str(). jhrg 2/20/15
 	BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
 	if( rh )
 	{
 	    p_request_handler p = rh->find_handler( dhi.action ) ;
 	    // if we can't find the function, see if there is a catch all
 	    // function that handles or redirects the request.
+	    //
+	    // TODO NB: There are no instances of catch.all handlers.
+	    // jhrg 2/20/15
 	    if( !p )
 	    {
 		p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL ) ;
@@ -279,6 +283,7 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 		p( dhi ) ;
 		if( dhi.container )
 		{
+		    // This is (likely) for reporting. May not be used... jhrg 2/20/15
 		    string c_list = dhi.data[REAL_NAME_LIST] ;
 		    if( !c_list.empty() )
 		       c_list += ", " ;
@@ -286,6 +291,8 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 		    dhi.data[REAL_NAME_LIST] = c_list ;
 		}
 	    } else {
+	        // TODO THis should not be an internal error - its really a configuration error
+	        // jhrg 2/20/15
 		string se = "Request handler \""
 			    + dhi.container->get_container_type()
 			    + "\" does not handle the response type \""
