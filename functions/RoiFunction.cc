@@ -44,6 +44,7 @@
 #include <BESDebug.h>
 
 #include "RoiFunction.h"
+#include "roi_utils.h"
 
 using namespace std;
 
@@ -72,77 +73,6 @@ static void check_number_type_array(BaseType *btp, unsigned int rank)
         throw Error("In function roi(): Expected the array '" + a->name() +"' to be rank " + long_to_string(rank) + " or greater.");
 }
 
-static void check_valid_slice(BaseType *btp)
-{
-    // we know it's a Structure * and it has one element because the test above passed
-    if (btp->type() != dods_structure_c)
-        throw Error("In function roi(): Expected an Array of Structures for the slice information.");
-
-    Structure *slice = static_cast<Structure*>(btp);
-
-    Constructor::Vars_iter i = slice->var_begin();
-    if (i == slice->var_end() || (*i)->name() != "start" || (*i)->type() != dods_int32_c)
-        throw Error("In function roi(): Could not find valid 'start' field in slice information");
-
-    ++i;
-    if (i == slice->var_end() || (*i)->name() != "stop" || (*i)->type() != dods_int32_c)
-        throw Error("In function roi(): Could not find valid 'stop' field in slice information");
-
-    ++i;
-    if (i == slice->var_end() || (*i)->name() != "name" || (*i)->type() != dods_str_c)
-        throw Error("In function roi(): Could not find valid 'name' field in slice information");
-}
-
-/**
- * Is the slice array (an array of structures) correct? Throw Error
- * if not.
- *
- * @param btp Pointer to the Array of Structure that holds the slice information
- * @return The number of slices in the slice array
- * @exception Error Thrown if the array si not valid.
- */
-static unsigned int valid_slice_array(BaseType *btp)
-{
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__, "roi() function called with null slice array.");
-
-    if (btp->type() != dods_array_c)
-        throw Error("In function roi(): Expected last argument to be an Array of slices.");
-
-    Array *slices = static_cast<Array*>(btp);
-    if (slices->dimensions() != 1)
-        throw Error("In function roi(): Expected last argument to be a one dimensional Array of slices.");
-
-    int rank = slices->dimension_size(slices->dim_begin());
-    for (int i = 0; i < rank; ++i) {
-        check_valid_slice(slices->var(i));
-    }
-
-    return rank;
-}
-
-/**
- * This method extracts values from one element of the slices Array of Structures.
- * It assumes that the input has been validated.
- *
- * @param slices
- * @param i
- * @param start
- * @param stop
- * @param name
- */
-static void get_slice_data(Array *slices, unsigned int i, int &start, int &stop, string &name)
-{
-    BaseType *btp = slices->var(i);
-
-    Structure *slice = static_cast<Structure*>(btp);
-    Constructor::Vars_iter vi = slice->var_begin();
-
-    start = static_cast<Int32*>(*vi++)->value();
-    stop = static_cast<Int32*>(*vi++)->value();
-    name = static_cast<Str*>(*vi++)->value();
-}
-
 /**
  * @brief Subset the N arrays using index slicing information
  *
@@ -166,7 +96,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // Must have 2 or more arguments
         throw Error("No help yet");
     default:
-        rank = valid_slice_array(argv[argc-1]); // throws if slice is not valid
+        rank = roi_valid_bbox(argv[argc-1]); // throws if slice is not valid
 
         for (int i = 0; i < argc-1; ++i)
             check_number_type_array(argv[i], rank);      // throws if array is not valid
@@ -189,7 +119,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             int start, stop;
             string name;
             // start, stop, name are value-result parameters
-            get_slice_data(slices, i, start, stop, name);
+            roi_bbox_get_slice_data(slices, i, start, stop, name);
 
             // Hack, should use reverse iterators, but Array does not have them
             Array::Dim_iter iter = the_array->dim_begin() + d;
