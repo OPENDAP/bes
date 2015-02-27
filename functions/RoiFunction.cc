@@ -109,10 +109,13 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // cast is safe given the above
         Array *the_array = static_cast<Array*>(argv[i]);
 
-        // foreach dimension of the array, apply the slice constraint.
+        // For each dimension of the array, apply the slice constraint.
         // Assume Array[]...[][X][Y] where the slice has dims X and Y
         // So find the last <rank> dimensions and check that their names
-        // match those of the slice
+        // match those of the slice. This loops 'walks backward' over
+        // both the N bbox slices and the right-most N dimensions of
+        // the arrays.
+
         unsigned int num_dims = the_array->dimensions();
         int d = num_dims-1;
         for (int i = rank-1; i >= 0; --i) {
