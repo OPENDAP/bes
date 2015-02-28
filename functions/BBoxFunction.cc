@@ -71,14 +71,16 @@ namespace libdap {
 void
 function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
+    const string wrong_args = "Wrong number of args to bbox(). Expected an Array and minimum and maximum values (3 arguments)";
+
     switch (argc) {
     case 0:
-        throw Error("No help yet");
+        throw Error(malformed_expr, wrong_args);
     case 3:
         // correct number of args
         break;
     default:
-        throw Error(malformed_expr, "Wrong number of args to bbox()");
+        throw Error(malformed_expr, wrong_args);
     }
 
     if (argv[0] && argv[0]->type() != dods_array_c)
@@ -142,7 +144,6 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         break;
     }
     case 2: {
-#if 1
         // quick reminder: rows == y == j; cols == x == i
         Array::Dim_iter rows = the_array->dim_begin(), cols = the_array->dim_begin()+1;
         unsigned int Y = the_array->dimension_size(rows);
@@ -202,20 +203,9 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         response->set_vec_nocopy(0, roi_bbox_build_slice(y_start, y_stop, the_array->dimension_name(rows)));
         response->set_vec_nocopy(1, roi_bbox_build_slice(x_start, x_stop, the_array->dimension_name(cols)));
         break;
-#else
-        int i = 0;
-        for (Array::Dim_iter di = the_array->dim_begin(), de = the_array->dim_end(); di != de; ++di) {
-            // FIXME hack code for now to see end-to-end operation. jhrg 2/25/15
-            //Structure *slice = roi_bbox_build_slice(10, 20, the_array->dimension_name(di));
-            //response->set_vec_nocopy(i++, slice);
-            response->set_vec_nocopy(i++, roi_bbox_build_slice(10, 20, the_array->dimension_name(di)));
-        }
-        break;
-#endif
     }
-    case 3:
-        //break;
     default:
+        // Odometer code here. See Trac. jhrg 2/27/15
         throw Error("In function bbox(): Arrays with rank " + long_to_string(rank) + " are not yet supported.");
         break;
     }

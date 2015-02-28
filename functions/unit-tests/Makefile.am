@@ -55,7 +55,7 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest Dap4_TabularFunctionTest BBoxFunctionTest \
-RoiFunctionTest
+RoiFunctionTest BBoxUnionFunctionTest
 	
 else
 UNIT_TESTS =
@@ -70,7 +70,7 @@ check-local:
 endif
 
 # These are used to read in baselines from files
-TEST_SRC = test_utils.cc test_utils.h
+TEST_SRC = test_utils.cc test_utils.h ../roi_utils.cc ../roi_utils.h
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
 CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
@@ -91,6 +91,9 @@ Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIB
 
 BBoxFunctionTest_SOURCES = ../BBoxFunction.cc ../BBoxFunction.h BBoxFunctionTest.cc $(TEST_SRC)
 BBoxFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+
+BBoxUnionFunctionTest_SOURCES = ../BBoxUnionFunction.cc ../BBoxUnionFunction.h BBoxUnionFunctionTest.cc $(TEST_SRC)
+BBoxUnionFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 
 RoiFunctionTest_SOURCES = ../RoiFunction.cc ../RoiFunction.h RoiFunctionTest.cc $(TEST_SRC)
 RoiFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types

@@ -65,6 +65,8 @@ namespace libdap {
 void
 function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
+    const string wrong_args = "Wrong number of arguments to bbox_union(). Expected one or more bounding boxes and a string naming the operation (2+ arguments)";
+
     unsigned int rank = 0;
     string operation = "";
 
@@ -72,7 +74,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     case 0:
     case 1:
         // Must have 2 or more arguments
-        throw Error("No help yet");
+        throw Error(malformed_expr, wrong_args);
 
     default:
         // Vet the input: All bbox variables must be the same shape
@@ -82,7 +84,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // really have to be the same shape, but this will do for now.
         for (int i = 1; i < argc-1; ++i)
             if (roi_valid_bbox(argv[0]) != rank)
-                throw Error("In function bbox_union(): All bounding boxes must be the same shape to form their union.");
+                throw Error(malformed_expr, "In function bbox_union(): All bounding boxes must be the same shape to form their union.");
 
         operation = extract_string_argument(argv[argc-1]);
         break;
@@ -123,7 +125,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             roi_bbox_get_slice_data(bbox, i, start, stop, name);
 
             if (result.at(i).name != name)
-            	throw Error("In function bbox_union(): named dimensions must match in teh bounding boxes");
+            	throw Error("In function bbox_union(): named dimensions must match in the bounding boxes");
 
             if (operation == "union") {
                 result.at(i).start = min(result.at(i).start, start);

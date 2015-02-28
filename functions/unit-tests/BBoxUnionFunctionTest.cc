@@ -50,7 +50,8 @@
 #include "test_config.h"
 #include "test_utils.h"
 
-#include "BBoxFunction.h"
+#include "BBoxUnionFunction.h"
+#include "roi_utils.h"
 
 using namespace CppUnit;
 using namespace libdap;
@@ -69,7 +70,7 @@ static bool debug2 = false;
 namespace libdap
 {
 
-class BBoxFunctionTest:public TestFixture
+class BBoxUinioFunctionTest:public TestFixture
 {
 private:
     TestTypeFactory btf;
@@ -78,9 +79,9 @@ private:
     DDS *float32_array, *float32_2d_array;
 
 public:
-    BBoxFunctionTest(): float32_array(0), float32_2d_array(0)
+    BBoxUinioFunctionTest(): float32_array(0), float32_2d_array(0)
     {}
-    ~BBoxFunctionTest()
+    ~BBoxUinioFunctionTest()
     {}
 
     void setUp()
@@ -110,8 +111,8 @@ public:
         BaseType *result = 0;
         try {
             BaseType *argv[] = { };
-            function_dap2_bbox(0, argv, *float32_array /* DDS & */, &result);
-            CPPUNIT_FAIL("bbox() Should throw an exception when called with no arguments");
+            function_dap2_bbox_union(0, argv, *float32_array /* DDS & */, &result);
+            CPPUNIT_FAIL("bbox_union() Should throw an exception when called with no arguments");
         }
         catch (Error &e) {
             CPPUNIT_ASSERT(true);
@@ -121,32 +122,42 @@ public:
         }
     }
 
-    void string_arg_test() {
+    void union_test() {
         BaseType *result = 0;
         try {
-            Array a("values", new Str("values"));
-            a.append_dim(5, "strings");
-
             // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
-            BaseType *argv[] = { &a, &min, &max };
-            function_dap2_bbox(0, argv, *float32_array /* DDS & */, &result);
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
 
-            CPPUNIT_FAIL("bbox() Should throw an exception when called with a Str array");
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(8, 18, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("union");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
-            CPPUNIT_ASSERT(true);
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
-        catch (...) {
-            CPPUNIT_FAIL("unknown exception.");
-        }
-    }
 
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
+
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+        Array *result_bbox = static_cast<Array*>(result);
+
+        DBG(cerr << "resulting bbox: " << endl);
+        DBG(result_bbox->print_val(cerr));
+
+    }
+#if 0
     void float32_array_test() {
         BaseType *btp = *(float32_array->var_begin());
 
@@ -323,18 +334,16 @@ public:
         CPPUNIT_ASSERT((*i)->type() == dods_str_c);
         CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
     }
-
-    CPPUNIT_TEST_SUITE( BBoxFunctionTest );
+#endif
+    CPPUNIT_TEST_SUITE( BBoxUinioFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
-    CPPUNIT_TEST(string_arg_test);
-    CPPUNIT_TEST(float32_array_test);
-    CPPUNIT_TEST(float32_2d_array_test);
+    CPPUNIT_TEST(union_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(BBoxUinioFunctionTest);
 
 } // namespace libdap
 
@@ -365,7 +374,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::BBoxFunctionTest::") + argv[i++];
+            test = string("libdap::BBoxUnionFunctionTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

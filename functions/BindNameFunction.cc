@@ -55,8 +55,6 @@ string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
 "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name\">\n" +
 "</function>";
 
-
-
 /** Bind a new name to a variable. The first argument to the function is
  * the new name and the second argument is the BaseType* to (re)name. This
  * function can be used to assign a name to an anonymous variable or change
