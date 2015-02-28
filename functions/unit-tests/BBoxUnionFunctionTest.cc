@@ -70,7 +70,7 @@ static bool debug2 = false;
 namespace libdap
 {
 
-class BBoxUinioFunctionTest:public TestFixture
+class BBoxUnionFunctionTest:public TestFixture
 {
 private:
     TestTypeFactory btf;
@@ -79,9 +79,9 @@ private:
     DDS *float32_array, *float32_2d_array;
 
 public:
-    BBoxUinioFunctionTest(): float32_array(0), float32_2d_array(0)
+    BBoxUnionFunctionTest(): float32_array(0), float32_2d_array(0)
     {}
-    ~BBoxUinioFunctionTest()
+    ~BBoxUnionFunctionTest()
     {}
 
     void setUp()
@@ -122,7 +122,7 @@ public:
         }
     }
 
-    void union_test() {
+    void union_test_1() {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -141,7 +141,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -153,197 +153,214 @@ public:
 
         Array *result_bbox = static_cast<Array*>(result);
 
-        DBG(cerr << "resulting bbox: " << endl);
-        DBG(result_bbox->print_val(cerr));
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
 
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
     }
-#if 0
-    void float32_array_test() {
-        BaseType *btp = *(float32_array->var_begin());
 
-        // It's an array
-        CPPUNIT_ASSERT(btp->type() == dods_array_c);
-
-        // ... and it's an Float32 array
-        Array *a = static_cast<Array*>(btp);
-        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
-
-        //  it has thirty elements
-        CPPUNIT_ASSERT(a->length() == 30);
-
-        TestCommon *tc = dynamic_cast<TestCommon*>(a);
-        CPPUNIT_ASSERT(tc != 0);
-        tc->set_series_values(true);
-
-        DBG2(a->read());
-        DBG2(cerr << "Array 'a': ");
-        DBG2(a->print_val(cerr));
-
+    void union_test_2() {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
 
-            BaseType *argv[] = { a, &min, &max };
-            function_dap2_bbox(3, argv, *float32_array /* DDS & */, &result);
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(2, 18, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("union");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
 
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
 
-        Array *result_array = static_cast<Array*>(result);
+        Array *result_bbox = static_cast<Array*>(result);
 
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(result->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
-
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 8);    // values are hardwired in the initial version of this function
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 26);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "a_values");
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void float32_2d_array_test() {
-        BaseType *btp = *(float32_2d_array->var_begin());
-
-        // It's an array
-        CPPUNIT_ASSERT(btp->type() == dods_array_c);
-
-        // ... and it's an Float32 array
-        Array *a = static_cast<Array*>(btp);
-        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
-
-        //  it has thirty elements
-        CPPUNIT_ASSERT(a->length() == 1020);
-
-        TestCommon *tc = dynamic_cast<TestCommon*>(a);
-        CPPUNIT_ASSERT(tc != 0);
-        tc->set_series_values(true);
-
-        DBG2(a->read());
-        DBG2(cerr << "Array 'a': ");
-        DBG2(a->print_val(cerr));
-
+    void union_test_3() {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
 
-            BaseType *argv[] = { a, &min, &max };
-            function_dap2_bbox(3, argv, *float32_2d_array /* DDS & */, &result);
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 10, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("union");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
 
-        Array *result_array = static_cast<Array*>(result);
+        Array *result_bbox = static_cast<Array*>(result);
 
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(result->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
 
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
-
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 29);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "rows");
-
-        indices = static_cast<Structure*>(result_array->var(1));
-        CPPUNIT_ASSERT(indices != 0);
-
-        i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 33);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_3.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
     }
-#endif
-    CPPUNIT_TEST_SUITE( BBoxUinioFunctionTest );
+
+    void intersection_test_1() {
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
+
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 11, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("inter");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
+        }
+
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
+
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+        Array *result_bbox = static_cast<Array*>(result);
+
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
+
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_1.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+    }
+
+    void intersection_test_2() {
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(5, 7, "a_values"));
+
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 11, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("inter");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
+        }
+
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
+
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+        Array *result_bbox = static_cast<Array*>(result);
+
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
+
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_inter_2.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+    }
+
+    void intersection_test_3() {
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(5, 7, "a_values"));
+
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(8, 11, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("inter");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
+            CPPUNIT_FAIL("Expected an exception to be thrown");
+        }
+        catch (Error &e) {
+        	DBG(cerr << "Got the expected error:" + e.get_error_message());
+            CPPUNIT_ASSERT(true);
+        }
+        catch (...) {
+        	CPPUNIT_FAIL("Expected an Error exception, got something else.");
+        }
+    }
+
+    CPPUNIT_TEST_SUITE( BBoxUnionFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
-    CPPUNIT_TEST(union_test);
+    CPPUNIT_TEST(union_test_1);
+    CPPUNIT_TEST(union_test_2);
+    CPPUNIT_TEST(union_test_3);
+    CPPUNIT_TEST(intersection_test_1);
+    CPPUNIT_TEST(intersection_test_2);
+    CPPUNIT_TEST(intersection_test_3);
 
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BBoxUinioFunctionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(BBoxUnionFunctionTest);
 
 } // namespace libdap
 

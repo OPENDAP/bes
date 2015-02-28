@@ -135,6 +135,11 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
                 result.at(i).start = max(result.at(i).start, start);
                 result.at(i).stop = min(result.at(i).stop, stop);
 
+                if (result.at(i).stop < result.at(i).start)
+                	throw Error("In bbox_union(): The intersection of the bounding boxes is empty (dimension " + long_to_string(i) + ").");
+            }
+            else {
+            	throw Error(malformed_expr, "In bbox_union(): Unknown operator '" + operation + "'; expected 'union', 'intersection' or 'inter'.");
             }
         }
     }
