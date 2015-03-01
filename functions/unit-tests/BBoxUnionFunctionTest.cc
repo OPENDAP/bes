@@ -242,7 +242,7 @@ public:
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
 
-    void intersection_test_1() {
+   void intersection_test_1() {
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
@@ -347,6 +347,49 @@ public:
         }
     }
 
+    // Test 2d (these are actual boxes - not just line segments
+    void union_test_4() {
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
+            bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 5, "a_values"));
+
+            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 10, "a_values"));
+            bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(7, 10, "a_values"));
+
+            Str oper("oper");
+            oper.set_value("union");
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get(), &oper };
+            function_dap2_bbox_union(3, argv, *float32_array /* DDS & */, &result);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error:" + e.get_error_message());
+        }
+
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2d.baseline.xml");
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of bbox_union()'s response: " << endl << oss.str() << endl);
+
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_array_c);
+
+        Array *result_bbox = static_cast<Array*>(result);
+
+        oss.str("");
+        oss.clear();
+        result_bbox->print_val(oss);
+        DBG(cerr << "resulting bbox: " << endl << oss.str());
+
+        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_4.baseline");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+    }
+
     CPPUNIT_TEST_SUITE( BBoxUnionFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
@@ -356,6 +399,8 @@ public:
     CPPUNIT_TEST(intersection_test_1);
     CPPUNIT_TEST(intersection_test_2);
     CPPUNIT_TEST(intersection_test_3);
+
+    CPPUNIT_TEST(union_test_4);
 
     CPPUNIT_TEST_SUITE_END();
 };

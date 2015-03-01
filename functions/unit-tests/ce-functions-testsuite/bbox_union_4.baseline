@@ -1,0 +1,5 @@
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} bbox[indices = 2] = {{ 3, 10, "a_values" }, { 3, 10, "a_values" }};
