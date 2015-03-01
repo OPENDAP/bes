@@ -92,6 +92,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
                 throw Error(malformed_expr, "In function bbox_union(): All bounding boxes must be the same shape to form their union.");
 
         operation = extract_string_argument(argv[argc-1]);
+        downcase(operation);
         break;
     }
 

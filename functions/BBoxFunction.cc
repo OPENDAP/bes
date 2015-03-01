@@ -75,7 +75,7 @@ namespace libdap {
 void
 function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    const string wrong_args = "Wrong number of args to bbox(). Expected an Array and minimum and maximum values (3 arguments)";
+    const string wrong_args = "Wrong number of arguments to bbox(). Expected an Array and minimum and maximum values (3 arguments)";
 
     switch (argc) {
     case 0:
@@ -234,11 +234,9 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 BaseType *function_dap4_bbox(D4RValueList * /* args */, DMR & /* dmr */)
 {
-    auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
-
     throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
 
-    return response.release();
+    return 0; //response.release();
 }
 
 } // namesspace libdap

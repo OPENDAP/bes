@@ -1,0 +1,5 @@
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} inter[inter = 2] = {{ 4, 5, "a_values" }, { 4, 5, "a_values" }};

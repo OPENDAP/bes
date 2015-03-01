@@ -97,7 +97,7 @@ static void check_number_type_array(BaseType *btp, unsigned int rank)
 void
 function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    auto_ptr<Structure> response(new Structure("roi_subset"));
+    const string wrong_args = "Wrong number of arguments to roi(). Expected one or more Arrays and bounding box";
 
     // This is the rank of the Array of Slices, not the N-1 arrays to be sliced
     int rank = 0;
@@ -106,7 +106,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     case 0:
     case 1:
         // Must have 2 or more arguments
-        throw Error("No help yet");
+        throw Error(malformed_expr, wrong_args);
     default:
         rank = roi_valid_bbox(argv[argc-1]); // throws if slice is not valid
 
@@ -115,7 +115,9 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         break;
     }
 
-    Array *slices = static_cast<Array*>(argv[argc-1]);
+    auto_ptr<Structure> response(new Structure("roi_subset"));
+
+    Array *bbox = static_cast<Array*>(argv[argc-1]);
 
     for (int i = 0; i < argc-1; ++i) {
         // cast is safe given the above
@@ -134,12 +136,12 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             int start, stop;
             string name;
             // start, stop, name are value-result parameters
-            roi_bbox_get_slice_data(slices, i, start, stop, name);
+            roi_bbox_get_slice_data(bbox, i, start, stop, name);
 
             // Hack, should use reverse iterators, but Array does not have them
             Array::Dim_iter iter = the_array->dim_begin() + d;
 
-            // TODO Make this an option (i.e., turn of the test)?
+            // TODO Make this an option (i.e., turn off the test)?
             // TODO Make a second option that will match names instead of position
             if (the_array->dimension_name(iter) != name)
                 throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
