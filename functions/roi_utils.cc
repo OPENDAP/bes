@@ -38,6 +38,21 @@
 
 namespace libdap {
 
+/**
+ * Each Bounding Box is made up of a number of 'slices' - test if a given
+ * one is valid.
+ *
+ * A bounding box is an Array of Structures, where each Structure element
+ * of the array is one 'slice' of a dimension of some dataset variable.
+ * This function can be used to test each of those elements/slices to see
+ * if they have the correct form. This function throws an exception if
+ * the 'slice' is not valid, otherwise it simply returns.
+ *
+ * @param btp A BaseType* - the type used to pass arguments into server
+ * functions - that should reference a Structure that has to form of a
+ * bbox element.
+ * @exception Error If the slice is not valid
+ */
 void roi_bbox_valid_slice(BaseType *btp)
 {
     // we know it's a Structure * and it has one element because the test above passed
@@ -68,8 +83,6 @@ void roi_bbox_valid_slice(BaseType *btp)
  * the BBox Array. In addition to the start and stop indices, the
  * Structure holds the dimension's name.
  *
- * @todo Fix the error messages; they say 'in roi()'
- *
  * @param btp Pointer to the Array of Structure that holds the slice information
  * @return The number of slices in the slice array
  * @exception Error Thrown if the array si not valid.
@@ -77,14 +90,14 @@ void roi_bbox_valid_slice(BaseType *btp)
 unsigned int roi_valid_bbox(BaseType *btp)
 {
     if (!btp)
-        throw InternalErr(__FILE__, __LINE__, "roi() function called with null slice array.");
+        throw InternalErr(__FILE__, __LINE__, "Function called with null slice array.");
 
     if (btp->type() != dods_array_c)
-        throw Error("In function roi(): Expected last argument to be an Array of slices.");
+        throw Error("Function expected last argument to be a Bounding Box (i.e., an Array of Structures) (1).");
 
     Array *slices = static_cast<Array*>(btp);
     if (slices->dimensions() != 1)
-        throw Error("In function roi(): Expected last argument to be a one dimensional Array of slices.");
+        throw Error("Function expected last argument to be a Bounding Box (i.e., an Array of Structures) (2).");
 
     int rank = slices->dimension_size(slices->dim_begin());
     for (int i = 0; i < rank; ++i) {
@@ -95,14 +108,16 @@ unsigned int roi_valid_bbox(BaseType *btp)
 }
 
 /**
- * This method extracts values from one element of the slices Array of Structures.
- * It assumes that the input has been validated.
+ * This method extracts values from one element of the Bounding Box
+ * (i.e., Array of Structures). It assumes that the input has been validated.
  *
- * @param slices
- * @param i
- * @param start
- * @param stop
- * @param name
+ * @param slices The Bounding Box (which is made up of 'slices' of different
+ * dimensions of the dataset's variable
+ * @param i Get this element of the bbox array - corresponds to the ith
+ * dimension of the dataset variable
+ * @param start	Start index
+ * @param stop Stop index
+ * @param name Corresponding dimension name of the dataset variable
  */
 void roi_bbox_get_slice_data(Array *slices, unsigned int i, int &start, int &stop, string &name)
 {
@@ -116,9 +131,28 @@ void roi_bbox_get_slice_data(Array *slices, unsigned int i, int &start, int &sto
     name = static_cast<Str*>(*vi++)->value();
 }
 
+/**
+ * Build a single element of a bounding box.
+ *
+ * Use this with an existing bounding box  - first build an empty
+ * bbox and then add individual elements by building them with this
+ * function and using Array::add_vec_nocopy(...) to populate the bbox
+ * with elements that describe the start, stop and names of the bbox's
+ * different dimensions.
+ *
+ * A bbox will have N-elements in a one-dimensional array that correspond
+ * to the N-dimensions of the 'source' dataset variable. This function
+ * builds one of those elements but it's up to the caller to correctly
+ * add the element to the bbox.
+ *
+ * @param start_value The starting index for the 'slice'
+ * @param stop_value The stopping index
+ * @param dim_name The slice/dimension name - this should match the dataset
+ * variable's dimension name.
+ */
 Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name)
 {
-    Structure *slice = new Structure("slice");
+    Structure *slice = new Structure("slice");	// This name is superfluous
 
     Int32 *start = new Int32("start");
     start->set_value(start_value);
@@ -138,34 +172,36 @@ Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_valu
     return slice;
 }
 
-auto_ptr<Array> roi_bbox_build_empty_bbox()
+/**
+ * Build an empty Bounding Box using DAP variables. A bbox is made up of an
+ * Array of Structures, where each Structure has three fields. The fields are
+ * the start and stop indices for the given dimension along with its name.
+ * The Array will have one dimension, with an element for each dimension
+ * in the source variable.
+ *
+ * By default the bbox is named 'bbox'
+ *
+ * @param num_dim Initialize the array with this number of dimensions; corresponds
+ * to the rank of the associated variable.
+ * @param dim_name The name for the Array's single dimension - not really that
+ * useful...
+ * @param bbpx_name Defaults to 'bbox', this is the name for the bbox Array. Setting
+ * this to the name of the associated dataset variable can make for more intelligible
+ * error messages.
+ */
+auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name)
 {
     // Build the Structure and load it with the needed fields. The
     // Array instances will have the same fields, but each instance
     // will also be loaded with values.
-    Structure *proto = new Structure("bbox");
+    Structure *proto = new Structure(bbox_name);
     proto->add_var_nocopy(new Int32("start"));
     proto->add_var_nocopy(new Int32("stop"));
     proto->add_var_nocopy(new Str("name"));
     // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
-    auto_ptr<Array> response(new Array("bbox", proto));
+    auto_ptr<Array> response(new Array(bbox_name, proto));
 
-    return response;
-}
-
-auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &dim_name)
-{
-    // Build the Structure and load it with the needed fields. The
-    // Array instances will have the same fields, but each instance
-    // will also be loaded with values.
-    Structure *proto = new Structure("bbox");
-    proto->add_var_nocopy(new Int32("start"));
-    proto->add_var_nocopy(new Int32("stop"));
-    proto->add_var_nocopy(new Str("name"));
-    // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
-    auto_ptr<Array> response(new Array("bbox", proto));
-
-    response->append_dim(num_dim, dim_name);
+    response->append_dim(num_dim, bbox_name);
 
     return response;
 }

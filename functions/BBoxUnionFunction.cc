@@ -53,7 +53,12 @@ namespace libdap {
  *
  * This combines N BBox variables (Array of Structure) forming
  * either their union or intersection, depending on the last
- * parameter's value ("union" or "inter[section]")
+ * parameter's value ("union" or "inter[section]").
+ *
+ * If the function is passed bboxes that have no intersection,
+ * an exception is thrown. This is so that callers will know
+ * why no data were returned. Otherwise, an empty response, while
+ * correct, could be baffling to the client.
  *
  * @note There are both DAP2 and DAP4 versions of this function.
  *
@@ -144,8 +149,8 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         }
     }
 
-    // Build the response
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, "indices");
+    // Build the response; name the result after the operation
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, operation);
     for (unsigned int i = 0; i < rank; ++i) {
     	Structure *slice = roi_bbox_build_slice(result.at(i).start, result.at(i).stop, result.at(i).name);
     	response->set_vec_nocopy(i, slice);

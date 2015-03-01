@@ -261,7 +261,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -301,7 +301,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_1.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_intersection_1.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 
@@ -369,7 +369,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2d.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/bbox_union_2.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
 

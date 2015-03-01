@@ -30,6 +30,7 @@ DISTCLEANFILES = bes.conf
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/functionsTest
+TESTSUITEFLAGS = -j7
 
 $(TESTSUITE): $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4 $(srcdir)/functionsTest.at
 

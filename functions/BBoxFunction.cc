@@ -51,7 +51,7 @@ namespace libdap {
 /**
  * @brief Return the bounding box for an array
  *
- * Given an N-dimensional Array of simple types and two
+ * Given an N-dimensional Array of simple numeric types and two
  * minimum and maximum values, return the indices of a N-dimensional
  * bounding box. The indices are returned using an Array of
  * Structure, where each element of the array holds the name,
@@ -60,6 +60,10 @@ namespace libdap {
  * It is up to the caller to make use of the returned values; the
  * array is not modified in any way other than to read in it's
  * values (and set the variable's read_p property).
+ *
+ * The returned Structure Array has the same name as the variable
+ * it applies to, so that error messages can reference the source
+ * variable.
  *
  * @note There are both DAP2 and DAP4 versions of this function.
  *
@@ -104,7 +108,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     // Build the response
     unsigned int rank = the_array->dimensions();
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, "indices");
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
 
     switch (rank) {
     case 1: {

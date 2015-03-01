@@ -38,8 +38,7 @@ void roi_bbox_get_slice_data(Array *slices, unsigned int i, int &start, int &sto
 
 Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name);
 
-auto_ptr<Array> roi_bbox_build_empty_bbox();
-auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &dim_name);
+auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
 
 }
 

@@ -50,6 +50,7 @@
 #include "test_utils.h"
 
 #include "RoiFunction.h"
+#include "roi_utils.h"
 
 using namespace CppUnit;
 using namespace libdap;
@@ -67,35 +68,6 @@ static bool debug2 = false;
 
 namespace libdap
 {
-
-static Array *get_empty_slices_array()
-{
-    // Make the prototype
-    Structure *proto = new Structure("bbox");
-    proto->add_var_nocopy(new Int32("start"));
-    proto->add_var_nocopy(new Int32("stop"));
-    proto->add_var_nocopy(new Str("name"));
-
-    return new Array("bbox", proto);
-}
-
-static Structure *get_new_slice_element(int start, int stop, const string &name)
-{
-    Structure *proto = new Structure("bbox");
-    Int32 *istart = new Int32("start");
-    istart->set_value(start);
-    proto->add_var_nocopy(istart);
-
-    Int32 *istop = new Int32("stop");
-    istop->set_value(stop);
-    proto->add_var_nocopy(istop);
-
-    Str *iname = new Str("name");
-    iname->set_value(name);
-    proto->add_var_nocopy(iname);
-
-    return proto;
-}
 
 class RoiFunctionTest:public TestFixture
 {
@@ -155,11 +127,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Array *slices = get_empty_slices_array();
-            slices->append_dim(1, "slices");
-            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "a_values"));
+            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
+            slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "a_values"));
 
-            BaseType *argv[] = { a, slices };
+            BaseType *argv[] = { a, slices.get() };
             function_dap2_roi(2, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
@@ -218,12 +189,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Array *slices = get_empty_slices_array();
-            slices->append_dim(2, "slices");
-            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "rows"));
-            slices->set_vec_nocopy(1, get_new_slice_element(9, 18, "cols"));
+            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(2, "slices");
+            slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "rows"));
+            slices->set_vec_nocopy(1, roi_bbox_build_slice(9, 18, "cols"));
 
-            BaseType *argv[] = { a, slices };
+            BaseType *argv[] = { a, slices.get() };
             function_dap2_roi(2, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
@@ -283,11 +253,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Array *slices = get_empty_slices_array();
-            slices->append_dim(1, "slices");
-            slices->set_vec_nocopy(0, get_new_slice_element(9, 18, "values"));
+            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
+            slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "values"));
 
-            BaseType *argv[] = { a, b, slices };
+            BaseType *argv[] = { a, b, slices.get() };
             function_dap2_roi(3, argv, *float32_array2 /* DDS & */, &result);
         }
         catch (Error &e) {

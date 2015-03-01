@@ -3,4 +3,4 @@ Structure {
     Int32 start;
     Int32 stop;
     String name;
-} bbox[indices = 2] = {{ 160, 192, "Cell_Along_Swath" }, { 0, 130, "Cell_Across_Swath" }};
+} Latitude[Latitude = 2] = {{ 160, 192, "Cell_Along_Swath" }, { 0, 130, "Cell_Across_Swath" }};

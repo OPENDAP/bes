@@ -76,6 +76,18 @@ static void check_number_type_array(BaseType *btp, unsigned int rank)
 /**
  * @brief Subset the N arrays using index slicing information
  *
+ * This function should be called with a series of array variables,
+ * each of which are N-dimensions or greater, where the N common
+ * dimensions should all be the same size. The intent of this function
+ * is that a N-dimensional bounding box, provided in indicial space,
+ * will be used to subset each of the arrays. There are other functions
+ * that can be used to build these bounding boxes using values of
+ * dataset variables - see bbox() and bbox_union(). Taken together,
+ * the roi(), bbox() and bbox_union() functions can be used to subset
+ * a collection of Arrays where some arrays are taken to be dependent
+ * variables and others independent variables. The result is a subset
+ * of 'discrete coverage' the collection of independent and dependent
+ * variables define.
  *
  * @param argc Argument count
  * @param argv Argument vector - variable in the current DDS

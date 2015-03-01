@@ -2,4 +2,4 @@ Structure {
     Int32 start;
     Int32 stop;
     String name;
-} bbox[indices = 1] = {{ 5, 7, "a_values" }};
+} inter[inter = 1] = {{ 5, 7, "a_values" }};
