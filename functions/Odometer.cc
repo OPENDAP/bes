@@ -22,31 +22,52 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef ROI_UTILS_H_
-#define ROI_UTILS_H_
+#include "config.h"
+
+#include <vector>
+
+#include <Error.h>
+
+#include "Odometer.h"
+
+using namespace std;
 
 namespace libdap {
 
-class BaseType;
-class Array;
-class Structure;
+// documentation in the header file
+unsigned int
+Odometer::next()
+{
+	if (d_offset == end())
+		throw Error("Attempt to move beyond the end of an array in the indexing software.");
 
-// Defined here because prior to C++ 11, defining a container using a local
-// type was not allowed.
-struct slice {
-	int start, stop;
-	string name;
-};
+#if 1
+	// About 3.1 seconds for 10^9 elements
+	vector<unsigned int>::reverse_iterator si = d_shape.rbegin();
+	for (vector<unsigned int>::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+		if (++(*i) == *si) {
+			*i = 0;
+		}
+		else {
+			break;
+		}
+	}
+#else
+	// ... about 3.2 seconds for this code
+	// TODO Unroll this using a switch()
+	unsigned int i = d_rank - 1;
+	do {
+		if (++d_indices[i] == d_shape[i]) {
+			d_indices[i] = 0;
+		}
+		else {
+			break;
+		}
 
-void roi_bbox_valid_slice(BaseType *btp);
-unsigned int roi_valid_bbox(BaseType *btp);
+	} while (i-- > 0);
+#endif
 
-void roi_bbox_get_slice_data(Array *bbox, unsigned int i, int &start, int &stop, string &name);
-
-Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name);
-
-auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
-
+	return ++d_offset;
 }
 
-#endif /* ROI_UTILS_H_ */
+} // namespace libdap

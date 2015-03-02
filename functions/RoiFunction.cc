@@ -122,6 +122,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     for (int i = 0; i < argc-1; ++i) {
         // cast is safe given the above
         Array *the_array = static_cast<Array*>(argv[i]);
+        BESDEBUG("roi", "the_array: " << the_array->name() << ": " << (void*)the_array << endl);
 
         // For each dimension of the array, apply the slice constraint.
         // Assume Array[]...[][X][Y] where the slice has dims X and Y
@@ -147,6 +148,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
                 throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
 
             // TODO Add stride option?
+            BESDEBUG("roi", "Dimension: " << i << ", Start: " << start << ", Stop: " << stop << endl);
             the_array->add_constraint(iter, start, 1 /*stride*/, stop);
             --d;
         }
@@ -157,8 +159,9 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // TODO Why do we have to force this read? The libdap::BaseType::serialize()
         // code should take care of it, but in the debugger the read_p property is
         // showing  up as true. jhrg 2/26/15 Hack and move on...
-        if (!the_array->read_p())
-            the_array->read();
+        //if (!the_array->read_p())
+        the_array->set_read_p(false);
+        the_array->read();
         the_array->set_read_p(true);
 
         response->add_var(the_array);

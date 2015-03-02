@@ -5,12 +5,10 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/functions/tests/data/MOD04_CF.dods</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/MOD04_CF.sampled.dods</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <!-- %22 is a double quote and %3E is greater than -->
-      <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
       <bes:constraint>Latitude,Longitude</bes:constraint>
     </bes:container>
   </bes:define>

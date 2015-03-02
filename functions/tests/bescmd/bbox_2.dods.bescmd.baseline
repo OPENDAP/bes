@@ -3,5 +3,5 @@ Structure {
     Int32 start;
     Int32 stop;
     String name;
-} Longitude[Longitude = 2] = {{ 11, 187, "Cell_Along_Swath" }, { 0, 127, "Cell_Across_Swath" }};
+} Longitude[Longitude = 2] = {{ 0, 9, "Cell_Along_Swath" }, { 6, 9, "Cell_Across_Swath" }};
 

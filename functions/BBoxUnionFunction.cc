@@ -101,11 +101,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     // Initialize a local data structure - used because it's much
     // easier to read and write this than the DAP variables.
-    struct slice {
-    	int start, stop;
-    	string name;
-    };
-    vector<slice> result(rank);
+    vector<slice> result(rank);		// struct slice is defined in roi_utils.h
 
     for (unsigned int i = 0; i < rank; ++i) {
         int start, stop;
@@ -173,13 +169,13 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  *
  * @see function_dap2_bbox
  */
-BaseType *function_dap4_bbox_union(D4RValueList *args, DMR &)
+BaseType *function_dap4_bbox_union(D4RValueList *, DMR &)
 {
-    auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
+    //auto_ptr<Array> response(new Array("bbox", new Structure("bbox")));
 
     throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
 
-    return response.release();
+    return 0; //response.release();
 }
 
 } // namesspace libdap

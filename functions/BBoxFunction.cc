@@ -41,6 +41,8 @@
 #include <util.h>
 #include <ServerFunctionsList.h>
 
+#include <BESDebug.h>
+
 #include "BBoxFunction.h"
 #include "roi_utils.h"
 
@@ -94,6 +96,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
     // cast is safe given the above
     Array *the_array = static_cast<Array*>(argv[0]);
+    BESDEBUG("bbox", "the_array: " << the_array->name() << ": " << (void*)the_array << endl);
 
     // Read the variable into memory
     the_array->read();
@@ -153,7 +156,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         unsigned int Y = the_array->dimension_size(rows);
         unsigned int X = the_array->dimension_size(cols);
 
-        unsigned int x_start = 0;
+        unsigned int x_start = X-1; //= 0;
         unsigned int y_start = 0;
         bool found_y_start = false;
         // Must look at all rows to find the 'left-most' col with value
