@@ -29,6 +29,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <sys/time.h>   // timing tests
+
 #include <sstream>
 #include <vector>
 
@@ -56,6 +58,19 @@ static bool debug2 = false;
 namespace libdap
 {
 
+static double elapsed_time(const struct timeval &begin, const struct timeval &end)
+{
+    long sec = end.tv_sec - begin.tv_sec;
+    long usec = end.tv_usec - begin.tv_usec;
+
+    if (usec < 0 && sec > 0) {
+        sec--;
+        usec = abs(usec);
+    }
+
+    return double(sec + (double(usec) / 1000000.0));
+}
+
 class OdometerTest: public TestFixture
 {
 private:
@@ -81,7 +96,7 @@ public:
     }
 
     void ctor_test() {
-    	vector<unsigned int>shape(3);
+        Odometer::shape shape(3);
     	shape.at(0) = 10;
     	shape.at(1) = 20;
     	shape.at(2) = 30;
@@ -89,7 +104,8 @@ public:
 
     	CPPUNIT_ASSERT(od.offset() == 0);
     	CPPUNIT_ASSERT(od.end() == 10 * 20 *30);
-    	vector<unsigned int>indices = od.indices();
+    	Odometer::shape indices;
+    	od.indices(indices);
     	CPPUNIT_ASSERT(indices.size() == 3);
     	CPPUNIT_ASSERT(indices.at(0) == 0);
     	CPPUNIT_ASSERT(indices.at(1) == 0);
@@ -97,7 +113,7 @@ public:
     }
 
     void next_test() {
-    	vector<unsigned int>shape(3);
+        Odometer::shape shape(3);
     	shape.at(0) = 10;
     	shape.at(1) = 20;
     	shape.at(2) = 30;
@@ -108,7 +124,8 @@ public:
 
     	CPPUNIT_ASSERT(od.offset() != od.end());
     	CPPUNIT_ASSERT(od.offset() == 29);
-    	vector<unsigned int>indices = od.indices();
+        Odometer::shape indices;
+        od.indices(indices);
     	CPPUNIT_ASSERT(indices.size() == 3);
     	CPPUNIT_ASSERT(indices.at(0) == 0);
     	CPPUNIT_ASSERT(indices.at(1) == 0);
@@ -118,7 +135,7 @@ public:
 
     	CPPUNIT_ASSERT(od.offset() != od.end());
     	CPPUNIT_ASSERT(od.offset() == 30);
-    	indices = od.indices();
+    	od.indices(indices);
     	CPPUNIT_ASSERT(indices.size() == 3);
     	CPPUNIT_ASSERT(indices.at(0) == 0);
     	CPPUNIT_ASSERT(indices.at(1) == 1);
@@ -129,7 +146,7 @@ public:
 
     	CPPUNIT_ASSERT(od.offset() != od.end());
     	CPPUNIT_ASSERT(od.offset() == 600);
-    	indices = od.indices();
+    	od.indices(indices);
     	CPPUNIT_ASSERT(indices.size() == 3);
     	CPPUNIT_ASSERT(indices.at(0) == 1);
     	CPPUNIT_ASSERT(indices.at(1) == 0);
@@ -141,7 +158,7 @@ public:
 
     	CPPUNIT_ASSERT(od.offset() != od.end());
     	CPPUNIT_ASSERT(od.offset() == 5999);
-    	indices = od.indices();
+    	od.indices(indices);
     	CPPUNIT_ASSERT(indices.size() == 3);
     	CPPUNIT_ASSERT(indices.at(0) == 9);
     	CPPUNIT_ASSERT(indices.at(1) == 19);
@@ -155,25 +172,57 @@ public:
     // This test always passes, but how long does it take?
     // We can try different versions of next() and see if there's
     // much difference.
-    void time_test() {
-    	vector<unsigned int>shape(3);
+    void time_test_1() {
+    	Odometer::shape shape(3);
     	shape.at(0) = 1000;
     	shape.at(1) = 1000;
     	shape.at(2) = 1000;
     	Odometer od(shape);
 
+    	struct timeval begin, end;
+    	gettimeofday(&begin, 0);
+
     	unsigned int len = 1000 * 1000 * 1000;
     	for (int i = 0; i < len; ++i)
     		od.next();
 
+        gettimeofday(&end, 0);
+        double elapsed = elapsed_time(begin, end);
+        DBG(cerr << " Time to run next(): " << elapsed << endl);
+
     	CPPUNIT_ASSERT(od.offset() == od.end());
     }
+
+#if 0
+    void time_test_2() {
+        vector<unsigned int>shape(3);
+        shape.at(0) = 1000;
+        shape.at(1) = 1000;
+        shape.at(2) = 1000;
+        Odometer od(shape);
+
+        struct timeval begin, end;
+        gettimeofday(&begin, 0);
+
+        unsigned int len = 1000 * 1000 * 1000;
+        for (int i = 0; i < len; ++i)
+                od.next_2();
+
+        gettimeofday(&end, 0);
+        double elapsed = elapsed_time(begin, end);
+
+        DBG(cerr << " Time to run next_2(): " << elapsed << endl);
+
+        CPPUNIT_ASSERT(od.offset() == od.end());
+    }
+#endif
 
     CPPUNIT_TEST_SUITE( OdometerTest );
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(next_test);
-    CPPUNIT_TEST(time_test);
+    CPPUNIT_TEST(time_test_1);
+    // CPPUNIT_TEST(time_test_2);
 
     CPPUNIT_TEST_SUITE_END();
 };

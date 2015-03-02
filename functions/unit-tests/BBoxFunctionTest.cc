@@ -324,12 +324,58 @@ public:
         CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
     }
 
+    // Do we get an exceptin when there's an empty box?
+    void float32_2d_array_test_error() {
+        BaseType *btp = *(float32_2d_array->var_begin());
+
+        // It's an array
+        CPPUNIT_ASSERT(btp->type() == dods_array_c);
+
+        // ... and it's an Float32 array
+        Array *a = static_cast<Array*>(btp);
+        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
+
+        //  it has thirty elements
+        CPPUNIT_ASSERT(a->length() == 1020);
+
+        TestCommon *tc = dynamic_cast<TestCommon*>(a);
+        CPPUNIT_ASSERT(tc != 0);
+        tc->set_series_values(true);
+
+        DBG2(a->read());
+        DBG2(cerr << "Array 'a': ");
+        DBG2(a->print_val(cerr));
+
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            Float64 min("min");
+            min.set_value(50.0);
+            min.set_read_p(true);
+            Float64 max("max");
+            max.set_value(51.0);
+            max.set_read_p(true);
+
+            BaseType *argv[] = { a, &min, &max };
+            function_dap2_bbox(3, argv, *float32_2d_array /* DDS & */, &result);
+            CPPUNIT_FAIL("Expected an exception to be thrown");
+        }
+        catch (Error &e) {
+            DBG(cerr << "Caught expected exception Error: " << e.get_error_message() << endl);
+            CPPUNIT_ASSERT(true);
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unexpected exception thrown");
+        }
+    }
+
     CPPUNIT_TEST_SUITE( BBoxFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(string_arg_test);
     CPPUNIT_TEST(float32_array_test);
     CPPUNIT_TEST(float32_2d_array_test);
+    CPPUNIT_TEST(float32_2d_array_test_error);
 
     CPPUNIT_TEST_SUITE_END();
 };

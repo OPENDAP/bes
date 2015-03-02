@@ -22,7 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
 #ifndef ODOMETER_H_
 #define ODOMETER_H_
 
@@ -36,98 +35,129 @@ namespace libdap {
  * each element of an N-dim array without using multiplication to
  * compute the offset into the vector that holds the array's data.
  */
-class Odometer {
-	// The state set by the ctor
-	std::vector<unsigned int> d_shape;
-	unsigned int d_highest_offset;
-	unsigned int d_rank;
+class Odometer
+{
+public:
+    typedef std::vector<unsigned int> shape;
 
-	// The varying state of the Odometer
-	std::vector<unsigned int> d_indices;
-	unsigned int d_offset;
+private:
+    // The state set by the ctor
+    shape d_shape;
+    unsigned int d_highest_offset;
+    unsigned int d_rank;
+
+    // The varying state of the Odometer
+    shape d_indices;
+    unsigned int d_offset;
 
 public:
-	/**
-	 * Build an instance of Odometer using the given 'shape'. Each element
-	 * of the shape vector is the size of the corresponding dimension. E.G.,
-	 * a 10 by 20 by 30 array would be described by a vector of 10,20,30.
-	 *
-	 * Initially, the Odometer object is set to index 0, 0, ..., 0 that
-	 * matches the offset 0
-	 */
-	Odometer(std::vector<unsigned int> shape) : d_shape(shape), d_offset(0) {
-		d_rank = d_shape.size();
+    /**
+     * Build an instance of Odometer using the given 'shape'. Each element
+     * of the shape vector is the size of the corresponding dimension. E.G.,
+     * a 10 by 20 by 30 array would be described by a vector of 10,20,30.
+     *
+     * Initially, the Odometer object is set to index 0, 0, ..., 0 that
+     * matches the offset 0
+     */
+    Odometer(shape shape) :
+            d_shape(shape), d_offset(0)
+    {
+        d_rank = d_shape.size();
 
-		d_highest_offset = 1;
-		for (unsigned int i = 0; i < d_rank; ++i) {
-			d_highest_offset *= d_shape.at(i);
-		}
+        d_highest_offset = 1;
+        for (unsigned int i = 0; i < d_rank; ++i) {
+            d_highest_offset *= d_shape.at(i);
+        }
 
-		d_indices.resize(d_rank, 0);
-	}
+        d_indices.resize(d_rank, 0);
+    }
 
-	/*
-	 * 	reset(): zero internal state
-	 * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
-	 * 			Calling next() when the object is at the last element should return one past the last element. calling next() after that should throw an exception.
-	 * 	vector<int> indices(): for the given state of the odometer, return the indices that match the offset.
-	 * 	offset(): return the offset
-	 * 	end(): should return one past the last valid offset - the value returned by next() when it indicates all elements/indices have been visited.
-	 *
-	 */
+    /*
+     * 	reset(): zero internal state
+     * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
+     * 			Calling next() when the object is at the last element should return one past the last element. calling next() after that should throw an exception.
+     * 	vector<int> indices(): for the given state of the odometer, return the indices that match the offset.
+     * 	offset(): return the offset
+     * 	end(): should return one past the last valid offset - the value returned by next() when it indicates all elements/indices have been visited.
+     *
+     */
 
-	/**
-	 * Reset the internal state. The offset is reset to the 0th element
-	 * and the indices are reset to 0, 0, ..., 0.
-	 */
-	void reset() {
-		for (unsigned int i = 0; i < d_rank; ++i)
-			d_indices.at(i) = 0;
-		d_offset = 0;
-	}
+    /**
+     * Reset the internal state. The offset is reset to the 0th element
+     * and the indices are reset to 0, 0, ..., 0.
+     */
+    void reset()
+    {
+        for (unsigned int i = 0; i < d_rank; ++i)
+            d_indices.at(i) = 0;
+        d_offset = 0;
+    }
 
-	/**
-	 * Increment the Odometer to the next element and return the offset value.
-	 * This increments the internal state so that calling indices() and returns
-	 * the offset to that element in a vector of values. Calling indices() after
-	 * calling this method will return a vector<unsigned int> of the current
-	 * index value.
-	 *
-	 * @return The offset into memory for the next element. Returns a value that
-	 * matches the one returned by end() when next has been called when the object
-	 * index is at the last element.
-	 */
-	unsigned int next();
+    /**
+     * Increment the Odometer to the next element and return the offset value.
+     * This increments the internal state so that calling indices() and returns
+     * the offset to that element in a vector of values. Calling indices() after
+     * calling this method will return a vector<unsigned int> of the current
+     * index value.
+     *
+     * @return The offset into memory for the next element. Returns a value that
+     * matches the one returned by end() when next has been called when the object
+     * index is at the last element.
+     */
+    inline unsigned int next()
+    {
+        // if (d_offset == d_highest_offset) throw Error("Attempt to move beyond the end of an array in the indexing software.");
 
-	/**
-	 * Return the current set of indices. These match the current offset.
-	 * Both the offset and indices are incremented by the next() method.
-	 */
-	std::vector<unsigned int> indices() {
-		return d_indices;
-	}
+        // About 2.4 seconds for 10^9 elements
+        shape::reverse_iterator si = d_shape.rbegin();
+        for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+            if (++(*i) == *si) {
+                *i = 0;
+            }
+            else {
+                break;
+            }
+        }
 
-	/**
-	 * The offset into memory for the current element.
-	 */
-	unsigned int offset() {
-		return d_offset;
-	}
+        return ++d_offset;
+    }
 
-	/**
-	 * Return the sentinel value that indicates that the offset (returned by
-	 * offset()) is at the end of the array. When offset() < end() the values
-	 * of offset() and indices() are valid elements of the array being indexed.
-	 * When offset() == end(), the values are no longer valid and the last
-	 * array element has been visited.
-	 */
-	unsigned int end() {
-		return d_highest_offset;
-	}
+    // This version throws Error if offset() == end()
+    unsigned int next_safe();
+
+    /**
+     * Return the current set of indices. These match the current offset.
+     * Both the offset and indices are incremented by the next() method.
+     *
+     * To access the ith index, use [i] or .at(i)
+     */
+    inline void indices(shape &indices)
+    {
+        indices = d_indices;
+    }
+
+    /**
+     * The offset into memory for the current element.
+     */
+    inline unsigned int offset()
+    {
+        return d_offset;
+    }
+
+    /**
+     * Return the sentinel value that indicates that the offset (returned by
+     * offset()) is at the end of the array. When offset() < end() the values
+     * of offset() and indices() are valid elements of the array being indexed.
+     * When offset() == end(), the values are no longer valid and the last
+     * array element has been visited.
+     */
+    inline unsigned int end()
+    {
+        return d_highest_offset;
+    }
 
 };
 
 }	// namespace libdap
-
 
 #endif /* ODOMETER_H_ */

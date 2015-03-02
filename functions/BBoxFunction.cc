@@ -44,7 +44,14 @@
 #include <BESDebug.h>
 
 #include "BBoxFunction.h"
+#include "Odometer.h"
 #include "roi_utils.h"
+
+// Set this to 1 to use special code for arrays of rank 1 and 2.
+// set it to 0 (... comment out, etc.) to use the general code for
+// all cases. I've run the unit and regression tests both ways.
+// jhrg 3/2/15
+#define UNWIND_BBOX_CODE 1
 
 using namespace std;
 
@@ -114,13 +121,15 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
 
     switch (rank) {
-    case 1: {
+    case 1:
+#if UNWIND_BBOX_CODE
+    {
         unsigned int X = the_array->dimension_size(the_array->dim_begin());
 
         bool found_start = false;
         unsigned int start = 0;
         for (unsigned int i = 0; i < X && !found_start; ++i) {
-            if (the_values.at(i) >= min_value && the_values.at(i) <= max_value) {
+            if (the_values[i] >= min_value && the_values[i] <= max_value) {
                 start = i;
                 found_start = true;
             }
@@ -136,7 +145,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         bool found_stop = false;
         unsigned int stop = X-1;
         for (int i = X - 1; i >= 0 && !found_stop; --i) {
-            if (the_values.at(i) >= min_value && the_values.at(i) <= max_value) {
+            if (the_values[i] >= min_value && the_values[i] <= max_value) {
                 stop = (unsigned int)i;
                 found_stop = true;
             }
@@ -150,7 +159,10 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         response->set_vec_nocopy(0, slice);
         break;
     }
-    case 2: {
+#endif
+    case 2:
+#if UNWIND_BBOX_CODE
+    {
         // quick reminder: rows == y == j; cols == x == i
         Array::Dim_iter rows = the_array->dim_begin(), cols = the_array->dim_begin()+1;
         unsigned int Y = the_array->dimension_size(rows);
@@ -165,7 +177,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
             for (unsigned int i = 0; i < X && !found_x_start; ++i) {
                 unsigned int ind = j * X + i;
-                if (the_values.at(ind) >= min_value && the_values.at(ind) <= max_value) {
+                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
                     x_start = min(i, x_start);
                     found_x_start = true;
                     if (!found_y_start) {
@@ -192,7 +204,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
             for (int i = X - 1; i >= 0 && !found_x_stop; --i) {
                 unsigned int ind = j * X + i;
-                if (the_values.at(ind) >= min_value && the_values.at(ind) <= max_value) {
+                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
                     x_stop = max((unsigned int)i, x_stop);
                     found_x_stop = true;
                     if (!found_y_stop) {
@@ -211,11 +223,51 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         response->set_vec_nocopy(1, roi_bbox_build_slice(x_start, x_stop, the_array->dimension_name(cols)));
         break;
     }
-    default:
-        // Odometer code here. See Trac. jhrg 2/27/15
-        throw Error("In function bbox(): Arrays with rank " + long_to_string(rank) + " are not yet supported.");
+#endif
+    default: {
+        Odometer::shape shape(rank);       // the shape of 'the_array'
+        int j = 0;
+        for (Array::Dim_iter i = the_array->dim_begin(), e = the_array->dim_end(); i != e; ++i) {
+            shape.at(j++) = the_array->dimension_size(i);
+        }
+        Odometer odometer(shape);
+
+        Odometer::shape indices(rank);  // Holds a given index
+        Odometer::shape min = shape;    // Holds the minimum values for each of rank dimensions
+        Odometer::shape max(rank, 0);   // ... and the maximum. min and max define the bounding box
+                                        // NB: shape is initialized with the size of the array
+        do {
+            if (the_values[odometer.offset()] >= min_value && the_values[odometer.offset()] <= max_value) {
+                // record this index
+                odometer.indices(indices);
+                Odometer::shape::iterator m = min.begin();
+                Odometer::shape::iterator x = max.begin();
+
+                for (Odometer::shape::iterator i = indices.begin(), e = indices.end(); i != e; ++i, ++m, ++x) {
+                    if (*i < *m) *m = *i;
+                    if (*i > *x) *x = *i;
+                }
+            }
+        } while (odometer.next() != odometer.end());
+
+        // cheap test for 'did we find any values.' If we did, then the
+        // min index will have to be less than the shape (which is the
+        // size of the array). We only need to test one of the indices.
+        if (min[0] == shape[0]) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+
+        Odometer::shape::iterator m = min.begin();
+        Odometer::shape::iterator x = max.begin();
+        Array::Dim_iter d = the_array->dim_begin();
+        for (unsigned int i = 0; i < rank; ++i, ++m, ++x, ++d) {
+            response->set_vec_nocopy(i, roi_bbox_build_slice(*m, *x, the_array->dimension_name(d)));
+        }
         break;
-    }
+    }   // default
+    }   // switch
 
     response->set_read_p(true);
     response->set_send_p(true);
