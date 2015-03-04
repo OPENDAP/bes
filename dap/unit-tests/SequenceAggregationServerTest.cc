@@ -31,7 +31,7 @@
 #include <memory>
 
 #include <DDS.h>
-#include <dataDDS.h>
+#include <DataDDS.h>
 #include <Int32.h>
 #include <Float32.h>
 #include <Sequence.h>

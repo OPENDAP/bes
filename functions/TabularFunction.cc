@@ -194,8 +194,8 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
 void
 function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    // jhrg 2/5/15 auto_ptr<Sequence> response(new Sequence("table"));
-    unique_ptr<TabularSequence> response(new TabularSequence("table"));
+    // jhrg 2/5/15 unique_ptr<Sequence> response(new Sequence("table"));
+    auto_ptr<TabularSequence> response(new TabularSequence("table"));
 
     int num_arrays = argc;              // Might pass in other stuff...
     vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
@@ -236,7 +236,7 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  */
 BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr)
 {
-    unique_ptr<D4Sequence> response(new D4Sequence("table"));
+    auto_ptr<D4Sequence> response(new D4Sequence("table"));
 
     int num_arrays = args->size();              // Might pass in other stuff...
     vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity

@@ -25,6 +25,8 @@
 #ifndef I_BESDapSequenceAggregationServer_h
 #define I_BESDapSequenceAggregationServer_h 1
 
+#include <memory>
+
 #include "BESAggregationServer.h"       // in dispatch
 
 class BESDDSResponse;

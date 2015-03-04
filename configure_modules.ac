@@ -747,6 +747,7 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
+		 dapreader/tests/package.m4
 
 		 dap/Makefile
 		 

@@ -41,7 +41,7 @@
 #include <D4Sequence.h>
 #include <DMR.h>
 #include <XMLWriter.h>
-#include <D4Rvalue.h>
+#include <D4RValue.h>
 #include <util.h>
 #include <GetOpt.h>
 #include <debug.h>

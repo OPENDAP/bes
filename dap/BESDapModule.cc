@@ -57,7 +57,7 @@ using std::endl;
 // These I added to test the Null AggregationServer code jhrg 1/30/15
 #include "BESDapNullAggregationServer.h"
 #include "BESDapSequenceAggregationServer.h"
-#include "BESAggFActory.h"
+#include "BESAggFactory.h"
 
 #include "BESDapTransmit.h"
 #include "BESTransmitter.h"
