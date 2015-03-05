@@ -18,6 +18,9 @@ lex.*.cc
 *.log
 *.trs
 
+## OS-X Finder spoo
+*.DS_Store
+
 .dirstamp
 .settings
 .cproject

@@ -893,7 +893,15 @@ AM_COND_IF([DAP_MODULES],
 	modules/ugrid_functions/tests/Makefile 
 	modules/ugrid_functions/tests/package.m4 
 	modules/ugrid_functions/tests/atlocal
-	modules/ugrid_functions/tests/bes.conf:modules/ugrid_functions/tests/bes.conf.modules.in])
+	modules/ugrid_functions/tests/bes.conf:modules/ugrid_functions/tests/bes.conf.modules.in
+        
+	modules/w10n_handler/Makefile 
+	modules/w10n_handler/unit-tests/Makefile
+	modules/w10n_handler/unit-tests/test_config.h
+	modules/w10n_handler/bes-testsuite/Makefile 
+	modules/w10n_handler/bes-testsuite/package.m4 
+	modules/w10n_handler/bes-testsuite/atlocal
+	modules/w10n_handler/bes-testsuite/bes.conf:modules/w10n_handler/bes-testsuite/bes.conf.modules.in])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -947,6 +955,8 @@ AM_COND_IF([DAP_MODULES],
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/w10n_handler/bes-testsuite, [standalone])
+    
     ]
 )
 

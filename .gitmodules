@@ -58,4 +58,6 @@
 	path = modules/ugrid_functions
 	url = https://github.com/opendap/ugrid_functions
 	branch = master
-
+[submodule "modules/w10n_handler"]
+	path = modules/w10n_handler
+	url = https://github.com/opendap/w10n_handler

@@ -19,14 +19,8 @@ AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
 
-if BES_DEVELOPER
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-endif
-
-SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates 
 if LIBDAP
 SUBDIRS += dap dapreader functions
 endif
