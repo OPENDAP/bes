@@ -19,11 +19,6 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-if BES_DEVELOPER
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-CXXFLAGS = 
-endif
-
 SUBDIRS = . tests
 
 lib_besdir=$(libdir)/bes

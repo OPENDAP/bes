@@ -559,7 +559,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval)
 {
 
-    if (get_store_result().length() != 0) {
+    if (get_store_result().length() != 0) {     // use !empty()
         string serviceUrl = get_store_result();
 
         XMLWriter xmlWrtr;
