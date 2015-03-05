@@ -49,7 +49,7 @@ HDF4.CacheDir=/tmp
 # HDF4 handler specific parameters: 
 #-----------------------------------------------------------------------#
 # EnableCF: Handle HDF data to follow the CF conventions
-#          (true,yes|false,no, defaults to true)
+#          (true,yes|false,no, defaults to false)
 #
 # If this key's value is false, the handler will behave same as the default 
 # handler. The output will not follow basic CF conventions and most of NASA 
