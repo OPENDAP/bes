@@ -25,6 +25,8 @@
 
 // Tests for the AISResources class.
 
+#include <iterator>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -145,7 +147,7 @@ public:
         DBG(cerr << "SequenceValues size: " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 4);
 
-        for (int j = 0; j < sv.size(); ++j) {
+        for (SequenceValues::size_type j = 0; j < sv.size(); ++j) {
             CPPUNIT_ASSERT(s->var_value(j, 0) != 0);
             Int32 *i = static_cast<Int32*>(s->var_value(j, 0));
             DBG(cerr << "Seq.a, row " << long_to_string(j) << ": " << i->value() << endl);
@@ -184,7 +186,7 @@ public:
         DBG(cerr << "SequenceValues size: " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 12);
 
-        for (int j = 0; j < sv.size(); ++j) {
+        for (SequenceValues::size_type j = 0; j < sv.size(); ++j) {
             CPPUNIT_ASSERT(s->var_value(j, 0) != 0);
             Int32 *i = static_cast<Int32*>(s->var_value(j, 0));
             DBG(cerr << "Seq.a, row " << long_to_string(j) << ": " << i->value() << endl);
@@ -267,7 +269,6 @@ public:
         // and it has four elements
 
         // call it; the function reads the values of the array
-        BaseType *argv[] = {arrays[0], arrays[1], arrays[2], arrays[3]};
         BaseType *result = 0;
         try {
             function_dap2_tabular(arrays.size(), &arrays[0], *four_var_dds, &result);
@@ -280,15 +281,15 @@ public:
         Sequence *s = static_cast<Sequence*>(result);
 
         // Number of columns is the number of arrays
-        CPPUNIT_ASSERT(s->var_end() - s->var_begin() == arrays.size());
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 4);
 
-        for (int i = 0; i < sv.size(); ++i) {
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
             DBG(cerr << "row " << long_to_string(i));
-            for (int j = 0; j < arrays.size(); ++j) {
+            for (SequenceValues::size_type j = 0; j < arrays.size(); ++j) {
                 CPPUNIT_ASSERT(s->var_value(i, j) != 0);
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
@@ -333,7 +334,6 @@ public:
         // and it has four elements
 
         // call it; the function reads the values of the array
-        BaseType *argv[] = {arrays[0], arrays[1], arrays[2], arrays[3]};
         BaseType *result = 0;
         try {
             function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dds, &result);
@@ -345,16 +345,16 @@ public:
         CPPUNIT_ASSERT(result->type() == dods_sequence_c);
         Sequence *s = static_cast<Sequence*>(result);
 
-        // Number of columns is the number of arrays
-        CPPUNIT_ASSERT(s->var_end() - s->var_begin() == arrays.size());
+        // Number of columns is the number of arrays; just being pedantic with the cast..
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 8);
 
-        for (int i = 0; i < sv.size(); ++i) {
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
             DBG(cerr << "row " << long_to_string(i));
-            for (int j = 0; j < arrays.size(); ++j) {
+            for (SequenceValues::size_type j = 0; j < arrays.size(); ++j) {
                 CPPUNIT_ASSERT(s->var_value(i, j) != 0);
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {

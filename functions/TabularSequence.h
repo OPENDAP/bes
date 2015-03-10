@@ -57,87 +57,30 @@ class TabularSequence: public Sequence
 {
 private:
 protected:
+    void load_prototypes_with_values(BaseTypeRow &btr, bool safe = true);
+
 public:
-    TabularSequence(const string &n);
-    TabularSequence(const string &n, const string &d);
+    TabularSequence(const string &n) : Sequence(n) { }
+    TabularSequence(const string &n, const string &d) : Sequence(n, d) { }
 
-    TabularSequence(const TabularSequence &rhs);
+    TabularSequence(const TabularSequence &rhs) : Sequence(rhs) { }
 
-    virtual ~TabularSequence();
+    virtual ~TabularSequence() { }
 
-    TabularSequence &operator=(const TabularSequence &rhs);
+    virtual BaseType *ptr_duplicate() { return new TabularSequence(*this); }
 
-    virtual BaseType *ptr_duplicate();
+    TabularSequence &operator=(const TabularSequence &rhs) {
+        if (this == &rhs)
+            return *this;
 
-#if 0
-    virtual BaseType *transform_to_dap4(D4Group *root, Constructor *container);
+        static_cast<Sequence &>(*this) = rhs; // run Sequence=
 
-    virtual bool is_dap2_only_type();
+        return *this;
+    }
 
-    virtual string toString();
-
-    virtual bool is_linear();
-
-    virtual int length() const;
-
-    virtual int number_of_rows();
-
-    virtual bool read_row(int row, DDS &dds, ConstraintEvaluator &eval, bool ce_eval = true);
-
-    virtual void intern_data(ConstraintEvaluator &eval, DDS &dds);
-#endif
     virtual bool serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, bool ce_eval = true);
+    virtual void intern_data(ConstraintEvaluator &eval, DDS &dds);
 
-#if 0
-    virtual bool deserialize(UnMarshaller &um, DDS *dds, bool reuse = false);
-
-    /// Rest the row number counter
-    void reset_row_number();
-
-    int get_starting_row_number();
-
-    virtual int get_row_stride();
-
-    virtual int get_ending_row_number();
-
-    virtual void set_row_number_constraint(int start, int stop, int stride = 1);
-
-    /// Get the unsent data property
-    bool get_unsent_data()
-    {
-        return d_unsent_data;
-    }
-
-    /// Set the unsent data property
-    void set_unsent_data(bool usd)
-    {
-        d_unsent_data = usd;
-    }
-
-    virtual void set_value(SequenceValues &values);
-    virtual SequenceValues value();
-
-    virtual BaseType *var_value(size_t row, const string &name);
-
-    virtual BaseType *var_value(size_t row, size_t i);
-
-    virtual BaseTypeRow *row_value(size_t row);
-
-    virtual void print_one_row(ostream &out, int row, string space, bool print_row_num = false);
-    virtual void print_val_by_rows(ostream &out, string space = "", bool print_decl_p = true, bool print_row_numbers =
-            true);
-    virtual void print_val(ostream &out, string space = "", bool print_decl_p = true);
-
-    virtual void print_one_row(FILE *out, int row, string space, bool print_row_num = false);
-    virtual void print_val_by_rows(FILE *out, string space = "", bool print_decl_p = true,
-            bool print_row_numbers = true);
-    virtual void print_val(FILE *out, string space = "", bool print_decl_p = true);
-    virtual void set_leaf_p(bool state);
-
-    virtual bool is_leaf_sequence();
-
-    virtual void set_leaf_sequence(int lvl = 1);
-#endif
     virtual void dump(ostream &strm) const;
 };
 

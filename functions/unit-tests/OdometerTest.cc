@@ -221,7 +221,7 @@ public:
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(next_test);
-    CPPUNIT_TEST(time_test_1);
+    // CPPUNIT_TEST(time_test_1);
     // CPPUNIT_TEST(time_test_2);
 
     CPPUNIT_TEST_SUITE_END();

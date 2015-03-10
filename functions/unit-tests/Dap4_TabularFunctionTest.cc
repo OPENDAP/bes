@@ -150,7 +150,7 @@ public:
         DBG(cerr << "SequenceValues size: " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 4);
 
-        for (int j = 0; j < sv.size(); ++j) {
+        for (SequenceValues::size_type j = 0; j < sv.size(); ++j) {
             CPPUNIT_ASSERT(s->var_value(j, 0) != 0);
             Int32 *i = static_cast<Int32*>(s->var_value(j, 0));
             DBG(cerr << "Seq.a, row " << long_to_string(j) << ": " << i->value() << endl);
@@ -196,15 +196,15 @@ public:
         DBG(cerr << "The d4 sequence print rep: " << oss.str() << endl);
 
         // Number of columns is the number of arrays
-        CPPUNIT_ASSERT(s->var_end() - s->var_begin() == arrays.size());
+        CPPUNIT_ASSERT((vector<D4Sequence>::size_type)(s->var_end() - s->var_begin()) == arrays.size());
 
         SequenceValues sv = s->value();
         DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
         CPPUNIT_ASSERT(sv.size() == 8);
 
-        for (int i = 0; i < sv.size(); ++i) {
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
             DBG(cerr << "row " << long_to_string(i));
-            for (int j = 0; j < arrays.size(); ++j) {
+            for (SequenceValues::size_type j = 0; j < arrays.size(); ++j) {
                 CPPUNIT_ASSERT(s->var_value(i, j) != 0);
                 BaseType *btp = s->var_value(i, j);
                 switch (btp->type()) {
