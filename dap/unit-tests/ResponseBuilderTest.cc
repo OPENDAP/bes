@@ -84,9 +84,12 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static bool debug_2 = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#undef DBG2
+#define DBG2(x) do { if (debug_2) (x); } while(false);
 
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
@@ -106,48 +109,48 @@ rb_simple_function(int, BaseType *[], DDS &, BaseType **btpp)
 static void
 parse_datadds_response(istream &in, string &prolog, vector<char> &blob)
 {
-	// Split the stuff in the input stream into two parts:
-	// The text prolog and the binary blob
-	const int line_length = 1024;
+    // Split the stuff in the input stream into two parts:
+    // The text prolog and the binary blob
+    const int line_length = 1024;
     // Read up to 'Data:'
-	char line[line_length];
-	while (!in.eof()) {
-		in.getline(line, line_length);
-		DBG(cerr << "prolog line: " << line << endl);
-		if (strncmp(line, "Data:", 5) == 0)
-			break;
-		prolog += string(line);
-		prolog += "\n";
-	}
+    char line[line_length];
+    while (!in.eof()) {
+	in.getline(line, line_length);
+	DBG(cerr << "prolog line: " << line << endl);
+	if (strncmp(line, "Data:", 5) == 0)
+	    break;
+	prolog += string(line);
+	prolog += "\n";
+    }
 
-	// Read the blob
-	streampos pos = in.tellg();
-	in.seekg(0, in.end);
-	unsigned int length = in.tellg() - pos;
-	DBG(cerr << "blob length: " << length << endl);
+    // Read the blob
+    streampos pos = in.tellg();
+    in.seekg(0, in.end);
+    unsigned int length = in.tellg() - pos;
+    DBG(cerr << "blob length: " << length << endl);
 
-	// return to byte just after 'Data:'
-	in.seekg(pos, in.beg);
+    // return to byte just after 'Data:'
+    in.seekg(pos, in.beg);
 
-	blob.reserve(length);
-	in.read(&blob[0], length);
+    blob.reserve(length);
+    in.read(&blob[0], length);
 }
 
 class ResponseBuilderTest: public TestFixture {
 private:
     BESDapResponseBuilder *drb, *drb3, *drb5, *drb6;
     string d_stored_result_subdir;
-	DDS *test_05_dds;
-	string stored_dap2_result_filename;
+    DDS *test_05_dds;
+    string stored_dap2_result_filename;
 
     AttrTable *cont_a;
     DAS *das;
     DDS *dds;
 
-	DMR *test_01_dmr;
-	D4ParserSax2 *d4_parser;
-	D4TestTypeFactory *d4_ttf;
-	D4BaseTypeFactory *d4_btf;
+    DMR *test_01_dmr;
+    D4ParserSax2 *d4_parser;
+    D4TestTypeFactory *d4_ttf;
+    D4BaseTypeFactory *d4_btf;
 
     ostringstream oss;
     time_t now;
@@ -156,21 +159,21 @@ private:
 
     void loadServerSideFunction() {
         rbSSF = new libdap::ServerFunction(
-            // The name of the function as it will appear in a constraint expression
-            "rbSimpleFunc",
-            // The version of the function
-            "1.0",
-            // A brief description of the function
-            "Returns a string",
-            // A usage/syntax statement
-            "rbSimpleFunc()",
-            // A URL that points two a web page describing the function
-            "http://docs.opendap.org/index.php/Hyrax:_Server_Side_Functions",
-            // A URI that defines the role of the function
-            "http://services.opendap.org/dap4/unit-tests/ResponseBuilderTest",
-            // A pointer to the helloWorld() function
-            rb_simple_function
-        );
+					   // The name of the function as it will appear in a constraint expression
+					   "rbSimpleFunc",
+					   // The version of the function
+					   "1.0",
+					   // A brief description of the function
+					   "Returns a string",
+					   // A usage/syntax statement
+					   "rbSimpleFunc()",
+					   // A URL that points two a web page describing the function
+					   "http://docs.opendap.org/index.php/Hyrax:_Server_Side_Functions",
+					   // A URI that defines the role of the function
+					   "http://services.opendap.org/dap4/unit-tests/ResponseBuilderTest",
+					   // A pointer to the helloWorld() function
+					   rb_simple_function
+					   );
 
         libdap::ServerFunctionsList::TheList()->add_function(rbSSF);
     }
@@ -182,15 +185,16 @@ public:
                            drb6(0),
                            d_stored_result_subdir("/builder_response_cache"),
                            test_05_dds(0),
+			   // FIXME Cannot rely on hash name being the same on different machines. jhrg 3/4/15
                            stored_dap2_result_filename(TEST_SRC_DIR + d_stored_result_subdir + "/my_result_16877844200208667996.data_ddx"),
                            cont_a(0),
                            das(0),
                            dds(0),
-						   test_01_dmr(0),
-						   d4_parser(0),
-					       d4_ttf(0),
-					       d4_btf(0)
-                           {
+			   test_01_dmr(0),
+			   d4_parser(0),
+			   d4_ttf(0),
+			   d4_btf(0)
+    {
         now = time(0);
         ostringstream time_string;
         time_string << (int) now;
@@ -199,17 +203,17 @@ public:
 
         loadServerSideFunction();
 
-        clean_cache_dir(d_stored_result_subdir);
+	//        clean_cache_dir(d_stored_result_subdir);
     }
 
     ~ResponseBuilderTest() {
     	// delete rbSSF; NB: ServerFunctionsList is a singleton that deletes its entries at exit.
-    	clean_cache_dir(d_stored_result_subdir);
+    	// clean_cache_dir(d_stored_result_subdir);
     }
 
     void setUp() {
-		DBG(cerr << "setUp() - BEGIN" << endl);
-		DBG(BESDebug::SetUp("cerr,cache,dap"));
+	DBG2(cerr << "setUp() - BEGIN" << endl);
+	DBG2(BESDebug::SetUp("cerr,cache,dap"));
 
         // Test pathname
         drb = new BESDapResponseBuilder();
@@ -259,37 +263,30 @@ public:
     	string cid;
     	DDXParser dp(&ttf);
     	test_05_dds = new DDS(&ttf);
-		dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
-		// for these tests, set the filename to the dataset_name. ...keeps the cache names short
-		test_05_dds->filename(test_05_dds->get_dataset_name());
+	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
+	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
+	test_05_dds->filename(test_05_dds->get_dataset_name());
     	// cid == http://dods.coas.oregonstate.edu:8080/dods/dts/test.01.blob
-    	DBG(cerr << "setUp() - DDS Name: " << test_05_dds->get_dataset_name() << endl);
-    	DBG(cerr << "setUp() - Intern CID: " << cid << endl);
+    	DBG2(cerr << "setUp() - DDS Name: " << test_05_dds->get_dataset_name() << endl);
+    	DBG2(cerr << "setUp() - Intern CID: " << cid << endl);
 
         d4_parser = new D4ParserSax2();
-    	DBG(cerr << "Built D4ParserSax2() " << endl);
-
     	d4_ttf = new D4TestTypeFactory();
-    	DBG(cerr << "Built D4TestTypeFactory() " << endl);
-
     	d4_btf = new D4BaseTypeFactory();
-    	DBG(cerr << "Built D4BaseTypeFactory() " << endl);
-
 
         test_01_dmr = new DMR(d4_ttf);
-    	DBG(cerr << "Built DMR(D4TestTypeFactory *) " << endl);
 
     	string dmr_filename = (string)TEST_SRC_DIR + "/input-files/test_01.dmr";
-    	DBG(cerr << "Parsing DMR file " << dmr_filename << endl);
+    	DBG2(cerr << "Parsing DMR file " << dmr_filename << endl);
     	d4_parser->intern(readTestBaseline(dmr_filename), test_01_dmr, parser_debug);
-    	DBG(cerr << "Parsed DMR from file " << dmr_filename << endl);
+    	DBG2(cerr << "Parsed DMR from file " << dmr_filename << endl);
 
         TheBESKeys::ConfigFile = (string)TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PATH_KEY,  (string)TEST_SRC_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::PREFIX_KEY,  "dap_response");
         TheBESKeys::TheKeys()->set_key( BESDapResponseCache::SIZE_KEY,    "100");
 
-        DBG(cerr << "setUp() - END" << endl);
+        DBG2(cerr << "setUp() - END" << endl);
     }
 
     void tearDown() {
@@ -307,7 +304,7 @@ public:
         delete d4_btf; d4_btf = 0;
         delete test_01_dmr; test_01_dmr = 0;
 
-        remove(stored_dap2_result_filename.c_str());
+        // remove(stored_dap2_result_filename.c_str());
     }
 
     bool re_match(Regex &r, const string &s) {
@@ -325,46 +322,46 @@ public:
     }
 
     inline bool file_exists (const std::string& name) {
-      struct stat buffer;
-      return (stat (name.c_str(), &buffer) == 0);
+	struct stat buffer;
+	return (stat (name.c_str(), &buffer) == 0);
     }
 
-	void send_das_test() {
-		try {
-		string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
-		DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-		Regex r1(baseline.c_str());
+    void send_das_test() {
+	try {
+	    string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
+	    DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
+	    Regex r1(baseline.c_str());
 
-		drb->send_das(oss, *das);
+	    drb->send_das(oss, *das);
 
-		DBG(cerr << "DAS: " << oss.str() << endl);
+	    DBG(cerr << "DAS: " << oss.str() << endl);
 
-		CPPUNIT_ASSERT(re_match(r1, oss.str()));
-		oss.str("");
-		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
-		}
+	    CPPUNIT_ASSERT(re_match(r1, oss.str()));
+	    oss.str("");
 	}
+	catch (Error &e) {
+	    CPPUNIT_FAIL(e.get_error_message());
+	}
+    }
 
     void send_dds_test() {
     	try {
-    	string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
-		DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-		Regex r1(baseline.c_str());
+	    string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
+	    DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
+	    Regex r1(baseline.c_str());
 
-        ConstraintEvaluator ce;
+	    ConstraintEvaluator ce;
 
-        drb->send_dds(oss, *dds, ce);
+	    drb->send_dds(oss, *dds, ce);
 
-        DBG(cerr << "DDS: " << oss.str() << endl);
+	    DBG(cerr << "DDS: " << oss.str() << endl);
 
-        CPPUNIT_ASSERT(re_match(r1, oss.str()));
-        oss.str("");
-		}
-		catch (Error &e) {
-			CPPUNIT_FAIL(e.get_error_message());
-		}
+	    CPPUNIT_ASSERT(re_match(r1, oss.str()));
+	    oss.str("");
+	}
+	catch (Error &e) {
+	    CPPUNIT_FAIL(e.get_error_message());
+	}
     }
 
     void send_ddx_test() {
@@ -408,9 +405,9 @@ public:
     	string baseline = readTestBaseline((string) TEST_SRC_DIR + "/input-files/response_builder_store_dap2_data_async_required.xml");
         try {
             oss.str("");
-        	drb->send_dap2_data(oss, *test_05_dds, ce, false);
+	    drb->send_dap2_data(oss, *test_05_dds, ce, false);
 
-        	string candidateResponseDoc = oss.str();
+	    string candidateResponseDoc = oss.str();
 
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
             DBG(cerr << "store_dap2_result_test() - Baseline Document: " << endl << baseline << endl);
@@ -434,43 +431,44 @@ public:
 
         try {
             oss.str("");
-        	drb->send_dap2_data(oss, *test_05_dds, ce, false);
+	    drb->send_dap2_data(oss, *test_05_dds, ce, false);
 
-        	string candidateResponseDoc = oss.str();
+	    string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap2_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
             DBG(cerr << "store_dap2_result_test() - Baseline Document: " << endl << baseline << endl);
-            CPPUNIT_ASSERT(candidateResponseDoc == baseline);
-
-            string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "my_result_16877844200208667996.data_ddx";
-            DBG(cerr << "store_dap2_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
+            // FIXME These XML docs contain the cached filename, which uses a machine
+	    // dependent hash value
+	    //CPPUNIT_ASSERT(candidateResponseDoc == baseline);
 
             TestTypeFactory ttf;
-			// Force read from the cache file
+	    // Force read from the cache file
             DBG(cerr << "store_dap2_result_test() - Reading stored DAP2 dataset." << endl);
-			DDS *cache_dds = BESStoredDapResultCache::get_instance()->get_cached_dap2_data_ddx(stored_dap2_result_filename, &ttf, "test.05");
-			DBG(cerr << "store_dap2_result_test() - Stored DAP2 dataset read." << endl);
-			CPPUNIT_ASSERT(cache_dds);
+	    // FIXME This filename (stored_dap2_...) was built above in the ctor but uses a
+	    // hash code that is machine dependent. jhrg 3/4/15
+	    DDS *cache_dds = BESStoredDapResultCache::get_instance()->get_cached_dap2_data_ddx(stored_dap2_result_filename, &ttf, "test.05");
+	    DBG(cerr << "store_dap2_result_test() - Stored DAP2 dataset read." << endl);
+	    CPPUNIT_ASSERT(cache_dds);
 
-			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
+	    // There are nine variables in test.05.ddx
+	    CPPUNIT_ASSERT(cache_dds->var_end() - cache_dds->var_begin() == 9);
 
-			ostringstream oss;
-			DDS::Vars_iter i = cache_dds->var_begin();
-			while (i != cache_dds->var_end()) {
-				DBG(cerr << "Variable " << (*i)->name() << endl);
-				// this will incrementally add thr string rep of values to 'oss'
-				(*i)->print_val(oss, "", false /*print declaration */);
-				DBG(cerr << "Value " << oss.str() << endl);
-				++i;
-			}
+	    ostringstream oss;
+	    DDS::Vars_iter i = cache_dds->var_begin();
+	    while (i != cache_dds->var_end()) {
+		DBG(cerr << "Variable " << (*i)->name() << endl);
+		// this will incrementally add the string rep of values to 'oss'
+		(*i)->print_val(oss, "", false /*print declaration */);
+		DBG(cerr << "Value " << oss.str() << endl);
+		++i;
+	    }
 
-			// In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
-			// is a any single digit. The *Test classes implement a counter and return strings where
-			// <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
-			// values for <number>.
-			Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
-			CPPUNIT_ASSERT(re_match(regex, oss.str()));
-			delete cache_dds; cache_dds = 0;
+	    // In this regex the value of <number> in the DAP2 Str variable (Silly test string: <number>)
+	    // is a any single digit. The *Test classes implement a counter and return strings where
+	    // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
+	    // values for <number>.
+	    Regex regex("2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
+	    CPPUNIT_ASSERT(re_match(regex, oss.str()));
+	    delete cache_dds; cache_dds = 0;
 
         } catch (Error &e) {
             CPPUNIT_FAIL("ERROR: " + e.get_error_message());
@@ -509,9 +507,9 @@ public:
         try {
             oss.str("");
             test_01_dmr->root()->set_send_p(true);
-        	drb->store_dap4_result(oss, *test_01_dmr);
+	    drb->store_dap4_result(oss, *test_01_dmr);
 
-        	string candidateResponseDoc = oss.str();
+	    string candidateResponseDoc = oss.str();
 
             DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
             DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
@@ -546,9 +544,9 @@ public:
         try {
             oss.str("");
             test_01_dmr->root()->set_send_p(true);
-        	drb->store_dap4_result(oss, *test_01_dmr);
+	    drb->store_dap4_result(oss, *test_01_dmr);
 
-        	string candidateResponseDoc = oss.str();
+	    string candidateResponseDoc = oss.str();
 
             DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
             DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
@@ -572,9 +570,9 @@ public:
 
         try {
             oss.str("");
-        	drb->store_dap4_result(oss, *test_01_dmr);
+	    drb->store_dap4_result(oss, *test_01_dmr);
 
-        	string candidateResponseDoc = oss.str();
+	    string candidateResponseDoc = oss.str();
             DBG(cerr << "store_dap4_result_test() - Server Response Document: " << endl << candidateResponseDoc << endl);
             DBG(cerr << "store_dap4_result_test() - Baseline Document: " << endl << baseline << endl);
             CPPUNIT_ASSERT(candidateResponseDoc == baseline);
@@ -591,33 +589,33 @@ public:
             string stored_object_response_file = (string) TEST_SRC_DIR + d_stored_result_subdir + "/my_result_9619561608535196802.dap";
             DBG(cerr << "store_dap4_result_test() - Stored Object Response File: " << endl << stored_object_response_file << endl);
 
-    		BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance();
+	    BESStoredDapResultCache *cache = BESStoredDapResultCache::get_instance();
 
-			DMR *cached_data = cache->get_cached_dap4_data(stored_object_response_file, d4_btf, "test.01");
+	    DMR *cached_data = cache->get_cached_dap4_data(stored_object_response_file, d4_btf, "test.01");
 
-			DBG(cerr << "cache_and_read_a_dap4_response() - Stored DAP4 dataset has been read." << endl);
+	    DBG(cerr << "cache_and_read_a_dap4_response() - Stored DAP4 dataset has been read." << endl);
 
 
-			int response_element_count = cached_data->root()->element_count(true);
-			DBG(cerr << "cache_and_read_a_dap4_response() - response_element_count: " << response_element_count << endl);
+	    int response_element_count = cached_data->root()->element_count(true);
+	    DBG(cerr << "cache_and_read_a_dap4_response() - response_element_count: " << response_element_count << endl);
 
-			CPPUNIT_ASSERT(cached_data);
-			// There are nine variables in test.05.ddx
-			CPPUNIT_ASSERT(response_element_count == 11);
+	    CPPUNIT_ASSERT(cached_data);
+	    // There are nine variables in test.05.ddx
+	    CPPUNIT_ASSERT(response_element_count == 11);
 
-			ostringstream oss;
-			Constructor::Vars_iter i = cached_data->root()->var_begin();
-			while (i != cached_data->root()->var_end()) {
-				DBG(cerr << "Variable " << (*i)->name() << endl);
-				// this will incrementally add thr string rep of values to 'oss'
-				(*i)->print_val(oss, "", false /*print declaration */);
-				DBG(cerr << "response_value (" << oss.str().length() << " chars): " << endl << oss.str() << endl << endl);
-				++i;
-			}
+	    ostringstream oss;
+	    Constructor::Vars_iter i = cached_data->root()->var_begin();
+	    while (i != cached_data->root()->var_end()) {
+		DBG(cerr << "Variable " << (*i)->name() << endl);
+		// this will incrementally add thr string rep of values to 'oss'
+		(*i)->print_val(oss, "", false /*print declaration */);
+		DBG(cerr << "response_value (" << oss.str().length() << " chars): " << endl << oss.str() << endl << endl);
+		++i;
+	    }
 
-			DBG(cerr << "cache_and_read_a_dap4_response() - baseline ( " << baseline.length() <<" chars): "<< endl << baseline << endl);
+	    DBG(cerr << "cache_and_read_a_dap4_response() - baseline ( " << baseline.length() <<" chars): "<< endl << baseline << endl);
 
-			CPPUNIT_ASSERT(baseline == oss.str());
+	    CPPUNIT_ASSERT(baseline == oss.str());
 
 
         } catch (Error &e) {
@@ -672,7 +670,7 @@ public:
     }
 
     void invoke_server_side_function_test() {
-		DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
+	DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
 
         try {
             string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
@@ -690,12 +688,12 @@ public:
 
             DBG( cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 
-			string prolog;
-			vector<char> blob;
-			istringstream iss(oss.str());
-			parse_datadds_response(iss, prolog, blob);
+	    string prolog;
+	    vector<char> blob;
+	    istringstream iss(oss.str());
+	    parse_datadds_response(iss, prolog, blob);
 
-			DBG( cerr << "prolog: " << prolog << endl);
+	    DBG( cerr << "prolog: " << prolog << endl);
 
             CPPUNIT_ASSERT(re_match(r1, prolog));
 
@@ -709,14 +707,14 @@ public:
             ifstream blob_baseline_in(((string)TEST_SRC_DIR + "/input-files/blob_baseline.bin").c_str());
 
             blob_baseline_in.seekg(0, blob_baseline_in.end);
-        	unsigned int blob_baseline_length = blob_baseline_in.tellg();
+	    unsigned int blob_baseline_length = blob_baseline_in.tellg();
 
-        	DBG(cerr << "blob_baseline length: " << blob_baseline_length << endl);
-        	DBG(cerr << "blob size: " << blob.size() << endl);
+	    DBG(cerr << "blob_baseline length: " << blob_baseline_length << endl);
+	    DBG(cerr << "blob size: " << blob.size() << endl);
 
-        	CPPUNIT_ASSERT(blob_baseline_length == blob.size());
+	    CPPUNIT_ASSERT(blob_baseline_length == blob.size());
 
-        	blob_baseline_in.seekg(0, blob_baseline_in.beg);
+	    blob_baseline_in.seekg(0, blob_baseline_in.beg);
 
             char blob_baseline[blob_baseline_length];
             blob_baseline_in.read(blob_baseline, blob_baseline_length);
@@ -729,23 +727,26 @@ public:
         } catch (Error &e) {
             CPPUNIT_FAIL("Caught libdap::Error!! Message:" + e.get_error_message());
         }
-		DBG(cerr << "invoke_server_side_function_test() - END" << endl);
+	DBG(cerr << "invoke_server_side_function_test() - END" << endl);
 
     }
 
 
     CPPUNIT_TEST_SUITE( ResponseBuilderTest );
 
-        CPPUNIT_TEST(send_das_test);
-        CPPUNIT_TEST(send_dds_test);
-        CPPUNIT_TEST(send_ddx_test);
+    CPPUNIT_TEST(send_das_test);
+    CPPUNIT_TEST(send_dds_test);
+    CPPUNIT_TEST(send_ddx_test);
 
-        CPPUNIT_TEST(escape_code_test);
-        CPPUNIT_TEST(invoke_server_side_function_test);
-        CPPUNIT_TEST(store_dap2_result_test);
-        CPPUNIT_TEST(store_dap4_result_test);
+    CPPUNIT_TEST(escape_code_test);
+    CPPUNIT_TEST(invoke_server_side_function_test);
 
-
+#if 0
+    // FIXME These tests have baselines that rely on hash values that are
+    // machine dependent. jhrg 3/4/15
+    CPPUNIT_TEST(store_dap2_result_test);
+    CPPUNIT_TEST(store_dap4_result_test);
+#endif
     CPPUNIT_TEST_SUITE_END();
 };
 
@@ -755,13 +756,16 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dD");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
             break;
+	case 'D':
+	    debug_2 = 1;
+	    break;
         default:
             break;
         }

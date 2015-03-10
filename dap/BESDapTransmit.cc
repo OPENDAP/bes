@@ -86,9 +86,7 @@ public:
 			throw; // rethrow as is
 		}
 		catch (const std::exception &e) {
-			string msg(
-					"std::exception caught transmitting " + response_string + ": " + e.what()
-							+ " (caught in BESDapTransmit).");
+			string msg = "std::exception caught transmitting " + response_string + ": " + e.what() + " (caught in BESDapTransmit).";
 			throw BESInternalFatalError(msg, __FILE__, __LINE__);
 		}
 		catch (...) {

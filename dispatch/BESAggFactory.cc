@@ -45,7 +45,7 @@ BESAggFactory *BESAggFactory::_instance = 0 ;
  * @see BESAggregationServer
  */
 bool
-BESAggFactory::add_handler( string handler_name,
+BESAggFactory::add_handler( const string &handler_name,
 			    p_agg_handler handler_method )
 {
     BESAggFactory::Handler_citer i ;
@@ -68,7 +68,7 @@ BESAggFactory::add_handler( string handler_name,
  * @see BESAggregationServer
  */
 bool
-BESAggFactory::remove_handler( string handler_name )
+BESAggFactory::remove_handler( const string &handler_name )
 {
     BESAggFactory::Handler_iter i ;
     i = _handler_list.find( handler_name ) ;
@@ -93,7 +93,7 @@ BESAggFactory::remove_handler( string handler_name )
  * @see BESAggregationServer
  */
 BESAggregationServer *
-BESAggFactory::find_handler( string handler_name )
+BESAggFactory::find_handler( const string &handler_name )
 {
     BESAggFactory::Handler_citer i ;
     i = _handler_list.find( handler_name ) ;

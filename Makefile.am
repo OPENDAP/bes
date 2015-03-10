@@ -20,6 +20,7 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
+
 if LIBDAP
 SUBDIRS += dap dapreader functions
 endif

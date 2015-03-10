@@ -39,6 +39,9 @@ using std::endl;
 #include "BindNameFunction.h"
 #include "BindShapeFunction.h"
 #include "TabularFunction.h"
+#include "BBoxFunction.h"
+#include "RoiFunction.h"
+#include "BBoxUnionFunction.h"
 
 #include "DapFunctions.h"
 
@@ -57,7 +60,9 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new VersionFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new TabularFunction());
-
+    libdap::ServerFunctionsList::TheList()->add_function(new BBoxFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new RoiFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new BBoxUnionFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

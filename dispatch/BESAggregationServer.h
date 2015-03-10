@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,16 +38,23 @@
 
 /** @brief Abstraction representing mechanism for aggregating data
  */
-class BESAggregationServer : public BESObj
+class BESAggregationServer: public BESObj
 {
 private:
-    string			_name ;
-				BESAggregationServer() {}
+    string d_name;
+    BESAggregationServer()
+    {
+    }
 protected:
-    				BESAggregationServer( string name )
-				    : _name( name ) {}
+    BESAggregationServer(const string &name) :
+            d_name(name)
+    {
+    }
 public:
-    virtual			~BESAggregationServer() {} ;
+    virtual ~BESAggregationServer()
+    {
+    }
+
     /** @brief aggregate the response object
      *
      * @param dhi structure which contains the response object and the
@@ -56,11 +63,14 @@ public:
      * @see BESAggregationException
      * @see BESDataHandlerInterface
      */
-    virtual void		aggregate( BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void aggregate(BESDataHandlerInterface &dhi) = 0;
 
-    virtual const string &	get_name() const { return _name ; }
+    virtual const string &get_name() const
+    {
+        return d_name;
+    }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESAggregationServer_h_

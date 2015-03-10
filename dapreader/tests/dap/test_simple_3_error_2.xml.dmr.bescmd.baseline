@@ -1,16 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <getDMR>
-        <BESError>
-            <Type>1</Type>
-            <Message>libdap exception building response: error_code = 1001: At line 1: The Enumeration 'e1' must have an integer type, instead the type 'Float64' was used.
+libdap exception building response: error_code = 1001: At line 1: The Enumeration 'e1' must have an integer type, instead the type 'Float64' was used.
 At line 1: Expected an Attribute, Enumeration, Dimension, Group or variable element; found 'Enumeration' instead.
-At line 1: The document contained unbalanced tags.</Message>
-            <Administrator>root@localhost</Administrator>
-            <Location>
-                <File>DapRequestHandler.cc</File>
-                <Line>196</Line>
-            </Location>
-        </BESError>
-    </getDMR>
-</response>
+At line 1: The document contained unbalanced tags.

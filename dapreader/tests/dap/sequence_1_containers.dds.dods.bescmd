@@ -13,6 +13,8 @@
     <bes:container name="c2"/>
     <bes:container name="c3"/>
     <!-- constraint could go here or up in the container elements -->
+    <constraint>s.i,s.k</constraint>
+    <aggregate handler="null.aggregation" cmd="someCommand"/>
   </bes:define>
   
   <bes:get type="dods" definition="d1"/>

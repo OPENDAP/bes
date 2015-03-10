@@ -19,10 +19,10 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+CXXFLAGS = 
 endif
 
-SUBDIRS = . unit-tests
-# tests
+SUBDIRS = . unit-tests tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_module.la
@@ -47,10 +47,9 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapService.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc \
-	BESStoredDapResultCache.cc
-#	BESDAPCache.cc 
-
-#	BESDAPCache.cc 
+	BESStoredDapResultCache.cc \
+	BESDapNullAggregationServer.cc \
+	BESDapSequenceAggregationServer.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -73,10 +72,9 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapService.h \
 	BESDapResponseBuilder.h \
 	BESDapResponseCache.h \
-	BESStoredDapResultCache.h
-#	BESDAPCache.h 
-
-#	BESDAPCache.h
+	BESStoredDapResultCache.h \
+	BESDapNullAggregationServer.h \
+	BESDapSequenceAggregationServer.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -114,7 +112,6 @@ dap.conf: dap.conf.in $(top_builddir)/config.status
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dap.conf
-
 
 C4_DIR=./cccc
 .PHONY: cccc

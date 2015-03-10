@@ -546,7 +546,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
  * Should this result be returned using the asynchronous response mechanism?
  * Look at the 'store_result' property and see if the code should return this
  * using the asynchronous mechanism. If yes, it will try and return the correct
- * response or an error if the serveris not configured or the client has not
+ * response or an error if the server is not configured or the client has not
  * included the correct information in the request.
  *
  * @param out Write information to the client using this stream
@@ -558,8 +558,86 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
  */
 bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval)
 {
+    if (get_store_result().empty()) return false;
 
-    if (get_store_result().length() != 0) {
+    string serviceUrl = get_store_result();
+
+    XMLWriter xmlWrtr;
+    D4AsyncUtil d4au;
+
+    bool found;
+    string *stylesheet_ref = 0, ss_ref_value;
+    TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
+    if (found && ss_ref_value.length() > 0) {
+        stylesheet_ref = &ss_ref_value;
+    }
+
+    BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+    if (resultCache == NULL) {
+
+        /**
+         * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
+         * Looks like need to reject the request and move on.
+         *
+         */
+        string msg = "The Stored Result request cannot be serviced. ";
+        msg += "Unable to acquire StoredResultCache instance. ";
+        msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
+
+        BESDEBUG("dap", "[WARNING] " << msg << endl);
+
+        d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
+        out << xmlWrtr.get_doc();
+        out << flush;
+
+        BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - Sent AsyncRequestRejected" << endl);
+    }
+    else if (get_async_accepted().length() != 0) {
+
+        /**
+         * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
+         */
+        BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - serviceUrl="<< serviceUrl << endl);
+
+        BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
+        string storedResultId = "";
+        storedResultId = resultCache->store_dap2_result(dds, get_ce(), this, &eval);
+
+        BESDEBUG("dap",
+                "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
+
+        string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
+        BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
+
+        XMLWriter xmlWrtr;
+        d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
+        out << xmlWrtr.get_doc();
+        out << flush;
+
+        BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncAccepted response" << endl);
+    }
+    else {
+        /**
+         * Client didn't indicate a willingness to accept an async response
+         * So - we tell them that async is required.
+         */
+        d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
+        out << xmlWrtr.get_doc();
+        out << flush;
+
+        BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
+    }
+
+    return true;
+
+}
+
+#if 0
+// the original version. jhrg 3/9/15
+bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval)
+{
+
+    if (get_store_result().length() != 0) {     // use !empty()
         string serviceUrl = get_store_result();
 
         XMLWriter xmlWrtr;
@@ -632,6 +710,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     }
     return false;
 }
+#endif
 
 /**
  * Build/return the BLOB part of the DAP2 data response.
@@ -728,8 +807,9 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
-    if (!d_btp_func_ce.empty()) {
-        BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << d_btp_func_ce << endl);
+    if (!get_btp_func_ce().empty()) {
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
+
         string cache_token = "";
         DDS *fdds = 0;
         // Define a local ce evaluator so that the clause from the function parse
@@ -738,11 +818,11 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         ConstraintEvaluator func_eval;
         if (responseCache()) {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
-            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+            fdds = responseCache()->cache_dataset(dds, get_btp_func_ce(), this, &func_eval, cache_token);
         }
         else {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
-            func_eval.parse_constraint(d_btp_func_ce, dds);
+            func_eval.parse_constraint(get_btp_func_ce(), dds);
             fdds = func_eval.eval_function_clauses(dds);
         }
 
@@ -753,7 +833,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // result) will be sent.
         fdds->mark_all(false);
 
-        eval.parse_constraint(d_dap2ce, *fdds);
+        eval.parse_constraint(get_ce(), *fdds);
 
         fdds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
@@ -767,9 +847,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers) set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset),
                 dds.get_dap_version());
 
-        BESDEBUG("dap", cerr << "BESDapResponseBuilder::send_dap2_data() - About to call dataset_constraint" << endl);
         if (!store_dap2_result(data_stream, dds, eval)) {
-            serialize_dap2_data_dds(data_stream, *fdds, eval, false);
+            serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
 
         if (responseCache()) responseCache()->unlock_and_close(cache_token);
@@ -779,7 +858,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
     else {
         BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Simple constraint" << endl);
 
-        eval.parse_constraint(d_dap2ce, dds); // Throws Error if the ce doesn't parse.
+        eval.parse_constraint(get_ce(), dds); // Throws Error if the ce doesn't parse.
 
         dds.tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 

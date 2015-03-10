@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Structure name="roi_subset">
+    <Array name="a">
+        <Float32/>
+        <dimension name="rows" size="30"/>
+        <dimension name="cols" size="34"/>
+    </Array>
+</Structure>

@@ -4,17 +4,19 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
+AM_CXXFLAGS =
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
+# CXXFLAGS = 
 endif
 
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+if BUILD_HYRAX_DEBUG
+AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+endif
 
 SUBDIRS = . unit-tests testsuite
 DIST_SUBDIRS = unit-tests testsuite

@@ -81,6 +81,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
 
+    // FIXME Keywords should not be used and this should be removed. jhrg 2/20/15
     dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
     BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
 
@@ -101,6 +102,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
         dds->set_response_limit(rsl); // The default for this is zero
     }
 
+    // FIXME This should be fixed too... (see above re keywords). jhrg 2/20/15
     if (dds->get_keywords().has_keyword("dap")) {
         dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
     }

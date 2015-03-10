@@ -35,15 +35,19 @@ CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
 DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 
-# test_config.h: test_config.h.in Makefile
-#	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
-
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest StoredDap2ResultTest StoredDap4ResultTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest SequenceAggregationServerTest
+
+# FIXME Look at the problems in ResponseBuilderTest and address the (likley)
+# similar issues in these tests. (Use of machine dependent hash names in the
+# baselines.) jhrg 3/4/15
+# 
+# StoredDap2ResultTest StoredDap4ResultTest 
+
 else
 UNIT_TESTS =
 
@@ -64,11 +68,11 @@ ResponseBuilderTest_LDADD = $(AM_LDADD)
 ResponseCacheTest_SOURCES = ResponseCacheTest.cc  $(TEST_SRC)
 ResponseCacheTest_LDADD = $(AM_LDADD)
 
-StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
-StoredDap2ResultTest_LDADD = $(AM_LDADD)
+# StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
+# StoredDap2ResultTest_LDADD = $(AM_LDADD)
 
-StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
-StoredDap4ResultTest_LDADD = $(AM_LDADD)
+# StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
+# StoredDap4ResultTest_LDADD = $(AM_LDADD)
 
-# StoredResultTest_SOURCES = StoredResultTest.cc  $(TEST_SRC)
-# StoredResultTest_LDADD = $(AM_LDADD)
+SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
+SequenceAggregationServerTest_LDADD = $(AM_LDADD)

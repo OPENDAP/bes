@@ -1,10 +1,18 @@
 
-The *.bescmd files in this directory are used to make *.dods, .das,
+The *.bescmd files in this directory are used to make *.dods, *.das,
 etc., files that are then used by the dapreader handler for various
 tests so that we can test things like server functions on real data
 without needing the actual handlers that read the real data files.
 This decouples the handers' tests from other handlers.
 
 Use the besstandalone program with the 'build_responses.conf' file
-to make the .dods, ..., 'response files' and then use those with 
-dapreader to simulate reading actual HDF4, etc., files. 
+in conjunction with the .bescmd files here to make the .dods, ...,
+'response files' and then use those with dapreader to simulate
+reading actual HDF4, etc., files.
+
+Regarding hdf4, I built a smaller dods response from the MOD04 file
+to save space since the whole file built a DAP2 dods response of 2G.
+I also noticed that the tests were hard to interpret, so I made a
+sampled version of the dataset (MOD04_CF.sampled.dods) where the 
+arrays are all 10x10 in lat and long. Unfortunately the dependent
+vars are not very exciting...

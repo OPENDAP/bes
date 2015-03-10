@@ -58,19 +58,19 @@ public:
     ~agglistT() {}
 
     static BESAggregationServer *
-    h1( string name )
+    h1( const string &name )
     {
 	return new TestAggServer( name ) ;
     }
 
     static BESAggregationServer *
-    h2( string name )
+    h2( const string &name )
     {
 	return new TestAggServer( name ) ;
     }
 
     static BESAggregationServer *
-    h3( string name )
+    h3( const string &name )
     {
 	return new TestAggServer( name ) ;
     }

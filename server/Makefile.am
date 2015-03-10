@@ -17,10 +17,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-if BES_DEVELOPER
-AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-endif
-
 SUBDIRS = . test
 
 bin_PROGRAMS = beslistener besdaemon

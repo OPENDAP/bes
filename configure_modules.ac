@@ -1,7 +1,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.68)
+AC_PREREQ(2.69)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -27,17 +27,31 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-dnl AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
-dnl AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
-dnl AC_CONFIG_TESTDIR(functions/tests, [standalone])
-
-dnl AC_CONFIG_TESTDIR(dap/bes-testsuite, [standalone])
-
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
 dnl to default values otherwise.
 AC_CANONICAL_HOST
 AC_SUBST(host)
+
+dnl I moved this up to here from the tail end of the file
+dnl because it needs to run before the AC_PROG_CXX macro
+dnl which will also set CXXFLAGS
+dnl jhrg 3/4/15
+AC_ARG_ENABLE([developer],
+  [
+    AS_HELP_STRING([--enable-developer],[developer mode])
+  ],
+  [
+    AM_CONDITIONAL([BES_DEVELOPER], [true])
+    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
+    dnl Only set CXXFLAGS if the caller does not have them set in their environment
+    AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"]) 
+  ],
+  [
+    AM_CONDITIONAL([BES_DEVELOPER], [false])
+    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
+  ]
+)
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
@@ -162,7 +176,6 @@ AC_SUBST(BES_BZ2_LIBS)
 dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
 
-
 dnl Locate GDAL libraries if possible; this test is here and not down with
 dnl the 'modules' tests because gdal is used by the functions module that 
 dnl has always been part of the bes.
@@ -256,20 +269,6 @@ AC_CHECK_LIBDAP([3.11.0],
   ]
 )
 
-AC_ARG_ENABLE([developer],
-  [
-    AS_HELP_STRING([--enable-developer],[developer mode])
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [true])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [false])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
-  ]
-)
-
 dnl extra argument: --with-libwrap
 AC_MSG_CHECKING(whether to use libwrap)
 AC_ARG_WITH(libwrap,
@@ -306,7 +305,6 @@ AM_CONDITIONAL([DAP_MODULES], [test "x$with_dap_modules" = "xyes"])
 dnl These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_MODULES], [
 
-dnl FIXME Unused at the moment
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
   [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
@@ -753,8 +751,15 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
+		 dapreader/tests/package.m4
 
 		 dap/Makefile
+		 
+		 dap/tests/Makefile
+		 dap/tests/bes.conf
+		 dap/tests/package.m4
+		 dap/tests/atlocal
+		 
 		 dap/unit-tests/Makefile
 		 dap/unit-tests/test_config.h
 
@@ -762,7 +767,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
  		 functions/tests/package.m4
- 		 functions/tests/bes.conf:functions/tests/bes.conf.modules.in
+ 		 functions/tests/bes.conf
  		 functions/tests/data/build_responses.conf
 		 functions/unit-tests/Makefile])
 
@@ -786,6 +791,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(dap/tests, [standalone])
 
 dnl Output files if building the emodules too
 		 

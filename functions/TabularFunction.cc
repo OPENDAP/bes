@@ -107,11 +107,16 @@ shape_values(vector<long long> shape)
 
 /** @brief Add the BaseTypes for the Sequence's columns.
  *
- * This function is passed the arguments of the function one at a time,
- * performs some simple testing, and adds them to a vector of Arrays.
- * This vector will be used to build the columns of the resulting
+ * This function is passed the arguments of the tabular() server function
+ * one at a time, performs some simple testing, and adds them to a vector
+ * of Arrays. This vector will be used to build the columns of the resulting
  * Sequence (or D4Sequence) and to read and build up the internal
  * store of values.
+ *
+ * The first time this function is called, it records the shape of the
+ * DAP Array passed in using the BaseType*. That shape is returned as a
+ * value-result parameter and forms the baseline for testing the subsequent
+ * arrays' shape, which must match
  *
  * @param n Column number
  * @param btp Pointer to the Basetype; must be an array
@@ -175,10 +180,11 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
 }
 
 /** @brief Transform one or more arrays to a sequence.
+ *
  * This function will transform one of more arrays into a sequence,
  * where each array becomes a column in the sequence. Each
  * array must have the same number of dimensions and is
- * enumerated n row-major order (the right-most dimension varies
+ * enumerated in row-major order (the right-most dimension varies
  * fastest).
  *
  * It's assumed that for each of the arrays, elements (i0, i1, ..., in)
@@ -202,18 +208,25 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
     vector<Array*>the_arrays(num_arrays);
 
+    // Read each array passed to tabular(), check that its shape matches
+    // the first array's shape, store the array in a vector and read in
+    // it's values (into the Array object's internal store).
     for (int n = 0; n < num_arrays; ++n) {
         build_columns(n, argv[n], the_arrays, shape);
     }
 
     DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
 
+    // Now build the response Sequence so it has columns that match the
+    // Array element types
     for (unsigned long n = 0; n < the_arrays.size(); ++n) {
         response->add_var(the_arrays[n]->var());
     }
 
     long long num_values = shape_values(shape);
     SequenceValues sv(num_values);
+    // Transfer the data from the array variables held in the vector of
+    // Arrays into the Sequence using the SequenceValues object.
     // sv is a value-result parameter
     get_sequence_values(the_arrays, num_values, sv);
 

@@ -13,31 +13,27 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum site.exp
+# Using this will result in a summary of tests while the check-local
+# target will show the individual tests. Defining both targets will
+# produce both outputs. jhrg 2/10/15
+#
+TESTS = besDapModuleTest
 
-EXTRA_DIST = besdap_moduleTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
+CLEANFILES = *.log *.trs
+
+EXTRA_DIST = besDapModuleTest.at atlocal.in package.m4.in bes.conf.in
 
 DISTCLEANFILES = bes.conf
-
-bes.conf: bes.conf.in $(top_srcdir)/config.status
-	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
  
-TESTSUITE = $(srcdir)/besdap_moduleTest
+# TESTSUITE = $(srcdir)/besdap_moduleTest
+TESTSUITE = $(srcdir)/besDapModuleTest
 
-check-local: atconfig atlocal $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+# check-local: atconfig atlocal $(TESTSUITE)
+#	$(SHELL) $(TESTSUITE) $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -46,19 +42,7 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/besdap_moduleTest.at $(srcdir)/package.m4
+
+$(TESTSUITE): $(srcdir)/besDapModuleTest.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
-
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac
-	:;{ \
-	echo '# Signature of the current package.' && \
-	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
-	echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])' && \
-	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
-	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
-	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
-	} >'$(srcdir)/package.m4'
-
-

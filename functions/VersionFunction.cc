@@ -88,7 +88,7 @@ function_dap2_version(int, BaseType *[], DDS &dds, BaseType **btpp)
  @TODO Change implementation to use libxml2 objects and NOT strings.
 */
 
-BaseType *function_dap4_version(D4RValueList *args, DMR &dmr)
+BaseType *function_dap4_version(D4RValueList *, DMR &dmr)
 {
     string xml_value = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 

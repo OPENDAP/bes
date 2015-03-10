@@ -9,6 +9,16 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+AM_CXXFLAGS =
+
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
+TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+if BES_DEVELOPER
+AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
+CXXFLAGS = 
+endif
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libsample_module.la
 dist_bin_SCRIPTS = bes-sample-data.sh
