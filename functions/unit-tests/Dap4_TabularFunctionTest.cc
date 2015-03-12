@@ -134,7 +134,7 @@ public:
         D4RValue rv(a);
         D4RValueList *args = new D4RValueList;
         args->add_rvalue(&rv);
-        BaseType *result = function_dap4_tabular(args, *one_var_dmr);
+        BaseType *result = TabularFunction::function_dap4_tabular(args, *one_var_dmr);
 
         // Now check that the response types are as expected
         DBG(cerr << "a[0]: " << dynamic_cast<Int32&>(*(a->var(0))).value() << endl);
@@ -180,7 +180,7 @@ public:
         // BaseType *argv[] = {arrays[0], arrays[1], arrays[2], arrays[3]};
         BaseType *result = 0;
         try {
-            result = function_dap4_tabular(args, *four_var_2_dmr);
+            result = TabularFunction::function_dap4_tabular(args, *four_var_2_dmr);
             // function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dmr, &result);
         }
         catch (Error &e) {

@@ -30,14 +30,31 @@ class BaseType;
 class Array;
 class DDS;
 
-std::vector<long long>array_shape(Array *a);
-bool shape_matches(Array *a, std::vector<long long> shape);
+//typedef SequenceValues std::vector< std::vector<BaseType*> *>;
 
-void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
 
 class TabularFunction: public libdap::ServerFunction
 {
+private:
+    friend class TabularFunctionTest;
+    friend class Dap4_TabularFunctionTest;
+
+    static void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
+    static BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
+
+    static void function_dap2_tabular_2(int argc, BaseType *argv[], DDS &, BaseType **btpp);
+
+    // These are static so that the code does not have to make a TabularFunction
+    // instance to access them. They are 'in' TabularFunction to control the name
+    // space - they were static functions but that made it impossible to write
+    // unit tests.
+    static std::vector<unsigned long> array_shape(Array *a);
+    static bool shape_matches(Array *a, std::vector<unsigned long> shape);
+    static unsigned long number_of_values(std::vector<unsigned long> shape);
+    static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, std::vector<unsigned long> &shape);
+    static void read_values(std::vector<Array*> arrays);
+    static void build_sequence_values(std::vector<Array*> arrays, std::vector< std::vector<BaseType*> *> &sv);
+
 public:
     TabularFunction()
     {
@@ -46,10 +63,11 @@ public:
         setUsageString("tabular()");
         setRole("http://services.opendap.org/dap4/server-side-function/tabular");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#tabular");
-        setFunction(libdap::function_dap2_tabular);
-        setFunction(libdap::function_dap4_tabular);
+        setFunction(libdap::TabularFunction::function_dap2_tabular);
+        setFunction(libdap::TabularFunction::function_dap4_tabular);
         setVersion("1.0");
     }
+
     virtual ~TabularFunction()
     {
     }

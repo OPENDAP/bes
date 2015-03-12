@@ -26,8 +26,11 @@
 #include "config.h"
 
 #include <cassert>
+#include <climits>
+
 #include <sstream>
 #include <memory>
+#include <algorithm>
 
 #include <BaseType.h>
 #include <Array.h>
@@ -47,6 +50,18 @@ using namespace std;
 namespace libdap {
 
 /**
+ * Simple function to read the values of an Array. Can be called on its
+ * own or with for_each().
+ *
+ * @param a Call read() for this variable. Also sets the read_p property
+ */
+static void read_array_values(Array *a)
+{
+    a->read();
+    a->set_read_p(true);
+}
+
+/**
  * Build a vector of array dimension sizes used to compare with
  * other arrays to determine compatibility for the tabular function.
  *
@@ -54,10 +69,10 @@ namespace libdap {
  * @param a Read the size and number of dimensions from this array
  * @return The shape array
  */
-vector<long long>
-array_shape(Array *a)
+vector<unsigned long>
+TabularFunction::array_shape(Array *a)
 {
-    vector<long long> shape;
+    vector<unsigned long> shape;
 
     for (Array::Dim_iter i = a->dim_begin(), e = a->dim_end(); i != e; ++i) {
         shape.push_back(a->dimension_size(i));
@@ -76,7 +91,7 @@ array_shape(Array *a)
  * @return True if the shapes match, False otherwise.
  */
 bool
-shape_matches(Array *a, vector<long long> shape)
+TabularFunction::shape_matches(Array *a, vector<unsigned long> shape)
 {
     // Same number of dims
     if (shape.size() != a->dimensions())
@@ -84,9 +99,10 @@ shape_matches(Array *a, vector<long long> shape)
 
     // Each dim the same size
     Array::Dim_iter i = a->dim_begin(), e = a->dim_end();
-    vector<long long>::iterator si = shape.begin(), se = shape.end();
+    vector<unsigned long>::iterator si = shape.begin(), se = shape.end();
     while (i != e && si != se) {
-        if (*si != a->dimension_size(i))
+        assert(a->dimension_size(i) >= 0);
+        if (*si != (unsigned long)a->dimension_size(i))
             return false;
         ++i; ++si;
     }
@@ -94,18 +110,19 @@ shape_matches(Array *a, vector<long long> shape)
     return true;
 }
 
-static long long
-shape_values(vector<long long> shape)
+unsigned long
+TabularFunction::number_of_values(vector<unsigned long> shape)
 {
-    long long size = 1;
-    vector<long long>::iterator si = shape.begin(), se = shape.end();
+    unsigned long size = 1;
+    vector<unsigned long>::iterator si = shape.begin(), se = shape.end();
     while (si != se) {
         size *= *si++;
     }
     return size;
 }
 
-/** @brief Add the BaseTypes for the Sequence's columns.
+/**
+ * @brief Add the BaseTypes for the Sequence's columns.
  *
  * This function is passed the arguments of the tabular() server function
  * one at a time, performs some simple testing, and adds them to a vector
@@ -119,13 +136,13 @@ shape_values(vector<long long> shape)
  * arrays' shape, which must match
  *
  * @param n Column number
- * @param btp Pointer to the Basetype; must be an array
+ * @param btp Pointer to the Basetype; must be an Array
  * @param the_arrays Value-result parameter for the resulting BaseTypes
  * @param shape The array shape. Computer for the first array, subsequent
  * arrays must match it.
  */
-static void
-build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector<long long> &shape)
+void
+TabularFunction::build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector<unsigned long> &shape)
 {
     if (btp->type() != dods_array_c)
         throw Error( "In tabular(): Expected argument '" + btp->name() + "' to be an Array.");
@@ -139,17 +156,32 @@ build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector
     else if (!shape_matches(a, shape))
         throw Error("In tabular: Array '" + a->name() + "' does not match the shape of the initial Array.");
 
-    a->read();
-    a->set_read_p(true);
+    read_array_values(a);
 
-    the_arrays.at(n) = a;
+    the_arrays.at(n) = a;       // small number of Arrays; use the safe method
 }
 
-/** @brief Load the values into a vector of a vector of BaseType pointers.
+/**
+ * For each Array in the vector of Arrays, read its values into
+ * internal memory and set the read_p property.
+ *
+ * @param arrays For this vector<Array*>, read the data for each array.
+ */
+void TabularFunction::read_values(vector<Array*> arrays)
+{
+    // NB: read_array_values is defined at the very top of this file
+    for_each(arrays.begin(), arrays.end(), read_array_values);
+}
+
+/**
+ * @brief Load the values into a vector of a vector of BaseType pointers.
  *
  * Given a vector of the arrays that will supply values for this Sequence,
  * build up the values and load them into the SequenceValues/D4SeqValues
  * object that is the value-result parameter.
+ *
+ * @note This code depends on each Array in 'arrays' having already read its
+ * values. It will throw Error if that is not the case.
  *
  * @param the_arrays Extract data from these arrays
  * @param num_values The number of values (i.e, rows)
@@ -158,24 +190,28 @@ build_columns(unsigned long n, BaseType* btp, vector<Array*>& the_arrays, vector
  * are both typedefs to a vector of vectors of BaseType pointers, so
  * both D2 and D4 objects can use this code.
  */
-static void
-get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vector<BaseType*>* > &sv)
+void
+TabularFunction::build_sequence_values(vector<Array*> the_arrays, SequenceValues &sv)
 {
     // This can be optimized for most cases because we're storing objects for Byte, Int32, ...
     // values where we could be storing native types. But this is DAP2 code... jhrg 2/3/15
-    for (int i = 0; i < num_values; ++i) {
-        // D4SeqRow, BaseTypeRow == vector<BaseType*>
-        vector<BaseType*> *row = new vector<BaseType*>(the_arrays.size());
+    //
+    // NB: SequenceValues == vector< vector<BaseType*> *>, and
+    // D4SeqRow, BaseTypeRow == vector<BaseType*>
+    for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
 
-        for (unsigned long j = 0; j < the_arrays.size(); ++j) {
+        BaseTypeRow *row = new BaseTypeRow(the_arrays.size());
+
+        for (BaseTypeRow::size_type j = 0; j < the_arrays.size(); ++j) {
             DBG(cerr << "the_arrays.at(" << j << ") " << the_arrays.at(j) << endl);
             // i == row number; j == column (or array) number
-            row->at(j) = the_arrays.at(j)->var(i)->ptr_duplicate();
-            row->at(j)->set_send_p(true);
-            row->at(j)->set_read_p(true);
+            (*row)[j]/*->at(j)*/ = the_arrays[j]/*.at(j)*/->var(i)->ptr_duplicate();
+
+            (*row)[j]->set_send_p(true);
+            (*row)[j]->set_read_p(true);
         }
 
-        sv.at(i) = row;
+        sv[i]/*.at(i)*/ = row;
     }
 }
 
@@ -198,21 +234,21 @@ get_sequence_values(vector<Array*> the_arrays, long long num_values, vector< vec
  * @param btpp Value-result parameter for the resulting Sequence
  */
 void
-function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+TabularFunction::function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
     // unique_ptr is not avialable on gcc 4.2. jhrg 2/11/15
     // unique_ptr<TabularSequence> response(new TabularSequence("table"));
     auto_ptr<TabularSequence> response(new TabularSequence("table"));
 
     int num_arrays = argc;              // Might pass in other stuff...
-    vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
+    vector<unsigned long> shape;            // Holds shape info; used to test array sizes for uniformity
     vector<Array*>the_arrays(num_arrays);
 
     // Read each array passed to tabular(), check that its shape matches
     // the first array's shape, store the array in a vector and read in
     // it's values (into the Array object's internal store).
     for (int n = 0; n < num_arrays; ++n) {
-        build_columns(n, argv[n], the_arrays, shape);
+        TabularFunction::build_columns(n, argv[n], the_arrays, shape);
     }
 
     DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
@@ -223,18 +259,90 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         response->add_var(the_arrays[n]->var());
     }
 
-    long long num_values = shape_values(shape);
+    unsigned long num_values = TabularFunction::number_of_values(shape);
     SequenceValues sv(num_values);
     // Transfer the data from the array variables held in the vector of
     // Arrays into the Sequence using the SequenceValues object.
     // sv is a value-result parameter
-    get_sequence_values(the_arrays, num_values, sv);
+    TabularFunction::build_sequence_values(the_arrays, sv);
 
     response->set_value(sv);
     response->set_read_p(true);
 
     *btpp = response.release();
     return;
+}
+
+void
+TabularFunction::function_dap2_tabular_2(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+{
+    vector<Array*> the_arrays;
+    // collect all of the arrays; separates them from other kinds of parameters
+    for (int n = 0; n < argc; ++n) {
+        if (argv[n]->type() != dods_array_c)
+            throw Error("In function tabular(): Expected an array, but argument " + argv[n]->name() + " is a " + argv[n]->type_name() + ".");
+        the_arrays.push_back(static_cast<Array*>(argv[n]));
+    }
+
+    // every var with dimension == min_dim_size is considered an 'independent' var
+    unsigned long min_dim_size = ULONG_MAX;   // <climits>
+    for (vector<Array*>::iterator i = the_arrays.begin(), e = the_arrays.end(); i != e; ++i) {
+        min_dim_size = min((unsigned long)(*i)->dimensions(), min_dim_size);
+    }
+
+    // collect the independent and dependent variables; size _and_ shape must match
+    vector<Array*> indep, dep;
+    for (vector<Array*>::iterator i = the_arrays.begin(), e = the_arrays.end(); i != e; ++i) {
+        if ((*i)->dimensions() == min_dim_size) {
+            indep.push_back(*i);
+        }
+        else {
+            dep.push_back(*i);
+        }
+    }
+
+    vector<unsigned long> indep_shape = array_shape(indep.at(0));
+    vector<unsigned long> dep_shape = array_shape(dep.at(0));
+
+    // FIXME Test shapes here
+
+    unsigned long num_indep_values = number_of_values(indep_shape);
+    SequenceValues indep_sv(num_indep_values);
+
+    read_values(indep);
+    build_sequence_values(indep, indep_sv);
+
+    unsigned long num_dep_values = number_of_values(dep_shape);
+    SequenceValues dep_sv(num_dep_values);
+
+    read_values(dep);
+    build_sequence_values(dep, dep_sv);
+
+    auto_ptr<TabularSequence> response(new TabularSequence("table"));
+    // combine the two SequenceValue tables and set the response to the result
+
+#if 0
+    DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
+
+    // Now build the response Sequence so it has columns that match the
+    // Array element types
+    for (unsigned long n = 0; n < the_arrays.size(); ++n) {
+        response->add_var(the_arrays[n]->var());
+    }
+
+    unsigned long num_values = TabularFunction::number_of_values(shape);
+    SequenceValues sv(num_values);
+    // Transfer the data from the array variables held in the vector of
+    // Arrays into the Sequence using the SequenceValues object.
+    // sv is a value-result parameter
+    TabularFunction::build_sequence_values(the_arrays, sv);
+
+    response->set_value(sv);
+    response->set_read_p(true);
+
+    *btpp = response.release();
+    return;
+#endif
 }
 
 /**
@@ -248,18 +356,18 @@ function_dap2_tabular(int argc, BaseType *argv[], DDS &, BaseType **btpp)
  *
  * @see function_dap2_tabular
  */
-BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr)
+BaseType *TabularFunction::function_dap4_tabular(D4RValueList *args, DMR &dmr)
 {
     // unique_ptr is not avialable on gcc 4.2. jhrg 2/11/15
     //unique_ptr<D4Sequence> response(new D4Sequence("table"));
     auto_ptr<D4Sequence> response(new D4Sequence("table"));
 
     int num_arrays = args->size();              // Might pass in other stuff...
-    vector<long long> shape;            // Holds shape info; used to test array sizes for uniformity
+    vector<unsigned long> shape;            // Holds shape info; used to test array sizes for uniformity
     vector<Array*>the_arrays(num_arrays);
 
     for (int n = 0; n < num_arrays; ++n) {
-        build_columns(n, args->get_rvalue(n)->value(dmr), the_arrays, shape);
+        TabularFunction::build_columns(n, args->get_rvalue(n)->value(dmr), the_arrays, shape);
     }
 
     DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
@@ -268,10 +376,10 @@ BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr)
         response->add_var(the_arrays[n]->var());
     }
 
-    long long num_values = shape_values(shape);
+    unsigned long num_values = TabularFunction::number_of_values(shape);
     D4SeqValues sv(num_values);
     // sv is a value-result parameter
-    get_sequence_values(the_arrays, num_values, sv);
+    TabularFunction::build_sequence_values(the_arrays, sv);
 
     response->set_value(sv);
     response->set_read_p(true);

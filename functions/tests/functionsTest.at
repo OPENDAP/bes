@@ -14,8 +14,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bbox_1.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bbox_2.dods.bescmd)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_0.dods.bescmd)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_1.dods.bescmd, [xfail])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_2.dods.bescmd, [xfail])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_3.dods.bescmd, [xfail])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_4.dods.bescmd, [xfail])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_5.dods.bescmd, [xfail])
+
+# These tests have odd looking baselines. The fix is to modify the 
+# dapreader handler so that it uses its own set of specializations.
+# jhrg 3/12/15
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_1.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_2.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_3.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_4.dods.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_5.dods.bescmd)

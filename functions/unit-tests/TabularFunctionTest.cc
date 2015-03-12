@@ -83,7 +83,6 @@ public:
 
     void setUp()
     {
-
         try {
             one_var_dds = new DDS(&btf);
             one_var_dds->parse((string)TEST_SRC_DIR + "/tabular/one_var.dds");
@@ -131,7 +130,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *argv[] = { a };
         BaseType *result = 0;
-        function_dap2_tabular(1, argv, *one_var_dds, &result);
+        TabularFunction::function_dap2_tabular(1, argv, *one_var_dds, &result);
 
         // Now check that the response types are as expected
         DBG(cerr << "a[0]: " << dynamic_cast<Int32&>(*(a->var(0))).value() << endl);
@@ -170,7 +169,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *argv[] = { a };
         BaseType *result = 0;
-        function_dap2_tabular(1, argv, *one_var_dds, &result);
+        TabularFunction::function_dap2_tabular(1, argv, *one_var_dds, &result);
 
         // Now check that the response types are as expected
         DBG(cerr << "a[11]: " << dynamic_cast<Int32&>(*(a->var(11))).value() << endl);
@@ -198,7 +197,7 @@ public:
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = array_shape(static_cast<Array*>(btp));
+        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
@@ -209,7 +208,7 @@ public:
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = array_shape(static_cast<Array*>(btp));
+        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
@@ -218,42 +217,113 @@ public:
     }
 
     void array_shape_matches_test() {
-        //(Array *a, vector<long long> shape)
+        //(Array *a, vector<unsigned long> shape)
         BaseType *btp = *(four_var_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = array_shape(static_cast<Array*>(btp));
+        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 1);
         CPPUNIT_ASSERT(shape[0] == 4);
 
-        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
 
         btp = *(four_var_dds->var_begin() + 1);
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
     }
 
     void array_shape_matches_test_2() {
-        //(Array *a, vector<long long> shape)
+        //(Array *a, vector<unsigned long> shape)
         BaseType *btp = *(four_var_2_dds->var_begin());
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        vector<long long>shape = array_shape(static_cast<Array*>(btp));
+        vector<unsigned long>shape = TabularFunction::array_shape(static_cast<Array*>(btp));
 
         DBG(cerr << "shape size: " << shape.size() << endl);
         CPPUNIT_ASSERT(shape.size() == 2);
         CPPUNIT_ASSERT(shape[0] == 4);
         CPPUNIT_ASSERT(shape[1] == 2);
 
-        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
 
         btp = *(four_var_2_dds->var_begin() + 1);
         CPPUNIT_ASSERT(btp->type() == dods_array_c);
 
-        CPPUNIT_ASSERT(shape_matches(static_cast<Array*>(btp), shape));
+        CPPUNIT_ASSERT(TabularFunction::shape_matches(static_cast<Array*>(btp), shape));
+    }
+
+    void build_sequence_values_test() {
+        DBG(cerr << "Starting build_sequence_values_test..." << endl);
+
+        vector<Array*> arrays;
+        for (DDS::Vars_iter i = four_var_2_dds->var_begin(), e = four_var_2_dds->var_end(); i != e; ++i) {
+            CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+            arrays.push_back(static_cast<Array*>(*i));
+        }
+
+        vector<unsigned long> shape = TabularFunction::array_shape(arrays.at(0));
+        DBG(cerr << "shape size: " << shape.size() << endl);
+        CPPUNIT_ASSERT(shape.size() == 2);
+        CPPUNIT_ASSERT(shape[0] == 4);
+        CPPUNIT_ASSERT(shape[1] == 2);
+
+        unsigned long num_values = TabularFunction::number_of_values(shape);
+        CPPUNIT_ASSERT(num_values == 8);
+
+        SequenceValues sv(num_values);
+        try {
+            TabularFunction::read_values(arrays);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        try {
+            TabularFunction::build_sequence_values(arrays, sv);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
+            BaseTypeRow *row = sv.at(i);
+            for (BaseTypeRow::size_type j = 0; j < row->size(); ++j) {
+                switch (row->at(j)->type()) {
+                case dods_byte_c: {
+                    dods_byte b = static_cast<Byte*>(row->at(j))->value();
+                    DBG(cerr << "b("<<i<<","<<j<<"): " << b << endl);
+                    break;
+                }
+                case dods_int32_c: {
+                    dods_int32 i = static_cast<Int32*>(row->at(j))->value();
+                    DBG(cerr << "i("<<i<<","<<j<<"): " << i << endl);
+                   break;
+                }
+                case dods_float32_c: {
+                    dods_float32 f = static_cast<Float32*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                case dods_float64_c: {
+                    dods_float64 f = static_cast<Float64*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                default:
+                    CPPUNIT_FAIL("Wrong type in four_var_2_dds");
+                    break;
+                }
+            }
+        }
     }
 
     void four_var_test() {
@@ -271,7 +341,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *result = 0;
         try {
-            function_dap2_tabular(arrays.size(), &arrays[0], *four_var_dds, &result);
+            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_dds, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -336,7 +406,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *result = 0;
         try {
-            function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dds, &result);
+            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dds, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -401,7 +471,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *argv[] = { a };
         BaseType *result = 0;
-        function_dap2_tabular(1, argv, *one_var_dds, &result);
+        TabularFunction::function_dap2_tabular(1, argv, *one_var_dds, &result);
 
 
         CPPUNIT_ASSERT(result->type() == dods_sequence_c);
@@ -425,6 +495,7 @@ public:
     CPPUNIT_TEST(compute_array_shape_test_2);
     CPPUNIT_TEST(array_shape_matches_test);
     CPPUNIT_TEST(array_shape_matches_test_2);
+    CPPUNIT_TEST(build_sequence_values_test);
 
     CPPUNIT_TEST(four_var_test);
     CPPUNIT_TEST(four_var_2_test);
