@@ -1,7 +1,0 @@
-The data:
-Structure {
-    Int32 start;
-    Int32 stop;
-    String name;
-} bbox[indices = 2] = {{ 10, 20, "Cell_Along_Swath" }, { 10, 20, "Cell_Across_Swath" }};
-
