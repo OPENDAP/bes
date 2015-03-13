@@ -37,6 +37,7 @@ private:
     friend class Dap4_TabularFunctionTest;
 
     typedef std::vector< std::vector<BaseType*> *> SequenceValues;
+    typedef std::vector<unsigned long> Shape;
 
     static void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
     // static BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
@@ -48,14 +49,19 @@ private:
     // instance to access them. They are 'in' TabularFunction to control the name
     // space - they were static functions but that made it impossible to write
     // unit tests.
-    static std::vector<unsigned long> array_shape(Array *a);
-    static bool shape_matches(Array *a, std::vector<unsigned long> shape);
-    static unsigned long number_of_values(std::vector<unsigned long> shape);
-    static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, std::vector<unsigned long> &shape);
-    static void read_values(std::vector<Array*> arrays);
-    static void build_sequence_values(std::vector<Array*> arrays, SequenceValues &sv);
-    static void combine_sequence_values(SequenceValues &dep, SequenceValues &indep);
-    static void add_index_columns(const std::vector<unsigned long> &indep_shape, const std::vector<unsigned long> &dep_shape,
+    static Shape array_shape(Array *a);
+    static bool shape_matches(Array *a, const Shape &shape);
+    static bool dep_indep_match(const Shape &dep_shape, const Shape &indep_shape);
+
+    static unsigned long number_of_values(const Shape &shape);
+
+    static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, Shape &shape);
+
+    static void read_values(const std::vector<Array*> &arrays);
+
+    static void build_sequence_values(const std::vector<Array*> &arrays, SequenceValues &sv);
+    static void combine_sequence_values(SequenceValues &dep, const SequenceValues &indep);
+    static void add_index_column(const Shape &indep_shape, const Shape &dep_shape,
             std::vector<Array*> &dep_vars);
 
 public:

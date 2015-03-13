@@ -546,7 +546,7 @@ public:
         TabularFunction::read_values(dep_vars);
         CPPUNIT_ASSERT(dep_vars.size() == 1);
 
-        TabularFunction::add_index_columns(indep_shape, dep_shape, dep_vars);
+        TabularFunction::add_index_column(indep_shape, dep_shape, dep_vars);
         CPPUNIT_ASSERT(dep_vars.size() == 2);
         CPPUNIT_ASSERT(dep_vars.at(0)->type() == dods_array_c);
         CPPUNIT_ASSERT(dep_vars.at(0)->var()->type() == dods_uint32_c);
