@@ -34,6 +34,7 @@
 #include <BaseType.h>
 #include <Byte.h>
 #include <Int32.h>
+#include <UInt32.h>
 #include <Float32.h>
 #include <Float64.h>
 #include <Array.h>
@@ -74,9 +75,10 @@ private:
 
     DDS *one_var_dds, *one_var_2_dds;
     DDS *four_var_dds, *four_var_2_dds;
+    DDS *four_var_mixed;
 
 public:
-    TabularFunctionTest(): one_var_dds(0), one_var_2_dds(0), four_var_dds(0), four_var_2_dds(0)
+    TabularFunctionTest(): one_var_dds(0), one_var_2_dds(0), four_var_dds(0), four_var_2_dds(0), four_var_mixed(0)
     {}
     ~TabularFunctionTest()
     {}
@@ -99,6 +101,10 @@ public:
             four_var_2_dds = new DDS(&btf);
             four_var_2_dds->parse((string)TEST_SRC_DIR + "/tabular/four_var_2.dds");
             DBG2(four_var_2_dds->print_xml(stderr, false, "No blob"));
+
+            four_var_mixed = new DDS(&btf);
+            four_var_mixed->parse((string)TEST_SRC_DIR + "/tabular/four_var_mixed.dds");
+            DBG2(four_var_mixed->print_xml(stderr, false, "No blob"));
         }
 
         catch (Error & e) {
@@ -299,13 +305,13 @@ public:
             for (BaseTypeRow::size_type j = 0; j < row->size(); ++j) {
                 switch (row->at(j)->type()) {
                 case dods_byte_c: {
-                    dods_byte b = static_cast<Byte*>(row->at(j))->value();
-                    DBG(cerr << "b("<<i<<","<<j<<"): " << b << endl);
+                    dods_byte v = static_cast<Byte*>(row->at(j))->value();
+                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
                     break;
                 }
                 case dods_int32_c: {
-                    dods_int32 i = static_cast<Int32*>(row->at(j))->value();
-                    DBG(cerr << "i("<<i<<","<<j<<"): " << i << endl);
+                    dods_int32 v = static_cast<Int32*>(row->at(j))->value();
+                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
                    break;
                 }
                 case dods_float32_c: {
@@ -324,6 +330,234 @@ public:
                 }
             }
         }
+
+        CPPUNIT_ASSERT(sv.size() == 8);
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
+            BaseTypeRow *row = sv.at(i);
+            CPPUNIT_ASSERT(row->size() == 4);
+            CPPUNIT_ASSERT(row->at(0)->type() == dods_byte_c);
+            CPPUNIT_ASSERT(row->at(1)->type() == dods_int32_c);
+            CPPUNIT_ASSERT(row->at(2)->type() == dods_float32_c);
+            CPPUNIT_ASSERT(row->at(3)->type() == dods_float64_c);
+        }
+    }
+
+    // Test the simple case where the shape of the indep and dep vars are the same.
+    // Normally the function is not used in that case, but we're testing it for
+    // completeness' sake.
+    void combine_sequence_values_test_1() {
+        DBG(cerr << "Starting combine_sequence_values_test_1 ..." << endl);
+
+        vector<Array*> arrays;
+        for (DDS::Vars_iter i = four_var_mixed->var_begin(), e = four_var_mixed->var_end(); i != e; ++i) {
+            CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+            arrays.push_back(static_cast<Array*>(*i));
+        }
+
+        vector<Array*> a, b;
+        a.push_back(arrays[0]);
+        b.push_back(arrays[1]);
+
+        vector<unsigned long> a_shape = TabularFunction::array_shape(a.at(0));
+        vector<unsigned long> b_shape = TabularFunction::array_shape(b.at(0));
+
+        unsigned long num_a_values = TabularFunction::number_of_values(a_shape);
+        CPPUNIT_ASSERT(num_a_values == 2);
+        SequenceValues a_sv(num_a_values);
+        TabularFunction::read_values(a);
+        TabularFunction::build_sequence_values(a, a_sv);
+        CPPUNIT_ASSERT(a_sv.size() == 2);
+
+        unsigned long num_b_values = TabularFunction::number_of_values(b_shape);
+        //CPPUNIT_ASSERT(num_b_values == 8);
+        CPPUNIT_ASSERT(num_b_values == 2);
+        SequenceValues b_sv(num_b_values);
+
+        TabularFunction::read_values(b);
+        TabularFunction::build_sequence_values(b, b_sv);
+        CPPUNIT_ASSERT(b_sv.size() == 2);
+
+        SequenceValues &result = b_sv;
+        try {
+            TabularFunction::combine_sequence_values(b_sv, a_sv);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        // This loop is mostly so that we can see the values when using -d
+        for (SequenceValues::size_type i = 0; i < result.size(); ++i) {
+            BaseTypeRow *row = result.at(i);
+            for (BaseTypeRow::size_type j = 0; j < row->size(); ++j) {
+                switch (row->at(j)->type()) {
+                case dods_byte_c: {
+                    dods_byte v = static_cast<Byte*>(row->at(j))->value();
+                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
+                    break;
+                }
+                case dods_int32_c: {
+                    dods_int32 v = static_cast<Int32*>(row->at(j))->value();
+                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
+                   break;
+                }
+                case dods_float32_c: {
+                    dods_float32 f = static_cast<Float32*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                case dods_float64_c: {
+                    dods_float64 f = static_cast<Float64*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                default:
+                    CPPUNIT_FAIL("Wrong type in four_var_2_dds");
+                    break;
+                }
+            }
+        }
+
+        CPPUNIT_ASSERT(result.size() == 2);
+        for (SequenceValues::size_type i = 0; i < result.size(); ++i) {
+            BaseTypeRow *row = result.at(i);
+            CPPUNIT_ASSERT(row->size() == 2);
+            CPPUNIT_ASSERT(row->at(0)->type() == dods_int32_c);
+            CPPUNIT_ASSERT(row->at(1)->type() == dods_byte_c);
+        }
+    }
+
+    void combine_sequence_values_test_2() {
+        DBG(cerr << "Starting combine_sequence_values_test_2 ..." << endl);
+
+        vector<Array*> arrays;
+        for (DDS::Vars_iter i = four_var_mixed->var_begin(), e = four_var_mixed->var_end(); i != e; ++i) {
+            CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+            arrays.push_back(static_cast<Array*>(*i));
+        }
+
+        vector<Array*> indep_vars, dep_vars;
+        indep_vars.push_back(arrays[0]);
+        indep_vars.push_back(arrays[1]);
+
+        dep_vars.push_back(arrays[2]);
+
+        vector<unsigned long> indep_shape = TabularFunction::array_shape(indep_vars.at(0));
+        vector<unsigned long> dep_shape = TabularFunction::array_shape(dep_vars.at(0));
+
+        unsigned long num_indep_values = TabularFunction::number_of_values(indep_shape);
+        CPPUNIT_ASSERT(num_indep_values == 2);
+        SequenceValues indep_sv(num_indep_values);
+        TabularFunction::read_values(indep_vars);
+        TabularFunction::build_sequence_values(indep_vars, indep_sv);
+        CPPUNIT_ASSERT(indep_sv.size() == 2);
+
+        unsigned long num_dep_values = TabularFunction::number_of_values(dep_shape);
+        CPPUNIT_ASSERT(num_dep_values == 8);
+        SequenceValues dep_sv(num_dep_values);
+        TabularFunction::read_values(dep_vars);
+        TabularFunction::build_sequence_values(dep_vars, dep_sv);
+        CPPUNIT_ASSERT(dep_sv.size() == 8);
+
+        SequenceValues &result = dep_sv;
+        try {
+            TabularFunction::combine_sequence_values(dep_sv, indep_sv);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        // This loop is mostly so that we can see the values when using -d
+        for (SequenceValues::size_type i = 0; i < result.size(); ++i) {
+            BaseTypeRow *row = result.at(i);
+            for (BaseTypeRow::size_type j = 0; j < row->size(); ++j) {
+                switch (row->at(j)->type()) {
+                case dods_byte_c: {
+                    dods_byte v = static_cast<Byte*>(row->at(j))->value();
+                    DBG(cerr << "b("<<i<<","<<j<<"): " << v << endl);
+                    break;
+                }
+                case dods_int32_c: {
+                    dods_int32 v = static_cast<Int32*>(row->at(j))->value();
+                    DBG(cerr << "i("<<i<<","<<j<<"): " << v << endl);
+                   break;
+                }
+                case dods_float32_c: {
+                    dods_float32 f = static_cast<Float32*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                case dods_float64_c: {
+                    dods_float64 f = static_cast<Float64*>(row->at(j))->value();
+                    DBG(cerr << "f("<<i<<","<<j<<"): " << f << endl);
+                    break;
+                }
+                default:
+                    CPPUNIT_FAIL("Wrong type in four_var_2_dds");
+                    break;
+                }
+            }
+        }
+
+        CPPUNIT_ASSERT(result.size() == 8);
+        for (SequenceValues::size_type i = 0; i < result.size(); ++i) {
+            BaseTypeRow *row = result.at(i);
+            CPPUNIT_ASSERT(row->size() == 3);
+            CPPUNIT_ASSERT(row->at(0)->type() == dods_float32_c);
+            CPPUNIT_ASSERT(row->at(1)->type() == dods_byte_c);
+            CPPUNIT_ASSERT(row->at(2)->type() == dods_int32_c);
+        }
+    }
+
+    void add_index_columns_test() {
+        DBG(cerr << "Starting add_index_columns_test ..." << endl);
+
+        vector<Array*> arrays;
+        for (DDS::Vars_iter i = four_var_mixed->var_begin(), e = four_var_mixed->var_end(); i != e; ++i) {
+            CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+            arrays.push_back(static_cast<Array*>(*i));
+        }
+
+        vector<Array*> indep_vars, dep_vars;
+        indep_vars.push_back(arrays[0]);
+        indep_vars.push_back(arrays[1]);
+
+        dep_vars.push_back(arrays[2]);
+
+        vector<unsigned long> indep_shape = TabularFunction::array_shape(indep_vars.at(0));
+        vector<unsigned long> dep_shape = TabularFunction::array_shape(dep_vars.at(0));
+
+        unsigned long num_indep_values = TabularFunction::number_of_values(indep_shape);
+        CPPUNIT_ASSERT(num_indep_values == 2);
+        //SequenceValues indep_sv(num_indep_values);
+        //TabularFunction::read_values(indep_vars);
+        //TabularFunction::build_sequence_values(indep_vars, indep_sv);
+        //CPPUNIT_ASSERT(indep_sv.size() == 2);
+
+        unsigned long num_dep_values = TabularFunction::number_of_values(dep_shape);
+        CPPUNIT_ASSERT(num_dep_values == 8);
+        SequenceValues dep_sv(num_dep_values);
+
+        TabularFunction::read_values(dep_vars);
+        CPPUNIT_ASSERT(dep_vars.size() == 1);
+
+        TabularFunction::add_index_columns(indep_shape, dep_shape, dep_vars);
+        CPPUNIT_ASSERT(dep_vars.size() == 2);
+        CPPUNIT_ASSERT(dep_vars.at(0)->type() == dods_array_c);
+        CPPUNIT_ASSERT(dep_vars.at(0)->var()->type() == dods_uint32_c);
+        DBG(cerr << "first dep var name: " << dep_vars.at(0)->name() << endl);
+        DBG(cerr << "second dep var name: " << dep_vars.at(1)->name() << endl);
+
+        vector<dods_uint32> synth(8);
+        dep_vars.at(0)->value(&synth[0]);
+
+        CPPUNIT_ASSERT(synth.at(0) == 0);
+        CPPUNIT_ASSERT(synth.at(7) == 3);
     }
 
     void four_var_test() {
@@ -456,6 +690,81 @@ public:
         }
     }
 
+    // This test uses the four_var_mixed DDS, but it only passes the first three vars to the tabular() function
+    void four_var_mixed_test_1() {
+        DBG(cerr << "Starting four_var_mixed_test ..." << endl);
+
+        vector<BaseType*> arrays;
+        for (DDS::Vars_iter i = four_var_mixed->var_begin(), e = four_var_mixed->var_end(); i != e; ++i) {
+            CPPUNIT_ASSERT((*i)->type() == dods_array_c);
+            arrays.push_back(static_cast<Array*>(*i));
+        }
+        arrays.pop_back();      // This is just an easy way to get the only the first three of the vars...
+
+        BaseType *result = 0;
+        try {
+            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_mixed, &result);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+
+        CPPUNIT_ASSERT(result->type() == dods_sequence_c);
+        Sequence *s = static_cast<Sequence*>(result);
+
+        // Number of columns is the number of arrays; just being pedantic with the cast..
+        // Note that because the single dep var is one dimension bigger than the independent
+        // variables, an extra column has been added to the result.
+        CPPUNIT_ASSERT((vector<BaseType*>::size_type)distance(s->var_begin(), s->var_end()) == arrays.size() + 1);
+
+        SequenceValues sv = s->value();
+        DBG(cerr << "SequenceValues size (number of rows in the sequence): " << sv.size() << endl);
+        CPPUNIT_ASSERT(sv.size() == 8);
+
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
+            DBG(cerr << "row " << long_to_string(i));
+            for (unsigned long j = 0; j < arrays.size() + 1; ++j) {
+                CPPUNIT_ASSERT(s->var_value(i, j) != 0);
+                BaseType *btp = s->var_value(i, j);
+                switch (btp->type()) {
+                case dods_byte_c:
+                    DBG(cerr << " b: " << (int)static_cast<Byte&>(*btp).value());
+                    CPPUNIT_ASSERT(static_cast<Byte&>(*btp).value() == 255);
+                    break;
+
+                case dods_int32_c:
+                    DBG(cerr << " i: " << static_cast<Int32&>(*btp).value());
+                    CPPUNIT_ASSERT(static_cast<Int32&>(*btp).value() == 123456789);
+                    break;
+
+                case dods_uint32_c:
+                    DBG(cerr << " ui: " << static_cast<UInt32&>(*btp).value());
+                    CPPUNIT_ASSERT(static_cast<UInt32&>(*btp).value() < 8);
+                    break;
+
+                case dods_float32_c:
+                    DBG(cerr << " f: " << static_cast<Float32&>(*btp).value());
+                    CPPUNIT_ASSERT(static_cast<Float32&>(*btp).value() == (float)99.999);
+                    break;
+
+                default:
+                    DBG(cerr << "Error: Found unexpected " << btp->name() << ", " << btp->type_name() << endl);
+                    CPPUNIT_FAIL("Did not find the correct type in response Sequence");
+                }
+            }
+            DBG(cerr << endl);
+        }
+
+        for (SequenceValues::size_type i = 0; i < sv.size(); ++i) {
+            BaseTypeRow *row = sv.at(i);
+            CPPUNIT_ASSERT(row->size() == 4);
+            CPPUNIT_ASSERT(row->at(0)->type() == dods_uint32_c);
+            CPPUNIT_ASSERT(row->at(1)->type() == dods_float32_c);
+            CPPUNIT_ASSERT(row->at(2)->type() == dods_byte_c);
+            CPPUNIT_ASSERT(row->at(3)->type() == dods_int32_c);
+        }
+    }
+
     void one_var_2_print_val_test() {
         // we know there's just one variable
         BaseType *btp = *(one_var_2_dds->var_begin());
@@ -495,10 +804,15 @@ public:
     CPPUNIT_TEST(compute_array_shape_test_2);
     CPPUNIT_TEST(array_shape_matches_test);
     CPPUNIT_TEST(array_shape_matches_test_2);
+
     CPPUNIT_TEST(build_sequence_values_test);
+    CPPUNIT_TEST(combine_sequence_values_test_1);
+    CPPUNIT_TEST(combine_sequence_values_test_2);
+    CPPUNIT_TEST(add_index_columns_test);
 
     CPPUNIT_TEST(four_var_test);
     CPPUNIT_TEST(four_var_2_test);
+    CPPUNIT_TEST(four_var_mixed_test_1);
 
     CPPUNIT_TEST_SUITE_END();
 };

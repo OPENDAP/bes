@@ -30,18 +30,18 @@ class BaseType;
 class Array;
 class DDS;
 
-//typedef SequenceValues std::vector< std::vector<BaseType*> *>;
-
-
 class TabularFunction: public libdap::ServerFunction
 {
 private:
     friend class TabularFunctionTest;
     friend class Dap4_TabularFunctionTest;
 
-    static void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-    static BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
+    typedef std::vector< std::vector<BaseType*> *> SequenceValues;
 
+    static void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
+    // static BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
+
+    // This
     static void function_dap2_tabular_2(int argc, BaseType *argv[], DDS &, BaseType **btpp);
 
     // These are static so that the code does not have to make a TabularFunction
@@ -53,7 +53,10 @@ private:
     static unsigned long number_of_values(std::vector<unsigned long> shape);
     static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, std::vector<unsigned long> &shape);
     static void read_values(std::vector<Array*> arrays);
-    static void build_sequence_values(std::vector<Array*> arrays, std::vector< std::vector<BaseType*> *> &sv);
+    static void build_sequence_values(std::vector<Array*> arrays, SequenceValues &sv);
+    static void combine_sequence_values(SequenceValues &dep, SequenceValues &indep);
+    static void add_index_columns(const std::vector<unsigned long> &indep_shape, const std::vector<unsigned long> &dep_shape,
+            std::vector<Array*> &dep_vars);
 
 public:
     TabularFunction()
@@ -64,7 +67,7 @@ public:
         setRole("http://services.opendap.org/dap4/server-side-function/tabular");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#tabular");
         setFunction(libdap::TabularFunction::function_dap2_tabular);
-        setFunction(libdap::TabularFunction::function_dap4_tabular);
+        // FIXME setFunction(libdap::TabularFunction::function_dap4_tabular);
         setVersion("1.0");
     }
 

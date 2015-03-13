@@ -54,8 +54,12 @@ test_config.h: test_config.h.in Makefile
 
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
-TabularFunctionTest Dap4_TabularFunctionTest BBoxFunctionTest \
-RoiFunctionTest BBoxUnionFunctionTest OdometerTest
+TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
+OdometerTest
+
+# Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
+# in front of the DAP4 version, which has had virtually no testing.
+# jhrg 3/12/15
 	
 else
 UNIT_TESTS =
