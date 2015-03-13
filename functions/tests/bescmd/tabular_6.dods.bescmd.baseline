@@ -1,0 +1,9 @@
+The data:
+Sequence {
+    Float32 Latitude;
+    Float32 Longitude;
+    Int16 Optical_Depth_Land_And_Ocean;
+} table = { 
+0: { 49.9799, 166.815, -9999 }, 
+1: { 49.4234, 169.518, -9999 } };
+

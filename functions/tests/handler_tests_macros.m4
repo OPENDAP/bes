@@ -32,12 +32,13 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_XFAIL_IF([test "$3" = "xfail"])
 AT_CLEANUP])
 
 m4_define([_AT_BESCMD_BINARYDATA_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -Ms - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_XFAIL_IF([test "$3" = "xfail"])
 AT_CLEANUP])
@@ -45,8 +46,9 @@ AT_CLEANUP])
 m4_define([_AT_BESCMD_PATTERN_DATA_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
-AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -Ms - || true], [], [stdout], [stderr])
 AT_CHECK([grep -f $2 stdout], [], [ignore],[],[])
+AT_XFAIL_IF([test "$3" = "xfail"])
 AT_CLEANUP])
 
 m4_define([AT_BESCMD_RESPONSE_TEST],

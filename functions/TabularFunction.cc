@@ -269,7 +269,13 @@ void TabularFunction::combine_sequence_values(SequenceValues &dep, const Sequenc
         // When we get to the end of the indep variables, start over
         // This test is at the start of the loop so that we can test ii == ie on exit
         if (ii == ie) ii = indep.begin();
-        (*i)->insert((*i)->end(), (*ii)->begin(), (*ii)->end());
+        // This call to insert() copies the pointers, but that will lead to duplicate
+        // calls to delete when Sequence deletes the SequenceValues object. Could be
+        // replaced with reference counted pointers??? jhrg 3/13/15
+        // (*i)->insert((*i)->end(), (*ii)->begin(), (*ii)->end());
+        for (BaseTypeRow::iterator btr_i = (*ii)->begin(), btr_e = (*ii)->end(); btr_i != btr_e; ++btr_i) {
+            (*i)->push_back((*btr_i)->ptr_duplicate());
+        }
         ++ii;
     }
 
