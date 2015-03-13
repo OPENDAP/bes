@@ -49,9 +49,7 @@ private:
     string _catalog_name;
     unsigned int _reference;
 
-    BESCatalog()
-    {
-    }
+    BESCatalog();
 
 protected:
     BESCatalog(const string &catalog_name) :
