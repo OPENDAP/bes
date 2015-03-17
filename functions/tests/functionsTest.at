@@ -28,3 +28,10 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_2.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_3.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_4.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_5.dods.bescmd)
+
+# DAP4 functions - these use the 'functions' keyword
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func1.bescmd])
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func2.bescmd])
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func3.bescmd])
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func4.bescmd])
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func5.bescmd])
