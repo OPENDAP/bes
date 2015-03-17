@@ -14,11 +14,12 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = dap DapReaderTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
+EXTRA_DIST = dap DapReaderTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 \
+$(srcdir)/handler_tests_macros.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in ../../config.status
+bes.conf: bes.conf.in $(top_builddir)/config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
@@ -44,7 +45,20 @@ clean-local:
 distclean-local:
 	-rm atconfig
 
+# Why are these dependencies prefixed by $(srcdir)? jhrg 3/17/15
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/DapReaderTest.at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(srcdir)/DapReaderTest.at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 bes.conf
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+	:;{ \
+	echo '# Signature of the current package.' && \
+	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
+	echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])' && \
+	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
+	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
+	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	} >'$(srcdir)/package.m4'
+	
