@@ -7,7 +7,8 @@
 AUTOMAKE_OPTIONS = foreign check-news 
 
 ACLOCAL_AMFLAGS = -I conf
-AM_CXXFLAGS = 
+
+AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -19,10 +20,13 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
-CXXFLAGS = 
 endif
 
-SUBDIRS = . unit-tests tests
+SUBDIRS = . unit-tests
+
+# These tests depend on dapread, which is built after this code.
+# jhrg 3/17/15. 
+# tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdap_module.la
@@ -48,8 +52,9 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapResponseBuilder.cc \
 	BESDapResponseCache.cc \
 	BESStoredDapResultCache.cc \
-	BESDapNullAggregationServer.cc \
-	BESDapSequenceAggregationServer.cc
+	BESDapNullAggregationServer.cc
+	
+# Unused: BESDapSequenceAggregationServer.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -73,8 +78,9 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseBuilder.h \
 	BESDapResponseCache.h \
 	BESStoredDapResultCache.h \
-	BESDapNullAggregationServer.h \
-	BESDapSequenceAggregationServer.h
+	BESDapNullAggregationServer.h
+	
+# Unused: BESDapSequenceAggregationServer.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
