@@ -754,10 +754,6 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/tests/atlocal
 
 		 dap/Makefile
-		 dap/tests/Makefile
-		 dap/tests/bes.conf
-		 dap/tests/atlocal
-		 
 		 dap/unit-tests/Makefile
 		 dap/unit-tests/test_config.h
 
