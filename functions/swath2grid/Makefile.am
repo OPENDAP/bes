@@ -2,14 +2,9 @@
 # Build libswath2grid, part of libdap.
 
 AUTOMAKE_OPTIONS = foreign
- 
-AM_CPPFLAGS = -I$(top_srcdir)/GNU -I$(top_srcdir) -I$(top_srcdir)/tests  -I$(top_srcdir)/dispatch $(XML2_CFLAGS) $(CURL_CFLAGS) 
-AM_LDADD = 
 
-if CPPUNIT
-AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-AM_LDADD += $(CPPUNIT_LIBS)
-endif
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch $(XML2_CFLAGS) $(CURL_CFLAGS) \
+$(GDAL_CFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -18,9 +13,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-# SUBDIRS = 
-# DIST_SUBDIRS = 
-
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
 
@@ -28,11 +20,9 @@ check_PROGRAMS = $(UNIT_TESTS)
 # Now (12/20/12) this fails; don't run until it works.
 # TESTS = $(UNIT_TESTS)
 
-
 noinst_LTLIBRARIES = libswath2grid.la
 
 libswath2grid_la_SOURCES = $(SRCS) $(HDRS)
-libswath2grid_la_CPPFLAGS = $(GDAL_CFLAGS) $(XML2_CFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) -I$(top_srcdir)/dispatch
 libswath2grid_la_LDFLAGS = 
 libswath2grid_la_LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
@@ -46,7 +36,7 @@ BoundingBox.h wcsUtil.h DAP_Dataset.h reproj_functions.h
 
 if CPPUNIT
 UNIT_TESTS = s2gTest
-	
+
 else
 UNIT_TESTS =
 
@@ -60,8 +50,9 @@ check-local:
 endif
 
 s2gTest_SOURCES = s2gTest.cc
-s2gTest_CPPFLAGS = $(AM_CPPFLAGS) $(DAP_SERVER_CFLAGS) $(DAP_CLIENT_CFLAGS) $(GDAL_CFLAGS)
-s2gTest_LDADD = -ltest-types libswath2grid.la $(AM_LDADD)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
+s2gTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+s2gTest_LDADD = -ltest-types libswath2grid.la $(CPPUNIT_LIBS) $(DAP_SERVER_LIBS) \
+$(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS) 
 
 if  LIBDAP
 check-dap:

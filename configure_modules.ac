@@ -24,7 +24,7 @@ DODS_GCOV_VALGRIND
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.10 tar-pax])
 LT_INIT
 
 dnl flags for the compilers and linkers - set these before locating the
@@ -468,7 +468,7 @@ AS_IF([test "x$OPENJPEG_FOUND" = "xyes"],
 ],[ # else AN_CONF_IF([BUILD_GDAL]
 
 dnl if we're not building the gdal-related things, make sure that 
-dnlOPENJPEG_FOUND is defined and is false
+dnl OPENJPEG_FOUND is defined and is false
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
 ]) # AN_CONF_IF([BUILD_GDAL] 
@@ -763,7 +763,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile])
 
-AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
+# AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])

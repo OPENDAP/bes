@@ -4,7 +4,6 @@
 # 01/28/2013 Hacked up by jhrg
 #
 
-# AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap
 AM_CXXFLAGS = 
 
 AUTOMAKE_OPTIONS = foreign check-news
@@ -23,7 +22,7 @@ endif
 
 SUBDIRS = . unit-tests tests
 
-DIST_SUBDIRS = unit-tests tests swath2grid
+# DIST_SUBDIRS = unit-tests tests swath2grid
 
 if GDAL_FOUND
 SUBDIRS +=  swath2grid 
