@@ -43,14 +43,13 @@
 
 #include <util.h>
 #include <debug.h>
-#include "dispatch/BESDebug.h"
+#include <BESDebug.h>
 
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"
 #include "BindNameFunction.h"
 #include "MakeArrayFunction.h"
 
-//#include "ce_functions.h"
 #include "test_config.h"
 
 #include "test/TestTypeFactory.h"

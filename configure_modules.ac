@@ -760,7 +760,6 @@ AC_CONFIG_FILES([Makefile
 		 functions/Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
- 		 functions/tests/bes.conf
  		 functions/tests/data/build_responses.conf
 		 functions/unit-tests/Makefile])
 
@@ -794,7 +793,6 @@ AM_COND_IF([DAP_MODULES],
     modules/csv_handler/Makefile
     modules/csv_handler/bes-testsuite/Makefile
     modules/csv_handler/bes-testsuite/atlocal
-    modules/csv_handler/bes-testsuite/bes.conf:modules/csv_handler/bes-testsuite/bes.conf.modules.in
 
     modules/dap-server/Makefile
     modules/dap-server/asciival/Makefile

@@ -50,7 +50,7 @@
 #include <util.h>
 #include <debug.h>
 
-#include "dispatch/BESDebug.h"
+#include <BESDebug.h>
 
 #include "GridFunction.h"
 #include "LinearScaleFunction.h"

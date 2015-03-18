@@ -15,7 +15,7 @@ BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 # BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_srcdir@
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/dapreader
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|data|dmr|xml|dap)$;

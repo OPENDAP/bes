@@ -42,9 +42,6 @@
 #include <util.h>
 #include <debug.h>
 
-
-//#include "ce_functions.h"
-
 #include "test/TestTypeFactory.h"
 
 #include <test_config.h>

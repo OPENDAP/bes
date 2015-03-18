@@ -33,9 +33,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-DIRS_EXTRA = 
-
-EXTRA_DIST = test_config.h.in ce-functions-testsuite
+EXTRA_DIST = test_config.h.in ce-functions-testsuite tabular
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 

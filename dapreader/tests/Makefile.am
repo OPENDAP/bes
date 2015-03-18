@@ -14,21 +14,29 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = dap DapReaderTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 \
+EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4 \
 $(srcdir)/handler_tests_macros.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in $(top_builddir)/config.status
-	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_srcdir[@]%$$my_topdir/dapreader%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: bes.conf.in $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+#bes.conf: bes.conf.in $(top_srcdir)/configure.ac
+#	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+#	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+#		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
+#		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+#		-e "s%[@]libdir[@]%${libdir}%" \
+#		-e "s%[@]datadir[@]%${datadir}%" \
+#		-e "s%[@]abs_srcdir[@]%$$my_topdir/dapreader%" \
+#		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+#		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 
 ############## Autotest follows #####################
 
@@ -47,7 +55,7 @@ distclean-local:
 
 # Why are these dependencies prefixed by $(srcdir)? jhrg 3/17/15
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/DapReaderTest.at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 bes.conf
+$(TESTSUITE): $(srcdir)/DapReaderTest.at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
