@@ -729,6 +729,10 @@ AH_BOTTOM([
 
 AC_CONFIG_FILES([Makefile
 		 abi_checker.xml
+		 bes_dispatch.pc
+		 bes_ppt.pc
+		 bes_xml_command.pc
+		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
 		 docs/Makefile
@@ -745,22 +749,18 @@ AC_CONFIG_FILES([Makefile
 		 server/test/Makefile
 		 bin/Makefile
 		 templates/Makefile
-		 bes_dispatch.pc
-		 bes_ppt.pc
-		 bes_xml_command.pc
+		 
+		 dap/Makefile
+		 dap/unit-tests/Makefile
+		 dap/unit-tests/test_config.h
 
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
 
-		 dap/Makefile
-		 dap/unit-tests/Makefile
-		 dap/unit-tests/test_config.h
-
 		 functions/Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
- 		 functions/tests/data/build_responses.conf
 		 functions/unit-tests/Makefile])
 
 AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
