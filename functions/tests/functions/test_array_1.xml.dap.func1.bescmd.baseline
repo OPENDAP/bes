@@ -3,11 +3,11 @@
     <Float64 name="x">
         <Dim size="5"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>d7f28e9d</Value>
+            <Value>eac1aa87</Value>
         </Attribute>
     </Float64>
 </Dataset>
 
 The data:
-Float64 x[5] = {12345678.9, 12345678.9, 12345678.9, 12345678.9, 12345678.9};
+Float64 x[5] = {3.2, 102.4, 3276.8, 104857.6, 3355443.2};
 
