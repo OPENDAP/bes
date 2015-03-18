@@ -86,7 +86,7 @@ void clean_cache_dir(const string &cache)
 	char cwd[MAXPATHLEN];	// MAXPATHLEN is defined in <sys/param.h>
 	string cache_dir = string(getwd(cwd)) + cache + "/*";
 
-	string command = string("rm ") + cache_dir;
+	string command = string("rm ") + cache_dir + " 2>/dev/null";
 
 	int status = system(command.c_str());
 

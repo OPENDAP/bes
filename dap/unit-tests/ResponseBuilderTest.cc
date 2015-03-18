@@ -208,7 +208,7 @@ public:
 
     ~ResponseBuilderTest() {
     	// delete rbSSF; NB: ServerFunctionsList is a singleton that deletes its entries at exit.
-    	// clean_cache_dir(d_stored_result_subdir);
+    	clean_cache_dir(d_stored_result_subdir);
     }
 
     void setUp() {
@@ -670,7 +670,7 @@ public:
     }
 
     void invoke_server_side_function_test() {
-	DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
+    	DBG(cerr << "invoke_server_side_function_test() - BEGIN" << endl);
 
         try {
             string baseline = readTestBaseline((string)TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
@@ -688,12 +688,12 @@ public:
 
             DBG( cerr << "---- start result ----" << endl << oss.str() << "---- end result ----" << endl);
 
-	    string prolog;
-	    vector<char> blob;
-	    istringstream iss(oss.str());
-	    parse_datadds_response(iss, prolog, blob);
+            string prolog;
+            vector<char> blob;
+            istringstream iss(oss.str());
+            parse_datadds_response(iss, prolog, blob);
 
-	    DBG( cerr << "prolog: " << prolog << endl);
+            DBG( cerr << "prolog: " << prolog << endl);
 
             CPPUNIT_ASSERT(re_match(r1, prolog));
 
@@ -727,8 +727,8 @@ public:
         } catch (Error &e) {
             CPPUNIT_FAIL("Caught libdap::Error!! Message:" + e.get_error_message());
         }
-	DBG(cerr << "invoke_server_side_function_test() - END" << endl);
 
+        DBG(cerr << "invoke_server_side_function_test() - END" << endl);
     }
 
 
