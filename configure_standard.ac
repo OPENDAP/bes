@@ -46,7 +46,7 @@ AC_ARG_ENABLE([developer],
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE(1.10)
+AM_INIT_AUTOMAKE([1.10 tar-pax])
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [.])
