@@ -20,8 +20,8 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum gmon.out
 
-EXTRA_DIST = data bescmd functions $(TESTSUITE) $(TESTSUITE).at \
-atlocal.in bes.conf.in
+EXTRA_DIST = data bescmd functionsTest.at functionsTest \
+atlocal.in bes.conf.in handler_tests_macros.m4
 
 DISTCLEANFILES = bes.conf
 
@@ -46,7 +46,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/functionsTest
 TESTSUITEFLAGS = -j7
 
-$(TESTSUITE): $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4 $(srcdir)/functionsTest.at
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
 
 check-local: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -72,4 +72,3 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-	
