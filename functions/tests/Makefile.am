@@ -20,7 +20,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum gmon.out
 
-EXTRA_DIST = data bescmd functionsTest.at functionsTest \
+EXTRA_DIST = data bescmd functions functionsTest.at functionsTest \
 atlocal.in bes.conf.in handler_tests_macros.m4
 
 DISTCLEANFILES = bes.conf
