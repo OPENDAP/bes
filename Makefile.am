@@ -14,10 +14,16 @@
 # user    3m29.876s
 # sys     0m23.857s
 
-
 AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
+
+if WITH_DEPENDENCIES
+# I think this will enable distcheck to pickup the --with-dependencies
+# flag on OSX but not use it on Linux (where we should be getting all
+# the dependencies from RPMs). jhrg 3/18/15
+AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
+endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
 
@@ -37,7 +43,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = apache hello_world doxy.conf bes.spec \
-		OSX_Resources bes-config-pkgconfig
+OSX_Resources bes-config-pkgconfig
 
 server-tests:
 	cd cmdln && make server-tests

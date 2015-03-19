@@ -15,21 +15,19 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum site.exp
+CLEANFILES = *.log
 
-EXTRA_DIST = hello_handlerTest.at $(TESTSUITE) atlocal.in nc bes.conf.in
+EXTRA_DIST = hello_handlerTest.at $(TESTSUITE) atlocal.in bes.conf.in
 
-DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hello_handlerTest
+DISTCLEANFILES = bes.conf
 
-bes.conf: bes.conf.in ../config.status
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: bes.conf.in $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############## Autotest follows #####################
 

@@ -312,9 +312,13 @@ AC_ARG_WITH([dependencies],
   [ 
     AS_IF([test -n "$with_dependencies"], 
     [ac_bes_dependencies_prefix=$with_dependencies
+    # This conditional and symbol substitution pass the deps value to the 
+    # top level makefile. jhrg 3/18/15
+    AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
+    AC_SUBST([ac_bes_dependencies_prefix])
     AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])
   ],
-  [ ])
+  [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])] )
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
@@ -543,7 +547,7 @@ AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
 
 AC_CHECK_CFITS(
    [AM_CONDITIONAL([BUILD_FITS],[true])],
-   [AC_MSG_WARN([The cfits library and/or cfits headers not found; not building the fit handler.])
+   [AC_MSG_WARN([The cfits library and/or cfits headers not found; not building the fits handler.])
     AM_CONDITIONAL([BUILD_FITS],[false])],
    $ac_bes_dependencies_prefix
 )
@@ -761,9 +765,8 @@ AC_CONFIG_FILES([Makefile
 		 functions/Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
-		 functions/unit-tests/Makefile])
-
-# AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
+		 functions/unit-tests/Makefile
+		 functions/swath2grid/Makefile])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
@@ -783,7 +786,6 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
-AC_CONFIG_TESTDIR(dap/tests, [standalone])
 
 dnl Output files if building the emodules too
 		 
@@ -798,8 +800,6 @@ AM_COND_IF([DAP_MODULES],
     modules/dap-server/asciival/Makefile
     modules/dap-server/asciival/tests/Makefile
     modules/dap-server/asciival/tests/atlocal
-    modules/dap-server/asciival/tests/package.m4
-    modules/dap-server/asciival/tests/bes.conf:modules/dap-server/asciival/tests/bes.conf.modules.in
     
     modules/dap-server/asciival/unit-tests/Makefile
     modules/dap-server/asciival/unit-tests/test_config.h
@@ -810,26 +810,21 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/bes-testsuite/Makefile 
     modules/fileout_json/bes-testsuite/atlocal
-    modules/fileout_json/bes-testsuite/bes.conf:modules/fileout_json/bes-testsuite/bes.conf.modules.in
     
     modules/freeform_handler/Makefile
     modules/freeform_handler/bes-testsuite/Makefile
     modules/freeform_handler/bes-testsuite/atlocal
     modules/freeform_handler/FFND/Makefile
-    modules/freeform_handler/bes-testsuite/bes.conf:modules/freeform_handler/bes-testsuite/bes.conf.modules.in
 
 	modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
     modules/xml_data_handler/unit-tests/test_config.h
     modules/xml_data_handler/tests/Makefile
     modules/xml_data_handler/tests/atlocal
-    modules/xml_data_handler/tests/bes.conf:modules/xml_data_handler/tests/bes.conf.modules.in
     
     modules/netcdf_handler/Makefile
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
-	modules/netcdf_handler/bes-testsuite/package.m4 
-	modules/netcdf_handler/bes-testsuite/bes.conf:modules/netcdf_handler/bes-testsuite/bes.conf.modules.in
 	
 	modules/fileout_netcdf/Makefile 
 	modules/fileout_netcdf/unit-tests/Makefile 
@@ -839,60 +834,43 @@ AM_COND_IF([DAP_MODULES],
 	modules/gateway_module/Makefile 
 	modules/gateway_module/bes-testsuite/Makefile 
 	modules/gateway_module/bes-testsuite/atlocal 
-	modules/gateway_module/bes-testsuite/bes.conf:modules/gateway_module/bes-testsuite/bes.conf.modules.in
 	
 	modules/fileout_gdal/Makefile
 	modules/fileout_gdal/tests/Makefile 
-	modules/fileout_gdal/tests/package.m4 
 	modules/fileout_gdal/tests/atlocal 
-	modules/fileout_gdal/tests/bes.conf:modules/fileout_gdal/tests/bes.conf.modules.in
 	
 	modules/fits_handler/Makefile
     modules/fits_handler/bes-testsuite/atlocal
     modules/fits_handler/bes-testsuite/Makefile
-    modules/fits_handler/bes-testsuite/bes.conf:modules/fits_handler/bes-testsuite/bes.conf.modules.in
-    
     
     modules/gdal_handler/Makefile
     modules/gdal_handler/tests/Makefile
     modules/gdal_handler/tests/atlocal
-    modules/gdal_handler/tests/package.m4
-    modules/gdal_handler/tests/bes.conf:modules/gdal_handler/tests/bes.conf.modules.in
     
     modules/hdf4_handler/Makefile
     modules/hdf4_handler/hdfclass/Makefile
     modules/hdf4_handler/bes-testsuite/Makefile
     modules/hdf4_handler/bes-testsuite/atlocal
-    modules/hdf4_handler/bes-testsuite/bes.conf:modules/hdf4_handler/bes-testsuite/bes.conf.modules.in
-    modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf:modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf.modules.in
     
     modules/hdf5_handler/Makefile
     modules/hdf5_handler/bes-testsuite/Makefile
     modules/hdf5_handler/bes-testsuite/atlocal
-    modules/hdf5_handler/bes-testsuite/bes.conf:modules/hdf5_handler/bes-testsuite/bes.conf.modules.in 
-    modules/hdf5_handler/bes-testsuite/bes.default.conf:modules/hdf5_handler/bes-testsuite/bes.default.conf.modules.in
     
     modules/ncml_module/Makefile 
     modules/ncml_module/tests/Makefile 
     modules/ncml_module/tests/atlocal 
-    modules/ncml_module/tests/bes.conf:modules/ncml_module/tests/bes.conf.modules.in 
-    modules/ncml_module/tests/bes_no_nc_global.conf:modules/ncml_module/tests/bes_no_nc_global.conf.modules.in
-    
+
     modules/ugrid_functions/Makefile 
 	modules/ugrid_functions/unit-tests/Makefile
 	modules/ugrid_functions/unit-tests/test_config.h
 	modules/ugrid_functions/tests/Makefile 
-	modules/ugrid_functions/tests/package.m4 
 	modules/ugrid_functions/tests/atlocal
-	modules/ugrid_functions/tests/bes.conf:modules/ugrid_functions/tests/bes.conf.modules.in
         
 	modules/w10n_handler/Makefile 
 	modules/w10n_handler/unit-tests/Makefile
 	modules/w10n_handler/unit-tests/test_config.h
 	modules/w10n_handler/bes-testsuite/Makefile 
-	modules/w10n_handler/bes-testsuite/package.m4 
-	modules/w10n_handler/bes-testsuite/atlocal
-	modules/w10n_handler/bes-testsuite/bes.conf:modules/w10n_handler/bes-testsuite/bes.conf.modules.in])
+	modules/w10n_handler/bes-testsuite/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],

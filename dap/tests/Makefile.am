@@ -31,7 +31,7 @@ DISTCLEANFILES = bes.conf
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/besDapModuleTest
 
 clean-local:

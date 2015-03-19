@@ -27,21 +27,10 @@ bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-#bes.conf: bes.conf.in $(top_srcdir)/configure.ac
-#	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-#	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-#		-e "s%[@]modulesdir[@]%${libdir}/bes%" \
-#		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-#		-e "s%[@]libdir[@]%${libdir}%" \
-#		-e "s%[@]datadir[@]%${datadir}%" \
-#		-e "s%[@]abs_srcdir[@]%$$my_topdir/dapreader%" \
-#		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-#		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
-
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/DapReaderTest
 
 check-local: atconfig atlocal $(TESTSUITE)
@@ -69,4 +58,4 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-	
+
