@@ -1,4 +1,3 @@
-
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
@@ -21,19 +20,24 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.13.3
+#FIXME: removed for testing
+# Requires:       libdap >= 3.13.3
 Requires:       readline bzip2 zlib
 Requires:       libxml2 >= 2.7.0
+# needed by ppt
 Requires:       openssl
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.13.3
+#FIXME
+# BuildRequires:  libdap-devel >= 3.13.3
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
+# needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+# BuildRequires:  doxygen graphviz
 
 %description
 BES is a high-performance back-end server software framework for 
@@ -50,7 +54,8 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.11.0
+#FIXME
+#Requires:       libdap-devel >= 3.11.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -133,37 +138,22 @@ exit 0
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/csv.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dap-server.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dapreader.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/ff.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/fojson.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/fonc.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/nc.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/ncml.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/w10n.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/xml_data_handler.conf
 
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt
 %{_datadir}/bes/*.xml
-
-%{_datadir}/hyrax/
-
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
 %{_bindir}/besd
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
+# %{_bindir}/besregtest; jhrg 12/3/14
 %{_bindir}/bescmdln
 %{_libdir}/*.so.*
 %{_libdir}/bes/
-# %{bescachedir}
+%{bescachedir}
 %{bespkidir}/
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
@@ -185,13 +175,13 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
-* Tue Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
+* Thu Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
 - Update
 
-* Tue May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
+* Thu May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
 - Update
 
-* Tue Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
+* Thu Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
 - Update
 
 * Thu Mar 11 2010 Patrick West <westp@rpi.edu> - 3.8.1-1
