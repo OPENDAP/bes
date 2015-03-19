@@ -21,8 +21,30 @@ h5 h5.nasa bes.conf.in bes.default.conf.in bes.conf.modules.in \
 bes.default.conf.modules.in
 
 # hdf5_handlerTest.nasa.at 
+# Do not prefix the DISTCLEANFILES with $(srcdir) because that
+# will result in a warning from distcheck
+DISTCLEANFILES = bes.conf bes.default.conf package.m4 hdf5_handlerTest
 
-DISTCLEANFILES = bes.conf bes.default.conf $(srcdir)/package.m4 hdf5_handlerTest
+if DAP_MODULES
+BES_CONF_IN = bes.conf.modules.in
+BES_DEFAULT_CONF_IN = bes.default.conf.modules.in
+else
+BES_CONF_IN = bes.conf.in
+BES_DEFAULT_CONF_IN = bes.default.conf.in
+endif
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+bes.default.conf: $(BES_DEFAULT_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.default.conf
 
 ############## Autotest follows #####################
 
