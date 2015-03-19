@@ -19,14 +19,35 @@ CLEANFILES = *.log *.sum site.exp
 
 EXTRA_DIST = hdf4_handlerTest.at hdf4_handlerTest.with_hdfeos2.at	\
 	 hdf4_handlerTest.nasa.with_hdfeos2.at h4 h4.with_hdfeos2	\
-	 h4.nasa.with_hdfeos2 $(srcdir)/package.m4 atlocal.in		\
-	 bes.conf.in bes.with_hdfeos2.conf.in				\
-	 bes.conf.modules.in bes.with_hdfeos2.conf.modules.in \
+	 h4.nasa.with_hdfeos2 package.m4 atlocal.in bes.conf.in		\
+	 bes.with_hdfeos2.conf.in bes.conf.modules.in			\
+	 bes.with_hdfeos2.conf.modules.in				\
 	 generate_metadata_baseline.sh.in $(TESTSUITE)
 
-DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest	\
+DISTCLEANFILES = bes.conf package.m4 hdf4_handlerTest		\
 	generate_metadata_baseline.sh bes.with_hdfeos2.conf	\
 	hdf4_handlerTest.with_hdfeos2
+
+if DAP_MODULES
+BES_CONF_IN = bes.conf.modules.in
+BES_HDFEOS_CONF_IN = bes.with_hdfeos2.conf.modules.in
+else
+BES_CONF_IN = bes.conf.in
+BES_HDFEOS_CONF_IN = bes.with_hdfeos2.conf.in
+endif
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+bes.with_hdfeos2.conf: $(BES_HDFEOS_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.with_hdfeos2.conf
 
 ############## Autotest follows #####################
 
