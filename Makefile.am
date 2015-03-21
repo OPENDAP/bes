@@ -91,13 +91,35 @@ fortifyclean:
 
 ##########################################################################
 
+# This hack strips out the individual handlers' spec files from the
+# big tar and lets us use the old target again, which means I don't
+# have to code the rpmbuild root into a target.
+dist-hook:
+	rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+
 # Build linux RPMs
 
 srpm: dist
 	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
+# NB: 'dist' builds a tar.gz package using automake in the CWD.
 rpm: dist
 	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+
+# cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+# rpmbuild -bb $(RPM_OPTIONS) bes.spec
+#
+# Old comment: 
+# We used to use -tb and feed it the source tar.gz but with the new
+# 'modules' build of the bes there are multiple .spec files in the resulting
+# tar.gz and that confuses rpmbuild. Running rpmbuild with more than one
+# spec file in the tar.gz results in the somewhat inscrutable error: 'two
+# %prep lines'. As a work-around (and because I don't want to remove the
+# handler's spec files, I'm using the modified rpm rule above). jhrg 3/18/15
+#
+# Update: I used dist-hook to filter out the modules' *.spec files. jhrg 
+# 3/20/15
+
 
 ###########################################################################
 

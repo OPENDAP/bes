@@ -21,6 +21,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+# FIXME and elsewhere 
 Requires:       libdap >= 3.13.3
 Requires:       readline bzip2 zlib
 Requires:       libxml2 >= 2.7.0
