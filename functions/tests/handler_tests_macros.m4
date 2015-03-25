@@ -3,7 +3,7 @@
 # These macros are used for both the netcdf3 and netcdf4 tests.
 
 AT_INIT([bes.conf besstandalone getdap])
-# AT_COPYRIGHT([])
+AT_COPYRIGHT([OpenDAP, 2015])
 
 AT_TESTED([besstandalone])
 
@@ -16,8 +16,8 @@ AT_ARG_OPTION_ARG([generate g],
      fi     
      exit],[])
 
-AT_ARG_OPTION_ARG([generate-data a],
-    [  -a arg, --generate-data=arg   Build the baseline file for test 'arg'],
+AT_ARG_OPTION_ARG([generate_data a],
+    [  -a arg, --generate_data=arg   Build the baseline file for test 'arg'],
     [if ./generate_data_baseline.sh $at_arg_generate_data; then
          echo "Built baseline for $at_arg_generate_data"
      else

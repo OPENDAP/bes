@@ -44,7 +44,8 @@ build_responses.conf: build_responses.conf.in $(top_srcdir)/configure.ac
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/functionsTest
-TESTSUITEFLAGS = -j7
+TESTSUITEFLAGS =
+# -j7
 
 $(TESTSUITE): $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4 $(srcdir)/functionsTest.at
 
@@ -72,4 +73,3 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-	

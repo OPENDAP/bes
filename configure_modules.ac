@@ -1,7 +1,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.69)
+AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT(bes, 3.13.2, support@opendap.org)
@@ -711,12 +711,6 @@ AM_CONDITIONAL([BUILD_NCML],[false])
 AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
 ])	# AM_COND_IF([DAP_MODULES]
-
-
-dnl 's/ \(.*\) \/ \(.[^\/]*\) \/ \.\. / \1/g'
-canonical_abs_top_srcdir=`echo ${ac_abs_top_srcdir} | sed 's@\(.*\)/.[^/]*/\.\.@\1@g'`
-echo "Setting canonical_abs_top_srcdir to $canonical_abs_top_srcdir (${ac_abs_top_srcdir})"
-
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
