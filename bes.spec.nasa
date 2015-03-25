@@ -23,10 +23,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.13.3
 Requires:       readline bzip2 zlib
-Requires:	netcdf >= 4.1
-Requires:	libicu >= 3.6
+Requires:	netcdf >= 4.1 
+Requires:	libicu >= 3.6 
 Requires:	hdf5 => 1.8
-Requires:	hdf >= 4.2
+# Build and run against a static hdf4/hdfeos2 library because hdfeos2
+# is not part of the RPM ecosystem. jhrg 3/24/15
+# Requires:	hdf >= 4.2
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 # gdal >= 1.10
@@ -39,10 +41,10 @@ BuildRequires:  libdap-devel >= 3.13.3
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
-BuildRequires:	netcdf-devel >= 4.1
+BuildRequires:	netcdf-devel >= 4.1 
 BuildRequires:	libicu-devel >= 3.6
 BuildRequires:	hdf5-devel => 1.8
-BuildRequires:	hdf-devel >= 4.2
+# BuildRequires:	hdf >= 4.2
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
 # gdal-devel >= 1.10
@@ -86,7 +88,7 @@ developing applications that use %{name}.
 chmod a-x dispatch/BESStreamResponseHandler*
 
 %build
-%configure --disable-static --disable-dependency-tracking
+%configure --disable-static --disable-dependency-tracking --with-dependencies=$prefix/deps
 make %{?_smp_mflags}
 
 # make docs

@@ -106,6 +106,11 @@ srpm: dist
 rpm: dist
 	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
+# FIXME Add dist once working
+nasarpm:
+	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -bb $(RPM_OPTIONS) bes.spec.nasa
+
 # cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
 # rpmbuild -bb $(RPM_OPTIONS) bes.spec
 #
