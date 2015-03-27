@@ -11,7 +11,7 @@
 
 Name:           bes
 Version:        3.13.2
-Release:        1-NASA%{?dist}
+Release:        1.NASA%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
