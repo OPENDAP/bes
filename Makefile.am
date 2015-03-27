@@ -106,8 +106,9 @@ srpm: dist
 rpm: dist
 	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
-# FIXME Add dist once working
-nasarpm:
+# This target is pretty specific to our need to build a RPM for use at
+# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
+nasarpm: dist
 	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.nasa
 

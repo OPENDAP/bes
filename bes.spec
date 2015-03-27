@@ -145,21 +145,21 @@ exit 0
 %dir %{_sysconfdir}/bes/modules
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/csv.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dap-server.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dapreader.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/ff.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/fojson.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/fonc.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/nc.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/ncml.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/w10n.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/xml_data_handler.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/*.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/csv.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/dap-server.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/dapreader.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/ff.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/fojson.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/fonc.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/nc.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/ncml.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/w10n.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/xml_data_handler.conf
 
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
