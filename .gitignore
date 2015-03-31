@@ -44,6 +44,7 @@ aclocal.m4
 libtool
 atconfig
 atlocal
+h5.conf
 
 ## hdf5_handler specific files
 
