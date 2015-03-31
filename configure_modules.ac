@@ -628,31 +628,20 @@ libgf_ok="no"
 dnl NB: Hackery: if --with-gridfields is not given and ac_bes_dependencies_prefix 
 dnl is non-zero, use that as if --with-... was given. jhrg 12/1/14
 AC_ARG_WITH([gridfields],
-    AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.]),
-    [if test "$withval" = "yes"
-     then
-         AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])
-     else
-         AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
+    [AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.])],
+	[AS_IF([test x"$withval" = x"yes"],
+		[AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])],
+		[AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
          GF_LIBS="-L$withval/lib -lgridfields"
          GF_CFLAGS="-I$withval/include"
 	 	 GF_PATH=$withval
          AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-         libgf_ok="yes"
-     fi],
-    []
-    dnl [AS_IF([test -n "$ac_bes_dependencies_prefix"],
-    dnl 	[AC_MSG_NOTICE([Using $ac_bes_dependencies_prefix as the GridFields prefix directory.])
-    dnl      GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
-    dnl      GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
-    dnl 	 GF_PATH=$ac_bes_dependencies_prefix
-    dnl 	 libgf_ok="yes"])
-    dnl ]
-)
+         libgf_ok="yes"])],
+    [ libgf_ok="no" ])
 
 AC_ARG_ENABLE([gridfields],
     AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
-    [],
+    [ ],
     [enable_gridfields=yes])
 
 if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
@@ -660,11 +649,13 @@ then
 
 # save PATH     
 gridfields_save_path=$PATH
+
 # if --with-dependencies was used, look there too
 AS_IF([test -n "$ac_bes_dependencies_prefix"],
     [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
 
 AC_MSG_CHECKING([for libgridfields])
+
 if gridfields-config --version > /dev/null 2>&1
 then
     version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
@@ -681,6 +672,12 @@ then
 
     AC_DEFINE([GRDIFIELDS],[1],[define if gridfields lib is present])
     AC_MSG_RESULT([yes; used gridfields-config])
+elif test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/
+then
+	GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
+	GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
+	GF_PATH=$ac_bes_dependencies_prefix
+	AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
 else
     AC_MSG_NOTICE([I could not find libgridfields])
 fi
