@@ -34,7 +34,13 @@ if DAP_MODULES
 SUBDIRS += modules
 endif
 
-bin_SCRIPTS = besd bes-config bes-config-pkgconfig
+bin_SCRIPTS = bes-config bes-config-pkgconfig
+
+# Yes, even though its `init_d_SCRIPTS`, we use `init_ddir`,
+# with-out a second underscore.
+init_ddir = $(sysconfdir)/rc.d/init.d
+init_d_SCRIPTS = besd
+CLEANFILES = $(init_d_SCRIPTS)
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
