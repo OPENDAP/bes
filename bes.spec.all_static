@@ -11,7 +11,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.13.2
+Version:        3.14.0
 Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -22,32 +22,32 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.13.3
+Requires:       libdap >= 3.14.0
 Requires:       readline bzip2 zlib
-# Requires:	netcdf >= 4.1 
 Requires:	libicu >= 3.6 
+Requires:       libxml2 >= 2.7.0
+Requires:       openssl
+# Requires:	netcdf >= 4.1 
 # Requires:	hdf5 => 1.8
 # Build and run against a static hdf4/hdfeos2 library because hdfeos2
 # is not part of the RPM ecosystem. jhrg 3/24/15
 # Requires:	hdf >= 4.2
-Requires:       libxml2 >= 2.7.0
-Requires:       openssl
 # gdal >= 1.10
 # gridfields >= ?
 # fits >= ?
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.13.3
+BuildRequires:  libdap-devel >= 3.14.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
-# BuildRequires:	netcdf-devel >= 4.1 
 BuildRequires:	libicu-devel >= 3.6
-# BuildRequires:	hdf5-devel => 1.8
-# BuildRequires:	hdf >= 4.2
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+# BuildRequires:	netcdf-devel >= 4.1 
+# BuildRequires:	hdf5-devel => 1.8
+# BuildRequires:	hdf >= 4.2
 # gdal-devel >= 1.10
 # gridfields-devel >= ?
 # fits-devel >= ?
@@ -61,13 +61,18 @@ views, provide new functionality, and new features to their end users
 through the BES modular design. Providers can add new data handlers, new 
 data objects/views, the ability to define views with constraints and 
 aggregation, the ability to add reporting mechanisms, initialization 
-hooks, and more.
+hooks, and more. Note: This RPM contains versions of the runtime
+modules (aka handlers) that are statically linked to any dependencies
+that cannot be pulled from the RHEL/CentOS 6 yum repositories. The
+RPM without 'static' in its name requires that the EPEL repo be used
+for some dependencies and does not include modules that lack dependencies
+in the standard + EPEL repos.
 
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.11.0
+Requires:       libdap-devel >= 3.14.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel

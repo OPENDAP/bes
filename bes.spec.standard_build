@@ -11,7 +11,7 @@
 
 Name:           bes
 Version:        3.14.0
-Release:        1.static%{?dist}
+Release:        1.%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -47,12 +47,7 @@ views, provide new functionality, and new features to their end users
 through the BES modular design. Providers can add new data handlers, new 
 data objects/views, the ability to define views with constraints and 
 aggregation, the ability to add reporting mechanisms, initialization 
-hooks, and more. Note: This RPM contains versions of the runtime
-modules (aka handlers) that are statically linked to any dependencies
-that cannot be pulled from the RHEL/CentOS 6 yum repositories. The
-RPM without 'static' in its name requires that the EPEL repo be used
-for some dependencies and does not include modules that lack dependencies
-in the standard + EPEL repos.
+hooks, and more. 
 
 %package        devel
 Summary:        Development files for %{name}
