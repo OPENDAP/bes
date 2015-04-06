@@ -22,6 +22,8 @@ if WITH_DEPENDENCIES
 # I think this will enable distcheck to pickup the --with-dependencies
 # flag on OSX but not use it on Linux (where we should be getting all
 # the dependencies from RPMs). jhrg 3/18/15
+#
+# Not always true - some deps come from here, even on linux jhrg 4/5/15
 AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
 endif
 
@@ -117,6 +119,14 @@ rpm: dist
 nasarpm: dist
 	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.nasa
+
+# This target is pretty specific to our need to build a RPM for use at
+# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
+# This will link with everything it can find in the local deps dir,
+# removing the need for EPEL
+all-static-rpm: dist
+	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
 
 # cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
 # rpmbuild -bb $(RPM_OPTIONS) bes.spec
