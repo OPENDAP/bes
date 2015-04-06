@@ -76,12 +76,16 @@ fortify:
 	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd cmdln && $(MAKE) $(MFLAGS))
 	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd cmdln && $(MAKE) $(MFLAGS))
 	(cd standalone && $(MAKE) $(MFLAGS))
 	(cd docs && $(MAKE) $(MFLAGS))
 	(cd bin && $(MAKE) $(MFLAGS))
 	(cd templates && $(MAKE) $(MFLAGS))
+	(cd dap && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd dapreader && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd functions && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd modules && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
 # Use this to clean the fortify project.
