@@ -1,3 +1,4 @@
+
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
@@ -9,8 +10,8 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.13.2
-Release:        1%{?dist}
+Version:        3.14.0
+Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -20,23 +21,21 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#FIXME: removed for testing
-# Requires:       libdap >= 3.13.3
+Requires:       libdap >= 3.14.0
 Requires:       readline bzip2 zlib
 Requires:       libxml2 >= 2.7.0
-# needed by ppt
 Requires:       openssl
 
 Requires(pre): shadow-utils
 
-#FIXME
-# BuildRequires:  libdap-devel >= 3.13.3
+BuildRequires:  libdap-devel >= 3.14.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
-# needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+
+# These were used by the doc target
 # BuildRequires:  doxygen graphviz
 
 %description
@@ -48,15 +47,20 @@ views, provide new functionality, and new features to their end users
 through the BES modular design. Providers can add new data handlers, new 
 data objects/views, the ability to define views with constraints and 
 aggregation, the ability to add reporting mechanisms, initialization 
-hooks, and more.
+hooks, and more. Note: This RPM contains versions of the runtime
+modules (aka handlers) that are statically linked to any dependencies
+that cannot be pulled from the RHEL/CentOS 6 yum repositories. The
+RPM without 'static' in its name requires that the EPEL repo be used
+for some dependencies and does not include modules that lack dependencies
+in the standard + EPEL repos.
 
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-#FIXME
-#Requires:       libdap-devel >= 3.11.0
-# for the /usr/share/aclocal directory ownership
+
+Requires:       libdap-devel >= 3.14.0
+# For the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
 Requires:       pkgconfig
