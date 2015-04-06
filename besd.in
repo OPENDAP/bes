@@ -2,7 +2,7 @@
 #
 # besd        Startup script for the OPeNDAP BES
 #
-# chkconfig: 5 65 25
+# chkconfig: 2345 95 05
 # description: OPeNDAP BES is a modular framework allowing access to
 #	       data files
 # processname: besctl

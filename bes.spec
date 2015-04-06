@@ -134,7 +134,12 @@ useradd -r -g %{besuser} -d %{beslogdir} -s /sbin/nologin \
     -c "BES daemon" %{besuser}
 exit 0
 
-%post -p /sbin/ldconfig
+%post 
+/sbin/chkconfig --add besd
+/sbin/ldconfig
+
+%preun
+/sbin/chkconfig --del besd
 
 %postun -p /sbin/ldconfig
 
@@ -170,15 +175,20 @@ exit 0
 
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
-%{_bindir}/besd
+# %{_bindir}/besd # moved to /etc/rc.d/init.d; see below.
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
+
 %{_libdir}/*.so.*
 %{_libdir}/bes/
+
+%{_initddir}/besd
+
 # %{bescachedir}
 %{bespkidir}/
+
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
@@ -199,6 +209,9 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
+* Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1
+- Added install of 'besd' script to /etc/rc.d/init.d 
+
 * Tue Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
 - Update
 
