@@ -1,3 +1,98 @@
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-03-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed comment about EnableCF in h4.conf.in
+	EnableCF defaults to false - that is, if the option
+	is not presnet, it's off.
+
+2015-03-04  opendap  <support@opendap.org>
+
+	Removed one test until we get a fix in.
+	Should be marked xfail, but the hdf4 handler tests don't
+	have that option.
+
+2015-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf4_handler
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+	Added #include <string>
+
+2015-01-05  muqun yang  <myang6@hdfgroup.org>
+
+	Update Makefile.am and the testsuite file to harmonize with the
+	check-in of removing a big testing file
+
+2014-12-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	Remove 1C21 HDF file from the testsuite since the file size is 39M
+	and it occupies close to 90% of the package. Other sample NASA HDF
+	files are still kept so removing this file doesn't affect the
+	completeness of the whole testsuite. The only side-effect is that
+	users may not have a bigger HDF file to test with Hyrax. This is
+	minimal because users can go to HDF group's website to obtain big
+	sample HDF file.
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after merging with the modules branch
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added a config_hdf.h since it was/is made using the local configure.ac
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	I added a spec file named ...no_eos2.
+	Building the RPMs for the hdfeos2 version is a bit of a pain, but
+	I made it a bit simpler by adding a special spec file for the straight
+	build and hacking the hdfeos build so it makes rpms with hdfeos2
+	in their names. It looks for the hdfeos2 library in $prefix/deps.
+
+2014-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Updated for 3.11.6
+
+2014-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added hdf4_handler to the bes modules build.
+
+2014-11-03  Kent Yang  <myang6@hdfgroup.org>
+
+	update BES keys info.
+
+	Add known issues
+
+2014-10-29  Kent Yang  <myang6@hdfgroup.org>
+
+	Remove compiler warning caught when testing the build of RPM with
+	HDF4 only. Also comment out the dap4 check in configure.ac. This
+	is still for DAP2 release. DAP4 will be migrated separately.
+
+	For 3.11.6 release, migrate from local svn at the HDF group to
+	opendap svn.
+
+	For HDF4 handler 3.11.6 release. Migrate code from local svn at
+	the hdfgroup to OPeNDAP's svn. Tested at MacOS, Linux CentOS 6.5
+	64-bit.
+
 2014-10-27 MuQun Yang <myang6@hdfgroup.org>
 
         * README: Added more information for this release.
