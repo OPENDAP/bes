@@ -1,5 +1,5 @@
 
-Updated for version 3.13.2 of the OPeNDAP BES.
+Updated for version 3.14.0 of the OPeNDAP BES.
 
 Building and Installing the BES
 
@@ -20,6 +20,8 @@ section! Thanks.
 ---------------------------------------------------------------------------
 
 BUILDING FROM A GIT CLONE
+
+ALso see http://docs.opendap.org/index.php/Hyrax_GitHub_Source_Build
 
 Note that as of 2/3/15 the BES master branch software supports DAP4
 and DAP2, and thus requires libdap4. If you want to build the older

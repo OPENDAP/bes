@@ -1,3 +1,947 @@
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version number in NEWS to 3.14.0
+
+	Bumped up the versions in the spec files for libdap
+	...now libdap/-devel 3.14.0 is required.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	Conflicts:
+		modules/csv_handler
+
+	Updated relese version numbers in configure.ac and the spec files.
+
+	Added to teh fortify target for the bes.
+
+2015-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Makefile.am now supports a new 'all-static' rpm.
+	This target (all-static-rpm) expects to find the dependencies for
+	all of the handlers either on a plain RHEL6 machine or in the special
+	static dependencies installed in $prefix/deps where $prefix is set
+	in the shell and used as the value of --prefix to the hyrax-dependencies
+	project. This requires that the hyrax-dependencies be built with this
+	static linking in mind.
+
+2015-04-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the besd script.
+	Now it installs in /etc/rc.d/init.d like a good system V daemon
+	init script and has the run levels set properly. This requires
+	RHEL 6.
+
+2015-04-01  James Gallagher  <jgallagher@opendap.org>
+
+	Pushed the NSIDC changes to fileout_netcdf; updating submodule
+
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	New commits in the submodules
+	Mostly ignored generated conf files but there are
+	some build fixes too (for 'make check' when CppUnit
+	is not present).
+
+	Fixed an issue with gridfileds tests
+	There was a syntax error plus a botched test.
+
+2015-03-30  James Gallagher  <jgallagher@opendap.org>
+
+	dap-server update
+
+2015-03-26  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed rpm name
+	RPM has odd rules about what chars can appear where
+
+	Added NASA-specific RPM spec file
+	see bes.spec.nasa
+
+2015-03-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Accomodate autoconf 2.63
+	Modifications to the submodules
+
+	Change configure_modules.ac: autoconf version changed (back) to 2.63.
+	Also changed calls to AT_ARG_OPTION_ARG so that the multi-word options
+	use underscores and not dashes (needed for 2.63 but not later versions).
+
+	Modifications to make a 'NASA' rpm
+	This will include hdfeos2 and hdf4 statically linked to the
+	hdf4_handler because that's what has to be. I have added a new
+	target in the Makefile (nasarpm) that will do this and made
+	changes to configure so that a partial build of the dependencies
+	will provide the stuff needed.
+	Note that the hdf4 library is still not linking statically! Return
+	to this ASAP.
+
+2015-03-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the RPM targets
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	RPM now builds correctly from the command line...
+	...the Makefile target needs some work though, because rpmbuild
+	is confused by the multiple spec files in the tar.gz. Either remove
+	them or run rpmbuild -ba or -bb and pass in the spec file on that
+	command line. Could make the dist, but will need to copy it to
+	the rpmbuild topdir/SOURCES.
+
+	CentOS distcheck now works!
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated all the submodules for the distcheck changes.
+
+	Merged from stash after switching back to master.
+
+	Various changes for distcheck.
+
+2015-03-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'jg_distcheck' of https://github.com/opendap/bes into jg_distcheck
+	Conflicts:
+		configure_modules.ac
+
+	minor edit to configure_modules.ac
+
+	Modified configure.ac
+	Now 'pax' tar is used to build the dist so the long filenames
+	in the hdf4 and 5 handlers don't force a build fail. I also
+	cleaned up the functions and functions/swath2grid Makefile.am
+	files.
+
+	Fixes for distcheck
+	For the bes.conf files, use the test's Makefile.am to build the
+	conf file so that we can strip the ../ from @abs_top_srcdir@. I also
+	fixed some botched include directives where files were included
+	using 'dispatch/BESDebug.h', etc., which will clearly break using
+	distcheck.
+
+	Removed dap/tests from the build
+	The tests in this code depend on dapreader, but that dir is not built
+	until this one has finished!
+
+	Change pushed for fo json
+
+	New module commits
+
+	Modules update
+
+	Updated baselines in functions/tests
+	dapreader uses series values from the Test* classes and I moved the
+	tests here from dapreader (since this is where the functions are defined
+	and this code is built after the dapreader code - so the tests were
+	not being run back in the dapreader dir).
+
+2015-03-17  James Gallagher  <jgallagher@opendap.org>
+
+	Cleaned up the ResponseBuilder & ResponseCache tests.
+	They used system("rm ...") and I added "2>/dev/null" to cut down on the
+	extra error messages.
+
+	Ignore the messy merge from an old stash until I have time to look it over carefully.
+
+	...working on distcheck
+	This is a checkpoint on my branch.
+
+	Moved tests for DAP4 functions here from dapreader.
+
+	I moved the function tests to 'functions'.
+	In the main Makefile.am, 'functions' is built after this directory.
+	Thus, the function module is not normally available when dapreader is
+	first built.
+
+	I removed the AggregationServer class for Sequence.
+	The code is still in git, but not part of the build or the tests.
+
+2015-03-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a duplicate delete bug; added tests.
+	Found and fixed an issue in tabular when building tables of arrays of
+	differing sizes. In that case, BaseType* were being copied, not
+	duplicated. Later the Sequence dtor deleted all the pointers, causing
+	a duplicate delete operation. Bummer. Lots of pointer dups now...
+
+	Removed roi() function tests and added modified submodules
+
+	In BESCatalog.h: shortened the private ctor to a declaration
+	...because that's all you need and you don't get warnings about
+	missing initializations.
+
+	Additions to tabular() - more sanity checking
+	...but no more tests. One issue found with integration testing when
+	asking for tables from arrays where the independent variables have rank
+	N and the dependent have rank N+1 and one or more granule has no data
+	that match the selection criteria.
+
+2015-03-12  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for different dimensions to tabular()
+	The first version of tabular() required all arrays to be the same size.
+	The new version supports the case where one or more array is one
+	dimension larger than the rest of the arrays. The tests pass, but there
+	is still considerable work to do for the code to be ready for use.
+
+	Fixed the roi() baselines so they pass.
+	A better fix would be to subclass the types (Byte, ...) in dapreader
+	so that it is not using the Test* types. See Trac...
+
+2015-03-11  James Gallagher  <jgallagher@opendap.org>
+
+	Updated fo json
+
+2015-03-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'agg_server'
+
+	Updated hashes for the agg_server branch
+
+	Updated the modules hashes
+
+	Added integration tests for tabular()
+
+	Addition to TabularSequence so that selection expressions work
+	I modified TabularSequence so that selection expressions work for both
+	binary (aka dods) and ASCII responses. I also modified the tests so
+	there are fewer warnings about mismatched sizes and added some comments
+	to TabularFunction
+
+	Minor refactor in BESDapResponseBuilder
+	I changed some logic that was especially hard to follow and looked at
+	making the send_dap2_data() method easier to use in other code, esp.
+	in the asciival handler.
+
+2015-03-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into agg_server
+	Conflicts:
+		Makefile.am
+		functions/TabularFunction.cc
+		modules/w10n_handler
+
+2015-03-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge after stash pop
+
+	Merged after a pull of agg_server
+	I needed to build the agg_server branch on the
+	AWS test-mule running CentOS 6 and in the process
+	fixed a number of issues - it might have been
+	more savvy to have built/fixed the master and then
+	merged down to agg_server, but ...
+
+2015-03-04  opendap  <support@opendap.org>
+
+	Fixes for building on CentOS 6
+	Most of the build issues cover #include filenames where
+	OSX is not case sensitive but linux is. Some other issues
+	are somewhat perplexing (a missing call to generate package.m4).
+	Also, the tests for the dap module contain some baselines
+	that use hash values that are machine/os specific and I've
+	removed those for now.
+
+2015-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed distclean in standalone
+
+	Fixed distclean in cmdln
+
+	BBoxFunction supports N-dim boxes
+	Based on the 'Odometer' class; includes tests. I verified
+	that the 1-d and 2-d tests pass when using the
+	general algorithm but did not add any 3-d tests.
+
+2015-03-01  James Gallagher  <jgallagher@opendap.org>
+
+	Copied the roi() tests to standalone (from cmdln)
+	I'm starting to think that we should have a special dir for
+	end-to-end tests where the whole server is used but still does
+	not have to be installed. By making the dir separate from the
+	code, we can make sure it is listed last and/or not listed
+	if the modules are not built as part of the bes build.
+
+	Added one more test file for the roi() code
+
+	Added Odometer class; modified tests.
+	Odometer will be used to make a general bbox() function - one that works
+	for arrays with any number of dimensions and ne that can be used to
+	make minimal boxes that are the unions of regions, not other boxes.
+	I also tweaked the test code and marked most of the regression tests
+	as xfail since they will until we fix dapreader (Trac #2286). Lastly,
+	I added a subset version of the Modis 04 file that's easier to use
+	for tests since it's possible to figure out if the bbox/roi code is
+	working.
+
+	Added more tests for the BBoxUnionFunction class.
+
+2015-02-28  James Gallagher  <jgallagher@opendap.org>
+
+	One new baseline...
+
+	Partial code review
+	Added comments; removed an unused function; and modified one
+	to be a bit more useful when errors are found.
+
+	Added a 2d bbox unit test.
+
+2015-02-27  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed BBoxUnion so it handles 'intersection'
+	Added tests, but only for 1d bboxes; need to add tests for two
+	dimensions.
+
+	Added unit-tests for BBoxUnion.
+	I know there are problems with "intersection"; "union" looks
+	OK, but the test needs to be completed.
+
+	Added to gitignore
+
+	Added tests for roi(); interection mode for bbox_union
+	These seem to round out the roi(), bbox() and bbox_union()
+	functions. I'm going to work more on better end-to-end testing
+	that does not use the cmdln tool (which means that the server
+	much be installed and running).
+
+2015-02-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added baseline for bbox_union test
+
+	Added working code to BBoxUnionFunction
+	...and one test. Now we need a real bounding box function!
+
+	Added nascent version of BBoxUnion.
+	Not done, but compiles.
+
+	Refactor RoiFunction
+	Moved the bbox utils to their own file so I can use them with the
+	bbox_union() function.
+
+	Comments added/fixed
+	I poked around in the BES code with Patrick on the
+	phone and added some notes, TODOs, etc. Mostly these
+	came about while we were talking about aggregation
+	and the multiple container code in the BES.
+
+	I fixed debug builds
+	Now debug (./configure --enable-developer) builds of
+	the BES copile the sources using -O0 and -g3.
+
+	Simple tests of roi() using installed handlers.
+	This is the first of the end-to-end tests for the server
+	function. These test if the function runs using the
+	dap module evaluator (different than using besstandalone
+	or a unit-test!) and if the output can be chained
+	to other transmitters like fileout_netcdf (it can).
+	The tests work, but I have not 'made them automatic'
+	yet because I'm not sure what that would mean for
+	typical builds (i.e., I think the the BES has to be
+	installed for these to work).
+
+	More testing for the roi() and bbox() functions.
+	Added unit and regression tests, fixed a few bugs
+	and started on end-to-end testing.
+
+	Initial stab at regression tests for roi() and bbox()
+	The bbox() function is still dumb; it always returns a 10x10
+	box. However, these tests show that roi() wrks with hdf4 data
+	and inout from bbox().
+
+	Added a two-array test for the roi() function.
+
+2015-02-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added gitignore and some ignores to functions/unit-tests
+
+	More roi() tests
+	Test with a 2d array pass and with 2 1d arrays look good but need
+	more work.
+
+	Initial version of roi()
+	This version of roi() subsets (slices) N arrays using a 'slice'
+	array like that produced by the bbox() function also recently added.
+	Tested for one 1-d array only so far
+
+	Initial version of bbox(). Placeholder.
+	The function is fully formed _except_ that it lacks a way to
+	actually determine the bounding box. That will come later once
+	I have the other functions coded and tested. The commit includes
+	two unit tests. DAP2 only.
+
+2015-02-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added bescmd for tabular() with multiple containers.
+	However, in the BES's current configuration, this doesn't make much
+	sense, so this is mostly checked in as a place holder to keep the idea
+	alive and not something that should actually work.
+
+	Added example aggregation BES commands.
+	These don't all work, but they are useful examples, all the same.
+
+	Reverted to teh old dataset name behavior in dapreader.
+	Dataset names from .dods and .data files use the name
+	in the Dataset {} <name>; syntax element and not the
+	filename. I also checked in some changes in dap-server,
+	fo json (from a merge) and ncml_module.
+
+2015-02-19  Nathan Potter  <ndp@opendap.org>
+
+	Added w10n_handler submodule to bes preoject.
+
+2015-02-13  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+	SequenceAggregationServer ready for more testing
+	Added regression tests for the Sequence AS and they pass. However,
+	testing using the libdap TestSequence class is of limited used because
+	it does not know about stored values. I'm commiting this and will
+	test against the TabularSequence type returned by the tabular()
+	function in the functins module.
+
+	Added regression tests for the Sequence Aggregation Server
+	...but not baselines for some because they fail.
+
+	Sequence Aggregation Server check point
+	The Sequence Aggregation Server will process a DDS response correctly,
+	returning the DDS for the aggregated result. The DataDDS response is
+	still a work in progress...
+
+	Unit tests for the new Sequence Aggregation Server
+
+2015-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed dapreader so that it supports multiple containers.
+	When reading from a dap2 or dap4 data response, the code in
+	Connect is not 'container safe' so this handler reads into a
+	temporary DDS and then transfers the resulting variables. At
+	this point, processing global attributes is not handled for
+	a multi-container response (but it's hard to know how that
+	should be handled by this code).
+
+2015-02-11  Nathan Potter  <ndp@opendap.org>
+
+	Replaced use of unique_ptr with auto_ptr for compiler luddites like myself.
+
+2015-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	Changed from unique_ptr to auto_ptr
+	gcc 4.2 on OS/X 10.7 does not support unique_ptr yet.
+
+	Updated the gitignore files in dap-server and fo json.
+
+2015-02-10  James Gallagher  <jgallagher@opendap.org>
+
+	The dapreader 'error' tests use a pattern rule now.
+	A persistent problem with the tests here that check the parser's
+	detection of errors was that the baselines were compared to
+	the output using a litteral match. When the source line numbers
+	changed, the tests failed (i.e., every time the code was
+	edited). I switched to an AT_...PATTERN... test driver, modified
+	the baselines to contain just the txt of the error message,and
+	the problem went away.
+
+	Minor tweak to GridGeoConstraint test
+	I added some initializer code to quite a warning.
+
+	Reactivated the regression tests in dap
+	Modified configure_modules.ac, the tests, etc. However,
+	at this point the tests actually do nothing - these were
+	completely broken. I will start out adding some tests for
+	the new AggregationServer handler added to this dir.
+
+2015-02-09  James Gallagher  <jgallagher@opendap.org>
+
+	Added Sequence AggregationServer, 0.1
+
+	Merge branch 'master' into agg_server
+
+	Added some generated scripts to gitignore
+
+	Fixed the indentation of BESDapResponseBuilder.cc
+	No functional change
+
+	Merge branch 'tabular'
+	This adds the tabular() function. The tabular function
+	takes one or more arrays that meet certain criteria and
+	builds a table from their values. Each array is one
+	columnn in the table (sequence). A subclass of libdap::Sequence
+	is defined to make serialization and ce evaluation work
+	correctly. Includes tests.
+
+	TabularSequence now supports selection.
+	I modified the serialize() method of TabukarSequence so
+	that it supports selection expressions. It's not the best
+	in terms of performance (I suspect; no actuall performance
+	measurement yet). Also, configure_modules.ac supports the
+	new regression tests.
+
+2015-02-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added unit tests for the D4 version of tabular()
+
+	Added a test baseline for tabular
+
+	Initial regression tests for tabular - working
+	I subclassed Sequence to get the DAP2 version of tabular to
+	work. The issue was that Sequence::serialize is broken WRT
+	a sequence that is already loaded with data values.
+
+	Added tests for tabular
+
+	Added to functions/tests/data so the data work with dapreader
+	I added a bes conf file (build_responses.conf) that will work
+	to build .dods, ..., files from netcdf data files so that we
+	can test using real data without having to first build specific
+	format handlers.
+
+2015-02-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added two gitignore files
+
+	New an improved version of tabular()
+	The function now works correctly with N arrays and tests their
+	shape for correctness (all arrays must match in shape for this
+	version of the function). Also included are unit tests.
+
+2015-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	New changes in the modules.
+
+	The new AggregationServer.
+
+	Added initial version of tabular().
+	This version of tabular() works witj a single one dimension
+	array and may work with others, but is untested for those cases.
+	Has a unit test file.
+
+	The agg_server branch
+	Partial progress on an AggregationServer. This code is a
+	'null aggregation server' that prints out information about
+	the DHI it gets passed. Maybe useful later on...
+
+	Repaired fragile tests
+	These tests failed because the line number of the code
+	that throws an exception changed. We need to change how
+	tests like this compare against their baseline - use a
+	regex or just test for an error return?
+
+	Added info about DAP2 vs DAP4 to README and INSTALL
+
+2015-02-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2015-02-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Simplifed the check_path() function by using a function pointer to
+	eliminate two identical logic paths that utilized two different
+	version of the stat function depending on the value of a passed
+	paramter. The new verion assigns a function pointer based on the
+	value of the parameter and then only one block of logic follows.
+	This simplifies maintenence and readability. Additionally added
+	from debugging instrumentation.
+
+2015-01-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added some new test code to dapreader
+	The new tests are for Sequences and multi-container requests
+	where each containers is a sequence. This was added as part of the
+	NASA work on Swath aggregation.
+
+	Fixed an issue with multiple containers and dapreader
+	The dapreader handler failed when containers were used and the DAS
+	was empty because a test in DDS::transfer_attr() that checked for a
+	matching hierarchy between the two objects (DAS and DDS) would fail.
+	I patched this by no calling transfer_attr() when the DAS is empty.
+
+2015-01-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an error in configure_modules.ac
+	The header 'strings.h' was misspelled 'trings.h'.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN.
+	I updated the modules as well, commiting them too.
+	Also, I added LT_INIT in the bes configure_modules.ac.
+
+2015-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	Removed my too-hastily applied patch to BindName.
+	I modified the D4 function parser in libdap so that string constants
+	do not include the double quotes that delimit their values. The call
+	to remove_quotes() here was then redundant.
+
+2015-01-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed test issues in dapreader
+	These issues were actually due to a subtle change in the DAP4 function
+	parser. Sting constants are now returned with their double quotes.
+	This is so that variable names can be passed into functions even when
+	those names are quoted (because they contain spaces or meta
+	characters). The tests assumed unquoted names. I wonder about this,
+	but I'm checking in the fix and adding a note to jira/trac.
+
+	Added empty cache dirs
+	We need four cache dirs to make the tests in dap/unit-tests
+	work correctly. I added these 'empty' dirs by putting a crafty
+	gitignore file in them and adding it to the index.
+
+	Merge remote-tracking branch 'origin/dap4'
+	Conflicts:
+		dap/unit-tests/ResponseCacheTest.cc
+		dapreader/Makefile.am
+		dapreader/bes-testsuite/Makefile.am
+		dapreader/bes-testsuite/bes.conf.in
+		dapreader/bes-testsuite/dapreader_moduleTest.at
+		dispatch/BESFileLockingCache.h
+		functions/Makefile.am
+		ppt/Makefile.am
+		server/Makefile.am
+		xmlcommand/Makefile.am
+
+2014-12-13  James Gallagher  <jgallagher@opendap.org>
+
+	Updated INSTALL and README
+	They now contain text describing git and the two ways the
+	code can be built.
+
+	Fixed configre_modules.ac - stuff got lost in the merge
+
+	Moved configure.ac to configure_standard.ac
+	The 'mosules' build uses a new configure.ac and several
+	AM_CONDITIONAL variables; the standard build configure.ac
+	does not and there's no way to make automake be 'conditional'
+	itself. So... There are two configure.ac files, one named
+	..._modules and the other named ..._standard. Thre's no
+	file named 'configure.ac' in git so that builders don't forget
+	to switch.
+
+	Merge remote-tracking branch 'origin/modules'
+	Conflicts:
+		configure.ac
+	Last set of changes made on the modules branch regarding the
+	dist target and building from the tarball.
+
+	Changes so that make dist and a build of the tarball work.
+
+	Restored the 'standard' build configure.ac
+	This code will now support both the standard build where
+	the bes alone builds - autoreconf -fiv followed by the
+	usual suspects will build and install the bes framework.
+	Copying the configure_modules.ac to configure.ac and running
+	those commands after using git's submodule commands to clone
+	the Hyrax module set will build the bes and all of the modules.
+	See INSTALL for more information.
+
+	Merge remote-tracking branch 'origin/modules'
+	Conflicts:
+		dap/unit-tests/response_cache/.gitignore
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Module updates - specifically to factor setting the module name
+	and version information out of the configure script and into the
+	module's Makefile.am
+
+2014-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Changes in csv, dap-server and ncml.
+
+	Removed besregtest from the rpm spec file
+
+	The spec file now requires 3.13.3
+
+	Added directory response_cache.
+
+2014-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the gitmodules file for ugrid and ncml.
+	Both of these lacked a 'branch = modules' line, so the submodule
+	update command was using the master branch.
+
+	Fixed the dapreader regression tests.
+	These tests were commented out and the dapreader handler/module was
+	linked with several of the bes libraries. This meant that other
+	tests that used the module were broken.
+
+	Added ugrid_functions to the bes modules build.
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for the bes modules build.
+
+	Added hdf5_handler to the bes modules build.
+	Also fixed issues in the gateway module test code and pushed
+	those to github.
+
+2014-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added hdf4_handler to the bes modules build.
+
+2014-11-29  James Gallagher  <jgallagher@opendap.org>
+
+	Added the *.conf files to git ignore
+
+	Added gdal_handler to the bes modules build.
+
+	Added the fits_handler to the bes modules build.
+
+2014-11-28  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac when --without-dap-modules is used.
+
+	Fixed configure.ac so that FOUND_OPENJPEG is defiend even if BUILD_GDAL is not.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Tweaked the xml handler module given that hdf4/5 are not yet working.
+
+	Added fieout_gdal to the BES modules build
+
+	Modified .gitmodules so that it tracks the modules branch of gateway_module by default.
+
+	Added gateway_module to the BES modules branch/build.
+
+	Added fileout_netcdf to the BES modules build.
+
+	Added netcdf_handler to the bes modules build.
+
+2014-11-24  James Gallagher  <jgallagher@opendap.org>
+
+	Modifications for the modules build.
+	Added the Freeform and xml_data handlers. The dist target works, as
+	does make install.
+
+2014-11-23  James Gallagher  <jgallagher@opendap.org>
+
+	Added the freeform handler to the modules build.
+
+2014-11-21  James Gallagher  <jgallagher@opendap.org>
+
+	Configured submodules to use the 'modules' branch
+	I editied the .gitmodules file so that csv, fileout json and
+	dap-server call should use the 'modules' branch by default when
+	cloned using the bes 'modules' branch.
+
+	Found and fixed the ResponseCacheTest error.
+	The problem with the ResponsecacheTest unit test was that it
+	depended on the 'response_cache' directory already existing. But
+	git does not (it seems) fetch/update/etc. empty directories. I
+	added a .gitignore file in the directory and set it to ignore
+	everything except the .gitignore file.
+
+	Added fileout_json to the modules build.
+
+	Changes in the modules dirs for csv and dap-server.
+
+	Added more handlers to the modules branch
+	Tweaked the configure.ac file so that dap-server now builds; the
+	configure script now has some new makefile variables for handlers
+	to use when linking unit-tests. I added the dap-server, fileout_json,
+	freeform and xml_data handlers to this branch.
+
+2014-11-19  James Gallagher  <jgallagher@opendap.org>
+
+	Support for the 'modules' build
+	Modified configure.ac so that it will build the Makefiles for all of
+	the modules in the new modules subdir. Added 'subdir-objects' to the
+	Makefile.am files in the bes build that need it (to suppress the wordy
+	warning message). Also added .gitignore.
+
+	Added csv_handler in modules dir
+
+2014-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	Added include of D4Dimensions.h
+	M    functions/BindShapeFunction.cc
+
+2014-10-14  James Gallagher  <jgallagher@opendap.org>
+
+	I re-indented this code because it was too hard to read.
+
+	Added more tests and fixed 2256 where a .dods response, frozen to
+	a file and a .das response were not being merged correctly. The
+	problem was that the bescmd file had to specify that the context
+	'use_explicit_containers' was set to 'no'. Not setting this caused
+	the handler to fail when trying to read the DAS file.
+
+2014-10-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for ticket 2258 - Modules with names that contained the string
+	'dap' were loaded before the dap module. Fixed.
+
+	Added fix for bug 2258 where the module fails to load. The problem
+	seems to be in the BES itself and the way that modules are loaded,
+	but a fix is to change the name of the module in the conf
+	file (from 'dapreader' to anything that does not contain the
+	string 'dap').
+
+	Removed cruft
+
+2014-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Added some tests for the DAP4 functions using the code in the
+	functions module - might move this to the functions module in the
+	near future...
+
+	Added some tests for the DAP4 functions using the code in the
+	functions module - might move this to the functions module in the
+	near future...
+	
+	I imposed some sanity on the organization of the test data files.
+
+	Added DAP4 a function eval call to the send dap4 data code. I also
+	cleared out some of the old boolean stuff inherited from DAP2's ce
+	eval code.
+
+	Log message text fix
+
+2014-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed comment
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files.
+
+2014-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Added a few files for DAP2 Sequences as part of testing issues
+	with nested sequences in DAP4. ...need to organize the dap2 versus
+	dap4 files here a bit better if/when we start using this for more
+	tests. ...unless the data for those tests are kept in the handlers
+	that uses them.
+
+2014-09-09  James Gallagher  <jgallagher@opendap.org>
+
+	Removed an unneeded use of auto_ptr.
+
+2014-09-08  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling
+
+	Another fix for the unit-tests in bes/dap - I think the cache dirs
+	are finally cleaned properly.
+
+	I found that the test for escaped pathnames was failing and the
+	baseline was bogus. I added a ticket, modified the baseline to
+	contain a note about the ticket and made that test 'xfail'.
+
+	Updated README
+
+	Added support for DAP4 responses from DAP2 response files. The
+	code may not work for DAP2 responses that contain Structure or
+	Sequences. For these to work we may need to subclass the TestType
+	implementations for those classes.
+
+	Added support for DAP4 responses from DAP4 data response files.
+	made the DAP2 responses more general (including support for DAP2
+	dds responses from DAP2 data response files). No support for DAP4
+	stuff from DAP2 response files yet - not sure if this is needed.
+
+2014-09-05  James Gallagher  <jgallagher@opendap.org>
+
+	Reading .dap documents now works for both .dmr and .dap
+	requests (although there are some issues like DAP4_Checksum_CRC32
+	appearing in DMR responses and appearing twice in DAP responses).
+	DAP2 object/response support not added. All tests still pass.
+
+	Modified dapreader so that it will build a DMR from both
+	DMR/XML (text) files and .dap response files. This same basic code
+	can be extended to include building DAP4 responses from DDS and
+	DataDDS 'files'. The intent is that getdap and getdap4 will be
+	used to build the data files and this handler will be able to feed
+	DMR/DDS objects into Transmitter handlers. I also removed the
+	unused SupportDAP4 parameter from the dapreader.conf.in file.
+
+	Added comment about a leak fix.
+
+2014-08-25  James Gallagher  <jgallagher@opendap.org>
+
+	svn ignores
+
+	Fixed the tests so they run correctly using make check -j9 - they
+	did not work correctly with a parallel build.
+
+2014-08-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the dapreader issues; fixed some issues in the Makefile.am files regarding distcheck.
+
+2014-08-21  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling in an error message
+
+	fixed the name of the dapreader module in the template bes conf
+	file that's used for the handler install
+
+2014-08-19  James Gallagher  <jgallagher@opendap.org>
+
+	Now gets the xml:base context and sets the correct part of the DMR object
+
+2014-08-14  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old caching stuff
+	D    dispatch/BESCache.cc
+	D    dispatch/BESCache.h
+	M    dispatch/BESReturnManager.cc
+	M    dispatch/BESReturnManager.h
+	D    dispatch/BESUncompressBZ2.cc
+	D    dispatch/BESUncompressBZ2.h
+	D    dispatch/BESUncompressGZ.cc
+	D    dispatch/BESUncompressGZ.h
+	D    dispatch/BESUncompressManager.cc
+	D    dispatch/BESUncompressManager.h
+	M    dispatch/BESUncompressManager3.h
+	D    dispatch/BESUncompressZ.cc
+	D    dispatch/BESUncompressZ.h
+
+	Formatting changes as I worked through adding DAP4 support to the CSV handler.
+
+2014-08-13  James Gallagher  <jgallagher@opendap.org>
+
+	I remove the unlock_and_close(int fd) method of
+	BESFileLockingCache because it did not update the list of open
+	descriptors - the version of this method that takes a filename
+	argument does. Mixing the two methods lead to descriptors being
+	closed twice. The bug did not show up here but it did on the dap4
+	branch.
+
+	Fixed an error BESFileLockingCache where a cached file could be
+	unlocked using its file descriptor and not its name. Doing so
+	meant that the recorded descriptor was left on a list of
+	descriptors to close and then would be 'closed twice' in some
+	cases. I also fixed an error in the Makefile.am for the unit tests
+	in dap where the installed libraries were used instead of the
+	build libraries (in the source directories). Other changes/fixes
+	are the result of adding support for the DMR response to the CSV
+	handler.
+
+2014-08-11  James Gallagher  <jgallagher@opendap.org>
+
+	All the latest changes from the trunk including the 1.9.9 changes
+	- the previous merge likely got the changes up to 1.9.8, not 1.9.9
+	as the comment says.
+
+	Merged code from the trunk so that the changes there for the last
+	set of Hyrax releases will be available. This includes changes up
+	to version 1.9.9 of Hyrax
+
+2014-08-01  James Gallagher  <jgallagher@opendap.org>
+
+	Release checklist for 3.13.2
+	M    ChangeLog
+	M    INSTALL
+	M    README
+	M    bes.spec
+	M    configure.ac
+	M    dapreader/bes-testsuite/package.m4
+
 2014-07-31  James Gallagher <jgallagher@opendap.org>
 
 	3.13.2 changes
