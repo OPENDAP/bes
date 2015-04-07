@@ -1,3 +1,74 @@
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2015-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed Makefile.am for DAP4 build
+	The handler need the symbol USE_DAP4 defined to work with DAP4
+	requests. I added -DUSE_DAP4 to AM_CPPFLAGS and the tests now
+	work.
+
+2014-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/dap4'
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after merging with the modules branch
+
+	Merge remote-tracking branch 'origin/modules'
+
+	Merge branch 'modules' of https://github.com/opendap/hdf5_handler into modules
+
+	Fixes for make dist and	make check.
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Updated for 2.2.3
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added hdf5_handler to the bes modules build.
+
+2014-11-03  Kent Yang  <myang6@hdfgroup.org>
+
+	add known issues
+
+	Just comment out a debugging line. Doesn't change any output.
+
+2014-10-30  Kent Yang  <myang6@hdfgroup.org>
+
+	make HDF5 hander for dap4 in the correct opendap svn location.
+
+	commit dap4 dmr, dap and dap ce bescmd and baseline files
+
+	modify testsuite to test DAP4. Since DAP4 expression constraint causes memory leaking. The two expression constraint tests are commented out.
+
+	Make the configure link with DAP4 code
+
+	copy code from trunk to dap4 location for the HDF5 handler
+
+2014-10-29  Kent Yang  <myang6@hdfgroup.org>
+
+	HDF5-handler 2.2.3 release: check in the code from HDF5 handler at local svn to opendap svn
 2014-10-27  MuQun Yang <myang6@hdfgroup.org>
         * HDF5CF.cc
         * HDF5CF.h
