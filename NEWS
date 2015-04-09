@@ -1,7 +1,68 @@
 News for version 3.14.0
 
 This version of the BES incorporates all the 'standard' handlers
-and includes support for DAP4. It requires libdap 3.14.
+and includes support for DAP4. It requires libdap 3.14. Included in
+this is the ability to build a RPM that, using some packages from the
+EPEL RedHat/CentOS/Fedora repo, provides a binary release for all of
+Hyrax. This version of the bes rpm contains the word 'NASA'; the plain
+version still uses EPEL but does not contain handlers like gdal (used
+to read GeoTIFF and JPEG2000) or HDF4 w/HDFEOS2. The handlers
+included in the 'NASA' RPM include the gdal and HDF4/HDFEOS2 handlers.
+
+The besd script has been fixed and is now installed correctly by the
+RPM package so that the bes can easily be configured to start at boot
+time.
+
+The code now builds using autoconf 2.63; automake 1.11.1 and libtool
+2.2.6. These are the versions found on a RHEL 6 machine.
+
+Added server functions: tabular(), roi(), bbox(), and bbox_union() for
+use with the new Swath Aggregation features.
+
+The built-in 'dapreader' handler can now be used to reduce
+interdependencies between handlers when writing regression and
+integration tests.
+
+* Other Updates to handlers
+
+The asciival handler was updated so that server functions will now
+correctly return ASCII responses.
+
+The HTML form was patched using a contribution from LARC.
+
+fileout_json now handles arrays of strings properly.
+
+The fileout_netcdf handler has a contributed fix from NSIDC:
+
+   Convert OPeNDAP Byte array data to NetCDF NC_SHORT The handler's
+   output currently interprets unsigned Bytes from OPeNDAP as signed
+   bytes (NC_BYTE). To avoid misrepresenting data and retain
+   compatibility with NetCDF3/classic we need to convert/output this
+   data as a NC_SHORT.
+
+   The existing test data for fits utilizes signed integers which
+   shouldn't ever be a valid output from DAP2. The test data should be
+   validated/regenerated and the test re-enabled.
+
+
+* New handlers
+
+Added the new w10n handler to support w10n responses from the server.
+
+Added the ugrid subsetting function handler. This server function can
+be used to subset an unstructured grid (aka irregular mesh) as long as
+that ugrid matches the specification being developed by ASA, inc. See
+the online documentation for more information at docs.opendap.org.
+http://docs.opendap.org/index.php/Server_Side_Processing_Functions
+
+* Handlers that support DAP4
+
+csv_handler
+freeform_handler
+gdal_handler (geotiff, jpeg2000, other formats)
+netcdf_handler
+hdf5_handler
+fits_handler
 
 News for version 3.13.2
 
