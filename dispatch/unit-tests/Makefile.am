@@ -144,8 +144,10 @@ servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 fsT_SOURCES = fsT.cc
 
 if LIBDAP
-catT_SOURCES = catT.cc ../BESCatalogResponseHandler.cc
+catT_OBJ = ../BESCatalogResponseHandler.o
+catT_SOURCES = catT.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
+catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
 
 # Note that BESCache3Test is not a CPP Unit test. jhrg 4/12/12
