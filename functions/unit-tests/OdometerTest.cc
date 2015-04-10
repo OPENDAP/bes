@@ -29,6 +29,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <cstdlib>
 #include <sys/time.h>   // timing tests
 
 #include <sstream>
