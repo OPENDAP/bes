@@ -58,7 +58,7 @@ server-tests:
 
 .PHONY: docs
 docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
+	doxygen doxy.conf
 	(cd docs && tar -czf html.tar.gz html)
 
 # cccc computes metrics like Lines of code and McCabe. It'a available

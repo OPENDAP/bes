@@ -738,6 +738,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_dispatch.pc
 		 bes_ppt.pc
 		 bes_xml_command.pc
+		 doxy.conf
 		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile

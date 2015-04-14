@@ -7,6 +7,8 @@ Building and Installing the BES
 
 BUILDING FROM A GIT CLONE
 BUILDING FROM A SOURCE DISTRIBUTION
+BUILDING AN RPM
+RUNNING DISTCHECK
 BUILD REQUIREMENTS
 NOTES
 CONFIGURATION AND TESTING
@@ -31,7 +33,7 @@ the modules.
 1. The BES repo on GitHub can be built two ways. The cloned
 repo can be configured to build the framework only or it can be
 configured to build both the framework and all of the modules included
-in a 'stock' Hyrax distribution. Either way, it start the same:
+in a 'stock' Hyrax distribution. Either way, it starts out the same:
 
     'git clone https://github.com/opendap/bes'
 
@@ -92,6 +94,31 @@ recommend that you install cppunit if you have not already.
 
 3. Type `make install' to install the BES software. The package
 installs in /usr/local/ by default; use --prefix to change that.
+
+BUILDING AN RPM
+
+There are several targets in the BES Makefile that can be used to build
+RPM packages. The target 'rpm' will assume you want to use the bes.spec
+file and build an RPM for either the bes alone or bes w/modules (depending
+on the file that configure.ac is linked to). In the latter case, only
+modules with dependencies that are installed using RPM will be built.
+
+The BES Makefile also has another set of targets that are intended for 
+use with a BES + modules build and will build _all_ of the modules, using
+static linkage for the one that don't have their dependencies provided by
+an RPM. To buld this kind of RPM, you need to first get and build the 
+hyrax-dependencies package and do so using one of the special targets in its
+Makefile for 'static-rpms'. You will also need to force it to build only
+static libraries using CONFIGURE_FLAGS=--disable-shared when you rum 'make'.
+
+RUNNING DISTCHECK
+
+If you've used the hyrax-dependencies package to build the BES + modules,
+and you're using automake 1.13 or older, run the Makefile's distcheck
+using 'make distcheck DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=...'
+Without setting that environment variable, the distcheck build won't
+find any of the dependencies. Also using MFLAGS=-j9 (use whatever
+number is appropriate or your machine) will speedn things up.
 
 AFTER INSTALLING
 
