@@ -670,7 +670,7 @@ then
     GF_CFLAGS="`gridfields-config --cflags`"
     GF_PATH="`gridfields-config --prefix`"
 
-    AC_DEFINE([GRDIFIELDS],[1],[define if gridfields lib is present])
+    AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
     AC_MSG_RESULT([yes; used gridfields-config])
 elif test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/
 then
@@ -678,6 +678,7 @@ then
 	GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
 	GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
 	GF_PATH=$ac_bes_dependencies_prefix
+	AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
 	AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
 else
     AC_MSG_NOTICE([I could not find libgridfields])
@@ -903,11 +904,6 @@ AM_COND_IF([DAP_MODULES],
 
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
-    
-    AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_data_baseline.sh], 
-		[chmod +x modules/ugrid_functions/tests/generate_data_baseline.sh])
-	AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_metadata_baseline.sh],
-		[chmod +x modules/ugrid_functions/tests/generate_metadata_baseline.sh])
     
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])
