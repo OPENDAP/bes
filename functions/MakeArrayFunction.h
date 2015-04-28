@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -31,32 +30,28 @@ namespace libdap {
 class BaseType;
 class DDS;
 
-/**
- * The make_array function .
- */
-void function_make_dap2_array(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+void function_make_dap2_array(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
 
-/**
- * The linear_scale() function applies the familiar y = mx + b equation to data.
- */
 BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr);
 
 /**
- * The LinearScaleFunction class encapsulates the array builder function 'function_make_array'
+ * The MakeArrayFunction class encapsulates the array builder function
+ * implementations (function_make_dap2_array() and function_make_dap4_array())
  * along with additional meta-data regarding its use and applicability.
  */
-class MakeArrayFunction: public libdap::ServerFunction {
+class MakeArrayFunction: public libdap::ServerFunction
+{
 public:
-	MakeArrayFunction()
+    MakeArrayFunction()
     {
-		setName("make_array");
-		setDescriptionString("The make_array() function reads a number of values and builds a DAP Array object.");
-		setUsageString("make_array(type,shape,value0,value1,...,valueN)");
-		setRole("http://services.opendap.org/dap4/server-side-function/make_array");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
-		setFunction(libdap::function_make_dap2_array);
-		setFunction(libdap::function_make_dap4_array);
-		setVersion("1.0");
+        setName("make_array");
+        setDescriptionString("The make_array() function reads a number of values and builds a DAP Array object.");
+        setUsageString("make_array(type,shape,value0,value1,...,valueN)");
+        setRole("http://services.opendap.org/dap4/server-side-function/make_array");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
+        setFunction(libdap::function_make_dap2_array);
+        setFunction(libdap::function_make_dap4_array);
+        setVersion("1.0");
     }
     virtual ~MakeArrayFunction()
     {
