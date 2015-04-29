@@ -30,11 +30,13 @@
 #include <sstream>
 #include <set>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <Grid.h>
+namespace libdap {
+class BaseType;
+class Array;
+class Grid;
+}
 
-namespace libdap
+namespace functions
 {
 
 /** Encapsulate the logic needed to handle geographical constraints
@@ -134,8 +136,8 @@ private:
     Notation d_longitude_notation;
     LatitudeSense d_latitude_sense;
 
-    Array::Dim_iter d_lon_dim;  //< References the longitude dimension
-    Array::Dim_iter d_lat_dim;  //< References the latitude dimension
+    libdap::Array::Dim_iter d_lon_dim;  //< References the longitude dimension
+    libdap::Array::Dim_iter d_lat_dim;  //< References the latitude dimension
 
     // Sets of string values used to find stuff in attributes
     set<string> d_coards_lat_units;
@@ -189,9 +191,8 @@ protected:
                                int &latitude_index_top,
                                int &latitude_index_bottom) const;
 
-    virtual void reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_dim);
-    virtual void flip_latitude_within_array(Array &a, int lat_length,
-					    int lon_length);
+    virtual void reorder_data_longitude_axis(libdap::Array &a,libdap:: Array::Dim_iter lon_dim);
+    virtual void flip_latitude_within_array(libdap::Array &a, int lat_length, int lon_length);
 
     friend class GridGeoConstraintTest; // Unit tests
 
@@ -254,19 +255,19 @@ public:
         d_lon_length = len;
     }
 
-    Array::Dim_iter get_lon_dim() const
+    libdap::Array::Dim_iter get_lon_dim() const
     {
         return d_lon_dim;
     }
-    Array::Dim_iter get_lat_dim() const
+    libdap::Array::Dim_iter get_lat_dim() const
     {
         return d_lat_dim;
     }
-    void set_lon_dim(Array::Dim_iter lon)
+    void set_lon_dim(libdap::Array::Dim_iter lon)
     {
         d_lon_dim = lon;
     }
-    void set_lat_dim(Array::Dim_iter lat)
+    void set_lat_dim(libdap::Array::Dim_iter lat)
     {
         d_lat_dim = lat;
     }

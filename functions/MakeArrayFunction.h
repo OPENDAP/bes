@@ -26,13 +26,14 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
+}
 
-void function_make_dap2_array(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
+namespace functions {
 
-BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr);
+void function_make_dap2_array(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_make_dap4_array(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 /**
  * The MakeArrayFunction class encapsulates the array builder function
@@ -49,8 +50,8 @@ public:
         setUsageString("make_array(type,shape,value0,value1,...,valueN)");
         setRole("http://services.opendap.org/dap4/server-side-function/make_array");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
-        setFunction(libdap::function_make_dap2_array);
-        setFunction(libdap::function_make_dap4_array);
+        setFunction(function_make_dap2_array);
+        setFunction(function_make_dap4_array);
         setVersion("1.0");
     }
     virtual ~MakeArrayFunction()
@@ -58,4 +59,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace

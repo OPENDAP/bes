@@ -42,11 +42,12 @@
 #include <ServerFunctionsList.h>
 
 #include "BBoxUnionFunction.h"
-#include "roi_utils.h"
+#include "roi_util.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 /**
  * @brief Combine several bounding boxes, forming their union.
@@ -178,4 +179,4 @@ BaseType *function_dap4_bbox_union(D4RValueList *, DMR &)
     return 0; //response.release();
 }
 
-} // namesspace libdap
+} // namesspace functions

@@ -26,8 +26,6 @@
 
 #include <iostream>
 
-using std::endl;
-
 #include <ServerFunctionsList.h>
 #include <BESDebug.h>
 
@@ -44,6 +42,8 @@ using std::endl;
 #include "BBoxUnionFunction.h"
 
 #include "DapFunctions.h"
+
+namespace functions {
 
 void DapFunctions::initialize(const string &)
 {
@@ -90,3 +90,4 @@ BESAbstractModule *maker()
 }
 }
 
+}

@@ -27,7 +27,7 @@
 
 #include <vector>
 
-namespace libdap {
+namespace functions {
 
 /**
  * Map the indices of a N-dimensional array to the offset into memory
@@ -106,8 +106,6 @@ public:
      */
     inline unsigned int next()
     {
-        // if (d_offset == d_highest_offset) throw Error("Attempt to move beyond the end of an array in the indexing software.");
-
         // About 2.4 seconds for 10^9 elements
         shape::reverse_iterator si = d_shape.rbegin();
         for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {

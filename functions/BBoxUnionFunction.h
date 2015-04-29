@@ -25,15 +25,17 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
 
 class D4RValueList;
 class DMR;
+}
 
-void function_dap2_bbox_union(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-BaseType *function_dap4_bbox_union(D4RValueList *args, DMR &dmr);
+namespace functions {
+
+void function_dap2_bbox_union(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_dap4_bbox_union(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class BBoxUnionFunction: public libdap::ServerFunction
 {
@@ -45,8 +47,8 @@ public:
         setUsageString("bbox_union(<bb1>, <bb2>, ..., <bbn>)");
         setRole("http://services.opendap.org/dap4/server-side-function/bbox_union");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bbox_union");
-        setFunction(libdap::function_dap2_bbox_union);
-        setFunction(libdap::function_dap4_bbox_union);
+        setFunction(function_dap2_bbox_union);
+        setFunction(function_dap4_bbox_union);
         setVersion("1.0");
     }
     virtual ~BBoxUnionFunction()
@@ -54,4 +56,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace

@@ -42,36 +42,15 @@
 #include <ServerFunctionsList.h>
 
 #include <BESDebug.h>
+#include <roi_util.h>
 
 #include "RoiFunction.h"
-#include "roi_utils.h"
+#include "functions_util.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
-
-/**
- * Test for acceptable array types for the N-1 arguments of roi().
- * Throw Error if the array is not valid for this function
- *
- * @param btp Test this variable.
- * @exception Error thrown if the array is not valid
- */
-static void check_number_type_array(BaseType *btp, unsigned int rank)
-{
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__, "roi() function called with null variable.");
-
-    if (btp->type() != dods_array_c)
-        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array.");
-
-    Array *a = static_cast<Array *>(btp);
-    if (!a->var()->is_simple_type() || a->var()->type() == dods_str_c || a->var()->type() == dods_url_c)
-        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array of numeric types.");
-
-    if (a->dimensions() < rank)
-        throw Error("In function roi(): Expected the array '" + a->name() +"' to be rank " + long_to_string(rank) + " or greater.");
-}
+namespace functions {
 
 /**
  * @brief Subset the N arrays using index slicing information
@@ -190,4 +169,4 @@ BaseType *function_dap4_roi(D4RValueList *, DMR &)
     return 0;
 }
 
-} // namesspace libdap
+} // namesspace functions

@@ -74,6 +74,8 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+namespace functions {
+
 class CEFunctionsTest:public TestFixture
 {
 private:
@@ -781,8 +783,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CEFunctionsTest);
 
-
-
+} // namespace functions
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
@@ -808,7 +809,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("ugrid::BindTest::") + argv[i++];
+            test = string("functions::ugrid::BindTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -816,17 +817,3 @@ int main(int argc, char*argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
-
-
-#if 0
-int
-main( int, char** )
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() );
-
-    bool wasSuccessful = runner.run( "", false ) ;
-
-    return wasSuccessful ? 0 : 1;
-}
-#endif

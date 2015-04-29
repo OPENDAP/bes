@@ -31,8 +31,9 @@
 #include "Odometer.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 // documentation in the header file
 unsigned int Odometer::next_safe()
@@ -53,26 +54,4 @@ unsigned int Odometer::next_safe()
     return ++d_offset;
 }
 
-#if 0
-unsigned int Odometer::next_2()
-{
-    if (d_offset == end()) throw Error("Attempt to move beyond the end of an array in the indexing software.");
-
-    // ... about 3.5 seconds for this code
-    // TODO Unroll this using a switch()
-    unsigned int i = d_rank - 1;
-    do {
-        if (++d_indices[i] == d_shape[i]) {
-            d_indices[i] = 0;
-        }
-        else {
-            break;
-        }
-
-    } while (i-- > 0);
-
-    return ++d_offset;
-}
-#endif
-
-} // namespace libdap
+} // namespace function

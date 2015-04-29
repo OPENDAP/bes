@@ -73,7 +73,7 @@ endif
 
 # These are used to read in baselines from files
 TEST_SRC = test_utils.cc test_utils.h 
-TEST_OBJ = ../roi_utils.o
+TEST_OBJ = ../roi_util.o ../functions_util.o
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
 CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types

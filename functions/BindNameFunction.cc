@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -48,12 +47,14 @@
 
 #include "BindNameFunction.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 string bind_name_info =
-string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-"<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name\">\n" +
-"</function>";
+        string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                + "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name\">\n"
+                + "</function>";
 
 /** Bind a new name to a variable. The first argument to the function is
  * the new name and the second argument is the BaseType* to (re)name. This
@@ -68,11 +69,9 @@ string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
  * @return The newly (re)named variable.
  * @exception Error Thrown for a variety of errors.
  */
-void
-function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+void function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
 {
-
-	DBG(cerr << "function_bind_name_dap2() - BEGIN" << endl);
+    DBG(cerr << "function_bind_name_dap2() - BEGIN" << endl);
 
     if (argc == 0) {
         Str *response = new Str("info");
@@ -82,8 +81,7 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     }
 
     // Check for two args or more. The first two must be strings.
-    if (argc != 2)
-    	throw Error(malformed_expr, "bind_name(name,variable) requires two arguments.");
+    if (argc != 2) throw Error(malformed_expr, "bind_name(name,variable) requires two arguments.");
 
     DBG(cerr << "function_bind_name_dap2() - Processing argv[0]" << endl);
 
@@ -93,7 +91,7 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     DBG(cerr << "function_bind_name_dap2() - Processing argv[1]" << endl);
     BaseType *sourceVar = argv[1];
     DBG(cerr << "function_bind_name_dap2() - Source variable:  " <<
-    		sourceVar->type_name() << " " << sourceVar->name() << endl);
+            sourceVar->type_name() << " " << sourceVar->name() << endl);
 
     // Don't allow renaming that will introduce namespace collisions.
     //
@@ -104,35 +102,33 @@ function_bind_name_dap2(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
     // the CE Evaluator will make a DAP String variable with a value that is the string
     // passed into the function. So, either way argv[0] is a BaseType*. However, if it's
     // a variable in the dataset, its name() will be found by DDS::var().
-    if (dds.var(/*argv[0]->name()*/ name))
-    	throw Error(malformed_expr, "The name '" + name + "' is already in use.");
-
+    if (dds.var(/*argv[0]->name()*/name)) throw Error(malformed_expr, "The name '" + name + "' is already in use.");
 
     // If the variable is the return value of a function, just pass it back. If it is
     // a variable in the dataset (i.e., present in the DDS), copy it because DDS deletes
     // all its variables and the function processing code also deletes all it's variables.
     // NB: Could use reference counting pointers to eliminate this copy... jhrg 6/24/13
     if (dds.var(sourceVar->name())) {
-    	DBG(cerr << "function_bind_name_dap2() - Copying existing variable in DDS: " << sourceVar->name() << endl);
-    	*btpp = sourceVar->ptr_duplicate();
-    	if (!(*btpp)->read_p()) {
-    		(*btpp)->read();
-    		(*btpp)->set_read_p(true);
-    	}
-    	(*btpp)->set_send_p(true);
-    	(*btpp)->set_name(name);
+        DBG(cerr << "function_bind_name_dap2() - Copying existing variable in DDS: " << sourceVar->name() << endl);
+        *btpp = sourceVar->ptr_duplicate();
+        if (!(*btpp)->read_p()) {
+            (*btpp)->read();
+            (*btpp)->set_read_p(true);
+        }
+        (*btpp)->set_send_p(true);
+        (*btpp)->set_name(name);
     }
     else {
-    	DBG(cerr << "function_bind_name_dap2 - Using passed variable: " << sourceVar->name() << endl);
-    	sourceVar->set_name(name);
-    	*btpp = sourceVar;
-    }
-    DBG(cerr << "function_bind_name_dap2() - END" << endl);
+        DBG(cerr << "function_bind_name_dap2 - Using passed variable: " << sourceVar->name() << endl);
+        sourceVar->set_name(name);
+        *btpp = sourceVar;
+    } DBG(cerr << "function_bind_name_dap2() - END" << endl);
 
     return;
 }
 
-BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
+BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr)
+{
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
         Str *response = new Str("info");
@@ -143,8 +139,7 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
 
     // Check for 2 arguments
     DBG(cerr << "args->size() = " << args->size() << endl);
-    if (args->size() != 2)
-        throw Error(malformed_expr,"bind_shape(shape,variable) requires two arguments.");
+    if (args->size() != 2) throw Error(malformed_expr, "bind_shape(shape,variable) requires two arguments.");
 
     string name = extract_string_argument(args->get_rvalue(0)->value(dmr));
 
@@ -164,34 +159,31 @@ BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr){
     // the CE Evaluator will make a DAP String variable with a value that is the string
     // passed into the function. So, either way args[0] is a BaseType*. However, if it's
     // a variable in the dataset, its name() will be found by DMR::root()->var().
-    if (dmr.root()->var(/*arg0->name()*/ name))
-    	throw Error(malformed_expr, "The name '" + /*arg0->name()*/ name + "' is already in use.");
-
+    if (dmr.root()->var(/*arg0->name()*/name))
+        throw Error(malformed_expr, "The name '" + /*arg0->name()*/name + "' is already in use.");
 
     // If the variable is the return value of a function, just pass it back. If it is
     // a variable in the dataset (i.e., present in the DDS), copy it because DDS deletes
     // all its variables and the function processing code also deletes all it's variables.
     // NB: Could use reference counting pointers to eliminate this copy... jhrg 6/24/13
     if (dmr.root()->var(sourceVar->name())) {
-    	DBG(cerr << "function_bind_name_dap4() - Copying existing variable in DMR: " << sourceVar->name() << endl);
-    	resultVar = sourceVar->ptr_duplicate();
-    	if (!resultVar->read_p()) {
-    		resultVar->read();
-    		resultVar->set_read_p(true);
-    	}
-    	resultVar->set_send_p(true);
-    	resultVar->set_name(name);
+        DBG(cerr << "function_bind_name_dap4() - Copying existing variable in DMR: " << sourceVar->name() << endl);
+        resultVar = sourceVar->ptr_duplicate();
+        if (!resultVar->read_p()) {
+            resultVar->read();
+            resultVar->set_read_p(true);
+        }
+        resultVar->set_send_p(true);
+        resultVar->set_name(name);
     }
     else {
-    	DBG(cerr << "function_bind_name_dap4 - Using passed variable: " << sourceVar->name() << endl);
-    	resultVar = sourceVar;
-    	resultVar->set_name(name);
+        DBG(cerr << "function_bind_name_dap4 - Using passed variable: " << sourceVar->name() << endl);
+        resultVar = sourceVar;
+        resultVar->set_name(name);
 
     }
     return resultVar;
 
-
 }
 
-
-} // namesspace libdap
+} // namesspace functions

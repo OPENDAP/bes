@@ -37,11 +37,19 @@
 #include <string>
 #include <sstream>
 
+#if 0
 #include <BaseType.h>
 #include <Array.h>
 #include <Grid.h>
+#endif
 
-namespace libdap
+namespace libdap {
+class BaseType;
+class Array;
+class Grid;
+}
+
+namespace functions
 {
 
 enum relop {
@@ -65,7 +73,7 @@ enum relop {
 class GSEClause
 {
 private:
-    Array *d_map;
+    libdap::Array *d_map;
     // _value1, 2 and _op1, 2 hold the first and second operators and
     // operands. For a clause like `var op value' only _op1 and _value1 have
     // valid information. For a clause like `value op var op value' the
@@ -90,22 +98,20 @@ private:
 public:
     /** @name Constructors */
     //@{
-    GSEClause(Grid *grid, const string &map, const double value,
+    GSEClause(libdap::Grid *grid, const string &map, const double value,
               const relop op);
 
-    GSEClause(Grid *grid, const string &map, const double value1,
+    GSEClause(libdap::Grid *grid, const string &map, const double value1,
               const relop op1, const double value2, const relop op2);
     //@}
 
-    virtual ~GSEClause() {
-    	delete d_map; d_map = 0;
-    }
+    virtual ~GSEClause();
     
     bool OK() const;
 
     /** @name Accessors */
     //@{
-    Array *get_map() const;
+    libdap::Array *get_map() const;
 
     string get_map_name() const;
 
@@ -120,7 +126,7 @@ public:
 
     /** @name Mutators */
     //@{
-    void set_map(Array *map);
+    void set_map(libdap::Array *map);
 
     void set_start(int start);
 
@@ -128,7 +134,7 @@ public:
     //@}
 };
 
-} // namespace libdap
+} // namespace functions
 
 #endif // _gseclause_h
 

@@ -27,12 +27,14 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
+}
 
-void function_dap2_version(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
-BaseType *function_dap4_version(D4RValueList *args, DMR &dmr);
+namespace functions {
+
+void function_dap2_version(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) ;
+libdap::BaseType *function_dap4_version(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class VersionFunction: public libdap::ServerFunction {
 public:
@@ -43,8 +45,8 @@ public:
 		setUsageString("version()");
 		setRole("http://services.opendap.org/dap4/server-side-function/version");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#version");
-		setFunction(libdap::function_dap2_version);
-		setFunction(libdap::function_dap4_version);
+		setFunction(function_dap2_version);
+		setFunction(function_dap4_version);
 		setVersion("1.0");
     }
     virtual ~VersionFunction()
@@ -52,4 +54,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace

@@ -33,7 +33,11 @@
 #define FALSE 0
 #endif
 
-namespace libdap
+namespace libdap {
+class Grid;
+}
+
+namespace functions
 {
 
 class GSEClause;
@@ -43,12 +47,12 @@ class GSEClause;
 struct gse_arg
 {
     GSEClause *_gsec;           // The gse parsed.
-    Grid *_grid;                // The Grid being constrained.
+    libdap::Grid *_grid;                // The Grid being constrained.
     int _status;                // The parser's status.
 
     gse_arg(): _gsec(0), _grid(0), _status(1)
     {}
-    gse_arg(Grid *g): _gsec(0), _grid(g), _status(1)
+    gse_arg(libdap::Grid *g): _gsec(0), _grid(g), _status(1)
     {}
     virtual ~gse_arg()
     {}
@@ -61,11 +65,11 @@ struct gse_arg
     {
         return _gsec;
     }
-    void set_grid(Grid *g)
+    void set_grid(libdap::Grid *g)
     {
         _grid = g;
     }
-    Grid *get_grid()
+    libdap::Grid *get_grid()
     {
         return _grid;
     }

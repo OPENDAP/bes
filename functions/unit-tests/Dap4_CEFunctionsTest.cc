@@ -74,6 +74,7 @@
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
+using namespace functions;
 
 int test_variable_sleep_interval = 0;
 
@@ -522,7 +523,7 @@ public:
         try {
 
             long int num_dims = 3;
-            int dims[3] = {5,2,3};
+            unsigned int dims[3] = {5,2,3};
             string shape = "";
 
 
@@ -591,10 +592,6 @@ public:
                 ++p;
             }
             DBG(cerr << endl);
-
-
-
-
         }
         catch (Error &e) {
             DBG(cerr << e.get_error_message() << endl);
@@ -635,10 +632,8 @@ public:
 
             DBG(cerr << "bind_shape_test_bad_shape() - Calling function_bind_shape_dap4()" << endl);
 
-            BaseType *result =  function_bind_shape_dap4(&params, *two_arrays_dmr);
+            (void)function_bind_shape_dap4(&params, *two_arrays_dmr);
             CPPUNIT_ASSERT(!"[ERROR] bind_shape_test_bad_shape() - Mismatched dimensions should have thrown an Exception");
-
-
         }
         catch (Error &e) {
             DBG(cerr << "bind_shape_test_bad_shape() - Caught expected exception. Message: " << e.get_error_message() << endl);

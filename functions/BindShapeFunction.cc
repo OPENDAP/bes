@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -46,67 +45,63 @@
 
 #include "BindNameFunction.h"
 
-namespace libdap {
-string bind_shape_info =
-string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-"<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_shape\">\n" +
-"</function>";
+using namespace std;
+using namespace libdap;
 
+namespace functions {
+
+string bind_shape_info =
+        string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                + "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_shape\">\n"
+                + "</function>";
 
 vector<int> parse_dims(const string &shape); // defined in MakeArrayFunction.cc
 
-
-BaseType *bind_shape_worker(string shape, BaseType *btp){
-
+BaseType *bind_shape_worker(string shape, BaseType *btp)
+{
     // string shape = extract_string_argument(argv[0]);
     vector<int> dims = parse_dims(shape);
 
     Array *array = dynamic_cast<Array*>(btp);
-    if (!array)
-    	throw Error(malformed_expr, "bind_shape() requires an Array as its second argument.");
+    if (!array) throw Error(malformed_expr, "bind_shape() requires an Array as its second argument.");
 
     unsigned long vector_size = array->length();
-	DBG(cerr << "bind_shape_worker() - vector_size: " << long_to_string(vector_size) << endl);
-
+    DBG(cerr << "bind_shape_worker() - vector_size: " << long_to_string(vector_size) << endl);
 
     array->clear_all_dims();
 
     unsigned long number_of_elements = 1;
     vector<int>::iterator i = dims.begin();
     while (i != dims.end()) {
-    	int dimSize = *i;
-    	number_of_elements *= dimSize;
-        if(array->is_dap4()){
-        	DBG(cerr << "bind_shape_worker() - Adding DAP4 dimension." << endl);
+        int dimSize = *i;
+        number_of_elements *= dimSize;
+        if (array->is_dap4()) {
+            DBG(cerr << "bind_shape_worker() - Adding DAP4 dimension." << endl);
 
-        	// FIXME - I think this creates a memory leak because
-        	// the D4Dimension will never be deleted by the
-        	// current implementation of Array which only has a
-        	// weak pointer to the D4Dimension.
-        	//
-        	// NB: The likely fix is to find the Group that holds
-        	// this variable and add the new D4Dimension to its
-        	// D4Dimensions object. That will enure it is
-        	// deleted. jhrg 8/26/14
-        	D4Dimension *this_dim = new D4Dimension("",dimSize);
-        	array->append_dim(this_dim);
+            // FIXME - I think this creates a memory leak because
+            // the D4Dimension will never be deleted by the
+            // current implementation of Array which only has a
+            // weak pointer to the D4Dimension.
+            //
+            // NB: The likely fix is to find the Group that holds
+            // this variable and add the new D4Dimension to its
+            // D4Dimensions object. That will enure it is
+            // deleted. jhrg 8/26/14
+            D4Dimension *this_dim = new D4Dimension("", dimSize);
+            array->append_dim(this_dim);
         }
-        else
-        {
-        	DBG(cerr << "bind_shape_worker() - Adding DAP2 dimension." << endl);
-        	array->append_dim(dimSize);
+        else {
+            DBG(cerr << "bind_shape_worker() - Adding DAP2 dimension." << endl);
+            array->append_dim(dimSize);
         }
         i++;
-    }
-    DBG(cerr << "bind_shape_worker() - number_of_elements: " << long_to_string(number_of_elements) << endl);
+    } DBG(cerr << "bind_shape_worker() - number_of_elements: " << long_to_string(number_of_elements) << endl);
 
     if (number_of_elements != vector_size)
-    	throw Error(malformed_expr, "bind_shape(): The product of the new dimensions must match the size of the Array's internal storage vector.");
-
+        throw Error(malformed_expr,
+                "bind_shape(): The product of the new dimensions must match the size of the Array's internal storage vector.");
 
     return array;
-
-
 }
 
 /** Bind a shape to a DAP2 Array that is a vector. The product of the dimension
@@ -123,10 +118,8 @@ BaseType *bind_shape_worker(string shape, BaseType *btp){
  * @return The newly (re)named variable.
  * @exception Error Thrown for a variety of errors.
  */
-void
-function_bind_shape_dap2(int argc, BaseType * argv[], DDS &, BaseType **btpp)
+void function_bind_shape_dap2(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
-
     if (argc == 0) {
         Str *response = new Str("info");
         response->set_value(bind_shape_info);
@@ -135,8 +128,7 @@ function_bind_shape_dap2(int argc, BaseType * argv[], DDS &, BaseType **btpp)
     }
 
     // Check for two args or more. The first two must be strings.
-    if (argc != 2)
-    	throw Error(malformed_expr, "bind_shape(shape,variable) requires two arguments.");
+    if (argc != 2) throw Error(malformed_expr, "bind_shape(shape,variable) requires two arguments.");
 
     string shape = extract_string_argument(argv[0]);
 
@@ -161,9 +153,8 @@ function_bind_shape_dap2(int argc, BaseType * argv[], DDS &, BaseType **btpp)
  * @exception Error Thrown for a variety of errors.
  */
 
-BaseType *function_bind_shape_dap4(D4RValueList *args, DMR &dmr){
-
-
+BaseType *function_bind_shape_dap4(D4RValueList *args, DMR &dmr)
+{
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
         Str *response = new Str("info");
@@ -172,19 +163,15 @@ BaseType *function_bind_shape_dap4(D4RValueList *args, DMR &dmr){
         return response;
     }
 
-
     // Check for 2 arguments
     DBG(cerr << "args.size() = " << args.size() << endl);
-    if (args->size() != 2)
-        throw Error(malformed_expr,"bind_shape(shape,variable) requires two arguments.");
+    if (args->size() != 2) throw Error(malformed_expr, "bind_shape(shape,variable) requires two arguments.");
 
     string shape = extract_string_argument(args->get_rvalue(0)->value(dmr));
 
     BaseType *btp = args->get_rvalue(1)->value(dmr);
 
     return bind_shape_worker(shape, btp);
-
 }
 
-
-} // namesspace libdap
+} // namesspace functions

@@ -57,54 +57,16 @@
 #include <BESDebug.h>
 
 #include "MakeArrayFunction.h"
+#include "functions_util.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 string make_array_info =
         string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                 + "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array\">\n"
                 + "</function>";
-
-/** Parse the shape 'expression'. The form of the expression is '[' size ']'
- * @note Also used by bind_shape()
- * @return A vector of ints
- */
-vector<int> parse_dims(const string &shape)
-{
-    vector<int> dims;
-    istringstream iss(shape);
-    string::size_type pos = 0;
-    do {
-        char brace;
-        iss >> brace;
-        ++pos;
-        // EOF is only found by reading past the last character
-        if (iss.eof()) return dims;
-
-        if (brace != '[' || iss.fail())
-            throw Error(malformed_expr,
-                    "make_array(): Expected a left brace at position " + long_to_string(pos) + " in shape expression: "
-                            + shape);
-
-        int size = 0;
-        iss >> size;
-        ++pos;
-        if (size == 0 || iss.fail())
-            throw Error(malformed_expr,
-                    "make_array(): Expected an integer at position " + long_to_string(pos) + " in shape expression: "
-                            + shape);
-        dims.push_back(size);
-
-        iss >> brace;
-        ++pos;
-        if (brace != ']' || iss.fail())
-            throw Error(malformed_expr,
-                    "make_array(): Expected a right brace at position " + long_to_string(pos) + " in shape expression: "
-                            + shape);
-    } while (!iss.eof());
-
-    return dims;
-}
 
 bool isValidTypeMatch(Type requestedType, Type argType)
 {
@@ -450,4 +412,4 @@ BaseType *function_make_dap4_array(D4RValueList *args, DMR &dmr)
 
 }
 
-} // namesspace libdap
+} // namesspace functions

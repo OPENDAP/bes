@@ -64,7 +64,7 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace libdap
+namespace functions
 {
 
 class TabularFunctionTest:public TestFixture
@@ -819,7 +819,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TabularFunctionTest);
 
-} // namespace libdap
+} // namespace functions
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
@@ -848,7 +848,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::TabularFunctionTest::") + argv[i++];
+            test = string("functions::TabularFunctionTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

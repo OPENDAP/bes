@@ -40,7 +40,9 @@
 #include "gse_parser.h"
 #include "grid_utils.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 /** The geogrid function returns the part of a Grid which includes a
  geographically specified rectangle. The arguments to the function are the

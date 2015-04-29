@@ -39,7 +39,9 @@
 #include "gse_parser.h"
 #include "grid_utils.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 /** The grid function uses a set of relational expressions to form a selection
  within a Grid variable based on the values in the Grid's map vectors.
@@ -158,13 +160,6 @@ bool GridFunction::canOperateOn(DDS &dds) {
 	getGrids(dds, &grids);
 
 	return !grids.empty();
-#if 0
-    bool usable = !grids->empty();
-
-    delete grids;
-
-	return usable;
-#endif
 }
 
-} // namesspace libdap
+} // namesspace functions

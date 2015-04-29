@@ -56,7 +56,7 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace libdap
+namespace functions
 {
 
 static double elapsed_time(const struct timeval &begin, const struct timeval &end)
@@ -184,7 +184,7 @@ public:
     	gettimeofday(&begin, 0);
 
     	unsigned int len = 1000 * 1000 * 1000;
-    	for (int i = 0; i < len; ++i)
+    	for (unsigned int i = 0; i < len; ++i)
     		od.next();
 
         gettimeofday(&end, 0);
@@ -230,7 +230,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OdometerTest);
 
-} // namespace libdap
+} // namespace functions
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
@@ -259,7 +259,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::OdometerTest::") + argv[i++];
+            test = string("functions::OdometerTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

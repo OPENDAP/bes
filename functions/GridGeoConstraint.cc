@@ -36,6 +36,7 @@
 //#define DODS_DEBUG
 
 #include <Float64.h>
+#include <Grid.h>
 #include <dods-datatypes.h>
 #include <Error.h>
 #include <InternalErr.h>
@@ -45,8 +46,9 @@
 #include "GridGeoConstraint.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 /** @brief Initialize GeoConstraint with a Grid.
 
@@ -390,4 +392,4 @@ void GridGeoConstraint::apply_constraint_to_data()
     }
 }
 
-} // namespace libdap
+} // namespace functions

@@ -38,6 +38,7 @@
 //#define DODS_DEBUG2
 
 #include <Float64.h>
+#include <Array.h>
 #include <Error.h>
 #include <InternalErr.h>
 #include <dods-datatypes.h>
@@ -47,8 +48,9 @@
 #include "GeoConstraint.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 /** This is used with find_if(). The GeoConstraint class holds a set of strings
     which are prefixes for variable names. Using the regular find() locates

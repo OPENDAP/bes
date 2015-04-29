@@ -46,8 +46,9 @@
 #include "TabularFunction.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 /**
  * Simple function to read the values of an Array. Can be called on its
@@ -342,6 +343,7 @@ void TabularFunction::add_index_column(const Shape &indep_shape, const Shape &de
     dep_vars.insert(dep_vars.begin(), a);
 }
 
+#if 0
 /**
  * @brief Transform one or more arrays to a sequence.
  *
@@ -399,6 +401,7 @@ void TabularFunction::function_dap2_tabular_2(int argc, BaseType *argv[], DDS &,
     *btpp = response.release();
     return;
 }
+#endif
 
 /**
  * @brief Transform one or more arrays to a sequence.
@@ -579,4 +582,4 @@ BaseType *TabularFunction::function_dap4_tabular(D4RValueList *args, DMR &dmr)
 }
 #endif
 
-} // namesspace libdap
+} // namesspace functions

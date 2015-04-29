@@ -25,15 +25,17 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
 
 class D4RValueList;
 class DMR;
+}
 
-void function_dap2_bbox(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-BaseType *function_dap4_bbox(D4RValueList *args, DMR &dmr);
+namespace functions {
+
+void function_dap2_bbox(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_dap4_bbox(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class BBoxFunction: public libdap::ServerFunction
 {
@@ -45,8 +47,8 @@ public:
         setUsageString("bbox(<array>, <float64>, <float64>)");
         setRole("http://services.opendap.org/dap4/server-side-function/bbox");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bbox");
-        setFunction(libdap::function_dap2_bbox);
-        setFunction(libdap::function_dap4_bbox);
+        setFunction(function_dap2_bbox);
+        setFunction(function_dap4_bbox);
         setVersion("1.0");
     }
     virtual ~BBoxFunction()
@@ -54,4 +56,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace
