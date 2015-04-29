@@ -31,6 +31,8 @@ class DDS;
 
 namespace functions {
 
+void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask);
+
 void function_mask_dap2_array(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 libdap::BaseType *function_mask_dap4_array(libdap::D4RValueList *args, libdap::DMR &dmr);
 
@@ -49,8 +51,8 @@ public:
         setUsageString("mask_array(array, mask)");
         setRole("http://services.opendap.org/dap4/server-side-function/mask_array");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#mask_array");
-        setFunction(libdap::function_mask_dap2_array);
-        setFunction(libdap::function_mask_dap4_array);
+        setFunction(functions::function_mask_dap2_array);
+        setFunction(functions::function_mask_dap4_array);
         setVersion("1.0");
     }
     virtual ~MaskArrayFunction()

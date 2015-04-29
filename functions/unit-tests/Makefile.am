@@ -53,7 +53,7 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest
+OdometerTest MaskArrayFunctionTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -76,34 +76,39 @@ TEST_SRC = test_utils.cc test_utils.h
 TEST_OBJ = ../roi_util.o ../functions_util.o
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
-CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 Dap4_CEFunctionsTest_SOURCES = Dap4_CEFunctionsTest.cc
-Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc
-GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 # If dist/distclean fails here, look at the ../ SOURCES and the value of subdir-objects.
 # It may be that subdir-objects must be set up higher in the chain of Makefiles.
 TabularFunctionTest_OBJ = ../TabularFunction.o
 TabularFunctionTest_SOURCES = TabularFunctionTest.cc
-TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 # Dap4_TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h Dap4_TabularFunctionTest.cc
 # Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
 BBoxFunctionTest__OBJ = ../BBoxFunction.o
 BBoxFunctionTest_SOURCES = BBoxFunctionTest.cc $(TEST_SRC)
-BBoxFunctionTest_LDADD = $(BBoxFunctionTest__OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+BBoxFunctionTest_LDADD = $(BBoxFunctionTest__OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 BBoxUnionFunctionTest_OBJ = ../BBoxUnionFunction.o
 BBoxUnionFunctionTest_SOURCES = BBoxUnionFunctionTest.cc $(TEST_SRC)
-BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 RoiFunctionTest_OBJ = ../RoiFunction.o
 RoiFunctionTest_SOURCES = RoiFunctionTest.cc $(TEST_SRC)
-RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 OdometerTest_OBJ = ../Odometer.o
 OdometerTest_SOURCES = OdometerTest.cc $(TEST_SRC)
 OdometerTest_LDADD = $(OdometerTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
+MaskArrayFunctionTest_OBJ = ../MaskArrayFunction.o
+MaskArrayFunctionTest_SOURCES = MaskArrayFunctionTest.cc $(TEST_SRC)
+MaskArrayFunctionTest_LDADD = $(MaskArrayFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+

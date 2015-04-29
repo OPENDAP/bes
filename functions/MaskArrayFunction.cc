@@ -31,16 +31,9 @@
 
 #include <Type.h>
 #include <BaseType.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
 #include <Str.h>
-#include <Url.h>
 #include <Array.h>
+#include <Structure.h>
 #include <Error.h>
 #include <DDS.h>
 
@@ -56,6 +49,7 @@
 #include <BESDebug.h>
 
 #include "MakeArrayFunction.h"
+#include "functions_util.h"
 
 using namespace libdap;
 
@@ -67,25 +61,42 @@ string mask_array_info =
                 + "</function>";
 
 /**
- * Test for acceptable array types for the N-1 arguments of roi().
- * Throw Error if the array is not valid for this function
+ * Helper for the DAP2 and DAP4 server functions.
  *
- * @param btp Test this variable.
- * @exception Error thrown if the array is not valid
+ * After the server functions have done their QC, apply the mask to the
+ * data array, altering its values in place.
+ *
+ * @note Assume the array, mask and no_data_value have been QC'd and are valid.
+ *
+ * @param array The data array
+ * @param no_data_value Use this value to mark locations that are not set in the mask.
+ * @param mask The mask. This is a binary mask, where 1 is 'set' and 0 is 'not set'.
  */
-static void check_number_type_array(BaseType *btp)
+void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask)
 {
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__, "roi() function called with null variable.");
+    // Get the data in a vector
+    // FIXME Only handles data arrays that are int32s...
+    switch (array->var()->type()) {
+    case dods_int32_c: {
+        array->read();
+        array->set_read_p(true);
+        unsigned long data_size = array->length();
+        vector<dods_int32> data(data_size);
+        array->value(&data[0]);
 
-    if (btp->type() != dods_array_c)
-        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array.");
+        // Use transform here?
+        vector<dods_byte>::const_iterator mi = mask.begin();
+        for(vector<dods_int32>::iterator i = data.begin(), e = data.end(); i != e; ++i) {
+            if (!*mi++) *i = no_data_value;
+        }
 
-    Array *a = static_cast<Array *>(btp);
-    if (!a->var()->is_simple_type() || a->var()->type() == dods_str_c || a->var()->type() == dods_url_c)
-        throw Error("In function roi(): Expected argument '" + btp->name() + "' to be an Array of numeric types.");
+        array->set_value(data, data.size());
+        break;
+    }
+    default:
+        throw InternalErr(__FILE__, __LINE__, "In mask_array(): Type " + array->type_name() + " not handled.");
+    }
 }
-
 
 /**
  * Implementation of the mask_array() function for DAP2.
@@ -101,7 +112,7 @@ static void check_number_type_array(BaseType *btp)
  * @param btpp Value-result parameter that holds either the masked array
  * or a DAP2 String variable with usage information.
  */
-void function_mask_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btpp)
 {
     // Called with no args? Return usage information.
     if (argc == 0) {
@@ -116,28 +127,31 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **
     // QC args: must have a mask, ND value and 1+ array.
     if (argc < 3) throw Error(malformed_expr, "mask_array(Array1, ..., ArrayN, NoData, Mask) requires at least three arguments.");
 
+    // Get the NoData value; it must be a number
+    double no_data_value = extract_double_value(argv[argc-2]);
+
     // Get the mask, which must be a DAP Byte array
     BaseType *mask_var = argv[argc-1];
 
-    check_number_type_array(mask_var);      // Throws Error
+    check_number_type_array(mask_var);      // Throws Error if not a numeric array
     if (mask_var->var()->type() == dods_byte_c)
         throw Error(malformed_expr, "mask_array: Expected the last argument (the mask) to be a byte array.");
 
-    vector<dods_byte> mask;
+    mask_var->read();
+    mask_var->set_read_p(true);
+    vector<dods_byte> mask(mask_var->length());
     static_cast<Array*>(mask_var)->value(&mask[0]);     // get the value
 
-#if 0
     // The Mask and Array(s) must be numerical and match in shape
-
-    // The NoData value must be a number
+    // FIXME Add this.
 
     // Now mask the arrays
     for (int i = 0; i < argc-2; ++i) {
-        mask_array(argv[i], no_data_value, mask);
+        mask_array(static_cast<Array*>(argv[i]), no_data_value, mask);
     }
 
     // Build the return value(s) - this means make copies of the masked arrays
-    BaseType *dest = 0;
+    BaseType *dest = 0; // null_ptr
     if (argc == 3)
         dest = argv[0]->ptr_duplicate();
     else {
@@ -152,7 +166,7 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **
 
     // Return the array or structure containing the arrays
     *btpp = dest;
-#endif
+
     return;
 }
 
@@ -163,7 +177,7 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **
  * @param dmr
  * @return The masked array or a DAP4 String with usage information
  */
-BaseType *function_mask_dap4_array(D4RValueList *args, DMR &dmr)
+BaseType *function_mask_dap4_array(D4RValueList *args, DMR &)
 {
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
@@ -268,6 +282,8 @@ BaseType *function_mask_dap4_array(D4RValueList *args, DMR &dmr)
 
     return dest;
 #endif
+
+    return 0; // null_ptr
 }
 
 } // namesspace functions
