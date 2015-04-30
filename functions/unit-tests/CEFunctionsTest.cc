@@ -79,11 +79,11 @@ namespace functions {
 class CEFunctionsTest:public TestFixture
 {
 private:
-    DDS * dds;
+    DDS *dds;
     TestTypeFactory btf;
     ConstraintEvaluator ce;
 public:
-    CEFunctionsTest()
+    CEFunctionsTest(): dds(0)
     {}
     ~CEFunctionsTest()
     {}

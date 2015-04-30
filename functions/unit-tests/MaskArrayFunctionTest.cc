@@ -32,6 +32,7 @@
 #include <BaseType.h>
 #include <Byte.h>
 #include <Int32.h>
+#include <Float32.h>
 #include <Str.h>
 #include <Array.h>
 #include <Structure.h>
@@ -72,21 +73,21 @@ private:
     // ConstraintEvaluator ce;
 
     Array *one_d_array, *two_d_array;
+    Array *float_2d_array;
     Array *one_d_mask, *two_d_mask;
 
     vector<dods_byte> d_mask, d_mask2;
 
 public:
-    MaskArrayFunctionTest(): one_d_array(0), two_d_array(0), one_d_mask(0), two_d_mask(0)
+    MaskArrayFunctionTest(): one_d_array(0), two_d_array(0), float_2d_array(0),
+        one_d_mask(0), two_d_mask(0), d_mask(10), d_mask2(50)
     {
-        d_mask.reserve(10);
         for (int i = 0; i < 10; ++i)
-            d_mask[i] = (i < 5) ? 1: 0;
+            d_mask.at(i) = (i < 5) ? 1: 0;
 
-        d_mask2.reserve(50);
         for (int i = 0; i < 10; ++i)
             for (int j = 0; j < 5; ++j)
-                d_mask2[j*10 + i] = (i < 5) ? 1: 0;
+                d_mask2.at(j*10 + i) = (i < 5) ? 1: 0;
     }
 
     ~MaskArrayFunctionTest()
@@ -104,7 +105,7 @@ public:
                 values[i] = 10 * sin(i * 18);
             }
             DBG2(cerr << "Initial one D Array data values: ");
-            DBG2(copy(values.begin(), values.end(), std::ostream_iterator<dods_int32>(std::cerr, ", ")));
+            DBG2(copy(values.begin(), values.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG2(cerr << endl);
             one_d_array->set_value(values, values.size());
 
@@ -117,9 +118,22 @@ public:
                 for (int j = 0; j < 5; ++j)
                     values2[j*10 + i] = 10 * sin(i * 18);
             DBG2(cerr << "Initial two D Array data values: ");
-            DBG2(copy(values2.begin(), values2.end(), std::ostream_iterator<dods_int32>(std::cerr, ", ")));
+            DBG2(copy(values2.begin(), values2.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG2(cerr << endl);
             two_d_array->set_value(values2, values2.size());
+
+            float_2d_array = new Array("float_2d_array", new Float32("float_2d_array"));
+            float_2d_array->append_dim(10, "one");
+            float_2d_array->append_dim(5, "two");
+
+            vector<dods_float32> values3(50);
+            for (int i = 0; i < 10; ++i)
+                for (int j = 0; j < 5; ++j)
+                    values3[j*10 + i] = sin(i * 18);
+            DBG2(cerr << "Initial two D Array data values: ");
+            DBG2(copy(values3.begin(), values3.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+            DBG2(cerr << endl);
+            float_2d_array->set_value(values3, values3.size());
 
             // set up masks - masks are always Byte Arrays
             one_d_mask = new Array("one_d_mask", new Byte("one_d_mask"));
@@ -171,12 +185,14 @@ public:
         DBG(cerr << "In mask_array_one_d_test..." << endl);
 
         try {
-            mask_array(one_d_array, 0, d_mask);
+            cerr << "d_mask.size(): " << d_mask.size() << endl;
+
+            mask_array_helper<dods_int32>(one_d_array, 0, d_mask);
 
             vector<dods_int32> data(one_d_array->length());
             one_d_array->value(&data[0]);
             DBG(cerr << "Masked data values: ");
-            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, ", ")));
+            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG(cerr << endl);
 
             CPPUNIT_ASSERT(data[4] == 2 && data[5] == 0);       // ...could test all the values
@@ -193,12 +209,12 @@ public:
         DBG(cerr << "In mask_array_two_d_test..." << endl);
 
         try {
-            mask_array(two_d_array, 0, d_mask2);
+            mask_array_helper<dods_int32>(two_d_array, 0, d_mask2);
 
             vector<dods_int32> data(two_d_array->length());
             two_d_array->value(&data[0]);
             DBG(cerr << "Masked data values: ");
-            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, ", ")));
+            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG(cerr << endl);
 
             CPPUNIT_ASSERT(data[4] == 2 && data[5] == 0);       // ...could test all the values
@@ -212,6 +228,32 @@ public:
         }
 
         DBG(cerr << "Out mask_array_two_d_test" << endl);
+    }
+
+    void mask_array_float_2d_test()
+    {
+        DBG(cerr << "In mask_array_float_2d_test..." << endl);
+
+        try {
+            mask_array_helper<dods_float32>(float_2d_array, 0, d_mask2);
+
+            vector<dods_float32> data(float_2d_array->length());
+            float_2d_array->value(&data[0]);
+            DBG(cerr << "Masked data values: ");
+            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+            DBG(cerr << endl);
+
+            CPPUNIT_ASSERT(double_eq(data[4], 0.253823) && data[5] == 0);       // ...could test all the values
+            CPPUNIT_ASSERT(double_eq(data[14], 0.253823) && data[15] == 0);
+            CPPUNIT_ASSERT(double_eq(data[24], 0.253823) && data[25] == 0);
+            CPPUNIT_ASSERT(double_eq(data[34], 0.253823) && data[35] == 0);
+            CPPUNIT_ASSERT(double_eq(data[44], 0.253823) && data[45] == 0);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+        DBG(cerr << "Out mask_array_float_2d_test" << endl);
     }
 
 #if 0
@@ -469,6 +511,7 @@ public:
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(mask_array_one_d_test);
     CPPUNIT_TEST(mask_array_two_d_test);
+    CPPUNIT_TEST(mask_array_float_2d_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

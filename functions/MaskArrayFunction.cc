@@ -28,6 +28,7 @@
 
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include <Type.h>
 #include <BaseType.h>
@@ -72,30 +73,25 @@ string mask_array_info =
  * @param no_data_value Use this value to mark locations that are not set in the mask.
  * @param mask The mask. This is a binary mask, where 1 is 'set' and 0 is 'not set'.
  */
-void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask)
+template <typename T>
+void mask_array_helper(Array *array, double no_data_value, const vector<dods_byte> &mask)
 {
-    // Get the data in a vector
-    // FIXME Only handles data arrays that are int32s...
-    switch (array->var()->type()) {
-    case dods_int32_c: {
-        array->read();
-        array->set_read_p(true);
-        unsigned long data_size = array->length();
-        vector<dods_int32> data(data_size);
-        array->value(&data[0]);
+    // Read the data array's data
+    array->read();
+    array->set_read_p(true);
+    vector<T> data(array->length());
+    array->value(&data[0]);
 
-        // Use transform here?
-        vector<dods_byte>::const_iterator mi = mask.begin();
-        for(vector<dods_int32>::iterator i = data.begin(), e = data.end(); i != e; ++i) {
-            if (!*mi++) *i = no_data_value;
-        }
+    assert(data.size() == mask.size());
 
-        array->set_value(data, data.size());
-        break;
+    // mask the data array
+    vector<dods_byte>::const_iterator mi = mask.begin();
+    for (typename vector<T>::iterator i = data.begin(), e = data.end(); i != e; ++i) {
+        if (!*mi++) *i = no_data_value;
     }
-    default:
-        throw InternalErr(__FILE__, __LINE__, "In mask_array(): Type " + array->type_name() + " not handled.");
-    }
+
+    // reset the values
+    array->set_value(data, data.size());
 }
 
 /**
@@ -142,12 +138,39 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btp
     vector<dods_byte> mask(mask_var->length());
     static_cast<Array*>(mask_var)->value(&mask[0]);     // get the value
 
-    // The Mask and Array(s) must be numerical and match in shape
-    // FIXME Add this.
-
     // Now mask the arrays
     for (int i = 0; i < argc-2; ++i) {
-        mask_array(static_cast<Array*>(argv[i]), no_data_value, mask);
+        Array *array = static_cast<Array*>(argv[i]);
+        // The Mask and Array(s) should match in shape, but to simplify use, we test
+        // only that they have the same number of elements.
+        if ((vector<dods_byte>::size_type)array->length() != mask.size())
+            throw Error(malformed_expr, "In function make_array(): The array '" + array->name() + "' and the mask do not match in size.");
+
+        switch (array->var()->type()) {
+        case dods_byte_c:
+            mask_array_helper<dods_byte>(array, no_data_value, mask);
+            break;
+        case dods_int16_c:
+            mask_array_helper<dods_int16>(array, no_data_value, mask);
+            break;
+        case dods_uint16_c:
+            mask_array_helper<dods_uint16>(array, no_data_value, mask);
+            break;
+        case dods_int32_c:
+            mask_array_helper<dods_int32>(array, no_data_value, mask);
+            break;
+        case dods_uint32_c:
+            mask_array_helper<dods_uint32>(array, no_data_value, mask);
+            break;
+        case dods_float32_c:
+            mask_array_helper<dods_float32>(array, no_data_value, mask);
+            break;
+        case dods_float64_c:
+            mask_array_helper<dods_float64>(array, no_data_value, mask);
+            break;
+        default:
+            throw InternalErr(__FILE__, __LINE__, "In mask_array(): Type " + array->type_name() + " not handled.");
+        }
     }
 
     // Build the return value(s) - this means make copies of the masked arrays

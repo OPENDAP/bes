@@ -31,7 +31,9 @@ class DDS;
 
 namespace functions {
 
-void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask);
+//void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask);
+template <typename T>
+void mask_array_helper(Array* array, double no_data_value, const vector<dods_byte>& mask);
 
 void function_mask_dap2_array(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 libdap::BaseType *function_mask_dap4_array(libdap::D4RValueList *args, libdap::DMR &dmr);

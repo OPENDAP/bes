@@ -550,7 +550,7 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
  */
 GeoConstraint::GeoConstraint()
         : d_array_data(0), d_array_data_size(0),
-        d_lat(0), d_lon(0),
+        d_lat(0), d_lon(0), d_lat_length(0), d_lon_length(0),
         d_bounding_box_set(false),
         d_longitude_rightmost(false),
         d_longitude_notation(unknown_notation),
