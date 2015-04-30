@@ -33,16 +33,20 @@
 #include <Byte.h>
 #include <Int32.h>
 #include <Float32.h>
+#include <Float64.h>
 #include <Str.h>
 #include <Array.h>
 #include <Structure.h>
 #include <DDS.h>
+#include <DMR.h>
+#include <D4RValue.h>
 #include <util.h>
 #include <GetOpt.h>
 #include <debug.h>
 
 #include <test/TestTypeFactory.h>
 #include <test/TestCommon.h>
+#include <test/D4TestTypeFactory.h>
 
 #include "test_config.h"
 #include "test_utils.h"
@@ -70,6 +74,7 @@ class MaskArrayFunctionTest:public TestFixture
 {
 private:
     TestTypeFactory btf;
+    D4TestTypeFactory d4_ttf;
     // ConstraintEvaluator ce;
 
     Array *one_d_array, *two_d_array;
@@ -139,11 +144,13 @@ public:
             one_d_mask = new Array("one_d_mask", new Byte("one_d_mask"));
             one_d_mask->append_dim(10, "one");
             one_d_mask->set_value(d_mask, d_mask.size());
+            one_d_mask->set_read_p(true);
 
             two_d_mask = new Array("two_d_mask", new Byte("two_d_mask"));
             two_d_mask->append_dim(10, "one");
             two_d_mask->append_dim(5, "two");
             two_d_mask->set_value(d_mask2, d_mask2.size());
+            two_d_mask->set_read_p(true);
         }
         catch (Error & e) {
             cerr << "SetUp: " << e.get_error_message() << endl;
@@ -180,13 +187,11 @@ public:
         DBG(cerr << "Out no_arg_test" << endl);
     }
 
-    void mask_array_one_d_test()
+    void mask_array_helper_one_d_test()
     {
-        DBG(cerr << "In mask_array_one_d_test..." << endl);
+        DBG(cerr << "In mask_array_helper_one_d_test..." << endl);
 
         try {
-            cerr << "d_mask.size(): " << d_mask.size() << endl;
-
             mask_array_helper<dods_int32>(one_d_array, 0, d_mask);
 
             vector<dods_int32> data(one_d_array->length());
@@ -201,12 +206,12 @@ public:
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
 
-        DBG(cerr << "Out mask_array_one_d_test" << endl);
+        DBG(cerr << "Out mask_array_helper_one_d_test" << endl);
     }
 
-    void mask_array_two_d_test()
+    void mask_array_helper_two_d_test()
     {
-        DBG(cerr << "In mask_array_two_d_test..." << endl);
+        DBG(cerr << "In mask_array_helper_two_d_test..." << endl);
 
         try {
             mask_array_helper<dods_int32>(two_d_array, 0, d_mask2);
@@ -227,12 +232,12 @@ public:
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
 
-        DBG(cerr << "Out mask_array_two_d_test" << endl);
+        DBG(cerr << "Out mask_array_helper_two_d_test" << endl);
     }
 
-    void mask_array_float_2d_test()
+    void mask_array_helper_float_2d_test()
     {
-        DBG(cerr << "In mask_array_float_2d_test..." << endl);
+        DBG(cerr << "In mask_array_helper_float_2d_test..." << endl);
 
         try {
             mask_array_helper<dods_float32>(float_2d_array, 0, d_mask2);
@@ -253,147 +258,23 @@ public:
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
 
-        DBG(cerr << "Out mask_array_float_2d_test" << endl);
+        DBG(cerr << "Out mask_array_helper_float_2d_test" << endl);
     }
 
-#if 0
-    void string_arg_test() {
-        BaseType *result = 0;
-        try {
-            Array a("values", new Str("values"));
-            a.append_dim(5, "strings");
-
-            // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
-            BaseType *argv[] = { &a, &min, &max };
-            function_dap2_bbox(0, argv, *float32_array /* DDS & */, &result);
-
-            CPPUNIT_FAIL("bbox() Should throw an exception when called with a Str array");
-        }
-        catch (Error &e) {
-            CPPUNIT_ASSERT(true);
-        }
-        catch (...) {
-            CPPUNIT_FAIL("unknown exception.");
-        }
-    }
-
-    void float32_array_test() {
-        BaseType *btp = *(float32_array->var_begin());
-
-        // It's an array
-        CPPUNIT_ASSERT(btp->type() == dods_array_c);
-
-        // ... and it's an Float32 array
-        Array *a = static_cast<Array*>(btp);
-        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
-
-        //  it has thirty elements
-        CPPUNIT_ASSERT(a->length() == 30);
-
-        TestCommon *tc = dynamic_cast<TestCommon*>(a);
-        CPPUNIT_ASSERT(tc != 0);
-        tc->set_series_values(true);
-
-        DBG2(a->read());
-        DBG2(cerr << "Array 'a': ");
-        DBG2(a->print_val(cerr));
+    void float32_2d_mask_array_test() {
+        DBG(cerr << "In float32_2d_mask_array_test..." << endl);
 
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
+            Float64 no_data("no_data");
+            no_data.set_value(0.0);
+            no_data.set_read_p(true);
 
-            BaseType *argv[] = { a, &min, &max };
-            function_dap2_bbox(3, argv, *float32_array /* DDS & */, &result);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error:" + e.get_error_message());
-        }
+            DDS dds(&btf, "empty");
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_bbox.baseline.xml");
-        ostringstream oss;
-        result->print_xml(oss);
-
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
-
-        CPPUNIT_ASSERT(oss.str() == baseline);
-
-        CPPUNIT_ASSERT(result->type() == dods_array_c);
-
-        Array *result_array = static_cast<Array*>(result);
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(result->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
-
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 8);    // values are hardwired in the initial version of this function
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 26);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "a_values");
-    }
-
-    void float32_2d_array_test() {
-        BaseType *btp = *(float32_2d_array->var_begin());
-
-        // It's an array
-        CPPUNIT_ASSERT(btp->type() == dods_array_c);
-
-        // ... and it's an Float32 array
-        Array *a = static_cast<Array*>(btp);
-        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
-
-        //  it has thirty elements
-        CPPUNIT_ASSERT(a->length() == 1020);
-
-        TestCommon *tc = dynamic_cast<TestCommon*>(a);
-        CPPUNIT_ASSERT(tc != 0);
-        tc->set_series_values(true);
-
-        DBG2(a->read());
-        DBG2(cerr << "Array 'a': ");
-        DBG2(a->print_val(cerr));
-
-        BaseType *result = 0;
-        try {
-            // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(40.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(50.0);
-            max.set_read_p(true);
-
-            BaseType *argv[] = { a, &min, &max };
-            function_dap2_bbox(3, argv, *float32_2d_array /* DDS & */, &result);
+            BaseType *argv[] = { float_2d_array, &no_data, two_d_mask };
+            function_mask_dap2_array(3, argv, dds, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL("Error: " + e.get_error_message());
@@ -402,9 +283,9 @@ public:
         ostringstream oss;
         result->print_xml(oss);
 
-        DBG(cerr << "DDX of bbox()'s response: " << endl << oss.str() << endl);
+        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
 
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_bbox.baseline.xml");
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_mask_array.baseline.xml");
         CPPUNIT_ASSERT(oss.str() == baseline);
 
         CPPUNIT_ASSERT(result->type() == dods_array_c);
@@ -413,105 +294,158 @@ public:
 
         DBG(oss.str(""));
         DBG(oss.clear());
-        DBG(result->print_val(oss));
+        DBG(result_array->print_val(oss));
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
-        // we know it's a Structure * and it has one element because the test above passed
-        Structure *indices = static_cast<Structure*>(result_array->var(0));
-        CPPUNIT_ASSERT(indices != 0);
+        vector<dods_float32> vals(result_array->length());
+        result_array->value(&vals[0]);
 
-        Constructor::Vars_iter i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
+        CPPUNIT_ASSERT(double_eq(vals[4], 0.253823));
+        CPPUNIT_ASSERT(double_eq(vals[5], 0.0));
 
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 29);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "rows");
-
-        indices = static_cast<Structure*>(result_array->var(1));
-        CPPUNIT_ASSERT(indices != 0);
-
-        i = indices->var_begin();
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "start");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 0);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "stop");
-        CPPUNIT_ASSERT((*i)->type() == dods_int32_c);
-        CPPUNIT_ASSERT(static_cast<Int32*>(*i)->value() == 33);
-
-        ++i;
-        CPPUNIT_ASSERT(i != indices->var_end());
-        CPPUNIT_ASSERT((*i)->name() == "name");
-        CPPUNIT_ASSERT((*i)->type() == dods_str_c);
-        CPPUNIT_ASSERT(static_cast<Str*>(*i)->value() == "cols");
+        DBG(cerr << "Out float32_2d_mask_array_test" << endl);
     }
 
-    // Do we get an exceptin when there's an empty box?
-    void float32_2d_array_test_error() {
-        BaseType *btp = *(float32_2d_array->var_begin());
-
-        // It's an array
-        CPPUNIT_ASSERT(btp->type() == dods_array_c);
-
-        // ... and it's an Float32 array
-        Array *a = static_cast<Array*>(btp);
-        CPPUNIT_ASSERT(a->var()->type() == dods_float32_c);
-
-        //  it has thirty elements
-        CPPUNIT_ASSERT(a->length() == 1020);
-
-        TestCommon *tc = dynamic_cast<TestCommon*>(a);
-        CPPUNIT_ASSERT(tc != 0);
-        tc->set_series_values(true);
-
-        DBG2(a->read());
-        DBG2(cerr << "Array 'a': ");
-        DBG2(a->print_val(cerr));
+    void general_mask_array_test() {
+        DBG(cerr << "In general_mask_array_test..." << endl);
 
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            Float64 min("min");
-            min.set_value(50.0);
-            min.set_read_p(true);
-            Float64 max("max");
-            max.set_value(51.0);
-            max.set_read_p(true);
+            Float64 no_data("no_data");
+            no_data.set_value(0.0);
+            no_data.set_read_p(true);
 
-            BaseType *argv[] = { a, &min, &max };
-            function_dap2_bbox(3, argv, *float32_2d_array /* DDS & */, &result);
-            CPPUNIT_FAIL("Expected an exception to be thrown");
+            DDS dds(&btf, "empty");
+
+            BaseType *argv[] = { two_d_array, float_2d_array, &no_data, two_d_mask };
+            function_mask_dap2_array(4, argv, dds, &result);
         }
         catch (Error &e) {
-            DBG(cerr << "Caught expected exception Error: " << e.get_error_message() << endl);
-            CPPUNIT_ASSERT(true);
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
-        catch (...) {
-            CPPUNIT_FAIL("Unexpected exception thrown");
-        }
+
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
+
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_structure_c);
+        Structure *result_struct = static_cast<Structure*>(result);
+        CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
+
+        Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
+
+        DBG(oss.str(""));
+        DBG(oss.clear());
+        DBG(array_1->print_val(oss));
+        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+
+        vector<dods_int32> vals_1(array_1->length());
+        array_1->value(&vals_1[0]);
+
+        CPPUNIT_ASSERT(vals_1[4] == 2);
+        CPPUNIT_ASSERT(vals_1[5] == 0);
+
+        Array *array_2 = static_cast<Array*>(*(result_struct->var_begin() + 1));
+
+        DBG(oss.str(""));
+        DBG(oss.clear());
+        DBG(array_2->print_val(oss));
+        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+
+        vector<dods_float32> vals_2(array_2->length());
+        array_2->value(&vals_2[0]);
+
+        CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
+        CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));
+
+        DBG(cerr << "Out general_mask_array_test" << endl);
     }
-#endif
+
+    void dap4_general_mask_array_test() {
+        DBG(cerr << "In dap4_general_mask_array_test..." << endl);
+
+        BaseType *result = 0;
+        try {
+            // Must set up the args as per the CE parser
+            Float64 no_data("no_data");
+            no_data.set_value(0.0);
+            no_data.set_read_p(true);
+
+            DMR dmr(&d4_ttf, "empty");
+
+            //BaseType *argv[] = { two_d_array, float_2d_array, &no_data, two_d_mask };
+            D4RValueList *args = new D4RValueList;
+            args->add_rvalue(new D4RValue(two_d_array));
+            args->add_rvalue(new D4RValue(float_2d_array));
+            args->add_rvalue(new D4RValue(&no_data));
+            args->add_rvalue(new D4RValue(two_d_mask));
+
+            result = function_mask_dap4_array(args, dmr);
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL("Error: " + e.get_error_message());
+        }
+
+        ostringstream oss;
+        result->print_xml(oss);
+
+        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
+
+        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
+        CPPUNIT_ASSERT(oss.str() == baseline);
+
+        CPPUNIT_ASSERT(result->type() == dods_structure_c);
+        Structure *result_struct = static_cast<Structure*>(result);
+        CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
+        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
+
+        Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
+
+        DBG(oss.str(""));
+        DBG(oss.clear());
+        DBG(array_1->print_val(oss));
+        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+
+        vector<dods_int32> vals_1(array_1->length());
+        array_1->value(&vals_1[0]);
+
+        CPPUNIT_ASSERT(vals_1[4] == 2);
+        CPPUNIT_ASSERT(vals_1[5] == 0);
+
+        Array *array_2 = static_cast<Array*>(*(result_struct->var_begin() + 1));
+
+        DBG(oss.str(""));
+        DBG(oss.clear());
+        DBG(array_2->print_val(oss));
+        DBG(cerr << "Result value: " << endl << oss.str() << endl);
+
+        vector<dods_float32> vals_2(array_2->length());
+        array_2->value(&vals_2[0]);
+
+        CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
+        CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));
+
+        DBG(cerr << "Out dap4_general_mask_array_test" << endl);
+    }
 
     CPPUNIT_TEST_SUITE( MaskArrayFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
-    CPPUNIT_TEST(mask_array_one_d_test);
-    CPPUNIT_TEST(mask_array_two_d_test);
-    CPPUNIT_TEST(mask_array_float_2d_test);
+    CPPUNIT_TEST(mask_array_helper_one_d_test);
+    CPPUNIT_TEST(mask_array_helper_two_d_test);
+    CPPUNIT_TEST(mask_array_helper_float_2d_test);
+
+    CPPUNIT_TEST(float32_2d_mask_array_test);
+    CPPUNIT_TEST(general_mask_array_test);
+    CPPUNIT_TEST(dap4_general_mask_array_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
