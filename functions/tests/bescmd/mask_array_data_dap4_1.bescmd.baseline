@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="function_results">
+    <Dimension name="dim1" size="10"/>
+    <Float64 name="a">
+        <Dim name="/dim1"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>9f192cf9</Value>
+        </Attribute>
+    </Float64>
+</Dataset>
+
+The data:
+Float64 a[dim1 = 10] = {-83.9000015258789, -73.6100006103516, 98.5800018310547, 37.5499992370605, -99.2300033569336, 0, 0, 0, 0, 0};
+
