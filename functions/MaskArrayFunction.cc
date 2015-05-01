@@ -97,14 +97,14 @@ void mask_array_helper(Array *array, double no_data_value, const vector<dods_byt
 /**
  * Implementation of the mask_array() function for DAP2.
  *
- * The mask_array() function takes one or more arrays and applys a mask
+ * The mask_array() function takes one or more arrays and applies a mask
  * to the array, returning and array that holds the array's data values
  * wherever the mask is has a non-zero value and the supplied no-data
  * value otherwise.
  *
- * @param argc
- * @param argv
- * @param dds
+ * @param argc Three or more args
+ * @param argv One or more arrays, a no data value and a mask array
+ * @param dds Not used
  * @param btpp Value-result parameter that holds either the masked array
  * or a DAP2 String variable with usage information.
  */
@@ -121,30 +121,30 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btp
     BESDEBUG("functions", "function_mask_dap2_array() -  argc: " << argc << endl);
 
     // QC args: must have a mask, ND value and 1+ array.
-    if (argc < 3) throw Error(malformed_expr, "mask_array(Array1, ..., ArrayN, NoData, Mask) requires at least three arguments.");
+    if (argc < 3) throw Error(malformed_expr, "In mask_array(Array1, ..., ArrayN, NoData, Mask) requires at least three arguments.");
 
     // Get the NoData value; it must be a number
     double no_data_value = extract_double_value(argv[argc-2]);
 
     // Get the mask, which must be a DAP Byte array
-    BaseType *mask_var = argv[argc-1];
-
-    check_number_type_array(mask_var);      // Throws Error if not a numeric array
-    if (mask_var->var()->type() == dods_byte_c)
-        throw Error(malformed_expr, "mask_array: Expected the last argument (the mask) to be a byte array.");
+    check_number_type_array(argv[argc-1]);      // Throws Error if not a numeric array
+    Array *mask_var = static_cast<Array*>(argv[argc-1]);
+    if (mask_var->var()->type() != dods_byte_c)
+        throw Error(malformed_expr, "In mask_array(): Expected the last argument (the mask) to be a byte array.");
 
     mask_var->read();
     mask_var->set_read_p(true);
     vector<dods_byte> mask(mask_var->length());
-    static_cast<Array*>(mask_var)->value(&mask[0]);     // get the value
+    mask_var->value(&mask[0]);     // get the value
 
     // Now mask the arrays
     for (int i = 0; i < argc-2; ++i) {
+        check_number_type_array (argv[i]);
         Array *array = static_cast<Array*>(argv[i]);
         // The Mask and Array(s) should match in shape, but to simplify use, we test
         // only that they have the same number of elements.
         if ((vector<dods_byte>::size_type)array->length() != mask.size())
-            throw Error(malformed_expr, "In function make_array(): The array '" + array->name() + "' and the mask do not match in size.");
+            throw Error(malformed_expr, "In make_array(): The array '" + array->name() + "' and the mask do not match in size.");
 
         switch (array->var()->type()) {
         case dods_byte_c:
@@ -196,11 +196,16 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btp
 /**
  * Implementation of the mask_array() function for DAP4.
  *
- * @param args
+ * @note I've duplicated a fair amount of code from teh DAP2 version; I could
+ * code on in terms of the other, but I'll need to think about the type overlap
+ * more before I do that. jhrg 4/30/15
+ *
+ * @param args One or more numeric arrays (int or float), a NoData value and
+ * a mask (a byte array).
  * @param dmr
  * @return The masked array or a DAP4 String with usage information
  */
-BaseType *function_mask_dap4_array(D4RValueList *args, DMR &)
+BaseType *function_mask_dap4_array(D4RValueList *args, DMR &dmr)
 {
     // DAP4 function porting information: in place of 'argc' use 'args.size()'
     if (args == 0 || args->size() == 0) {
@@ -210,103 +215,77 @@ BaseType *function_mask_dap4_array(D4RValueList *args, DMR &)
         return response;
     }
 
-#if 0
-    // Check for 2 arguments
-    DBG(cerr << "args.size() = " << args.size() << endl);
-    if (args->size() < 2)
-        throw Error(malformed_expr, "Wrong number of arguments to make_array(). See make_array() for more information");
+    // Check for 3+ arguments
+    if (args->size() < 3) throw Error(malformed_expr, "In mask_array(Array1, ..., ArrayN, NoData, Mask) requires at least three arguments.");
 
-    string requested_type_name = extract_string_argument(args->get_rvalue(0)->value(dmr));
-    string shape = extract_string_argument(args->get_rvalue(1)->value(dmr));
+    // Get the NoData value (second to last last); it must be a number
+    double no_data_value = extract_double_value(args->get_rvalue(args->size()-2)->value(dmr));
 
-    BESDEBUG("functions", "type: " << requested_type_name << endl);
-    BESDEBUG("functions", "shape: " << shape << endl);
+    // Get the mask (last arg), which must be a DAP Byte array
+    BaseType *mask_btp = args->get_rvalue(args->size()-1)->value(dmr);
+    check_number_type_array (mask_btp);      // Throws Error if not a numeric array
+    Array *mask_var = static_cast<Array*>(mask_btp);
+    if (mask_var->var()->type() != dods_byte_c)
+        throw Error(malformed_expr, "In mask_array(): Expected the last argument (the mask) to be a byte array.");
 
-    // get the DAP type; NB: In DAP4 this will include Url4 and Enum
-    Type requested_type = libdap::get_type(requested_type_name.c_str());
-    if (!is_simple_type(requested_type))
-        throw Error(malformed_expr,
-                "make_array() can only build arrays of simple types (integers, floats and strings).");
+    mask_var->read();
+    mask_var->set_read_p(true);
+    vector<dods_byte> mask(mask_var->length());
+    mask_var->value(&mask[0]);     // get the value
 
-    // parse the shape information. The shape expression form is [size0][size1]...[sizeN]
-    // count [ and ] and the numbers should match (low budget invariant) and that's N
-    // use an istringstream to read the integer sizes and build an Array
-    vector<int> dims = parse_dims(shape);	// throws on parse error
+    // Now mask the arrays
+    for (unsigned int i = 0; i < args->size() - 2; ++i) {
+        BaseType *array_btp = args->get_rvalue(i)->value(dmr);
+        check_number_type_array (array_btp);
+        Array *array = static_cast<Array*>(array_btp);
+        // The Mask and Array(s) should match in shape, but to simplify use, we test
+        // only that they have the same number of elements.
+        if ((vector<dods_byte>::size_type) array->length() != mask.size())
+            throw Error(malformed_expr,
+                    "In make_array(): The array '" + array->name() + "' and the mask do not match in size.");
 
-    static unsigned long counter = 1;
-    string name;
-    do {
-        name = "g" + long_to_string(counter++);
-    } while (dmr.root()->var(name));
-
-    Array *dest = new Array(name, 0);	// The ctor for Array copies the prototype pointer...
-    BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(requested_type));	// ... so use add_var_nocopy() to add it instead
-
-    unsigned long number_of_elements = 1;
-    vector<int>::iterator i = dims.begin();
-    while (i != dims.end()) {
-        number_of_elements *= *i;
-        dest->append_dim(*i++);
+        switch (array->var()->type()) {
+        case dods_byte_c:
+            mask_array_helper<dods_byte>(array, no_data_value, mask);
+            break;
+        case dods_int16_c:
+            mask_array_helper<dods_int16>(array, no_data_value, mask);
+            break;
+        case dods_uint16_c:
+            mask_array_helper<dods_uint16>(array, no_data_value, mask);
+            break;
+        case dods_int32_c:
+            mask_array_helper<dods_int32>(array, no_data_value, mask);
+            break;
+        case dods_uint32_c:
+            mask_array_helper<dods_uint32>(array, no_data_value, mask);
+            break;
+        case dods_float32_c:
+            mask_array_helper<dods_float32>(array, no_data_value, mask);
+            break;
+        case dods_float64_c:
+            mask_array_helper<dods_float64>(array, no_data_value, mask);
+            break;
+        default:
+            throw InternalErr(__FILE__, __LINE__, "In mask_array(): Type " + array->type_name() + " not handled.");
+        }
     }
 
-    // Get the total element number
-    // check that args.size() + 2 is N
-    if (number_of_elements + 2 != args->size())
-        throw Error(malformed_expr,
-                "make_array(): Expected " + long_to_string(number_of_elements) + " parameters but found "
-                        + long_to_string(args->size() - 2) + " instead.");
-
-    switch (requested_type) {
-    // All integer values are stored in Int32 DAP variables by the stock argument parser
-    // except values too large; those are stored in a UInt32
-    case dods_byte_c:
-        read_values<dods_byte, Int32>(args, dmr, dest);
-        break;
-
-    case dods_int16_c:
-        read_values<dods_int16, Int32>(args, dmr, dest);
-        break;
-
-    case dods_uint16_c:
-        read_values<dods_uint16, Int32>(args, dmr, dest);
-        break;
-
-    case dods_int32_c:
-        read_values<dods_int32, Int32>(args, dmr, dest);
-        break;
-
-    case dods_uint32_c:
-        // FIXME Should be UInt32 but the parser uses Int32 unless a value is too big.
-        read_values<dods_uint32, Int32>(args, dmr, dest);
-        break;
-
-    case dods_float32_c:
-        read_values<dods_float32, Float64>(args, dmr, dest);
-        break;
-
-    case dods_float64_c:
-        read_values<dods_float64, Float64>(args, dmr, dest);
-        break;
-
-    case dods_str_c:
-        read_values<string, Str>(args, dmr, dest);
-        break;
-
-    case dods_url_c:
-        read_values<string, Url>(args, dmr, dest);
-        break;
-
-    default:
-        throw InternalErr(__FILE__, __LINE__, "Unknown type error");
+    // Build the return value(s) - this means make copies of the masked arrays
+    BaseType *dest = 0; // null_ptr
+    if (args->size() == 3)
+        dest = args->get_rvalue(0)->value(dmr)->ptr_duplicate();
+    else {
+        dest = new Structure("masked_arays");
+        for (unsigned int i = 0; i < args->size() - 2; ++i) {
+            dest->add_var(args->get_rvalue(i)->value(dmr));     //add_var() copies its arg
+        }
     }
+
     dest->set_send_p(true);
     dest->set_read_p(true);
 
     return dest;
-#endif
-
-    return 0; // null_ptr
 }
 
 } // namesspace functions

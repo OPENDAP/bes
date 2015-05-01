@@ -23,17 +23,18 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <ServerFunction.h>
+#include <dods-datatypes.h>
 
 namespace libdap {
 class BaseType;
+class Array;
 class DDS;
 }
 
 namespace functions {
 
-//void mask_array(Array *array, double no_data_value, const vector<dods_byte> &mask);
 template <typename T>
-void mask_array_helper(Array* array, double no_data_value, const vector<dods_byte>& mask);
+void mask_array_helper(libdap::Array* array, double no_data_value, const std::vector<libdap::dods_byte>& mask);
 
 void function_mask_dap2_array(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 libdap::BaseType *function_mask_dap4_array(libdap::D4RValueList *args, libdap::DMR &dmr);
@@ -53,8 +54,8 @@ public:
         setUsageString("mask_array(array, mask)");
         setRole("http://services.opendap.org/dap4/server-side-function/mask_array");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#mask_array");
-        setFunction(functions::function_mask_dap2_array);
-        setFunction(functions::function_mask_dap4_array);
+        setFunction(function_mask_dap2_array);
+        setFunction(function_mask_dap4_array);
         setVersion("1.0");
     }
     virtual ~MaskArrayFunction()
