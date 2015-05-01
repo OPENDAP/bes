@@ -30,12 +30,12 @@
  */
 void BESDMRResponse::set_container(const string &/*cn*/)
 {
-	// FIXME Add container support
+    // FIXME Add container support
 #if 0
-	if( _dmr && get_explicit_containers() )
-	{
-		_dmr->container_name( cn );
-	}
+    if( _dmr && get_explicit_containers() )
+    {
+        _dmr->container_name( cn );
+    }
 #endif
 }
 
@@ -44,10 +44,10 @@ void BESDMRResponse::set_container(const string &/*cn*/)
 void BESDMRResponse::clear_container()
 {
 #if 0
-	if( _dmr )
-	{
-		_dmr->container_name( "" );
-	}
+    if( _dmr )
+    {
+        _dmr->container_name( "" );
+    }
 #endif
 }
 
@@ -60,19 +60,19 @@ void BESDMRResponse::clear_container()
  */
 void BESDMRResponse::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "BESDMRResponse::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	if (_dmr) {
-		strm << BESIndent::LMarg << "DMR:" << endl;
-		BESIndent::Indent();
-		DapIndent::SetIndent(BESIndent::GetIndent());
-		_dmr->dump(strm);
-		DapIndent::Reset();
-		BESIndent::UnIndent();
-	}
-	else {
-		strm << BESIndent::LMarg << "DMR: null" << endl;
-	}
-	BESIndent::UnIndent();
+    strm << BESIndent::LMarg << "BESDMRResponse::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_dmr) {
+        strm << BESIndent::LMarg << "DMR:" << endl;
+        BESIndent::Indent();
+        DapIndent::SetIndent(BESIndent::GetIndent());
+        _dmr->dump(strm);
+        DapIndent::Reset();
+        BESIndent::UnIndent();
+    }
+    else {
+        strm << BESIndent::LMarg << "DMR: null" << endl;
+    }
+    BESIndent::UnIndent();
 }
 
