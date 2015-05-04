@@ -28,6 +28,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <sstream>
+#include <iterator>
 
 #include <BaseType.h>
 #include <Byte.h>
