@@ -43,17 +43,15 @@ void libdap::set_array_using_double(Array *dest, double *src, int src_len) ;
 
 namespace functions {
 // These functions are defined here in the bes 'functions' module. jhrg 4/28/15
-//
 
-// defined in MakeArrayFunction.cc
 vector<int> parse_dims(const string &shape);
-// bool isValidTypeMatch(Type requestedType, Type argType);
 
-
-// in RoiFunction.cc
 void check_number_type_array(libdap::BaseType *btp, unsigned int rank = 0);
 
 #if 0
+/// We might move these into functions_util over time if they become generally
+/// useful. jhrg 5/1/15
+
 // in LinearScaleFunction.cc
 static double string_to_double(const char *val);
 static double get_attribute_double_value(BaseType *var, const string &attribute);

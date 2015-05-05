@@ -248,7 +248,7 @@ void TabularFunction::build_sequence_values(const vector<Array*> &the_arrays, Se
  * Combine the two SequenceValues vectors to form one table. The dep
  * SequenceValues are the left hand columns and the indep are the right
  * hand ones. Because there can be more dep values than indep values
- * (but dep == indep * N, where N is and integer > 0), and because
+ * (but dep == indep * N, where N is an integer > 0), and because
  * std::vector append operations are faster than inserts, this code loops
  * over dep and inserts elements from indep, returning deps as the function
  * result.

@@ -25,7 +25,6 @@
 
 // The Grid Selection Expression Clause class.
 
-
 #include "config.h"
 
 #include <cstring>

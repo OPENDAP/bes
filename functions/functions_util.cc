@@ -38,7 +38,6 @@ using namespace libdap;
 
 namespace functions {
 
-// defined in MakeArrayFunction.cc
 /** Parse the shape 'expression'. The form of the expression is '[' size ']'
  * @note Also used by bind_shape()
  * @return A vector of ints
@@ -80,10 +79,6 @@ vector<int> parse_dims(const string &shape)
     return dims;
 }
 
-// bool isValidTypeMatch(Type requestedType, Type argType);
-
-
-// in RoiFunction.cc
 /**
  * Test for acceptable array types for the N-1 arguments of roi().
  * Throw Error if the array is not valid for this function
@@ -108,32 +103,5 @@ void check_number_type_array(BaseType *btp, unsigned int rank /* = 0 */)
     if (rank && !(a->dimensions() == rank || a->dimensions() == rank+1))
         throw Error("In function roi(): Expected the array '" + a->name() +"' to be rank " + long_to_string(rank) + " or " + long_to_string(rank+1) + ".");
 }
-
-#if 0
-// in LinearScaleFunction.cc
-static double string_to_double(const char *val);
-static double get_attribute_double_value(BaseType *var, const string &attribute);
-static double get_attribute_double_value(BaseType *var, vector<string> &attributes);
-static double get_missing_value(BaseType *var);
-static double get_slope(BaseType *var);
-static double get_y_intercept(BaseType *var);
-
-// in TabularFunction.cc (these are methods)
-typedef std::vector<unsigned long> Shape;
-static Shape array_shape(Array *a);
-static bool shape_matches(Array *a, const Shape &shape);
-static bool dep_indep_match(const Shape &dep_shape, const Shape &indep_shape);
-
-static unsigned long number_of_values(const Shape &shape);
-
-static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, Shape &shape);
-
-static void read_values(const std::vector<Array*> &arrays);
-
-static void build_sequence_values(const std::vector<Array*> &arrays, SequenceValues &sv);
-static void combine_sequence_values(SequenceValues &dep, const SequenceValues &indep);
-static void add_index_column(const Shape &indep_shape, const Shape &dep_shape,
-        std::vector<Array*> &dep_vars);
-#endif
 
 } // namespace fucntions
