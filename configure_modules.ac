@@ -337,16 +337,16 @@ AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
 
 dnl This is used by the web form code. jhrg 12/11/14
-dods_HTML_Filter=no
-if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
-   dods_HTML_Filter=yes
-else 
-   dods_HTML_Filter=no
-fi
+dnl dods_HTML_Filter=no
+dnl if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
+dnl    dods_HTML_Filter=yes
+dnl else 
+dnl    dods_HTML_Filter=no
+dnl fi
 
-if test "z$dods_HTML_Filter" = "zno"; then
-   AC_MSG_WARN([HTML::Filter not found. See INSTALL])
-fi  
+dnl if test "z$dods_HTML_Filter" = "zno"; then
+dnl    AC_MSG_WARN([HTML::Filter not found. See INSTALL])
+dnl fi  
 
 dnl Freeform hacks
 
@@ -460,7 +460,7 @@ AS_IF([test -z "$with_openjpeg_prefix" -a -n "$ac_bes_dependencies_prefix"],
 
 save_LIBS=$LIBS
 LIBS="-L$with_openjpeg_prefix/lib $LIBS"
-AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [])
+AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [-lm])
 LIBS=$save_LIBS
 
 AM_CONDITIONAL([OPENJPEG_FOUND], [test "x$OPENJPEG_FOUND" = "xyes"])
@@ -519,7 +519,8 @@ CFITS_LDFLAGS="-L${CFITS_PATH_LIBDIR}"
 AC_SUBST([CFITS_LDFLAGS])
 AC_SUBST([CFITS_LIBS])],
 
-[ac_cfits_ok='no']
+[ac_cfits_ok='no'],
+[-lm]
 )
 LDFLAGS="$ac_cfits_save_LDFLAGS"
 

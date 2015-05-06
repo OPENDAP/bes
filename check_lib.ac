@@ -1,0 +1,19 @@
+dnl -*- automake -*-
+dnl Process this file with autoconf to produce a configure script.
+dnl This is a minimal autoconf/configure.ac script used to check 
+dnl search for libraries. Process it using 
+dnl autoconf -o check_lib.sh -W all check_lib.ac
+dal and run it using sh ./check_lib.sh -L... -I...
+
+AC_PREREQ(2.63)
+
+AC_INIT(check_lib, 1.0, support@opendap.org)
+AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
+
+AC_CHECK_LIB([netcdf], [nc_open], [echo "*** Found netcdf"], [echo "*** did not find netcdf"],[-lcurl -lhdf5 -lhdf5_hl])
+
+AC_CHECK_LIB([openjp2], [opj_version], [echo "*** openjpeg found"], [echo "*** openjeg not found"], [-lm])
+
+AC_CHECK_LIB([gridfields], [GridFieldOperator], [echo "*** gridfields found"], [echo "*** gridfields not found"], [])
+
