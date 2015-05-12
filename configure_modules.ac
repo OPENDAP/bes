@@ -38,21 +38,14 @@ dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
 AC_ARG_ENABLE([developer],
-  [
-    AS_HELP_STRING([--enable-developer],[developer mode])
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [true])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
-    dnl Only set CXXFLAGS if the caller does not have them set in their environment
-    AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"]) 
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [false])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
-    AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
-  ]
-)
+  [AS_HELP_STRING([--enable-developer],[developer mode])],
+  [AM_CONDITIONAL([BES_DEVELOPER], [true])
+   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
+   dnl Only set CXXFLAGS if the caller does not have them set in their environment
+   AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
+  [AM_CONDITIONAL([BES_DEVELOPER], [false])
+   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
+   AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
@@ -296,29 +289,27 @@ dnl dap-mouldes is true by default; use --disable-dap-modules or
 dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
 
 AC_ARG_WITH([dap-modules],
-  [ AS_HELP_STRING([--without-dap-modules],[don't build the bundled dap modules]) ],
-  [ ],
-  [ with_dap_modules=yes ])
+  [AS_HELP_STRING([--without-dap-modules], [don't build the bundled dap modules (default is to build the modules)])],
+  [with_dap_modules=${withval} ],
+  [with_dap_modules=yes])
 
 DAP_MODULES=
-AM_CONDITIONAL([DAP_MODULES], [test "x$with_dap_modules" = "xyes"])
+AM_CONDITIONAL([DAP_MODULES], [test x$with_dap_modules = xyes])
 
 dnl These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_MODULES], [
 
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
-  [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
-  [ 
-    AS_IF([test -n "$with_dependencies"], 
-    [ac_bes_dependencies_prefix=$with_dependencies
-    # This conditional and symbol substitution pass the deps value to the 
-    # top level makefile. jhrg 3/18/15
-    AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
-    AC_SUBST([ac_bes_dependencies_prefix])
-    AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])
-  ],
-  [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])] )
+	[AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies])],
+    [AS_IF([test -n "$with_dependencies"], 
+           [ac_bes_dependencies_prefix=$with_dependencies
+            dnl This conditional and symbol substitution pass the deps value to the 
+            dnl top level makefile. jhrg 3/18/15
+            AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
+            AC_SUBST([ac_bes_dependencies_prefix])
+            AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])],
+           [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
@@ -352,21 +343,17 @@ dnl Freeform hacks
 
 FF_CPPFLAGS=
 AC_MSG_CHECKING([the OS type for the freeform code])
-case "$host" in
-    *linux*) FF_CPPFLAGS="-DLINUX" ;;
-    *hp*)    FF_CPPFLAGS="-DHP9000" ;;
-    *alpha*) FF_CPPFLAGS="-DDEC_ALPHA" ;;
-    *sun*)   FF_CPPFLAGS="-DSUN" ;;
-    *darwin*)   FF_CPPFLAGS="-DLINUX" ;;
-    *sgi*)   if test $ac_cv_sizeof_long -eq 4
-         then
-             FF_CPPFLAGS="-DIRIS4"
-         else       
-             FF_CPPFLAGS="-DIRIX"
-         fi ;;
-    *)  AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])
-        ;;
-esac
+AS_CASE([$host],
+    [*linux*], [FF_CPPFLAGS=-DLINUX],
+    [*hp*], [FF_CPPFLAGS=-DHP9000],
+    [*alpha*], [FF_CPPFLAGS=-DDEC_ALPHA],
+    [*sun*], [FF_CPPFLAGS=-DSUN],
+    [*darwin*], [FF_CPPFLAGS=-DLINUX],
+    [*sgi*], [AS_IF([test $ac_cv_sizeof_long -eq 4],
+                    [FF_CPPFLAGS=-DIRIS4],
+                    [FF_CPPFLAGS=-DIRIX])],
+    [AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])])
+    
 AC_MSG_RESULT([set to $FF_CPPFLAGS])
 AC_SUBST(FF_CPPFLAGS)
 
@@ -721,6 +708,8 @@ AM_CONDITIONAL([BUILD_HDF5],[false])
 AM_CONDITIONAL([BUILD_NCML],[false])
 AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
+AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
+
 ])	# AM_COND_IF([DAP_MODULES]
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
@@ -793,7 +782,7 @@ AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
 
-dnl Output files if building the emodules too
+dnl Output files if building the modules too
 		 
 AM_COND_IF([DAP_MODULES],
     [
