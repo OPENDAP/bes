@@ -211,7 +211,7 @@ int CmdApp::initialize(int argc, char **argv)
 
     int c;
 
-    while ((c = getopt(argc, argv, "?vd:h:p:t:u:x:f:i:r:")) != EOF) {
+    while ((c = getopt(argc, argv, "?vd:h:p:t:u:x:f:i:r:")) != -1) {
         switch (c) {
         case 't':
             timeoutStr = optarg;

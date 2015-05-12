@@ -218,7 +218,7 @@ int
 main( int argC, char **argV )
 {
     int c = 0 ;
-    while( ( c = getopt( argC, argV, "d:" ) ) != EOF )
+    while( ( c = getopt( argC, argV, "d:" ) ) != -1 )
     {
 	switch( c )
 	{

@@ -240,7 +240,7 @@ int ServerApp::initialize(int argc, char **argv)
 
 	// If you change the getopt statement below, be sure to make the
 	// corresponding change in daemon.cc and besctl.in
-	while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF) {
+	while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
 		switch (c) {
 		case 'i':
 			dashi = optarg;

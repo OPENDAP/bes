@@ -960,7 +960,7 @@ int main(int argc, char *argv[])
     // If you change the getopt statement below, be sure to make the
     // corresponding change in ServerApp.cc and besctl.in
     int c = 0;
-    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF) {
+    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
         switch (c) {
             case 'v': // version
                 BESServerUtils::show_version(daemon_name);
