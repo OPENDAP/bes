@@ -1,5 +1,5 @@
 
-# Build libswath2grid, part of libdap.
+# Build libswath2grid, part of the bes/functions module when GDAL is present.
 
 AUTOMAKE_OPTIONS = foreign
 

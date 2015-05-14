@@ -22,10 +22,12 @@ endif
 
 SUBDIRS = . unit-tests tests
 
-# DIST_SUBDIRS = unit-tests tests swath2grid
+DIST_SUBDIRS = swath2grid
 
 if GDAL_FOUND
-SUBDIRS +=  swath2grid 
+# Even if GDAL is found when building the BES, hold off on this code
+# until it has tests and supports DAP4
+# SUBDIRS +=  swath2grid 
 endif
 
 lib_besdir=$(libdir)/bes

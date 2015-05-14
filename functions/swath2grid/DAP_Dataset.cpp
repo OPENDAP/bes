@@ -33,7 +33,14 @@
 #include "Grid.h"
 #include "Float64.h"
 
-#include "ce_functions.h"
+#include "Error.h"
+#if 0
+#include "ConstraintEvaluator.h"
+#include "Sequence.h"
+#include "Structure.h"
+#include "ServerFunction.h"
+#endif
+
 #include "util.h"
 #include "debug.h"
 
