@@ -34,6 +34,7 @@
 #include "LinearScaleFunction.h"
 #include "VersionFunction.h"
 #include "MakeArrayFunction.h"
+#include "MakeMaskFunction.h"
 #include "BindNameFunction.h"
 #include "BindShapeFunction.h"
 #include "TabularFunction.h"
@@ -55,6 +56,7 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new MakeMaskFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindNameFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindShapeFunction());
 
