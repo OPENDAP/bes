@@ -3,10 +3,8 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
-// Authors: Nathan Potter <npotter@opendap.org>
-//         James Gallagher <jgallagher@opendap.org>
-//         Dan Holloway <dholloway@opendap.org>
+// Copyright (c) 2015 OPeNDAP, Inc.
+// Authors: Dan Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
