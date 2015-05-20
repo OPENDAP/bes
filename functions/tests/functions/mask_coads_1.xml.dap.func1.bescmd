@@ -9,7 +9,7 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-        <dap2function>make_mask(SST,2,SST.COADSX,SST.COADSY,$Float32(40.1,-65.0))</dap2function>
+        <dap2function>make_mask(SST,2,SST.COADSX,SST.COADSY,$Float32(41.0,-65.0,43.0,-63.0))</dap2function>
     </bes:container>
   </bes:define>
   
