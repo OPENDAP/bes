@@ -71,6 +71,50 @@ string make_mask_info =
                 + "</function>";
 
 
+template <typename T>
+void make_mask_helper(const vector<Array*>dims, Array *tuples, vector<dods_byte> mask)
+{
+
+    vector< vector<double> > dim_value_vecs(dims.size());
+
+    int i = 0;  // index the dim_value_vecs vector of vectors;
+    for (vector<Array*>::iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
+	dim_value_vecs.at(i++) = extract_double_array(*d);
+    }
+
+    // Copy the 'tuple' data to a simple vector<T>
+    vector<T> data(tuples->length());
+    tuples->value(&data[0]);
+
+    // Iterate over the tuples, searching the dimensions for their values
+    int nDims = dims.size();
+    int nTuples = data.size() / nDims;
+
+    bool theyAllMatched;
+    vector<int> indices(nDims);
+    T *tVal = &data[0];
+
+    for (int outer = 0; outer < nTuples; outer++ ) {
+	for (int inner = 0; inner < nDims; inner++) {
+
+	    theyAllMatched = true;  // Assume all 'tuple' dimension values will match.
+
+	    for (int i = 0; i < dim_value_vecs[inner].size(); i++) {
+		if ( double_eq( (double)*tVal, dim_value_vecs[inner][i] )) {
+		    indices[inner] = i;
+		}
+		else {
+		    theyAllMatched = false;  // If any don't, then don't mask these 'tuple' locations.
+	    }
+	}
+
+	if ( theyAllMatched ) {
+	    offset = calculateOffset(indices);  // calculate the offset into the mask for the [i][j][...] indices
+	    mask[offset] = 1;
+	}
+    }
+}
+
 /** Given a ...
 
  @param argc A count of the arguments
@@ -164,7 +208,7 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 	}
 	
 	int dSize; 
-	Array *a = static_cast<Array*>(btp);
+	Array *a = static_cast<Array*>(btpgi);
 	for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
 	    dSize = a->dimension_size(itr);
 	    cerr << "dim[" << i << "] = " << a->name() << " size=" << dSize << endl;
@@ -190,39 +234,48 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     // All mask values are stored in Byte DAP variables by the stock argument parser
     // except values too large; those are stored in a UInt32
     case dods_byte_c:
+	//make_mask_helper<dods_byte>(dims, tuples, mask);
         cerr << "read_mask_values<dods_byte, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_int16_c:
+	//make_mask_helper<dods_int16>(dims, tuples, mask);
         cerr << "read_mask_values<dods_int16, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_uint16_c:
+	//make_mask_helper<dods_uint16>(dims, tuples, mask);
         cerr << "read_mask_values<dods_uint16, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_int32_c:
+	//make_mask_helper<dods_int32>(dims, tuples, mask);
         cerr << "read_mask_values<dods_int32, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_uint32_c:
         // FIXME Should be UInt32 but the parser uses Int32 unless a value is too big.
+	//make_mask_helper<dods_uint32>(dims, tuples, mask);
         cerr << "read_mask_values<dods_uint32, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_float32_c:
+	//make_mask_helper<dods_float32>(dims, tuples, mask);
         cerr << "read_mask_values<dods_float32, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_float64_c:
+	//make_mask_helper<dods_float64>(dims, tuples, mask);
         cerr << " read_mask_values<dods_float64, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_str_c:
+	//make_mask_helper<dods_str>(dims, tuples, mask);
         cerr << "read_mask_values<string, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_url_c:
+	//make_mask_helper<dods_url>(dims, tuples, mask);
         cerr << "read_mask_values<string, Byte>(tuples, dims, mask);" << endl;
         break;
 
@@ -235,6 +288,37 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     // Calculate the number of Tuples passed to the function.
     unsigned int numberOfTuples = tSz / nDims; 
+
+    Array *idx = &tuples[0];
+    vector<int> indices(nDims);
+    int index;
+ 
+    for (int outer = 0; outer < numberOfTuples; outer++) {
+
+	// Foreach tuple member search the respective dimension
+	//  if FOUND, return indice, if NOT_FOUND return -1;
+
+	for (int inner = 0; inner < nDims; inner++) {
+	    index = dimSearch( dims[inner], idx->value());
+	    indices[inner] = index;
+	}
+
+	// Check to ensure each tuple member passed search test.
+
+	searchFailed = false;
+	for (int inner = 0; inner < nDims; inner++) {
+	    if ( indices[inner] == -1 ) {
+		searchFailed = true;
+	    }
+	}
+
+	if ( searchFailed ) {
+	    // do nothing
+	}
+	else {
+	    indices.push_back( indice.offset );
+	}
+    }
 
     cerr << "nDims:" << nDims << " nTuples:" << numberOfTuples << endl;
 
