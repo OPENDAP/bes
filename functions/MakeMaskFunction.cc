@@ -105,11 +105,47 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     // Create the 'mask' array using the shape of the target grid variable's array.
 
+    vector<MaskDIM> maskDims;
+    vector<string> dimNames;
+    int nGridDims = 1;
     Array *mask = new Array("mask", new Byte("mask"));
 
     for (Array::Dim_iter i = a->dim_begin(); i != a->dim_end(); ++i) {
 	mask->append_dim(a->dimension_size(i), a->dimension_name(i));
+	MaskDIM *mDim = new MaskDIM;;
+	mDim->size = a->dimension_size(i);
+	mDim->name = a->dimension_name(i);
+	mDim->offset = 0;
+	//maskDims.push_back(mDim);
+	nGridDims++;
     }
+
+    vector<int> offsets;
+    offsets.reserve(nGridDims);
+
+    std::vector<int>::size_type idx = nGridDims - 1;
+    int currOffset = 0;
+    int sumOfPrevOffsets = 0;
+
+    bool atBeginning = true;
+
+    for (idx = nGridDims; idx>0; idx--) {
+	
+	MaskDIM *mDim = &(maskDims[idx-1]);
+	
+	if ( atBeginning ) {
+	    currOffset = sizeof(dods_byte);
+	    mDim->offset = currOffset;
+	    atBeginning = false;
+	}
+	else {
+	    currOffset = mDim->size * sumOfPrevOffsets;
+	    mDim->offset = currOffset;
+	}
+
+	sumOfPrevOffsets = currOffset;
+    }
+
     // read argv[1], the number[N] of dimension variables represented in tuples
 
     unsigned int nDims = extract_uint_value(argv[1]);
@@ -200,6 +236,10 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     cerr << "nDims:" << nDims << " nTuples:" << numberOfTuples << endl;
 
+    BESDEBUG("function",
+	     "function_dap2_make_mask() -target " <<  requestedTargetName << " -nDims " << nDims << endl);
+
+    //*btpp = function_linear_scale_worker(argv[0], m, b, missing, use_missing);
 
 }
 
