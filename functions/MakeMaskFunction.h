@@ -31,6 +31,12 @@ class BaseType;
 class DDS;
 }
 
+typedef struct {
+    int size;
+    string name;
+    int offset;
+} MaskDIM;
+
 namespace functions {
 
 void function_make_dap2_mask(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
