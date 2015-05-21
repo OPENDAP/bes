@@ -76,27 +76,10 @@ class MakeMaskFunctionTest:public TestFixture
 private:
     TestTypeFactory btf;
     D4TestTypeFactory d4_ttf;
-    // ConstraintEvaluator ce;
-
-    Array *one_d_array, *two_d_array;
-    Array *float_2d_array;
-    Array *one_d_mask, *two_d_mask;
-
-    vector<dods_byte> d_mask, d_mask2;
 
 public:
-    MakeMaskFunctionTest(): one_d_array(0), two_d_array(0), float_2d_array(0),
-        one_d_mask(0), two_d_mask(0), d_mask(10), d_mask2(50)
-    {
-#if 0
-        for (int i = 0; i < 10; ++i)
-            d_mask.at(i) = (i < 5) ? 1: 0;
-
-        for (int i = 0; i < 10; ++i)
-            for (int j = 0; j < 5; ++j)
-                d_mask2.at(j*10 + i) = (i < 5) ? 1: 0;
-#endif
-    }
+    MakeMaskFunctionTest()
+    { }
 
     ~MakeMaskFunctionTest()
     {}
@@ -162,15 +145,7 @@ public:
 #endif
     }
 
-    void tearDown() {
-#if 0
-        delete one_d_array; one_d_array = 0;
-        delete two_d_array; two_d_array = 0;
-
-        delete one_d_mask; one_d_mask = 0;
-        delete two_d_mask; two_d_mask = 0;
-#endif
-    }
+    void tearDown() { }
 
     void no_arg_test() {
         DBG(cerr << "In no_arg_test..." << endl);
@@ -192,260 +167,22 @@ public:
         DBG(cerr << "Out no_arg_test" << endl);
     }
 
-#if 0
-    void mask_array_helper_one_d_test()
-    {
-        DBG(cerr << "In mask_array_helper_one_d_test..." << endl);
+    void find_value_index_test() {
+        double init_values[] = {1,2,3,4,5,6,7,8,9,10};
+        vector<double> data (init_values, init_values + sizeof(init_values) / sizeof(double) );
+        DBG2(cerr << "data values: ");
+        DBG2(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
+        DBG2(cerr << endl);
 
-        try {
-            mask_array_helper<dods_int32>(one_d_array, 0, d_mask);
+        CPPUNIT_ASSERT(find_value_index(4.0, data) == 3);
 
-            vector<dods_int32> data(one_d_array->length());
-            one_d_array->value(&data[0]);
-            DBG(cerr << "Masked data values: ");
-            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
-            DBG(cerr << endl);
-
-            CPPUNIT_ASSERT(data[4] == 2 && data[5] == 0);       // ...could test all the values
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        DBG(cerr << "Out mask_array_helper_one_d_test" << endl);
+        CPPUNIT_ASSERT(find_value_index(11.0, data) == -1);
     }
-
-    void mask_array_helper_two_d_test()
-    {
-        DBG(cerr << "In mask_array_helper_two_d_test..." << endl);
-
-        try {
-            mask_array_helper<dods_int32>(two_d_array, 0, d_mask2);
-
-            vector<dods_int32> data(two_d_array->length());
-            two_d_array->value(&data[0]);
-            DBG(cerr << "Masked data values: ");
-            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
-            DBG(cerr << endl);
-
-            CPPUNIT_ASSERT(data[4] == 2 && data[5] == 0);       // ...could test all the values
-            CPPUNIT_ASSERT(data[14] == 2 && data[15] == 0);
-            CPPUNIT_ASSERT(data[24] == 2 && data[25] == 0);
-            CPPUNIT_ASSERT(data[34] == 2 && data[35] == 0);
-            CPPUNIT_ASSERT(data[44] == 2 && data[45] == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        DBG(cerr << "Out mask_array_helper_two_d_test" << endl);
-    }
-
-    void mask_array_helper_float_2d_test()
-    {
-        DBG(cerr << "In mask_array_helper_float_2d_test..." << endl);
-
-        try {
-            mask_array_helper<dods_float32>(float_2d_array, 0, d_mask2);
-
-            vector<dods_float32> data(float_2d_array->length());
-            float_2d_array->value(&data[0]);
-            DBG(cerr << "Masked data values: ");
-            DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
-            DBG(cerr << endl);
-
-            CPPUNIT_ASSERT(double_eq(data[4], 0.253823) && data[5] == 0);       // ...could test all the values
-            CPPUNIT_ASSERT(double_eq(data[14], 0.253823) && data[15] == 0);
-            CPPUNIT_ASSERT(double_eq(data[24], 0.253823) && data[25] == 0);
-            CPPUNIT_ASSERT(double_eq(data[34], 0.253823) && data[35] == 0);
-            CPPUNIT_ASSERT(double_eq(data[44], 0.253823) && data[45] == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        DBG(cerr << "Out mask_array_helper_float_2d_test" << endl);
-    }
-
-    void float32_2d_mask_array_test() {
-        DBG(cerr << "In float32_2d_mask_array_test..." << endl);
-
-        BaseType *result = 0;
-        try {
-            // Must set up the args as per the CE parser
-            Float64 no_data("no_data");
-            no_data.set_value(0.0);
-            no_data.set_read_p(true);
-
-            DDS dds(&btf, "empty");
-
-            BaseType *argv[] = { float_2d_array, &no_data, two_d_mask };
-            function_mask_dap2_array(3, argv, dds, &result);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        ostringstream oss;
-        result->print_xml(oss);
-
-        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
-
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_mask_array.baseline.xml");
-        CPPUNIT_ASSERT(oss.str() == baseline);
-
-        CPPUNIT_ASSERT(result->type() == dods_array_c);
-
-        Array *result_array = static_cast<Array*>(result);
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(result_array->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        vector<dods_float32> vals(result_array->length());
-        result_array->value(&vals[0]);
-
-        CPPUNIT_ASSERT(double_eq(vals[4], 0.253823));
-        CPPUNIT_ASSERT(double_eq(vals[5], 0.0));
-
-        DBG(cerr << "Out float32_2d_mask_array_test" << endl);
-    }
-
-    void general_mask_array_test() {
-        DBG(cerr << "In general_mask_array_test..." << endl);
-
-        BaseType *result = 0;
-        try {
-            // Must set up the args as per the CE parser
-            Float64 no_data("no_data");
-            no_data.set_value(0.0);
-            no_data.set_read_p(true);
-
-            DDS dds(&btf, "empty");
-
-            BaseType *argv[] = { two_d_array, float_2d_array, &no_data, two_d_mask };
-            function_mask_dap2_array(4, argv, dds, &result);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        ostringstream oss;
-        result->print_xml(oss);
-
-        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
-
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
-        CPPUNIT_ASSERT(oss.str() == baseline);
-
-        CPPUNIT_ASSERT(result->type() == dods_structure_c);
-        Structure *result_struct = static_cast<Structure*>(result);
-        CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
-
-        Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(array_1->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        vector<dods_int32> vals_1(array_1->length());
-        array_1->value(&vals_1[0]);
-
-        CPPUNIT_ASSERT(vals_1[4] == 2);
-        CPPUNIT_ASSERT(vals_1[5] == 0);
-
-        Array *array_2 = static_cast<Array*>(*(result_struct->var_begin() + 1));
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(array_2->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        vector<dods_float32> vals_2(array_2->length());
-        array_2->value(&vals_2[0]);
-
-        CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
-        CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));
-
-        DBG(cerr << "Out general_mask_array_test" << endl);
-    }
-
-    void dap4_general_mask_array_test() {
-        DBG(cerr << "In dap4_general_mask_array_test..." << endl);
-
-        BaseType *result = 0;
-        try {
-            // Must set up the args as per the CE parser
-            Float64 no_data("no_data");
-            no_data.set_value(0.0);
-            no_data.set_read_p(true);
-
-            DMR dmr(&d4_ttf, "empty");
-
-            //BaseType *argv[] = { two_d_array, float_2d_array, &no_data, two_d_mask };
-            D4RValueList *args = new D4RValueList;
-            args->add_rvalue(new D4RValue(two_d_array));
-            args->add_rvalue(new D4RValue(float_2d_array));
-            args->add_rvalue(new D4RValue(&no_data));
-            args->add_rvalue(new D4RValue(two_d_mask));
-
-            result = function_mask_dap4_array(args, dmr);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL("Error: " + e.get_error_message());
-        }
-
-        ostringstream oss;
-        result->print_xml(oss);
-
-        DBG(cerr << "DDX of mask_array()'s response: " << endl << oss.str() << endl);
-
-        string baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/general_mask_array.baseline.xml");
-        CPPUNIT_ASSERT(oss.str() == baseline);
-
-        CPPUNIT_ASSERT(result->type() == dods_structure_c);
-        Structure *result_struct = static_cast<Structure*>(result);
-        CPPUNIT_ASSERT(result_struct->var_begin() != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+1 != result_struct->var_end());
-        CPPUNIT_ASSERT(result_struct->var_begin()+2 == result_struct->var_end());
-
-        Array *array_1 = static_cast<Array*>(*(result_struct->var_begin()));
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(array_1->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        vector<dods_int32> vals_1(array_1->length());
-        array_1->value(&vals_1[0]);
-
-        CPPUNIT_ASSERT(vals_1[4] == 2);
-        CPPUNIT_ASSERT(vals_1[5] == 0);
-
-        Array *array_2 = static_cast<Array*>(*(result_struct->var_begin() + 1));
-
-        DBG(oss.str(""));
-        DBG(oss.clear());
-        DBG(array_2->print_val(oss));
-        DBG(cerr << "Result value: " << endl << oss.str() << endl);
-
-        vector<dods_float32> vals_2(array_2->length());
-        array_2->value(&vals_2[0]);
-
-        CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
-        CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));
-
-        DBG(cerr << "Out dap4_general_mask_array_test" << endl);
-    }
-#endif
 
     CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
+    CPPUNIT_TEST(find_value_index_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
