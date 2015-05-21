@@ -31,7 +31,8 @@ class BaseType;
 class DDS;
 }
 
-typedef struct {
+typedef struct 
+{
     int size;
     string name;
     int offset;
