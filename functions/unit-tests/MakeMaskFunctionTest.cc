@@ -168,6 +168,8 @@ public:
     }
 
     void find_value_index_test() {
+        // I googled for this way to init std::vector<>.
+        // See http://www.cplusplus.com/reference/vector/vector/vector/
         double init_values[] = {1,2,3,4,5,6,7,8,9,10};
         vector<double> data (init_values, init_values + sizeof(init_values) / sizeof(double) );
         DBG2(cerr << "data values: ");
@@ -179,10 +181,45 @@ public:
         CPPUNIT_ASSERT(find_value_index(11.0, data) == -1);
     }
 
+    void find_value_indices_test() {
+        double init_values[] = {1,2,3,4,5,6,7,8,9,10};
+        vector<double> row (init_values, init_values + sizeof(init_values) / sizeof(double) );
+        DBG2(cerr << "row values: ");
+        DBG2(copy(row.begin(), row.end(), ostream_iterator<double>(cerr, " ")));
+        DBG2(cerr << endl);
+
+        double init_values2[] = {10,20,30,40,50,60,70,80,90,100};
+        vector<double> col (init_values2, init_values2 + sizeof(init_values2) / sizeof(double) );
+        DBG2(cerr << "col values: ");
+        DBG2(copy(col.begin(), col.end(), ostream_iterator<double>(cerr, " ")));
+        DBG2(cerr << endl);
+
+        vector< vector<double> > maps;
+        maps.push_back(row);
+        maps.push_back(col);
+
+        vector<double> tuple;
+        tuple.push_back(4.0);
+        tuple.push_back(40.0);
+
+        vector<int> ind = find_value_indices(tuple, maps);
+        CPPUNIT_ASSERT(ind.at(0) == 3);
+        CPPUNIT_ASSERT(ind.at(1) == 3);
+
+        vector<double> t2;
+        t2.push_back(4.0);
+        t2.push_back(41.5);
+
+        ind = find_value_indices(t2, maps);
+        CPPUNIT_ASSERT(ind.at(0) == 3);
+        CPPUNIT_ASSERT(ind.at(1) == -1);
+    }
+
     CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(find_value_index_test);
+    CPPUNIT_TEST(find_value_indices_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
