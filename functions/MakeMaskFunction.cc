@@ -59,6 +59,7 @@
 #include <BESDebug.h>
 
 #include "MakeMaskFunction.h"
+#include "Odometer.h"
 #include "functions_util.h"
 
 using namespace libdap;
@@ -125,7 +126,7 @@ template<typename T>
 void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte> &mask)
 {
     vector< vector<double> > dim_value_vecs(dims.size());
-
+    
     int i = 0;  // index the dim_value_vecs vector of vectors;
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
         // Dan: My mistake. There is a second extract_double_array() that does
@@ -136,8 +137,20 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
         // This version of extract...() takes the vector<double> by reference:
         // In util.cc/h: void extract_double_array(Array *a, vector<double> &dest)
-        extract_double_array(*d, dim_value_vecs.at(i));
+        extract_double_array(*d, dim_value_vecs.at(i++));
     }
+
+    // Construct and Odometer used to calculate offsets
+    int rank = dims.size();
+    Odometer::shape shape(rank);
+
+    int j = 0;  // index the shape vector for an Odometer;
+
+    for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
+	shape.at(j++) = d->size();
+    }
+
+    Odometer odometer(shape);
 
     // Copy the 'tuple' data to a simple vector<T>
     vector<T> data(tuples->length());
@@ -159,7 +172,11 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
         }
 
         // find its indices
-        vector<int> indices = find_value_indices(tuple, dim_value_vecs);
+#if 0
+	Odometer::shape indices(rank);  // Holds a given index
+	indices = find_value_indices(tuple, dim_value_vecs);
+#endif
+	vector<int> indices = find_value_indices(tuple, dim_value_vecs);
 
         // if all of the indices are >= 0, then add this point to the mask
 #if 0
