@@ -31,9 +31,10 @@ namespace functions {
 
 /**
  * Map the indices of a N-dimensional array to the offset into memory
- * that matches those indices. This code can be used to step through
- * each element of an N-dim array without using multiplication to
- * compute the offset into the vector that holds the array's data.
+ * (i.e., a vector) that matches those indices. This code can be used
+ * to step through each element of an N-dim array without using
+ * multiplication to compute the offset into the vector that holds
+ * the array's data.
  */
 class Odometer
 {
@@ -64,6 +65,7 @@ public:
     {
         d_rank = d_shape.size();
 
+        // compute the highest offset value based on the array shape
         d_highest_offset = 1;
         for (unsigned int i = 0; i < d_rank; ++i) {
             d_highest_offset *= d_shape.at(i);
@@ -122,6 +124,40 @@ public:
 
     // This version throws Error if offset() == end()
     unsigned int next_safe();
+
+    /**
+     * Given a set of indices, update offset to match the position
+     * in the memory/vector they correspond to given the Odometer's
+     * initial shape.
+     * @param indices Indices of an element
+     * @return The position in linear memory of that element
+     */
+    inline unsigned int set_indices(const shape &indices)
+    {
+        d_indices = indices;
+
+       d_offset = 0;
+       unsigned int chunk_size = 1;
+
+       // I copied this algorithm from Nathan's code in NDimenensionalArray in the
+       // ugrid function module. jhrg 5/22/15
+       shape::reverse_iterator si = d_shape.rbegin();
+       for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+           // optimize?
+           d_offset += chunk_size * *i;
+           chunk_size *= *si;
+       }
+
+        return d_offset;
+    }
+
+    unsigned int set_indices(const std::vector<int> &indices)
+    {
+        shape temp;
+        std::copy(indices.begin(), indices.end(), std::back_inserter(temp));
+
+        return set_indices(temp);
+    }
 
     /**
      * Return the current set of indices. These match the current offset.
