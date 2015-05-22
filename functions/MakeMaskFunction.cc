@@ -120,7 +120,7 @@ find_value_indices(const vector<double> &values, const vector< vector<double> > 
 }
 
 // Dan: In this function I made the vector<dods_byte> a reference so that changes to
-// it will be accessable to the caller without having to return the vector<> mask
+// it will be accessible to the caller without having to return the vector<> mask
 // (it could be large). This also means that it won't be passed on the stack
 template<typename T>
 void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte> &mask)
@@ -147,7 +147,12 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
     int j = 0;  // index the shape vector for an Odometer;
 
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
-	shape.at(j++) = d->size();
+        // Changed d-> to (*d)-> ... So this is one thing about iterators that
+        // is less than optimal. The iterator dereferences to the thing in the
+        // container, which is this case is a pointer. But you have to explicitly
+        // dereference the iterator. Also, Array::length(), not size() (I
+        // confuse those two also).
+	shape.at(j++) = (*d)->length();
     }
 
     Odometer odometer(shape);
@@ -173,6 +178,14 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
         // find its indices
 #if 0
+        // I saw this and went 'cool' but then compiler chimed in.
+        // I wrote fund_value_indices() so that a -1 indicates not
+        // found, which closes the door to unsigned int. I think that's
+        // a bug, because we might actually need to use unsigned for
+        // some really big arrays, but before that, I think we need
+        // to give more thought to just how we 'find indices'. Like
+        // just how close does the value of the tuple element have
+        // to be to the alue in the map cell to match?
 	Odometer::shape indices(rank);  // Holds a given index
 	indices = find_value_indices(tuple, dim_value_vecs);
 #endif
