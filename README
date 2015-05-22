@@ -1,7 +1,7 @@
 
 README for the OpenDAP BES
 
-Updated for version 3.13.2
+Updated for version 3.14.
 
 See the INSTALL file for build instructions, including special
 instructions for building from a (git) cloned repo. This code can
@@ -27,11 +27,12 @@ Contents
 * DAP2 versus DAP4
 
 The code on the master branch now supports both DAP2 and DAP4
-responses, and handlers that do the same. Because of that, it must be
-linked with libdap4, not libdap (libdap4 contains support for both
-DAP2 and DAP4, while the older 'libdap' supports only DAP2). If you
-need to get the DAP2-only version of the software, use the branch
-named 'dap2'. Please commit only fixes there.
+responses, and the data format handlers do as well. Because of that,
+it must be linked with libdap 3.14, not libdap older versions of
+libdap (libdap 3.14 contains support for both DAP2 and DAP4, while the
+older 'libdap' supports only DAP2). If you need to get the DAP2-only
+version of the software, use the branch named 'dap2'. Please commit
+only fixes there.
 
 Each of the handlers, which can be built as submodules within this
 code, also has DAP2 and DAP4 support on their master branch and a
@@ -62,6 +63,9 @@ conf: Where the automake and autoconf configuration files live
 docs: Where some bes documentation resides
 
 * About the BES
+
+Note see http://docs.opendap.org/index.php/Hyrax for the latest and
+most comprehensive documentation.
 
 * Configuration
 

@@ -25,10 +25,12 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class Array;
 class DDS;
+}
+
+namespace functions {
 
 class TabularFunction: public libdap::ServerFunction
 {
@@ -36,33 +38,32 @@ private:
     friend class TabularFunctionTest;
     friend class Dap4_TabularFunctionTest;
 
-    typedef std::vector< std::vector<BaseType*> *> SequenceValues;
+    typedef std::vector< std::vector<libdap::BaseType*> *> SequenceValues;
     typedef std::vector<unsigned long> Shape;
 
-    static void function_dap2_tabular(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-    // static BaseType *function_dap4_tabular(D4RValueList *args, DMR &dmr);
+    static void function_dap2_tabular(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 
-    // This
-    static void function_dap2_tabular_2(int argc, BaseType *argv[], DDS &, BaseType **btpp);
-
+#if 0
+    static void function_dap2_tabular_2(int argc, libdap::BaseType *argv[], libdap::DDS &, libdap::BaseType **btpp);
+#endif
     // These are static so that the code does not have to make a TabularFunction
     // instance to access them. They are 'in' TabularFunction to control the name
     // space - they were static functions but that made it impossible to write
     // unit tests.
-    static Shape array_shape(Array *a);
-    static bool shape_matches(Array *a, const Shape &shape);
+    static Shape array_shape(libdap::Array *a);
+    static bool shape_matches(libdap::Array *a, const Shape &shape);
     static bool dep_indep_match(const Shape &dep_shape, const Shape &indep_shape);
 
     static unsigned long number_of_values(const Shape &shape);
 
-    static void build_columns(unsigned long n, BaseType *btp, std::vector<Array*> &arrays, Shape &shape);
+    static void build_columns(unsigned long n, libdap::BaseType *btp, std::vector<libdap::Array*> &arrays, Shape &shape);
 
-    static void read_values(const std::vector<Array*> &arrays);
+    static void read_values(const std::vector<libdap::Array*> &arrays);
 
-    static void build_sequence_values(const std::vector<Array*> &arrays, SequenceValues &sv);
+    static void build_sequence_values(const std::vector<libdap::Array*> &arrays, SequenceValues &sv);
     static void combine_sequence_values(SequenceValues &dep, const SequenceValues &indep);
     static void add_index_column(const Shape &indep_shape, const Shape &dep_shape,
-            std::vector<Array*> &dep_vars);
+            std::vector<libdap::Array*> &dep_vars);
 
 public:
     TabularFunction()
@@ -72,7 +73,7 @@ public:
         setUsageString("tabular()");
         setRole("http://services.opendap.org/dap4/server-side-function/tabular");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#tabular");
-        setFunction(libdap::TabularFunction::function_dap2_tabular);
+        setFunction(TabularFunction::function_dap2_tabular);
         // FIXME setFunction(libdap::TabularFunction::function_dap4_tabular);
         setVersion("1.0");
     }
@@ -82,4 +83,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace

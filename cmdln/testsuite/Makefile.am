@@ -15,14 +15,15 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = besTest.at $(srcdir)/package.m4 $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
+EXTRA_DIST = besTest.at $(srcdir)/package.m4 $(TESTSUITE) atlocal.in	\
+ff hdf4 hdf5 nc show ssfunc
 
-DISTCLEANFILES = $(TESTSUITE)
+DISTCLEANFILES = besTest
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/besTest
 
 server-tests: atconfig atlocal $(TESTSUITE)
@@ -35,7 +36,7 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/besTest.at package.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
@@ -49,5 +50,3 @@ package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
-

@@ -32,9 +32,6 @@
 
 #include <fstream>
 
-using std::ofstream ;
-using std::ifstream ;
-
 #include "BESBaseApp.h"
 
 class CmdClient ;
@@ -43,12 +40,12 @@ class CmdApp : public BESBaseApp
 {
 private:
     CmdClient *			_client ;
-    string			_hostStr ;
-    string			_unixStr ;
+    std::string			_hostStr ;
+    std::string			_unixStr ;
     int				_portVal ;
-    string			_cmd ;
-    ofstream *			_outputStrm ;
-    ifstream *			_inputStrm ;
+    std::string			_cmd ;
+    std::ofstream *		_outputStrm ;
+    std::ifstream *		_inputStrm ;
     bool			_createdInputStrm ;
     int				_timeout ;
     int				_repeat ;
@@ -62,7 +59,7 @@ public:
     virtual int			initialize( int argC, char **argV ) ;
     virtual int			run() ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     CmdClient *			client() { return _client ; }
     static void			signalCannotConnect( int sig ) ;

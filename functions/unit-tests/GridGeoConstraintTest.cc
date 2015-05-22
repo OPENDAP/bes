@@ -42,9 +42,6 @@
 #include <util.h>
 #include <debug.h>
 
-
-//#include "ce_functions.h"
-
 #include "test/TestTypeFactory.h"
 
 #include <test_config.h>
@@ -63,7 +60,7 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace libdap
+namespace functions
 {
 
 class GridGeoConstraintTest:public TestFixture
@@ -1287,15 +1284,15 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(GridGeoConstraintTest);
 
-} // namespace libdap
+} // namespace functions
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     GetOpt getopt(argc, argv, "dD");
-    char option_char;
-    while ((option_char = getopt()) != EOF)
+    int option_char;
+    while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -1316,7 +1313,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::GridGeoConstraintTest::") + argv[i++];
+            test = string("functions::GridGeoConstraintTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

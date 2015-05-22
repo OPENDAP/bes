@@ -32,7 +32,7 @@
 #include "BESContextManager.h"
 
 BESDMRResponseHandler::BESDMRResponseHandler(const string &name) :
-		BESResponseHandler(name)
+        BESResponseHandler(name)
 {
 }
 
@@ -55,20 +55,20 @@ BESDMRResponseHandler::~BESDMRResponseHandler()
  */
 void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-	dhi.action_name = DMR_RESPONSE_STR;
-	DMR *dmr = new DMR();
+    dhi.action_name = DMR_RESPONSE_STR;
+    DMR *dmr = new DMR();
 
-	// Here we might set the dap and dmr version if they should be different from
-	// 4.0 and 1.0. jhrg 11/6/13
+    // Here we might set the dap and dmr version if they should be different from
+    // 4.0 and 1.0. jhrg 11/6/13
 
-	bool found = false;
+    bool found = false;
     string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-	if (found && !xml_base.empty()) {
-		dmr->set_request_xml_base(xml_base);
-	}
+    if (found && !xml_base.empty()) {
+        dmr->set_request_xml_base(xml_base);
+    }
 
-	_response = new BESDMRResponse(dmr);
-	BESRequestHandlerList::TheList()->execute_each(dhi);
+    _response = new BESDMRResponse(dmr);
+    BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
 /** @brief transmit the response object built by the execute command
@@ -85,9 +85,9 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDMRResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-	if (_response) {
-		transmitter->send_response(DMR_SERVICE, _response, dhi);
-	}
+    if (_response) {
+        transmitter->send_response(DMR_SERVICE, _response, dhi);
+    }
 }
 
 /** @brief dumps information about this object
@@ -98,15 +98,15 @@ void BESDMRResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandler
  */
 void BESDMRResponseHandler::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "BESDMRResponseHandler::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	BESResponseHandler::dump(strm);
-	BESIndent::UnIndent();
+    strm << BESIndent::LMarg << "BESDMRResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
 BESDMRResponseHandler::DMRResponseBuilder(const string &name)
 {
-	return new BESDMRResponseHandler(name);
+    return new BESDMRResponseHandler(name);
 }
 

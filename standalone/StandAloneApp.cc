@@ -127,7 +127,7 @@ StandAloneApp::initialize( int argc, char **argv )
     };
     int option_index = 0;
 
-    while( ( c = getopt_long( argc, argv, "?vc:d:x:f:i:r:", longopts, &option_index) ) != EOF )
+    while( ( c = getopt_long( argc, argv, "?vc:d:x:f:i:r:", longopts, &option_index) ) != -1 )
     {
 	switch( c )
 	{

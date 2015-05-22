@@ -66,7 +66,7 @@ static bool debug2 = false;
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false);
 
-namespace libdap
+namespace functions
 {
 
 class BBoxFunctionTest:public TestFixture
@@ -382,15 +382,15 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
 
-} // namespace libdap
+} // namespace functions
 
 int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     GetOpt getopt(argc, argv, "dD");
-    char option_char;
-    while ((option_char = getopt()) != EOF)
+    int option_char;
+    while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -411,7 +411,7 @@ int main(int argc, char*argv[]) {
     }
     else {
         while (i < argc) {
-            test = string("libdap::BBoxFunctionTest::") + argv[i++];
+            test = string("functions::BBoxFunctionTest::") + argv[i++];
 
             wasSuccessful = wasSuccessful && runner.run(test);
         }

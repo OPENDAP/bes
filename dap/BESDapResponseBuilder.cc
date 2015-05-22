@@ -1045,10 +1045,11 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
             // send_data operation.
             send_dap4_data_using_ce(out, function_result, with_mime_headers);
         }
+        else {
+            send_dap4_data_using_ce(out, dmr, with_mime_headers);
 
-        send_dap4_data_using_ce(out, dmr, with_mime_headers);
-
-        remove_timeout();
+            remove_timeout();
+        }
     }
     catch (...) {
         remove_timeout();

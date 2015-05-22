@@ -50,8 +50,9 @@
 #include "TabularSequence.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 // static constants and functions copied from the parent class. These
 // should never have been static... hindsight
@@ -311,5 +312,5 @@ TabularSequence::dump(ostream &strm) const
     DapIndent::UnIndent() ;
 }
 
-} // namespace libdap
+} // namespace functions
 

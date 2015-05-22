@@ -1,6 +1,4 @@
 
-SUBDIRS = 
-
 # Tests
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
@@ -17,7 +15,7 @@ AM_LDADD += $(CPPUNIT_LIBS)
 endif
 
 if USE_VALGRIND
-TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1  --dsymutil=yes --leak-check=yes
+TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1 --dsymutil=yes --leak-check=yes
 endif
 
 # These are not used by automake but are often useful for certain types of
@@ -33,12 +31,12 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-DIRS_EXTRA = 
-
-EXTRA_DIST = test_config.h.in ce-functions-testsuite
+EXTRA_DIST = test_config.h.in ce-functions-testsuite tabular
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
+# I added '*.po' because there are dependencies on ../*.o files and
+# that seems to leave *.Po files here that distclean complains about.
 DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 
 # TODO Check if this sed command to filter out the ../ from the value of 
@@ -55,7 +53,7 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest
+OdometerTest MaskArrayFunctionTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -74,33 +72,43 @@ check-local:
 endif
 
 # These are used to read in baselines from files
-TEST_SRC = test_utils.cc test_utils.h ../roi_utils.cc ../roi_utils.h
+TEST_SRC = test_utils.cc test_utils.h 
+TEST_OBJ = ../roi_util.o ../functions_util.o
 
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc
-CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 Dap4_CEFunctionsTest_SOURCES = Dap4_CEFunctionsTest.cc
-Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc
-GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
 # If dist/distclean fails here, look at the ../ SOURCES and the value of subdir-objects.
 # It may be that subdir-objects must be set up higher in the chain of Makefiles.
-TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h TabularFunctionTest.cc
-TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+TabularFunctionTest_OBJ = ../TabularFunction.o
+TabularFunctionTest_SOURCES = TabularFunctionTest.cc
+TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
-Dap4_TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h Dap4_TabularFunctionTest.cc
-Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+# Dap4_TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h Dap4_TabularFunctionTest.cc
+# Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+BBoxFunctionTest__OBJ = ../BBoxFunction.o
+BBoxFunctionTest_SOURCES = BBoxFunctionTest.cc $(TEST_SRC)
+BBoxFunctionTest_LDADD = $(BBoxFunctionTest__OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
-BBoxFunctionTest_SOURCES = ../BBoxFunction.cc ../BBoxFunction.h BBoxFunctionTest.cc $(TEST_SRC)
-BBoxFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+BBoxUnionFunctionTest_OBJ = ../BBoxUnionFunction.o
+BBoxUnionFunctionTest_SOURCES = BBoxUnionFunctionTest.cc $(TEST_SRC)
+BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
-BBoxUnionFunctionTest_SOURCES = ../BBoxUnionFunction.cc ../BBoxUnionFunction.h BBoxUnionFunctionTest.cc $(TEST_SRC)
-BBoxUnionFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+RoiFunctionTest_OBJ = ../RoiFunction.o
+RoiFunctionTest_SOURCES = RoiFunctionTest.cc $(TEST_SRC)
+RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
 
-RoiFunctionTest_SOURCES = ../RoiFunction.cc ../RoiFunction.h RoiFunctionTest.cc $(TEST_SRC)
-RoiFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
+OdometerTest_OBJ = ../Odometer.o
+OdometerTest_SOURCES = OdometerTest.cc $(TEST_SRC)
+OdometerTest_LDADD = $(OdometerTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
-OdometerTest_SOURCES = ../Odometer.cc ../Odometer.h OdometerTest.cc $(TEST_SRC)
-OdometerTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+MaskArrayFunctionTest_OBJ = ../MaskArrayFunction.o
+MaskArrayFunctionTest_SOURCES = MaskArrayFunctionTest.cc $(TEST_SRC)
+MaskArrayFunctionTest_LDADD = $(MaskArrayFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+

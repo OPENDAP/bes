@@ -37,6 +37,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <Array.h>
+#include <Grid.h>
 #include <dods-datatypes.h>
 #include <Error.h>
 #include <InternalErr.h>
@@ -47,28 +49,9 @@
 #include "gse.tab.hh"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
-
-// Private methods
-
-#if 0
-// No need to actually define these; declaring them as private is good enough. jhrg 8/20/13
-GSEClause::GSEClause()
-{
-    throw InternalErr(__FILE__, __LINE__, "default ctor called for GSEClause");
-}
-
-GSEClause::GSEClause(const GSEClause &)
-{
-    throw InternalErr(__FILE__, __LINE__, "copy ctor called for GSEClause");
-}
-
-GSEClause &GSEClause::operator=(GSEClause &)
-{
-    throw InternalErr(__FILE__, __LINE__, "assigment called for GSEClause");
-}
-#endif
+namespace functions {
 
 // For the comparisons here, we should use an epsilon to catch issues
 // with floating point values. jhrg 01/12/06
@@ -244,6 +227,11 @@ GSEClause::GSEClause(Grid *grid, const string &map, const double value1,
     compute_indices();
 }
 
+GSEClause::~GSEClause()
+{
+    delete d_map;
+}
+
 /** Class invariant.
     @return True if the object is valid, otherwise False. */
 bool
@@ -338,5 +326,5 @@ GSEClause::get_map_max_value() const
     return d_map_max_value;
 }
 
-} // namespace libdap
+} // namespace functions
 

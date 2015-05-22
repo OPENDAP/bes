@@ -36,7 +36,9 @@
 
 #include "LinearScaleFunction.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 /** This server-side function returns version information for the server-side
  functions. Note that this function takes no arguments and returns a
@@ -121,4 +123,4 @@ BaseType *function_dap4_version(D4RValueList *, DMR &dmr)
     return response;
 }
 
-} // namesspace libdap
+} // namesspace functions

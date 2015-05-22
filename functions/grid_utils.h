@@ -26,20 +26,23 @@
 #define GRID_UTILS_H_
 
 namespace libdap {
-
 class DDS;
 class BaseType;
 class Grid;
+}
+
+namespace functions {
 
 class GSEClause;
-struct gse_arg;
+struct gse_arg;         // in gse_parser.h
 
-void getGrids(BaseType *bt, vector<Grid *> *grids);
-void getGrids(DDS &dds, vector<Grid *> *grids);
-bool isGeoGrid(Grid *d_grid);
+void getGrids(libdap::BaseType *bt, std::vector<libdap::Grid *> *grids);
+void getGrids(libdap::DDS &dds, std::vector<libdap::Grid *> *grids);
+bool isGeoGrid(libdap::Grid *d_grid);
 
-void parse_gse_expression(gse_arg *arg, BaseType * expr);
-void apply_grid_selection_expressions(Grid * grid, vector < GSEClause * >clauses);
+void parse_gse_expression(gse_arg *arg, libdap::BaseType * expr);
+void apply_grid_selection_expressions(libdap::Grid * grid, std::vector <GSEClause *>clauses);
+
 }
 
 #endif /* GRID_UTILS_H_ */

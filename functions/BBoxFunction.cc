@@ -45,7 +45,7 @@
 
 #include "BBoxFunction.h"
 #include "Odometer.h"
-#include "roi_utils.h"
+#include "roi_util.h"
 
 // Set this to 1 to use special code for arrays of rank 1 and 2.
 // set it to 0 (... comment out, etc.) to use the general code for
@@ -54,8 +54,9 @@
 #define UNWIND_BBOX_CODE 1
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+namespace functions {
 
 /**
  * @brief Return the bounding box for an array
@@ -294,4 +295,4 @@ BaseType *function_dap4_bbox(D4RValueList * /* args */, DMR & /* dmr */)
     return 0; //response.release();
 }
 
-} // namesspace libdap
+} // namesspace functions

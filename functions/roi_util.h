@@ -26,10 +26,12 @@
 #define ROI_UTILS_H_
 
 namespace libdap {
-
 class BaseType;
 class Array;
 class Structure;
+}
+
+namespace functions {
 
 // Defined here because prior to C++ 11, defining a container using a local
 // type was not allowed.
@@ -38,14 +40,14 @@ struct slice {
 	string name;
 };
 
-void roi_bbox_valid_slice(BaseType *btp);
-unsigned int roi_valid_bbox(BaseType *btp);
+void roi_bbox_valid_slice(libdap::BaseType *btp);
+unsigned int roi_valid_bbox(libdap::BaseType *btp);
 
-void roi_bbox_get_slice_data(Array *bbox, unsigned int i, int &start, int &stop, string &name);
+void roi_bbox_get_slice_data(libdap::Array *bbox, unsigned int i, int &start, int &stop, string &name);
 
-Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name);
+libdap::Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name);
 
-auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
+auto_ptr<libdap::Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
 
 }
 

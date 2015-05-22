@@ -4,7 +4,6 @@
 # 01/28/2013 Hacked up by jhrg
 #
 
-# AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap
 AM_CXXFLAGS = 
 
 AUTOMAKE_OPTIONS = foreign check-news
@@ -23,10 +22,12 @@ endif
 
 SUBDIRS = . unit-tests tests
 
-DIST_SUBDIRS = unit-tests tests swath2grid
+DIST_SUBDIRS = swath2grid
 
 if GDAL_FOUND
-SUBDIRS +=  swath2grid 
+# Even if GDAL is found when building the BES, hold off on this code
+# until it has tests and supports DAP4
+# SUBDIRS +=  swath2grid 
 endif
 
 lib_besdir=$(libdir)/bes
@@ -38,15 +39,15 @@ SRCS = grid_utils.cc DapFunctions.cc GeoConstraint.cc GridGeoConstraint.cc \
 gse.tab.cc lex.gse.cc GSEClause.cc GeoGridFunction.cc GridFunction.cc \
 LinearScaleFunction.cc VersionFunction.cc MakeArrayFunction.cc \
 BindNameFunction.cc BindShapeFunction.cc TabularFunction.cc \
-TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_utils.cc \
-BBoxUnionFunction.cc Odometer.cc
+TabularSequence.cc BBoxFunction.cc RoiFunction.cc roi_util.cc \
+BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc functions_util.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h GridGeoConstraint.h \
 gse.tab.hh gse_parser.h GSEClause.h GeoGridFunction.h \
 GridFunction.h LinearScaleFunction.h VersionFunction.h MakeArrayFunction.h \
 BindNameFunction.h BindShapeFunction.h TabularFunction.h \
-TabularSequence.h BBoxFunction.h RoiFunction.h roi_utils.h \
-BBoxUnionFunction.h Odometer.h
+TabularSequence.h BBoxFunction.h RoiFunction.h roi_util.h \
+BBoxUnionFunction.h Odometer.h MaskArrayFunction.h functions_util.h
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

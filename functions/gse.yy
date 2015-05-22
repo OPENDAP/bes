@@ -42,9 +42,9 @@
 #include "GSEClause.h"
 #include "gse_parser.h"
 
-using std::cerr;
-using std::endl;
+using namespace std;
 using namespace libdap;
+using namespace functions;
 
 // This macro is used to access the instance of a gse_arg class which is
 // passed to the parser through a void *. See parser.h.

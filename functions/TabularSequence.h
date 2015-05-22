@@ -48,16 +48,19 @@ namespace libdap {
 class ConstraintEvaluator;
 class DDS;
 class Marshaller;
+}
+
+namespace functions {
 
 /** @brief Specialization of Sequence for tables of data
  *
  * Assumes that the data are loaded into the Sequence using set_value()
  */
-class TabularSequence: public Sequence
+class TabularSequence: public libdap::Sequence
 {
 private:
 protected:
-    void load_prototypes_with_values(BaseTypeRow &btr, bool safe = true);
+    void load_prototypes_with_values(libdap::BaseTypeRow &btr, bool safe = true);
 
 public:
     TabularSequence(const string &n) : Sequence(n) { }
@@ -78,12 +81,12 @@ public:
         return *this;
     }
 
-    virtual bool serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, bool ce_eval = true);
-    virtual void intern_data(ConstraintEvaluator &eval, DDS &dds);
+    virtual bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval = true);
+    virtual void intern_data(libdap::ConstraintEvaluator &eval, libdap::DDS &dds);
 
     virtual void dump(ostream &strm) const;
 };
 
-} // namespace libdap
+} // namespace functions
 
 #endif //_tabular_sequence_h

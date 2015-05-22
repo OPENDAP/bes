@@ -1,10 +1,10 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.69)
+AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.13.2, support@opendap.org)
+AC_INIT(bes, 3.14.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -24,7 +24,7 @@ DODS_GCOV_VALGRIND
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.10 tar-pax])
 LT_INIT
 
 dnl flags for the compilers and linkers - set these before locating the
@@ -38,26 +38,20 @@ dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
 AC_ARG_ENABLE([developer],
-  [
-    AS_HELP_STRING([--enable-developer],[developer mode])
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [true])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
-    dnl Only set CXXFLAGS if the caller does not have them set in their environment
-    AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"]) 
-  ],
-  [
-    AM_CONDITIONAL([BES_DEVELOPER], [false])
-    AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
-  ]
-)
+  [AS_HELP_STRING([--enable-developer],[developer mode])],
+  [AM_CONDITIONAL([BES_DEVELOPER], [true])
+   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [true])
+   dnl Only set CXXFLAGS if the caller does not have them set in their environment
+   AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="-g3 -O0  -Wall -W -Wcast-align"])],
+  [AM_CONDITIONAL([BES_DEVELOPER], [false])
+   AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [false])
+   AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
 LIB_DIS_CURRENT=13
 LIB_DIS_AGE=5
-LIB_DIS_REVISION=0
+LIB_DIS_REVISION=1
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)
@@ -66,7 +60,7 @@ AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=4
 LIB_PPT_AGE=0
-LIB_PPT_REVISION=5
+LIB_PPT_REVISION=6
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_AGE)
 AC_SUBST(LIB_PPT_REVISION)
@@ -75,7 +69,7 @@ AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=2
 LIB_XML_CMD_AGE=1
-LIB_XML_CMD_REVISION=4
+LIB_XML_CMD_REVISION=5
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -295,25 +289,27 @@ dnl dap-mouldes is true by default; use --disable-dap-modules or
 dnl --enable-dap-modules=no to turn this off. jhrg 11/17/13
 
 AC_ARG_WITH([dap-modules],
-  [ AS_HELP_STRING([--without-dap-modules],[don't build the bundled dap modules]) ],
-  [ ],
-  [ with_dap_modules=yes ])
+  [AS_HELP_STRING([--without-dap-modules], [don't build the bundled dap modules (default is to build the modules)])],
+  [with_dap_modules=${withval} ],
+  [with_dap_modules=yes])
 
 DAP_MODULES=
-AM_CONDITIONAL([DAP_MODULES], [test "x$with_dap_modules" = "xyes"])
+AM_CONDITIONAL([DAP_MODULES], [test x$with_dap_modules = xyes])
 
 dnl These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_MODULES], [
 
 ac_bes_dependencies_prefix=
 AC_ARG_WITH([dependencies],
-  [ AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies]) ],
-  [ 
-    AS_IF([test -n "$with_dependencies"], 
-    [ac_bes_dependencies_prefix=$with_dependencies
-    AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])
-  ],
-  [ ])
+	[AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies])],
+    [AS_IF([test -n "$with_dependencies"], 
+           [ac_bes_dependencies_prefix=$with_dependencies
+            dnl This conditional and symbol substitution pass the deps value to the 
+            dnl top level makefile. jhrg 3/18/15
+            AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
+            AC_SUBST([ac_bes_dependencies_prefix])
+            AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])],
+           [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
@@ -332,36 +328,32 @@ AC_DEFINE([DAP_PROTOCOL_VERSION], ["3.2"], [What DAP version is supported?])
 AC_SUBST([DAP_PROTOCOL_VERSION])
 
 dnl This is used by the web form code. jhrg 12/11/14
-dods_HTML_Filter=no
-if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
-   dods_HTML_Filter=yes
-else 
-   dods_HTML_Filter=no
-fi
+dnl dods_HTML_Filter=no
+dnl if $PERL -e "use HTML::Filter;" > /dev/null 2>&1; then 
+dnl    dods_HTML_Filter=yes
+dnl else 
+dnl    dods_HTML_Filter=no
+dnl fi
 
-if test "z$dods_HTML_Filter" = "zno"; then
-   AC_MSG_WARN([HTML::Filter not found. See INSTALL])
-fi  
+dnl if test "z$dods_HTML_Filter" = "zno"; then
+dnl    AC_MSG_WARN([HTML::Filter not found. See INSTALL])
+dnl fi  
 
 dnl Freeform hacks
 
 FF_CPPFLAGS=
 AC_MSG_CHECKING([the OS type for the freeform code])
-case "$host" in
-    *linux*) FF_CPPFLAGS="-DLINUX" ;;
-    *hp*)    FF_CPPFLAGS="-DHP9000" ;;
-    *alpha*) FF_CPPFLAGS="-DDEC_ALPHA" ;;
-    *sun*)   FF_CPPFLAGS="-DSUN" ;;
-    *darwin*)   FF_CPPFLAGS="-DLINUX" ;;
-    *sgi*)   if test $ac_cv_sizeof_long -eq 4
-         then
-             FF_CPPFLAGS="-DIRIS4"
-         else       
-             FF_CPPFLAGS="-DIRIX"
-         fi ;;
-    *)  AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])
-        ;;
-esac
+AS_CASE([$host],
+    [*linux*], [FF_CPPFLAGS=-DLINUX],
+    [*hp*], [FF_CPPFLAGS=-DHP9000],
+    [*alpha*], [FF_CPPFLAGS=-DDEC_ALPHA],
+    [*sun*], [FF_CPPFLAGS=-DSUN],
+    [*darwin*], [FF_CPPFLAGS=-DLINUX],
+    [*sgi*], [AS_IF([test $ac_cv_sizeof_long -eq 4],
+                    [FF_CPPFLAGS=-DIRIS4],
+                    [FF_CPPFLAGS=-DIRIX])],
+    [AC_MSG_WARN([Either this machine is not supported by FreeForm or the configure script needs to be fixed"])])
+    
 AC_MSG_RESULT([set to $FF_CPPFLAGS])
 AC_SUBST(FF_CPPFLAGS)
 
@@ -455,7 +447,7 @@ AS_IF([test -z "$with_openjpeg_prefix" -a -n "$ac_bes_dependencies_prefix"],
 
 save_LIBS=$LIBS
 LIBS="-L$with_openjpeg_prefix/lib $LIBS"
-AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [])
+AC_CHECK_LIB(openjp2, opj_version, [OPENJPEG_FOUND="yes"], [OPENJPEG_FOUND="no"], [-lm])
 LIBS=$save_LIBS
 
 AM_CONDITIONAL([OPENJPEG_FOUND], [test "x$OPENJPEG_FOUND" = "xyes"])
@@ -467,7 +459,7 @@ AS_IF([test "x$OPENJPEG_FOUND" = "xyes"],
 ],[ # else AN_CONF_IF([BUILD_GDAL]
 
 dnl if we're not building the gdal-related things, make sure that 
-dnlOPENJPEG_FOUND is defined and is false
+dnl OPENJPEG_FOUND is defined and is false
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 
 ]) # AN_CONF_IF([BUILD_GDAL] 
@@ -514,7 +506,8 @@ CFITS_LDFLAGS="-L${CFITS_PATH_LIBDIR}"
 AC_SUBST([CFITS_LDFLAGS])
 AC_SUBST([CFITS_LIBS])],
 
-[ac_cfits_ok='no']
+[ac_cfits_ok='no'],
+[-lm]
 )
 LDFLAGS="$ac_cfits_save_LDFLAGS"
 
@@ -542,7 +535,7 @@ AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
 
 AC_CHECK_CFITS(
    [AM_CONDITIONAL([BUILD_FITS],[true])],
-   [AC_MSG_WARN([The cfits library and/or cfits headers not found; not building the fit handler.])
+   [AC_MSG_WARN([The cfits library and/or cfits headers not found; not building the fits handler.])
     AM_CONDITIONAL([BUILD_FITS],[false])],
    $ac_bes_dependencies_prefix
 )
@@ -623,39 +616,38 @@ libgf_ok="no"
 dnl NB: Hackery: if --with-gridfields is not given and ac_bes_dependencies_prefix 
 dnl is non-zero, use that as if --with-... was given. jhrg 12/1/14
 AC_ARG_WITH([gridfields],
-    AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.]),
-    [if test "$withval" = "yes"
-     then
-         AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])
-     else
-         AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
+    [AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.])],
+	[AS_IF([test x"$withval" = x"yes"],
+		[AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])],
+		[AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
          GF_LIBS="-L$withval/lib -lgridfields"
          GF_CFLAGS="-I$withval/include"
 	 	 GF_PATH=$withval
          AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
-         libgf_ok="yes"
-     fi],
-    [AS_IF([test -n "$ac_bes_dependencies_prefix"],
-    	[AC_MSG_NOTICE([Using $ac_bes_dependencies_prefix as the GridFields prefix directory.])
-         GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
-         GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
-	 	 GF_PATH=$ac_bes_dependencies_prefix
-	 	 libgf_ok="yes"])
-    ])
+         libgf_ok="yes"])],
+    [ libgf_ok="no" ])
 
 AC_ARG_ENABLE([gridfields],
     AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
-    [],
+    [ ],
     [enable_gridfields=yes])
 
 if test "$libgf_ok" = "no" -a "$enable_gridfields" = "yes"
 then
-     
-AC_MSG_CHECKING([for libgridfields])
+
+# save PATH     
+gridfields_save_path=$PATH
+
+# if --with-dependencies was used, look there too
+AS_IF([test -n "$ac_bes_dependencies_prefix"],
+    [PATH=$ac_bes_dependencies_prefix/bin:$PATH])
+
+AC_MSG_CHECKING([for libgridfields $libgf_needed])
+
 if gridfields-config --version > /dev/null 2>&1
 then
     version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
-    AX_COMPARE_VERSION([$version_libgf], [ge], [$libgf_needed], [libgf_ok='yes'], [libgf_ok='no'])
+    AX_COMPARE_VERSION([$version_libgf], [ge], [$libgf_needed], [libgf_ok="yes"], [libgf_ok="no"])
 
     if test "$libgf_ok"="no"
     then
@@ -666,11 +658,22 @@ then
     GF_CFLAGS="`gridfields-config --cflags`"
     GF_PATH="`gridfields-config --prefix`"
 
-    AC_DEFINE([GRDIFIELDS],[1],[define if gridfields lib is present])
+    AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
     AC_MSG_RESULT([yes; used gridfields-config])
+elif test -f $ac_bes_dependencies_prefix/lib/libgridfields.a -a -d $ac_bes_dependencies_prefix/include/gridfields/
+then
+	libgf_ok="yes"
+	GF_LIBS="-L$ac_bes_dependencies_prefix/lib -lgridfields"
+	GF_CFLAGS="-I$ac_bes_dependencies_prefix/include"
+	GF_PATH=$ac_bes_dependencies_prefix
+	AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
+	AC_MSG_RESULT([yes; used --with-dependencies value ($ac_bes_dependencies_prefix)])
 else
     AC_MSG_NOTICE([I could not find libgridfields])
 fi
+
+# Restore saved value of PATH
+export PATH=$gridfields_save_path
 
 fi
 
@@ -705,13 +708,9 @@ AM_CONDITIONAL([BUILD_HDF5],[false])
 AM_CONDITIONAL([BUILD_NCML],[false])
 AM_CONDITIONAL([USING_GRIDFIELDS],[false])
 
+AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
+
 ])	# AM_COND_IF([DAP_MODULES]
-
-
-dnl 's/ \(.*\) \/ \(.[^\/]*\) \/ \.\. / \1/g'
-canonical_abs_top_srcdir=`echo ${ac_abs_top_srcdir} | sed 's@\(.*\)/.[^/]*/\.\.@\1@g'`
-echo "Setting canonical_abs_top_srcdir to $canonical_abs_top_srcdir (${ac_abs_top_srcdir})"
-
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -728,6 +727,11 @@ AH_BOTTOM([
 
 AC_CONFIG_FILES([Makefile
 		 abi_checker.xml
+		 bes_dispatch.pc
+		 bes_ppt.pc
+		 bes_xml_command.pc
+		 doxy.conf
+		 
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
 		 docs/Makefile
@@ -744,34 +748,20 @@ AC_CONFIG_FILES([Makefile
 		 server/test/Makefile
 		 bin/Makefile
 		 templates/Makefile
-		 bes_dispatch.pc
-		 bes_ppt.pc
-		 bes_xml_command.pc
+		 
+		 dap/Makefile
+		 dap/unit-tests/Makefile
+		 dap/unit-tests/test_config.h
 
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
-		 dapreader/tests/package.m4
-
-		 dap/Makefile
-		 
-		 dap/tests/Makefile
-		 dap/tests/bes.conf
-		 dap/tests/package.m4
-		 dap/tests/atlocal
-		 
-		 dap/unit-tests/Makefile
-		 dap/unit-tests/test_config.h
 
 		 functions/Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
- 		 functions/tests/package.m4
- 		 functions/tests/bes.conf
- 		 functions/tests/data/build_responses.conf
-		 functions/unit-tests/Makefile])
-
-AM_COND_IF([BUILD_GDAL], [AC_CONFIG_FILES([functions/swath2grid/Makefile])])
+		 functions/unit-tests/Makefile
+		 functions/swath2grid/Makefile])
 
 AC_CONFIG_FILES([cmdln/testsuite/generate_data_baseline.sh],
 	[chmod +x cmdln/testsuite/generate_data_baseline.sh])
@@ -791,9 +781,8 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 AC_CONFIG_TESTDIR(cmdln/testsuite, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
-AC_CONFIG_TESTDIR(dap/tests, [standalone])
 
-dnl Output files if building the emodules too
+dnl Output files if building the modules too
 		 
 AM_COND_IF([DAP_MODULES],
     [
@@ -801,14 +790,11 @@ AM_COND_IF([DAP_MODULES],
     modules/csv_handler/Makefile
     modules/csv_handler/bes-testsuite/Makefile
     modules/csv_handler/bes-testsuite/atlocal
-    modules/csv_handler/bes-testsuite/bes.conf:modules/csv_handler/bes-testsuite/bes.conf.modules.in
 
     modules/dap-server/Makefile
     modules/dap-server/asciival/Makefile
     modules/dap-server/asciival/tests/Makefile
     modules/dap-server/asciival/tests/atlocal
-    modules/dap-server/asciival/tests/package.m4
-    modules/dap-server/asciival/tests/bes.conf:modules/dap-server/asciival/tests/bes.conf.modules.in
     
     modules/dap-server/asciival/unit-tests/Makefile
     modules/dap-server/asciival/unit-tests/test_config.h
@@ -819,26 +805,21 @@ AM_COND_IF([DAP_MODULES],
     modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/bes-testsuite/Makefile 
     modules/fileout_json/bes-testsuite/atlocal
-    modules/fileout_json/bes-testsuite/bes.conf:modules/fileout_json/bes-testsuite/bes.conf.modules.in
     
     modules/freeform_handler/Makefile
     modules/freeform_handler/bes-testsuite/Makefile
     modules/freeform_handler/bes-testsuite/atlocal
     modules/freeform_handler/FFND/Makefile
-    modules/freeform_handler/bes-testsuite/bes.conf:modules/freeform_handler/bes-testsuite/bes.conf.modules.in
 
 	modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
     modules/xml_data_handler/unit-tests/test_config.h
     modules/xml_data_handler/tests/Makefile
     modules/xml_data_handler/tests/atlocal
-    modules/xml_data_handler/tests/bes.conf:modules/xml_data_handler/tests/bes.conf.modules.in
     
     modules/netcdf_handler/Makefile
 	modules/netcdf_handler/bes-testsuite/Makefile 
 	modules/netcdf_handler/bes-testsuite/atlocal 
-	modules/netcdf_handler/bes-testsuite/package.m4 
-	modules/netcdf_handler/bes-testsuite/bes.conf:modules/netcdf_handler/bes-testsuite/bes.conf.modules.in
 	
 	modules/fileout_netcdf/Makefile 
 	modules/fileout_netcdf/unit-tests/Makefile 
@@ -848,60 +829,43 @@ AM_COND_IF([DAP_MODULES],
 	modules/gateway_module/Makefile 
 	modules/gateway_module/bes-testsuite/Makefile 
 	modules/gateway_module/bes-testsuite/atlocal 
-	modules/gateway_module/bes-testsuite/bes.conf:modules/gateway_module/bes-testsuite/bes.conf.modules.in
 	
 	modules/fileout_gdal/Makefile
 	modules/fileout_gdal/tests/Makefile 
-	modules/fileout_gdal/tests/package.m4 
 	modules/fileout_gdal/tests/atlocal 
-	modules/fileout_gdal/tests/bes.conf:modules/fileout_gdal/tests/bes.conf.modules.in
 	
 	modules/fits_handler/Makefile
     modules/fits_handler/bes-testsuite/atlocal
     modules/fits_handler/bes-testsuite/Makefile
-    modules/fits_handler/bes-testsuite/bes.conf:modules/fits_handler/bes-testsuite/bes.conf.modules.in
-    
     
     modules/gdal_handler/Makefile
     modules/gdal_handler/tests/Makefile
     modules/gdal_handler/tests/atlocal
-    modules/gdal_handler/tests/package.m4
-    modules/gdal_handler/tests/bes.conf:modules/gdal_handler/tests/bes.conf.modules.in
     
     modules/hdf4_handler/Makefile
     modules/hdf4_handler/hdfclass/Makefile
     modules/hdf4_handler/bes-testsuite/Makefile
     modules/hdf4_handler/bes-testsuite/atlocal
-    modules/hdf4_handler/bes-testsuite/bes.conf:modules/hdf4_handler/bes-testsuite/bes.conf.modules.in
-    modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf:modules/hdf4_handler/bes-testsuite/bes.with_hdfeos2.conf.modules.in
     
     modules/hdf5_handler/Makefile
     modules/hdf5_handler/bes-testsuite/Makefile
     modules/hdf5_handler/bes-testsuite/atlocal
-    modules/hdf5_handler/bes-testsuite/bes.conf:modules/hdf5_handler/bes-testsuite/bes.conf.modules.in 
-    modules/hdf5_handler/bes-testsuite/bes.default.conf:modules/hdf5_handler/bes-testsuite/bes.default.conf.modules.in
     
     modules/ncml_module/Makefile 
     modules/ncml_module/tests/Makefile 
     modules/ncml_module/tests/atlocal 
-    modules/ncml_module/tests/bes.conf:modules/ncml_module/tests/bes.conf.modules.in 
-    modules/ncml_module/tests/bes_no_nc_global.conf:modules/ncml_module/tests/bes_no_nc_global.conf.modules.in
-    
+
     modules/ugrid_functions/Makefile 
 	modules/ugrid_functions/unit-tests/Makefile
 	modules/ugrid_functions/unit-tests/test_config.h
 	modules/ugrid_functions/tests/Makefile 
-	modules/ugrid_functions/tests/package.m4 
 	modules/ugrid_functions/tests/atlocal
-	modules/ugrid_functions/tests/bes.conf:modules/ugrid_functions/tests/bes.conf.modules.in
         
 	modules/w10n_handler/Makefile 
 	modules/w10n_handler/unit-tests/Makefile
 	modules/w10n_handler/unit-tests/test_config.h
 	modules/w10n_handler/bes-testsuite/Makefile 
-	modules/w10n_handler/bes-testsuite/package.m4 
-	modules/w10n_handler/bes-testsuite/atlocal
-	modules/w10n_handler/bes-testsuite/bes.conf:modules/w10n_handler/bes-testsuite/bes.conf.modules.in])
+	modules/w10n_handler/bes-testsuite/atlocal])
         
     dnl Move these into the autotest.at files using an autotest option.
 	AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -930,11 +894,6 @@ AM_COND_IF([DAP_MODULES],
 
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
-    
-    AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_data_baseline.sh], 
-		[chmod +x modules/ugrid_functions/tests/generate_data_baseline.sh])
-	AC_CONFIG_FILES([modules/ugrid_functions/tests/generate_metadata_baseline.sh],
-		[chmod +x modules/ugrid_functions/tests/generate_metadata_baseline.sh])
     
 	dnl These can stay
     AC_CONFIG_FILES([modules/dap-server/www-interface/js2h.pl], [chmod +x modules/dap-server/www-interface/js2h.pl])

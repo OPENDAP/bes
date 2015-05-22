@@ -139,7 +139,7 @@ string info1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 string info2 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <request reqID=\"some_unique_value\"><showInfo node=\"data\"/></request>\n" ;
 
-bool translate_test( BESTokenizer &tokenizer, xmlTextWriterPtr writer )
+bool translate_test( BESTokenizer &/*tokenizer*/, xmlTextWriterPtr /*writer*/ )
 {
     return true ;
 }

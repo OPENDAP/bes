@@ -3,7 +3,7 @@
 # These macros are used for both the netcdf3 and netcdf4 tests.
 
 AT_INIT([bes.conf besstandalone getdap])
-# AT_COPYRIGHT([])
+AT_COPYRIGHT([OpenDAP, 2015])
 
 AT_TESTED([besstandalone])
 
@@ -16,8 +16,8 @@ AT_ARG_OPTION_ARG([generate g],
      fi     
      exit],[])
 
-AT_ARG_OPTION_ARG([generate-data a],
-    [  -a arg, --generate-data=arg   Build the baseline file for test 'arg'],
+AT_ARG_OPTION_ARG([generate_data a],
+    [  -a arg, --generate_data=arg   Build the baseline file for test 'arg'],
     [if ./generate_data_baseline.sh $at_arg_generate_data; then
          echo "Built baseline for $at_arg_generate_data"
      else
@@ -62,3 +62,13 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 m4_define([AT_BESCMD_PATTERN_DATA_RESPONSE_TEST],
 [_AT_BESCMD_PATTERN_DATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])
 ])
+
+m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dap4 functions])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/$1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $abs_srcdir/$1.baseline stdout], [], [ignore],[],[])
+# see above ..." || diff -b -B $abs_srcdir/$1.baseline stderr"
+AT_XFAIL_IF([test "$2" = "xfail"])
+AT_CLEANUP])
+

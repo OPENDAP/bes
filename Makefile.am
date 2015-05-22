@@ -14,10 +14,18 @@
 # user    3m29.876s
 # sys     0m23.857s
 
-
 AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
+
+if WITH_DEPENDENCIES
+# I think this will enable distcheck to pickup the --with-dependencies
+# flag on OSX but not use it on Linux (where we should be getting all
+# the dependencies from RPMs). jhrg 3/18/15
+#
+# Not always true - some deps come from here, even on linux jhrg 4/5/15
+AM_DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=@ac_bes_dependencies_prefix@
+endif
 
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates 
 
@@ -28,7 +36,13 @@ if DAP_MODULES
 SUBDIRS += modules
 endif
 
-bin_SCRIPTS = besd bes-config bes-config-pkgconfig
+bin_SCRIPTS = bes-config bes-config-pkgconfig
+
+# Yes, even though its `init_d_SCRIPTS`, we use `init_ddir`,
+# with-out a second underscore.
+init_ddir = $(sysconfdir)/rc.d/init.d
+init_d_SCRIPTS = besd
+CLEANFILES = $(init_d_SCRIPTS)
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
@@ -37,14 +51,14 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = apache hello_world doxy.conf bes.spec \
-		OSX_Resources bes-config-pkgconfig
+OSX_Resources bes-config-pkgconfig
 
 server-tests:
 	cd cmdln && make server-tests
 
 .PHONY: docs
 docs:
-	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
+	doxygen doxy.conf
 	(cd docs && tar -czf html.tar.gz html)
 
 # cccc computes metrics like Lines of code and McCabe. It'a available
@@ -70,12 +84,16 @@ fortify:
 	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
-	(cd cmdln && $(MAKE) $(MFLAGS))
 	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd cmdln && $(MAKE) $(MFLAGS))
 	(cd standalone && $(MAKE) $(MFLAGS))
 	(cd docs && $(MAKE) $(MFLAGS))
 	(cd bin && $(MAKE) $(MFLAGS))
 	(cd templates && $(MAKE) $(MFLAGS))
+	(cd dap && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd dapreader && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd functions && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
+	(cd modules && sourceanalyzer -b @PACKAGE@ $(MAKE) $(MFLAGS))
 	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
 # Use this to clean the fortify project.
@@ -85,13 +103,49 @@ fortifyclean:
 
 ##########################################################################
 
+# This hack strips out the individual handlers' spec files from the
+# big tar and lets us use the old target again, which means I don't
+# have to code the rpmbuild root into a target.
+dist-hook:
+	rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
+
 # Build linux RPMs
 
 srpm: dist
 	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
+# NB: 'dist' builds a tar.gz package using automake in the CWD.
 rpm: dist
 	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+
+# This target is pretty specific to our need to build a RPM for use at
+# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
+nasarpm: dist
+	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -bb $(RPM_OPTIONS) bes.spec.nasa
+
+# This target is pretty specific to our need to build a RPM for use at
+# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
+# This will link with everything it can find in the local deps dir,
+# removing the need for EPEL
+all-static-rpm: dist
+	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
+
+# cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+# rpmbuild -bb $(RPM_OPTIONS) bes.spec
+#
+# Old comment: 
+# We used to use -tb and feed it the source tar.gz but with the new
+# 'modules' build of the bes there are multiple .spec files in the resulting
+# tar.gz and that confuses rpmbuild. Running rpmbuild with more than one
+# spec file in the tar.gz results in the somewhat inscrutable error: 'two
+# %prep lines'. As a work-around (and because I don't want to remove the
+# handler's spec files, I'm using the modified rpm rule above). jhrg 3/18/15
+#
+# Update: I used dist-hook to filter out the modules' *.spec files. jhrg 
+# 3/20/15
+
 
 ###########################################################################
 

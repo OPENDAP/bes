@@ -1,3 +1,4 @@
+
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
@@ -9,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.13.2
+Version:        3.14.0
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -20,22 +21,33 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.13.3
+Requires:       libdap >= 3.14.0
 Requires:       readline bzip2 zlib
+Requires:	netcdf >= 4.1
+Requires:	libicu >= 3.6
+Requires:	hdf5 => 1.8
+Requires:	hdf >= 4.2
 Requires:       libxml2 >= 2.7.0
-# needed by ppt
 Requires:       openssl
+# gdal >= 1.10
+# gridfields >= ?
+# fits >= ?
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.13.3
+BuildRequires:  libdap-devel >= 3.14.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
-# needed by ppt
+BuildRequires:	netcdf-devel >= 4.1
+BuildRequires:	libicu-devel >= 3.6
+BuildRequires:	hdf5-devel => 1.8
+BuildRequires:	hdf-devel >= 4.2
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
-# BuildRequires:  doxygen graphviz
+# gdal-devel >= 1.10
+# gridfields-devel >= ?
+# fits-devel >= ?
 
 %description
 BES is a high-performance back-end server software framework for 
@@ -52,7 +64,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.11.0
+Requires:       libdap-devel >= 3.14.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -122,36 +134,61 @@ useradd -r -g %{besuser} -d %{beslogdir} -s /sbin/nologin \
     -c "BES daemon" %{besuser}
 exit 0
 
+%post 
+/sbin/chkconfig --add besd
+/sbin/ldconfig
 
-%post -p /sbin/ldconfig
+%preun
+/sbin/chkconfig --del besd
 
 %postun -p /sbin/ldconfig
-
 
 %files
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
+
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
-%config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/*.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/functions.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/csv.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/dap-server.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/dapreader.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/ff.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/fojson.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/fonc.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/nc.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/ncml.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/w10n.conf
+# %config(noreplace) %{_sysconfdir}/bes/modules/xml_data_handler.conf
+
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt
 %{_datadir}/bes/*.xml
+
+%{_datadir}/hyrax/
+
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
-%{_bindir}/besd
+# %{_bindir}/besd # moved to /etc/rc.d/init.d; see below.
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
-# %{_bindir}/besregtest; jhrg 12/3/14
 %{_bindir}/bescmdln
+
 %{_libdir}/*.so.*
 %{_libdir}/bes/
-%{bescachedir}
+
+%{_initddir}/besd
+
+# %{bescachedir}
 %{bespkidir}/
+
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
@@ -172,13 +209,16 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
-* Thu Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
+* Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1
+- Added install of 'besd' script to /etc/rc.d/init.d 
+
+* Tue Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
 - Update
 
-* Thu May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
+* Tue May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
 - Update
 
-* Thu Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
+* Tue Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
 - Update
 
 * Thu Mar 11 2010 Patrick West <westp@rpi.edu> - 3.8.1-1

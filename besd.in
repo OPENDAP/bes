@@ -2,19 +2,16 @@
 #
 # besd        Startup script for the OPeNDAP BES
 #
-# chkconfig: 5 65 25
+# chkconfig: 2345 95 05
 # description: OPeNDAP BES is a modular framework allowing access to
 #	       data files
 # processname: besctl
 # config: @sysconfdir@/bes/bes.conf
 # pidfile: @localstatedir@/run/bes.pid
 
-# Source function library.
-. /etc/rc.d/init.d/functions
-
-# Path to the apachectl script, server binary, and short-form for messages.
-bes_prefix=@prefix@
-exec_prefix=@prefix@
+# Path to the besctl script. Note: If the BES is installed using a prefix
+# that is not set in the besctl script, add '-i <bes_prefix>' to the value
+# of besctl here. This should only be needed in unusual situations.
 besctl=@bindir@/besctl
 prog=besd
 RETVAL=0
@@ -27,8 +24,8 @@ case "$1" in
 	what=${1}
 	shift
 	other=$@
-	echo "${besctl} ${what} -i ${bes_prefix} ${other}"
-	${besctl} ${what} -i ${bes_prefix} ${other}
+	echo "${besctl} ${what} ${other}"
+	${besctl} ${what} ${other}
 	RETVAL=$?
 	;;
   *)

@@ -34,7 +34,7 @@
 #include "GeoConstraint.h"
 #endif
 
-namespace libdap
+namespace functions
 {
 
 // Defined in GeoConstraint; maybe move to util.cc/h?
@@ -50,13 +50,13 @@ class GridGeoConstraint : public GeoConstraint
 
 private:
     // Specific to a Grid
-    Grid *d_grid;               //< Constrain this Grid
+    libdap::Grid *d_grid;               //< Constrain this Grid
 
-    Array *d_latitude;          //< A pointer to the Grid's latitude map
-    Array *d_longitude;         //< A pointer to the Grid's longitude map
+    libdap::Array *d_latitude;          //< A pointer to the Grid's latitude map
+    libdap::Array *d_longitude;         //< A pointer to the Grid's longitude map
 
     bool build_lat_lon_maps();
-    bool build_lat_lon_maps(Array *lat, Array *lon);
+    bool build_lat_lon_maps(libdap::Array *lat, libdap::Array *lon);
 
     bool lat_lon_dimensions_ok();
 
@@ -65,8 +65,8 @@ private:
 public:
     /** @name Constructors */
     //@{
-    GridGeoConstraint(Grid *grid);
-    GridGeoConstraint(Grid *grid, Array *lat, Array *lon);
+    GridGeoConstraint(libdap::Grid *grid);
+    GridGeoConstraint(libdap::Grid *grid, libdap::Array *lat, libdap::Array *lon);
     //@}
 
     virtual ~GridGeoConstraint()
@@ -74,7 +74,7 @@ public:
 
     virtual void apply_constraint_to_data() ;
 
-    virtual Grid *get_constrained_grid() const
+    virtual libdap::Grid *get_constrained_grid() const
     {
         return d_grid;
     }

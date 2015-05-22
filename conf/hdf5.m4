@@ -62,10 +62,8 @@ dnl the autoconf internal cache isn't avoided because we really check for
 dnl libhdf5, other libraries that implement the same api have other names
 dnl  AC_LINK_IFELSE([AC_LANG_CALL([],[$ac_check_func_checked])],
       AC_CHECK_LIB([hdf5],[$ac_check_h5_func_checked],
-        [
-          H5_LIBS='-lhdf5'
-          ac_hdf5_ok='yes'
-        ])
+        [H5_LIBS='-lhdf5_hl -lhdf5'; ac_hdf5_ok='yes'], [], 
+	[-lhdf5_hl -lz -lm])
     ],
     [
       for ac_hdf5_libdir in "." \

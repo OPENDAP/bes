@@ -26,8 +26,6 @@
 
 #include <iostream>
 
-using std::endl;
-
 #include <ServerFunctionsList.h>
 #include <BESDebug.h>
 
@@ -42,8 +40,11 @@ using std::endl;
 #include "BBoxFunction.h"
 #include "RoiFunction.h"
 #include "BBoxUnionFunction.h"
+#include "MaskArrayFunction.h"
 
 #include "DapFunctions.h"
+
+namespace functions {
 
 void DapFunctions::initialize(const string &)
 {
@@ -63,6 +64,7 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new RoiFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxUnionFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
@@ -90,3 +92,4 @@ BESAbstractModule *maker()
 }
 }
 
+}

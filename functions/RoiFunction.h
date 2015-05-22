@@ -25,15 +25,17 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
 
 class D4RValueList;
 class DMR;
+}
 
-void function_dap2_roi(int argc, BaseType *argv[], DDS &dds, BaseType **btpp);
-BaseType *function_dap4_roi(D4RValueList *args, DMR &dmr);
+namespace functions {
+
+void function_dap2_roi(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_dap4_roi(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class RoiFunction: public libdap::ServerFunction
 {
@@ -45,8 +47,8 @@ public:
         setUsageString("roi(<array0>, <array1>, ..., <arrayn>, Structure slice[M]), where <array0>, ..., has M or more dimensions.");
         setRole("http://services.opendap.org/dap4/server-side-function/roi");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#roi");
-        setFunction(libdap::function_dap2_roi);
-        setFunction(libdap::function_dap4_roi);
+        setFunction(function_dap2_roi);
+        setFunction(function_dap4_roi);
         setVersion("1.0");
     }
     virtual ~RoiFunction()
@@ -54,4 +56,4 @@ public:
     }
 };
 
-} // libdap namespace
+} // functions namespace

@@ -27,11 +27,13 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
+}
 
-void function_geogrid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+namespace functions {
+
+void function_geogrid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) ;
 
 class GeoGridFunction: public libdap::ServerFunction {
 public:
@@ -42,14 +44,14 @@ public:
 		setUsageString("geogrid(...)");
 		setRole("http://services.opendap.org/dap4/server-side-function/geogrid");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#geogrid");
-		setFunction(libdap::function_geogrid);
+		setFunction(function_geogrid);
 		setVersion("1.2");
     }
     virtual ~GeoGridFunction()
     {
     }
 
-    bool canOperateOn(DDS &dds);
+    bool canOperateOn(libdap::DDS &dds);
 };
 
-} // libdap namespace
+} // functions namespace

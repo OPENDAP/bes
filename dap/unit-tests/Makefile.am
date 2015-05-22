@@ -40,7 +40,9 @@ DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ResponseCacheTest SequenceAggregationServerTest
+UNIT_TESTS = ResponseBuilderTest ResponseCacheTest 
+
+# Class not included in the dap module: SequenceAggregationServerTest
 
 # FIXME Look at the problems in ResponseBuilderTest and address the (likley)
 # similar issues in these tests. (Use of machine dependent hash names in the
@@ -74,5 +76,5 @@ ResponseCacheTest_LDADD = $(AM_LDADD)
 # StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
 # StoredDap4ResultTest_LDADD = $(AM_LDADD)
 
-SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
-SequenceAggregationServerTest_LDADD = $(AM_LDADD)
+# SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
+# SequenceAggregationServerTest_LDADD = $(AM_LDADD)

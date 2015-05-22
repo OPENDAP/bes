@@ -36,14 +36,16 @@
 #include "GSEClause.h"
 #include "GridGeoConstraint.h"
 
-int gse_parse(libdap::gse_arg *arg);
+using namespace libdap;
+
+int gse_parse(functions::gse_arg *arg);
 void gse_restart(FILE * in);
 
 // Glue routines declared in gse.lex
 void gse_delete_buffer(void *buffer);
 void *gse_string(const char *yy_str);
 
-namespace libdap {
+namespace functions {
 
 /**
  * Recursively traverses the BaseType bt (if its a constructor type) and collects pointers to all of the Grid and places said pointers

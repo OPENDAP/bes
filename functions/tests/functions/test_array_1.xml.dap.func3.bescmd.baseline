@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="function_results">
-    <Float64 name="x1">
-        <Dim size="3"/>
+    <Float64 name="x">
+        <Dim size="5"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>df87b8fe</Value>
+            <Value>eac1aa87</Value>
         </Attribute>
     </Float64>
-    <Float64 name="x2">
-        <Dim size="2"/>
+    <Float64 name="x">
+        <Dim size="5"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9fcb140b</Value>
+            <Value>2468f761</Value>
         </Attribute>
     </Float64>
 </Dataset>
 
 The data:
-Float64 x1[3] = {12345678.9, 12345678.9, 12345678.9};
-Float64 x2[2] = {1234567.89, 1234567.89};
+Float64 x[5] = {3.2, 102.4, 3276.8, 104857.6, 3355443.2};
+Float64 x[5] = {0.32, 10.24, 327.68, 10485.76, 335544.32};
 

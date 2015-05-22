@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -27,39 +26,36 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
+}
 
-/**
- * The linear_scale() function applies the familiar y = mx + b equation to data.
- */
-void function_bind_name_dap2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+namespace functions {
 
-BaseType *function_bind_name_dap4(D4RValueList *args, DMR &dmr);
-
-
+void function_bind_name_dap2(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_bind_name_dap4(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 /**
  * The LinearScaleFunction class encapsulates the linear_scale function 'function_linear_scale'
  * along with additional meta-data regarding its use and applicability.
  */
-class BindNameFunction: public libdap::ServerFunction {
+class BindNameFunction: public libdap::ServerFunction
+{
 public:
-	BindNameFunction()
+    BindNameFunction()
     {
-		setName("bind_name");
-		setDescriptionString("The bind_name() function (re)names a DAP variable.");
-		setUsageString("bind_name(name,variable)");
-		setRole("http://services.opendap.org/dap4/server-side-function/bind_name");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name");
-		setFunction(libdap::function_bind_name_dap2);
-		setFunction(libdap::function_bind_name_dap4);
-		setVersion("1.0");
+        setName("bind_name");
+        setDescriptionString("The bind_name() function (re)names a DAP variable.");
+        setUsageString("bind_name(name,variable)");
+        setRole("http://services.opendap.org/dap4/server-side-function/bind_name");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name");
+        setFunction(function_bind_name_dap2);
+        setFunction(function_bind_name_dap4);
+        setVersion("1.0");
     }
     virtual ~BindNameFunction()
     {
     }
 };
 
-} // libdap namespace
+} // functions namespace

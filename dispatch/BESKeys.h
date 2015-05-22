@@ -102,7 +102,7 @@ private:
     bool		only_blanks( const char *line ) ;
     void		load_include_files( const string &files ) ;
     void		load_include_file( const string &file ) ;
-    			BESKeys() {}
+    			BESKeys(): _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)   {}
 			BESKeys( const string &keys_file_name,
 				 map<string,vector<string> > *keys ) ;
 protected:

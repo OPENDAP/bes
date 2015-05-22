@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -27,29 +26,32 @@
 #include <ServerFunction.h>
 
 namespace libdap {
-
 class BaseType;
 class DDS;
+}
 
-void function_grid(int argc, BaseType *argv[], DDS &dds, BaseType **btpp) ;
+namespace functions {
 
-class GridFunction: public libdap::ServerFunction {
+void function_grid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+
+class GridFunction: public libdap::ServerFunction
+{
 public:
-	GridFunction()
+    GridFunction()
     {
-		setName("grid");
-		setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
-		setUsageString("grid(...)");
-		setRole("http://services.opendap.org/dap4/server-side-function/grid");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
-		setFunction(libdap::function_grid);
-		setVersion("1.0");
+        setName("grid");
+        setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
+        setUsageString("grid(...)");
+        setRole("http://services.opendap.org/dap4/server-side-function/grid");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
+        setFunction(function_grid);
+        setVersion("1.0");
     }
     virtual ~GridFunction()
     {
     }
 
-    bool canOperateOn(DDS &dds);
+    bool canOperateOn(libdap::DDS &dds);
 };
 
-} // libdap namespace
+} // functions namespace

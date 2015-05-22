@@ -23,16 +23,16 @@ DIST_SUBDIRS = unit-tests testsuite
 
 bin_PROGRAMS = bescmdln
 
-bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc \	
-	CmdApp.h CmdClient.h CmdTranslation.h
+bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc \
+CmdApp.h CmdClient.h CmdTranslation.h
 
 # Including these as dependencies breaks the distclean target.
 # I replaced them with a library include and made sure that the
 # library's directory is built first.
 # ../xmlcommand/BESXMLUtils.cc	../xmlcommand/BESXMLUtils.h
 
-bescmdln_LDADD = $(top_srcdir)/dispatch/libbes_dispatch.la $(top_srcdir)/ppt/libbes_ppt.la \
-$(top_srcdir)/xmlcommand/libbes_xml_command.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
+bescmdln_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/ppt/libbes_ppt.la \
+$(top_builddir)/xmlcommand/libbes_xml_command.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 
 server-tests:
 	besctl start && \

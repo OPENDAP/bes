@@ -29,14 +29,16 @@
 #include <BaseType.h>
 #include <Structure.h>
 #include <Array.h>
+#include <functions/roi_util.h>
 #include <Int32.h>
 #include <Str.h>
 
 #include <util.h>
 
-#include "roi_utils.h"
 
-namespace libdap {
+using namespace libdap;
+
+namespace functions {
 
 /**
  * Each Bounding Box is made up of a number of 'slices' - test if a given
@@ -206,4 +208,4 @@ auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bb
     return response;
 }
 
-} //namespace libdap
+} //namespace functions
