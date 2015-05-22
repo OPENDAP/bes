@@ -186,30 +186,20 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
             tuple[dim] = data[n * nDims + dim];
         }
 
-        // find its indices
-#if 0
-        // I saw this and went 'cool' but then compiler chimed in.
-        // I wrote fund_value_indices() so that a -1 indicates not
-        // found, which closes the door to unsigned int. I think that's
-        // a bug, because we might actually need to use unsigned for
-        // some really big arrays, but before that, I think we need
-        // to give more thought to just how we 'find indices'. Like
-        // just how close does the value of the tuple element have
-        // to be to the alue in the map cell to match?
-	Odometer::shape indices(rank);  // Holds a given index
-	indices = find_value_indices(tuple, dim_value_vecs);
-#endif
+        // find indices for tuple-values in the specified
+	// target-grid dimensions
 	vector<int> indices = find_value_indices(tuple, dim_value_vecs);
 
         // if all of the indices are >= 0, then add this point to the mask
         if (all_indices_valid(indices)) {
-#if 0
-        // FIXME write these then remove #if 0
-            offset = calculateOffset(indices);  // calculate the offset into the mask for the [i][j][...] indices
-            mask[offset] = 1;
-#endif
+
+	    // Pass identified indices to Odometer, it will automatically
+	    // calculate offset within defined 'shape' using those index values.
+	    // Result of set_indices() will update d_offset value, accessible
+	    // using the Odometer::offset() accessor.
+	    odometer.set_indices(indices);  
+	    mask[odometer.offset()] = 1;
         }
-        // tuple_offset += ndims
     }
 }
 
