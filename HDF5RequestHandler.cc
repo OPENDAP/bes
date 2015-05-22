@@ -69,6 +69,9 @@
 #include <BESInternalFatalError.h>
 #include <TheBESKeys.h>
 #include <BESDebug.h>
+#include <BESStopWatch.h>
+#include "BESDataNames.h"
+
 #include "h5get.h"
 #include "config_hdf5.h"
 //#include "h5cfdap.h"
@@ -105,6 +108,9 @@ HDF5RequestHandler::~HDF5RequestHandler()
 
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_das", dhi.data[REQUEST_ID]);
 
     bool found_key = false;
     bool usecf = false;
@@ -193,6 +199,9 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_dds", dhi.data[REQUEST_ID]);
 
     bool found = false;
     bool usecf = false;
@@ -329,6 +338,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
+
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_data", dhi.data[REQUEST_ID]);
 
     bool found = false;
     bool usecf = false;
@@ -469,6 +482,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_data_with_IDs", dhi.data[REQUEST_ID]);
 
     BESDEBUG("h5","Building DataDDS by passing file IDs. "<<endl);
     hid_t cf_fileid = -1;
@@ -539,6 +555,10 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 #ifdef USE_DAP4
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
+
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_dmr", dhi.data[REQUEST_ID]);
 
     bool found = false;
     bool usecf = false;
@@ -688,6 +708,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("HDF5RequestHandler::hdf5_build_dmr_with_IDs", dhi.data[REQUEST_ID]);
 
     BESDEBUG("h5","Building DMR with passing file IDs. "<<endl);
     string filename = dhi.container->access();
