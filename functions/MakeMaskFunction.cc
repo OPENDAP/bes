@@ -147,41 +147,6 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
     int nDims = dims.size();
     int nTuples = data.size() / nDims;
 
-#if 0
-    // I don't think the logic for theyAllMatched won't work. I think what will happen
-    // is that the inner most loop will scan the entire dim value vec, setting
-    // it to false every time a value does not match (most of the time) so
-    // it will be false in the if() unless the value matches the last thing tested.
-    // Also, I don't see how the different tuple values are accessed. I'm going to
-    // add a few simpler functions and then add in a new section for the code below.
-
-    bool theyAllMatched;
-    vector<int> indices(nDims);
-    T *tVal = &data[0];
-
-    for (int outer = 0; outer < nTuples; outer++) {
-        for (int inner = 0; inner < nDims; inner++) {
-
-            theyAllMatched = true;  // Assume all 'tuple' dimension values will match.
-
-            for (int i = 0; i < dim_value_vecs[inner].size(); i++) {
-                if (double_eq((double) *tVal, dim_value_vecs[inner][i])) {
-                    indices[inner] = i;
-                }
-                else {
-                    theyAllMatched = false;  // If any don't, then don't mask these 'tuple' locations.
-                }
-            }
-#if 0
-            if (theyAllMatched) {
-                offset = calculateOffset(indices);  // calculate the offset into the mask for the [i][j][...] indices
-                mask[offset] = 1;
-            }
-#endif
-        }
-    }
-#endif
-
     // NB: 'data' holds the tuple values
 
     // unsigned int tuple_offset = 0;       // an optimization...
@@ -206,8 +171,6 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 #endif
         // tuple_offset += ndims
     }
-
-
 }
 
 /** Given a ...
@@ -246,15 +209,16 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     Grid *g = static_cast<Grid*>(btp);
     Array *a = g->get_array();
 
+    vector<dods_byte> mask(a->length());
+
     // Create the 'mask' array using the shape of the target grid variable's array.
 
     vector<MaskDIM> maskDims;
     vector<string> dimNames;
     int nGridDims = 1;
-    Array *mask = new Array("mask", new Byte("mask"));
-
+    
     for (Array::Dim_iter i = a->dim_begin(); i != a->dim_end(); ++i) {
-        mask->append_dim(a->dimension_size(i), a->dimension_name(i));
+        //mask->append_dim(a->dimension_size(i), a->dimension_name(i));
         MaskDIM *mDim = new MaskDIM;
         ;
         mDim->size = a->dimension_size(i);
@@ -340,7 +304,7 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         break;
 
     case dods_int16_c:
-        //make_mask_helper<dods_int16>(dims, tuples, mask);
+        make_mask_helper<dods_int16>(dims, tuples, mask);
         cerr << "read_mask_values<dods_int16, Byte>(tuples, dims, mask);" << endl;
         break;
 
@@ -383,44 +347,6 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     default:
         throw InternalErr(__FILE__, __LINE__, "Unknown type error");
     }
-
-    unsigned int tSz = tuples->dimension_size(tuples->dim_begin());
-
-    // Calculate the number of Tuples passed to the function.
-    unsigned int numberOfTuples = tSz / nDims;
-#if 0
-    Array *idx = &tuples[0];
-    vector<int> indices(nDims);
-    int index;
-
-    for (int outer = 0; outer < numberOfTuples; outer++) {
-
-        // Foreach tuple member search the respective dimension
-        //  if FOUND, return indice, if NOT_FOUND return -1;
-
-        for (int inner = 0; inner < nDims; inner++) {
-            index = dimSearch(dims[inner], idx->value());
-            indices[inner] = index;
-        }
-
-        // Check to ensure each tuple member passed search test.
-
-        searchFailed = false;
-        for (int inner = 0; inner < nDims; inner++) {
-            if (indices[inner] == -1) {
-                searchFailed = true;
-            }
-        }
-
-        if (searchFailed) {
-            // do nothing
-        }
-        else {
-            indices.push_back(indice.offset);
-        }
-    }
-#endif
-    cerr << "nDims:" << nDims << " nTuples:" << numberOfTuples << endl;
 
     BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
 
