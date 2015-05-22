@@ -58,6 +58,7 @@ using std::cout;
 #include "BESDataNames.h"
 
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 
@@ -116,60 +117,65 @@ BESInterface::~BESInterface()
 int
 BESInterface::execute_request( const string &from )
 {
-    if( !_dhi )
-    {
-	string err = "DataHandlerInterface can not be null" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
-    }
-    _dhi->set_output_stream( _strm ) ;
-    _dhi->data[REQUEST_FROM] = from ;
 
-    pid_t thepid = getpid() ;
-    ostringstream ss ;
-    ss << thepid ;
-    _dhi->data[SERVER_PID] = ss.str() ;
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESInterface::execute_request",_dhi->data[REQUEST_ID]);
 
-    int status = 0;
+	if( !_dhi )
+	{
+		string err = "DataHandlerInterface can not be null" ;
+		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
+	_dhi->set_output_stream( _strm ) ;
+	_dhi->data[REQUEST_FROM] = from ;
 
-    // We split up the calls for the reason that if we catch an
-    // exception during the initialization, building, execution, or response
-    // transmit of the request then we can transmit the exception/error
-    // information.
-    try {
-        initialize();
+	pid_t thepid = getpid() ;
+	ostringstream ss ;
+	ss << thepid ;
+	_dhi->data[SERVER_PID] = ss.str() ;
 
-	*(BESLog::TheLog()) << _dhi->data[SERVER_PID]
-			    << " from " << _dhi->data[REQUEST_FROM]
-			    << " request received" << endl ;
+	int status = 0;
 
-        validate_data_request();
-        build_data_request_plan() ;
-	execute_data_request_plan();
-	/* These two functions are now being called inside
-	 * execute_data_request_plan as they are really a part of executing
-	 * the request and not separate.
+	// We split up the calls for the reason that if we catch an
+	// exception during the initialization, building, execution, or response
+	// transmit of the request then we can transmit the exception/error
+	// information.
+	try {
+		initialize();
+
+		*(BESLog::TheLog()) << _dhi->data[SERVER_PID]
+										  << " from " << _dhi->data[REQUEST_FROM]
+																	<< " request received" << endl ;
+
+		validate_data_request();
+		build_data_request_plan() ;
+		execute_data_request_plan();
+		/* These two functions are now being called inside
+		 * execute_data_request_plan as they are really a part of executing
+		 * the request and not separate.
 	invoke_aggregation();
 	transmit_data();
-	*/
-	_dhi->executed = true ;
-    }
-    catch( BESError & ex )
-    {
-        return exception_manager( ex ) ;
-    }
-    catch( bad_alloc & )
-    {
-        string serr = "BES out of memory" ;
-        BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;
-        return exception_manager( ex ) ;
-    }
-    catch(...) {
-        string serr = "An undefined exception has been thrown" ;
-        BESInternalError ex( serr, __FILE__, __LINE__ ) ;
-        return exception_manager( ex ) ;
-    }
+		 */
+		_dhi->executed = true ;
+	}
+	catch( BESError & ex )
+	{
+		return exception_manager( ex ) ;
+	}
+	catch( bad_alloc & )
+	{
+		string serr = "BES out of memory" ;
+		BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;
+		return exception_manager( ex ) ;
+	}
+	catch(...) {
+		string serr = "An undefined exception has been thrown" ;
+		BESInternalError ex( serr, __FILE__, __LINE__ ) ;
+		return exception_manager( ex ) ;
+	}
 
-    return finish( status ) ;
+	return finish( status ) ;
 }
 
 int
@@ -291,6 +297,10 @@ BESInterface::add_init_callback(p_bes_init init)
 void
 BESInterface::initialize()
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESInterface::initialize",_dhi->data[REQUEST_ID]);
+
     BESDEBUG("bes", "Initializing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl ) ;
     bool do_continue = true;
     init_iter i = _init_list.begin();
@@ -318,6 +328,10 @@ BESInterface::initialize()
 void
 BESInterface::validate_data_request()
 {
+	//BESStopWatch sw;
+	//if (BESISDEBUG( TIMING_LOG ))
+    //		sw.start("BESInterface::validate_data_request");
+
 }
 
 /** @brief Execute the data request plan
@@ -336,6 +350,12 @@ BESInterface::validate_data_request()
 void
 BESInterface::execute_data_request_plan()
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESInterface::execute_data_request_plan",_dhi->data[REQUEST_ID]);
+
+	;
+
     BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl ) ;
     BESResponseHandler *rh = _dhi->response_handler ;
     if( rh )
@@ -363,6 +383,10 @@ BESInterface::execute_data_request_plan()
 void
 BESInterface::invoke_aggregation()
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESInterface::invoke_aggregation",_dhi->data[REQUEST_ID]);
+
     if( _dhi->data[AGG_CMD] != "" )
     {
         BESDEBUG("bes", "aggregating with: " << _dhi->data[AGG_CMD] << " ...  "<< endl ) ;
@@ -399,6 +423,10 @@ BESInterface::invoke_aggregation()
 void
 BESInterface::transmit_data()
 {
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESInterface::transmit_data",_dhi->data[REQUEST_ID]);
+
     BESDEBUG("bes", "Transmitting request: " << _dhi->data[DATA_REQUEST] << endl) ;
     if (_transmitter)
     {

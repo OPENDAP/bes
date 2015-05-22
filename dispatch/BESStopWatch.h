@@ -27,8 +27,9 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      ndp         Nathan Potter <ndp@opendap.org>
+//      pwest       Patrick West  <pwest@ucar.edu>
+//      jgarcia     Jose Garcia  <jgarcia@ucar.edu>
 
 #ifndef I_BESStopWatch_h
 #define I_BESStopWatch_h 1
@@ -41,9 +42,14 @@
 
 #include "BESObj.h"
 
+#define TIMING_LOG "timing"
+
 class BESStopWatch : public BESObj
 {
 private:
+	string               _timer_name;
+	string               _req_id;
+	string               _log_name;
     struct rusage		_start_usage ;
     struct rusage		_stop_usage ;
     struct timeval		_result ;
@@ -51,20 +57,47 @@ private:
     bool			_stopped ;
     bool			timeval_subtract() ;
 public:
-				BESStopWatch() {}
-    virtual			~BESStopWatch() {}
-    virtual bool		start() ;
-    virtual bool		stop() ;
-    virtual int			seconds()
-				{
-				    if( _stopped ) return _result.tv_sec ;
-				    else return 0 ;
-				}
-    virtual int			microseconds()
-				{
-				    if( _stopped ) return _result.tv_usec ;
-				    else return 0 ;
-				}
+
+    /**
+     * Makes a new BESStopWatch with a logName of TIMING_LOG
+     *
+     */
+    BESStopWatch();
+
+    /**
+     * Makes a new BESStopWatch.
+     *
+     * @param logName The name of the log to use in the logging output.
+     */
+    BESStopWatch(string logName);
+
+
+
+    /**
+     * This destructor is "special" in that it's execution signals the timer to stop if it has been started.
+     * Stopping the timer will initiate an attempt to write logging information to the BESDebug::GetStrm() stream.
+     * If the start method has not been called then the method exits silently.
+     */
+    ~BESStopWatch();
+
+
+    /**
+     * Starts the timer.
+     * NB: This method will attempt to write logging
+     * information to the BESDebug::GetStrm() stream.
+     * @param name The name of the timer.
+     */
+    virtual bool		start(string name) ;
+
+    /**
+     * Starts the timer.
+     * NB: This method will attempt to write logging
+     * information to the BESDebug::GetStrm() stream.
+     * @param name The name of the timer.
+     * @param reqID The client's request ID associated with this activity. Available from the DataHandlerInterfact object.
+     */
+    virtual bool		start(string name, string reqID) ;
+
 
     virtual void		dump( ostream &strm ) const ;
 } ;

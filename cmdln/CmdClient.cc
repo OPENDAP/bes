@@ -267,12 +267,9 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
 		if (repeat < 1) repeat = 1;
 		for (int i = 0; i < repeat && !do_exit; i++) {
 			BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl );
-				BESStopWatch *sw = 0;
-				if( BESISDEBUG( "timing" ) )
-				{
-					sw = new BESStopWatch();
-					sw->start();
-				}
+				BESStopWatch sw;
+				if( BESISDEBUG( TIMING_LOG ) )
+					sw.start("CmdClient::executeCommand","command_line_client");
 
 				map<string,string> extensions;
 				_client->send( cmd, extensions );
@@ -334,26 +331,8 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
 					}
 					BESDEBUG( "cmdln", "cmdclient done receiving " << endl );
 				}
-				if( BESISDEBUG( "timing" ) )
-				{
-					if( sw && sw->stop() )
-					{
-						BESDEBUG( "timing", "cmdclient - executed \""
-								<< cmd << "\" in " << sw->seconds()
-								<< " seconds and " << sw->microseconds()
-								<< " microseconds" << endl );
-					}
-					else
-					{
-						BESDEBUG( "timing", "cmdclient - executed \"" << cmd
-								<< "\" - no timing available"
-								<< endl );
-					}
-				}
 
 				_strm->flush();
-				delete sw;
-				sw = 0;
 			}
 		}
 	return do_exit;

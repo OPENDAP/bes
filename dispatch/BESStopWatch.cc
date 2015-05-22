@@ -22,11 +22,12 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
+//      ndp         Nathan Potter <ndp@opendap.org>
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
@@ -41,114 +42,220 @@ using std::endl ;
 #include "BESStopWatch.h"
 #include "BESDebug.h"
 
+string missing_log_param = "";
+
+BESStopWatch::BESStopWatch(){
+	_log_name = TIMING_LOG;
+	_timer_name = missing_log_param;
+	_req_id = missing_log_param;
+
+}
+
+BESStopWatch::BESStopWatch(string logName){
+	_log_name = logName;
+	_timer_name = missing_log_param;
+	_timer_name = missing_log_param;
+	_req_id = missing_log_param;
+
+}
+
+
+/**
+ * Starts the timer.
+ * NB: This method will attempt to write logging
+ * information to the BESDebug::GetStrm() stream.
+ * @param name The name of the timer.
+ */
 bool
-BESStopWatch::start()
+BESStopWatch::start(string name)
 {
-    // get timer for current usage
-    if( getrusage( RUSAGE_SELF, &_start_usage ) != 0 )
-    {
-	int myerrno = errno ;
-	char *c_err = strerror( myerrno ) ;
-	string err = "getrusage failed in start: " ;
-	if( c_err )
+	return start(name,missing_log_param) ;
+}
+
+/**
+ * Starts the timer.
+ * NB: This method will attempt to write logging
+ * information to the BESDebug::GetStrm() stream.
+ * @param name The name of the timer.
+ * @param reqID The client's request ID associated with this activity. Available from the DataHandlerInterfact object.
+ */
+bool
+BESStopWatch::start(string name, string reqID)
+{
+	_timer_name = name;
+	_req_id = reqID;
+	// get timing for current usage
+	if( getrusage( RUSAGE_SELF, &_start_usage ) != 0 )
 	{
-	    err += c_err ;
+		int myerrno = errno ;
+		char *c_err = strerror( myerrno ) ;
+		string err = "getrusage failed in start: " ;
+		if( c_err )
+		{
+			err += c_err ;
+		}
+		else
+		{
+			err += "unknown error" ;
+		}
+		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+		_started = false ;
 	}
 	else
 	{
-	    err += "unknown error" ;
+		_started = true ;
+		struct timeval &start = _start_usage.ru_utime ;
+		double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
+
+		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STARTED][" << starttime << "][ms]["<< _timer_name << "]" << endl;
 	}
-	BESDEBUG( "timing", err << endl ) ;
-	_started = false ;
-    }
-    else
-    {
-	_started = true ;
-    }
 
-    // either we started the stop watch, or failed to start it. Either way,
-    // no timings are available, so set stopped to false.
-    _stopped = false ;
+	// either we started the stop watch, or failed to start it. Either way,
+	// no timings are available, so set stopped to false.
+	_stopped = false ;
 
-    return _started ;
+
+	return _started ;
 }
 
+
+/**
+ * This destructor is "special" in that it's execution signals the timer to stop if it has been started.
+ * Stopping the timer will initiate an attempt to write logging information to the BESDebug::GetStrm() stream.
+ * If the start method has not been called then the method exits silently.
+ */
+BESStopWatch::~BESStopWatch()
+{
+	// if we have started, then stop and update the log.
+	if( _started )
+	{
+		// get timing for current usage
+		if( getrusage( RUSAGE_SELF, &_stop_usage ) != 0 )
+		{
+			int myerrno = errno ;
+			char *c_err = strerror( myerrno ) ;
+			string err = "getrusage failed in stop: " ;
+			if( c_err )
+			{
+				err += c_err ;
+			}
+			else
+			{
+				err += "unknown error" ;
+			}
+			*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+			_started = false ;
+			_stopped = false ;
+		}
+		else
+		{
+			// get the difference between the _start_usage and the
+			// _stop_usage and save the difference.
+			bool success = timeval_subtract() ;
+			if( !success )
+			{
+				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
+				_started = false ;
+				_stopped = false ;
+			}
+			else
+			{
+				_stopped = true ;
+
+				struct timeval &stop = _stop_usage.ru_utime ;
+				double stoptime =  stop.tv_sec*1000.0 + stop.tv_usec/1000.0;
+				double elapsed =  _result.tv_sec*1000.0 + _result.tv_usec/1000.0;
+
+				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STOPPED][" << stoptime << "][ms][" << _timer_name << "][ELAPSED][" << elapsed << "][ms]" << endl;
+
+			}
+
+
+		}
+	}
+
+}
+
+
+#if 0
 bool
 BESStopWatch::stop()
 {
-    // if we have started, the we can stop. Otherwise just fall through.
-    if( _started )
-    {
-	// get timer for current usage
-	if( getrusage( RUSAGE_SELF, &_stop_usage ) != 0 )
+	// if we have started, the we can stop. Otherwise just fall through.
+	if( _started )
 	{
-	    int myerrno = errno ;
-	    char *c_err = strerror( myerrno ) ;
-	    string err = "getrusage failed in stop: " ;
-	    if( c_err )
-	    {
-		err += c_err ;
-	    }
-	    else
-	    {
-		err += "unknown error" ;
-	    }
-	    BESDEBUG( "timing", err << endl ) ;
-	    _started = false ;
-	    _stopped = false ;
+		// get timer for current usage
+		if( getrusage( RUSAGE_SELF, &_stop_usage ) != 0 )
+		{
+			int myerrno = errno ;
+			char *c_err = strerror( myerrno ) ;
+			string err = "getrusage failed in stop: " ;
+			if( c_err )
+			{
+				err += c_err ;
+			}
+			else
+			{
+				err += "unknown error" ;
+			}
+			BESDEBUG( _log_name, err << endl ) ;
+			_started = false ;
+			_stopped = false ;
+		}
+		else
+		{
+			// get the difference between the _start_usage and the
+			// _stop_usage and save the difference.
+			bool success = timeval_subtract() ;
+			if( !success )
+			{
+				BESDEBUG( _log_name, "failed to get timing" << endl ) ;
+				_started = false ;
+				_stopped = false ;
+			}
+			else
+			{
+				_stopped = true ;
+			}
+		}
 	}
 	else
 	{
-	    // get the difference between the _start_usage and the
-	    // _stop_usage and save the difference.
-	    bool success = timeval_subtract() ;
-	    if( !success )
-	    {
-		BESDEBUG( "timing", "failed to get timing" << endl ) ;
-		_started = false ;
-		_stopped = false ;
-	    }
-	    else
-	    {
-		_stopped = true ;
-	    }
+		BESDEBUG( _log_name, "timing not started" << endl ) ;
 	}
-    }
-    else
-    {
-	BESDEBUG( "timing", "timing not started" << endl ) ;
-    }
-    
-    return _stopped ;
+
+	return _stopped ;
 }
+#endif
+
 
 bool
 BESStopWatch::timeval_subtract()
 {
-    struct timeval &start = _start_usage.ru_utime ;
-    struct timeval &stop = _stop_usage.ru_utime ;
+	struct timeval &start = _start_usage.ru_utime ;
+	struct timeval &stop = _stop_usage.ru_utime ;
 
-    /* Perform the carry for the later subtraction by updating y. */
-    if( stop.tv_usec < start.tv_usec )
-    {
-	int nsec = (start.tv_usec - stop.tv_usec) / 1000000 + 1 ;
-	start.tv_usec -= 1000000 * nsec ;
-	start.tv_sec += nsec ;
-    }
-    if( stop.tv_usec - start.tv_usec > 1000000 )
-    {
-	int nsec = (start.tv_usec - stop.tv_usec) / 1000000 ;
-	start.tv_usec += 1000000 * nsec ;
-	start.tv_sec -= nsec ;
-    }
+	/* Perform the carry for the later subtraction by updating y. */
+	if( stop.tv_usec < start.tv_usec )
+	{
+		int nsec = (start.tv_usec - stop.tv_usec) / 1000000 + 1 ;
+		start.tv_usec -= 1000000 * nsec ;
+		start.tv_sec += nsec ;
+	}
+	if( stop.tv_usec - start.tv_usec > 1000000 )
+	{
+		int nsec = (start.tv_usec - stop.tv_usec) / 1000000 ;
+		start.tv_usec += 1000000 * nsec ;
+		start.tv_sec -= nsec ;
+	}
 
-    /* Compute the time remaining to wait.
+	/* Compute the time remaining to wait.
     tv_usec  is certainly positive. */
-    _result.tv_sec = stop.tv_sec - start.tv_sec ;
-    _result.tv_usec = stop.tv_usec - start.tv_usec ;
+	_result.tv_sec = stop.tv_sec - start.tv_sec ;
+	_result.tv_usec = stop.tv_usec - start.tv_usec ;
 
-    /* Return 1 if result is negative. */
-    return !(stop.tv_sec < start.tv_sec) ;
+	/* Return 1 if result is negative. */
+	return !(stop.tv_sec < start.tv_sec) ;
 }
 
 /** @brief dumps information about this object
@@ -160,7 +267,11 @@ BESStopWatch::timeval_subtract()
 void
 BESStopWatch::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "BESStopWatch::dump - ("
-			     << (void *)this << ")" << endl ;
+	strm << BESIndent::LMarg << "BESStopWatch::dump - ("
+			<< (void *)this << ")" << endl ;
 }
+
+
+
+
 

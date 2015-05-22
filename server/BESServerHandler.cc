@@ -211,12 +211,12 @@ void BESServerHandler::execute(Connection *c)
 		BESDEBUG("server2", "BESServerHandler::execute - command = " << cmd_str << endl);
 		BESDEBUG("server", "BESServerHandler::execute - command ... " << endl);
 
-		BESStopWatch *sw = 0;
-		if (BESISDEBUG( "timing" ))
-		{
-			sw = new BESStopWatch();
-			sw->start();
-		}
+
+		BESStopWatch sw;
+		if (BESISDEBUG( TIMING_LOG ))
+			sw.start("BESServerHandler::execute");
+
+
 
 		int descript = c->getSocket()->getSocketDescriptor();
 
@@ -236,22 +236,6 @@ void BESServerHandler::execute(Connection *c)
 
 			BESDEBUG("server", "BESServerHandler::execute - " << "executed successfully" << endl);
 
-			if (BESISDEBUG( "timing" ))
-			{
-				if( sw && sw->stop() )
-				{
-					BESDEBUG( "timing",
-							"BESServerHandler::execute - executed in "
-							<< sw->seconds() << " seconds and "
-							<< sw->microseconds() << " microseconds"
-							<< endl );
-				}
-				else
-				{
-					BESDEBUG( "timing", "BESServerHandler::execute - "
-							<< "no timing available" << endl );
-				}
-			}
 		}
 		else
 		{
@@ -315,7 +299,7 @@ void BESServerHandler::execute(Connection *c)
 			}
 		}
 
-		if (sw) delete sw;
+		//if (sw) delete sw;
 	}	// This is the end of the infinite loop that processes commands.
 
 	c->closeConnection();
