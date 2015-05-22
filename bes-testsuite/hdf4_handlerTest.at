@@ -58,13 +58,17 @@ AT_CLEANUP]
 AT_BESCMD_DAS_RESPONSE_TEST([S2000415.HDF.0.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([S2000415.HDF.1.bescmd], [pass])
 AT_BESCMD_DDX_RESPONSE_TEST([S2000415.HDF.2.bescmd], [pass])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([S2000415.HDF.3.bescmd], [pass])
+#The baseline file for this test(data) is too big.
+#Remove this test from the release 3.11.7. Obtain the baseline file from older versions for testing.
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST([S2000415.HDF.3.bescmd], [pass])
 
 AT_BESCMD_DAS_RESPONSE_TEST([f97182070958.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([f97182070958.hdf.dds.bescmd], [pass])
 AT_BESCMD_DDX_RESPONSE_TEST([f97182070958.hdf.ddx.bescmd], [pass])
 
-AT_BESCMD_DDS_RESPONSE_TEST([1990-S1700101.HDF.dds.bescmd], [pass])
+# The testing files are either bigger or redundant. So remove them starting from
+# the release 3.11.7. Obtain these testng files from older versions if necessary.
+#AT_BESCMD_DDS_RESPONSE_TEST([1990-S1700101.HDF.dds.bescmd], [pass])
 
 #AT_BESCMD_DAS_RESPONSE_TEST([1C21.19980101.00539.7.hdf.das.bescmd], [pass])
 #AT_BESCMD_DDS_RESPONSE_TEST([1C21.19980101.00539.7.hdf.dds.bescmd], [pass])

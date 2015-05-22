@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf4_handler
-M_VER=3.11.6
+M_VER=3.11.7
 
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
@@ -105,14 +105,17 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h HDF4_DDS.h HDF4_DMR.h
 
 EXTRA_DIST = data data.nasa hdf-testfiles \
 		hdfeos.yy hdfeos.lex \
-		COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
+		COPYRIGHT_URI  \
 		OSX_Resources h4.conf.in test.nasa.with_hdfeos2.sh USAGE
+
+if !DAP_MODULES
+EXTRA_DIST += hdf4_handler.spec hdf4_handler.spec.cf
+endif
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
-sample_data_DATA = data/1990-S1700101.HDF.gz data/1990104h09da-gdm.hdf.gz \
-     data/S2000415.HDF.gz data/foo2.hdf.gz data/3B42.980909.5.HDF.gz
+sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz
 
 install-data-local: h4.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
