@@ -215,11 +215,26 @@ public:
         CPPUNIT_ASSERT(ind.at(1) == -1);
     }
 
+    void all_indices_valid_test() {
+        vector<int> i1;
+        i1.push_back(3);
+        i1.push_back(7);
+
+        CPPUNIT_ASSERT(all_indices_valid(i1));
+
+        vector<int> i2;
+        i2.push_back(3);
+        i2.push_back(-1);
+
+        CPPUNIT_ASSERT(!all_indices_valid(i2));
+    }
+
     CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(find_value_index_test);
     CPPUNIT_TEST(find_value_indices_test);
+    CPPUNIT_TEST(all_indices_valid_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

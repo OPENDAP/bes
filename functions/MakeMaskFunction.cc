@@ -119,6 +119,16 @@ find_value_indices(const vector<double> &values, const vector< vector<double> > 
     return indices;
 }
 
+/**
+ * Are any of the idex values -1? if so, this is not a valid index list
+ * @param indices vector of integer indices
+ * @return True if all of the index values are positive, false otherwise
+ */
+bool all_indices_valid(vector<int> indices)
+{
+    return find(indices.begin(), indices.end(), -1) == indices.end();
+}
+
 // Dan: In this function I made the vector<dods_byte> a reference so that changes to
 // it will be accessible to the caller without having to return the vector<> mask
 // (it could be large). This also means that it won't be passed on the stack
@@ -192,13 +202,13 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 	vector<int> indices = find_value_indices(tuple, dim_value_vecs);
 
         // if all of the indices are >= 0, then add this point to the mask
+        if (all_indices_valid(indices)) {
 #if 0
         // FIXME write these then remove #if 0
-        if (all_indices_valid(n)) {
             offset = calculateOffset(indices);  // calculate the offset into the mask for the [i][j][...] indices
             mask[offset] = 1;
-        }
 #endif
+        }
         // tuple_offset += ndims
     }
 }

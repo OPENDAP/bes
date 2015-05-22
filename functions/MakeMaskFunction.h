@@ -42,7 +42,7 @@ namespace functions {
 int find_value_index(double value, const std::vector<double> &map);
 std::vector<int> find_value_indices(const std::vector<double> &values,
                                     const std::vector< std::vector<double> > &maps);
-
+bool all_indices_valid(std::vector<int> indices);
 
 void function_dap2_make_mask(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 
