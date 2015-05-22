@@ -239,56 +239,16 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     Grid *g = static_cast<Grid*>(btp);
     Array *a = g->get_array();
 
-    vector<dods_byte> mask(a->length());
-
     // Create the 'mask' array using the shape of the target grid variable's array.
 
-    vector<MaskDIM> maskDims;
-    vector<string> dimNames;
-    int nGridDims = 1;
-    
-    for (Array::Dim_iter i = a->dim_begin(); i != a->dim_end(); ++i) {
-        //mask->append_dim(a->dimension_size(i), a->dimension_name(i));
-        MaskDIM *mDim = new MaskDIM;
-        ;
-        mDim->size = a->dimension_size(i);
-        mDim->name = a->dimension_name(i);
-        mDim->offset = 0;
-        //maskDims.push_back(mDim);
-        nGridDims++;
-    }
-
-    vector<int> offsets;
-    offsets.reserve(nGridDims);
-
-    std::vector<int>::size_type idx = nGridDims - 1;
-    int currOffset = 0;
-    int sumOfPrevOffsets = 0;
-
-    bool atBeginning = true;
-
-    for (idx = nGridDims; idx > 0; idx--) {
-
-        MaskDIM *mDim = &(maskDims[idx - 1]);
-
-        if (atBeginning) {
-            currOffset = sizeof(dods_byte);
-            mDim->offset = currOffset;
-            atBeginning = false;
-        }
-        else {
-            currOffset = mDim->size * sumOfPrevOffsets;
-            mDim->offset = currOffset;
-        }
-
-        sumOfPrevOffsets = currOffset;
-    }
+    vector<dods_byte> mask(a->length(),0);  // Create 'mask', initialized with zero's
 
     // read argv[1], the number[N] of dimension variables represented in tuples
-#if 0
+
     unsigned int nDims = extract_uint_value(argv[1]);
-#endif
+#if 0
     unsigned int nDims =2; //FIXME
+#endif
 
     // read argv[2] -> argv[2+numberOfDims]; the grid dimensions comprising mask tuples
 
@@ -329,49 +289,41 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     // All mask values are stored in Byte DAP variables by the stock argument parser
     // except values too large; those are stored in a UInt32
     case dods_byte_c:
-        //make_mask_helper<dods_byte>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_byte, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_byte>(dims, tuples, mask);
         break;
 
     case dods_int16_c:
         make_mask_helper<dods_int16>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_int16, Byte>(tuples, dims, mask);" << endl;
         break;
 
     case dods_uint16_c:
-        //make_mask_helper<dods_uint16>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_uint16, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_uint16>(dims, tuples, mask);
         break;
 
     case dods_int32_c:
-        //make_mask_helper<dods_int32>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_int32, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_int32>(dims, tuples, mask);
         break;
 
     case dods_uint32_c:
-        // FIXME Should be UInt32 but the parser uses Int32 unless a value is too big.
-        //make_mask_helper<dods_uint32>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_uint32, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_uint32>(dims, tuples, mask);
         break;
 
     case dods_float32_c:
-        //make_mask_helper<dods_float32>(dims, tuples, mask);
-        cerr << "read_mask_values<dods_float32, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_float32>(dims, tuples, mask);
         break;
 
     case dods_float64_c:
-        //make_mask_helper<dods_float64>(dims, tuples, mask);
-        cerr << " read_mask_values<dods_float64, Byte>(tuples, dims, mask);" << endl;
+        make_mask_helper<dods_float64>(dims, tuples, mask);
         break;
 
     case dods_str_c:
         //make_mask_helper<dods_str>(dims, tuples, mask);
-        cerr << "read_mask_values<string, Byte>(tuples, dims, mask);" << endl;
+        throw InternalErr(__FILE__, __LINE__, "make_mask function non-numeric dimension type error");
         break;
 
     case dods_url_c:
         //make_mask_helper<dods_url>(dims, tuples, mask);
-        cerr << "read_mask_values<string, Byte>(tuples, dims, mask);" << endl;
+        throw InternalErr(__FILE__, __LINE__, "make_mask function non-numeric dimension type error");
         break;
 
     default:
