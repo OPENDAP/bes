@@ -352,7 +352,7 @@ BESInterface::execute_data_request_plan()
 {
 	BESStopWatch sw;
 	if (BESISDEBUG( TIMING_LOG ))
-		sw.start("BESInterface::execute_data_request_plan",_dhi->data[REQUEST_ID]);
+		sw.start("BESInterface::execute_data_request_plan("+_dhi->data[DATA_REQUEST]+")",_dhi->data[REQUEST_ID]);
 
 	;
 

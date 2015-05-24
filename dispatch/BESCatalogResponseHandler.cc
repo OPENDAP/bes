@@ -43,6 +43,8 @@
 #include "BESCatalogUtils.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
+#include "BESDebug.h"
+#include "BESStopWatch.h"
 
 BESCatalogResponseHandler::BESCatalogResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -64,6 +66,11 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler( )
  * @see BESRequestHandlerList
  */
 void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
+
+	BESStopWatch sw;
+	if (BESISDEBUG( TIMING_LOG ))
+		sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
+
     BESInfo *info = BESInfoList::TheList()->build_info();
     _response = info;
 
