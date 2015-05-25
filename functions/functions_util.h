@@ -33,13 +33,13 @@ class Array;
 
 // These functions are part of libdap. Use #include <util.h>. jhrg 4/28/15
 //
-bool libdap::double_eq(double lhs, double rhs, double epsilon /* = 1.0e-5 */);
+//bool libdap::double_eq(double lhs, double rhs, double epsilon /* = 1.0e-5 */);
 
-string libdap::extract_string_argument(BaseType *arg) ;
-double libdap::extract_double_value(BaseType *arg) ;
-double *libdap::extract_double_array(Array *a) ;
-void libdap::extract_double_array(Array *a, vector<double> &dest) ;
-void libdap::set_array_using_double(Array *dest, double *src, int src_len) ;
+//string libdap::extract_string_argument(BaseType *arg) ;
+//double libdap::extract_double_value(BaseType *arg) ;
+//double *libdap::extract_double_array(Array *a) ;
+//void libdap::extract_double_array(Array *a, vector<double> &dest) ;
+//void libdap::set_array_using_double(Array *dest, double *src, int src_len) ;
 
 namespace functions {
 // These functions are defined here in the bes 'functions' module. jhrg 4/28/15

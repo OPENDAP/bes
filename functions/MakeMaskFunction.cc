@@ -332,6 +332,19 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
 
+    Array *dest = new Array("mask", 0);	// The ctor for Array copies the prototype pointer...
+    BaseTypeFactory btf;
+    dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
+
+    Array *ta = g->get_array();
+    for (Array::Dim_iter itr = ta->dim_begin(); itr != ta->dim_end(); ++itr) {
+	dest->append_dim(ta->dimension_size(itr));
+    }
+
+    dest->set_value(mask,ta->length());
+    dest->set_read_p(true);
+
+    *btpp = dest;
     //*btpp = function_linear_scale_worker(argv[0], m, b, missing, use_missing);
 
 }

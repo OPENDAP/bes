@@ -25,10 +25,23 @@
 
 #include "config.h"
 
+#include <cassert>
 #include <string>
 #include <sstream>
 #include <vector>
 
+#include "BaseType.h"
+#include "Byte.h"
+#include "Int16.h"
+#include "Int32.h"
+#include "UInt16.h"
+#include "UInt32.h"
+#include "Int64.h"
+#include "UInt64.h"
+#include "Int8.h"
+#include "Float32.h"
+#include "Float64.h"
+#include "Str.h"
 #include <Array.h>
 #include <Error.h>
 #include <util.h>
@@ -104,4 +117,61 @@ void check_number_type_array(BaseType *btp, unsigned int rank /* = 0 */)
         throw Error("In function roi(): Expected the array '" + a->name() +"' to be rank " + long_to_string(rank) + " or " + long_to_string(rank+1) + ".");
 }
 
-} // namespace fucntions
+/** Given a BaseType pointer, extract the numeric value it contains and return
+ it in a C++ integer.
+
+ @note Support for DAP4 types added.
+
+ @param arg The BaseType pointer
+ @return A C++ unsigned integer
+ @exception Error thrown if the referenced BaseType object does not contain
+ a DAP numeric value. */
+unsigned int extract_uint_value(BaseType *arg)
+{
+    assert(arg);
+
+    // Simple types are Byte, ..., Float64, String and Url.
+    if (!arg->is_simple_type() || arg->type() == dods_str_c || arg->type() == dods_url_c)
+        throw Error(malformed_expr, "The function requires a numeric-type argument.");
+
+    if (!arg->read_p())
+        throw InternalErr(__FILE__, __LINE__,
+                "The Evaluator built an argument list where some constants held no values.");
+
+    // The types of arguments that the CE Parser will build for numeric
+    // constants are limited to Uint32, Int32 and Float64. See ce_expr.y.
+    // Expanded to work for any numeric type so it can be used for more than
+    // just arguments.
+    switch (arg->type()) {
+    case dods_byte_c:
+      return (unsigned int) (static_cast<Byte*>(arg)->value());
+    case dods_uint16_c:
+      return (unsigned int) (static_cast<UInt16*>(arg)->value());
+    case dods_int16_c:
+      return (unsigned int) (static_cast<Int16*>(arg)->value());
+    case dods_uint32_c:
+      return (unsigned int) (static_cast<UInt32*>(arg)->value());
+    case dods_int32_c:
+      return (unsigned int) (static_cast<Int32*>(arg)->value());
+    case dods_float32_c:
+      return (unsigned int) (static_cast<Float32*>(arg)->value());
+    case dods_float64_c:
+      return (unsigned int)static_cast<Float64*>(arg)->value();
+
+        // Support for DAP4 types.
+    case dods_uint8_c:
+      return (unsigned int) (static_cast<Byte*>(arg)->value());
+    case dods_int8_c:
+      return (unsigned int) (static_cast<Int8*>(arg)->value());
+    case dods_uint64_c:
+      return (unsigned int) (static_cast<UInt64*>(arg)->value());
+    case dods_int64_c:
+      return (unsigned int) (static_cast<Int64*>(arg)->value());
+
+    default:
+      throw InternalErr(__FILE__, __LINE__,
+			"The argument list built by the parser contained an unsupported numeric type.");
+    }
+}
+
+} // namespace functions
