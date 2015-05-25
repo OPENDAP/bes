@@ -97,7 +97,7 @@ public:
                 values.push_back(10 * sin(i * 18));
             }
             DBG2(cerr << "Initial one D Array data values: ");
-            DBG2(copy(values.begin(), values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+            DBG2(copy(values.begin(), values.end(), ostream_iterator<dods_float32>(cerr, " ")));
             DBG2(cerr << endl);
             dim0->set_value(values, values.size());
 
@@ -246,13 +246,13 @@ public:
         tuples->set_value(tuples_values, tuples_values.size());
 
         DBG(cerr << "Tuples: ");
-        DBG(copy(tuples_values.begin(), tuples_values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+        DBG(copy(tuples_values.begin(), tuples_values.end(), ostream_iterator<dods_float32>(cerr, " ")));
         DBG(cerr << endl);
 
         // NB: mask is a value-result parameter passed by reference
         make_mask_helper<dods_float32>(dims, tuples, mask);
         DBG(cerr << "One D mask: ");
-        DBG(copy(mask.begin(), mask.end(), std::ostream_iterator<dods_byte>(std::cerr, " ")));
+        DBG(copy(mask.begin(), mask.end(), ostream_iterator<int>(cerr, " ")));
         DBG(cerr << endl);
 
         CPPUNIT_ASSERT(mask.at(0) == 0);
@@ -267,6 +267,47 @@ public:
         CPPUNIT_ASSERT(mask.at(9) == 0);
     }
 
+    void make_mask_helper_test_2() {
+        vector<dods_byte> mask(100);     // Caller must make a big enough mask
+
+        vector<Array*> dims;
+        dims.push_back(dim0);   // dim0 has 18 values that are 10 * sin(i * 18)
+        dims.push_back(dim0);   // dim0 has 18 values that are 10 * sin(i * 18)
+
+        Array *tuples = new Array("mask", new Float32("mask"));
+        vector<dods_float32> tuples_values;
+        tuples_values.push_back(10*sin(2*18));
+        tuples_values.push_back(10*sin(2*18));
+        tuples_values.push_back(10*sin(3*18));
+        tuples_values.push_back(10*sin(3*18));
+        tuples_values.push_back(10*sin(4*18));
+        tuples_values.push_back(10*sin(4*18));
+        tuples_values.push_back(10*sin(5*18));
+        tuples_values.push_back(10*sin(5*18));
+        tuples->set_value(tuples_values, tuples_values.size());
+
+        DBG(cerr << "Tuples: ");
+        DBG(copy(tuples_values.begin(), tuples_values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        // NB: mask is a value-result parameter passed by reference
+        make_mask_helper<dods_float32>(dims, tuples, mask);
+        DBG(cerr << "Two D mask: " << dec);
+        DBG(copy(mask.begin(), mask.end(), std::ostream_iterator<int>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(mask.at(0) == 0);
+        CPPUNIT_ASSERT(mask.at(21) == 0);
+        CPPUNIT_ASSERT(mask.at(22) == 1);
+        CPPUNIT_ASSERT(mask.at(33) == 1);
+        CPPUNIT_ASSERT(mask.at(44) == 1);
+        CPPUNIT_ASSERT(mask.at(55) == 1);
+        CPPUNIT_ASSERT(mask.at(56) == 0);
+        CPPUNIT_ASSERT(mask.at(70) == 0);
+        CPPUNIT_ASSERT(mask.at(80) == 0);
+        CPPUNIT_ASSERT(mask.at(99) == 0);
+    }
+
     CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
@@ -274,6 +315,7 @@ public:
     CPPUNIT_TEST(find_value_indices_test);
     CPPUNIT_TEST(all_indices_valid_test);
     CPPUNIT_TEST(make_mask_helper_test_1);
+    CPPUNIT_TEST(make_mask_helper_test_2);
 
     CPPUNIT_TEST_SUITE_END();
 };
