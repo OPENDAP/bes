@@ -53,6 +53,7 @@
 
 #include <debug.h>
 #include <util.h>
+#include <functions_util.h>
 
 #include <BaseTypeFactory.h>
 
@@ -132,6 +133,19 @@ bool all_indices_valid(vector<int> indices)
 // Dan: In this function I made the vector<dods_byte> a reference so that changes to
 // it will be accessible to the caller without having to return the vector<> mask
 // (it could be large). This also means that it won't be passed on the stack
+/**
+ * Given a vector of Grid maps (effectively domain variables) and a 'list'
+ * of tuples where N tuples and M maps means N x M values n the list, build
+ * a mask that can be used to filter an array of N dimensions selecting only
+ * locations (range values) that match those domain values. The list of M tuples
+ * is organized so that the first 0, ..., N-1 (the first N values) are M0, the
+ * next N values are M1, and so on.
+ *
+ * @param dims Maps from a Grid that supply the domain values' indices
+ * @param tuples The domain values
+ * @param mask The resulting mask for an N dimensional array, where N is the number
+ * of arrays in the Vector<> dims
+ */
 template<typename T>
 void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte> &mask)
 {
@@ -244,41 +258,36 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     vector<dods_byte> mask(a->length(),0);  // Create 'mask', initialized with zero's
 
     // read argv[1], the number[N] of dimension variables represented in tuples
-
+    if (!is_integer_type(argv[1]->type()))
+        throw Error(malformed_expr, "make_mask(): Expected an integer for the second argument.");
     unsigned int nDims = extract_uint_value(argv[1]);
-#if 0
-    unsigned int nDims =2; //FIXME
-#endif
 
-    // read argv[2] -> argv[2+numberOfDims]; the grid dimensions comprising mask tuples
-
+    // read argv[2] -> argv[2+numberOfDims]; the grid dimensions where we will find the values
+    // of the mask tuples.
     vector<Array*> dims;
-
     for (unsigned int i = 0; i < nDims; i++) {
 
         btp = argv[2 + i];
         if (btp->type() != dods_array_c) {
             throw Error(malformed_expr,
-                    "make_mask(dimension-name arguments must point to a DAP2 Grid variable dimensions.");
+                    "make_mask(): dimension-name arguments must point to Grid variable dimensions.");
         }
 
         int dSize;
         Array *a = static_cast<Array*>(btp);
         for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
             dSize = a->dimension_size(itr);
-            cerr << "dim[" << i << "] = " << a->name() << " size=" << dSize << endl;
+            DBG(cerr << "dim[" << i << "] = " << a->name() << " size=" << dSize << endl);
         }
 
         dims.push_back(a);
-
     }
 
     BESDEBUG("functions", "number of dimensions: " << dims.size() << endl);
 
     btp = argv[argc - 1];
-
     if (btp->type() != dods_array_c) {
-        throw Error(malformed_expr, "make_mask(last argument must be a special-form array..");
+        throw Error(malformed_expr, "make_mask(): last argument must be an array.");
     }
 
     check_number_type_array(btp);  // Throws an exception if not a numeric type.
@@ -317,17 +326,10 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         break;
 
     case dods_str_c:
-        //make_mask_helper<dods_str>(dims, tuples, mask);
-        throw InternalErr(__FILE__, __LINE__, "make_mask function non-numeric dimension type error");
-        break;
-
     case dods_url_c:
-        //make_mask_helper<dods_url>(dims, tuples, mask);
-        throw InternalErr(__FILE__, __LINE__, "make_mask function non-numeric dimension type error");
-        break;
-
     default:
-        throw InternalErr(__FILE__, __LINE__, "Unknown type error");
+        throw InternalErr(__FILE__, __LINE__,
+                "make_mask(): Expect an array of mask points (numbers) but found something else instead.");
     }
 
     BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
@@ -336,17 +338,14 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     BaseTypeFactory btf;
     dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
 
-    Array *ta = g->get_array();
-    for (Array::Dim_iter itr = ta->dim_begin(); itr != ta->dim_end(); ++itr) {
-	dest->append_dim(ta->dimension_size(itr));
+    for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
+	dest->append_dim(a->dimension_size(itr));
     }
 
-    dest->set_value(mask,ta->length());
+    dest->set_value(mask, a->length());
     dest->set_read_p(true);
 
     *btpp = dest;
-    //*btpp = function_linear_scale_worker(argv[0], m, b, missing, use_missing);
-
 }
 
 } // namespace functions
