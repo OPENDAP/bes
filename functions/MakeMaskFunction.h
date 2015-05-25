@@ -23,9 +23,11 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <ServerFunction.h>
+#include <dods-datatypes.h>
 
 namespace libdap {
 class BaseType;
+class Array;
 class DDS;
 }
 
@@ -43,6 +45,8 @@ int find_value_index(double value, const std::vector<double> &map);
 std::vector<int> find_value_indices(const std::vector<double> &values,
                                     const std::vector< std::vector<double> > &maps);
 bool all_indices_valid(std::vector<int> indices);
+template<typename T>
+void make_mask_helper(const std::vector<libdap::Array*> dims, libdap::Array *tuples, std::vector<libdap::dods_byte> &mask);
 
 void function_dap2_make_mask(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
 

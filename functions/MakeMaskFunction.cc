@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#define DODS_DEBUG 1
+
 #include <cassert>
 
 #include <sstream>
@@ -141,6 +143,8 @@ bool all_indices_valid(vector<int> indices)
  * is organized so that the first 0, ..., N-1 (the first N values) are M0, the
  * next N values are M1, and so on.
  *
+ * @todo Once we're done testing, replace .at() with []
+ *
  * @param dims Maps from a Grid that supply the domain values' indices
  * @param tuples The domain values
  * @param mask The resulting mask for an N dimensional array, where N is the number
@@ -150,7 +154,6 @@ template<typename T>
 void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte> &mask)
 {
     vector< vector<double> > dim_value_vecs(dims.size());
-    
     int i = 0;  // index the dim_value_vecs vector of vectors;
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
         // Dan: My mistake. There is a second extract_double_array() that does
@@ -161,15 +164,14 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
         // This version of extract...() takes the vector<double> by reference:
         // In util.cc/h: void extract_double_array(Array *a, vector<double> &dest)
+        DBG(cerr << "Adding dim: " << i << endl);
         extract_double_array(*d, dim_value_vecs.at(i++));
     }
 
     // Construct and Odometer used to calculate offsets
-    int rank = dims.size();
-    Odometer::shape shape(rank);
+    Odometer::shape shape(dims.size());
 
     int j = 0;  // index the shape vector for an Odometer;
-
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
         // Changed d-> to (*d)-> ... So this is one thing about iterators that
         // is less than optimal. The iterator dereferences to the thing in the
@@ -193,16 +195,21 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
     // unsigned int tuple_offset = 0;       // an optimization...
     for (int n = 0; n < nTuples; ++n) {
+        DBG(cerr << "Extracting tuple: " << n << endl);
         vector<double> tuple(nDims);
         // Build the next tuple
         for (int dim = 0; dim < nDims; ++dim) {
+            DBG(cerr << "dim: " << dim << endl);
             // could replace 'tuple * nDims' with 'tuple_offset'
-            tuple[dim] = data[n * nDims + dim];
+            tuple.at(dim) = data.at(n * nDims + dim);
         }
 
         // find indices for tuple-values in the specified
 	// target-grid dimensions
 	vector<int> indices = find_value_indices(tuple, dim_value_vecs);
+	DBG(cerr << "indices: ");
+        DBGN(copy(indices.begin(), indices.end(), ostream_iterator<int>(std::cerr, " ")));
+        DBGN(cerr << endl);
 
         // if all of the indices are >= 0, then add this point to the mask
         if (all_indices_valid(indices)) {
@@ -211,8 +218,9 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 	    // calculate offset within defined 'shape' using those index values.
 	    // Result of set_indices() will update d_offset value, accessible
 	    // using the Odometer::offset() accessor.
-	    odometer.set_indices(indices);  
-	    mask[odometer.offset()] = 1;
+	    odometer.set_indices(indices);
+	    DBG(cerr << "odometer.offset(): " << odometer.offset() << endl);
+	    mask.at(odometer.offset()) = 1;
         }
     }
 }
