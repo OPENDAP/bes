@@ -135,17 +135,27 @@ public:
     inline unsigned int set_indices(const shape &indices)
     {
         d_indices = indices;
-
+#if 0
         d_offset = 0;
         unsigned int chunk_size = 1;
-
+#endif
         // I copied this algorithm from Nathan's code in NDimenensionalArray in the
         // ugrid function module. jhrg 5/22/15
+#if 0
         shape::reverse_iterator si = d_shape.rbegin();
         for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
-            // optimize?
+            // The initial multiply is always 1 * N in both cases
             d_offset += chunk_size * *i;
             chunk_size *= *si;
+        }
+#endif
+        shape::reverse_iterator shape_index = d_shape.rbegin();
+        shape::reverse_iterator index = d_indices.rbegin(), index_end = d_indices.rend();
+        d_offset = *index++;
+        unsigned int chunk_size = *shape_index++;
+        while (index != index_end) {
+            d_offset += chunk_size * *index++;
+            chunk_size *= *shape_index++;
         }
 
         return d_offset;
