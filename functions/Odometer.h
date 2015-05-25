@@ -136,17 +136,17 @@ public:
     {
         d_indices = indices;
 
-       d_offset = 0;
-       unsigned int chunk_size = 1;
+        d_offset = 0;
+        unsigned int chunk_size = 1;
 
-       // I copied this algorithm from Nathan's code in NDimenensionalArray in the
-       // ugrid function module. jhrg 5/22/15
-       shape::reverse_iterator si = d_shape.rbegin();
-       for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
-           // optimize?
-           d_offset += chunk_size * *i;
-           chunk_size *= *si;
-       }
+        // I copied this algorithm from Nathan's code in NDimenensionalArray in the
+        // ugrid function module. jhrg 5/22/15
+        shape::reverse_iterator si = d_shape.rbegin();
+        for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+            // optimize?
+            d_offset += chunk_size * *i;
+            chunk_size *= *si;
+        }
 
         return d_offset;
     }
