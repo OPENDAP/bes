@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-// #define DODS_DEBUG 1
+//#define DODS_DEBUG 1
 
 #include <cassert>
 
@@ -89,7 +89,7 @@ find_value_index(double value, const vector<double> &map)
     //vector<double>::iterator loc = find_if(map.begin(), map.end(), bind2nd(ptr_fun(double_eq), value));
 
     for (vector<double>::const_iterator i = map.begin(), e = map.end(); i != e; ++i) {
-        if (double_eq(*i, value)) {
+        if (double_eq(*i, value, 0.1)) {        // FIXME Hack: 0.1 epsilon is a hack. jhrg 5/25/15
             return i - map.begin(); // there's an official iterator diff function somewhere...
         }
     }
@@ -156,15 +156,8 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
     vector< vector<double> > dim_value_vecs(dims.size());
     int i = 0;  // index the dim_value_vecs vector of vectors;
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
-        // Dan: My mistake. There is a second extract_double_array() that does
-        // just what we want that I forgot about. The version I put in the email
-        // returns a C array of doubles that you'll have to deallocate using delete[].
-        //
-        // dim_value_vecs.at(i++) = extract_double_array(*d);
-
         // This version of extract...() takes the vector<double> by reference:
         // In util.cc/h: void extract_double_array(Array *a, vector<double> &dest)
-        DBG(cerr << "Adding dim: " << i << endl);
         extract_double_array(*d, dim_value_vecs.at(i++));
     }
 
@@ -173,12 +166,7 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
     int j = 0;  // index the shape vector for an Odometer;
     for (vector<Array*>::const_iterator d = dims.begin(), e = dims.end(); d != e; ++d) {
-        // Changed d-> to (*d)-> ... So this is one thing about iterators that
-        // is less than optimal. The iterator dereferences to the thing in the
-        // container, which is this case is a pointer. But you have to explicitly
-        // dereference the iterator. Also, Array::length(), not size() (I
-        // confuse those two also).
-	shape.at(j++) = (*d)->length();
+	shape[j++] = (*d)->length();
     }
 
     Odometer odometer(shape);
@@ -195,14 +183,16 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
     // unsigned int tuple_offset = 0;       // an optimization...
     for (int n = 0; n < nTuples; ++n) {
-        DBG(cerr << "Extracting tuple: " << n << endl);
         vector<double> tuple(nDims);
         // Build the next tuple
         for (int dim = 0; dim < nDims; ++dim) {
-            DBG(cerr << "dim: " << dim << endl);
             // could replace 'tuple * nDims' with 'tuple_offset'
-            tuple.at(dim) = data.at(n * nDims + dim);
+            tuple[dim] = data[n * nDims + dim];
         }
+
+        DBG(cerr << "tuple: ");
+        DBGN(copy(tuple.begin(), tuple.end(), ostream_iterator<int>(std::cerr, " ")));
+        DBGN(cerr << endl);
 
         // find indices for tuple-values in the specified
 	// target-grid dimensions
@@ -220,7 +210,7 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 	    // using the Odometer::offset() accessor.
 	    odometer.set_indices(indices);
 	    DBG(cerr << "odometer.offset(): " << odometer.offset() << endl);
-	    mask.at(odometer.offset()) = 1;
+	    mask[odometer.offset()] = 1;
         }
     }
 }
@@ -249,8 +239,8 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         throw Error(malformed_expr,
                 "make_mask(target,nDims,[dim1,...],$TYPE(dim1_value0,dim2_value0,...)) requires at least four arguments.");
 
-    string requestedTargetName = extract_string_argument(argv[0]);
-    BESDEBUG("functions", "Requested target variable: " << requestedTargetName << endl);
+    // string requestedTargetName = extract_string_argument(argv[0]);
+    // BESDEBUG("functions", "Requested target variable: " << requestedTargetName << endl);
 
     BaseType *btp = argv[0];
 
@@ -340,7 +330,7 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
                 "make_mask(): Expect an array of mask points (numbers) but found something else instead.");
     }
 
-    BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
+    // BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
 
     Array *dest = new Array("mask", 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
