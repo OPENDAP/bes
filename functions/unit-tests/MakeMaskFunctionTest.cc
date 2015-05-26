@@ -77,10 +77,10 @@ private:
     TestTypeFactory btf;
     D4TestTypeFactory d4_ttf;
 
-    Array *dim0;
+    Array *dim0, *dim1;
 
 public:
-    MakeMaskFunctionTest() : dim0(0)
+    MakeMaskFunctionTest() : dim0(0), dim1(0)
     { }
 
     ~MakeMaskFunctionTest()
@@ -89,17 +89,32 @@ public:
     void setUp() {
         try {
             // Set up the arrays
+            const int dim_10 = 10;
             dim0 = new Array("dim0", new Float32("dim0"));
-            dim0->append_dim(10, "one");
+            dim0->append_dim(dim_10, "one");
 
             vector<dods_float32> values;
-            for (int i = 0; i < 10; ++i) {
-                values.push_back(10 * sin(i * 18));
+            for (int i = 0; i < dim_10; ++i) {
+                values.push_back(dim_10 * sin(i * 180/dim_10));
             }
             DBG2(cerr << "Initial one D Array data values: ");
-            DBG2(copy(values.begin(), values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+            DBG2(copy(values.begin(), values.end(), ostream_iterator<dods_float32>(cerr, " ")));
             DBG2(cerr << endl);
             dim0->set_value(values, values.size());
+
+            // Set up smaller array
+            const int dim_4 = 4;
+            dim1 = new Array("dim1", new Float32("dim1"));
+            dim1->append_dim(dim_4, "one");
+
+            values.clear();
+            for (int i = 0; i < dim_4; ++i) {
+                values.push_back(dim_4 * sin(i * 180/dim_4));
+            }
+            DBG2(cerr << "Initial one D Array data values: ");
+            DBG2(copy(values.begin(), values.end(), ostream_iterator<dods_float32>(cerr, " ")));
+            DBG2(cerr << endl);
+            dim1->set_value(values, values.size());
 
 #if 0
             two_d_array = new Array("two_d_array", new Int32("two_d_array"));
@@ -246,13 +261,13 @@ public:
         tuples->set_value(tuples_values, tuples_values.size());
 
         DBG(cerr << "Tuples: ");
-        DBG(copy(tuples_values.begin(), tuples_values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+        DBG(copy(tuples_values.begin(), tuples_values.end(), ostream_iterator<dods_float32>(cerr, " ")));
         DBG(cerr << endl);
 
         // NB: mask is a value-result parameter passed by reference
         make_mask_helper<dods_float32>(dims, tuples, mask);
         DBG(cerr << "One D mask: ");
-        DBG(copy(mask.begin(), mask.end(), std::ostream_iterator<dods_byte>(std::cerr, " ")));
+        DBG(copy(mask.begin(), mask.end(), ostream_iterator<int>(cerr, " ")));
         DBG(cerr << endl);
 
         CPPUNIT_ASSERT(mask.at(0) == 0);
@@ -267,6 +282,94 @@ public:
         CPPUNIT_ASSERT(mask.at(9) == 0);
     }
 
+    void make_mask_helper_test_2() {
+        vector<dods_byte> mask(100);     // Caller must make a big enough mask
+
+        vector<Array*> dims;
+        dims.push_back(dim0);   // dim0 has 18 values that are 10 * sin(i * 18)
+        dims.push_back(dim0);   // dim0 has 18 values that are 10 * sin(i * 18)
+
+        Array *tuples = new Array("mask", new Float32("mask"));
+        vector<dods_float32> tuples_values;
+        tuples_values.push_back(10*sin(2*18));
+        tuples_values.push_back(10*sin(2*18));
+        tuples_values.push_back(10*sin(3*18));
+        tuples_values.push_back(10*sin(3*18));
+        tuples_values.push_back(10*sin(4*18));
+        tuples_values.push_back(10*sin(4*18));
+        tuples_values.push_back(10*sin(5*18));
+        tuples_values.push_back(10*sin(5*18));
+        tuples->set_value(tuples_values, tuples_values.size());
+
+        DBG(cerr << "Tuples: ");
+        DBG(copy(tuples_values.begin(), tuples_values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        // NB: mask is a value-result parameter passed by reference
+        make_mask_helper<dods_float32>(dims, tuples, mask);
+        DBG(cerr << "Two D mask: " << dec);
+        DBG(copy(mask.begin(), mask.end(), std::ostream_iterator<int>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        CPPUNIT_ASSERT(mask.at(0) == 0);
+        CPPUNIT_ASSERT(mask.at(21) == 0);
+        CPPUNIT_ASSERT(mask.at(22) == 1);
+        CPPUNIT_ASSERT(mask.at(33) == 1);
+        CPPUNIT_ASSERT(mask.at(44) == 1);
+        CPPUNIT_ASSERT(mask.at(55) == 1);
+        CPPUNIT_ASSERT(mask.at(56) == 0);
+        CPPUNIT_ASSERT(mask.at(70) == 0);
+        CPPUNIT_ASSERT(mask.at(80) == 0);
+        CPPUNIT_ASSERT(mask.at(99) == 0);
+    }
+
+    void make_mask_helper_test_3() {
+        vector<dods_byte> mask(160);     // Caller must make a big enough mask
+
+        vector<Array*> dims;
+        dims.push_back(dim0);   // dim0 has 18 values that are 10 * sin(i * 18)
+        dims.push_back(dim1);   // dim0 has 18 values that are 10 * sin(i * 18)
+        dims.push_back(dim1);
+
+        Array *tuples = new Array("mask", new Float32("mask"));
+        vector<dods_float32> tuples_values;
+        tuples_values.push_back(10*sin(0*18));
+        tuples_values.push_back(4*sin(0*45));
+        tuples_values.push_back(4*sin(0*45));
+
+        tuples_values.push_back(10*sin(2*18));
+        tuples_values.push_back(4*sin(2*45));
+        tuples_values.push_back(4*sin(2*45));
+
+        tuples_values.push_back(10*sin(3*18));
+        tuples_values.push_back(4*sin(3*45));
+        tuples_values.push_back(4*sin(3*45));
+
+        tuples->set_value(tuples_values, tuples_values.size());
+
+        DBG(cerr << "Tuples: ");
+        DBG(copy(tuples_values.begin(), tuples_values.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        // NB: mask is a value-result parameter passed by reference
+        make_mask_helper<dods_float32>(dims, tuples, mask);
+        DBG(cerr << "Three D mask: " << dec);
+        DBG(copy(mask.begin(), mask.end(), std::ostream_iterator<int>(std::cerr, " ")));
+        DBG(cerr << endl);
+
+        // To figure out the offsets I used what I knew to be the 3D indices of the tuples
+        // (0,0,0 and 2,2,2 and 3,3,3) along with the algorithm in Odometer.h
+        CPPUNIT_ASSERT(mask.at(0) == 1);
+        CPPUNIT_ASSERT(mask.at(1) == 0);
+        CPPUNIT_ASSERT(mask.at(41) == 0);
+        CPPUNIT_ASSERT(mask.at(42) == 1);
+        CPPUNIT_ASSERT(mask.at(43) == 0);
+        CPPUNIT_ASSERT(mask.at(62) == 0);
+        CPPUNIT_ASSERT(mask.at(63) == 1);
+        CPPUNIT_ASSERT(mask.at(64) == 0);
+        CPPUNIT_ASSERT(mask.at(159) == 0);
+     }
+
     CPPUNIT_TEST_SUITE( MakeMaskFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
@@ -274,6 +377,8 @@ public:
     CPPUNIT_TEST(find_value_indices_test);
     CPPUNIT_TEST(all_indices_valid_test);
     CPPUNIT_TEST(make_mask_helper_test_1);
+    CPPUNIT_TEST(make_mask_helper_test_2);
+    CPPUNIT_TEST(make_mask_helper_test_3);
 
     CPPUNIT_TEST_SUITE_END();
 };
