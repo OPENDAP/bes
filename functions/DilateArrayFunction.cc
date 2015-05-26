@@ -69,17 +69,15 @@ string dilate_array_info =
                 + "<function name=\"dilate_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#dilate_array\">\n"
                 + "</function>";
 
-
-/** Build a new DAP Array variable. Read the type, shape and values from the
- * arg list. The variable will be named anon<number> and is guaranteed not
- * to shadow the name of an existing variable in the DDS.
- *
- * @see function_bind_name
+/**
+ * Given a 'mask array,' apply a dilation operation to the set bits in that
+ * mask. The mask is the first parameter and must be a DAP Byte array. The
+ * size of the dilation in pixels is given by the second argument.
  *
  * @param argc A count of the arguments
  * @param argv An array of pointers to each argument, wrapped in a child of BaseType
  * @param btpp A pointer to the return value; caller must delete.
- * @return The new DAP Array variable.
+ * @return The modified Mask Array.
  * @exception Error Thrown for a variety of errors.
  */
 void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
@@ -91,18 +89,25 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType 
         return;
     }
 
-    BESDEBUG("functions", "function_dilate_dap2_array() -  argc: " << long_to_string(argc) << endl);
+    BESDEBUG("functions", "function_dilate_dap2_array() -  argc: " << argc << endl);
 
     BaseType *btp = argv[0];
 
-    if (btp->type() != dods_array_c) {
-        throw Error(malformed_expr, "dilate_array(first argument must point to a DAP2 Array variable.");
-    }
+    if (btp->type() != dods_array_c)
+        throw Error(malformed_expr, "dilate_array(): first argument must point to a Array variable.");
 
     Array *mask = static_cast<Array*>(btp);
+    if (mask->var()->type() != dods_byte_c && mask->dimensions() == 2)
+        throw Error(malformed_expr, "dilate_array(): first argument must point to a Two dimensional Byte Array variable.");
 
+    // OK, we've got a valid 2D mask, now get the bytes into a vector.
+    vector<dods_byte> mask_values(mask->length());
+    mask->value(&mask_values[0]);
+
+    // Now make a vector<> for the result; I'm not sure if we really need this... jhrg 5/26/15
+    vector<dods_byte> dest_values(mask->length());
+#if 0
     // Create the 'dilated' array using the shape of the input 'mask' array variable.
-
     Array *dest = new Array("dilated_mask", 0);	// The ctor for Array copies the prototype pointer...
     
     BaseTypeFactory btf;
@@ -115,14 +120,15 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType 
     // Copy 'mask' array to initialize dilated array.
 
     dest->set_value(mask, mask->length());
+#endif
 
     // read argv[1], the number of dilation operations (size of the 'hot-dog') to perform.
-
     if (!is_integer_type(argv[1]->type()))
         throw Error(malformed_expr, "dilate_array(): Expected an integer for the second argument.");
 
     unsigned int dSize = extract_uint_value(argv[1]);
 
+#if 0
     Array::Dim_iter itr = dest->dim_begin();
     int maxI = dest->dimension_size(itr);
     
@@ -131,30 +137,47 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType 
 
     //int maxI = 100; 
     //int maxJ = 100;
-    
+#endif
+
+    Array::Dim_iter itr = mask->dim_begin();
+    int maxI = mask->dimension_size(itr++);
+    int maxJ = mask->dimension_size(itr);
+
     // Dilate each mask location 'dSize' elements around it.
-
     // NB: currently not handling mask edge.
-
     for (unsigned int i=dSize; i<maxI-dSize; i++) {
 	for (unsigned int j=dSize; j<maxJ-dSize; j++ ) {
-	    if ( mask[i][j] == 1 ) {
+	    int mask_offset = j + i * maxI;
+	    if ( mask_values.at(mask_offset) /*mask[i][j]*/ == 1 ) {
+	        // I think this could be modified to handle the edge case by expanding the
+	        // ranges above to be the whole image and then using max() and min() in the
+	        // initialization and loop tests below. Not sure though. jhrg 5/16/15
 		for (unsigned int x=i-dSize; x<i+dSize; x++) {
 		    for (unsigned int y=j-dSize; y<j+dSize; y++) {
-			dest.value[x][y] = 1;
+		        int dest_offset = y + x * maxI;
+			dest_values.at(dest_offset) = 1; //dest.value[x][y] = 1;
 		    }
 		}
 	    }
 	}
     }
 
+    // Create the 'dilated' array using the shape of the input 'mask' array variable.
+    Array *dest = new Array("dilated_mask", 0); // The ctor for Array copies the prototype pointer...
 
+    BaseTypeFactory btf;
+    dest->add_var_nocopy(btf.NewVariable(dods_byte_c)); // ... so use add_var_nocopy() to add it instead
 
+    dest->append_dim(maxI);
+    dest->append_dim(maxJ);
+
+    dest->set_value(dest_values, mask->length());
     dest->set_send_p(true);
     dest->set_read_p(true);
 
     // return the array
     *btpp = dest;
+
     return;
 }
 

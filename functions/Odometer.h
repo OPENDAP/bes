@@ -60,8 +60,7 @@ public:
      * Initially, the Odometer object is set to index 0, 0, ..., 0 that
      * matches the offset 0
      */
-    Odometer(shape shape) :
-            d_shape(shape), d_offset(0)
+    Odometer(shape shape) : d_shape(shape), d_offset(0)
     {
         d_rank = d_shape.size();
 
@@ -73,7 +72,24 @@ public:
 
         d_indices.resize(d_rank, 0);
     }
+#if 0
+    // This might be a good idea, but I didn't need it. The three D case is probably
+    // more important. jhrg 5/26/15
+    Odometer(unsigned int x, unsigned int y) : d_offset(0)
+    {
+        d_rank = 2;
+        d_shape.push_back(x);
+        d_shape.push_back(y);
 
+        // compute the highest offset value based on the array shape
+        d_highest_offset = 1;
+        for (unsigned int i = 0; i < d_rank; ++i) {
+            d_highest_offset *= d_shape.at(i);
+        }
+
+        d_indices.resize(d_rank, 0);
+    }
+#endif
     /*
      * 	reset(): zero internal state
      * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
