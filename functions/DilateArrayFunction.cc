@@ -106,38 +106,12 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType 
 
     // Now make a vector<> for the result; I'm not sure if we really need this... jhrg 5/26/15
     vector<dods_byte> dest_values(mask->length());
-#if 0
-    // Create the 'dilated' array using the shape of the input 'mask' array variable.
-    Array *dest = new Array("dilated_mask", 0);	// The ctor for Array copies the prototype pointer...
-    
-    BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
-
-    for (Array::Dim_iter itr = mask->dim_begin(); itr != mask->dim_end(); ++itr) {
-	dest->append_dim(mask->dimension_size(itr));
-    }
-
-    // Copy 'mask' array to initialize dilated array.
-
-    dest->set_value(mask, mask->length());
-#endif
 
     // read argv[1], the number of dilation operations (size of the 'hot-dog') to perform.
     if (!is_integer_type(argv[1]->type()))
         throw Error(malformed_expr, "dilate_array(): Expected an integer for the second argument.");
 
     unsigned int dSize = extract_uint_value(argv[1]);
-
-#if 0
-    Array::Dim_iter itr = dest->dim_begin();
-    int maxI = dest->dimension_size(itr);
-    
-    itr = dest->dim_end();
-    int maxJ = dest->dimension_size(itr);
-
-    //int maxI = 100; 
-    //int maxJ = 100;
-#endif
 
     Array::Dim_iter itr = mask->dim_begin();
     int maxI = mask->dimension_size(itr++);
@@ -152,8 +126,8 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType 
 	        // I think this could be modified to handle the edge case by expanding the
 	        // ranges above to be the whole image and then using max() and min() in the
 	        // initialization and loop tests below. Not sure though. jhrg 5/16/15
-		for (unsigned int x=i-dSize; x<i+dSize; x++) {
-		    for (unsigned int y=j-dSize; y<j+dSize; y++) {
+		for (unsigned int x=i-dSize; x<=i+dSize; x++) {
+		    for (unsigned int y=j-dSize; y<=j+dSize; y++) {
 		        int dest_offset = y + x * maxI;
 			dest_values.at(dest_offset) = 1; //dest.value[x][y] = 1;
 		    }
