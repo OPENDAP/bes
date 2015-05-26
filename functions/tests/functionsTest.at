@@ -37,9 +37,9 @@ AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([bescmd/mask_array_data_dap4_2.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_mask_coads_1.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_mask_coads_2.bescmd)
 
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_array_dap2_1.bescmd)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_array_dap2_2.bescmd)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_array_dap2_3.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_mask_dap2_1.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_mask_dap2_2.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_mask_dap2_3.bescmd)
 
 # DAP4 functions - these use the 'functions' keyword
 AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([functions/test_array_1.xml.dap.func1.bescmd])

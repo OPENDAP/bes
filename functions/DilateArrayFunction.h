@@ -46,11 +46,11 @@ class DilateArrayFunction: public libdap::ServerFunction
 public:
     DilateArrayFunction()
     {
-        setName("dilate_array");
-        setDescriptionString("The dilate_array() function applies a dilation graphics operation to a mask array.");
-        setUsageString("dilate_array(mask, dilatin_size = 1)");
-        setRole("http://services.opendap.org/dap4/server-side-function/dilate_array");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#dilate_array");
+        setName("dilate_mask");
+        setDescriptionString("The dilate_mask() function applies a dilation graphics operation to a mask array.");
+        setUsageString("dilate_mask(mask, dilatin_size = 1)");
+        setRole("http://services.opendap.org/dap4/server-side-function/dilate_mask");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#dilate_mask");
         setFunction(function_dilate_dap2_array);
 	//        setFunction(function_dilate_mask_dap4_array);
         setVersion("1.0");
