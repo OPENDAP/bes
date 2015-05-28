@@ -24,40 +24,32 @@
 
 #include "config.h"
 
-// #define DODS_DEBUG 1
+//#define DODS_DEBUG 1
 
 #include <cassert>
 
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <functional>
 
 #include <Type.h>
 #include <BaseType.h>
 #include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
 #include <Str.h>
-#include <Url.h>
+
 #include <Array.h>
-#include <Grid.h>
 #include <Error.h>
 #include <DDS.h>
 
+#if 0
+// No DAP4 support yet...
 #include <DMR.h>
 #include <D4Group.h>
 #include <D4RValue.h>
+#endif
 
 #include <debug.h>
 #include <util.h>
-#include <functions_util.h>
-
-#include <BaseTypeFactory.h>
 
 #include <BESDebug.h>
 
@@ -230,7 +222,7 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         return;
     }
 
-    // Check for two args or more. The first two must be strings.
+    // Check for three args or more. The first two must be strings.
     DBG(cerr << "argc = " << argc << endl);
     if (argc < 3)
         throw Error(malformed_expr,
@@ -324,7 +316,7 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     Array *dest = new Array("mask", 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
+    dest->add_var_nocopy(new Byte("mask"));	// ... so use add_var_nocopy() to add it instead
 
     for (vector<int>::iterator i = shape.begin(), e = shape.end(); i != e; ++i)
         dest->append_dim(*i);
