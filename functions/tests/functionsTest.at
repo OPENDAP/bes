@@ -37,7 +37,7 @@ AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([bescmd/mask_array_data_dap4_2.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_mask_coads_1.bescmd)
 # This test is broken: rearrange coadsx and coadsy to match the correct order
 # as in the test above. jhrg 5/26/15
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_mask_coads_2.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_mask_coads_2.bescmd)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_mask_dap2_1.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/dilate_mask_dap2_2.bescmd)

@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-//#define DODS_DEBUG 1
+// #define DODS_DEBUG 1
 
 #include <cassert>
 
@@ -134,9 +134,6 @@ bool all_indices_valid(vector<int> indices)
     return find(indices.begin(), indices.end(), -1) == indices.end();
 }
 
-// Dan: In this function I made the vector<dods_byte> a reference so that changes to
-// it will be accessible to the caller without having to return the vector<> mask
-// (it could be large). This also means that it won't be passed on the stack
 /**
  * Given a vector of Grid maps (effectively domain variables) and a 'list'
  * of tuples where N tuples and M maps means N x M values n the list, build
@@ -144,8 +141,6 @@ bool all_indices_valid(vector<int> indices)
  * locations (range values) that match those domain values. The list of M tuples
  * is organized so that the first 0, ..., N-1 (the first N values) are M0, the
  * next N values are M1, and so on.
- *
- * @todo Once we're done testing, replace .at() with []
  *
  * @param dims Maps from a Grid that supply the domain values' indices
  * @param tuples The domain values
@@ -241,39 +236,24 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         throw Error(malformed_expr,
                 "make_mask(shape_string,[dim1,...],$TYPE(dim1_value0,dim2_value0,...)) requires at least four arguments.");
 
-    // string requestedTargetName = extract_string_argument(argv[0]);
-    // BESDEBUG("functions", "Requested target variable: " << requestedTargetName << endl);
-
-    if (argv[0]->type() != dods_str_c) {
+    if (argv[0]->type() != dods_str_c)
         throw Error(malformed_expr, "make_mask(): first argument must point to a string variable.");
-    }
 
     string shape_str = extract_string_argument(argv[0]);
     vector<int> shape = parse_dims(shape_str);
 
-#if 0
-    if (btp->type() != dods_grid_c) {
-        throw Error(malformed_expr, "make_mask(first argument must point to a DAP2 Grid variable.");
-    }
-
-    Grid *g = static_cast<Grid*>(btp);
-    Array *a = g->get_array();
-#endif
     // Create the 'mask' array using the shape of the target grid variable's array.
     int length = 1;
     for (vector<int>::iterator i = shape.begin(), e = shape.end(); i != e; ++i)
         length *= *i;
-    vector<dods_byte> mask(length/*a->length()*/, 0);  // Create 'mask', initialized with zero's
-#if 0
-    // read argv[1], the number[N] of dimension variables represented in tuples
-    if (!is_integer_type(argv[1]->type()))
-        throw Error(malformed_expr, "make_mask(): Expected an integer for the second argument.");
-    unsigned int nDims = extract_uint_value(argv[1]);
-#endif
+    vector<dods_byte> mask(length, 0);  // Create 'mask', initialized with zero's
     unsigned int nDims = shape.size();
 
-    // read argv[2] -> argv[2+numberOfDims]; the grid dimensions where we will find the values
-    // of the mask tuples.
+    // read argv[1] -> argv[1+numberOfDims]; the grid dimensions where we will find the values
+    // of the mask tuples. Also note that the number of dims (shape.size() above) should be the
+    // same as argc-2.
+    assert(nDims == (unsigned int)argc-2);
+
     vector<Array*> dims;
     for (unsigned int i = 0; i < nDims; i++) {
 
@@ -284,19 +264,16 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
         }
 
         Array *a = static_cast<Array*>(btp);
+
+        // Check that each map size matches the 'shape' info passed in the first arg.
+        // This might not be the case for DAP4 (or if we change this to support level
+        // 2 swath data).
+        assert(a->dimension_size(a->dim_begin()) == shape.at(i));
+
         a->read();
         a->set_read_p(true);
-#if 0
-        int dSize;
-        for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
-            dSize = a->dimension_size(itr);
-            DBG(cerr << "dim[" << i << "] = " << a->name() << " size=" << dSize << endl);
-        }
-#endif
         dims.push_back(a);
     }
-
-    BESDEBUG("functions", "number of dimensions: " << dims.size() << endl);
 
     BaseType *btp = argv[argc - 1];
     if (btp->type() != dods_array_c) {
@@ -345,21 +322,13 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
                 "make_mask(): Expect an array of mask points (numbers) but found something else instead.");
     }
 
-    // BESDEBUG("function", "function_dap2_make_mask() -target " << requestedTargetName << " -nDims " << nDims << endl);
-
     Array *dest = new Array("mask", 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
     dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
-#if 0
-    for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
-	dest->append_dim(a->dimension_size(itr));
-    }
-
-    dest->set_value(mask, a->length());
-#endif
 
     for (vector<int>::iterator i = shape.begin(), e = shape.end(); i != e; ++i)
         dest->append_dim(*i);
+
     dest->set_value(mask, length);
 
     dest->set_read_p(true);
