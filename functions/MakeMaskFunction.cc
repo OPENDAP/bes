@@ -70,6 +70,8 @@ using namespace std;
 
 namespace functions {
 
+vector<int> parse_dims(const string &shape); // defined in MakeArrayFunction.cc
+
 string make_mask_info =
         string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                 + "<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_mask\">\n"
@@ -235,55 +237,68 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
 
     // Check for two args or more. The first two must be strings.
     DBG(cerr << "argc = " << argc << endl);
-    if (argc < 4)
+    if (argc < 3)
         throw Error(malformed_expr,
-                "make_mask(target,nDims,[dim1,...],$TYPE(dim1_value0,dim2_value0,...)) requires at least four arguments.");
+                "make_mask(shape_string,[dim1,...],$TYPE(dim1_value0,dim2_value0,...)) requires at least four arguments.");
 
     // string requestedTargetName = extract_string_argument(argv[0]);
     // BESDEBUG("functions", "Requested target variable: " << requestedTargetName << endl);
 
-    BaseType *btp = argv[0];
+    if (argv[0]->type() != dods_str_c) {
+        throw Error(malformed_expr, "make_mask(): first argument must point to a string variable.");
+    }
 
+    string shape_str = extract_string_argument(argv[0]);
+    vector<int> shape = parse_dims(shape_str);
+
+#if 0
     if (btp->type() != dods_grid_c) {
         throw Error(malformed_expr, "make_mask(first argument must point to a DAP2 Grid variable.");
     }
 
     Grid *g = static_cast<Grid*>(btp);
     Array *a = g->get_array();
-
+#endif
     // Create the 'mask' array using the shape of the target grid variable's array.
-
-    vector<dods_byte> mask(a->length(),0);  // Create 'mask', initialized with zero's
-
+    int length = 1;
+    for (vector<int>::iterator i = shape.begin(), e = shape.end(); i != e; ++i)
+        length *= *i;
+    vector<dods_byte> mask(length/*a->length()*/, 0);  // Create 'mask', initialized with zero's
+#if 0
     // read argv[1], the number[N] of dimension variables represented in tuples
     if (!is_integer_type(argv[1]->type()))
         throw Error(malformed_expr, "make_mask(): Expected an integer for the second argument.");
     unsigned int nDims = extract_uint_value(argv[1]);
+#endif
+    unsigned int nDims = shape.size();
 
     // read argv[2] -> argv[2+numberOfDims]; the grid dimensions where we will find the values
     // of the mask tuples.
     vector<Array*> dims;
     for (unsigned int i = 0; i < nDims; i++) {
 
-        btp = argv[2 + i];
+        BaseType *btp = argv[1 + i];
         if (btp->type() != dods_array_c) {
             throw Error(malformed_expr,
                     "make_mask(): dimension-name arguments must point to Grid variable dimensions.");
         }
 
-        int dSize;
         Array *a = static_cast<Array*>(btp);
+        a->read();
+        a->set_read_p(true);
+#if 0
+        int dSize;
         for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
             dSize = a->dimension_size(itr);
             DBG(cerr << "dim[" << i << "] = " << a->name() << " size=" << dSize << endl);
         }
-
+#endif
         dims.push_back(a);
     }
 
     BESDEBUG("functions", "number of dimensions: " << dims.size() << endl);
 
-    btp = argv[argc - 1];
+    BaseType *btp = argv[argc - 1];
     if (btp->type() != dods_array_c) {
         throw Error(malformed_expr, "make_mask(): last argument must be an array.");
     }
@@ -335,12 +350,18 @@ void function_dap2_make_mask(int argc, BaseType * argv[], DDS &, BaseType **btpp
     Array *dest = new Array("mask", 0);	// The ctor for Array copies the prototype pointer...
     BaseTypeFactory btf;
     dest->add_var_nocopy(btf.NewVariable(dods_byte_c));	// ... so use add_var_nocopy() to add it instead
-
+#if 0
     for (Array::Dim_iter itr = a->dim_begin(); itr != a->dim_end(); ++itr) {
 	dest->append_dim(a->dimension_size(itr));
     }
 
     dest->set_value(mask, a->length());
+#endif
+
+    for (vector<int>::iterator i = shape.begin(), e = shape.end(); i != e; ++i)
+        dest->append_dim(*i);
+    dest->set_value(mask, length);
+
     dest->set_read_p(true);
 
     *btpp = dest;
