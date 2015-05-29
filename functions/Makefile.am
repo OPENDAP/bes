@@ -24,7 +24,7 @@ SUBDIRS = . unit-tests tests
 
 DIST_SUBDIRS = swath2grid
 
-if GDAL_FOUND
+if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
 # until it has tests and supports DAP4
 # SUBDIRS +=  swath2grid 

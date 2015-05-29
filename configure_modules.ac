@@ -110,12 +110,12 @@ AM_PROG_LIBTOOL
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
-dnl Perl is  used by www-interface during the build
+dnl Perl is used by www-interface during the build
 AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
 dnl macro is not needed.
-AC_PATH_PROG([CURL], [curl], [*** Where is curl? ***], [/bin:/usr/bin])
+AC_PATH_PROG([CURL], [curl], [Where is curl?], [/bin:/usr/bin:/usr/local/bin])
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -173,39 +173,44 @@ dnl AC_CHECK_LIB(termcap, main)
 dnl Locate GDAL libraries if possible; this test is here and not down with
 dnl the 'modules' tests because gdal is used by the functions module that 
 dnl has always been part of the bes.
-GDAL_FOUND=
 
-AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
-            with_gdal_prefix="$withval", with_gdal_prefix="")
+dnl I've commented this out because I think we should move the swath2grid code
+dnl to it's own module, thus removing the gdal dependnecy from the BES itself.
+dnl jhrg 5/29/15
 
-if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
-then
-    AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
-    GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs`"
-    GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
-    GDAL_FOUND="yes"
-elif test -n "$with_gdal_prefix"
-then
-    AC_MSG_ERROR([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there.])
-fi
+dnl GDAL_FOUND=
 
-if test -z "$GDAL_FOUND"
-then
-    AX_LIB_GDAL([1.10.0])
-    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-        GDAL_FOUND="yes"
-    fi
-fi
+dnl AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
+dnl             with_gdal_prefix="$withval", with_gdal_prefix="")
 
-AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
+dnl if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
+dnl then
+dnl     AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
+dnl     GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs`"
+dnl     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
+dnl     GDAL_FOUND="yes"
+dnl elif test -n "$with_gdal_prefix"
+dnl then
+dnl     AC_MSG_ERROR([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there.])
+dnl fi
 
-if test -z "$GDAL_FOUND"
-then
-    AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
-else 
-    AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
-    AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
-fi
+dnl if test -z "$GDAL_FOUND"
+dnl then
+dnl     AX_LIB_GDAL([1.10.0])
+dnl     if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
+dnl         GDAL_FOUND="yes"
+dnl     fi
+dnl fi
+
+dnl AM_CONDITIONAL([GDAL_FOUND], [test x$GDAL_FOUND = xyes])
+
+dnl if test -z "$GDAL_FOUND"
+dnl then
+dnl     AC_MSG_WARN([I could not find GDAL. GDAL dependent code will not be built.])
+dnl else 
+dnl     AC_MSG_NOTICE([GDAL_CFLAGS:  $GDAL_CFLAGS])
+dnl     AC_MSG_NOTICE([GDAL_LDFLAGS: $GDAL_LDFLAGS])
+dnl fi
 
 # check for readline
 VL_LIB_READLINE
@@ -421,7 +426,8 @@ then
     AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
 elif test -n "$with_gdal_prefix"
 then
-    AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix, but gdal-config is not there. Not building GDAL-dependent modules.])
+    AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
+    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])
 else
     AC_MSG_NOTICE([Looking for GDAL.])
     AX_LIB_GDAL([1.10.0])
@@ -430,7 +436,7 @@ else
     fi
 fi
 
-AM_CONDITIONAL([BUILD_GDAL], [test x"$GDAL_FOUND" = "xyes"])
+AM_CONDITIONAL([BUILD_GDAL], [test x$GDAL_FOUND = xyes])
 
 dnl Only look for the openjpeg2000 library if GDAL was found
 

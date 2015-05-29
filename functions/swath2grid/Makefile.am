@@ -75,7 +75,7 @@ check-dap:
 endif
 
 
-if  GDAL_FOUND
+if  BUILD_GDAL
 check-gdal:
 	@echo ""
 	@echo "**********************************************************"

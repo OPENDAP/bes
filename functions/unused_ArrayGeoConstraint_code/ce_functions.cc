@@ -75,7 +75,7 @@
 #include "GridGeoConstraint.h"
 //#include "ArrayGeoConstraint.h"
 
-#include "ce_functions.h"
+#include <functions/unused_ArrayGeoConstraint_code/ce_functions.h>
 #ifdef GRIDFIELDS
 #include "gridfields_functions.h"
 #include "ugridFunctions/gf2.h"
