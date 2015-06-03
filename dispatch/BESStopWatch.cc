@@ -42,34 +42,16 @@ using std::endl ;
 #include "BESStopWatch.h"
 #include "BESDebug.h"
 
-string missing_log_param = "";
-
-BESStopWatch::BESStopWatch(){
-	_log_name = TIMING_LOG;
-	_timer_name = missing_log_param;
-	_req_id = missing_log_param;
-
-}
-
-BESStopWatch::BESStopWatch(string logName){
-	_log_name = logName;
-	_timer_name = missing_log_param;
-	_timer_name = missing_log_param;
-	_req_id = missing_log_param;
-
-}
-
-
 /**
- * Starts the timer.
- * NB: This method will attempt to write logging
+ * Starts the timer. NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
+ *
  * @param name The name of the timer.
  */
 bool
 BESStopWatch::start(string name)
 {
-	return start(name,missing_log_param) ;
+	return start(name, MISSING_LOG_PARAM) ;
 }
 
 /**
@@ -77,7 +59,8 @@ BESStopWatch::start(string name)
  * NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity. Available from the DataHandlerInterfact object.
+ * @param reqID The client's request ID associated with this activity.
+ * Available from the DataHandlerInterfact object. 
  */
 bool
 BESStopWatch::start(string name, string reqID)
@@ -90,6 +73,8 @@ BESStopWatch::start(string name, string reqID)
 		int myerrno = errno ;
 		char *c_err = strerror( myerrno ) ;
 		string err = "getrusage failed in start: " ;
+		err += (c_err != 0) ? c_err : "unknown error";
+#if 0
 		if( c_err )
 		{
 			err += c_err ;
@@ -98,6 +83,7 @@ BESStopWatch::start(string name, string reqID)
 		{
 			err += "unknown error" ;
 		}
+#endif
 		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
 		_started = false ;
 	}
@@ -120,9 +106,11 @@ BESStopWatch::start(string name, string reqID)
 
 
 /**
- * This destructor is "special" in that it's execution signals the timer to stop if it has been started.
- * Stopping the timer will initiate an attempt to write logging information to the BESDebug::GetStrm() stream.
- * If the start method has not been called then the method exits silently.
+ * This destructor is "special" in that it's execution signals the
+ * timer to stop if it has been started. Stopping the timer will
+ * initiate an attempt to write logging information to the
+ * BESDebug::GetStrm() stream. If the start method has not been called
+ * then the method exits silently.
  */
 BESStopWatch::~BESStopWatch()
 {
@@ -135,6 +123,8 @@ BESStopWatch::~BESStopWatch()
 			int myerrno = errno ;
 			char *c_err = strerror( myerrno ) ;
 			string err = "getrusage failed in stop: " ;
+			err += (c_err != 0) ? c_err : "unknown error";
+#if 0
 			if( c_err )
 			{
 				err += c_err ;
@@ -143,6 +133,7 @@ BESStopWatch::~BESStopWatch()
 			{
 				err += "unknown error" ;
 			}
+#endif
 			*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
 			_started = false ;
 			_stopped = false ;
