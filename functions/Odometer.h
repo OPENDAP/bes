@@ -31,9 +31,10 @@ namespace functions {
 
 /**
  * Map the indices of a N-dimensional array to the offset into memory
- * that matches those indices. This code can be used to step through
- * each element of an N-dim array without using multiplication to
- * compute the offset into the vector that holds the array's data.
+ * (i.e., a vector) that matches those indices. This code can be used
+ * to step through each element of an N-dim array without using
+ * multiplication to compute the offset into the vector that holds
+ * the array's data.
  */
 class Odometer
 {
@@ -59,11 +60,11 @@ public:
      * Initially, the Odometer object is set to index 0, 0, ..., 0 that
      * matches the offset 0
      */
-    Odometer(shape shape) :
-            d_shape(shape), d_offset(0)
+    Odometer(shape shape) : d_shape(shape), d_offset(0)
     {
         d_rank = d_shape.size();
 
+        // compute the highest offset value based on the array shape
         d_highest_offset = 1;
         for (unsigned int i = 0; i < d_rank; ++i) {
             d_highest_offset *= d_shape.at(i);
@@ -71,7 +72,24 @@ public:
 
         d_indices.resize(d_rank, 0);
     }
+#if 0
+    // This might be a good idea, but I didn't need it. The three D case is probably
+    // more important. jhrg 5/26/15
+    Odometer(unsigned int x, unsigned int y) : d_offset(0)
+    {
+        d_rank = 2;
+        d_shape.push_back(x);
+        d_shape.push_back(y);
 
+        // compute the highest offset value based on the array shape
+        d_highest_offset = 1;
+        for (unsigned int i = 0; i < d_rank; ++i) {
+            d_highest_offset *= d_shape.at(i);
+        }
+
+        d_indices.resize(d_rank, 0);
+    }
+#endif
     /*
      * 	reset(): zero internal state
      * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
@@ -122,6 +140,50 @@ public:
 
     // This version throws Error if offset() == end()
     unsigned int next_safe();
+
+    /**
+     * Given a set of indices, update offset to match the position
+     * in the memory/vector they correspond to given the Odometer's
+     * initial shape.
+     * @param indices Indices of an element
+     * @return The position in linear memory of that element
+     */
+    inline unsigned int set_indices(const shape &indices)
+    {
+        d_indices = indices;
+#if 0
+        d_offset = 0;
+        unsigned int chunk_size = 1;
+#endif
+        // I copied this algorithm from Nathan's code in NDimenensionalArray in the
+        // ugrid function module. jhrg 5/22/15
+#if 0
+        shape::reverse_iterator si = d_shape.rbegin();
+        for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+            // The initial multiply is always 1 * N in both cases
+            d_offset += chunk_size * *i;
+            chunk_size *= *si;
+        }
+#endif
+        shape::reverse_iterator shape_index = d_shape.rbegin();
+        shape::reverse_iterator index = d_indices.rbegin(), index_end = d_indices.rend();
+        d_offset = *index++;
+        unsigned int chunk_size = *shape_index++;
+        while (index != index_end) {
+            d_offset += chunk_size * *index++;
+            chunk_size *= *shape_index++;
+        }
+
+        return d_offset;
+    }
+
+    unsigned int set_indices(const std::vector<int> &indices)
+    {
+        shape temp;
+        std::copy(indices.begin(), indices.end(), std::back_inserter(temp));
+
+        return set_indices(temp);
+    }
 
     /**
      * Return the current set of indices. These match the current offset.

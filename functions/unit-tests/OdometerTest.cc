@@ -170,7 +170,59 @@ public:
     	CPPUNIT_ASSERT(od.offset() == od.end());
     }
 
-    // This test always passes, but how long does it take?
+    void set_indices_test() {
+        Odometer::shape shape(3);
+        shape.at(0) = 10;
+        shape.at(1) = 20;
+        shape.at(2) = 30;
+        Odometer od(shape);
+
+        CPPUNIT_ASSERT(od.offset() == 0);
+
+        Odometer::shape i1(3);
+        i1.at(0) = 0;
+        i1.at(1) = 0;
+        i1.at(2) = 29;
+
+        od.set_indices(i1);
+        CPPUNIT_ASSERT(od.offset() == 29);
+
+        i1.at(0) = 9;
+        i1.at(1) = 19;
+        i1.at(2) = 29;
+
+        od.set_indices(i1);
+        CPPUNIT_ASSERT(od.offset() == 5999);
+    }
+
+    // This tests the Odometer::set_indices() method that takes a vector of ints,
+    // not unsigned ints (which is how Odometer::shape is defined)
+    void set_indices_test2() {
+        Odometer::shape shape(3);
+        shape.at(0) = 10;
+        shape.at(1) = 20;
+        shape.at(2) = 30;
+        Odometer od(shape);
+
+        CPPUNIT_ASSERT(od.offset() == 0);
+
+        vector<int> i1(3);
+        i1.at(0) = 0;
+        i1.at(1) = 0;
+        i1.at(2) = 29;
+
+        od.set_indices(i1);
+        CPPUNIT_ASSERT(od.offset() == 29);
+
+        i1.at(0) = 9;
+        i1.at(1) = 19;
+        i1.at(2) = 29;
+
+        od.set_indices(i1);
+        CPPUNIT_ASSERT(od.offset() == 5999);
+    }
+
+     // This test always passes, but how long does it take?
     // We can try different versions of next() and see if there's
     // much difference.
     void time_test_1() {
@@ -222,6 +274,10 @@ public:
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(next_test);
+
+    CPPUNIT_TEST(set_indices_test);
+    CPPUNIT_TEST(set_indices_test2);
+
     // CPPUNIT_TEST(time_test_1);
     // CPPUNIT_TEST(time_test_2);
 

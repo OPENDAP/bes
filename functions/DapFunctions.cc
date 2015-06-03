@@ -34,6 +34,7 @@
 #include "LinearScaleFunction.h"
 #include "VersionFunction.h"
 #include "MakeArrayFunction.h"
+#include "MakeMaskFunction.h"
 #include "BindNameFunction.h"
 #include "BindShapeFunction.h"
 #include "TabularFunction.h"
@@ -41,6 +42,7 @@
 #include "RoiFunction.h"
 #include "BBoxUnionFunction.h"
 #include "MaskArrayFunction.h"
+#include "DilateArrayFunction.h"
 
 #include "DapFunctions.h"
 
@@ -55,6 +57,7 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new LinearScaleFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new MakeArrayFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new MakeMaskFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindNameFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BindShapeFunction());
 
@@ -64,7 +67,9 @@ void DapFunctions::initialize(const string &)
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new RoiFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxUnionFunction());
+
     libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new DilateArrayFunction());
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

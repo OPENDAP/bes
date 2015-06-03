@@ -28,6 +28,8 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <functions/unused_ArrayGeoConstraint_code/ArrayGeoConstraint.h>
+#include <functions/unused_ArrayGeoConstraint_code/ce_functions.h>
 
 //#define DODS_DEBUG
 
@@ -44,9 +46,6 @@
 #include "DAS.h"
 
 #include "test/TestArray.h"
-#include "ArrayGeoConstraint.h"
-#include "ce_functions.h"
-
 #include "test/TestTypeFactory.h"
 
 #include "debug.h"

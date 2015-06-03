@@ -26,6 +26,8 @@
 // The Grid Selection Expression Clause class.
 
 
+#include <functions/unused_ArrayGeoConstraint_code/ArrayGeoConstraint.h>
+#include <functions/unused_ArrayGeoConstraint_code/ce_functions.h>
 #include "config.h"
 
 #include <cmath>
@@ -36,12 +38,10 @@
 
 #include "debug.h"
 #include "dods-datatypes.h"
-#include "ArrayGeoConstraint.h"
 #include "Float64.h"
 
 #include "Error.h"
 #include "InternalErr.h"
-#include "ce_functions.h"
 
 using namespace std;
 

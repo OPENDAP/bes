@@ -43,7 +43,6 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <util.h>
 
-
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
 #include "BESInternalError.h"
@@ -57,89 +56,93 @@
 using namespace std;
 using namespace libdap;
 
-
 BESDapResponseCache *BESDapResponseCache::d_instance = 0;
-const string BESDapResponseCache::PATH_KEY   = "DAP.ResponseCache.path";
+const string BESDapResponseCache::PATH_KEY = "DAP.ResponseCache.path";
 const string BESDapResponseCache::PREFIX_KEY = "DAP.ResponseCache.prefix";
-const string BESDapResponseCache::SIZE_KEY   = "DAP.ResponseCache.size";
+const string BESDapResponseCache::SIZE_KEY = "DAP.ResponseCache.size";
 
-unsigned long BESDapResponseCache::getCacheSizeFromConfig(){
+unsigned long BESDapResponseCache::getCacheSizeFromConfig()
+{
 
-	bool found;
+    bool found;
     string size;
     unsigned long size_in_megabytes = 0;
-    TheBESKeys::TheKeys()->get_value( SIZE_KEY, size, found ) ;
-    if( found ) {
-    	BESDEBUG("cache", "In BESDapResponseCache::getDefaultCacheSize(): Located BES key " <<
-    			SIZE_KEY<< "=" << size << endl);
-    	istringstream iss(size);
-    	iss >> size_in_megabytes;
+    TheBESKeys::TheKeys()->get_value(SIZE_KEY, size, found);
+    if (found) {
+        BESDEBUG("cache",
+                "In BESDapResponseCache::getDefaultCacheSize(): Located BES key " << SIZE_KEY<< "=" << size << endl);
+        istringstream iss(size);
+        iss >> size_in_megabytes;
     }
     else {
-    	string msg = "[ERROR] BESDapResponseCache::getCacheSize() - The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the DAP response cache. ";
-    	BESDEBUG("cache", msg);
-        throw BESInternalError(msg , __FILE__, __LINE__);
+        string msg = "[ERROR] BESDapResponseCache::getCacheSize() - The BES Key " + SIZE_KEY
+                + " is not set! It MUST be set to utilize the DAP response cache. ";
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
     return size_in_megabytes;
 }
 
-string BESDapResponseCache::getCachePrefixFromConfig(){
-	bool found;
+string BESDapResponseCache::getCachePrefixFromConfig()
+{
+    bool found;
     string prefix = "";
-    TheBESKeys::TheKeys()->get_value( PREFIX_KEY, prefix, found ) ;
-    if( found ) {
-    	BESDEBUG("cache", "In BESDapResponseCache::getDefaultCachePrefix(): Located BES key " <<
-    			PREFIX_KEY<< "=" << prefix << endl);
-        prefix = BESUtil::lowercase( prefix ) ;
+    TheBESKeys::TheKeys()->get_value(PREFIX_KEY, prefix, found);
+    if (found) {
+        BESDEBUG("cache",
+                "In BESDapResponseCache::getDefaultCachePrefix(): Located BES key " << PREFIX_KEY<< "=" << prefix << endl);
+        prefix = BESUtil::lowercase(prefix);
     }
     else {
-    	string msg = "[ERROR] BESDapResponseCache::getCachePrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the DAP response cache. ";
-    	BESDEBUG("cache", msg);
-        throw BESInternalError(msg , __FILE__, __LINE__);
+        string msg = "[ERROR] BESDapResponseCache::getCachePrefix() - The BES Key " + PREFIX_KEY
+                + " is not set! It MUST be set to utilize the DAP response cache. ";
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
     return prefix;
 }
 
-string BESDapResponseCache::getCacheDirFromConfig(){
-	bool found;
+string BESDapResponseCache::getCacheDirFromConfig()
+{
+    bool found;
 
     string cacheDir = "";
-    TheBESKeys::TheKeys()->get_value( PATH_KEY, cacheDir, found ) ;
-    if( found ) {
-    	BESDEBUG("cache", "In BESDapResponseCache::getCachePrefix(): Located BES key " <<
-    			PATH_KEY<< "=" << cacheDir << endl);
-    	cacheDir = BESUtil::lowercase( cacheDir ) ;
+    TheBESKeys::TheKeys()->get_value(PATH_KEY, cacheDir, found);
+    if (found) {
+        BESDEBUG("cache",
+                "In BESDapResponseCache::getCachePrefix(): Located BES key " << PATH_KEY<< "=" << cacheDir << endl);
+        cacheDir = BESUtil::lowercase(cacheDir);
     }
     else {
-    	string msg =   "[ERROR] BESDapResponseCache::getCacheDir() - The BES Key " + PATH_KEY + " is not set! It MUST be set to utilize the DAP response cache. ";
-    	BESDEBUG("cache", msg);
-        throw BESInternalError(msg , __FILE__, __LINE__);
+        string msg = "[ERROR] BESDapResponseCache::getCacheDir() - The BES Key " + PATH_KEY
+                + " is not set! It MUST be set to utilize the DAP response cache. ";
+        BESDEBUG("cache", msg);
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
     return cacheDir;
 }
 
-
-BESDapResponseCache::BESDapResponseCache(){
-	BESDEBUG("cache", "In BESDapResponseCache::BESDapResponseCache()" << endl);
+BESDapResponseCache::BESDapResponseCache()
+{
+    BESDEBUG("cache", "In BESDapResponseCache::BESDapResponseCache()" << endl);
 
     string cacheDir = getCacheDirFromConfig();
     string prefix = getCachePrefixFromConfig();
     unsigned long size_in_megabytes = getCacheSizeFromConfig();
 
-    BESDEBUG("cache", "BESDapResponseCache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);
+    BESDEBUG("cache",
+            "BESDapResponseCache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);
 
     // cerr << endl << "***** BESDapResponseCache::BESDapResponseCache() - Read cache params: " << path << ", " << prefix << ", " << size << endl;
 
     // The required params must be present. If initialize() is not called,
     // then d_cache will stay null and is_available() will return false.
     // Also, the directory 'path' must exist, or d_cache will be null.
-    if (!cacheDir.empty() && size_in_megabytes > 0)
-    	initialize(cacheDir, prefix, size_in_megabytes);
+    if (!cacheDir.empty() && size_in_megabytes > 0) initialize(cacheDir, prefix, size_in_megabytes);
 
     BESDEBUG("cache", "Leaving BESDapResponseCache::BESDapResponseCache()" << endl);
 }
-
 
 /** @brief Protected constructor that takes as arguments keys to the cache directory,
  * file prefix, and size of the cache to be looked up a configuration file
@@ -154,10 +157,11 @@ BESDapResponseCache::BESDapResponseCache(){
  * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
  * size is 0, or if cache dir does not exist.
  */
-BESDapResponseCache::BESDapResponseCache(const string &cache_dir, const string &prefix, unsigned long long size): BESFileLockingCache(cache_dir,prefix,size) {
+BESDapResponseCache::BESDapResponseCache(const string &cache_dir, const string &prefix, unsigned long long size) :
+        BESFileLockingCache(cache_dir, prefix, size)
+{
 
 }
-
 
 /** Get an instance of the BESDapResponseCache object. This class is a singleton, so the
  * first call to any of three 'get_instance()' methods makes an instance and subsequent calls
@@ -173,15 +177,16 @@ BESDapResponseCache::BESDapResponseCache(const string &cache_dir, const string &
 BESDapResponseCache *
 BESDapResponseCache::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
-    if (d_instance == 0){
-    	if(dir_exists(cache_dir)){
-        	try {
+    if (d_instance == 0) {
+        if (dir_exists(cache_dir)) {
+            try {
                 d_instance = new BESDapResponseCache(cache_dir, prefix, size);
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
-    	}
+            }
+            catch (BESInternalError &bie) {
+                BESDEBUG("cache",
+                        "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            }
+        }
     }
     return d_instance;
 }
@@ -193,28 +198,29 @@ BESDapResponseCache *
 BESDapResponseCache::get_instance()
 {
     if (d_instance == 0) {
-    	if(dir_exists(getCacheDirFromConfig())){
-        	try {
+        if (dir_exists(getCacheDirFromConfig())) {
+            try {
                 d_instance = new BESDapResponseCache();
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
-    	}
+            }
+            catch (BESInternalError &bie) {
+                BESDEBUG("cache",
+                        "BESDapResponseCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            }
+        }
     }
 
     return d_instance;
 }
 
-
-
-void BESDapResponseCache::delete_instance() {
-    BESDEBUG("cache","BESDapResponseCache::delete_instance() - Deleting singleton BESDapResponseCache instance." << endl);
-    cerr << "BESDapResponseCache::delete_instance() - Deleting singleton BESDapResponseCache instance. d_instance="<< d_instance << endl;
+void BESDapResponseCache::delete_instance()
+{
+    BESDEBUG("cache",
+            "BESDapResponseCache::delete_instance() - Deleting singleton BESDapResponseCache instance." << endl);
+    cerr << "BESDapResponseCache::delete_instance() - Deleting singleton BESDapResponseCache instance. d_instance="
+            << d_instance << endl;
     delete d_instance;
     d_instance = 0;
 }
-
 
 const string chars_excluded_from_filenames = "<>=,/()\"\'";
 /**
@@ -224,8 +230,7 @@ const string chars_excluded_from_filenames = "<>=,/()\"\'";
  * a previously-stored result.
  *
  */
-static string
-build_cache_file_name(const string &dataset, const string &ce)
+static string build_cache_file_name(const string &dataset, const string &ce)
 {
     BESDEBUG("cache", "build_cache_file_name: dataset: " << dataset << ", ce: " << ce << endl);
 
@@ -266,8 +271,7 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
         return false;
     }
 
-    if (entry_size == 0)
-        return false;
+    if (entry_size == 0) return false;
 
     time_t dataset_time = entry_time;
     if (stat(dataset.c_str(), &buf) == 0) {
@@ -279,8 +283,7 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
 
     // TODO Fix this so that the code can get a LMT from the correct
     // handler.
-    if (dataset_time > entry_time)
-        return false;
+    if (dataset_time > entry_time) return false;
 
     return true;
 }
@@ -298,8 +301,8 @@ bool BESDapResponseCache::is_valid(const string &cache_file_name, const string &
  */
 void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DDS *fdds)
 {
-	BESDEBUG("cache", "Opening cache file: " << cache_file_name << endl);
-	ifstream data(cache_file_name.c_str());
+    BESDEBUG("cache", "Opening cache file: " << cache_file_name << endl);
+    ifstream data(cache_file_name.c_str());
 
     // Rip off the MIME headers from the response if they are present
     string mime = get_next_mime_header(data);
@@ -323,12 +326,12 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
     // Return the CID for the matching data part
     string data_cid;
     try {
-    	ddx_parser.intern_stream(data, fdds, data_cid, boundary);
-    	BESDEBUG("cache", "Dataset name: " << fdds->get_dataset_name() << endl);
+        ddx_parser.intern_stream(data, fdds, data_cid, boundary);
+        BESDEBUG("cache", "Dataset name: " << fdds->get_dataset_name() << endl);
     }
-    catch(Error &e) {
-    	BESDEBUG("cache", "DDX Parser Error: " << e.get_error_message() << endl);
-    	throw;
+    catch (Error &e) {
+        BESDEBUG("cache", "DDX Parser Error: " << e.get_error_message() << endl);
+        throw;
     }
 
     // Munge the CID into something we can work with
@@ -354,13 +357,14 @@ void BESDapResponseCache::read_data_from_cache(const string &cache_file_name, DD
  *
  */
 DDS *
-BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
+BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseTypeFactory *factory,
+        const string &filename)
 {
     BESDEBUG("cache", "Reading cache for " << cache_file_name << endl);
 
     DDS *fdds = new DDS(factory);
 
-    fdds->filename(filename) ;
+    fdds->filename(filename);
     //fdds->set_dataset_name( "function_result_" + name_path(filename) ) ;
 
     BESDEBUG("cache", "BESDapResponseCache::get_cached_data_ddx() -cache_file_name: " << cache_file_name << endl);
@@ -369,20 +373,18 @@ BESDapResponseCache::get_cached_data_ddx(const string &cache_file_name, BaseType
     BESDEBUG("cache", "DDS Filename: " << fdds->filename() << endl);
     BESDEBUG("cache", "DDS Dataset name: " << fdds->get_dataset_name() << endl);
 
-    fdds->set_factory( 0 ) ;
+    fdds->set_factory(0);
 
     // mark everything as read. and send. That is, make sure that when a response
     // is retrieved from the cache, all of the variables are marked as to be sent
     DDS::Vars_iter i = fdds->var_begin();
-    while(i != fdds->var_end()) {
-        (*i)->set_read_p( true );
+    while (i != fdds->var_end()) {
+        (*i)->set_read_p(true);
         (*i++)->set_send_p(true);
     }
 
     return fdds;
 }
-
-
 
 #if 0
 /**
@@ -449,7 +451,8 @@ DDS *BESDapResponseCache::read_dataset(const string &filename, const string &con
  * @return The DDS that resulted from calling the server functions
  * in the original CE.
  */
-DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb, ConstraintEvaluator *eval, string &cache_token)
+DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESDapResponseBuilder *rb,
+        ConstraintEvaluator *eval, string &cache_token)
 {
     // These are used for the cached or newly created DDS object
     BaseTypeFactory factory;
@@ -464,8 +467,7 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
         // then fail and the code will drop down to the create_and_lock() call.
         // is_valid() tests for a non-zero object and for d_dateset newer than
         // the cached object.
-        if (!is_valid(cache_file_name, dds.filename()))
-        	purge_file(cache_file_name);
+        if (!is_valid(cache_file_name, dds.filename())) purge_file(cache_file_name);
 
         if (get_read_lock(cache_file_name, fd)) {
             BESDEBUG("cache", "function ce (change)- cached hit: " << cache_file_name << endl);
@@ -479,17 +481,18 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
             fdds = new DDS(dds);
             eval->parse_constraint(constraint, *fdds);
 
-           if (eval->function_clauses()) {
-            	DDS *temp_fdds = eval->eval_function_clauses(*fdds);
-            	delete fdds;
-            	fdds = temp_fdds;
+            if (eval->function_clauses()) {
+                DDS *temp_fdds = eval->eval_function_clauses(*fdds);
+                delete fdds;
+                fdds = temp_fdds;
             }
 
             ofstream data_stream(cache_file_name.c_str());
             if (!data_stream)
-            	throw InternalErr(__FILE__, __LINE__, "Could not open '" + cache_file_name + "' to write cached response.");
+                throw InternalErr(__FILE__, __LINE__,
+                        "Could not open '" + cache_file_name + "' to write cached response.");
 
-            string start="dataddx_cache_start", boundary="dataddx_cache_boundary";
+            string start = "dataddx_cache_start", boundary = "dataddx_cache_boundary";
 
             // Use a ConstraintEvaluator that has not parsed a CE so the code can use
             // the send method(s)
@@ -504,26 +507,26 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
             // methods. Those methods assume they need to evaluate the BESDapResponseBuilder's
             // CE, which is not necessary and will alter the values of the send_p property
             // of the DDS's variables.
-			set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain, last_modified_time(rb->get_dataset_name()));
-			//data_stream << flush;
-			rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
-			//data_stream << flush;
+            set_mime_multipart(data_stream, boundary, start, dods_data_ddx, x_plain,
+                    last_modified_time(rb->get_dataset_name()));
+            //data_stream << flush;
+            rb->serialize_dap2_data_ddx(data_stream, *fdds, eval, boundary, start);
+            //data_stream << flush;
 
-			data_stream << CRLF << "--" << boundary << "--" << CRLF;
+            data_stream << CRLF << "--" << boundary << "--" << CRLF;
 
-			data_stream.close();
+            data_stream.close();
 
             // Change the exclusive lock on the new file to a shared lock. This keeps
             // other processes from purging the new file and ensures that the reading
             // process can use it.
-			exclusive_to_shared_lock(fd);
+            exclusive_to_shared_lock(fd);
 
             // Now update the total cache size info and purge if needed. The new file's
             // name is passed into the purge method because this process cannot detect its
             // own lock on the file.
             unsigned long long size = update_cache_info(cache_file_name);
-            if (cache_too_big(size))
-            	update_and_purge(cache_file_name);
+            if (cache_too_big(size)) update_and_purge(cache_file_name);
         }
         // get_read_lock() returns immediately if the file does not exist,
         // but blocks waiting to get a shared lock if the file does exist.
@@ -536,7 +539,7 @@ DDS *BESDapResponseCache::cache_dataset(DDS &dds, const string &constraint, BESD
         }
     }
     catch (...) {
-        BESDEBUG("cache", "caught exception, unlocking cache and re-throw." << endl );
+        BESDEBUG("cache", "caught exception, unlocking cache and re-throw." << endl);
         // I think this call is not needed. jhrg 10/23/12
         unlock_cache();
         throw;
