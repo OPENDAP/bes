@@ -1,16 +1,28 @@
 #!/bin/bash
 
-reps=1
+reps=10
 
 
 for command in $@
 do
 
+
     logFile=$command".log"
-    result=$command".result"
+    resultFile=$command".result"
  
-    # echo "Processing command " $command " reps: " $reps
-    besstandalone -r $reps -c $prefix/etc/bes/bes.conf -d "$logFile,timing,h5" -i $command > $result
+    
+    rm -f $logFile $resultFile
+    
+
+    repCount=0
+    
+    while [ $repCount -lt $reps ]
+    do
+        #echo "Processing command " $command " repCount: " $repCount
+        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing,h5" -i $command > $resultFile 2>>$logFile
+        repCount=$[repCount + 1] 
+        #ls -l $logFile
+    done
     
     runs=`grep ELAPSED $logFile |  grep -E "get (dds|das|dods|dmr|dap)" | wc | awk '{print $1;}' -`
     
@@ -24,12 +36,15 @@ do
         
         # echo "times: "$times
         
-        metrics=`echo $times | awk 'BEGIN{sum=0;}{ for(i=1; i<=NF ;i++){sum=sum+$i;} print sum, sum/NF;}' -`
+        # metrics=`echo $times | awk 'BEGIN{sum=0;}{ for(i=1; i<=NF ;i++){sum=sum+$i;} print sum, sum/NF;}' -`
         
-        sum=`echo $metrics | awk '{print $1}' -`
-        avg=`echo $metrics | awk '{print $2}' -`
+        
+        metrics=`echo $times | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`
+        
+        avg=`echo $metrics | awk '{print $1}' -`
+        stdev=`echo $metrics | awk '{print $2}' -`
     
-        echo $command: $avg ms avg time for $reps reps.
+        echo "$command: $avg ms (+/- $stdev ms) avg time for $reps reps."
     fi
     
 done
