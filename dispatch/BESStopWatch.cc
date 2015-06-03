@@ -98,7 +98,8 @@ BESStopWatch::start(string name, string reqID)
 		{
 			err += "unknown error" ;
 		}
-		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+		if(BESDebug::GetStrm())
+    		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
 		_started = false ;
 	}
 	else
@@ -107,7 +108,8 @@ BESStopWatch::start(string name, string reqID)
 		struct timeval &start = _start_usage.ru_utime ;
 		double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
 
-		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STARTED][" << starttime << "][ms]["<< _timer_name << "]" << endl;
+		if(BESDebug::GetStrm())
+    		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STARTED][" << starttime << "][ms]["<< _timer_name << "]" << endl;
 	}
 
 	// either we started the stop watch, or failed to start it. Either way,
@@ -143,7 +145,8 @@ BESStopWatch::~BESStopWatch()
 			{
 				err += "unknown error" ;
 			}
-			*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+			if(BESDebug::GetStrm())
+    			*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
 			_started = false ;
 			_stopped = false ;
 		}
@@ -154,7 +157,8 @@ BESStopWatch::~BESStopWatch()
 			bool success = timeval_subtract() ;
 			if( !success )
 			{
-				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
+				if(BESDebug::GetStrm())
+				    *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
 				_started = false ;
 				_stopped = false ;
 			}
@@ -166,7 +170,8 @@ BESStopWatch::~BESStopWatch()
 				double stoptime =  stop.tv_sec*1000.0 + stop.tv_usec/1000.0;
 				double elapsed =  _result.tv_sec*1000.0 + _result.tv_usec/1000.0;
 
-				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STOPPED][" << stoptime << "][ms][" << _timer_name << "][ELAPSED][" << elapsed << "][ms]" << endl;
+				if(BESDebug::GetStrm())
+    				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STOPPED][" << stoptime << "][ms][" << _timer_name << "][ELAPSED][" << elapsed << "][ms]" << endl;
 
 			}
 
