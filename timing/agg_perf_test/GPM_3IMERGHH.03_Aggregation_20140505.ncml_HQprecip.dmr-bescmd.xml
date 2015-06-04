@@ -7,7 +7,7 @@
   <bes:setContainer name="catalogContainer" space="catalog">/agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_3IMERGHH.03_Aggregation_20140505.ncml</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <bes:constraint>HQprecipitation[0:1:47][0:10:3599][0:10:1799]</bes:constraint>
+      <bes:constraint>HQprecipitation[0:1:47][0:100:3599][0:100:1799]</bes:constraint>
     </bes:container>
   </bes:define>
   <bes:get type="dmr" definition="d1" />

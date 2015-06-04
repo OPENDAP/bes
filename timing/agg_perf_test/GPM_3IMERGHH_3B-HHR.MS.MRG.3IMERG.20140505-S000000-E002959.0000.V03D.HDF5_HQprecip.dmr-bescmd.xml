@@ -7,8 +7,8 @@
   <bes:setContainer name="catalogContainer" space="catalog">/agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <bes:constraint>lon,lat,Grid_lat,Grid_lon,IRkalmanFilterWeight[0:100:3599][0:100:1799],HQprecipSource[0:100:3599][0:100:1799],precipitationCal[0:100:3599][0:100:1799],precipitationUncal[0:100:3599][0:100:1799],HQprecipitation[0:100:3599][0:100:1799],probabilityLiquidPrecipitation[0:100:3599][0:100:1799],HQobservationTime[0:100:3599][0:100:1799],randomError[0:100:3599][0:100:1799],IRprecipitation[0:100:3599][0:100:1799]</bes:constraint>
+      <bes:constraint>HQprecipitation[0:100:3599][0:100:1799]</bes:constraint>
     </bes:container>
   </bes:define>
-  <bes:get type="dods" definition="d1" />
+  <bes:get type="dmr" definition="d1" />
 </bes:request>
