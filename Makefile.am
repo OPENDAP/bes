@@ -18,7 +18,7 @@ AM_LFLAGS = -8
 
 if DAP_MODULES
 AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir)/modules/hdf4_handler/hdfclass \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(HDF4_CPPFLAGS)
 LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAG) $(HDF4_LIBS) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 # Maybe we don't need this anymore. jhrg 11/30/14
@@ -29,7 +29,7 @@ LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLA
 $(BES_DAP_LIBS)
 endif
 
-AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -DUSE_DAP4 -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = hdfclass . bes-testsuite
 # DIST_SUBDIRS = hdfclass bes-testsuite
