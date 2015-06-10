@@ -39,6 +39,13 @@ Beneath this directory you will find two subdirectories, 'test' and
 
 Also in this directory you will find shell scripts that will run the timing tests and extract a brief summary of the results.
 
+
+-- mkAggTests --
+
+This shell script runs the 4 different sets of aggregation timing test commands in the agg_perf_test directory. The timing summaries are recorded in files named in keeping with each aggregation's command set.
+
+
+
 -- timeTest --
 
 This script takes as its command line a list of file names that are assumed to contain BES XML requests. 
@@ -78,5 +85,7 @@ through its input stream for timing log lines and indent them according to how m
 USAGE
 
 cat $logFile | ./timingIndent
+
+
 
 
