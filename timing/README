@@ -1,0 +1,82 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Timing Code
+
+Utilizing a stopwatch/timer class with a use pattern that guarantees that the 
+stop method for the timer will be called we instrumented the C++ components of Hyrax to better understand where time was being spent in the server.
+
+When the debugging is activated for the BES with either the keywords "timing" 
+or "all" the BES will produces timing output that shows the order of execution and the elapsed times if the calling method.
+
+More about the stop watch class can be found here:
+
+    http://docs.opendap.org/index.php/BES_Timing
+
+
+We have instrumented the BES in the following locations:
+
+ - In the BES dispatch code that processes client commands.
+   We know the total time it takes to handle each XML command 
+   in a BES XML request document sent from the client.
+   
+ - In the hdf4_handler, hdf5_handler, ncml_module, netcdf_handler, ugrid_functions, and w10n_handler response production methods. We know the time taken taken to produce the DDS, DODS, DDS, and DMR responses.
+   
+ - Additional timing instrumentation may be added to as we come to understand 
+   more clearly where time is being spent. 
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BES Timing Tests
+
+
+- Test Commands - 
+
+Beneath this directory you will find two subdirectories, 'test' and
+'agg_per_test'. In each there is a collection of files containing BES commands, each one as would be issued by the OLFS to an attached BES listener process. The bes command files are named according to the dataset, the subset, and the response type that is embodied in the request.  
+
+
+- Shell Scripts -
+
+Also in this directory you will find shell scripts that will run the timing tests and extract a brief summary of the results.
+
+-- timeTest --
+
+This script takes as its command line a list of file names that are assumed to contain BES XML requests. 
+
+- timeTest assumes that the environment variable 'prefix' has been set, and 
+  will utilize $prefix to locate the BES configuration file at 
+    $prefix/etc/bes/bes.conf 
+   
+- The BES response will be placed in a file named by adding the suffix '.result'
+  to the command file name.
+  
+- The debug output will be placed in a file named by adding the suffix '.log'
+  to the command file name.
+
+- timeTest launches besstandalone like this:
+    besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing" \
+    -i $command > $resultFile 2>>$logFile
+
+- There is a shell variable, 'reps', set at the tope of the timeTest script 
+  that controls the number of times timeTest will run the command. Depending 
+  on the speed of the test execution you may want to adjust that value.
+
+Once timeTest has completed all of the reps it analyzes the log file and computes the average time it takes for every DDS, DAS, DODS, DMR, and DAP response and prints that summery to stdout.
+
+USAGE:
+
+./timeTest tests/fnoc1*.xml
+
+
+
+-- timingIndent --
+
+The timingIndent script reads from stdin and writes to stdout. It will look 
+through its input stream for timing log lines and indent them according to how many timing START vs timing STOP lines it encounters.
+
+
+USAGE
+
+cat $logFile | ./timingIndent
+
+
