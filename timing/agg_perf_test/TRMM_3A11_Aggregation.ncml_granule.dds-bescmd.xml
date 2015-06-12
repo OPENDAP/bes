@@ -7,7 +7,11 @@
   <bes:setContainer name="catalogContainer" space="catalog">/agg/disc2.nascom.nasa.gov/TRMM_3A11_Aggregation.ncml</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
+      <!--
+      Full constraint includes variable time, but we dropped it to move forwrda because of an issue subsetting the aggregation variable.
       <bes:constraint>nlon,nlat,monthRain[2][0:1:71][0:1:15],noOfSamples[2][0:1:71][0:1:15],chiSqFit[2][0:1:71][0:1:15],freezLevel[2][0:1:71][0:1:15],T0[2][0:1:71][0:1:15],r0[2][0:1:71][0:1:15],sigmaR[2][0:1:71][0:1:15],probRain[2][0:1:71][0:1:15],qInd1[2][0:1:71][0:1:15],qInd2[2][0:1:71][0:1:15],qInd3[2][0:1:71][0:1:15],spare[2][0:1:71][0:1:15],time[2]</bes:constraint>
+      -->
+      <bes:constraint>nlon,nlat,monthRain[2][0:1:71][0:1:15],noOfSamples[2][0:1:71][0:1:15],chiSqFit[2][0:1:71][0:1:15],freezLevel[2][0:1:71][0:1:15],T0[2][0:1:71][0:1:15],r0[2][0:1:71][0:1:15],sigmaR[2][0:1:71][0:1:15],probRain[2][0:1:71][0:1:15],qInd1[2][0:1:71][0:1:15],qInd2[2][0:1:71][0:1:15],qInd3[2][0:1:71][0:1:15],spare[2][0:1:71][0:1:15]</bes:constraint>
     </bes:container>
   </bes:define>
   <bes:get type="dds" definition="d1" />

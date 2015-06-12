@@ -1,6 +1,6 @@
 #!/bin/bash
 
-reps=10
+reps=2
 
 
 for command in $@
@@ -14,12 +14,14 @@ do
     rm -f $logFile $resultFile
     
 
+    # repCount=$(($reps-1))
     repCount=0
     
     while [ $repCount -lt $reps ]
     do
         #echo "Processing command " $command " repCount: " $repCount
-        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing,h5" -i $command > $resultFile 2>>$logFile
+        #besstandalone -r $reps -c $prefix/etc/bes/bes.conf -d "cerr,timing,h5,h4,ncml" -i $command > $resultFile 2>>$logFile
+        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing,h5,h4,ncml" -i $command > $resultFile 2>>$logFile
         repCount=$[repCount + 1] 
         #ls -l $logFile
     done
@@ -44,7 +46,7 @@ do
         avg=`echo $metrics | awk '{print $1}' -`
         stdev=`echo $metrics | awk '{print $2}' -`
     
-        echo "$command: $avg ms (+/- $stdev ms) avg time for $reps reps."
+        echo "$command: $avg ms (+/- $stdev ms) avg time for "$reps" reps."
     fi
     
 done
