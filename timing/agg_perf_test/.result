@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <BES>
+        <BESError>
+            <Type>3</Type>
+            <Message>Problem parsing the request xml document:
+</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>BESXMLInterface.cc</File>
+                <Line>126</Line>
+            </Location>
+        </BESError>
+    </BES>
+</response>

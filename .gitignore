@@ -144,4 +144,5 @@ xmlcommand/unit-tests/buildT
 xmlcommand/unit-tests/propsT
 xmlcommand/unit-tests/test_config.h
 
-
+timing/*/*.log
+timing/*/*.result
