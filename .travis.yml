@@ -16,38 +16,40 @@ branches:
 # Use this to prepare the system to install prerequisites or
 # dependencies
 #
-# Building on Ubuntu, we need uuid-dev, xml and curl
+# Building on Ubuntu, we need uuid-dev, xml and curl and more
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libxml2-dev uuid-dev libcurl4-openssl-dev
-
+  - wget http://www.opendap.org/pub/binary/tmp/libdap_3.14.0-1.deb
+  
 # Use this to install any prerequisites or dependencies necessary to
 # run your build
 #
-# Get, install bison 3; install it to the default prefix
 install:
-  - git clone --branch=master https://github.com/opendap/hyrax-dependencies
+  - sudo apt-get install -qq libxml2-dev uuid-dev libcurl4-openssl-dev
+  - sudo apt-get install -qq libnetcdf-dev
+  - sudo apt-get install -qq libhdf4-dev
+  - sudo apt-get install -qq libhdf5-dev
+  - sudo apt-get install -qq libhdfeos-dev
+  - sudo apt-get install -qq libgdal-dev
+  - sudo apt-get install -qq libopenjpeg-dev
+  - sudo apt-get install -qq libcfitsio3-dev
+  - sudo apt-get install -qq libicu-dev
+  - sudo dpkg -i libdap_3.14.0-1.deb
  
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
 #
-# I set prefix and PATH even though it's not really needed.
 before_script:
-  - export prefix=`pwd`/../build
-  - export PATH=$prefix/bin:$PATH
+  - export prefix=$HOME/OPENDAP/build
+  - export PATH=$prefix/bin:/usr/local/bin:$PATH
+  - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
   - ./configure --prefix=$prefix
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 #
-# NB: sudo make install failed for clang here, hence the use of
-# --prefix (which we'll need anyway later when we build the bes) with
-# configure above. This is an idiosyncrasy of Travis CI because of the
-# way it installs clang.
 script:
-  - make -j7
-  - make -j7 check
-  - make install
+  - make -j7 && make -j7 check && make install
   
 # after_script:
