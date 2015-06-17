@@ -6,7 +6,7 @@ language: cpp
 
 compiler:
   - gcc
-  - clang
+#  - clang
 
 # whitelist
 branches:
@@ -28,7 +28,7 @@ install:
   - sudo apt-get install -qq libxml2-dev uuid-dev libcurl4-openssl-dev
   - sudo apt-get install -qq libnetcdf-dev
   - sudo apt-get install -qq libhdf4-dev
-  - sudo apt-get install -qq libhdf5-dev
+  - sudo apt-get install -qq libhdf5-serial-dev
   - sudo apt-get install -qq libhdfeos-dev
   - sudo apt-get install -qq libgdal-dev
   - sudo apt-get install -qq libopenjpeg-dev
