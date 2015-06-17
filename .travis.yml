@@ -24,9 +24,10 @@ before_install:
   
 # Use this to install any prerequisites or dependencies necessary to
 # run your build
-#
 install:
-  - sudo apt-get install -qq libxml2-dev uuid-dev libcurl4-openssl-dev
+  - sudo apt-get install -qq libxml2-dev
+  - sudo apt-get install -qq uuid-dev
+  - sudo apt-get install -qq libcurl4-openssl-dev
   - sudo apt-get install -qq libnetcdf-dev
   - sudo apt-get install -qq libhdf4-dev
   - sudo apt-get install -qq libhdf5-serial-dev
@@ -39,7 +40,6 @@ install:
  
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
-#
 before_script:
   - export prefix=$HOME/OPENDAP/build
   - export PATH=$prefix/bin:/usr/local/bin:$PATH
@@ -49,7 +49,6 @@ before_script:
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
-#
 script:
   - make -j7 && make -j7 check && make install
   
