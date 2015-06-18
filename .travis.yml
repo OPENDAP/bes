@@ -27,15 +27,15 @@ before_install:
 install:
   - sudo apt-get install -qq libxml2-dev
   - sudo apt-get install -qq uuid-dev
-  - sudo apt-get install -qq libcurl4-gnutls-dev
-  - sudo apt-get install -qq libnetcdf-dev
-  - sudo apt-get install -qq libhdf4-dev
-  - sudo apt-get install -qq libhdf5-serial-dev
-  - sudo apt-get install -qq libhdfeos-dev
-  - sudo apt-get install -qq libgdal-dev
-  - sudo apt-get install -qq libopenjpeg-dev
-  - sudo apt-get install -qq libcfitsio3-dev
-  - sudo apt-get install -qq libicu-dev
+  - sudo apt-get install -qq libcurl4-openssl-dev
+#  - sudo apt-get install -qq libnetcdf-dev
+#  - sudo apt-get install -qq libhdf4-dev
+#  - sudo apt-get install -qq libhdf5-serial-dev
+#  - sudo apt-get install -qq libhdfeos-dev
+#  - sudo apt-get install -qq libgdal-dev
+#  - sudo apt-get install -qq libopenjpeg-dev
+#  - sudo apt-get install -qq libcfitsio3-dev
+#  - sudo apt-get install -qq libicu-dev
   - dpkg -l
   - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
  
@@ -46,7 +46,7 @@ before_script:
   - export PATH=$prefix/bin:/usr/local/bin:$PATH
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  - ./configure --prefix=$prefix
+  - ./configure --prefix=$prefix --without-dap-modules
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
