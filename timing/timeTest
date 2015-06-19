@@ -32,7 +32,7 @@ do
             reps=$2; shift;
             shift;;
         --)
-        	shift; break;;
+         	shift; break;;
     esac
 done
 
