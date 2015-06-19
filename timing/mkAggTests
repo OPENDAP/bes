@@ -5,5 +5,5 @@ for i in AIRX3STD GPM_3IMERGHH TRMM_3A11 TRMM_3B42
 do
     logFile=$i"_timing.log"
     echo "Working on $i aggregation timing evaluation. log: $logFile"
-    ./timeTest agg_perf_test/$i*.xml > $logFile 2>&1   
+    ./timeTest $i/$i*.xml > $logFile 2>&1   
 done
