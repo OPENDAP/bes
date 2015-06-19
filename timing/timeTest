@@ -1,6 +1,6 @@
 #!/bin/bash
 
-reps=2
+reps=100
 
 
 for command in $@
@@ -21,7 +21,7 @@ do
     do
         #echo "Processing command " $command " repCount: " $repCount
         #besstandalone -r $reps -c $prefix/etc/bes/bes.conf -d "cerr,timing,h5,h4,ncml" -i $command > $resultFile 2>>$logFile
-        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing,ncml" -i $command > $resultFile 2>>$logFile
+        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,ncml,timing" -i $command > $resultFile 2>>$logFile
         repCount=$[repCount + 1] 
         #ls -l $logFile
     done
