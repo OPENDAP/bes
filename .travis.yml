@@ -59,6 +59,8 @@ before_script:
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 script:
-  - make -j7 -k && make -j7 check && make install
+  - make -j7 
+  - make -j7 check
+  - make install
   
 # after_script:
