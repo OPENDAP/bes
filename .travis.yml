@@ -20,12 +20,6 @@ branches:
 # (e.g. gridfields?)
 before_install:
   - sudo apt-get update -qq
-  - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
-  - tar -xzf libdap-3.14.0.tar.gz
-  
-# Use this to install any prerequisites or dependencies necessary to
-# run your build
-install:
   - sudo apt-get install -qq libxml2-dev
   - sudo apt-get install -qq uuid-dev
   - sudo apt-get install -qq libcurl4-openssl-dev
@@ -38,6 +32,15 @@ install:
 #  - sudo apt-get install -qq libcfitsio3-dev
 #  - sudo apt-get install -qq libicu-dev
   - dpkg -l
+  
+# Use this to install any prerequisites or dependencies necessary to
+# run your build
+install:
+  - wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
+  - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
+  - tar -xzf bison-3.0.4.tar.gz
+  - (cd bison-3.0.4 && ./configure && make -j7 && sudo make install)
+  - tar -xzf libdap-3.14.0.tar.gz
   - (cd libdap-3.14.0 && ./configure && make -j7 && sudo make install)
 
 # I tried using a deb package, but it never worked, likely because the 
