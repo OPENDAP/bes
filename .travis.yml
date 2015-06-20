@@ -20,7 +20,8 @@ branches:
 # (e.g. gridfields?)
 before_install:
   - sudo apt-get update -qq
-  - wget http://www.opendap.org/pub/binary/tmp/libdap_3.14.0-1.deb
+  - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
+  - tar -xzf libdap-3.14.0.tar.gz
   
 # Use this to install any prerequisites or dependencies necessary to
 # run your build
@@ -37,7 +38,11 @@ install:
 #  - sudo apt-get install -qq libcfitsio3-dev
 #  - sudo apt-get install -qq libicu-dev
   - dpkg -l
-  - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
+  - (cd libdap-3.14.0 && ./configure && make -j7 && sudo make install)
+
+# I tried using a deb package, but it never worked, likely because the 
+# package is not being correctly built.
+#  - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
  
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
