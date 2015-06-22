@@ -27,10 +27,24 @@ HDFCFUtil::check_beskeys(const string& key) {
         if( dosettrue == doset  || dosetyes == doset )
             return true;
     }
-    return false;
 
+    return false;
 }
 
+/** 
+ * Copied from stack overflow because valgrind finds the code
+ * below (Split) overruns memory, generating errors. jhrg 6/22/15
+ */
+static void 
+split_helper(vector<string> &tokens, const string &text, char sep)
+{
+    string::size_type start = 0, end = 0;
+    while ((end = text.find(sep, start)) != string::npos) {
+        tokens.push_back(text.substr(start, end - start));
+        start = end + 1;
+    }
+    tokens.push_back(text.substr(start));
+}
 
 // From a string separated by a separator to a list of string,
 // for example, split "ab,c" to {"ab","c"}
@@ -38,6 +52,10 @@ void
 HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
 {
     names.clear();
+    split_helper(names, string(s, len), sep);
+#if 0    
+    // Replaced with the above since valgrind reports errors 
+    // with this code. jhrg 6/22/15
     for (int i = 0, j = 0; j <= len; ++j) {
         if ((j == len && len) || s[j] == sep) {
             string elem(s + i, j - i);
@@ -46,13 +64,21 @@ HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &nam
             continue;
         }
     }
+#endif
 }
 
 // Assume sz is Null terminated string.
 void 
 HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
 {
+    names.clear();
+    std::cerr << "HDFCFUtil::Split: sz: <" << sz << ">, sep: <" << sep << ">" << std::endl;
+    split_helper(names, string(sz), sep);
+#if 0
+    // Replaced with a direct call to the new helper code.
+    // jhrg 6/22/15
     Split(sz, (int)strlen(sz), sep, names);
+#endif
 }
 
 // This is a safer way to insert and update a c++ map value.
@@ -277,12 +303,12 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
                 && rep.str().find('e') == string::npos)
                 rep << ".";
             return rep.str();
-            break;
         }
     default:
         return string("UNKNOWN");
     }
 
+    return string("UNKNOWN");	// Added to silence a gcc warning. jhrg 6/22/15
 }
 
 // Print datatype in string. This is used to generate DAS.
@@ -2547,8 +2573,8 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
      float lon_west = 0.;
      
      vector<string> ind_elems;
-     char sep='\n';
-     HDFCFUtil::Split(&value[0],sep,ind_elems);
+     const char sep='\n';
+     HDFCFUtil::Split(&value[0], sep, ind_elems);
      
      /* The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.*/
      if(ind_elems.size()!=10)

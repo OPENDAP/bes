@@ -396,7 +396,7 @@ namespace HDFSP
             }
 
             // Get the field type
-            const int getFieldType () const
+            int getFieldType () const
             {
                 return this->fieldtype;
             }
