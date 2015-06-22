@@ -62,7 +62,7 @@ do
         repCount=$[repCount + 1] 
     done
     
-    runs=`grep ELAPSED $logFile |  grep -E "get (dds|das|dods|dmr|dap)" | wc | awk '{print $1;}' -`
+    runs=`grep ELAPSED $logFile |  grep -E "get (dds|das|dods|dmr|ddx|dap)" | wc | awk '{print $1;}' -`
     
     if [ $runs != $reps ]; then
         echo "ERROR: Failed to complete all scheduled reps of command $command. Skipping results."
