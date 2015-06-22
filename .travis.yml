@@ -20,24 +20,32 @@ branches:
 # (e.g. gridfields?)
 before_install:
   - sudo apt-get update -qq
-  - wget http://www.opendap.org/pub/binary/tmp/libdap_3.14.0-1.deb
+  - sudo apt-get install -qq libxml2-dev
+  - sudo apt-get install -qq uuid-dev
+  - sudo apt-get install -qq libcurl4-openssl-dev
+  - sudo apt-get install -qq libnetcdf-dev
+  - sudo apt-get install -qq libhdf4-dev
+  - sudo apt-get install -qq libhdf5-serial-dev
+  - sudo apt-get install -qq libhdfeos-dev
+  - sudo apt-get install -qq libgdal-dev
+  - sudo apt-get install -qq libopenjpeg-dev
+  - sudo apt-get install -qq libcfitsio3-dev
+  - sudo apt-get install -qq libicu-dev
+  - dpkg -l
   
 # Use this to install any prerequisites or dependencies necessary to
 # run your build
 install:
-  - sudo apt-get install -qq libxml2-dev
-  - sudo apt-get install -qq uuid-dev
-  - sudo apt-get install -qq libcurl4-openssl-dev
-#  - sudo apt-get install -qq libnetcdf-dev
-#  - sudo apt-get install -qq libhdf4-dev
-#  - sudo apt-get install -qq libhdf5-serial-dev
-#  - sudo apt-get install -qq libhdfeos-dev
-#  - sudo apt-get install -qq libgdal-dev
-#  - sudo apt-get install -qq libopenjpeg-dev
-#  - sudo apt-get install -qq libcfitsio3-dev
-#  - sudo apt-get install -qq libicu-dev
-  - dpkg -l
-  - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
+  - wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
+  - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
+  - tar -xzf bison-3.0.4.tar.gz
+  - (cd bison-3.0.4 && ./configure && make -j7 && sudo make install)
+  - tar -xzf libdap-3.14.0.tar.gz
+  - (cd libdap-3.14.0 && ./configure && make -j7 && sudo make install)
+
+# I tried using a deb package, but it never worked, likely because the 
+# package is not being correctly built.
+#  - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
  
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
@@ -46,11 +54,13 @@ before_script:
   - export PATH=$prefix/bin:/usr/local/bin:$PATH
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  - ./configure --prefix=$prefix --without-dap-modules
+  - ./configure --prefix=$prefix
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 script:
-  - make -j7 -k && make -j7 check && make install
+  - make -j7 
+#  - make -j7 check
+#  - make install
   
 # after_script:
