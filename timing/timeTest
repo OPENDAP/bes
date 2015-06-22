@@ -8,17 +8,20 @@
 # - possibly hard won data - are silently removed.
 #
 # options: -r: number of reps
+#          -d: comma separated list of bes debug names (e.g., ncml,h4)
+#          -D: No debug/timing data output at all
 
 # defaults
 
 reps=10
+debug="-d cerr,timing"
 
 # do the options thing...
 
-args=`getopt "r:" $*`
+args=`getopt "r:d:D" $*`
 if test $? != 0
 then
-	echo "Usage: timeTest [-r reps] [bescmd ...]"
+	echo "Usage: timeTest [-r reps][-d name_0,name_1,...,name_n][-D] [bescmd ...]"
 	exit 2
 fi
 
@@ -31,8 +34,14 @@ do
         -r)
             reps=$2; shift;
             shift;;
+        -d)
+            debug="${debug},$2"; shift;
+            shift;;
+	-D)
+	    debug=;
+	    shift;;
         --)
-         	shift; break;;
+            shift; break;;
     esac
 done
 
@@ -49,7 +58,7 @@ do
     
     while [ $repCount -lt $reps ]
     do
-        besstandalone -c $prefix/etc/bes/bes.conf -d "cerr,timing,ncml" -i $command > $resultFile 2>>$logFile
+        besstandalone -c $prefix/etc/bes/bes.conf $debug -i $command > $resultFile 2>>$logFile
         repCount=$[repCount + 1] 
     done
     
