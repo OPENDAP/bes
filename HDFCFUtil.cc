@@ -3,6 +3,8 @@
 #include <BESLog.h>
 #include <math.h>
 
+#include <debug.h>		// libdap debugging macros
+
 #define SIGNED_BYTE_TO_INT32 1
 using namespace std;
 using namespace libdap;
@@ -36,7 +38,7 @@ HDFCFUtil::check_beskeys(const string& key) {
  * below (Split) overruns memory, generating errors. jhrg 6/22/15
  */
 static void 
-split_helper(vector<string> &tokens, const string &text, char sep)
+split_helper(vector<string> &tokens, const string &text, const char sep)
 {
     string::size_type start = 0, end = 0;
     while ((end = text.find(sep, start)) != string::npos) {
@@ -72,7 +74,11 @@ void
 HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
 {
     names.clear();
-    std::cerr << "HDFCFUtil::Split: sz: <" << sz << ">, sep: <" << sep << ">" << std::endl;
+
+    // Split() was showing up in some valgrind runs as having an off-by-one
+    // error. I added this help track it down.
+    DBG(std::cerr << "HDFCFUtil::Split: sz: <" << sz << ">, sep: <" << sep << ">" << std::endl);
+
     split_helper(names, string(sz), sep);
 #if 0
     // Replaced with a direct call to the new helper code.
@@ -2574,7 +2580,21 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
      
      vector<string> ind_elems;
      const char sep='\n';
+#if 1
+     // Patch for Split(). The Split() method expects that 
+     // value will be null terminated, but callers in HDFSP.cc
+     // that set value don't add the null and modifying 
+     // that code so it does add the null might break other
+     // uses of value (i.e., callers of getValue()). Since this
+     // modifies a copy and the return is in a new variable,
+     // I'm going to leave it as is - a patch. jhrg 6/23/15
+     vector<char> text(value.size()+1);
+     text = value;
+     text.push_back('\0');
+     HDFCFUtil::Split(&text[0], sep, ind_elems);
+#else
      HDFCFUtil::Split(&value[0], sep, ind_elems);
+#endif
      
      /* The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.*/
      if(ind_elems.size()!=10)
