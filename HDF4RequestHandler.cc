@@ -126,11 +126,11 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
     bool found = false;
     bool usecf = false;
 
-#if 0
+//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
-#endif
+//#endif
 
     string key="H4.EnableCF";
     string doset;
@@ -290,11 +290,11 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
     bool found = false;
     bool usecf = false;
 
-#if 0
+//#if 0
     BESStopWatch sw;
         if (BESISDEBUG( TIMING_LOG ))
                 sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
-#endif
+//#endif
 
     string key="H4.EnableCF";
     string doset;
@@ -479,11 +479,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     bool found = false;
     bool usecf = false;
 
-#if 0
+//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID]);
-#endif
+//#endif
 
     string key="H4.EnableCF";
     string doset;
@@ -676,11 +676,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi) {
 
-#if 0
+//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", dhi.data[REQUEST_ID]);
-#endif
+//#endif
 
     int32 sdfd   = -1;
     int32 fileid = -1;
@@ -1313,11 +1313,11 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 {
 
-#if 0
+//#if 0
     BESStopWatch sw;
     if (BESISDEBUG( TIMING_LOG ))
         sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID]);
-#endif
+//#endif
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
@@ -1515,11 +1515,11 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
 bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) {
 
-#if 0
+//#if 0
     BESStopWatch sw;
         if (BESISDEBUG( TIMING_LOG ))
                 sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", dhi.data[REQUEST_ID]);
-#endif
+//#endif
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
     // First step, build the 'full DDS'
@@ -1681,14 +1681,14 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
 	map < string, string > attrs;
-#if 0
+//#if 0
         attrs["name"] = MODULE_NAME ;
         attrs["version"] = MODULE_VERSION ;
-#endif
-//#if 0
+//#endif
+#if 0
 	attrs["name"] = PACKAGE_NAME;
 	attrs["version"] = PACKAGE_VERSION;
-//#endif
+#endif
 	list < string > services;
 	BESServiceRegistry::TheRegistry()->services_handled(HDF4_NAME, services);
 	if (services.size() > 0) {
