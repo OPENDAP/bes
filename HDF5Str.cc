@@ -49,19 +49,13 @@
 
 #include "h5dds.h"
 #include "HDF5Str.h"
-#include "HDF5Structure.h"
 // #define DODS_DEBUG
-#include "debug.h"
-
-/// A temporary structure for retrieving data from HDF5 compound data type.
-typedef struct s2_str_t {
-    /// Buffer for string in compound data
-    char a[max_str_len];
-} s2_str_t;
+#include "BESDebug.h"
 
 
 HDF5Str::HDF5Str(const string & n, const string &d) 
- : Str(n,d),dset_id(-1),ty_id(-1), array_flag(0)
+ : Str(n,d)
+// : Str(n,d),dset_id(-1),dtypeid(-1), array_flag(0)
 {
 }
 
@@ -72,134 +66,69 @@ BaseType *HDF5Str::ptr_duplicate()
 
 bool HDF5Str::read()
 {
-    size_t size = H5Tget_size(ty_id);
-    DBG(cerr << ">read() size=" << size << endl);
-    if (read_p())
-	return true;
 
-#if 0
-    if (array_flag == 1) {
-	DBG(cerr << "=read(): array is dected." << endl);
-	return true;
+    if (read_p())
+        return true;
+
+    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+    if(file_id < 0) {
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
-#endif
+
+    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    if(dset_id < 0) {
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+
+    hid_t dtypeid = H5Dget_type(dset_id);
+    if(dtypeid < 0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+
+    size_t size = H5Tget_size(dtypeid);
 
     if (size == 0) {
-	throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+        H5Tclose(dtypeid);
+	H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
     }
-    if (get_dap_type(ty_id) == "String") {
-        vector<char>chr;
-        chr.resize(size+1);
-	get_data(dset_id, (void *) &chr[0]);
-	set_read_p(true);
-        string str(chr.begin(),chr.end());
-	set_value(str);
+    try {
 
-        // Release the handles.
-        if (H5Tclose(ty_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        if(H5Tis_variable_str(dtypeid) >0){
+            H5Tclose(dtypeid);
+            vector<string>finstrval;
+            finstrval.resize(1);
+            read_vlen_string(dset_id,1,NULL,NULL,NULL,finstrval);
+            string strval = finstrval[0];
+            set_value(strval);
         }
-        if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+          
+        else { 
+            vector<char>chr;
+            chr.resize(size+1);
+	    get_data(dset_id, (void *) &chr[0]);
+	    set_read_p(true);
+            string str(chr.begin(),chr.end());
+	    set_value(str);
         }
+        H5Tclose(dtypeid);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
 
+   }
+
+    catch(...) {
+        H5Tclose(dtypeid);
+	H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw;
     }
 
-    if (get_dap_type(ty_id) == "Structure") {
-	BaseType *q = get_parent();
-
-	int i = H5Tget_nmembers(ty_id);
-	int j = 0;
-	int k = 0;
-
-	hid_t s2_str_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_str_t));
-	hid_t stemp_tid;
-
-	vector<s2_str_t> buf(i);
-	string myname = name();
-	string parent_name;
-
-	if (i < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
-	}
-	if (s2_str_tid < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
-	}
-
-	DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
-		" size=" << i << endl);
-	while (q != NULL) {
-	    if (q->is_constructor_type()) { // Grid, structure or sequence
-		if (k == 0) {
-		    hid_t type = H5Tcopy(H5T_C_S1);
-		    if (type < 0) {
-			throw InternalErr(__FILE__, __LINE__, "cannot copy");
-		    }
-		    if (H5Tset_size(type, (size_t) size) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Unable to set size of datatype.");
-		    }
-		    if (H5Tset_strpad(type, H5T_STR_NULLTERM) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "H5Tset_strpad() failed.");
-		    }
-		    if (H5Tinsert(s2_str_tid, myname.c_str(), 0, type) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
-		    }
-		}
-		else {
-		    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_str_t));
-		    if (stemp_tid < 0) {
-			throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
-		    }
-		    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_str_tid) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
-		    }
-		    s2_str_tid = stemp_tid;
-		}
-		// Remember the last parent name.
-		parent_name = q->name();
-		HDF5Structure &p = static_cast<HDF5Structure &> (*q);
-		// Remember the index of array from the last parent.
-		j = p.get_array_index();
-		q = q->get_parent();
-	    }
-	    else {
-		q = NULL;
-	    }
-	    k++;
-	}
-
-	if (H5Dread(dset_id, s2_str_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
-	    // buf is deleted in the catch ... block below so
-	    // shouldn't be deleted here. pwest Mar 18, 2009
-	    //delete[] buf;
-	    throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
-	    // string("hdf5_dods server failed when getting int32 data for structure\n")
-	    // + Msgi);
-	}
-	set_read_p(true);
-	string str = buf[j].a;
-	val2buf(&str);
-    }
 
     return true;
 }
 
-void HDF5Str::set_did(hid_t dset)
-{
-    dset_id = dset;
-}
-
-void HDF5Str::set_tid(hid_t type)
-{
-    ty_id = type;
-}
-
-hid_t HDF5Str::get_did()
-{
-    return dset_id;
-}
-
-hid_t HDF5Str::get_tid()
-{
-    return ty_id;
-}

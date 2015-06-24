@@ -255,6 +255,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             gp.fp = (float *) vals;
             rep << showpoint;
             rep << setprecision(10);
+            //rep << setprecision(6);
             rep << *(gp.fp+loc);
             if (rep.str().find('.') == string::npos
                 && rep.str().find('e') == string::npos)

@@ -173,1743 +173,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-            <Attribute name="SWATH_1" type="Container">
-                <Attribute name="SwathName" type="String">
-                    <value>&quot;HIRDLS&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>121</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>5434</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="GeoField" type="Container">
-                    <Attribute name="GeoField_1" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Time&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_2" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_3" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_4" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_5" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SecondsInDay&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_6" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ProfileID&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_7" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;OrbitAscendingFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_8" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ScienceScanMode&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_9" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;OrbitNumber&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_10" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ScanTable&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_11" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ScanUpFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_12" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SolarZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_13" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;LocalSolarTime&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_14" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SpacecraftLatitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_15" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SpacecraftLongitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_16" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SpacecraftAltitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_17" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ScanElevationAtNominalAltitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_18" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ScanAzimuthAtNominalAltitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_19" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;TangentHeightAtNominalAltitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_20" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;ViewDirectionAtNominalAltitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_21" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Altitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudTopPressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Temperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;GPH&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RawGPH&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;GPHPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RawGPHPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H2O&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ClONO2&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_10" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2O5&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_11" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2O&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_12" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_13" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_14" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;HNO3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_15" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC11&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_16" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC12&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_17" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;17.4MicronExtinction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_18" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;12.1MicronExtinction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_19" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;10.8MicronExtinction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_20" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;8.3MicronExtinction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_21" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;7.1MicronExtinction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_22" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;17.4MicronCloudAerosolFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_23" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;12.1MicronCloudAerosolFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_24" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;10.8MicronCloudAerosolFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_25" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;8.3MicronCloudAerosolFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_26" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;7.1MicronCloudAerosolFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_27" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TemperaturePrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_28" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_29" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H2OPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_30" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ClONO2Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_31" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2O5Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_32" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2OPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_33" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_34" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_35" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;HNO3Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_36" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC11Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_37" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC12Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_38" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;17.4MicronExtinctionPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_39" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;12.1MicronExtinctionPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_40" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;10.8MicronExtinctionPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_41" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;8.3MicronExtinctionPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_42" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;7.1MicronExtinctionPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_43" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TemperatureNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_44" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_45" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H2ONormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_46" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ClONO2NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_47" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2O5NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_48" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2ONormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_49" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_50" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_51" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;HNO3NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_52" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC11NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_53" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC12NormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_54" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;17.4MicronExtinctionNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_55" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;12.1MicronExtinctionNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_56" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;10.8MicronExtinctionNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_57" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;8.3MicronExtinctionNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_58" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;7.1MicronExtinctionNormChiSq&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_59" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TemperatureQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_60" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_61" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H2OQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_62" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ClONO2Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_63" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2O5Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_64" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;N2OQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_65" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_66" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_67" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;HNO3Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_68" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC11Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_69" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CFC12Quality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_70" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;17.4MicronExtinctionQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_71" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;12.1MicronExtinctionQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_72" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;10.8MicronExtinctionQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_73" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;8.3MicronExtinctionQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_74" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;7.1MicronExtinctionQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>9</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="ProfileField" type="Container"/>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="GridStructure" type="Container"/>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Attribute name="CoreMetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -2675,7 +938,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronCloudAerosolFlag</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Int16/>
         <dimension name="Latitude" size="5434"/>
@@ -2704,7 +967,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -2761,7 +1024,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinctionPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -2818,7 +1081,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronCloudAerosolFlag</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Int16/>
         <dimension name="Latitude" size="5434"/>
@@ -2847,7 +1110,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -2904,7 +1167,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinctionPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -2961,7 +1224,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronCloudAerosolFlag</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Int16/>
         <dimension name="Latitude" size="5434"/>
@@ -2990,7 +1253,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3047,7 +1310,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinctionPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3104,7 +1367,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronCloudAerosolFlag</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Int16/>
         <dimension name="Latitude" size="5434"/>
@@ -3133,7 +1396,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3190,7 +1453,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinctionPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3247,7 +1510,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronCloudAerosolFlag</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Int16/>
         <dimension name="Latitude" size="5434"/>
@@ -3276,7 +1539,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3333,7 +1596,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinctionPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3390,7 +1653,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3447,7 +1710,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3504,7 +1767,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3561,7 +1824,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3618,7 +1881,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3675,7 +1938,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3732,7 +1995,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3789,7 +2052,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3874,7 +2137,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/GPH</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3903,7 +2166,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/GPHPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3932,7 +2195,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2O</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -3989,7 +2252,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2OPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4046,7 +2309,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4103,7 +2366,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4160,7 +2423,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4189,7 +2452,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4246,7 +2509,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4331,7 +2594,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2OPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4388,7 +2651,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4445,7 +2708,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4502,7 +2765,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4559,7 +2822,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4616,7 +2879,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/RawGPH</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4645,7 +2908,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/RawGPHPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4674,7 +2937,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/Temperature</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4731,7 +2994,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Data Fields/TemperaturePrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>
@@ -4788,7 +3051,7 @@
             <value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Altitude</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="5434"/>

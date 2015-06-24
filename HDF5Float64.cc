@@ -43,20 +43,11 @@
 #include "InternalErr.h"
 #include "h5dds.h"
 #include "HDF5Float64.h"
-#include "HDF5Structure.h"
-#include "debug.h"
-
-typedef struct s2_float64_t {
-    /// Buffer for a 64-bit float in compound data
-    dods_float64 a;
-} s2_float64_t;
-
+#include "BESDebug.h"
 
 
 HDF5Float64::HDF5Float64(const string & n, const string &d) : Float64(n, d)
 {
-    ty_id = -1;
-    dset_id = -1;
 }
 
 BaseType *HDF5Float64::ptr_duplicate()
@@ -68,118 +59,36 @@ bool HDF5Float64::read()
 {
     if (read_p())
 	return true;
-
-    if (get_dap_type(ty_id) == "Float64") {
+    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+    if(file_id < 0) {
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    }
+   
+    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    if(dset_id < 0) {
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+    
+    try {
 	dods_float64 buf;
 	get_data(dset_id, (void *) &buf);
 	set_read_p(true);
 	set_value(buf);
 
         // Release the handles.
-        if (H5Tclose(ty_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
-        }
         if (H5Dclose(dset_id) < 0) {
             throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
         }
-
+        H5Fclose(file_id);
     }
 
-    if (get_dap_type(ty_id) == "Structure") {
-	DBG(cerr << "=read(): Structure" << endl);
-	BaseType *q = get_parent();
-	if (!q)
-	    throw InternalErr(__FILE__, __LINE__, "null pointer");
-	HDF5Structure &p = static_cast<HDF5Structure &> (*q);
-	DBG(cerr << "=read(): Size = " << p.get_entire_array_size() << endl);
-
-#ifdef DODS_DEBUG
-	int i = H5Tget_nmembers(ty_id);
-	if(i < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
-	}
-#endif
-	int j = 0;
-	int k = 0;
-
-	vector<s2_float64_t> buf(p.get_entire_array_size());
-
-	string myname = name();
-	string parent_name;
-
-	hid_t s2_float64_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float64_t));
-	hid_t stemp_tid;
-
-	if (s2_float64_tid < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
-	}
-
-	DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
-		" size=" << i << endl);
-	while (q != NULL) {
-	    if (q->is_constructor_type()) { // Grid, structure or sequence
-		if (k == 0) {
-		    // Bottom level structure
-		    if (H5Tinsert(s2_float64_tid, myname.c_str(), HOFFSET(s2_float64_t, a), H5T_NATIVE_DOUBLE) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
-		    }
-		}
-		else {
-		    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float64_t));
-		    if (stemp_tid < 0) {
-			throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
-		    }
-		    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_float64_tid) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
-		    }
-		    s2_float64_tid = stemp_tid;
-		}
-		parent_name = q->name();
-		p = static_cast<HDF5Structure &> (*q);
-		// Remember the index of array from the last parent.
-		j = p.get_array_index();
-		q = q->get_parent();
-	    }
-	    else {
-		q = NULL;
-	    }
-	    k++;
-	}
-
-	if (H5Dread(dset_id, s2_float64_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
-	    // buf is deleted in the catch ... block below and
-	    // should not be deleted here. pwest Mar 18, 2009
-	    //delete[] buf;
-	    throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
-	    //string
-	    //()
-	    //+ Msgi);
-	}
-	set_read_p(true);
-	DBG(cerr << "index " << j << endl);
-
-	set_value(buf[j].a);
+    catch(...) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw;
     }
 
     return true;
 }
 
-void HDF5Float64::set_did(hid_t dset)
-{
-    dset_id = dset;
-}
-
-void HDF5Float64::set_tid(hid_t type)
-{
-    ty_id = type;
-}
-
-hid_t HDF5Float64::get_did()
-{
-    return dset_id;
-}
-
-hid_t HDF5Float64::get_tid()
-{
-    return ty_id;
-}

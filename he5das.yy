@@ -56,7 +56,7 @@
 
 #include "DAS.h"
 #include "Error.h"
-#include "debug.h"
+#include "BESDebug.h"
 #include "parser.h"
 //#include "he5das.tab.hh"
 
@@ -159,7 +159,7 @@ attribute:    	DAS_GROUP '=' DAS_STR
                 attr_list
                 {
 		  /* pop top of stack; store in attr_tab */
-		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+		  BESDEBUG("h5", " Popped attr_tab: " << TOP_OF_STACK << endl);
 		  POP;
 		}
 		DAS_END_GROUP '=' DAS_STR
@@ -170,7 +170,7 @@ attribute:    	DAS_GROUP '=' DAS_STR
                 attr_list
                 {
 		  /* pop top of stack; store in attr_tab */
-		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+		  BESDEBUG("h5", " Popped attr_tab: " << TOP_OF_STACK << endl);
 		  POP;
 		}
 		DAS_END_OBJECT '=' DAS_STR
@@ -182,7 +182,7 @@ attribute:    	DAS_GROUP '=' DAS_STR
 		| DAS_COMMENT {
                     ostringstream name;
                     name << "comment" << commentnum++;
-                    cerr << name.str() << ":" << $1 << endl;
+                    cerr<<  name.str() << ":" << $1 << endl;
                     AttrTable *a;
                     if (STACK_EMPTY)
                         a = ATTR_OBJ(arg);
@@ -204,7 +204,13 @@ attribute:    	DAS_GROUP '=' DAS_STR
 			a = TOP_OF_STACK;
 		    a->append_attr(name.c_str(), "String", 
 				   "\"Error processing EOS attributes\"");
-		    parse_error((parser_arg *)arg, NO_DAS_MSG.c_str());
+
+                    /* This is adopted from the HDF4 handler. */
+                    /*Using parse_error causes the memory leaking. So don't use this function. instead just
+                       set the status to FALSE.  KY 2014-02-25*/
+                    arg->set_status(FALSE);
+
+		    //parse_error((parser_arg *)arg, NO_DAS_MSG.c_str());
 		    /* Don't abort; keep parsing to try and pick up more
 		       attribtues. 3/30/2000 jhrg */
  		    /* YYABORT; */
@@ -238,8 +244,8 @@ ints:           DAS_INT
 		    /* integer. What's worse, long is 64  bits on Alpha and */
 		    /* SGI/IRIX 6.1... jhrg 10/27/96 */
 		    /* type = "Int32"; */
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
-		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
+		    BESDEBUG("h5", "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h5", " to AttrTable: " << TOP_OF_STACK << endl);
 		    if (!(check_int32($1) 
 			  || check_uint32($1))) {
 			ostringstream msg;
@@ -257,7 +263,7 @@ ints:           DAS_INT
 		| ints ',' DAS_INT
 		{
 		    type = "Int32";
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h5", "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!(check_int32($3)
 			  || check_uint32($1))) {
 			ostringstream msg;
@@ -277,7 +283,7 @@ ints:           DAS_INT
 floats:		DAS_FLOAT
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h5", "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -294,7 +300,7 @@ floats:		DAS_FLOAT
 		| floats ',' DAS_FLOAT
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h5", "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -313,7 +319,7 @@ floats:		DAS_FLOAT
 floatints:	float_or_int
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h5", "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -330,7 +336,7 @@ floatints:	float_or_int
 		| floatints ',' float_or_int
 		{
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h5", "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
@@ -352,7 +358,7 @@ float_or_int:   DAS_FLOAT | DAS_INT
 strs:		DAS_STR
 		{
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
+		    BESDEBUG("h5", "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
@@ -363,7 +369,7 @@ strs:		DAS_STR
                 | strs ',' DAS_STR
 		{
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
+		    BESDEBUG("h5", "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
@@ -383,7 +389,7 @@ strs:		DAS_STR
 void
 he5daserror(parser_arg *, char *s)
 {
-  cerr << s << endl;
+  cerr<< s << endl;
 }
 
 
@@ -391,7 +397,7 @@ static void
 process_group(parser_arg * arg, const string & id)
 {
     AttrTable *at;
-    DBG(cerr << "Processing ID: " << id << endl);
+    BESDEBUG("h5", "Processing ID: " << id << endl);
     /* If we are at the outer most level of attributes, make
        sure to use the AttrTable in the DAS. */
     if (STACK_EMPTY) {
@@ -404,5 +410,5 @@ process_group(parser_arg * arg, const string & id)
             at = TOP_OF_STACK->append_container(id);
     }
     PUSH(at);
-    DBG(cerr << " Pushed attr_tab: " << at << endl);
+    BESDEBUG("h5", " Pushed attr_tab: " << at << endl);
 }

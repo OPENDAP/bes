@@ -50,33 +50,43 @@ class HDF5Array:public Array {
   private:
     int d_num_dim;
     int d_num_elm;
-    hid_t d_dset_id;
-    hid_t d_ty_id;
+//    hid_t d_dset_id;
+//    hid_t d_ty_id;
     size_t d_memneed;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
     int format_constraint(int *cor, int *step, int *edg);
 
-    // Handling constraint expression on array of structure requires the
-    // following linearizion function since the HDF5 array of structure is
-    // 1-D (linear) while constraint expression can be multi-dimensional.
-    // Based on the \param start, \param stride, and \param count,
-    // this function will pick the corresponding array indexes from HDF5 array
-    // and the picked indexes will be stored under \param picks.
-    int linearize_multi_dimensions(int *start, int *stride, int *count,
-                                   int *picks);
     hid_t mkstr(int size, H5T_str_t pad);
 
-    bool m_array_of_structure(); // Used by read()
+    //bool m_array_of_structure(vector<char>&,bool,int,int,int*,int*,int*); // Used by read()
+    bool m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
     bool m_array_in_structure();
-    void m_insert_simple_array(hid_t s1_tid, hsize_t *size2);
-    bool m_array_of_reference();
-    void m_intern_plain_array_data(char *convbuf);
+    bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
+    void m_intern_plain_array_data(char *convbuf,hid_t memtype);
+    void m_array_of_atomic(hid_t, hid_t,int,int*,int*,int*);
 
+    void do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int* count, int* step);
+
+    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&values,bool has_values,int values_offset, int at_nelms,int* at_offset,int*at_count,int* at_step);
+
+    inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
+                                const std::vector < int > &pos);
+    bool obtain_next_pos(vector<int>& pos, vector<int>&start,vector<int>&end,vector<int>&step,int rank_change);
+
+    template<typename T>  int subset(
+            const T input[],
+            int rank,
+            vector<int> & dim,
+            int start[],
+            int stride[],
+            int edge[],
+            std::vector<T> *poutput,
+            vector<int>& pos,
+            int index);
+    friend class HDF5Structure;
   public:
-    /// HDF5 data type class
-     H5T_class_t d_type;
 
     /// Constructor
     HDF5Array(const string & n, const string &d, BaseType * v);
@@ -94,21 +104,6 @@ class HDF5Array:public Array {
 
     /// See return_type function defined in h5dds.cc.
     friend string return_type(hid_t datatype);
-
-    /// returns HDF5 dataset id.
-    hid_t get_did();
-    /// returns HDF5 datatype id.
-    hid_t get_tid();
-
-    /// Reads HDF5 variable length string array data into local buffer
-    bool read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
-                          int *offset, int *step, int *count);
-
-    /// remembers HDF5 dataset id.
-    void set_did(hid_t dset);
-
-    /// remembers HDF5 datatype id.
-    void set_tid(hid_t type);
 
     /// remembers memory size needed.    
     void set_memneed(size_t need);

@@ -44,7 +44,7 @@ void HE5Parser::print()
     unsigned int i = 0;
 
     if(err_msg != ""){
-        cerr << "Parse error:" << err_msg << endl;
+        cerr<< "Parse error:" << err_msg << endl;
     }
     cout << "ZA Size=" << za_list.size() << endl;
     for(i=0; i < za_list.size(); i++) {

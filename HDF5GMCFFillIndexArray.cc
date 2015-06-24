@@ -35,9 +35,8 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include <debug.h>
-#include "InternalErr.h"
 #include <BESDebug.h>
+#include "InternalErr.h"
 
 #include "Str.h"
 #include "HDF5GMCFFillIndexArray.h"
@@ -59,7 +58,7 @@ bool HDF5GMCFFillIndexArray::read()
 #if 0
 cerr<<"coming to read function"<<endl;
 cerr<<"file name " <<filename <<endl;
-cerr <<"var name "<<varname <<endl;
+"h5","var name "<<varname <<endl;
 #endif
 
     if (rank != 1) 

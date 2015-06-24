@@ -41,8 +41,6 @@ check_h5str(hid_t);
 void 
 close_fileid(hid_t fid);
 
-char*
-correct_name(char *);
 
 hid_t 
 get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, bool*);
@@ -65,5 +63,10 @@ get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
 void
 get_strdata(int, char *, char *, int);
 
+bool read_vlen_string(hid_t d_dset_id, int nelms, hsize_t *offset, hsize_t *step, hsize_t *count,std::vector<string> &finstrval);
+
+bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id);
+
+void get_vlen_str_data(char*src,std::string &finalstrval);
 
 #endif                          //_H5GET_H

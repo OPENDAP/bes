@@ -41,8 +41,8 @@
 #include "HDF5CFStr.h"
 #include <hdf5.h>
 
-HDF5CFStr::HDF5CFStr(const string &n, const string &d,const string &varname) 
-      : Str(n, d), varname(varname)
+HDF5CFStr::HDF5CFStr(const string &n, const string &d,const string &h5_varname) 
+      : Str(n, d), varname(h5_varname)
 {
 }
 

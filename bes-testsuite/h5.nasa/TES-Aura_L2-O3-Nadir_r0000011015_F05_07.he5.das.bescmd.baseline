@@ -47,7 +47,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "AirDensity";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AirDensity";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     Altitude {
         Float32 _FillValue -999.0000000;
@@ -57,7 +57,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-TES-SHARED";
         String origname "Altitude";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Altitude";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     AverageCloudEffOpticalDepth {
         Float32 _FillValue -999.0000000;
@@ -87,7 +87,7 @@ Attributes {
         String UniqueFieldDefinition "TES";
         String origname "AveragingKernel";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernel";
-        String orig_dimname_list "nLevels_1 ";
+        String orig_dimname_list "nTimes nLevels nLevels_1";
     }
     AveragingKernelDiagonal {
         Float32 _FillValue -999.0000000;
@@ -97,7 +97,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "AveragingKernelDiagonal";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernelDiagonal";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     Calibration_QA {
         Float32 _FillValue -999.0000000;
@@ -117,7 +117,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "CloudEffectiveOpticalDepth";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepth";
-        String orig_dimname_list "nFreq ";
+        String orig_dimname_list "nTimes nFreq";
     }
     CloudEffectiveOpticalDepthError {
         Float32 _FillValue -999.0000000;
@@ -127,7 +127,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "CloudEffectiveOpticalDepthError";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepthError";
-        String orig_dimname_list "nFreq ";
+        String orig_dimname_list "nTimes nFreq";
     }
     CloudTopPressure {
         Float32 _FillValue -999.0000000;
@@ -167,7 +167,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "ConstraintVector";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ConstraintVector";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     DegreesOfFreedomForSignal {
         Float32 _FillValue -999.0000000;
@@ -217,7 +217,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "Initial";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Initial";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     KDotDL_QA {
         Float32 _FillValue -999.0000000;
@@ -257,7 +257,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "MeasurementErrorCovariance";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MeasurementErrorCovariance";
-        String orig_dimname_list "nLevels_1 ";
+        String orig_dimname_list "nTimes nLevels nLevels_1";
     }
     NumberIterPerformed {
         Int16 _FillValue -99;
@@ -277,7 +277,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-MLS-TES-SHARED";
         String origname "O3";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     O3Precision {
         Float32 _FillValue -999.0000000;
@@ -287,7 +287,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-MLS-TES-SHARED";
         String origname "O3Precision";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3Precision";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     O3_Ccurve_QA {
         Int16 _FillValue -99;
@@ -307,7 +307,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "ObservationErrorCovariance";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ObservationErrorCovariance";
-        String orig_dimname_list "nLevels_1 ";
+        String orig_dimname_list "nTimes nLevels nLevels_1";
     }
     Pressure {
         Float32 _FillValue -999.0000000;
@@ -317,7 +317,7 @@ Attributes {
         String UniqueFieldDefinition "AURA-SHARED";
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Pressure";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     RadianceResidualMax {
         Float32 _FillValue -999.0000000;
@@ -527,7 +527,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "TotalError";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalError";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     TotalErrorCovariance {
         Float32 _FillValue -999.0000000;
@@ -537,7 +537,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "TotalErrorCovariance";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalErrorCovariance";
-        String orig_dimname_list "nLevels_1 ";
+        String orig_dimname_list "nTimes nLevels nLevels_1";
     }
     UTCTime {
         Int32 ARRAYOFSTRINGS 57;
@@ -558,7 +558,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "VerticalResolution";
         String fullnamepath "/HDFEOS/SWATHS/O3NadirSwath/Data Fields/VerticalResolution";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     BoresightAzimuth {
         Float64 _FillValue -999.00000000000000;
@@ -816,429 +816,6 @@ Attributes {
     }
     nFreq {
         String units "level";
-    }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "O3NadirSwath";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "nTimes";
-                        Int32 Size 2293;
-                    }
-                    Dimension_2 {
-                        String DimensionName "nLevels";
-                        Int32 Size 67;
-                    }
-                    Dimension_3 {
-                        String DimensionName "nFreq";
-                        Int32 Size 25;
-                    }
-                    Dimension_4 {
-                        String DimensionName "nLength";
-                        Int32 Size 28;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Time";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Latitude";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Longitude";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_4 {
-                        String GeoFieldName "SurfaceElevStandardDeviation";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_5 {
-                        String GeoFieldName "BoresightNadirAngle";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_6 {
-                        String GeoFieldName "BoresightNadirAngleUnc";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_7 {
-                        String GeoFieldName "BoresightAzimuth";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_8 {
-                        String GeoFieldName "SolarZenithAngle";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_9 {
-                        String GeoFieldName "LocalSolarTime";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_10 {
-                        String GeoFieldName "Tgt_SpacecraftZenith";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_11 {
-                        String GeoFieldName "Tgt_SpacecraftAzimuth";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_12 {
-                        String GeoFieldName "Latitude_Footprint_1";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_13 {
-                        String GeoFieldName "Latitude_Footprint_2";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_14 {
-                        String GeoFieldName "Latitude_Footprint_3";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_15 {
-                        String GeoFieldName "Latitude_Footprint_4";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_16 {
-                        String GeoFieldName "Longitude_Footprint_1";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_17 {
-                        String GeoFieldName "Longitude_Footprint_2";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_18 {
-                        String GeoFieldName "Longitude_Footprint_3";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_19 {
-                        String GeoFieldName "Longitude_Footprint_4";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_20 {
-                        String GeoFieldName "Sequence";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_21 {
-                        String GeoFieldName "Scan";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_22 {
-                        String GeoFieldName "SurfaceTypeFootprint";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_23 {
-                        String GeoFieldName "DayNightFlag";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_24 {
-                        String GeoFieldName "DominantSurfaceType";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "O3";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_2 {
-                        String DataFieldName "O3Precision";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_3 {
-                        String DataFieldName "TotalError";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_4 {
-                        String DataFieldName "VerticalResolution";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_5 {
-                        String DataFieldName "ConstraintVector";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_6 {
-                        String DataFieldName "Pressure";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_7 {
-                        String DataFieldName "Altitude";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_8 {
-                        String DataFieldName "Initial";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_9 {
-                        String DataFieldName "AirDensity";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_10 {
-                        String DataFieldName "AveragingKernelDiagonal";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_11 {
-                        String DataFieldName "AveragingKernel";
-                        String DimList "nTimes", "nLevels", "nLevels";
-                        String MaxdimList "nTimes", "nLevels", "nLevels";
-                    }
-                    DataField_12 {
-                        String DataFieldName "TotalErrorCovariance";
-                        String DimList "nTimes", "nLevels", "nLevels";
-                        String MaxdimList "nTimes", "nLevels", "nLevels";
-                    }
-                    DataField_13 {
-                        String DataFieldName "MeasurementErrorCovariance";
-                        String DimList "nTimes", "nLevels", "nLevels";
-                        String MaxdimList "nTimes", "nLevels", "nLevels";
-                    }
-                    DataField_14 {
-                        String DataFieldName "ObservationErrorCovariance";
-                        String DimList "nTimes", "nLevels", "nLevels";
-                        String MaxdimList "nTimes", "nLevels", "nLevels";
-                    }
-                    DataField_15 {
-                        String DataFieldName "CloudTopPressureError";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_16 {
-                        String DataFieldName "CloudTopPressure";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_17 {
-                        String DataFieldName "SurfaceTemperature";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_18 {
-                        String DataFieldName "SurfaceTempError";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_19 {
-                        String DataFieldName "TotalColumnDensity";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_20 {
-                        String DataFieldName "TotalColumnDensityError";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_21 {
-                        String DataFieldName "SpeciesRetrievalConverged";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_22 {
-                        String DataFieldName "DeviationVsRetrievalCovariance";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_23 {
-                        String DataFieldName "RadianceResidualMax";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_24 {
-                        String DataFieldName "NumberIterPerformed";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_25 {
-                        String DataFieldName "MaxNumIterations";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_26 {
-                        String DataFieldName "Scan_Averaged_Count";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_27 {
-                        String DataFieldName "DegreesOfFreedomForSignal";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_28 {
-                        String DataFieldName "InformationContent";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_29 {
-                        String DataFieldName "SpeciesRetrievalQuality";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_30 {
-                        String DataFieldName "SurfaceTempInitial";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_31 {
-                        String DataFieldName "SurfaceTempDegreesOfFreedom";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_32 {
-                        String DataFieldName "SurfaceTempObservationError";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_33 {
-                        String DataFieldName "SurfaceTempConstraint";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_34 {
-                        String DataFieldName "SurfaceTempPrecision";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_35 {
-                        String DataFieldName "TotalColumnDensityInitial";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_36 {
-                        String DataFieldName "CloudVariability_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_37 {
-                        String DataFieldName "KDotDL_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_38 {
-                        String DataFieldName "LDotDL_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_39 {
-                        String DataFieldName "Calibration_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_40 {
-                        String DataFieldName "AverageCloudEffOpticalDepth";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_41 {
-                        String DataFieldName "SurfaceEmissMean_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_42 {
-                        String DataFieldName "SurfaceEmissionLayer_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_43 {
-                        String DataFieldName "SurfaceTempVsApriori_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_44 {
-                        String DataFieldName "SurfaceTempVsAtmTemp_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_45 {
-                        String DataFieldName "H2O_HDO_Corr_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_46 {
-                        String DataFieldName "UTCTime";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_47 {
-                        String DataFieldName "RadianceResidualRMS";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_48 {
-                        String DataFieldName "RadianceResidualMean";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_49 {
-                        String DataFieldName "O3_Ccurve_QA";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_50 {
-                        String DataFieldName "AverageCloudEffOpticalDepthError";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_51 {
-                        String DataFieldName "CloudEffectiveOpticalDepth";
-                        String DimList "nTimes", "nFreq";
-                        String MaxdimList "nTimes", "nFreq";
-                    }
-                    DataField_52 {
-                        String DataFieldName "CloudEffectiveOpticalDepthError";
-                        String DimList "nTimes", "nFreq";
-                        String MaxdimList "nTimes", "nFreq";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
     CoreMetadata {
         INVENTORYMETADATA {

@@ -50,7 +50,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "AbsorbingAerosolOpticalThicknessMW";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AbsorbingAerosolOpticalThicknessMW";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nWavelDiagnostic YDim XDim";
     }
     AerosolModelMW {
         UInt16 _FillValue 65535;
@@ -62,7 +62,7 @@ Attributes {
         UInt16 missing_value 65535;
         String origname "AerosolModelMW";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolModelMW";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     AerosolOpticalThicknessMW {
         Int16 _FillValue -32767;
@@ -74,7 +74,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "AerosolOpticalThicknessMW";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessMW";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nWavelDiagnostic YDim XDim";
     }
     AerosolOpticalThicknessPassedThresholdMean {
         Int16 _FillValue -32767;
@@ -86,7 +86,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "AerosolOpticalThicknessPassedThresholdMean";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdMean";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     AerosolOpticalThicknessPassedThresholdStd {
         Int16 _FillValue -32767;
@@ -98,7 +98,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "AerosolOpticalThicknessPassedThresholdStd";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdStd";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     SingleScatteringAlbedoMW {
         Int16 _FillValue -32767;
@@ -110,7 +110,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "SingleScatteringAlbedoMW";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoMW";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nWavelDiagnostic YDim XDim";
     }
     SingleScatteringAlbedoPassedThresholdMean {
         Int16 _FillValue -32767;
@@ -122,7 +122,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "SingleScatteringAlbedoPassedThresholdMean";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdMean";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     SingleScatteringAlbedoPassedThresholdStd {
         Int16 _FillValue -32767;
@@ -134,7 +134,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "SingleScatteringAlbedoPassedThresholdStd";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdStd";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     SolarZenithAngle {
         Float32 _FillValue -1.267650600e+30;
@@ -146,7 +146,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "SolarZenithAngle";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SolarZenithAngle";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     TerrainReflectivity {
         Int16 _FillValue -32767;
@@ -158,7 +158,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "TerrainReflectivity";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/TerrainReflectivity";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     UVAerosolIndex {
         Float32 _FillValue -1.267650600e+30;
@@ -170,7 +170,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "UVAerosolIndex";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/UVAerosolIndex";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     VISAerosolIndex {
         Float32 _FillValue -1.267650600e+30;
@@ -182,7 +182,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "VISAerosolIndex";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/VISAerosolIndex";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     ViewingZenithAngle {
         Float32 _FillValue -1.267650600e+30;
@@ -194,7 +194,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "ViewingZenithAngle";
         String fullnamepath "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/ViewingZenithAngle";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
@@ -208,148 +208,5 @@ Attributes {
     }
     nWavelDiagnostic {
         String units "level";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "ColumnAmountAerosol";
-                Int32 XDim 1440;
-                Int32 YDim 720;
-                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
-                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
-                String PixelRegistration "HE5_HDFE_CENTER";
-                String GridOrigin "HE5_HDFE_GD_LL";
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "XDim";
-                        Int32 Size 1440;
-                    }
-                    Dimension_2 {
-                        String DimensionName "YDim";
-                        Int32 Size 720;
-                    }
-                    Dimension_3 {
-                        String DimensionName "nWavelDiagnostic";
-                        Int32 Size 5;
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "AerosolModelMW";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_2 {
-                        String DataFieldName "AerosolOpticalThicknessPassedThresholdMean";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_3 {
-                        String DataFieldName "AerosolOpticalThicknessPassedThresholdStd";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_4 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_5 {
-                        String DataFieldName "Longitude";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_6 {
-                        String DataFieldName "SingleScatteringAlbedoPassedThresholdMean";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_7 {
-                        String DataFieldName "SingleScatteringAlbedoPassedThresholdStd";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_8 {
-                        String DataFieldName "SolarZenithAngle";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_9 {
-                        String DataFieldName "TerrainReflectivity";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_10 {
-                        String DataFieldName "UVAerosolIndex";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_11 {
-                        String DataFieldName "ViewingZenithAngle";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_12 {
-                        String DataFieldName "VISAerosolIndex";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_13 {
-                        String DataFieldName "AbsorbingAerosolOpticalThicknessMW";
-                        String DimList "nWavelDiagnostic", "YDim", "XDim";
-                        String MaxdimList "nWavelDiagnostic", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_14 {
-                        String DataFieldName "AerosolOpticalThicknessMW";
-                        String DimList "nWavelDiagnostic", "YDim", "XDim";
-                        String MaxdimList "nWavelDiagnostic", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_15 {
-                        String DataFieldName "SingleScatteringAlbedoMW";
-                        String DimList "nWavelDiagnostic", "YDim", "XDim";
-                        String MaxdimList "nWavelDiagnostic", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
 }

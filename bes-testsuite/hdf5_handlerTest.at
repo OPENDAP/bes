@@ -94,6 +94,31 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_int.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_int.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_int.h5.ddx.bescmd])
 
+#netcdf-4 1d, 2d latlon tests, mostly include das and dds.
+AT_BESCMD_RESPONSE_TEST([t_2d_2dll.nc4.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_2d_2dll.nc4.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_ll_zc.nc4.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_ll_zc.nc4.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_ll_nozc.nc4.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_ll_nozc.nc4.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_2dll_zc.nc4.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_2dll_zc.nc4.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_3d_2dll_zc.nc4.h5.data.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.das.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.data.bescmd])
+
+#generic cf 1d,2d latlon tests, only include das and dds.
+AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_1dllz.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_1dllz.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_2dll.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_2dll.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_2dllz.h5.das.bescmd])
+
+#
 # The current handler doesn't support scalar.
 # AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_int_scalar.h5.data.bescmd])
@@ -286,7 +311,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_last.bescmd])
 
 # Test default cases.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.das.bescmd])
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_compound.h5.data.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_compound.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.ddx.bescmd])
 

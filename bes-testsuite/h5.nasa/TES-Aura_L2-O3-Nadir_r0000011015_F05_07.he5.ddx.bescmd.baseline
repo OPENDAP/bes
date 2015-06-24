@@ -288,936 +288,6 @@
             <value>NoDimName</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-            <Attribute name="SWATH_1" type="Container">
-                <Attribute name="SwathName" type="String">
-                    <value>&quot;O3NadirSwath&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>2293</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>67</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nFreq&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>25</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_4" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLength&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>28</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="GeoField" type="Container">
-                    <Attribute name="GeoField_1" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Time&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_2" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_3" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_4" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SurfaceElevStandardDeviation&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_5" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;BoresightNadirAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_6" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;BoresightNadirAngleUnc&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_7" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;BoresightAzimuth&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_8" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SolarZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_9" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;LocalSolarTime&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_10" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Tgt_SpacecraftZenith&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_11" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Tgt_SpacecraftAzimuth&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_12" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude_Footprint_1&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_13" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude_Footprint_2&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_14" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude_Footprint_3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_15" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Latitude_Footprint_4&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_16" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude_Footprint_1&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_17" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude_Footprint_2&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_18" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude_Footprint_3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_19" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Longitude_Footprint_4&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_20" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Sequence&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_21" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;Scan&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_22" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;SurfaceTypeFootprint&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_23" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;DayNightFlag&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="GeoField_24" type="Container">
-                        <Attribute name="GeoFieldName" type="String">
-                            <value>&quot;DominantSurfaceType&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3Precision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;VerticalResolution&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ConstraintVector&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Altitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Initial&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AirDensity&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_10" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AveragingKernelDiagonal&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_11" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AveragingKernel&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_12" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalErrorCovariance&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_13" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;MeasurementErrorCovariance&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_14" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ObservationErrorCovariance&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_15" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudTopPressureError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_16" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudTopPressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_17" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTemperature&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_18" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_19" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalColumnDensity&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_20" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalColumnDensityError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_21" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SpeciesRetrievalConverged&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_22" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;DeviationVsRetrievalCovariance&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_23" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RadianceResidualMax&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_24" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NumberIterPerformed&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_25" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;MaxNumIterations&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_26" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Scan_Averaged_Count&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_27" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;DegreesOfFreedomForSignal&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_28" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;InformationContent&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_29" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SpeciesRetrievalQuality&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_30" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempInitial&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_31" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempDegreesOfFreedom&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_32" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempObservationError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_33" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempConstraint&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_34" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_35" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalColumnDensityInitial&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_36" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudVariability_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_37" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;KDotDL_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_38" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;LDotDL_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_39" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Calibration_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_40" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AverageCloudEffOpticalDepth&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_41" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceEmissMean_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_42" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceEmissionLayer_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_43" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempVsApriori_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_44" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfaceTempVsAtmTemp_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_45" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H2O_HDO_Corr_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_46" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;UTCTime&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_47" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RadianceResidualRMS&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_48" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RadianceResidualMean&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_49" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3_Ccurve_QA&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_50" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AverageCloudEffOpticalDepthError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_51" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudEffectiveOpticalDepth&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nFreq&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nFreq&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_52" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudEffectiveOpticalDepthError&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nFreq&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nFreq&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="ProfileField" type="Container"/>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="GridStructure" type="Container"/>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Attribute name="CoreMetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -1479,7 +549,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AirDensity</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1508,7 +578,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Altitude</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1593,7 +663,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernel</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels_1 </value>
+            <value>nTimes nLevels nLevels_1</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1623,7 +693,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernelDiagonal</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1680,7 +750,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepth</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nFreq </value>
+            <value>nTimes nFreq</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1709,7 +779,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepthError</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nFreq </value>
+            <value>nTimes nFreq</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1822,7 +892,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ConstraintVector</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -1963,7 +1033,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Initial</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2076,7 +1146,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MeasurementErrorCovariance</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels_1 </value>
+            <value>nTimes nLevels nLevels_1</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2134,7 +1204,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2163,7 +1233,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3Precision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2220,7 +1290,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ObservationErrorCovariance</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels_1 </value>
+            <value>nTimes nLevels nLevels_1</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2250,7 +1320,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Pressure</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2839,7 +1909,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalError</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2868,7 +1938,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalErrorCovariance</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels_1 </value>
+            <value>nTimes nLevels nLevels_1</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>
@@ -2929,7 +1999,7 @@
             <value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/VerticalResolution</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>nTimes nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Latitude" size="2293"/>

@@ -124,135 +124,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container"/>
-        <Attribute name="GridStructure" type="Container">
-            <Attribute name="GRID_1" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;NadirGrid&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>90</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>83</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>-180000000.000000</value>
-                    <value>-82000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>180000000.000000</value>
-                    <value>82000000.000000</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>15</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CH4AtSurface&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TotalColumnDensity&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SurfacePressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Attribute name="CoreMetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -514,7 +385,7 @@
             <value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLevels </value>
+            <value>XDim YDim nLevels</value>
         </Attribute>
         <Float32/>
         <dimension name="Longitude" size="90"/>
@@ -544,7 +415,7 @@
             <value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>YDim </value>
+            <value>XDim YDim</value>
         </Attribute>
         <Float32/>
         <dimension name="Longitude" size="90"/>
@@ -573,7 +444,7 @@
             <value>/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>YDim </value>
+            <value>XDim YDim</value>
         </Attribute>
         <Float32/>
         <dimension name="Longitude" size="90"/>
@@ -602,7 +473,7 @@
             <value>/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>YDim </value>
+            <value>XDim YDim</value>
         </Attribute>
         <Float32/>
         <dimension name="Longitude" size="90"/>

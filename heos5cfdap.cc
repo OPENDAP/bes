@@ -374,12 +374,12 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        // cerr <<"variable full path= "<< (*it_v)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_v)->getFullPath() <<endl;
         gen_dap_onevar_dds(dds,*it_v,file_id,filename);
     }
 
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        // cerr <<"variable full path= "<< (*it_cv)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
 //gen_dap_onevar_dds(dds,*it_v,filename);
         gen_dap_oneeos5cvar_dds(dds,*it_cv,file_id,filename);
 
@@ -635,7 +635,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     }
  
     for (it_cv = cvars.begin(); it_cv !=cvars.end();it_cv++) {
-        // cerr <<"variable full path= "<< (*it_cv)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
 
         if (false == ((*it_cv)->getAttributes().empty())) {
 
@@ -667,13 +667,13 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
                           subset_str, product_str, other_str, st_only);
 
 #if 0
-if(st_str!="") cerr <<"Final structmetadata "<<st_str <<endl;
-if(core_str!="") cerr <<"Final coremetadata "<<core_str <<endl;
-if(arch_str!="") cerr <<"Final archivedmetadata "<<arch_str <<endl;
-if(xml_str!="") cerr <<"Final xmlmetadata "<<xml_str <<endl;
-if(subset_str!="") cerr <<"Final subsetmetadata "<<subset_str <<endl;
-if(product_str!="") cerr <<"Final productmetadata "<<product_str <<endl;
-if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
+if(st_str!="") "h5","Final structmetadata "<<st_str <<endl;
+if(core_str!="") "h5","Final coremetadata "<<core_str <<endl;
+if(arch_str!="") "h5","Final archivedmetadata "<<arch_str <<endl;
+if(xml_str!="") "h5","Final xmlmetadata "<<xml_str <<endl;
+if(subset_str!="") "h5","Final subsetmetadata "<<subset_str <<endl;
+if(product_str!="") "h5","Final productmetadata "<<product_str <<endl;
+if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 
 #endif
     if(st_str != ""){
@@ -695,7 +695,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
 
                 (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
                     << "StructMetadata " << " HDFEOS attribute" << endl;
-                //cerr << "HDF-EOS StructMetdata parse error!\n";
+                //"h5", "HDF-EOS StructMetdata parse error!\n";
             }
             
             he5daslex_destroy();
@@ -714,7 +714,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
 
             (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
                     << "CoreMetadata " << " HDFEOS attribute" << endl;
-            //cerr << "HDF-EOS CoreMetadata parse error!\n";
+            //"h5", "HDF-EOS CoreMetadata parse error!\n";
         }
 
         he5daslex_destroy();
@@ -730,7 +730,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
 
              (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
                     << "ArchiveMetadata " << " HDFEOS attribute" << endl;
-               // cerr << "HDF-EOS ArchiveMetdata parse error!\n";
+               // "h5", "HDF-EOS ArchiveMetdata parse error!\n";
         }
         he5daslex_destroy();
     }
@@ -760,7 +760,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
 
             (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
                     << "SubsetMetadata " << " HDFEOS attribute" << endl;
-            //cerr << "HDF-EOS SubsetMetadata parse error!\n";
+            //"h5", "HDF-EOS SubsetMetadata parse error!\n";
         }
         he5daslex_destroy();
     }
@@ -774,7 +774,7 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
                 || false == arg.status()){
             (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
                     << "ProductMetadata " << " HDFEOS attribute" << endl;
-            //cerr << "HDF-EOS ProductMetadata parse error!\n";
+            //"h5", "HDF-EOS ProductMetadata parse error!\n";
         }
         he5daslex_destroy();
     }
@@ -934,7 +934,7 @@ void read_ecs_metadata(hid_t s_file_id,
  
         // We want to remove the last '\0' character added by C .
         string s_one_oname(oname.begin(),oname.end()-1);
-        // cerr <<"full object name "<<s_one_oname <<endl;
+        // "h5","full object name "<<s_one_oname <<endl;
         s_oname[i] = s_one_oname;
 
         // Calculate how many elements we have for each category(StructMetadata, CoreMetadata, etc.)
@@ -964,9 +964,9 @@ void read_ecs_metadata(hid_t s_file_id,
                 else strmeta_num_total++;
             }
 #if 0
-cerr <<"strmeta_num_total= "<<strmeta_num_total <<endl;
-if(strmeta_no_suffix) cerr <<"structmeta data has the suffix" <<endl;
-else cerr <<"structmeta data doesn't have the suffix" <<endl;
+"h5","strmeta_num_total= "<<strmeta_num_total <<endl;
+if(strmeta_no_suffix) "h5","structmeta data has the suffix" <<endl;
+else "h5","structmeta data doesn't have the suffix" <<endl;
 #endif
         }
 
@@ -1000,9 +1000,9 @@ else cerr <<"structmeta data doesn't have the suffix" <<endl;
                    else coremeta_num_total++;
                 }
 #if 0
-cerr <<"coremeta_num_total= "<<coremeta_num_total <<endl;
-if(coremeta_no_suffix) cerr <<"coreuctmeta data has the suffix" <<endl;
-else cerr <<"coremeta data doesn't have the suffix" <<endl;
+"h5","coremeta_num_total= "<<coremeta_num_total <<endl;
+if(coremeta_no_suffix) "h5","coreuctmeta data has the suffix" <<endl;
+else "h5","coremeta data doesn't have the suffix" <<endl;
 #endif
             }
 
@@ -1036,9 +1036,9 @@ else cerr <<"coremeta data doesn't have the suffix" <<endl;
                         archmeta_num_total++;
                 }
 #if 0
-cerr <<"archmeta_num_total= "<<archmeta_num_total <<endl;
-if(archmeta_no_suffix) cerr <<"archuctmeta data has the suffix" <<endl;
-else cerr <<"archmeta data doesn't have the suffix" <<endl;
+"h5","archmeta_num_total= "<<archmeta_num_total <<endl;
+if(archmeta_no_suffix) "h5","archuctmeta data has the suffix" <<endl;
+else "h5","archmeta data doesn't have the suffix" <<endl;
 #endif
 
             }
@@ -1067,9 +1067,9 @@ else cerr <<"archmeta data doesn't have the suffix" <<endl;
                     else submeta_num_total++;
                 }
 #if 0
-cerr <<"submeta_num_total= "<<submeta_num_total <<endl;
-if(submeta_no_suffix) cerr <<"subuctmeta data has the suffix" <<endl;
-else cerr <<"submeta data doesn't have the suffix" <<endl;
+"h5","submeta_num_total= "<<submeta_num_total <<endl;
+if(submeta_no_suffix) "h5","subuctmeta data has the suffix" <<endl;
+else "h5","submeta data doesn't have the suffix" <<endl;
 #endif
 
             }
@@ -1099,9 +1099,9 @@ else cerr <<"submeta data doesn't have the suffix" <<endl;
                     else xmlmeta_num_total++;
                 }
 #if 0
-cerr <<"xmlmeta_num_total= "<<xmlmeta_num_total <<endl;
-if(xmlmeta_no_suffix) cerr <<"xmluctmeta data doesn't have the suffix" <<endl;
-else cerr <<"xmlmeta data has the suffix" <<endl;
+"h5","xmlmeta_num_total= "<<xmlmeta_num_total <<endl;
+if(xmlmeta_no_suffix) "h5","xmluctmeta data doesn't have the suffix" <<endl;
+else "h5","xmlmeta data has the suffix" <<endl;
 #endif
 
             }
@@ -1135,7 +1135,7 @@ else cerr <<"xmlmeta data has the suffix" <<endl;
             else othermeta_num_total++;
         }
 
-        // cerr <<"object name using s_oname is " <<s_oname[i] <<endl;
+        // "h5","object name using s_oname is " <<s_oname[i] <<endl;
         oname.clear();
         s_one_oname.clear();
     }
@@ -1149,7 +1149,7 @@ else cerr <<"xmlmeta data has the suffix" <<endl;
 //        H5Fclose(s_file_id);
         throw InternalErr(__FILE__, __LINE__, msg);
 
-        //     cerr <<"Struct Metadata doesn't exist."<<endl;
+        //     "h5","Struct Metadata doesn't exist."<<endl;
     }
     else {
         strmeta_value.resize(strmeta_num_total);
@@ -1207,7 +1207,7 @@ else cerr <<"xmlmeta data has the suffix" <<endl;
     // this metadata has a suffix.
     for (hsize_t i = 0; i < nelems; i++) {
 
-        // cerr <<"object name "<<s_oname[i] <<endl;
+        // "h5","object name "<<s_oname[i] <<endl;
          // DDS parser only needs to parse the struct Metadata. So check
         // if st_only flag is true, will only read StructMetadata string.
         // Struct Metadata is generated by the HDF-EOS5 library, so the

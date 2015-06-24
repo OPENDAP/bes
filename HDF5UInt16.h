@@ -47,9 +47,9 @@ using namespace libdap;
 ///
 class HDF5UInt16:public UInt16 {
 
-  private:
-    hid_t dset_id;
-    hid_t ty_id;
+//  private:
+//    hid_t dset_id;
+//    hid_t ty_id;
 
   public:
 
@@ -68,7 +68,7 @@ class HDF5UInt16:public UInt16 {
 
     /// See return_type function defined in h5dds.cc.  
     friend string return_type(hid_t datatype);
-
+#if 0
     /// returns HDF5 dataset id.
     hid_t get_did();
 
@@ -80,6 +80,7 @@ class HDF5UInt16:public UInt16 {
 
     /// remembers HDF5 datatype id.
     void set_tid(hid_t type);
+#endif
 
 };
 

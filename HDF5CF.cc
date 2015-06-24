@@ -83,7 +83,7 @@ void
 File::Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr)
 throw(Exception) {
 
-    // cerr <<"coming to Retrieve_H5_Info "<<endl;
+    // "h5","coming to Retrieve_H5_Info "<<endl;
     hid_t root_id;
     if ((root_id = H5Gopen(file_id,"/",H5P_DEFAULT))<0){
         throw1 ("Cannot open the HDF5 root group " );
@@ -199,7 +199,7 @@ throw(Exception) {
                     full_path_name = ((string(gname) != "/") 
                                 ?(string(gname)+"/"+temp_oname.substr(0,temp_oname.size()-1)):("/"+temp_oname.substr(0,temp_oname.size()-1)));
 
-                    //  cerr <<"Group full_path_name " <<full_path_name <<endl;
+                    //  "h5","Group full_path_name " <<full_path_name <<endl;
 
                     cgroup = H5Gopen(grp_id, full_path_name.c_str(),H5P_DEFAULT);
                     if (cgroup < 0)
@@ -725,17 +725,17 @@ throw(Exception)
                 
                 string new_total_fstring = HDF5CFUtil::trim_string(memtype_id,total_fstring,
                                            num_sect,sect_size,sect_newsize);
-                // cerr <<"The first new sect size is "<<sect_newsize[0] <<endl; 
+                // "h5","The first new sect size is "<<sect_newsize[0] <<endl; 
                 attr->value.resize(new_total_fstring.size());
                 copy(new_total_fstring.begin(),new_total_fstring.end(),attr->value.begin()); 
                 attr->strsize.resize(num_sect);
                 for (int temp_i = 0; temp_i <num_sect; temp_i ++) 
                     attr->strsize[temp_i] = sect_newsize[temp_i];
 
-                // cerr <<"new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
+                // "h5","new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
 #if 0
 for (int temp_i = 0; temp_i <num_sect; temp_i ++)
-     cerr <<"string new section size = " << attr->strsize[temp_i] <<endl;
+     "h5","string new section size = " << attr->strsize[temp_i] <<endl;
 #endif
             }
         }
@@ -833,7 +833,7 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
            }
        }
        if (true == this->unsupported_var_dtype) {
-           // cerr <<"having unsupported variable datatype" <<endl;
+           // "h5","having unsupported variable datatype" <<endl;
             for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
                 H5DataType temp_dtype = (*irv)->getType();
@@ -1159,6 +1159,39 @@ File:: Adjust_Duplicate_FakeDim_Name(Dimension * dim) throw(Exception){
     addeddimindex++;
 }
 
+void File::Replace_Dim_Name_All(const string orig_dim_name, const string new_dim_name) throw(Exception) {
+
+    // The newname of the original dimension should also be replaced by new_dim_name
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
+            ird != (*irv)->dims.end(); ++ird) {
+            if((*ird)->name == orig_dim_name) {
+                (*ird)->name = new_dim_name;
+                (*ird)->newname = new_dim_name;
+            }
+
+        }
+    }
+}
+
+#if 0
+void File::Use_Dim_Name_With_Size_All(const string dim_name, const size_t dim_size) throw(Exception) {
+
+    // The newname of the original dimension should also be replaced by new_dim_name
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
+            ird != (*irv)->dims.end(); ++ird) {
+            if((*ird)->size == orig_dim_name) {
+                (*ird)->name = new_dim_name;
+                (*ird)->newname = new_dim_name;
+            }
+
+        }
+    }
+}
+#endif
 void 
 File:: Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception){
 
@@ -1171,6 +1204,18 @@ File:: Add_Str_Attr(Attribute* attr,const string &attrname, const string& strval
     attr->strsize[0] = attr->fstrsize;
     attr->value.resize(strvalue.size());
     copy(strvalue.begin(),strvalue.end(),attr->value.begin());
+}
+
+bool 
+File:: Is_Str_Attr(Attribute* attr,string varfullpath,const string &attrname, const string& strvalue) {
+    bool ret_value = false;
+    if(attrname== get_CF_string(attr->newname)) {
+       Retrieve_H5_Attr_Value(attr,varfullpath);
+        string attr_value(attr->value.begin(),attr->value.end());
+        if(attr_value == strvalue) 
+            ret_value= true;
+    }
+    return ret_value;
 }
 
 void

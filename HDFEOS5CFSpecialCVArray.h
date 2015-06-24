@@ -44,13 +44,13 @@ using namespace libdap;
 
 class HDFEOS5CFSpecialCVArray:public HDF5BaseArray {
     public:
-        HDFEOS5CFSpecialCVArray(int rank, const string & filename, const hid_t fileid, H5DataType dtype, int num_elm, const string &varfullpath, const string & n="",  BaseType * v = 0):
+        HDFEOS5CFSpecialCVArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, int h5_num_elm, const string &varfullpath, const string & n="",  BaseType * v = 0):
         HDF5BaseArray(n,v),
-        rank(rank),
-        filename(filename),
-        fileid(fileid),
-        dtype(dtype),
-        total_num_elm(num_elm),
+        rank(h5_rank),
+        filename(h5_filename),
+        fileid(h5_fileid),
+        dtype(h5_dtype),
+        total_num_elm(h5_num_elm),
         varname(varfullpath) {
     }
 

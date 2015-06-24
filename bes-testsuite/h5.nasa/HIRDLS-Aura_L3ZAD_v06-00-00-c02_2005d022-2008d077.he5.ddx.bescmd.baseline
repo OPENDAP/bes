@@ -163,174 +163,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container"/>
-        <Attribute name="GridStructure" type="Container"/>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container">
-            <Attribute name="ZA_1" type="Container">
-                <Attribute name="ZaName" type="String">
-                    <value>&quot;HIRDLS&quot;</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>73</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>121</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>1151</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DimensionMap" type="Container"/>
-                <Attribute name="IndexDimensionMap" type="Container"/>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Time&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Month&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Day&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Year&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Pressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nLevels&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2Day&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2DayPrecision&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2DayCovariance&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_10" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NO2DayDataCount&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nTimes&quot;</value>
-                            <value>&quot;nLevels&quot;</value>
-                            <value>&quot;nLats&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-            </Attribute>
-        </Attribute>
-    </Attribute>
     <Attribute name="CoreMetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -749,7 +581,7 @@
             <value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLats </value>
+            <value>nTimes nLevels nLats</value>
         </Attribute>
         <Float32/>
         <dimension name="nTimes" size="1151"/>
@@ -779,7 +611,7 @@
             <value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLats </value>
+            <value>nTimes nLevels nLats</value>
         </Attribute>
         <Float32/>
         <dimension name="nTimes" size="1151"/>
@@ -809,7 +641,7 @@
             <value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLats </value>
+            <value>nTimes nLevels nLats</value>
         </Attribute>
         <Float32/>
         <dimension name="nTimes" size="1151"/>
@@ -839,7 +671,7 @@
             <value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>nLats </value>
+            <value>nTimes nLevels nLats</value>
         </Attribute>
         <Float32/>
         <dimension name="nTimes" size="1151"/>

@@ -151,13 +151,24 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
         throw InternalErr(__FILE__,__LINE__,"FillValue attribute can only have one element.");
 
     H5DataType var_dtype = var->getType();
-    string print_rep;
+    string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(),0,(void*)(&(attr->getValue()[0])));
 
-    switch(var_dtype) {
+    at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
+}
+
+// Leave the old code for the time being. KY 2015-05-07
+#if 0
+void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,const HDF5CF::Var* var) {
+
+    if (attr->getCount() != 1) 
+        throw InternalErr(__FILE__,__LINE__,"FillValue attribute can only have one element.");
+
+    H5DataType var_dtype = var->getType();
+   switch(var_dtype) {
 
         case H5UCHAR:
         {
-            unsigned char final_fill_value = (unsigned char)(attr->getValue()[0]);
+            unsigned char final_fill_value = *((unsigned char*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
@@ -165,44 +176,46 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
         case H5CHAR:
         {
             // Notice HDF5 native char maps to DAP int16. 
-            short final_fill_value = (short)(attr->getValue()[0]);
+            short final_fill_value = *((short*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
         case H5INT16:
         {
-            short final_fill_value = (short)(attr->getValue()[0]);
+            short final_fill_value = *((short*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
         case H5UINT16:
         {
-            unsigned short final_fill_value = (unsigned short)(attr->getValue()[0]);
+            unsigned short final_fill_value = *((unsigned short*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
 
         case H5INT32:
         {
-            int final_fill_value = (int)(attr->getValue()[0]);
+            int final_fill_value = *((int*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
         case H5UINT32:
         {
-            unsigned int final_fill_value = (unsigned int)(attr->getValue()[0]);
+            unsigned int final_fill_value = *((unsigned int*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
         case H5FLOAT32:
         {
-            float final_fill_value = (float)(attr->getValue()[0]);
+            float final_fill_value = *((float*)((void*)(&(attr->getValue()[0]))));
+//            memcpy(&(attr->getValue()[0]),(void*)(&final_fill_value),sizeof(float));
+//cerr<<"final_fill_value is "<<final_fill_value <<endl;
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
         case H5FLOAT64:
         {
-            double final_fill_value = (double)(attr->getValue()[0]);
+            double final_fill_value = *((double*)((void*)(&(attr->getValue()[0]))));
             print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
         }
             break;
@@ -212,19 +225,8 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr,cons
 
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
 }
-
-#if 0
-    switch(var_dtype) {
-
-        case H5UCHAR:
-        {
-            unsigned char final_fill_value = (unsigned char)(attr->getValue()[0]);
-            string print_rep = HDF5CFDAPUtil::print_attr(var_dtype,0,(void*)&final_fill_value);
-
-        }
-            break;
-
 #endif
+
 
     
 

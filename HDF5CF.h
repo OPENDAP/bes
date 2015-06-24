@@ -52,7 +52,7 @@
 
 enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL};
 enum EOS5Type {GRID,SWATH,ZA,OTHERVARS};
-enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,OTHERGMS};
+enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,GENERAL_LATLON1D, OTHERGMS};
 enum EOS5AuraName {OMI,MLS,HIRDLS,TES};
 static string FILE_ATTR_TABLE_NAME ="HDF5_GLOBAL";
 
@@ -82,9 +82,9 @@ namespace HDF5CF
 	    }
 
 
-	    virtual void setException (string message)
+	    virtual void setException (string except_message)
 	    {
-		this->message = message;
+		this->message = except_message;
 	    }
 
 
@@ -114,6 +114,8 @@ namespace HDF5CF
                     break;
                 case 4:
                     ss << a5;
+                    break;
+                default:
                     break;
             }
         }
@@ -259,7 +261,7 @@ namespace HDF5CF
                    dimnameflag(false)
 	    {
 	    }
-	    ~Var ();
+	    virtual ~Var ();
 
 	public:
 
@@ -515,7 +517,7 @@ namespace HDF5CF
             /// the access of DAS from DDS although internally they 
             /// still share common routines.
 	    virtual void Retrieve_H5_Info (const char *path,
-					   hid_t file_id, bool include_attr) throw (Exception);
+					   hid_t file_id,bool) throw (Exception);
 
             /// Retrieve attribute values for the supported HDF5 datatypes.
             virtual void Retrieve_H5_Supported_Attr_Values() throw (Exception);
@@ -607,19 +609,23 @@ namespace HDF5CF
             void Adjust_Duplicate_FakeDim_Name(Dimension * dim)throw(Exception);
             void Insert_One_NameSizeMap_Element(string name,hsize_t size) throw(Exception);
             void Insert_One_NameSizeMap_Element2(map<string,hsize_t> &,string name,hsize_t size) throw(Exception);
+            void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
             virtual string get_CF_string(string);
             virtual void Replace_Var_Info(Var* src, Var *target);
             virtual void Replace_Var_Attrs(Var *src, Var*target);
 
             void Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception);
+            // TEMP: new method to check attribute value.
+            bool Is_Str_Attr(Attribute* attr,string varfullpath, const string &attrname, const string& strvalue);
             void Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception);
             void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) throw(Exception);
+
  
 
         protected:
-            File (const char *path, hid_t file_id)
-		  : path (string(path)),  
+            File (const char *h5_path, hid_t file_id)
+		  : path (string(h5_path)),  
                     fileid (file_id),
                     rootid(-1),
                     unsupported_var_dtype(false),
@@ -726,6 +732,9 @@ namespace HDF5CF
             /// Handle "coordinates" attributes for general HDF5 products
             void Handle_Coor_Attr();
 
+            /// Update "product type" attributes for general HDF5 products
+            void Update_Product_Type() throw(Exception);
+
         protected: 
             void Add_Dim_Name_GPM() throw(Exception);
             void Add_Dim_Name_Mea_SeaWiFS() throw(Exception);
@@ -743,9 +752,17 @@ namespace HDF5CF
 
             void Add_Dim_Name_General_Product()throw(Exception);
             void Check_General_Product_Pattern() throw(Exception);
+            bool Check_Dimscale_General_Product_Pattern() throw(Exception);
+            bool Check_LatLon2D_General_Product_Pattern() throw(Exception);
+            bool Check_LatLon1D_General_Product_Pattern() throw(Exception);
+            void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
+            void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
             void Add_Dim_Name_Dimscale_General_Product() throw(Exception);
             void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) throw(Exception);
             void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
+            bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
+            void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
+            bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
 
             void Handle_CVar_GPM_L1() throw(Exception);
             void Handle_CVar_GPM_L3() throw(Exception);
@@ -756,6 +773,10 @@ namespace HDF5CF
             void Handle_CVar_Mea_Ozone() throw(Exception);
             void Handle_SpVar_ACOS() throw(Exception);
             void Handle_CVar_Dimscale_General_Product() throw(Exception);
+            void Handle_CVar_LatLon2D_General_Product() throw(Exception);
+            void Handle_CVar_LatLon1D_General_Product() throw(Exception);
+            void Handle_CVar_LatLon_General_Product() throw(Exception);
+           
 
             void Adjust_Mea_Ozone_Obj_Name() throw(Exception);
             void Adjust_GPM_L3_Obj_Name() throw(Exception);
@@ -780,6 +801,9 @@ namespace HDF5CF
             GMPattern gproduct_pattern;
             vector <GMCVar *>cvars;
             vector <GMSPVar *>spvars;
+            string gp_latname;
+            string gp_lonname; 
+            //map<string,string>dimcvars_2dlatlon;
             bool iscoard;
          
     };
@@ -879,8 +903,8 @@ namespace HDF5CF
     /// This class is a derived class of File. It includes methods applied to HDF-EOS5 files only.
     class EOS5File:public File {
         public:
-            EOS5File(const char*path, hid_t file_id):
-                       File(path,file_id),
+            EOS5File(const char*he5_path, hid_t file_id):
+                       File(he5_path,file_id),
                        iscoard(false),
                        grids_multi_latloncvs(false),
                        isaura(false),

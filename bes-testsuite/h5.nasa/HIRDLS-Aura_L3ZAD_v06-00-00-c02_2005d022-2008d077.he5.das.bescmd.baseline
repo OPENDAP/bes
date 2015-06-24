@@ -62,7 +62,7 @@ Attributes {
         String UniqueFieldDefinition "Aura-Shared";
         String origname "NO2Day";
         String fullnamepath "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day";
-        String orig_dimname_list "nLats ";
+        String orig_dimname_list "nTimes nLevels nLats";
     }
     NO2DayCovariance {
         Float32 _FillValue -999.0000000;
@@ -72,7 +72,7 @@ Attributes {
         String UniqueFieldDefinition "Aura-Shared";
         String origname "NO2DayCovariance";
         String fullnamepath "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance";
-        String orig_dimname_list "nLats ";
+        String orig_dimname_list "nTimes nLevels nLats";
     }
     NO2DayDataCount {
         Float32 _FillValue -999.0000000;
@@ -82,7 +82,7 @@ Attributes {
         String UniqueFieldDefinition "Aura-Shared";
         String origname "NO2DayDataCount";
         String fullnamepath "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount";
-        String orig_dimname_list "nLats ";
+        String orig_dimname_list "nTimes nLevels nLats";
     }
     NO2DayPrecision {
         Float32 _FillValue -999.0000000;
@@ -92,7 +92,7 @@ Attributes {
         String UniqueFieldDefinition "Aura-Shared";
         String origname "NO2DayPrecision";
         String fullnamepath "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision";
-        String orig_dimname_list "nLats ";
+        String orig_dimname_list "nTimes nLevels nLats";
     }
     Pressure {
         Float32 _FillValue -999.0000000;
@@ -164,89 +164,6 @@ Attributes {
         String origname "nTimes";
         String fullnamepath "/HDFEOS/ZAS/HIRDLS/nTimes";
         String orig_dimname "nTimes";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-            ZA_1 {
-                String ZaName "HIRDLS";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "nLats";
-                        Int32 Size 73;
-                    }
-                    Dimension_2 {
-                        String DimensionName "nLevels";
-                        Int32 Size 121;
-                    }
-                    Dimension_3 {
-                        String DimensionName "nTimes";
-                        Int32 Size 1151;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "Time";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_2 {
-                        String DataFieldName "Month";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Day";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_4 {
-                        String DataFieldName "Year";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_5 {
-                        String DataFieldName "Latitude";
-                        String DimList "nLats";
-                        String MaxdimList "nLats";
-                    }
-                    DataField_6 {
-                        String DataFieldName "Pressure";
-                        String DimList "nLevels";
-                        String MaxdimList "nLevels";
-                    }
-                    DataField_7 {
-                        String DataFieldName "NO2Day";
-                        String DimList "nTimes", "nLevels", "nLats";
-                        String MaxdimList "nTimes", "nLevels", "nLats";
-                    }
-                    DataField_8 {
-                        String DataFieldName "NO2DayPrecision";
-                        String DimList "nTimes", "nLevels", "nLats";
-                        String MaxdimList "nTimes", "nLevels", "nLats";
-                    }
-                    DataField_9 {
-                        String DataFieldName "NO2DayCovariance";
-                        String DimList "nTimes", "nLevels", "nLats";
-                        String MaxdimList "nTimes", "nLevels", "nLats";
-                    }
-                    DataField_10 {
-                        String DataFieldName "NO2DayDataCount";
-                        String DimList "nTimes", "nLevels", "nLats";
-                        String MaxdimList "nTimes", "nLevels", "nLats";
-                    }
-                }
-            }
-        }
     }
     CoreMetadata {
         INVENTORYMETADATA {

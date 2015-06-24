@@ -45,8 +45,6 @@
 
 HDF5Url::HDF5Url(const string &n, const string &d) : Url(n, d)
 {
-    ty_id = -1;
-    dset_id = -1;
 }
 
 BaseType *HDF5Url::ptr_duplicate()
@@ -56,52 +54,47 @@ BaseType *HDF5Url::ptr_duplicate()
 
 bool HDF5Url::read()
 {
+
+   hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
+    if(file_id < 0) {
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    }
+
+    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    if(dset_id < 0) {
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+    }
+
     hobj_ref_t rbuf;
 
     if (H5Dread(dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
 		&rbuf) < 0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
 	throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
     }
 
     hid_t did_r = H5Rdereference(dset_id, H5R_OBJECT, &rbuf);
-    char name[DODS_NAMELEN];
+    char r_name[DODS_NAMELEN];
     if (did_r < 0){
+	H5Dclose(dset_id);
+        H5Fclose(file_id);
 	throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
     }
-    if (H5Iget_name(did_r, name, DODS_NAMELEN) < 0){
-	throw InternalErr(__FILE__, __LINE__, "Unable to retrieve the name of the object.");
+    if (H5Iget_name(did_r, r_name, DODS_NAMELEN) < 0){
+	H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__, __LINE__, "Unable to retrieve the name of the object.");
     }
-    string reference = name;
+    string reference = r_name;
     set_value(reference);
 
      // Release the handles.
-    if (H5Tclose(ty_id) < 0) {
-       throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
-    }
-    if (H5Dclose(dset_id) < 0) {
-       throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
-    }
+    H5Dclose(dset_id); 
+    H5Fclose(file_id);
 
 
     return true;
 }
 
-void HDF5Url::set_did(hid_t dset)
-{
-    dset_id = dset;
-}
-
-void HDF5Url::set_tid(hid_t type)
-{
-    ty_id = type;
-}
-
-hid_t HDF5Url::get_did()
-{
-    return dset_id;
-}
-
-hid_t HDF5Url::get_tid()
-{
-    return ty_id;
-}

@@ -33,9 +33,8 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include <debug.h>
-#include "InternalErr.h"
 #include <BESDebug.h>
+#include "InternalErr.h"
 
 #include "HDFEOS5CFSpecialCVArray.h"
 

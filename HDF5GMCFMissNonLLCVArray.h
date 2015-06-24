@@ -44,11 +44,11 @@ using namespace libdap;
 class HDF5GMCFMissNonLLCVArray:public HDF5BaseArray {
 
   public:
-    HDF5GMCFMissNonLLCVArray(int rank, 
-                              int tnumelm, const string & n="",  BaseType * v = 0):
+    HDF5GMCFMissNonLLCVArray(int h5_rank, 
+                              int h5_tnumelm, const string & n="",  BaseType * v = 0):
         HDF5BaseArray(n,v),
-        rank(rank),
-        tnumelm(tnumelm) {
+        rank(h5_rank),
+        tnumelm(h5_tnumelm) {
     }
         
     virtual ~ HDF5GMCFMissNonLLCVArray() {

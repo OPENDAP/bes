@@ -44,22 +44,22 @@ using namespace libdap;
 
 class HDFEOS5CFMissLLArray:public Array {
     public:
-        HDFEOS5CFMissLLArray(int rank, const string & filename, const hid_t fileid,  const string &varfullpath, CVType cvartype,float point_lower, float point_upper, float point_left, float point_right, EOS5GridPRType eos5_pixelreg, EOS5GridOriginType eos5_origin, EOS5GridPCType eos5_projcode, int xdimsize, int ydimsize, const string & n="",  BaseType * v = 0):
+        HDFEOS5CFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid,  const string &varfullpath, CVType h5_cvartype,float h5_point_lower, float h5_point_upper, float h5_point_left, float h5_point_right, EOS5GridPRType h5_eos5_pixelreg, EOS5GridOriginType h5_eos5_origin, EOS5GridPCType h5_eos5_projcode, int h5_xdimsize, int h5_ydimsize, const string & n="",  BaseType * v = 0):
         Array(n,v),
-        rank(rank),
-        filename(filename),
-        fileid(fileid),
+        rank(h5_rank),
+        filename(h5_filename),
+        fileid(h5_fileid),
         varname(varfullpath),
-        cvartype(cvartype),
-        point_lower(point_lower),
-        point_upper(point_upper),
-        point_left(point_left),
-        point_right(point_right),
-        eos5_pixelreg(eos5_pixelreg),
-        eos5_origin(eos5_origin),
-        eos5_projcode(eos5_projcode),
-        xdimsize(xdimsize),
-        ydimsize(ydimsize) {
+        cvartype(h5_cvartype),
+        point_lower(h5_point_lower),
+        point_upper(h5_point_upper),
+        point_left(h5_point_left),
+        point_right(h5_point_right),
+        eos5_pixelreg(h5_eos5_pixelreg),
+        eos5_origin(h5_eos5_origin),
+        eos5_projcode(h5_eos5_projcode),
+        xdimsize(h5_xdimsize),
+        ydimsize(h5_ydimsize) {
         }
         
     virtual ~ HDFEOS5CFMissLLArray() {

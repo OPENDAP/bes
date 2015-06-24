@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007-2013 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2015 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -38,10 +38,12 @@
 #include "config_hdf5.h"
 
 #include <InternalErr.h>
-#include <debug.h>
+#include <BESDebug.h>
+
 #include <mime_util.h>
 
-#include "h5dds.h"
+//#include "h5dds.h"
+#include "hdf5_handler.h"
 #include "HDF5Int32.h"
 #include "HDF5UInt32.h"
 #include "HDF5UInt16.h"
@@ -53,13 +55,13 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
-#include "h5get.h"
+//#include "h5get.h"
 
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
 
-extern string get_hardlink(hid_t, const string &);
+//extern string get_hardlink(hid_t, const string &);
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
@@ -83,13 +85,12 @@ extern string get_hardlink(hid_t, const string &);
 ///////////////////////////////////////////////////////////////////////////////
 bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 {
-    DBG(cerr
-        << ">depth_first()" 
+    BESDEBUG("h5",
+        ">depth_first()" 
         << " pid: " << pid
         << " gname: " << gname
         << " fname: " << fname
         << endl);
-// cerr<<"coming to the depth_first "<<endl;
     
     // Iterate through the file to see the members of the group from the root.
     H5G_info_t g_info; 
@@ -102,80 +103,70 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     }
 
     nelems = g_info.nlinks;
-// cerr <<"nelems = " << nelems <<endl;
         
     ssize_t oname_size;
     for (hsize_t i = 0; i < nelems; i++) {
 
-        //char *oname = NULL;
         vector <char>oname;
 
-        try {
-
-            // Query the length of object name.
-            oname_size =
- 		H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+        // Query the length of object name.
+        oname_size =
+ 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
-            if (oname_size <= 0) {
-                string msg = "h5_dds handler: Error getting the size of the hdf5 object from the group: ";
-                msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
+        if (oname_size <= 0) {
+            string msg = "h5_dds handler: Error getting the size of the hdf5 object from the group: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
-            // Obtain the name of the object
-            // TODO vector<char>
-            //oname = new char[(size_t) oname_size + 1];
-            oname.resize((size_t) oname_size + 1);
+        // Obtain the name of the object
+        oname.resize((size_t) oname_size + 1);
 
-            //if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
-            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
-                (size_t)(oname_size+1), H5P_DEFAULT) < 0){
-                string msg =
+        //if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+            (size_t)(oname_size+1), H5P_DEFAULT) < 0){
+            string msg =
                     "h5_dds handler: Error getting the hdf5 object name from the group: ";
-                msg += gname;
+             msg += gname;
                 throw InternalErr(__FILE__, __LINE__, msg);
-            }
+        }
 
-            // Check if it is the hard link or the soft link
-            H5L_info_t linfo;
-            //if (H5Lget_info(pid,oname,&linfo,H5P_DEFAULT)<0) {
-            if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
-                string msg = "hdf5 link name error from: ";
-                msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
+        // Check if it is the hard link or the soft link
+        H5L_info_t linfo;
+        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+            string msg = "hdf5 link name error from: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
             
-            // We ignore soft link and hard link in this release 
-            if(linfo.type == H5L_TYPE_SOFT || linfo.type == H5L_TYPE_EXTERNAL) 
-              continue;
+        // We ignore soft link and hard link in this release 
+        if(linfo.type == H5L_TYPE_SOFT || linfo.type == H5L_TYPE_EXTERNAL) 
+            continue;
 
-            // Obtain the object type, such as group or dataset. 
-            H5O_info_t oinfo;
+        // Obtain the object type, such as group or dataset. 
+        H5O_info_t oinfo;
 
-            if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
-                string msg = "h5_dds handler: Error obtaining the info for the object";
-                //msg += oname;
-                msg += string(oname.begin(),oname.end());
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
+            string msg = "h5_dds handler: Error obtaining the info for the object";
+            msg += string(oname.begin(),oname.end());
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
-            H5O_type_t obj_type = oinfo.type;
+        H5O_type_t obj_type = oinfo.type;
 
-            switch (obj_type) {  
+        switch (obj_type) {  
 
-            case H5O_TYPE_GROUP: {
+            case H5O_TYPE_GROUP: 
+            {
 
                 // Obtain the full path name
                 string full_path_name =
                     string(gname) + string(oname.begin(),oname.end()-1) + "/";
                     //string(gname) + string(oname) + "/";
 
-                DBG(cerr << "=depth_first():H5G_GROUP " << full_path_name
+                BESDEBUG("h5", "=depth_first():H5G_GROUP " << full_path_name
                     << endl);
-
-                // Get the C char* of the object name
-                // FIXME t_fpn leaked
 
                 vector <char>t_fpn;
                 t_fpn.resize(full_path_name.length()+1);
@@ -192,26 +183,29 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Check the hard link loop and break the loop if it exists.
                 // Note the function get_hardlink is defined in h5das.cc
-		//string oid = get_hardlink(pid, oname);
 		string oid = get_hardlink(pid, &oname[0]);
                 if (oid == "") {
-                    depth_first(cgroup, &t_fpn[0], dds, fname);
+                    try {
+                        depth_first(cgroup, &t_fpn[0], dds, fname);
+                    }
+                    catch(...) {
+                        H5Gclose(cgroup);
+                        throw;
+                    }
                 }
 
                 if (H5Gclose(cgroup) < 0){
 		   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
 		}
-  //              if (t_fpn) {delete[]t_fpn; t_fpn = NULL;}                
                 break;
             }
 
-            case H5O_TYPE_DATASET:{
+            case H5O_TYPE_DATASET:
+            {
 
                 // Obtain the absolute path of the HDF5 dataset
                 //string full_path_name = string(gname) + string(oname);
                 string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);
-//cerr<<"dataset full_path "<<full_path_name <<endl;
-//cerr<<"dataset fill_path size is "<<full_path_name.size() <<endl;
 
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
                 // All the metadata information in the handler is stored in dt_inst.
@@ -219,6 +213,7 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Put the hdf5 dataset structure into DODS dds.
                 read_objects(dds, full_path_name, fname);
+                //H5Tclose(dt_inst.type);
                 break;
             }
 
@@ -228,17 +223,11 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
             default:
                 break;
             }
-        } // try
-        catch(...) {
-
-            //if (oname) {delete[]oname; oname = NULL;}
-            throw;
             
-        } // catch
         //if (oname) {delete[]oname; oname = NULL;}
     } // for i is 0 ... nelems
 
-    DBG(cerr << "<depth_first() " << endl);
+    BESDEBUG("h5", "<depth_first() " << endl);
     return true;
 }
 
@@ -264,17 +253,17 @@ static BaseType *Get_bt(const string &vname,
 
     try {
 
-        DBG(cerr << ">Get_bt varname=" << vname << " datatype=" << datatype
+        BESDEBUG("h5", ">Get_bt varname=" << vname << " datatype=" << datatype
             << endl);
 
         size_t size = 0;
-        int sign = -2;
+        int sign    = -2;
         switch (H5Tget_class(datatype)) {
 
         case H5T_INTEGER:
             size = H5Tget_size(datatype);
             sign = H5Tget_sign(datatype);
-            DBG(cerr << "=Get_bt() H5T_INTEGER size = " << size << " sign = "
+            BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
                 << sign << endl);
 
 	    if (sign == H5T_SGN_ERROR) {
@@ -312,7 +301,7 @@ static BaseType *Get_bt(const string &vname,
 
         case H5T_FLOAT:
             size = H5Tget_size(datatype);
-            DBG(cerr << "=Get_bt() H5T_FLOAT size = " << size << endl);
+            BESDEBUG("h5", "=Get_bt() H5T_FLOAT size = " << size << endl);
 
 	    if (size == 0) {
                 throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
@@ -331,10 +320,11 @@ static BaseType *Get_bt(const string &vname,
 
         // The array datatype is rarely,rarely used. So this
         // part of code is not reviewed.
+ #if 0
         case H5T_ARRAY: {
             BaseType *ar_bt = 0;
             try {
-                DBG(cerr <<
+                BESDEBUG("h5",
                     "=Get_bt() H5T_ARRAY datatype = " << datatype
                     << endl);
 
@@ -358,7 +348,7 @@ static BaseType *Get_bt(const string &vname,
 		if (size == 0) {
                 throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
                 }
-                DBG(cerr
+                BESDEBUG(cerr
                     << "=Get_bt()" << " Dim = " << ndim
                     << " Size = " << size
                     << endl);
@@ -375,7 +365,7 @@ static BaseType *Get_bt(const string &vname,
                 HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
                 for (int dim_index = 0; dim_index < ndim; dim_index++) {
                     h5_ar.append_dim(size2[dim_index]);
-                    DBG(cerr << "=Get_bt() " << size2[dim_index] << endl);
+                    BESDEBUG("h5", "=Get_bt() " << size2[dim_index] << endl);
                     nelement = nelement * size2[dim_index];
                 }
 
@@ -398,6 +388,7 @@ static BaseType *Get_bt(const string &vname,
             }
             break;
         }
+#endif
 
         // Reference map to DAP URL, check the technical note.
         case H5T_REFERENCE:
@@ -419,77 +410,7 @@ static BaseType *Get_bt(const string &vname,
                           string("Could not make a DAP variable for: ")
                           + vname);
                                                   
-    // Dynamic cast the HDF5 datatype to DAP2 type, also save the HDF5 datatype
-    switch (btp->type()) {
-
-    case dods_byte_c: {
-    	// TODO In this/these case(s) you know the type is a dods_byte so you can
-    	// safely use static_cast<>() instead of the more expensive static_cast
-    	// operator. Not a huge deal, but static_cast is faster.
-        HDF5Byte &v = static_cast < HDF5Byte & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-        
-    case dods_int16_c: {
-        HDF5Int16 &v = static_cast < HDF5Int16 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_uint16_c: {
-        HDF5UInt16 &v = static_cast < HDF5UInt16 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_int32_c: {
-        HDF5Int32 &v = static_cast < HDF5Int32 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_uint32_c: {
-        HDF5UInt32 &v = static_cast < HDF5UInt32 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_float32_c: {
-        HDF5Float32 &v = static_cast < HDF5Float32 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_float64_c: {
-        HDF5Float64 &v = static_cast < HDF5Float64 & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_str_c: {
-        HDF5Str &v = static_cast < HDF5Str & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    case dods_array_c:
-        break;
-        
-    case dods_url_c: {
-        HDF5Url &v = static_cast < HDF5Url & >(*btp);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        break;
-    }
-    default:
-        delete btp;
-        throw InternalErr(__FILE__, __LINE__,
-                          string("error counting hdf5 group elements for ") 
-                          + vname);
-    }
-    DBG(cerr << "<Get_bt()" << endl);
+    BESDEBUG("h5", "<Get_bt()" << endl);
     return btp;
 }
 
@@ -514,8 +435,10 @@ static Structure *Get_structure(const string &varname,
                                 hid_t datatype)
 {
     HDF5Structure *structure_ptr = NULL;
+    char* memb_name = NULL;
+    hid_t memb_type = -1;
 
-    DBG(cerr << ">Get_structure()" << datatype << endl);
+    BESDEBUG("h5", ">Get_structure()" << datatype << endl);
 
     if (H5Tget_class(datatype) != H5T_COMPOUND)
         throw InternalErr(__FILE__, __LINE__,
@@ -524,19 +447,19 @@ static Structure *Get_structure(const string &varname,
 
     try {
         structure_ptr = new HDF5Structure(varname, dataset);
-        structure_ptr->set_did(dt_inst.dset);
-        structure_ptr->set_tid(dt_inst.type);
+        //structure_ptr->set_did(dt_inst.dset);
+        //structure_ptr->set_tid(dt_inst.type);
 
         // Retrieve member types
         int nmembs = H5Tget_nmembers(datatype);
-        DBG(cerr << "=Get_structure() has " << nmembs << endl);
+        BESDEBUG("h5", "=Get_structure() has " << nmembs << endl);
 	if (nmembs < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
 	}
         for (int i = 0; i < nmembs; i++) {
-            char *memb_name = H5Tget_member_name(datatype, i);
+            memb_name = H5Tget_member_name(datatype, i);
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);
-            hid_t memb_type = H5Tget_member_type(datatype, i);
+            memb_type = H5Tget_member_type(datatype, i);
 	    if (memb_name == NULL){
 		throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
 	    }
@@ -557,10 +480,118 @@ static Structure *Get_structure(const string &varname,
                 structure_ptr->add_var(s);
                 delete s; s = 0;
             } 
-            else {
+            else if(memb_cls == H5T_ARRAY) {
+
+                BaseType *ar_bt = 0;
+                BaseType *btp   = 0;
+                Structure *s    = 0;
+                hid_t     dtype_base = 0;
+
+                try {
+
+                    // Get the base memb_type of the array
+                    dtype_base = H5Tget_super(memb_type);
+
+                    // Set the size of the array.
+                    int ndim = H5Tget_array_ndims(memb_type);
+                    size_t size = H5Tget_size(memb_type);
+                    int nelement = 1;
+
+		    if (dtype_base < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
+ 	            }
+		    if (ndim < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array memb_type");
+                    }
+		    if (size == 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the size of the memb_type");
+                    }
+
+                    hsize_t size2[DODS_MAX_RANK];
+                    if(H5Tget_array_dims(memb_type, size2) < 0){
+                        throw
+                        InternalErr(__FILE__, __LINE__,
+                                    string("Could not get array dims for: ")
+                                      + string(memb_name));
+                    }
+
+                    H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
+                    if(array_memb_cls == H5T_NO_CLASS) {
+                        throw InternalErr(__FILE__, __LINE__,
+                                  string("cannot get the correct class for compound type member")
+                                  + string(memb_name));
+                    }
+                    if(H5T_COMPOUND == array_memb_cls) {
+
+                        s = Get_structure(memb_name, dataset, dtype_base);
+                        HDF5Array *h5_ar = new HDF5Array(memb_name, dataset, s);
+                    
+                        for (int dim_index = 0; dim_index < ndim; dim_index++) {
+                            h5_ar->append_dim(size2[dim_index]);
+                            nelement = nelement * size2[dim_index];
+                        }
+
+                        // May delete them later since all these can be obtained from the file ID.
+                        //h5_ar->set_did(dt_inst.dset);
+                        // Assign the array memb_type id.
+                        //h5_ar->set_tid(memb_type);
+                        h5_ar->set_memneed(size);
+                        h5_ar->set_numdim(ndim);
+                        h5_ar->set_numelm(nelement);
+                        h5_ar->set_length(nelement);
+
+	                structure_ptr->add_var(h5_ar);
+                        delete h5_ar;
+	
+                    }
+                    else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) { 
+                        ar_bt = Get_bt(memb_name, dataset, dtype_base);
+                        HDF5Array *h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
+                        //btp = new HDF5Array(memb_name, dataset, ar_bt);
+                        //HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
+                    
+                        for (int dim_index = 0; dim_index < ndim; dim_index++) {
+                            h5_ar->append_dim(size2[dim_index]);
+                            nelement = nelement * size2[dim_index];
+                        }
+
+                        // May delete them later
+                        //h5_ar->set_did(dt_inst.dset);
+                        // Assign the array memb_type id.
+                        //h5_ar->set_tid(memb_type);
+                        h5_ar->set_memneed(size);
+                        h5_ar->set_numdim(ndim);
+                        h5_ar->set_numelm(nelement);
+                        h5_ar->set_length(nelement);
+
+	                structure_ptr->add_var(h5_ar);
+                        delete h5_ar;
+                    }
+                    if( ar_bt ) delete ar_bt;
+                    if( btp ) delete btp;
+                    if(s) delete s;
+                    H5Tclose(dtype_base);
+
+                }
+                catch (...) {
+                    if( ar_bt ) delete ar_bt;
+                    if( btp ) delete btp;
+                    if(s) delete s;
+                    H5Tclose(dtype_base);
+                    throw;
+                }
+ 
+
+            }
+            else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
                 BaseType *bt = Get_bt(memb_name, dataset, memb_type);
                 structure_ptr->add_var(bt);
                 delete bt; bt = 0;
+            }
+
+            else {
+                free(memb_name);
+		throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
             }
             // Caller needs to free the memory allocated by the library for memb_name.
             free(memb_name);
@@ -571,10 +602,14 @@ static Structure *Get_structure(const string &varname,
         // here, so should check if structure ptr exists before
         // deleting it. pwest Mar 18, 2009
         if( structure_ptr ) delete structure_ptr;
+        if(memb_name!= NULL) 
+            free(memb_name);
+        if(memb_type != -1)
+            H5Tclose(memb_type);
         throw;
     }
 
-    DBG(cerr << "<Get_structure()" << endl);
+    BESDEBUG("h5", "<Get_structure()" << endl);
 
     return structure_ptr;
 }
@@ -608,23 +643,6 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     // Obtain the DDS dataset name.
     dds_table.set_dataset_name(name_path(filename)); 
 
-    // The following code lines are not used and it causes memory leaking. Comment out.
-    //  KY 2014-03-19
-#if 0
-    //declare an array to store HDF5 dimensions
-    hid_t *dimids = NULL;
-    try {
-        dimids = new hid_t[dt_inst.ndims];
-    }
-    catch (...) {
-        if(dimids) {
-            delete [] dimids;
-            dimids=0;
-        }
-        throw;
-    }
-#endif
-
     // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
     BaseType *bt = Get_bt(varname, filename, dt_inst.type);
@@ -644,15 +662,13 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         delete bt; bt = 0;
     }
     else {
-        // Next, deal with Array and Grid data. This 'else clause' runs to
+        // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. jhrg
 
-//cerr<<"varname "<<varname <<endl;
-//cerr<<"varname size is "<<varname.size() <<endl;
         HDF5Array *ar = new HDF5Array(varname, filename, bt);
         delete bt; bt = 0;
-        ar->set_did(dt_inst.dset);
-        ar->set_tid(dt_inst.type);
+        //ar->set_did(dt_inst.dset);
+        //ar->set_tid(dt_inst.type);
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
@@ -662,7 +678,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         delete ar; ar = 0;
     }
 
-    DBG(cerr << "<read_objects_base_type(dds)" << endl);
+    BESDEBUG("h5", "<read_objects_base_type(dds)" << endl);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -683,30 +699,30 @@ read_objects_structure(DDS & dds_table, const string & varname,
     dds_table.set_dataset_name(name_path(filename));
 
     Structure *structure = Get_structure(varname, filename, dt_inst.type);
+
     try {
         // Assume Get_structure() uses exceptions to signal an error. jhrg
-        DBG(cerr << "=read_objects_structure(): Dimension is " 
+        BESDEBUG("h5", "=read_objects_structure(): Dimension is " 
             << dt_inst.ndims << endl);
 
         if (dt_inst.ndims != 0) {   // Array of Structure
-            int dim_index;
-            DBG(cerr << "=read_objects_structure(): array of size " <<
+            BESDEBUG("h5", "=read_objects_structure(): array of size " <<
                 dt_inst.nelmts << endl);
-            DBG(cerr << "=read_objects_structure(): memory needed = " <<
+            BESDEBUG("h5", "=read_objects_structure(): memory needed = " <<
                 dt_inst.need << endl);
             HDF5Array *ar = new HDF5Array(varname, filename, structure);
             delete structure; structure = 0;
             try {
-                ar->set_did(dt_inst.dset);
-                ar->set_tid(dt_inst.type);
+                //ar->set_did(dt_inst.dset);
+                //ar->set_tid(dt_inst.type);
                 ar->set_memneed(dt_inst.need);
                 ar->set_numdim(dt_inst.ndims);
                 ar->set_numelm((int) (dt_inst.nelmts));
                 ar->set_length((int) (dt_inst.nelmts));
 
-                for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     ar->append_dim(dt_inst.size[dim_index]);
-                    DBG(cerr << "=read_objects_structure(): append_dim = " <<
+                    BESDEBUG("h5", "=read_objects_structure(): append_dim = " <<
                         dt_inst.size[dim_index] << endl);
                 }
 
@@ -753,9 +769,19 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
         read_objects_structure(dds_table, varname, filename);
         break;
 
+    case H5T_ARRAY:
+    {
+        H5Tclose(dt_inst.type);
+        throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
+    }
     default:
         read_objects_base_type(dds_table, varname, filename);
         break;
     }
+    // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
+    if(H5Tclose(dt_inst.type)<0) {
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
+    }
 }
+
 

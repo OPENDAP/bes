@@ -41,333 +41,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container"/>
-        <Attribute name="GridStructure" type="Container">
-            <Attribute name="GRID_1" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;SET1&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>360</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>180</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>-180000000.000000</value>
-                    <value>-90000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>180000000.000000</value>
-                    <value>90000000.000000</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;Xdim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>360</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;Ydim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>180</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;E&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;STu&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;STv&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Qair&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;WB&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;U&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;DQ&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Tot_Precip_Water&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-            <Attribute name="GRID_2" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;SET2&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>360</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>180</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>-180000000.000000</value>
-                    <value>-90000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>180000000.000000</value>
-                    <value>90000000.000000</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;Xdim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>360</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;Ydim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>180</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;E&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;STu&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;STv&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;H&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Qair&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;WB&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;U&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;DQ&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Tot_Precip_Water&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Array name="SET1_DQ">
         <Attribute name="_FillValue" type="Float32">
             <value>-999.0000000</value>
@@ -385,7 +58,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/DQ</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -408,7 +81,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/E</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -431,7 +104,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/H</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -454,7 +127,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/Qair</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -477,7 +150,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/STu</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -500,7 +173,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/STv</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -523,7 +196,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -546,7 +219,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/U</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -569,7 +242,7 @@
             <value>/HDFEOS/GRIDS/SET1/Data Fields/WB</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -592,7 +265,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/DQ</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -615,7 +288,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/E</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -638,7 +311,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/H</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -661,7 +334,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/Qair</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -684,7 +357,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/STu</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -707,7 +380,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/STv</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -730,7 +403,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/Tot_Precip_Water</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -753,7 +426,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/U</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>
@@ -776,7 +449,7 @@
             <value>/HDFEOS/GRIDS/SET2/Data Fields/WB</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="180"/>

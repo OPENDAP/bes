@@ -498,7 +498,7 @@ projection: PROJECTION '=' STR
 {
     HE5Parser* p = (HE5Parser*)he5parser;
 #ifdef VERBOSE  
-    cerr << "Got projection " << $3 << endl;
+    "h5", "Got projection " << $3 << endl;
 #endif  
     HE5Grid *g = &p->grid_list.back();
     if(strncmp("HE5_GCTP_GEO", $3, 12)==0)
@@ -676,6 +676,6 @@ attribute_lowerright: LOWERRIGHTPT '(' FLOAT ',' FLOAT ')'
 void
 he5ddserror(HE5Parser *, char *s)
 {
-    cerr << "he5dds.y ERROR: " << s << endl;
+     cerr<< "he5dds.y ERROR: " << s << endl;
 }
 

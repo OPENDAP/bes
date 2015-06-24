@@ -49,7 +49,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-MLS-TES-SHARED";
         String origname "CH4";
         String fullnamepath "/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "XDim YDim nLevels";
     }
     CH4AtSurface {
         Float32 _FillValue -999.0000000;
@@ -59,7 +59,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "CH4AtSurface";
         String fullnamepath "/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "XDim YDim";
     }
     SurfacePressure {
         Float32 _FillValue -999.0000000;
@@ -69,7 +69,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "SurfacePressure";
         String fullnamepath "/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "XDim YDim";
     }
     TotalColumnDensity {
         Float32 _FillValue -999.0000000;
@@ -79,7 +79,7 @@ Attributes {
         String UniqueFieldDefinition "TES-SPECIFIC";
         String origname "TotalColumnDensity";
         String fullnamepath "/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity";
-        String orig_dimname_list "YDim ";
+        String orig_dimname_list "XDim YDim";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
@@ -118,69 +118,6 @@ Attributes {
         String origname "Pressure";
         String fullnamepath "/HDFEOS/GRIDS/NadirGrid/Data Fields/Pressure";
         String orig_dimname "nLevels";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "NadirGrid";
-                Int32 XDim 90;
-                Int32 YDim 83;
-                Float64 UpperLeftPointMtrs -180000000.000000, -82000000.000000;
-                Float64 LowerRightMtrs 180000000.000000, 82000000.000000;
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "nLevels";
-                        Int32 Size 15;
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "CH4";
-                        String DimList "XDim", "YDim", "nLevels";
-                        String MaxdimList "XDim", "YDim", "nLevels";
-                    }
-                    DataField_2 {
-                        String DataFieldName "CH4AtSurface";
-                        String DimList "XDim", "YDim";
-                        String MaxdimList "XDim", "YDim";
-                    }
-                    DataField_3 {
-                        String DataFieldName "TotalColumnDensity";
-                        String DimList "XDim", "YDim";
-                        String MaxdimList "XDim", "YDim";
-                    }
-                    DataField_4 {
-                        String DataFieldName "SurfacePressure";
-                        String DimList "XDim", "YDim";
-                        String MaxdimList "XDim", "YDim";
-                    }
-                    DataField_5 {
-                        String DataFieldName "Latitude";
-                        String DimList "YDim";
-                        String MaxdimList "YDim";
-                    }
-                    DataField_6 {
-                        String DataFieldName "Longitude";
-                        String DimList "XDim";
-                        String MaxdimList "XDim";
-                    }
-                    DataField_7 {
-                        String DataFieldName "Pressure";
-                        String DimList "nLevels";
-                        String MaxdimList "nLevels";
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
     CoreMetadata {
         INVENTORYMETADATA {

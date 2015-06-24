@@ -60,9 +60,9 @@ using namespace libdap;
 ////////////////////////////////////////////////////////////////////////////////
 class HDF5Str:public Str {
  private:
-    hid_t dset_id;
-    hid_t ty_id;
-    int array_flag;
+//    hid_t dset_id;
+//    hid_t ty_id;
+//    int array_flag;
 
  public:
 

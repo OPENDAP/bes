@@ -84,6 +84,9 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Retrieve all HDF5 info(Not the values)
         f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
+        // Update product type(this may occur that some special products may follow DIMSCALE model.
+        f->Update_Product_Type();
+
         // Need to add dimension names.
         f->Add_Dim_Name();
 
@@ -171,6 +174,10 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     bool include_attr = true;
     try {
         f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
+
+        // Update product type(this may occur that some special products may follow DIMSCALE model.
+        f->Update_Product_Type();
+
         f->Add_Dim_Name();
         f->Handle_CVar();
         f->Handle_SpVar();
@@ -220,7 +227,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds  "<<endl);
-    // cerr <<"coming to gen_gmh5_cfdds "<<endl;
+    // "h5","coming to gen_gmh5_cfdds "<<endl;
     const vector<HDF5CF::Var *>&      vars  = f->getVars();
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
     const vector<HDF5CF::GMSPVar *>& spvars = f->getSPVars();
@@ -234,16 +241,16 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        // cerr <<"variable full path= "<< (*it_v)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_v)->getFullPath() <<endl;
         gen_dap_onevar_dds(dds,*it_v,fileid, filename);
     }
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        // cerr <<"variable full path= "<< (*it_cv)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_cv)->getFullPath() <<endl;
         gen_dap_onegmcvar_dds(dds,*it_cv,fileid, filename);
     }
 
     for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
-        // cerr <<"variable full path= "<< (*it_spv)->getFullPath() <<endl;
+        // "h5","variable full path= "<< (*it_spv)->getFullPath() <<endl;
         gen_dap_onegmspvar_dds(dds,*it_spv,fileid, filename);
     }
 
@@ -252,7 +259,7 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
     BESDEBUG("h5","Coming to GM DAS generation function gen_gmh5_cfdas  "<<endl);
-    // cerr <<"coming to gen_gmh5_cfdas "<<endl;
+    // "h5","coming to gen_gmh5_cfdas "<<endl;
 
     const vector<HDF5CF::Var *>& vars             = f->getVars();
     const vector<HDF5CF::GMCVar *>& cvars         = f->getCVars();

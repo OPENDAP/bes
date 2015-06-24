@@ -48,8 +48,8 @@ using namespace libdap;
 class HDF5Byte:public Byte {
 
   private:
-    hid_t dset_id;
-    hid_t ty_id;
+//    hid_t dset_id;
+//    hid_t ty_id;
 
   public:
     /// Constructor
@@ -69,16 +69,16 @@ class HDF5Byte:public Byte {
     friend string return_type(hid_t datatype);
 
     /// returns HDF5 dataset id.  
-    hid_t get_did();
+//    hid_t get_did();
 
     /// returns HDF5 datatype id.
-    hid_t get_tid();
+//    hid_t get_tid();
 
     /// remembers HDF5 dataset id.
-    void set_did(hid_t dset);
+//    void set_did(hid_t dset);
 
     /// remembers HDF5 datatype id.
-    void set_tid(hid_t type);
+//    void set_tid(hid_t type);
 
 };
 

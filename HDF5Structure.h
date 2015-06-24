@@ -30,6 +30,7 @@
 #include <string>
 #include <H5Ipublic.h>
 #include "Structure.h"
+#include "HDF5Array.h"
 #include "h5get.h"
 
 using namespace libdap;
@@ -37,21 +38,18 @@ using namespace libdap;
 /// \file HDF5Structure.h
 /// \brief This class converts HDF5 compound type into DAP structure for the default option.
 ///
-/// \author James Gallagher
-/// \author Hyo-Kyung Lee
+///\author  Kent Yang
 ///
 /// \see Structure 
 class HDF5Structure:public Structure {
   private:
-    hid_t dset_id;
-    hid_t ty_id;
-    int array_index;
-    int array_size;             // size constrained by constraint expression
-    int array_entire_size;      // entire size in case of array of structure
 
+    void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
+    friend class HDF5Array;
   public:
     /// Constructor
     HDF5Structure(const string &n, const string &d);
+    HDF5Structure(const HDF5Structure &rhs);
     virtual ~ HDF5Structure();
 
     /// Assignment operator for dynamic cast into generic Structure.
@@ -66,32 +64,10 @@ class HDF5Structure:public Structure {
     /// Reads HDF5 structure data by calling each member's read method in this structure.
     virtual bool read();
 
+
     /// See return_type function defined in h5dds.cc.  
     friend string return_type(hid_t datatype);
 
-    /// returns HDF5 dataset id.  
-    hid_t get_did();
-    /// returns HDF5 datatype id.
-    hid_t get_tid();
-
-    /// returns the array index of this Structure if it's a part of array of structures.
-    int get_array_index();
-    /// returns the array size for subsetting if it's a part of array of structures.
-    int get_array_size();
-    /// returns the entire array size of this Structure if it's a part of array of structures.
-    int get_entire_array_size();
-
-    /// remembers HDF5 datatype id.  
-    void set_did(hid_t dset);
-    /// remembers HDF5 datatype id.
-    void set_tid(hid_t type);
-
-    /// remembers the array index of this Structure if it's a part of array of structures.
-    void set_array_index(int i);
-    /// remembers the array size for subsetting if it's a part of array of structures.
-    void set_array_size(int i);
-    /// returns the entire array size of this Structure if it's a part of array of structures.  
-    void set_entire_array_size(int i);
 
 
 };

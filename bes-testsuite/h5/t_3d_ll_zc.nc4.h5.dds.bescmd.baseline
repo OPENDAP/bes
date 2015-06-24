@@ -1,0 +1,6 @@
+Dataset {
+    Float32 mydata[zc1 = 2][lat1 = 4][lon1 = 4];
+    Float32 lat1[lat1 = 4];
+    Float32 lon1[lon1 = 4];
+    Float32 zc1[zc1 = 2];
+} t_3d_ll_zc.nc4.h5;

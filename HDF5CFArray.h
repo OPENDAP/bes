@@ -43,18 +43,18 @@ using namespace libdap;
 
 class HDF5CFArray:public Array {
     public:
-        HDF5CFArray(int rank, 
-                    const hid_t file_id,
-                    const string & filename, 
-                    H5DataType dtype, 
+        HDF5CFArray(int h5_rank, 
+                    const hid_t h5_file_id,
+                    const string & h5_filename, 
+                    H5DataType h5_dtype, 
                     const string &varfullpath, 
                     const string & n="",  
                     BaseType * v = 0):
                     Array(n,v),
-                    rank(rank),
-                    fileid(file_id),
-                    filename(filename),
-                    dtype(dtype),
+                    rank(h5_rank),
+                    fileid(h5_file_id),
+                    filename(h5_filename),
+                    dtype(h5_dtype),
                     varname(varfullpath) 
         {
         }

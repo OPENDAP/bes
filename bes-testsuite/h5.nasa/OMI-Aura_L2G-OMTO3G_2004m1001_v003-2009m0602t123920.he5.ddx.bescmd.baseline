@@ -214,800 +214,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container"/>
-        <Attribute name="GridStructure" type="Container">
-            <Attribute name="GRID_1" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;OMI Column Amount O3&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>1440</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>720</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>-180000000.000000</value>
-                    <value>90000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>180000000.000000</value>
-                    <value>-90000000.000000</value>
-                </Attribute>
-                <Attribute name="PixelRegistration" type="String">
-                    <value>HE5_HDFE_CENTER</value>
-                </Attribute>
-                <Attribute name="GridOrigin" type="String">
-                    <value>HE5_HDFE_GD_LL</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>1440</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>720</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nLayers&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>7</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_4" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nWavel&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>12</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_5" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>15</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;GroundPixelQualityFlags&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;LineNumber&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NumberOfCandidateScenes&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;OrbitNumber&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;PathLength&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RelativeAzimuthAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SceneNumber&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_10" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SecondsInDay&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_11" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SolarZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_12" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TerrainHeight&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_13" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Time&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_14" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ViewingZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_15" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AlgorithmFlags&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_16" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;CloudPressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_17" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ColumnAmountO3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_18" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;InstrumentConfigurationId&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_19" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;MeasurementQualityFlags&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_20" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;NumberSmallPixelColumns&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_21" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;O3BelowCloud&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_22" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;QualityFlags&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_23" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;RadiativeCloudFraction&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_24" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Reflectivity331&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_25" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Reflectivity360&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_26" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SmallPixelColumn&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_27" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SO2index&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_28" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;StepTwoO3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_29" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TerrainPressure&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_30" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;UVAerosolIndex&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_31" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Wavelength&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nWavel&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nWavel&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_32" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;APrioriLayerO3&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nLayers&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nLayers&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_33" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;LayerEfficiency&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nLayers&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nLayers&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_34" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Residual&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nWavel&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nCandidate&quot;</value>
-                            <value>&quot;nWavel&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Attribute name="ArchiveMetadata" type="Container">
         <Attribute name="ARCHIVEDMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -1064,7 +270,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/APrioriLayerO3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate nLayers YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1105,7 +311,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/AlgorithmFlags</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Byte/>
         <dimension name="nCandidate" size="15"/>
@@ -1145,7 +351,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/CloudPressure</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1185,7 +391,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ColumnAmountO3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1225,7 +431,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/GroundPixelQualityFlags</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <UInt16/>
         <dimension name="nCandidate" size="15"/>
@@ -1265,7 +471,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/InstrumentConfigurationId</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Byte/>
         <dimension name="nCandidate" size="15"/>
@@ -1305,7 +511,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Latitude</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1345,7 +551,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LayerEfficiency</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate nLayers YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1386,7 +592,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LineNumber</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Int32/>
         <dimension name="nCandidate" size="15"/>
@@ -1426,7 +632,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Longitude</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1466,7 +672,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/MeasurementQualityFlags</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Byte/>
         <dimension name="nCandidate" size="15"/>
@@ -1506,7 +712,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberOfCandidateScenes</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int32/>
         <dimension name="YDim" size="720"/>
@@ -1545,7 +751,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberSmallPixelColumns</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Byte/>
         <dimension name="nCandidate" size="15"/>
@@ -1585,7 +791,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/O3BelowCloud</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1625,7 +831,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/OrbitNumber</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Int32/>
         <dimension name="nCandidate" size="15"/>
@@ -1665,7 +871,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/PathLength</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1705,7 +911,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/QualityFlags</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <UInt16/>
         <dimension name="nCandidate" size="15"/>
@@ -1745,7 +951,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RadiativeCloudFraction</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1785,7 +991,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity331</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1825,7 +1031,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity360</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1865,7 +1071,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RelativeAzimuthAngle</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1905,7 +1111,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Residual</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate nWavel YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1946,7 +1152,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SO2index</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -1986,7 +1192,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SceneNumber</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Int32/>
         <dimension name="nCandidate" size="15"/>
@@ -2026,7 +1232,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SecondsInDay</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -2066,7 +1272,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SmallPixelColumn</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="nCandidate" size="15"/>
@@ -2106,7 +1312,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SolarZenithAngle</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -2146,7 +1352,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/StepTwoO3</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -2186,7 +1392,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainHeight</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="nCandidate" size="15"/>
@@ -2226,7 +1432,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainPressure</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -2266,7 +1472,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Time</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float64/>
         <dimension name="nCandidate" size="15"/>
@@ -2306,7 +1512,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/UVAerosolIndex</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>
@@ -2346,7 +1552,7 @@
             <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ViewingZenithAngle</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nCandidate YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="nCandidate" size="15"/>

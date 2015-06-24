@@ -45,13 +45,13 @@ using namespace libdap;
 
 class HDF5GMCFFillIndexArray:public Array {
     public:
-        HDF5GMCFFillIndexArray(int rank, 
-                    H5DataType dtype, 
+        HDF5GMCFFillIndexArray(int h5_rank, 
+                    H5DataType h5_dtype, 
                     const string & n="",  
                     BaseType * v = 0):
                     Array(n,v),
-                    rank(rank),
-                    dtype(dtype)
+                    rank(h5_rank),
+                    dtype(h5_dtype)
         {
         }
         

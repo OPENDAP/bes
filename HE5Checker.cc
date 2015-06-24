@@ -76,7 +76,7 @@ HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
 {
     unsigned int i = 0;
 #if 0
- cerr << "HE5Checker::set_missing_values(Grid Size=" 
+ "h5", "HE5Checker::set_missing_values(Grid Size=" 
          << p->grid_list.size() << ")" << endl;
 #endif
     for(i=0; i < p->grid_list.size(); i++) {
@@ -98,7 +98,7 @@ HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
         }
         if(g.projection == -1){
             flag = true;
-            cerr << "Grid projection is not set or the projection code is wrong. Name=" << g.name
+            "h5", "Grid projection is not set or the projection code is wrong. Name=" << g.name
                  << endl;
         }
 #endif
@@ -135,7 +135,7 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
             if(iter != dim_map.end()){
                 if(d.size != iter->second){
 #if 0
-                    cerr << "Dimension size mismatch is found." 
+                    "h5", "Dimension size mismatch is found." 
                          << " Name=" << d.name 
                          << " Size=" << d.size << endl;
 #endif 

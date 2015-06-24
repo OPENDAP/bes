@@ -44,12 +44,12 @@ using namespace libdap;
 
 class HDF5GMCFSpecialCVArray:public Array {
     public:
-        HDF5GMCFSpecialCVArray(H5DataType dtype, int tnumelm, const string &varfullpath, H5GCFProduct product_type, const string & n="",  BaseType * v = 0):
+        HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const string &varfullpath, H5GCFProduct h5_product_type, const string & n="",  BaseType * v = 0):
         Array(n,v),
-        dtype(dtype),
-        tnumelm(tnumelm),
+        dtype(h5_dtype),
+        tnumelm(h5_tnumelm),
         varname(varfullpath),
-        product_type(product_type)
+        product_type(h5_product_type)
     {
     }
         

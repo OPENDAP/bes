@@ -64,7 +64,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "APrioriLayerO3";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/APrioriLayerO3";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate nLayers YDim XDim";
     }
     AlgorithmFlags {
         Byte _FillValue 255;
@@ -77,7 +77,7 @@ Attributes {
         Byte missing_value 255;
         String origname "AlgorithmFlags";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/AlgorithmFlags";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     CloudPressure {
         Float32 _FillValue -1.267650600e+30;
@@ -90,7 +90,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "CloudPressure";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/CloudPressure";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     ColumnAmountO3 {
         Float32 _FillValue -1.267650600e+30;
@@ -103,7 +103,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "ColumnAmountO3";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ColumnAmountO3";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     GroundPixelQualityFlags {
         UInt16 _FillValue 65535;
@@ -116,7 +116,7 @@ Attributes {
         UInt16 missing_value 65535;
         String origname "GroundPixelQualityFlags";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/GroundPixelQualityFlags";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     InstrumentConfigurationId {
         Byte _FillValue 255;
@@ -129,7 +129,7 @@ Attributes {
         Byte missing_value 255;
         String origname "InstrumentConfigurationId";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/InstrumentConfigurationId";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Latitude {
         Float32 _FillValue -1.267650600e+30;
@@ -142,7 +142,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "Latitude";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Latitude";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     LayerEfficiency {
         Float32 _FillValue -1.267650600e+30;
@@ -155,7 +155,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "LayerEfficiency";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LayerEfficiency";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate nLayers YDim XDim";
     }
     LineNumber {
         Int32 _FillValue -2000000000;
@@ -168,7 +168,7 @@ Attributes {
         Int32 missing_value -2000000000;
         String origname "LineNumber";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LineNumber";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Longitude {
         Float32 _FillValue -1.267650600e+30;
@@ -181,7 +181,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "Longitude";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Longitude";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     MeasurementQualityFlags {
         Byte _FillValue 255;
@@ -194,7 +194,7 @@ Attributes {
         Byte missing_value 255;
         String origname "MeasurementQualityFlags";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/MeasurementQualityFlags";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     NumberOfCandidateScenes {
         Int32 _FillValue 0;
@@ -207,7 +207,7 @@ Attributes {
         Int32 missing_value 0;
         String origname "NumberOfCandidateScenes";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberOfCandidateScenes";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "YDim XDim";
     }
     NumberSmallPixelColumns {
         Byte _FillValue 255;
@@ -220,7 +220,7 @@ Attributes {
         Byte missing_value 255;
         String origname "NumberSmallPixelColumns";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberSmallPixelColumns";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     O3BelowCloud {
         Float32 _FillValue -1.267650600e+30;
@@ -233,7 +233,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "O3BelowCloud";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/O3BelowCloud";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     OrbitNumber {
         Int32 _FillValue -2000000000;
@@ -246,7 +246,7 @@ Attributes {
         Int32 missing_value -2000000000;
         String origname "OrbitNumber";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/OrbitNumber";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     PathLength {
         Float32 _FillValue 1.267650600e+30;
@@ -259,7 +259,7 @@ Attributes {
         Float32 missing_value 1.267650600e+30;
         String origname "PathLength";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/PathLength";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     QualityFlags {
         UInt16 _FillValue 65535;
@@ -272,7 +272,7 @@ Attributes {
         UInt16 missing_value 65535;
         String origname "QualityFlags";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/QualityFlags";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     RadiativeCloudFraction {
         Float32 _FillValue -1.267650600e+30;
@@ -285,7 +285,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "RadiativeCloudFraction";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RadiativeCloudFraction";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Reflectivity331 {
         Float32 _FillValue -1.267650600e+30;
@@ -298,7 +298,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "Reflectivity331";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity331";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Reflectivity360 {
         Float32 _FillValue -1.267650600e+30;
@@ -311,7 +311,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "Reflectivity360";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity360";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     RelativeAzimuthAngle {
         Float32 _FillValue -1.267650600e+30;
@@ -324,7 +324,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "RelativeAzimuthAngle";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RelativeAzimuthAngle";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Residual {
         Float32 _FillValue -1.267650600e+30;
@@ -337,7 +337,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "Residual";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Residual";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate nWavel YDim XDim";
     }
     SO2index {
         Float32 _FillValue -1.267650600e+30;
@@ -350,7 +350,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "SO2index";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SO2index";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     SceneNumber {
         Int32 _FillValue -2000000000;
@@ -363,7 +363,7 @@ Attributes {
         Int32 missing_value -2000000000;
         String origname "SceneNumber";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SceneNumber";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     SecondsInDay {
         Float32 _FillValue -1.267650600e+30;
@@ -376,7 +376,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "SecondsInDay";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SecondsInDay";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     SmallPixelColumn {
         Int16 _FillValue -32767;
@@ -389,7 +389,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "SmallPixelColumn";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SmallPixelColumn";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     SolarZenithAngle {
         Float32 _FillValue -1.267650600e+30;
@@ -402,7 +402,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "SolarZenithAngle";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SolarZenithAngle";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     StepTwoO3 {
         Float32 _FillValue -1.267650600e+30;
@@ -415,7 +415,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "StepTwoO3";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/StepTwoO3";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     TerrainHeight {
         Int16 _FillValue -32767;
@@ -428,7 +428,7 @@ Attributes {
         Int16 missing_value -32767;
         String origname "TerrainHeight";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainHeight";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     TerrainPressure {
         Float32 _FillValue -1.267650600e+30;
@@ -441,7 +441,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "TerrainPressure";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainPressure";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Time {
         Float64 _FillValue -1.2676506002282294e+30;
@@ -454,7 +454,7 @@ Attributes {
         Float64 missing_value -1.2676506002282294e+30;
         String origname "Time";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Time";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     UVAerosolIndex {
         Float32 _FillValue -1.267650600e+30;
@@ -467,7 +467,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "UVAerosolIndex";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/UVAerosolIndex";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     ViewingZenithAngle {
         Float32 _FillValue -1.267650600e+30;
@@ -480,7 +480,7 @@ Attributes {
         Float32 missing_value -1.267650600e+30;
         String origname "ViewingZenithAngle";
         String fullnamepath "/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ViewingZenithAngle";
-        String orig_dimname_list "XDim ";
+        String orig_dimname_list "nCandidate YDim XDim";
     }
     Wavelength {
         String units "nm";
@@ -720,290 +720,6 @@ Attributes {
     StructMetadata_0 {
         String origname "StructMetadata.0";
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
-    }
-    StructMetadata {
-        SwathStructure {
-        }
-        GridStructure {
-            GRID_1 {
-                String GridName "OMI Column Amount O3";
-                Int32 XDim 1440;
-                Int32 YDim 720;
-                Float64 UpperLeftPointMtrs -180000000.000000, 90000000.000000;
-                Float64 LowerRightMtrs 180000000.000000, -90000000.000000;
-                String PixelRegistration "HE5_HDFE_CENTER";
-                String GridOrigin "HE5_HDFE_GD_LL";
-                String Projection "HE5_GCTP_GEO";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "XDim";
-                        Int32 Size 1440;
-                    }
-                    Dimension_2 {
-                        String DimensionName "YDim";
-                        Int32 Size 720;
-                    }
-                    Dimension_3 {
-                        String DimensionName "nLayers";
-                        Int32 Size 7;
-                    }
-                    Dimension_4 {
-                        String DimensionName "nWavel";
-                        Int32 Size 12;
-                    }
-                    Dimension_5 {
-                        String DimensionName "nCandidate";
-                        Int32 Size 15;
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "GroundPixelQualityFlags";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_2 {
-                        String DataFieldName "Latitude";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_3 {
-                        String DataFieldName "LineNumber";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_4 {
-                        String DataFieldName "Longitude";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_5 {
-                        String DataFieldName "NumberOfCandidateScenes";
-                        String DimList "YDim", "XDim";
-                        String MaxdimList "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_6 {
-                        String DataFieldName "OrbitNumber";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_7 {
-                        String DataFieldName "PathLength";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_8 {
-                        String DataFieldName "RelativeAzimuthAngle";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_9 {
-                        String DataFieldName "SceneNumber";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_10 {
-                        String DataFieldName "SecondsInDay";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_11 {
-                        String DataFieldName "SolarZenithAngle";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_12 {
-                        String DataFieldName "TerrainHeight";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_13 {
-                        String DataFieldName "Time";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_14 {
-                        String DataFieldName "ViewingZenithAngle";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_15 {
-                        String DataFieldName "AlgorithmFlags";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_16 {
-                        String DataFieldName "CloudPressure";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_17 {
-                        String DataFieldName "ColumnAmountO3";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_18 {
-                        String DataFieldName "InstrumentConfigurationId";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_19 {
-                        String DataFieldName "MeasurementQualityFlags";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_20 {
-                        String DataFieldName "NumberSmallPixelColumns";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_21 {
-                        String DataFieldName "O3BelowCloud";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_22 {
-                        String DataFieldName "QualityFlags";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_23 {
-                        String DataFieldName "RadiativeCloudFraction";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_24 {
-                        String DataFieldName "Reflectivity331";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_25 {
-                        String DataFieldName "Reflectivity360";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_26 {
-                        String DataFieldName "SmallPixelColumn";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_27 {
-                        String DataFieldName "SO2index";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_28 {
-                        String DataFieldName "StepTwoO3";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_29 {
-                        String DataFieldName "TerrainPressure";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_30 {
-                        String DataFieldName "UVAerosolIndex";
-                        String DimList "nCandidate", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_31 {
-                        String DataFieldName "Wavelength";
-                        String DimList "nWavel";
-                        String MaxdimList "nWavel";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_32 {
-                        String DataFieldName "APrioriLayerO3";
-                        String DimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_33 {
-                        String DataFieldName "LayerEfficiency";
-                        String DimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                    DataField_34 {
-                        String DataFieldName "Residual";
-                        String DimList "nCandidate", "nWavel", "YDim", "XDim";
-                        String MaxdimList "nCandidate", "nWavel", "YDim", "XDim";
-                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
-                        Int32 DeflateLevel 5;
-                    }
-                }
-                MergedFields {
-                }
-            }
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
     ArchiveMetadata {
         ARCHIVEDMETADATA {

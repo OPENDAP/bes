@@ -611,7 +611,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
         String origname "L2gpPrecision";
         String fullnamepath "/HDFEOS/SWATHS/O3/Data Fields/L2gpPrecision";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     L2gpValue {
         Float32 _FillValue -999.9899902;
@@ -621,7 +621,7 @@ Attributes {
         String UniqueFieldDefinition "HIRDLS-MLS-TES-Shared";
         String origname "L2gpValue";
         String fullnamepath "/HDFEOS/SWATHS/O3/Data Fields/L2gpValue";
-        String orig_dimname_list "nLevels ";
+        String orig_dimname_list "nTimes nLevels";
     }
     Quality {
         Float32 _FillValue -999.9899902;
@@ -744,115 +744,6 @@ Attributes {
         String origname "Pressure";
         String fullnamepath "/HDFEOS/SWATHS/O3/Geolocation Fields/Pressure";
         String orig_dimname "nLevels";
-    }
-    StructMetadata {
-        SwathStructure {
-            SWATH_1 {
-                String SwathName "O3";
-                Dimension {
-                    Dimension_1 {
-                        String DimensionName "nTimes";
-                        Int32 Size 46;
-                    }
-                    Dimension_2 {
-                        String DimensionName "nTimesTotal";
-                        Int32 Size 46;
-                    }
-                    Dimension_3 {
-                        String DimensionName "nLevels";
-                        Int32 Size 55;
-                    }
-                }
-                DimensionMap {
-                }
-                IndexDimensionMap {
-                }
-                GeoField {
-                    GeoField_1 {
-                        String GeoFieldName "Latitude";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_2 {
-                        String GeoFieldName "Longitude";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_3 {
-                        String GeoFieldName "Time";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_4 {
-                        String GeoFieldName "LocalSolarTime";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_5 {
-                        String GeoFieldName "SolarZenithAngle";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_6 {
-                        String GeoFieldName "LineOfSightAngle";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_7 {
-                        String GeoFieldName "OrbitGeodeticAngle";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_8 {
-                        String GeoFieldName "ChunkNumber";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    GeoField_9 {
-                        String GeoFieldName "Pressure";
-                        String DimList "nLevels";
-                        String MaxdimList "nLevels";
-                    }
-                }
-                DataField {
-                    DataField_1 {
-                        String DataFieldName "L2gpValue";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_2 {
-                        String DataFieldName "L2gpPrecision";
-                        String DimList "nTimes", "nLevels";
-                        String MaxdimList "nTimes", "nLevels";
-                    }
-                    DataField_3 {
-                        String DataFieldName "Status";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_4 {
-                        String DataFieldName "Quality";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                    DataField_5 {
-                        String DataFieldName "Convergence";
-                        String DimList "nTimes";
-                        String MaxdimList "nTimes";
-                    }
-                }
-                ProfileField {
-                }
-                MergedFields {
-                }
-            }
-        }
-        GridStructure {
-        }
-        PointStructure {
-        }
-        ZaStructure {
-        }
     }
     CoreMetadata {
         INVENTORYMETADATA {

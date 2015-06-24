@@ -553,7 +553,7 @@ else cerr<<"no multiple lat/lon from structmeta" <<endl;
 
 
 // Dimension names
-cerr <<"number of dimensions "<<(*irg)->dimnames.size() <<endl;
+"h5","number of dimensions "<<(*irg)->dimnames.size() <<endl;
 for (vector<string>::iterator irv = (*irg)->dimnames.begin();
                 irv != (*irg)->dimnames.end(); ++irv) 
      cerr<<"dim names" <<*irv <<endl;
@@ -783,7 +783,7 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw(Exception) {
 //            var->newname = ((1 == num_swaths)?var->name:
   //                         eos5typestr + eos5_groupname + fslash_str + var->name);
               var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
-//cerr <<"var newname "<<var->newname <<endl;
+//"h5","var newname "<<var->newname <<endl;
         }
         break;
         case ZA:  
@@ -1016,7 +1016,7 @@ template<class T>
 void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set, 
                                      Dimension *dim,int num_groups, EOS5Type eos5type) throw(Exception){
 
-//cerr <<"NO DIMNAME dim size = "<<(int)(dim->size) <<endl;
+//"h5","NO DIMNAME dim size = "<<(int)(dim->size) <<endl;
 
     map<hsize_t,string>:: iterator itmap1;
     map<string,hsize_t>:: iterator itmap2;
@@ -1066,7 +1066,7 @@ void EOS5File::Create_Unique_DimName(T*eos5data,set<string>& thisvar_dimname_set
 
     else { // No dimension names match or close to march this dimension name, we will create a fakedim. 
            // Check Add_One_FakeDim_Name in HDF5CF.cc Fakedimname must be as a string reference.
-        // cerr <<"NO DIMNAME dim size = "<<(int)(dim->size) <<endl;
+        // "h5","NO DIMNAME dim size = "<<(int)(dim->size) <<endl;
         string Fakedimname = Create_Unique_FakeDimName(eos5data,eos5type);
         thisvar_dimname_set.insert(Fakedimname);
 
@@ -1271,7 +1271,7 @@ void EOS5File::Handle_CVar() throw(Exception){
     bool is_augmented = Check_Augmentation_Status();
 
 #if 0
-if(is_augmented) cerr <<"The file is augmented "<<endl;
+if(is_augmented) "h5","The file is augmented "<<endl;
 else cerr<<"The file is not augmented "<<endl;
 #endif
 
@@ -1285,9 +1285,9 @@ else cerr<<"The file is not augmented "<<endl;
 #if 0
 for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); irv++) {
-cerr <<"EOS5CVar name "<<(*irv)->name <<endl;
-cerr <<"EOS5CVar dimension name "<< (*irv)->cfdimname <<endl;
-cerr <<"EOS5CVar new name "<<(*irv)->newname <<endl;
+"h5","EOS5CVar name "<<(*irv)->name <<endl;
+"h5","EOS5CVar dimension name "<< (*irv)->cfdimname <<endl;
+"h5","EOS5CVar new name "<<(*irv)->newname <<endl;
 }
 #endif
     
@@ -1358,7 +1358,7 @@ bool EOS5File::Check_Augmentation_Status() throw(Exception) {
 
     int total_num_eos5grp = this->eos5cfgrids.size() + this->eos5cfswaths.size() + this->eos5cfzas.size();
 //cerr<< "total_num_eos5grp "<<total_num_eos5grp <<endl;
-//cerr <<"num_aug_eos5grp "<< num_aug_eos5grp <<endl;
+//"h5","num_aug_eos5grp "<< num_aug_eos5grp <<endl;
 
     if (num_aug_eos5grp == total_num_eos5grp) 
         aug_status = true;
@@ -1445,7 +1445,7 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
     set<string> tempvardimnamelist;
     tempvardimnamelist = cfeos5data->vardimnames;
     set <string>::iterator its;
-//cerr <<"coming to Single Augment Grid "<<endl;
+//"h5","coming to Single Augment Grid "<<endl;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
@@ -1538,7 +1538,7 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
                     }
                 } //  for (vector<Var *>::iterator irv = this->vars.begin() ...
                 if (2 == catch_latlon) {
-                    // cerr <<"coming to the catch "<<endl;
+                    // "h5","coming to the catch "<<endl;
                     (*irg)->has_nolatlon = true;
                     (*irg)->has_2dlatlon = false;
                 }
@@ -1568,8 +1568,8 @@ void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid) throw(Exce
     if (true == cfgrid->has_1dlatlon) 
         use_own_latlon = Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(cfgrid, tempvardimnamelist);
 #if 0
-if(use_own_latlon) cerr <<"using 1D latlon"<<endl;
-else cerr <<"use_own_latlon is false "<<endl;
+if(use_own_latlon) "h5","using 1D latlon"<<endl;
+else "h5","use_own_latlon is false "<<endl;
 #endif
 
     if (false == use_own_latlon) {
@@ -1582,7 +1582,7 @@ else cerr <<"use_own_latlon is false "<<endl;
     }
 
      // Else handling non-latlon grids
-//cerr <<"tempvardim set size "<<tempvardimnamelist.size() <<endl;
+//"h5","tempvardim set size "<<tempvardimnamelist.size() <<endl;
     Handle_NonLatLon_Grid_CVar(cfgrid,tempvardimnamelist);
 
 }
@@ -1681,7 +1681,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
      
 #if 0
 for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
-        cerr <<"tempvardim "<<*its <<endl;
+        "h5","tempvardim "<<*its <<endl;
 #endif
 
     return(find_latydim == true && find_lonxdim == true);   
@@ -1857,7 +1857,7 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
 
 void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw(Exception){
 
-     //cerr <<"coming to Handle_Multi_nonaugment_Grid_CVar "<<endl;
+     //"h5","coming to Handle_Multi_nonaugment_Grid_CVar "<<endl;
 
     // If the multiple grids don't share the same lat/lon according to the parameters
     // We then assume that each single grid has its own lat/lon, just loop through each grid.
@@ -1921,7 +1921,7 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw(Exception){
                 Handle_NonLatLon_Grid_CVar((this->eos5cfgrids)[j],tempvardimnamelist);
                 tempvardimnamelist.clear();
             }
-//cerr <<"end of NONLATLON "<<endl;
+//"h5","end of NONLATLON "<<endl;
         }// if (( 0 == num_1dlatlon_pairs) || .....
         // No unique lat/lon, just loop through. 
         else {
@@ -2598,7 +2598,7 @@ void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() throw(Exception) {
             }
             else if ("lon" == (*irv)->name || "Longitude" == (*irv)->name) {
                 (*irv)->newname = (*irv)->name; 
-                string lon_dimnewname = (((*irv)->dims)[0])->newname;
+                lon_dimnewname = (((*irv)->dims)[0])->newname;
                 lon_dimnewname = HDF5CFUtil::obtain_string_after_lastslash(lon_dimnewname);
                 if (""== lon_dimnewname) 
                    throw2("/ is not included in the dimension new name ",(((*irv)->dims)[0])->newname);
@@ -3376,6 +3376,9 @@ void EOS5File:: Handle_SpVar() throw(Exception) {
 //cerr<<"find the duplicate dimension name "<<endl;
                                                     string dup_var_name = (*irv2)->newname;
                                                     Replace_Var_Info((*ircv),(*irv2));
+                                                    // The following two lines are key
+                                                    //  to make sure duplicate CV is
+                                                    //  using a different name but keep all other info.
                                                     (*irv2)->newname = dup_var_name;
                                                     (*irv2)->getDimensions()[0]->newname = dup_var_name;
                                                 }
@@ -3407,9 +3410,9 @@ void EOS5File:: Handle_SpVar() throw(Exception) {
                     pair<multimap<string,string>::iterator,multimap<string,string>::iterator> mm_er_ret;
                     multimap<string,string>::iterator itmm;
                     for (itmm = dimname_to_dupdimnamelist.begin(); itmm!=dimname_to_dupdimnamelist.end();++itmm) {
-cerr<<"the original dim. name is "<<(*itmm).first <<endl;
-cerr<<"the duplicate dim. name is "<<(*itmm).second <<endl;
-if((*irv)->name == "RetrievalAveragingKernelMatrixDay")
+//cerr<<"the original dim. name is "<<(*itmm).first <<endl;
+//cerr<<"the duplicate dim. name is "<<(*itmm).second <<endl;
+//if((*irv)->name == "RetrievalAveragingKernelMatrixDay")
 cerr<<"duplicate dimension name of a variable is "<<(*ird)->name <<endl;
                         // Find the duplicated dim name in the dimname_to_dupdimnamelist,
                         // Now retrieve the dim. name and loop through all CV_EXIST variable to see if 

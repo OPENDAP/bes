@@ -5,15 +5,21 @@
             <value>1</value>
         </Attribute>
     </Attribute>
-    <Array name="lon">
-        <Attribute name="units" type="String">
-            <value>degrees_east</value>
+    <Array name="scale_yes">
+        <Attribute name="scale_factor" type="Float64">
+            <value>10.000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>1000.0000000000000</value>
         </Attribute>
         <Attribute name="origname" type="String">
-            <value>lon</value>
+            <value>scale_yes</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
-            <value>/lon</value>
+            <value>/scale_yes</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>lat lon</value>
         </Attribute>
         <Float32/>
         <dimension name="xc" size="4"/>
@@ -33,44 +39,18 @@
         <dimension name="xc" size="4"/>
         <dimension name="yc" size="4"/>
     </Array>
-    <Array name="scale_yes">
-        <Attribute name="coordinates" type="String">
-            <value>lat lon</value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <value>10.000000000000000</value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <value>1000.0000000000000</value>
+    <Array name="lon">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
         </Attribute>
         <Attribute name="origname" type="String">
-            <value>scale_yes</value>
+            <value>lon</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
-            <value>/scale_yes</value>
+            <value>/lon</value>
         </Attribute>
         <Float32/>
         <dimension name="xc" size="4"/>
-        <dimension name="yc" size="4"/>
-    </Array>
-    <Array name="xc">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         4</value>
-        </Attribute>
-        <Float32/>
-        <dimension name="xc" size="4"/>
-    </Array>
-    <Array name="yc">
-        <Attribute name="CLASS" type="String">
-            <value>DIMENSION_SCALE</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>This is a netCDF dimension but not a netCDF variable.         4</value>
-        </Attribute>
-        <Float32/>
         <dimension name="yc" size="4"/>
     </Array>
     <dataBLOB href=""/>

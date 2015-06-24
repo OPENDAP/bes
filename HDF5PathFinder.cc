@@ -32,7 +32,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // #define DODS_DEBUG
-#include "debug.h"
+#include "BESDebug.h"
 #include "HDF5PathFinder.h"
 
 using namespace std;
@@ -49,13 +49,13 @@ HDF5PathFinder::~HDF5PathFinder()
 
 bool HDF5PathFinder::add(string id, const string name)
 {
-    DBG(cerr << ">add(): id is:" << id << "   name is:" << name << endl);
+    BESDEBUG("h5", ">add(): id is:" << id << "   name is:" << name << endl);
     if (!visited(id)) {
 
         id_to_name_map[id] = name;
         return true;
     } else {
-        DBG(cerr << "=add(): already added." << endl);
+        BESDEBUG("h5", "=add(): already added." << endl);
         return false;
     }
 }

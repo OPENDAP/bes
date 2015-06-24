@@ -177,361 +177,6 @@
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
-    <Attribute name="StructMetadata" type="Container">
-        <Attribute name="SwathStructure" type="Container"/>
-        <Attribute name="GridStructure" type="Container">
-            <Attribute name="GRID_1" type="Container">
-                <Attribute name="GridName" type="String">
-                    <value>&quot;ColumnAmountAerosol&quot;</value>
-                </Attribute>
-                <Attribute name="XDim" type="Int32">
-                    <value>1440</value>
-                </Attribute>
-                <Attribute name="YDim" type="Int32">
-                    <value>720</value>
-                </Attribute>
-                <Attribute name="UpperLeftPointMtrs" type="Float64">
-                    <value>-180000000.000000</value>
-                    <value>90000000.000000</value>
-                </Attribute>
-                <Attribute name="LowerRightMtrs" type="Float64">
-                    <value>180000000.000000</value>
-                    <value>-90000000.000000</value>
-                </Attribute>
-                <Attribute name="PixelRegistration" type="String">
-                    <value>HE5_HDFE_CENTER</value>
-                </Attribute>
-                <Attribute name="GridOrigin" type="String">
-                    <value>HE5_HDFE_GD_LL</value>
-                </Attribute>
-                <Attribute name="Projection" type="String">
-                    <value>HE5_GCTP_GEO</value>
-                </Attribute>
-                <Attribute name="Dimension" type="Container">
-                    <Attribute name="Dimension_1" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>1440</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_2" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;YDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>720</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="Dimension_3" type="Container">
-                        <Attribute name="DimensionName" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                        </Attribute>
-                        <Attribute name="Size" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                    <Attribute name="DataField_1" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AerosolModelMW&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_2" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AerosolOpticalThicknessPassedThresholdMean&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_3" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AerosolOpticalThicknessPassedThresholdStd&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_4" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Latitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_5" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;Longitude&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_6" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SingleScatteringAlbedoPassedThresholdMean&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_7" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SingleScatteringAlbedoPassedThresholdStd&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_8" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SolarZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_9" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;TerrainReflectivity&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_10" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;UVAerosolIndex&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_11" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;ViewingZenithAngle&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_12" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;VISAerosolIndex&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_13" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AbsorbingAerosolOpticalThicknessMW&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_14" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;AerosolOpticalThicknessMW&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                    <Attribute name="DataField_15" type="Container">
-                        <Attribute name="DataFieldName" type="String">
-                            <value>&quot;SingleScatteringAlbedoMW&quot;</value>
-                        </Attribute>
-                        <Attribute name="DimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="MaxdimList" type="String">
-                            <value>&quot;nWavelDiagnostic&quot;</value>
-                            <value>&quot;YDim&quot;</value>
-                            <value>&quot;XDim&quot;</value>
-                        </Attribute>
-                        <Attribute name="CompressionType" type="String">
-                            <value>HE5_HDFE_COMP_DEFLATE</value>
-                        </Attribute>
-                        <Attribute name="DeflateLevel" type="Int32">
-                            <value>5</value>
-                        </Attribute>
-                    </Attribute>
-                </Attribute>
-                <Attribute name="MergedFields" type="Container"/>
-            </Attribute>
-        </Attribute>
-        <Attribute name="PointStructure" type="Container"/>
-        <Attribute name="ZaStructure" type="Container"/>
-    </Attribute>
     <Array name="AbsorbingAerosolOpticalThicknessMW">
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -561,7 +206,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AbsorbingAerosolOpticalThicknessMW</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nWavelDiagnostic YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="nWavelDiagnostic" size="5"/>
@@ -597,7 +242,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolModelMW</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <UInt16/>
         <dimension name="lat" size="720"/>
@@ -632,7 +277,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessMW</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nWavelDiagnostic YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="nWavelDiagnostic" size="5"/>
@@ -668,7 +313,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdMean</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="lat" size="720"/>
@@ -703,7 +348,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdStd</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="lat" size="720"/>
@@ -738,7 +383,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoMW</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>nWavelDiagnostic YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="nWavelDiagnostic" size="5"/>
@@ -774,7 +419,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdMean</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="lat" size="720"/>
@@ -809,7 +454,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdStd</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="lat" size="720"/>
@@ -844,7 +489,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SolarZenithAngle</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="720"/>
@@ -879,7 +524,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/TerrainReflectivity</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Int16/>
         <dimension name="lat" size="720"/>
@@ -914,7 +559,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/UVAerosolIndex</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="720"/>
@@ -949,7 +594,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/VISAerosolIndex</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="720"/>
@@ -984,7 +629,7 @@
             <value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/ViewingZenithAngle</value>
         </Attribute>
         <Attribute name="orig_dimname_list" type="String">
-            <value>XDim </value>
+            <value>YDim XDim</value>
         </Attribute>
         <Float32/>
         <dimension name="lat" size="720"/>

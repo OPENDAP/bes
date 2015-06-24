@@ -33,9 +33,8 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include <debug.h>
-#include "InternalErr.h"
 #include <BESDebug.h>
+#include "InternalErr.h"
 #include <Array.h>
 
 #include "HDFEOS5CFMissLLArray.h"
@@ -147,7 +146,7 @@ bool HDFEOS5CFMissLLArray::read()
 
 #if 0
 for (int i =0; i <nelms; i++) 
-cerr <<"final data val "<< i <<" is " << val[i] <<endl;
+"h5","final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
     set_value ((dods_float32 *) &val[0], nelms);

@@ -119,9 +119,13 @@ AC_CHECK_BES([3.9.0],
 OPENDAP_DEBUG_OPTION
 
 dnl autoheader macros; tack some text at the top and bottom of config_hdf5.h.in
+dnl need to config_hdf5_h to config_h since config_hdf5.h is manually generated. KY 2015-06-22
 
-AH_TOP([#ifndef _config_hdf5_h
-#define _config_hdf5_h])
+dnl AH_TOP([#ifndef _config_hdf5_h
+dnl #define _config_hdf5_h])
+
+AH_TOP([#ifndef _config_h
+#define _config_h])
 
 AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
 #if defined(__GNUG__) || defined(__GNUC__)
@@ -130,7 +134,8 @@ AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
 #define not_used 
 #endif /* __GNUG__ || __GNUC__ */
 
-#endif /* _config_hdf5_h */])
+#endif /* _config_h */])
+dnl #endif /* _config_hdf5_h */])
 
 ## This sets up the special symbols used to build the bes.conf file for
 ## the tests. Previously, this was done in the Makefile.am down in the

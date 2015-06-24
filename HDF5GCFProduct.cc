@@ -77,17 +77,17 @@ H5GCFProduct check_product(hid_t file_id) {
     }
 
     else if (true == check_measure_seawifs(root_id,s_level)) {
-        // cerr <<"after check seawifs " <<endl << " level is "<< s_level <<endl;
+        // "h5","after check seawifs " <<endl << " level is "<< s_level <<endl;
         if (2 == s_level) product_type =  Mea_SeaWiFS_L2;
         if (3 == s_level) product_type =  Mea_SeaWiFS_L3;
     }
 
     else if (true == check_aquarius(root_id,a_level)){
-        // cerr <<"after check aquarius" <<endl << " level is "<< a_level <<endl;
+        // "h5","after check aquarius" <<endl << " level is "<< a_level <<endl;
         if (3 == a_level) product_type =  Aqu_L3;
     }
     else if (true == check_obpg(root_id,a_level)){
-        // cerr <<"after check aquarius" <<endl << " level is "<< a_level <<endl;
+        // "h5","after check aquarius" <<endl << " level is "<< a_level <<endl;
         if (3 == a_level) product_type =  OBPG_L3;
     }
 
@@ -99,7 +99,7 @@ H5GCFProduct check_product(hid_t file_id) {
         int smap_flag = 1; // This is SMAP 
         if (true == check_smap_acosl2s(root_id,smap_flag)) 
             product_type =  SMAP;
-        // cerr <<"After checking smap, product type is " << product_type << endl;
+        // "h5","After checking smap, product type is " << product_type << endl;
 
         if (General_Product == product_type) {
 
@@ -107,7 +107,7 @@ H5GCFProduct check_product(hid_t file_id) {
             if (true == check_smap_acosl2s(root_id,acosl2s_flag)) 
                 product_type =  ACOS_L2S;
                 
-            // cerr <<" After checking acos, product type is " << product_type <<endl;
+            // "h5"," After checking acos, product type is " << product_type <<endl;
         }
        
     }
@@ -122,7 +122,7 @@ bool check_gpm_l1(hid_t s_root_id) {
     htri_t has_gpm_l1_attr1 = -1;
     bool   ret_flag = false;
 
-//cerr <<"coming to gpm level 3 "<<endl;
+//"h5","coming to gpm level 3 "<<endl;
 
     // Here we check the existence of attribute 1 first 
     has_gpm_l1_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
@@ -248,7 +248,7 @@ bool check_gpms_l3(hid_t s_root_id) {
     htri_t has_gpm_l3_attr1 = -1;
     bool   ret_flag = false;
 
-//cerr <<"coming to gpm level 3 "<<endl;
+//"h5","coming to gpm level 3 "<<endl;
 
     // Here we check the existence of attribute 1 first 
     has_gpm_l3_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
@@ -257,7 +257,7 @@ bool check_gpms_l3(hid_t s_root_id) {
 
         htri_t has_gpm_grid_group = -1;
 
-// cerr <<"coming to gpm grid "<<endl;
+// "h5","coming to gpm grid "<<endl;
         has_gpm_grid_group = H5Lexists(s_root_id,GPM_GRID_GROUP_NAME1,H5P_DEFAULT);
 
         hid_t s_group_id = -1;
@@ -307,7 +307,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
     htri_t has_gpm_l3_attr1 = -1;
     bool   ret_flag = false;
 
-//cerr <<"coming to gpm level 3 "<<endl;
+//"h5","coming to gpm level 3 "<<endl;
 
     // Here we check the existence of attribute 1 first 
     has_gpm_l3_attr1 = H5Aexists(s_root_id,GPM_ATTR1_NAME);
@@ -458,7 +458,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
 
     htri_t has_seawifs_attr1 = -1;
     bool   ret_flag = false;
-    // cerr <<"coming to measure seawifs "<<endl;
+    // "h5","coming to measure seawifs "<<endl;
 
     // Here we check the existence of attribute 1 first since
     // attribute 1 will tell if the product is SeaWIFS or not. 
@@ -470,7 +470,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
         string attr1_value="";
         obtain_gm_attr_value(s_root_id, SeaWiFS_ATTR1_NAME, attr1_value);
         // cerr<<"seawifs attr1 value size " << attr1_value.length() <<endl;
-        // cerr <<"seawifs ATTR1_VALUE size "<< SeaWiFS_ATTR1_VALUE.length()  <<endl;
+        // "h5","seawifs ATTR1_VALUE size "<< SeaWiFS_ATTR1_VALUE.length()  <<endl;
         if (0 == attr1_value.compare(SeaWiFS_ATTR1_VALUE)) {
             // cerr<<"coming after comparing "<<endl;
             htri_t has_seawifs_attr2 = -1;
@@ -479,7 +479,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
             has_seawifs_attr3 = H5Aexists(s_root_id,SeaWiFS_ATTR3_NAME);
 
             if ((has_seawifs_attr2 >0) && (has_seawifs_attr3 > 0)){
-                // cerr <<"coming to seawifs attr2 and 3" <<endl;
+                // "h5","coming to seawifs attr2 and 3" <<endl;
                 string attr2_value ="";
                 string  attr3_value ="";
                 obtain_gm_attr_value(s_root_id,SeaWiFS_ATTR2_NAME, attr2_value);
@@ -492,7 +492,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
                 if (((0 == attr2_value.find(SeaWiFS_ATTR2_FPVALUE)) &&
                      (attr2_value.find(SeaWiFS_ATTR2_L2PVALUE)!=string::npos))
                    ||(0 == attr3_value.find(SeaWiFS_ATTR3_L2FPVALUE))) { 
-                    // cerr <<"coming to seaWiFS level 2" <<endl;
+                    // "h5","coming to seaWiFS level 2" <<endl;
                     s_lflag = 2;
                     ret_flag = true; 
                 }
@@ -534,7 +534,7 @@ bool check_measure_ozone(hid_t s_root_id) {
 
     htri_t has_ozone_attr1 = -1;
     bool  ret_flag = false;
-    // cerr <<"coming to measure ozone "<<endl;
+    // "h5","coming to measure ozone "<<endl;
 
     // Here we check the existence of attribute 1 first since
     // attribute 1 will tell if the product is SeaWIFS or not. 
@@ -545,7 +545,7 @@ bool check_measure_ozone(hid_t s_root_id) {
         string attr1_value = "";
         obtain_gm_attr_value(s_root_id, Ozone_ATTR1_NAME, attr1_value);
         // cerr<<"ozone attr1 value size " << attr1_value.length() <<endl;
-        // cerr <<"ozone ATTR1_VALUE size "<< Ozone_ATTR1_VALUE.length()  <<endl;
+        // "h5","ozone ATTR1_VALUE size "<< Ozone_ATTR1_VALUE.length()  <<endl;
         if ((0 == attr1_value.compare(Ozone_ATTR1_VALUE1)) ||
             (0 == attr1_value.compare(Ozone_ATTR1_VALUE2))) {
             htri_t has_ozone_attr2 = -1;
@@ -588,7 +588,7 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
 
     htri_t has_aquarius_attr1 = -1;
     bool ret_flag = false;
-    // cerr <<"coming to aquarius "<<endl;
+    // "h5","coming to aquarius "<<endl;
 
     // Here we check the existence of attribute 1 first since
     // attribute 1 will tell if the product is Aquarius or not. 
@@ -642,7 +642,7 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
 
     htri_t has_obpg_attr1 = -1;
     bool ret_flag = false;
-//     cerr <<"coming to obpg "<<endl;
+//     "h5","coming to obpg "<<endl;
 
     // Here we check the existence of attribute 1 first since
     // attribute 1 will tell if the product is OBPG or not. 
@@ -691,7 +691,7 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
 bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
 
     htri_t has_smac_group;
-    // cerr <<"coming to smap acos "<<endl;
+    // "h5","coming to smap acos "<<endl;
     bool return_flag = false;
     has_smac_group = H5Lexists(s_root_id,SMAC2S_META_GROUP_NAME,H5P_DEFAULT);
 
@@ -735,14 +735,14 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
             }
         }
         else if (2 == which_pro) {
-            // cerr <<"coming to acos l2s "<<endl;
+            // "h5","coming to acos l2s "<<endl;
 
             htri_t has_acos_dset = -1;
 
             // ACOSL2S will have a dataset called ProjectID
             has_acos_dset = H5Lexists(s_group_id,ACOS_L2S_DSET_NAME,H5P_DEFAULT);
             if (has_acos_dset > 0) {
-                // cerr <<"coming to acos l2s dataset "<<endl;
+                // "h5","coming to acos l2s dataset "<<endl;
                 // Obtain the dataset ID
                 hid_t s_dset_id = -1;
                 if ((s_dset_id = H5Dopen(s_group_id, ACOS_L2S_DSET_NAME,H5P_DEFAULT)) < 0) {
@@ -826,7 +826,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
 
                 if (H5Tis_variable_str(dtype)) {
 
-                    // cerr <<"coming to variable length string "<<endl;
+                    // "h5","coming to variable length string "<<endl;
                     vector<char>temp_buf;
                     temp_buf.resize(total_data_size);
 
@@ -855,7 +855,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                         if (onestring !=NULL) {
                             string tempstring(onestring);
                             total_string+=tempstring;
-                            // cerr <<"temp_string attr "<<tempstring <<endl;
+                            // "h5","temp_string attr "<<tempstring <<endl;
                         }
                         // going to the next value.
                         temp_bp += dtype_size;
@@ -978,7 +978,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
     }
 
     vector<char> temp_buf(atype_size*num_elm+1);
-    // cerr <<"attribute size "<<atype_size*num_elm <<endl;
+    // "h5","attribute size "<<atype_size*num_elm <<endl;
     if (H5Aread(s_attr_id,attr_type, &temp_buf[0])<0){
         string msg = "cannot retrieve the value of  the attribute ";
         msg += string(s_attr_name);
@@ -991,7 +991,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
     }
 
     string temp_attr_value(temp_buf.begin(),temp_buf.end());
-    // cerr <<"size of temp_attr_value "<<temp_attr_value.size() <<endl;
+    // "h5","size of temp_attr_value "<<temp_attr_value.size() <<endl;
     size_t temp_null_pos = temp_attr_value.find_first_of('\0');
     s_attr_value = temp_attr_value.substr(0,temp_null_pos);
     //s_attr_value(temp_buf.begin(),temp_buf.end()-1);

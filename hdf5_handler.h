@@ -56,7 +56,6 @@
 #include <string>
 #include <sstream>
 
-#include <debug.h>
 #include <DAS.h>
 #include <DDS.h>
 #include <parser.h>
@@ -69,11 +68,11 @@ typedef struct DS {
     /// Name of HDF5 group or dataset
     char name[DODS_NAMELEN];
     /// HDF5 data set id
-    hid_t dset;
+    //hid_t dset;
     /// HDF5 data type id
     hid_t type;
     /// HDF5 data space id
-    hid_t dataspace;
+    //hid_t dataspace;
     /// Number of dimensions
     int ndims;
     /// Size of each dimension
