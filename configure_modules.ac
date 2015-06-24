@@ -298,7 +298,7 @@ AC_ARG_WITH([dap-modules],
   [with_dap_modules=${withval} ],
   [with_dap_modules=yes])
 
-DAP_MODULES=
+dnl DAP_MODULES=
 AM_CONDITIONAL([DAP_MODULES], [test x$with_dap_modules = xyes])
 
 dnl These are tests that only apply if the modules are being built too.

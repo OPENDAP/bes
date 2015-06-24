@@ -42,11 +42,11 @@ install:
   - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
   - wget http://www.opendap.org/pub/tmp/hdf5-1.8.15-patch1.tar.gz
   - tar -xzf bison-3.0.4.tar.gz
-  - (cd bison-3.0.4 && ./configure && make -j7 > /dev/null && sudo make install)
+  - (cd bison-3.0.4 && ./configure && make -j7 > /dev/null 2>&1 && sudo make install)
   - tar -xzf libdap-3.14.0.tar.gz
-  - (cd libdap-3.14.0 && ./configure && make -j7 > /dev/null && sudo make install)
+  - (cd libdap-3.14.0 && ./configure && make -j7 > /dev/null  2>&1 && sudo make install)
   - tar -xzf hdf5-1.8.15-patch1.tar.gz
-  - (cd hdf5-1.8.15-patch1 && ./configure && make -j7 > /dev/null && sudo make install)
+  - (cd hdf5-1.8.15-patch1 && ./configure CFLAGS="-fPIC -O2 -w" && make -j7 > /dev/null  2>&1 && sudo make install)
 
 # I tried using a deb package, but it never worked, likely because the 
 # package is not being correctly built.
@@ -59,7 +59,9 @@ before_script:
   - export PATH=$prefix/bin:/usr/local/bin:$PATH
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  - ./configure --prefix=$prefix
+  # Want the hdf5 handler build to find the hdf5 lib headers from the
+  # source tarball we just built.
+  - ./configure --prefix=$prefix CPPFLAGS=-I/usr/local/include
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
