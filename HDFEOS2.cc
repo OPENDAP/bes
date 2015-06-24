@@ -66,6 +66,8 @@ static void _throw5(const char *fname, int line, int numarg,
         case 2: ss << a3; break;
         case 3: ss << a4; break;
         case 4: ss << a5; break;
+        default:
+            ss<<"  Argument number is beyond 5 ";
         }
     }
     throw Exception(ss.str());
@@ -2799,7 +2801,7 @@ void File::handle_swath_cf_attrs() throw(Exception) {
 /// Read and prepare. This is the main method to make the DAP output CF-compliant.
 /// All dimension(coordinate variables) information need to be ready.
 /// All special arrangements need to be done in this step.
-void File::Prepare(const char *path) throw(Exception)
+void File::Prepare(const char *eosfile_path) throw(Exception)
 {
 
     // check if this is a special HDF-EOS2 grid(MOD08_M3) that have all dimension scales
@@ -2811,7 +2813,7 @@ void File::Prepare(const char *path) throw(Exception)
     int numswath = this->swaths.size(); 
     
     if(numgrid < 0) 
-        throw2("the number of grid is less than 0", path);
+        throw2("the number of grid is less than 0", eosfile_path);
     
     // First handle grids
     if (numgrid > 0) {

@@ -545,7 +545,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 vector<double>latlon_all;
                 latlon_all.resize(xdim*ydim*2);
 
-                CalculateLAMAZLatLon(gridid, fieldtype, &latlon[0], &latlon_all[0],&offset[0], &count[0], &step[0], nelms,use_cache);
+                CalculateLAMAZLatLon(gridid, fieldtype, &latlon[0], &latlon_all[0],&offset[0], &count[0], &step[0], use_cache);
                 if(true == use_cache) {
 
                     BESH4Cache *llcache = BESH4Cache::get_instance();
@@ -603,7 +603,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
         // Now handle other cases,note the values will be written after the if-block
         else if (specialformat == 3)	{// Have to provide latitude and longitude by ourselves
             try {
-                CalculateSpeLatLon (gridid, fieldtype, &latlon[0], &offset32[0], &count32[0], &step32[0], nelms);
+                CalculateSpeLatLon (gridid, fieldtype, &latlon[0], &offset32[0], &count32[0], &step32[0]);
             }
             catch(...) {
                 detachfunc(gridid);
@@ -2024,8 +2024,7 @@ void
 HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
                                               float64 * outlatlon,
                                               int32 * offset32,
-                                              int32 * count32, int32 * step32,
-                                              int nelms)
+                                              int32 * count32, int32 * step32)
 {
 
     // Retrieve dimensions and X-Y coordinates of corners 
@@ -2309,7 +2308,7 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, 
 // Calculate latitude and longitude for LAMAZ projection lat/lon products.
 // GDij2ll returns infinite numbers over the north pole or the south pole.
 void
-HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, int nelms,bool write_latlon_cache)
+HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, bool write_latlon_cache)
 {
     int32 xdim = 0;
     int32 ydim = 0;

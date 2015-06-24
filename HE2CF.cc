@@ -67,7 +67,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 
     for (int i = 0; i < npairs; ++i) {
         
-        int32 tag, ref;
+        int32 tag = 0;
+        int32 ref = 0;
         
         if (Vgettagref(vgroup_id, i, &tag, &ref) < 0){
 
@@ -82,25 +83,22 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
         }
         
         if(Visvg(vgroup_id, ref)){
+
             char  cvgroup_name[VGNAMELENMAX*4]; // the child vgroup name
-            int32 istat;
-            int32 vgroup_cid; // Vgroup id 
+            int32 istat = 0;
+            int32 vgroup_cid = 0; // Vgroup id 
 
             vgroup_cid = Vattach(file_id, ref,"r");
-
             if (FAIL == vgroup_cid) {
-
                 Vdetach(vgroup_id);
                 Vend(file_id);
                 ostringstream error;
                 error  << "cannot obtain the vgroup id";
                 throw_error(error.str());
                 return false;
-
             }
             
             istat = Vgetname(vgroup_cid,cvgroup_name);
-
             if (FAIL == istat) {
                 Vdetach(vgroup_cid);
                 Vdetach(vgroup_id);
@@ -147,14 +145,11 @@ bool
 HE2CF::open_sd(const string& _filename,const int sd_id_in)
 {
     int32 num_datasets = -1;
-
     sd_id = sd_id_in;
     if(SDfileinfo(sd_id, &num_datasets, &num_global_attributes)
         == FAIL){
-
         if(file_id != -1) 
             Vend(file_id);
-        
         ostringstream error;
         error << "Failed to call SDfileinfo() on "
               << _filename
@@ -179,155 +174,6 @@ HE2CF::open_vgroup(const string& _filename,const int file_id_in)
     return true;
 }
 
-#if 0
-// Borrowed codes from ncdas.cc in netcdf_handle4 module.
-string
-HE2CF::print_attr(int32 type, int loc, void *vals)
-{
-    ostringstream rep;
-    
-    union {
-        char *cp;
-        short *sp;
-        unsigned short *usp;
-        int32 /*nclong*/ *lp;
-        unsigned int *ui;
-        float *fp;
-        double *dp;
-    } gp;
-
-    switch (type) {
-        
-    case DFNT_UINT8:
-    case DFNT_INT8:        
-        {
-            unsigned char uc;
-            gp.cp = (char *) vals;
-
-            uc = *(gp.cp+loc);
-            rep << (int)uc;
-            return rep.str();
-        }
-
-    case DFNT_CHAR:
-        {
-            // Using the customized escattr. Don't escape \n,\r and \t. KY 2013-10-14
-            return HDFCFUtil::escattr(static_cast<const char*>(vals));
-        }
-
-    case DFNT_INT16:
-        {
-            gp.sp = (short *) vals;
-            rep << *(gp.sp+loc);
-            return rep.str();
-        }
-
-    case DFNT_UINT16:        
-        {
-            gp.usp = (unsigned short *) vals;
-            rep << *(gp.usp+loc);
-            return rep.str();
-        }
-
-    case DFNT_INT32:
-        {
-            gp.lp = (int32 *) vals; 
-            rep << *(gp.lp+loc);
-            return rep.str();
-        }
-
-    case DFNT_UINT32:        
-        {
-            gp.ui = (unsigned int *) vals; 
-            rep << *(gp.ui+loc);
-            return rep.str();
-        }
-
-    case DFNT_FLOAT:
-        {
-            gp.fp = (float *) vals;
-            rep << showpoint;
-            rep << setprecision(10);
-            rep << *(gp.fp+loc);
-            if (rep.str().find('.') == string::npos
-                && rep.str().find('e') == string::npos)
-                rep << ".";
-            return rep.str();
-        }
-        
-    case DFNT_DOUBLE:
-        {
-            gp.dp = (double *) vals;
-            rep << std::showpoint;
-            rep << std::setprecision(17);
-            rep << *(gp.dp+loc);
-            if (rep.str().find('.') == string::npos
-                && rep.str().find('e') == string::npos)
-                rep << ".";
-            return rep.str();
-            break;
-        }
-    default:
-        return string("UNKNOWN");
-    }
-    
-}
-
-string
-HE2CF::print_type(int32 type)
-{
-
-    // I expanded the list based on libdap/AttrTable.h.
-    static const char UNKNOWN[]="Unknown";    
-    static const char BYTE[]="Byte";
-    static const char INT16[]="Int16";
-    static const char UINT16[]="UInt16";        
-    static const char INT32[]="Int32";
-    static const char UINT32[]="UInt32";
-    static const char FLOAT32[]="Float32";
-    static const char FLOAT64[]="Float64";    
-    static const char STRING[]="String";
-    
-    // I got different cases from hntdefs.h.
-    switch (type) {
-        
-    case DFNT_CHAR:
-	return STRING;
-        
-    case DFNT_UCHAR8:
-	return STRING;        
-        
-    case DFNT_UINT8:
-	return BYTE;
-        
-    case DFNT_INT8:
-	return INT32;
-        
-    case DFNT_UINT16:
-	return UINT16;
-        
-    case DFNT_INT16:
-	return INT16;
-
-    case DFNT_INT32:
-	return INT32;
-
-    case DFNT_UINT32:
-	return UINT32;
-        
-    case DFNT_FLOAT:
-	return FLOAT32;
-
-    case DFNT_DOUBLE:
-	return FLOAT64;
-        
-    default:
-	return UNKNOWN;
-    }
-    
-}
-#endif
-    
 
 void HE2CF::set_DAS(DAS* _das)
 {
@@ -350,8 +196,6 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         }
        
         string attr_namestr(temp_name);
-//cerr<<"namestr "<<attr_namestr <<endl;
-
         // Check if this attribute is an HDF-EOS2 metadata(coremeta etc. ) attribute  
         // If yes, ignore this attribute.
         if (true == is_eosmetadata(attr_namestr)) 
@@ -382,21 +226,10 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         if (attr_namestr.compare(0,15, "productmetadata" )== 0)
             continue;
 
-
         // USE VECTOR
-        //char* attr_data  = new char [(attr_count+1) *DFKNTsize(attr_type)];
         vector<char>attr_data;
         attr_data.resize((attr_count+1) *DFKNTsize(attr_type));
-#if 0
-        if(attr_data == NULL){
-            Vend(file_id);
-            ostringstream error;
-            error <<  "Fail to calloc memory"  << endl;
-            throw_error(error.str());
-        }
-#endif
 
-        //if(SDreadattr(sd_id, i, attr_data) == FAIL){
         if(SDreadattr(sd_id, i, &attr_data[0]) == FAIL){
             Vend(file_id);
             //delete[] attr_data;
@@ -405,23 +238,12 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
             throw_error(error.str());
 
         }
-#if 0
-if (1==attr_count && DFNT_INT32==attr_type) {
-cerr<<"attr_name is "<< attr_namestr<<endl;
-cerr<<"attr value is "<<*(int*)&attr_data[0] <<endl;
-}
-#endif
-
 
         // Handle character type attribute as a string.
 	if (attr_type == DFNT_CHAR || attr_type == DFNT_UCHAR) {
-	    //*(value + n_values) = '\0';
-        //    value[n_values] = '\0';
-	    //n_values = 1;
             attr_data[attr_count] = '\0';
             attr_count = 1;
 	}
- 
              
         AttrTable *at = das->get_table("HDF_GLOBAL");
         if (!at)
@@ -445,12 +267,6 @@ cerr<<"attr value is "<<*(int*)&attr_data[0] <<endl;
                 string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)&attr_data[0] );
                 at->append_attr(attr_namestr, HDFCFUtil::print_type(attr_type), print_rep);
         }
-
-        
-
-
-        //delete[] attr_data;                    
-        //attr_data = NULL;
 
     }
 
@@ -493,7 +309,6 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 
         // Find the basename, arrange the metadata name list.
         if(temp_name_str.find(metadata_basename)==0) {
-//cerr<<"ECS metadata name "<<temp_name_str <<endl;
             arrange_list(one_dot_names,two_dots_names,non_number_names,temp_name_str,list_flag);
         }
     }
@@ -543,7 +358,7 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 // Should watch if there are any outliers. KY 2012-08-31
 void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag) {
 
-  
+    // No dot in the ECS name
     if(name.find(".") == string::npos) {
         sl1.push_front(name);
         sl2.push_front(name);
@@ -558,10 +373,14 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
 
         string str_after_dot = name.substr(dot_pos+1);
         stringstream sstr(str_after_dot);
-        int number_after_dot;
+
+        int number_after_dot = 0;
         sstr >> number_after_dot;
+
+        // No dot after ECS metadata
         if (!sstr) 
             v1.push_back(name);
+        // .0 after the main name of ECS metadata
         else if(0 == number_after_dot) {
             sl1.push_back(name);
             sl2.push_back(name);
@@ -569,7 +388,7 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
             if(flag!=1)
                 flag =1; 
         }
-        else { 
+        else {// .1 or .2 etc. after the main ECS metadata name 
             sl1.push_back(name);
             if (3 == flag)
                 throw InternalErr(__FILE__, __LINE__,
@@ -578,8 +397,8 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
                 flag = 2;
         }
     }
-
     else {// We don't distinguish if .0.1 and .0.0.1 will appear.
+        // have two dots in the ECS name.
         sl2.push_back(name);
         if (2 == flag)
             throw InternalErr(__FILE__, __LINE__,"ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
@@ -635,13 +454,19 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
 }
 
 
-bool HE2CF::set_vgroup_map(int32 _refid)
+bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
 {
     // Clear existing maps first.
-    vg_sd_map.clear();
-    vg_vd_map.clear();
+    // Note: It should only clear the corresponding groups: Geolocation or Data.
+    if(false == isgeo) {
+        vg_dsd_map.clear();
+        vg_dvd_map.clear();
+    }
+    else {
+        vg_gsd_map.clear();
+        vg_gvd_map.clear();
+    }
     
-//cerr<<"before Vattach ref id "<<_refid <<endl;
     int32 vgroup_id = Vattach(file_id, _refid, "r");
     if (FAIL == vgroup_id) {
         Vend(file_id);
@@ -652,7 +477,6 @@ bool HE2CF::set_vgroup_map(int32 _refid)
     }
 
     int32 npairs = Vntagrefs(vgroup_id);
-
     if (FAIL == npairs) {
         Vdetach(vgroup_id);
         Vend(file_id);
@@ -690,14 +514,12 @@ bool HE2CF::set_vgroup_map(int32 _refid)
 
             int32 sds_id = SDselect(sd_id, sds_index); // sds_id 
             if (FAIL == sds_id) {
-
                 Vdetach(vgroup_id);
                 Vend(file_id);
                 ostringstream error;
                 error <<  "Cannot obtain the SDS ID ";
                 throw_error(error.str());
                 return false;
-
             }
             
             int32 rank;
@@ -706,16 +528,17 @@ bool HE2CF::set_vgroup_map(int32 _refid)
             int32 num_attrs;
         
             if(FAIL == SDgetinfo(sds_id, buf, &rank, dimsizes, &datatype, &num_attrs)) {
-
                 Vdetach(vgroup_id);
                 Vend(file_id);
                 ostringstream error;
                 error <<  "Cannot obtain the SDS info.";
                 throw_error(error.str());
                 return false;
-
             }
-            vg_sd_map[string(buf)] = sds_id;
+            if(false == isgeo) 
+                vg_dsd_map[string(buf)] = sds_id;
+            else
+                vg_gsd_map[string(buf)] = sds_id;
             
         }
         
@@ -738,7 +561,11 @@ bool HE2CF::set_vgroup_map(int32 _refid)
                 error <<  "VSgetname failed for file_id=."  << file_id;
                 throw_error(error.str());
             }
-            vg_vd_map[string(buf)] = ref2;
+            if(false == isgeo) 
+                vg_dvd_map[string(buf)] = ref2;
+            else
+                vg_gvd_map[string(buf)] = ref2;
+
             if (FAIL == VSdetach(vid)) {
 
                 Vdetach(vgroup_id);
@@ -748,7 +575,7 @@ bool HE2CF::set_vgroup_map(int32 _refid)
                 throw_error(error.str());
 
             }
-        }
+        }// if 
     } // for
 
     if (FAIL == Vdetach(vgroup_id)){
@@ -799,7 +626,7 @@ bool HE2CF::write_attr_long_name(const string& _group_name,
 
 
 bool 
-HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
+HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 {
     char buf_var[H4_MAX_NC_NAME];
     char buf_attr[H4_MAX_NC_NAME];        
@@ -812,9 +639,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
     
     status = SDgetinfo(_sds_id, buf_var, 
                        &rank, dimsizes, &datatype, &num_attrs);
-
     if (FAIL == status) {
-
         Vend(file_id);
         SDendaccess(_sds_id);
         ostringstream error;
@@ -822,41 +647,100 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
         throw_error(error.str());
 
     }
-//cerr<<"datatype "<<datatype <<endl;
-//cerr<<"attribute name " << _newfname <<endl;
-    
+    AttrTable *at = das->get_table(_newfname);
+    if (!at){
+        at = das->add_table(_newfname, new AttrTable);
+    }
+
+    //Check if having the "coordinates" attribute when fieldtype is 0
+    bool v_has_coordinates = false;
+    if(0 == _fieldtype) {
+        if(at->simple_find("coordinates")!= at->attr_end())
+            v_has_coordinates = true;
+    }
+
+    //Check if having the "units" attributes when fieldtype is 1(latitude) or 2(longitude)
+    bool llcv_has_units = false;
+
+    // See if we can ignore scale and offset.
+    short llcv_ignore_scale  = 0;
+    short llcv_ignore_offset = 0;
+    if(1 == _fieldtype || 2 == _fieldtype) {
+        if(at->simple_find("units")!= at->attr_end())
+            llcv_has_units = true;
+        try {
+            llcv_ignore_scale  =  check_scale_offset(_sds_id,true);
+        }
+        catch(...) {
+            SDendaccess(_sds_id);
+            Vend(file_id);
+            throw;
+        }
+        try {
+            llcv_ignore_offset =  check_scale_offset(_sds_id,false);
+        }
+        catch(...) {
+            SDendaccess(_sds_id);
+            Vend(file_id);
+            throw;
+        }
+
+        // We need to check if we ignore scale_factor and the scale_factor type is an integer.
+        // If that's the case, we need to throw an exception since we cannot retrieve the
+        // integer type scale_factor added by the HDF4 API for the latitude and longitude.
+        // We don't think such a case exists. If any, we throw an exception and hope the 
+        // user to report this case to us.
+
+        // Find a case that the variable type is integer,
+        //             that the scale_factor and add_offset attributes exist
+        //             that the add_offset is not 0.
+        // We don't support this case and highly suspect that such a case doesn't exist.
+        if(-1 == llcv_ignore_offset && 2 == llcv_ignore_scale){
+            SDendaccess(_sds_id);
+            Vend(file_id);
+            ostringstream error;
+            error <<"The latitude or longitude has <scale_factor> and <add_offset> attributes, "
+                  <<" the latitude or longitude have integer type and <add_offset> is not 0, "
+                  <<" we don't support such a case in the current implementation, "
+                  <<" please report to eoshelp@hdfgroup.org if you encounter this situation.";
+            throw_error(error.str());
+        }
+    }
+
     for (int j=0; j < num_attrs; j++){
 
         status = SDattrinfo(_sds_id, j, buf_attr, &datatype, &n_values);
-
         if (status < 0){
-
             Vend(file_id);
             SDendaccess(_sds_id);
-
             ostringstream error;
             error << "SDattrinfo() failed on " << buf_attr;
             throw_error(error.str());
-            
         }        
 
-        // AttrTable *at = das->get_table(buf_var);
-        AttrTable *at = das->get_table(_newfname);
-
-        if (!at){
-            // at = das->add_table(buf_var, new AttrTable);
-            at = das->add_table(_newfname, new AttrTable);
+        if(true == v_has_coordinates) {
+           if(!strncmp(buf_attr, "coordinates", H4_MAX_NC_NAME))
+              continue;
         }
 
-        // USE VECTOR
-        //char* value = new char [(n_values+1) * DFKNTsize(datatype)];
+        if(true == llcv_has_units) {
+           if(!strncmp(buf_attr, "units", H4_MAX_NC_NAME))
+              continue;
+        }
+
+        if( 1 == _fieldtype || 2 == _fieldtype) {
+            if(!strncmp(buf_attr, "scale_factor", H4_MAX_NC_NAME))
+                if((1 == llcv_ignore_scale) || (2==llcv_ignore_scale) )
+                    continue;
+            if(!strncmp(buf_attr, "add_offset", H4_MAX_NC_NAME))
+                if(1 == llcv_ignore_offset)
+                    continue;
+        }
+
         vector<char> value;
         value.resize((n_values+1) * DFKNTsize(datatype));
-        //status = SDreadattr(_sds_id, j, value);
         status = SDreadattr(_sds_id, j, &value[0]);
-
         if (status < 0){
-
             Vend(file_id);
             SDendaccess(_sds_id);
             ostringstream error;
@@ -872,38 +756,30 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 	}
         
         // Need to check and change if attribute names contain special characters. KY 2012-6-8
-
         string attr_cf_name = string(buf_attr,strlen(buf_attr));
         attr_cf_name = HDFCFUtil::get_CF_string(attr_cf_name);
 	for (int loc=0; loc < n_values ; loc++) {
-	    //string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)value);
 	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)&value[0]);
 
             // Override any existing _FillValue attribute.
-            // if(!strncmp(buf_attr, "_FillValue", H4_MAX_NC_NAME)){
-               //at->del_attr(buf_attr);      
             if (attr_cf_name == "_FillValue") {
                 at->del_attr(attr_cf_name);
             }
             // Override any existing long_name attribute.
-            // if(!strncmp(buf_attr, "long_name", H4_MAX_NC_NAME)){
-            // at->del_attr(buf_attr);      
-
             if (attr_cf_name == "long_name") {
                 at->del_attr(attr_cf_name);
             }
-	    //at->append_attr(buf_attr, print_type(datatype), print_rep);
+
             // No need to escape special characters since print_rep already does that.
 	    at->append_attr(attr_cf_name, HDFCFUtil::print_type(datatype), print_rep);
 
 	}
         status = SDendaccess(_sds_id); 
-        //delete[] value;
     }
     return true;
 }
 
-bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
+bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldtype)
 {
     int32 number_type, count, size;
     char buf[H4_MAX_NC_NAME];
@@ -922,7 +798,6 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
     // Don't use VSnattrs - it returns the TOTAL number of attributes 
     // of a vdata and its fields. We should use VSfnattrs.
     count = VSfnattrs(vid, _HDF_VDATA);      
-
     if (FAIL == count) {
 
         VSdetach(vid);
@@ -937,11 +812,25 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
         at = das->add_table(_newfname, new AttrTable);
 
 
+    //Check if having the "coordinates" attribute when fieldtype is 0
+    bool v_has_coordinates = false;
+    if(0 == _fieldtype) {
+        if(at->simple_find("coordinates")!= at->attr_end())
+            v_has_coordinates = true;
+    }
+
+    //Check if having the "units" attributes when fieldtype is 1 or 2
+    bool llcv_has_units = false;
+    if(1 == _fieldtype || 2 == _fieldtype) {
+        if(at->simple_find("units")!= at->attr_end())
+            llcv_has_units = true;
+    }
+
+
     for(int i=0; i < count; i++){
         int32 count_v = 0;
         if (VSattrinfo(vid, _HDF_VDATA, i, buf,
                        &number_type, &count_v, &size) < 0) {
-
             VSdetach(vid);
             Vend(file_id);
             ostringstream error;
@@ -949,64 +838,51 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
             throw_error(error.str());
         }
 
-     //   char *data = NULL;
-        vector<char> data;     
-
-      //  try {
-
-        //    data = new char [(count_v+1) * DFKNTsize(number_type)];
-            data.resize((count_v+1) * DFKNTsize(number_type));
-            if (VSgetattr(vid, _HDF_VDATA, i, &data[0]) < 0) {
-
-                // problem: clean up and throw an exception
-                //delete []data;
-                VSdetach(vid);
-                Vend(file_id);
-                ostringstream error;            
-                error << "VSgetattr failed.";
-                throw_error(error.str());
-            }
-            // Handle character type attribute as a string.
-	    if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
-	        //*(data + count_v) = '\0';
-                data[count_v] ='\0';  
-	        count_v = 1;
-	    }
-        
-        
-            for(int j=0; j < count_v ; j++){
-
-	        //string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data);
-	        string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)&data[0]);
-
-                // Override any existing _FillValue attribute.
-                if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
-                    at->del_attr(buf);      
-                }
-                // Override any existing long_name attribute.
-                if(!strncmp(buf, "long_name", H4_MAX_NC_NAME)){
-                    at->del_attr(buf);      
-                }
-
-                string vdataname(buf);
-//cerr<<"vdata name "<<vdataname <<endl;
-//cerr<<"vdata value "<<print_rep << endl;
-	        at->append_attr(HDFCFUtil::get_CF_string(buf), HDFCFUtil::print_type(number_type), print_rep);
-
-            }
-
-           // if(data != NULL)
-            //    delete[] data;
-        //}
-
-#if 0
-        catch (...) {
-            if (data != NULL) 
-                delete[] data;
-            throw_error("Cannot allocate enough memory for the data buffer");
+        if(true == v_has_coordinates) {
+           if(!strncmp(buf, "coordinates", H4_MAX_NC_NAME))
+              continue;
         }
-#endif
+
+        else if(true == llcv_has_units) {
+           if(!strncmp(buf, "units", H4_MAX_NC_NAME))
+              continue;
+        }
         
+        vector<char> data;     
+        data.resize((count_v+1) * DFKNTsize(number_type));
+        if (VSgetattr(vid, _HDF_VDATA, i, &data[0]) < 0) {
+
+            // problem: clean up and throw an exception
+            VSdetach(vid);
+            Vend(file_id);
+            ostringstream error;            
+            error << "VSgetattr failed.";
+            throw_error(error.str());
+        }
+        // Handle character type attribute as a string.
+	if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
+            data[count_v] ='\0';  
+	    count_v = 1;
+	}
+        
+        for(int j=0; j < count_v ; j++){
+
+	    string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)&data[0]);
+
+            // Override any existing _FillValue attribute.
+            if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
+                at->del_attr(buf);      
+            }
+
+            // Override any existing long_name attribute.
+            if(!strncmp(buf, "long_name", H4_MAX_NC_NAME)){
+                at->del_attr(buf);      
+            }
+
+            string vdataname(buf);
+	    at->append_attr(HDFCFUtil::get_CF_string(buf), HDFCFUtil::print_type(number_type), print_rep);
+
+        }
     } // for 
     //  We need to call VFnfields to process fields as well in near future.
     VSdetach(vid);
@@ -1059,8 +935,6 @@ string
 HE2CF::get_metadata(const string& _name, bool& suffix_is_number,vector<string>&meta_nonnum_names, vector<string>& meta_nonum_data)
 {
     suffix_is_number = set_metadata(_name,meta_nonnum_names,meta_nonum_data);
-//meta_nonnum_names.resize(1);
-//meta_nonnum_names[0] ="test metadata";
     return metadata;
 }
 
@@ -1111,17 +985,17 @@ HE2CF::write_attribute(const string& _gname,
     int32 ref_df = -1; // ref id for /Data Fields/
     int32 ref_gf = -1; // ref id for /Geolocaion Fields/
     
-    // This if block effectively constructs the vg_sd_map and vg_vd_map at most once
-    // since starting from the second time, gname will be equal to _gname. KY 2012-7-3
+    // This if block effectively constructs the vg_dsd_map and vg_dvd_map at most once
+    // since starting from the second time, gname will be equal to _gname.
     if(gname != _gname){
         // Construct field:(SD|Vdata)ref table for faster lookup.
         gname = _gname;        
         get_vgroup_field_refids(_gname, &ref_df, &ref_gf);
-        
         if (ref_gf !=-1) 
-            set_vgroup_map(ref_gf); 
+            set_vgroup_map(ref_gf,true); 
+ 
         if (ref_df != 1) 
-            set_vgroup_map(ref_df); 
+            set_vgroup_map(ref_df,false); 
     }
     
     // Use a cached table.
@@ -1132,17 +1006,31 @@ HE2CF::write_attribute(const string& _gname,
     // the same SDS name for two different SDS objects. But in this context(HDF-EOS2 objects), it is okay.
     // KY 2012-7-3
     // Retrive sds_id for SDS
-    id =  vg_sd_map[_fname];
+    // Go over all possible maps (data fields and geolocation fields)
+    id =  vg_dsd_map[_fname];
     if(id > 0){
-        write_attr_sd(id, _newfname);
+        write_attr_sd(id, _newfname,_fieldtype);
     }
     // Retrieve ref_id for Vdata
     // The Vdata we retrieve here are HDF-EOS2 objects(Swath 1-D data)
     // Not all Vdata from the HDF file.
-    id = vg_vd_map[_fname];
+    id = vg_dvd_map[_fname];
     if(id > 0){
-        write_attr_vdata(id, _newfname);
+        write_attr_vdata(id, _newfname,_fieldtype);
     }
+
+    id =  vg_gsd_map[_fname];
+    if(id > 0){
+        write_attr_sd(id, _newfname,_fieldtype);
+    }
+    // Retrieve ref_id for Vdata
+    // The Vdata we retrieve here are HDF-EOS2 objects(Swath 1-D data)
+    // Not all Vdata from the HDF file.
+    id = vg_gvd_map[_fname];
+    if(id > 0){
+        write_attr_vdata(id, _newfname,_fieldtype);
+    }   
+
     return true;
 }
 
@@ -1153,6 +1041,11 @@ HE2CF::write_attribute_FillValue(const string& _varname,
                                  float value)
 {
     void* v_ptr = NULL;
+    // Casting between pointers of different types may generate unexpected behavior.
+    // gcc 4.8.2 reveals this problem in one test(SwathFile.HDF).
+    // So what we should do is to use char* or vector<char> in this case and memcpy the value to the vector<char>. 
+    // Casting the vector pointer to void *. The compiler can correctly interpret the data based on the data type.
+    vector<char>v_val;
 
     // Cast the value depending on the type.
     switch (_type) {
@@ -1160,43 +1053,52 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         case DFNT_UINT8:
         {
             uint8 val = (uint8) value;
-            v_ptr = (void*)&val;
+            v_val.resize(1);
+            memcpy(&v_val[0],&val,1);
+            v_ptr = (void*)&v_val[0];
         }
 
         break;
         case DFNT_INT8:        
         {
             int8 val = (int8) value;
-            v_ptr = (void*)&val;
-            
+            v_val.resize(1);
+            memcpy(&v_val[0],&val,1);
+            v_ptr = (void*)&v_val[0];
         }
         break;
         case DFNT_INT16:
         {
             int16 val = (int16) value;
-            v_ptr = (void*)&val;
+            v_val.resize(sizeof(short));
+            memcpy(&v_val[0],&val,sizeof(short));
+            v_ptr = (void*)&v_val[0];
         }
         break;
 
         case DFNT_UINT16:        
         {
             uint16 val = (uint16) value;
-            v_ptr = (void*)&val;
+            v_val.resize(sizeof(unsigned short));
+            memcpy(&v_val[0],&val,sizeof(unsigned short));
+            v_ptr = (void*)&v_val[0];
         }
         break;
 
         case DFNT_INT32:
-         {
+        {
             int32 val = (int32) value;
-            v_ptr = (void*)&val;
-
+            v_val.resize(sizeof(int));
+            memcpy(&v_val[0],&val,sizeof(int));
+            v_ptr = (void*)&v_val[0];
         }
         break;
         case DFNT_UINT32:        
         {
             uint32 val = (uint32) value;
-            v_ptr = (void*)&val;
-
+            v_val.resize(sizeof(unsigned int));
+            memcpy(&v_val[0],&val,sizeof(int));
+            v_ptr = (void*)&v_val[0];
         }
         break;
         case DFNT_FLOAT:
@@ -1207,8 +1109,9 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         case DFNT_DOUBLE:
         {
             float64 val = (float64) value;
-            v_ptr = (void*)&val;
-
+            v_val.resize(sizeof(double));
+            memcpy(&v_val[0],&val,sizeof(double));
+            v_ptr = (void*)&v_val[0];
         }
         break;
         default:
@@ -1254,4 +1157,115 @@ HE2CF::write_attribute_units(const string& _varname, string _units)
 }
 
 
+// Check if the scale_factor or the add_offset can be ignored.
+// _sds_id is the SDS ID of the variable. 
+// is_scale is true, the attribute is scale_factor.
+// is_scale is false, the attribute is add_offset.
+// When the attribute is scale_factor, 
+// the meaning of the returned value: 
+//   0: the scale_factor won't be ignored if exists.
+//   1 or 2: the scale_factor can be ignored. 2 is the case when the variable type is integer. 1 is the case when the variable type is float.            
+// When the attribute is add_offset,
+// the meaning of the returned value:
+//   0: the add_offset won't be ignored if exists. It doesn't check if add_offset attribute exists.
+//   -1: the add_offset won't be ignored and the add_offset definitely exists,the value is not 0.
+//   1: the add_offset will be ignored.
+short
+HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
+
+    char buf_var[H4_MAX_NC_NAME];
+    char buf_attr[H4_MAX_NC_NAME];        
+    int32 rank;
+    int32 dimsizes[H4_MAX_VAR_DIMS];
+    int32 datatype;
+    int32 num_attrs;
+    int32 n_values;
+    intn status;
+    
+    short ignore_so = 0;
+    status = SDgetinfo(_sds_id, buf_var, 
+                       &rank, dimsizes, &datatype, &num_attrs);
+    if (FAIL == status) {
+        SDendaccess(_sds_id);
+        ostringstream error;
+        error <<  "Cannot obtain the SDS info. ";
+        throw_error(error.str());
+    }
+ 
+    bool  has_so    = false;
+    int   so_index  = -1;
+    int32 so_dtype  = -1;
+    int32 var_dtype = datatype;
+    string so_name  =((true==is_scale)?"scale_factor":"add_offset");
+
+    for (int j=0; j < num_attrs; j++){
+
+        status = SDattrinfo(_sds_id, j, buf_attr, &datatype, &n_values);
+        if (status < 0){
+            SDendaccess(_sds_id);
+            ostringstream error;
+            error << "SDattrinfo() failed on " << buf_attr;
+            throw_error(error.str());
+        }        
+     
+        if(!strncmp(buf_attr, so_name.c_str(), H4_MAX_NC_NAME)) {
+            if(1 == n_values) {
+                has_so = true;
+                so_index = j;
+                so_dtype = datatype;
+                break;
+            }
+        }
+    }
+
+    // We find the attribute, now check if we can ignore this attribute.
+    if(true == has_so) {
+        vector<char> value;
+        // We have already checked the number of attribute values. The number is 1. 
+        value.resize(DFKNTsize(so_dtype));
+        status = SDreadattr(_sds_id, so_index, &value[0]);
+        if (status < 0){
+            SDendaccess(_sds_id);
+            ostringstream error;
+            error << "SDreadattr() failed on the attribute scale_factor."  << endl;
+            throw_error(error.str());
+        }
+        // If this attribute is "scale_factor",
+        if(true == is_scale) {
+            if(DFNT_FLOAT32 == so_dtype) {
+                float final_scale_value = *((float*)((void*)(&value[0])));
+                if(final_scale_value == 1.0) 
+                    ignore_so = 1;
+                // This is the ugly case that the variable type is integer, the
+                // scale_factor is handled by the handler reading function.
+                // However, the add_offset for this case cannot be 0.
+                // So we need to check this case. We may also need to
+                // check the scale_factor value.
+                else if(var_dtype !=DFNT_FLOAT32 && var_dtype != DFNT_FLOAT64)
+                    ignore_so = 2;
+            }
+            else if(DFNT_FLOAT64 == so_dtype) {
+                double final_scale_value = *((double*)((void*)(&value[0])));
+                if(final_scale_value == 1.0) 
+                    ignore_so = 1;
+                else if(var_dtype !=DFNT_FLOAT32 && var_dtype != DFNT_FLOAT64)
+                    ignore_so = 2;
+            }   
+        }
+        else {
+            // has offset, we need to make a mark for the case when scale_factor applies to a varialbe that has an integer type  
+            ignore_so = -1;
+            string print_rep = HDFCFUtil::print_attr(so_dtype, 0, (void *)&value[0]);
+            if(DFNT_FLOAT32 == so_dtype || DFNT_FLOAT64 == so_dtype) {
+                if(atof(print_rep.c_str()) == 0.0) 
+                    ignore_so = 1;
+            }
+            else { 
+                if(atoi(print_rep.c_str()) == 0)
+                    ignore_so = 1;
+            }
+        }
+    }
+    return ignore_so;
+}
 

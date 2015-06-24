@@ -258,7 +258,44 @@ bool BESH4Cache::write_cached_data( const string & cache_file_name,const int exp
 
 }
 
+bool BESH4Cache::write_cached_data2( const string & cache_file_name,const int expected_file_size,const void *buf) {
 
+    BESDEBUG("cache", "In BESH4Cache::write_cached_data()" << endl);
+    int fd = 0;
+    bool ret_value = false;
+
+    // 1. create_and_lock. 
+    if(create_and_lock(cache_file_name,fd)) {
+
+        ssize_t ret_val = 0;
+
+        // 2. write the file.
+        ret_val = write(fd,buf,expected_file_size);
+
+
+        // 3. If the written size is not the same as the expected file size, purge the file.
+        if(ret_val != expected_file_size) {
+            if(unlink(cache_file_name.c_str())!=0){
+                string msg = "Cannot remove the corrupt cached file " + cache_file_name;
+                throw BESInternalError(msg , __FILE__, __LINE__);
+            }
+                
+        }
+        else {
+            unsigned long long size = update_cache_info(cache_file_name);
+            if(cache_too_big(size))
+                update_and_purge(cache_file_name);
+            ret_value = true;
+        }
+         // 4. release the lock.
+        unlock_and_close(cache_file_name);
+      
+
+   }
+    
+   return ret_value;
+
+}
 #if 0
 void BESH4Cache::dummy_test_func() {
 

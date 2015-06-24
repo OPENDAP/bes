@@ -286,7 +286,7 @@ BES.DefaultResponseMethod=POST
 # important key to turn it on first.
 H4.EnableCF=true
 
-H4.EnablePassFileID=false
+H4.EnablePassFileID=true
 
 
 # When turning on this key, the handler will handle AIRS level 3 version 6 products
@@ -391,7 +391,27 @@ H4.DisableVdataNameclashingCheck=true
 #     The attribute container of the Vdata will always appear regardless of this key.
 H4.EnableVdataDescAttr=false
 
-H4.EnableEOSGeoCacheFile=false
+
+# When the following cache key is turned on,  
+# DDS and DAS of special products(currently AIRS version 6 only) will be  
+# written to local files of the server under the H4.Cache.metadata.path directory. 
+# DDS and DAS will be read directly from the server since the second time.
+# Note: no total file size under the directory is enforced since
+# DDS and DAS are relatively small and each HDF4 file may only have
+# 2-3 DAS and DDS local files.
+H4.EnableMetaDataCacheFile=false
+H4.Cache.metadata.path=/tmp/md
+
+#
+# When the following cache key is turned on, data opened by the HDF4 SDS API will write
+# into a local file in the server under the HDF4.Cache directory. Data will be read in
+# from the cached file since the second time.
+# The cached parameters(path, prefix, size) are the same as
+# the H4.EnableEOSGeoCacheFile. 
+H4.EnableDataCacheFile=false
+
+# Cache to store the lat/lon of an HDF-EOS grid.
+H4.EnableEOSGeoCacheFile=true
 HDF4.Cache.latlon.path=/tmp/latlon
 HDF4.Cache.latlon.prefix=l
 #The size of the cache in megabytes, currently ~20GB cache for lat,lon

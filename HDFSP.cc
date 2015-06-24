@@ -69,6 +69,8 @@ _throw5 (const char *fname, int line, int numarg,
             case 4:
                 ss << a5;
 		break;
+            default:
+                ss <<" Argument number is beyond 5"; 
         }
     }
     throw Exception (ss.str ());
@@ -220,11 +222,13 @@ throw (Exception)
     file->sdfd = mysdid;
     file->fileid = myfileid;
 
-    // Start V interface
-    int32 status = Vstart (file->fileid);
-    if (status == FAIL)  {
-        delete file;
-        throw2 ("Cannot start vdata/vgroup interface", path);
+    if(myfileid != -1) {
+        // Start V interface
+        int32 status = Vstart (file->fileid);
+        if (status == FAIL)  {
+            delete file;
+            throw2 ("Cannot start vdata/vgroup interface", path);
+        }
     }
 
     try {
@@ -233,7 +237,8 @@ throw (Exception)
 
         // Handle lone vdatas, non-lone vdatas will be handled in Prepare().
         // Read lone vdata.
-        file->ReadLoneVdatas(file);
+        if(myfileid != -1) 
+            file->ReadLoneVdatas(file);
     }
     catch(...) {
         delete file;

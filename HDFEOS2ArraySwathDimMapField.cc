@@ -713,7 +713,11 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         break;
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float);
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
             };
+            
 #undef GET_SCALE_FACTOR_ATTR_VALUE
         }
 
@@ -756,6 +760,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         break;
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float);
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
                 };
 #undef GET_ADD_OFFSET_ATTR_VALUE
         }
@@ -804,6 +810,10 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     GET_FILLVALUE_ATTR_VALUE(UINT8,  uint8);
                     GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
                     GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
+                    // Float and double are not considered. Handle them later.
+                    //default:
+                     //   throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                 };
 #undef GET_FILLVALUE_ATTR_VALUE
         }

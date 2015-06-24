@@ -102,7 +102,7 @@ bool HDFSPArrayGeoField::read ()
         case TRMML3S_V7:
         case TRMML3M_V7:
         {
-            readtrmml3_v7 (&offset32[0], &count32[0], &step32[0], nelms);
+            readtrmml3_v7 (&offset32[0],  &step32[0], nelms);
             break;
         }
         // CERES CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS products
@@ -171,7 +171,7 @@ bool HDFSPArrayGeoField::read ()
         // OBPG level 3 products
         case OBPGL3:
         {
-            readobpgl3 (&offset[0], &count[0], &step[0], nelms);
+            readobpgl3 (&offset[0],  &step[0], nelms);
             break;
         }
 
@@ -539,7 +539,7 @@ HDFSPArrayGeoField::readtrmml3c_v6 (int32 * offset32, int32 * count32,
 // Read latlon of TRMM version 7 products.
 // Lat/lon parameters can be retrieved from attribute GridHeader.
 void
-HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32, int32 * count32,
+HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32, 
                                 int32 * step32, int nelms)
 {
 
@@ -969,7 +969,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 // lat/lon should be calculated based on the file attribute.
 // Geographic projection: lat,lon starting point and also lat/lon steps.
 void
-HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
+HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
 {
 
     string check_pass_fileid_key_str="H4.EnablePassFileID";

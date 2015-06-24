@@ -89,13 +89,13 @@ class HDFSPArrayGeoField:public Array
         void readobpgl2 (int32 *, int32 *, int32 *, int);
 
         // Read OBPG level 3 lat/lon
-        void readobpgl3 (int *, int *, int *, int);
+        void readobpgl3 (int *, int *,  int);
 
         // Read TRMM level 3 version 6 lat/lon
         void readtrmml3b_v6 (int32 *, int32 *, int32 *, int);
 
         // Read TRMM level 3 version 7 lat/lon
-        void readtrmml3_v7 (int32 *, int32 *, int32 *, int);
+        void readtrmml3_v7 (int32 *,  int32 *, int);
 
 
         // Read CERES SAVG and CERES ICCP_DAYLIKE lat/lon

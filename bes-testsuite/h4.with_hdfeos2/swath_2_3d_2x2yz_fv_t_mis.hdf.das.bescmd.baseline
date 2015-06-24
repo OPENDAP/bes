@@ -5,10 +5,13 @@ Attributes {
     Latitude {
         String units "degrees_north";
         String long_name "Swath1:Latitude";
+        UInt32 fill 4294967295;
+        Float32 _FillValue 4294967295;
     }
     Longitude {
         String units "degrees_east";
         String long_name "Swath1:Longitude";
+        Float32 _FillValue 65535;
     }
     temperature {
         String coordinates "pressure Latitude Longitude";
@@ -21,10 +24,12 @@ Attributes {
     Latitude_1 {
         String units "degrees_north";
         String long_name "Swath2:Latitude";
+        Float32 _FillValue -2147483648;
     }
     Longitude_1 {
         String units "degrees_east";
         String long_name "Swath2:Longitude";
+        Float32 _FillValue -32768;
     }
     temperature_1 {
         String coordinates "pressure_1 Latitude_1 Longitude_1";

@@ -19,6 +19,7 @@
 #include <dirent.h>
 #include <libgen.h>
 #include <unistd.h>
+#include <cerrno>
 
 #include "mfhdf.h"
 #include "hdf.h"
@@ -114,6 +115,10 @@ struct HDFCFUtil
 
     /// Print datatype in string
     static std::string print_type(int32);
+
+    /// Obtain datatype size
+    static short obtain_type_size(int32);
+
 
     // Subsetting the 2-D fields
     template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
@@ -228,6 +233,13 @@ struct HDFCFUtil
     // Read double-type data from a file to a vector of double type
     static ssize_t read_vector_from_file(int fd,vector<double> &,size_t);
      
+    // wrap function of Unix read to a buffer. Memory for the buffer should be allocated.
+    static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
+    static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname); 
+    static size_t obtain_dds_cache_size(HDFSP::File*);
+    static void write_sp_sds_dds_cache(HDFSP::File*,FILE*,size_t,const std::string & fname);
+    static void read_sp_sds_dds_cache(FILE*,libdap::DDS * dds_ptr,const std::string &filename, const std::string &hdf_filename);
+     
 };
 
 /// This inline routine will translate N dimensions into 1 dimension.
@@ -254,5 +266,62 @@ INDEX_nD_TO_1D (const std::vector < int32 > &dims,
     return sum;
 }
 
+// Build a lock of a certain type.
+static inline struct flock *lock(int type) {
+    static struct flock lock;
+    lock.l_type = type;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+
+    return &lock;
+}
+
+static inline string get_errno() {
+        char *s_err = strerror(errno);
+        if (s_err)
+                return s_err;
+        else
+                return "Unknown error.";
+}
+
+//! Getting a subset of a variable
+//
+//      \param input Input variable
+//       \param dim dimension info of the input
+//       \param start start indexes of each dim
+//       \param stride stride of each dim
+//       \param edge count of each dim
+//       \param poutput output variable
+//      \parrm index dimension index
+//       \return 0 if successful. -1 otherwise.
+//
+#if 0
+template<typename T>
+int subset(
+    const T input[],
+    int rank,
+    vector<int> & dim,
+    vector<int> & start,
+    vector<int> & stride,
+    vector<int> & edge,
+    std::vector<T> *poutput,
+    vector<int>& pos,
+    int index)
+{
+    for(int k=0; k<edge[index]; k++)
+    {
+        pos[index] = start[index] + k*stride[index];
+        if(index+1<rank)
+            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
+        if(index==rank-1)
+        {
+            poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
+        }
+    } // end of for
+    return 0;
+} // end of template<typename T> static int subset
+#endif
 
 #endif

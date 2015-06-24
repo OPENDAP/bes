@@ -92,15 +92,15 @@ namespace HDFEOS2
             }
 
             /// set file type be either HDF-EOS2 or HDF4(non-HDFEOS2)
-            virtual void setFileType (bool isHDFEOS2)
+            virtual void setFileType (bool isHDFEOS2_flag)
             {
-                this->isHDFEOS2 = isHDFEOS2;
+                this->isHDFEOS2 = isHDFEOS2_flag;
             }
 
             /// set exception message
-            virtual void setException (std::string message)
+            virtual void setException (std::string exception_message)
             {
-                this->message = message;
+                this->message = exception_message;
             }
 
         protected:
@@ -240,8 +240,8 @@ namespace HDFEOS2
             }
 
         protected:
-            Dimension (const std::string & name, int32 dimsize)
-                : name (name), dimsize (dimsize)
+            Dimension (const std::string & eos_dname, int32 eos_dimsize)
+                : name (eos_dname), dimsize (eos_dimsize)
             {
             }
 
@@ -263,6 +263,12 @@ namespace HDFEOS2
                 :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)/*, field_cache(0)*/
 
             {
+                name ="";
+                rank =-1;
+                type =-1;
+                coordinates="";
+                newname = "";
+                units="";
             }
             virtual ~ Field ();
 
@@ -305,9 +311,9 @@ namespace HDFEOS2
             }
 
             /// Set the list of the corrected dimensions
-            void setCorrectedDimensions (std::vector < Dimension * >dims)
+            void setCorrectedDimensions (std::vector < Dimension * >eos_dims)
             {
-                correcteddims = dims;
+                correcteddims = eos_dims;
             }
 
             /// Get the "coordinates" attribute value
@@ -335,7 +341,7 @@ namespace HDFEOS2
             }
 
             /// Get the _Fillvalue" attribute value
-            float getAddedFillValue () const
+            const float getAddedFillValue () const
             {
                 return this->addedfv;
             }
@@ -351,7 +357,7 @@ namespace HDFEOS2
             }
 
             /// Have the added fillvaue?
-            bool haveAddedFillValue () const
+            const bool haveAddedFillValue () const
             {
                 return this->haveaddedfv;
             }
@@ -372,7 +378,7 @@ namespace HDFEOS2
             // 4 is an inserted natural number.
             // 5 is time.
 
-            int getFieldType () const
+            const int getFieldType () const
             {
                 return this->fieldtype;
             }
@@ -390,31 +396,31 @@ namespace HDFEOS2
             }
 
             /// Obtain the ydimmajor info.
-            bool getYDimMajor () const
+            const bool getYDimMajor () const
             {
                 return this->ydimmajor;
             }
 
             /// Obtain the speciallon info.
-            bool getSpecialLon () const
+            const bool getSpecialLon () const
             {
                 return this->speciallon;
             }
 
             /// Obtain the special lat/lon format info.
-            int getSpecialLLFormat () const
+            const int getSpecialLLFormat () const
             {
                 return this->specialformat;
             }
 
             /// Obtain if the dimension can be condensed.  
-            bool getCondensedDim () const
+            const bool getCondensedDim () const
             {
                 return this->condenseddim;
             }
 
             /// Have dimension map or not
-            bool UseDimMap () const
+            const bool UseDimMap () const
             {
                 return this->dmap;
             }
@@ -626,7 +632,7 @@ namespace HDFEOS2
             }
 
             /// Get the scale and offset type  
-            SOType getScaleType () const
+            const SOType getScaleType () const
             {
                 return this->scaletype;
             }
@@ -636,6 +642,7 @@ namespace HDFEOS2
             Dataset (const std::string & n)
                 : datasetid (-1), addfvalueattr(false),name (n),scaletype(DEFAULT_CF_EQU)
             {
+                
             }
 
             virtual ~ Dataset ();
@@ -842,8 +849,8 @@ namespace HDFEOS2
 
                 protected:
 
-                    Calculated (const GridDataset * grid)
-                        : grid (grid),  ydimmajor (false)
+                    Calculated (const GridDataset * eos_grid)
+                        : grid (eos_grid),  ydimmajor (false)
                     {
                     }
 
@@ -905,7 +912,7 @@ namespace HDFEOS2
                 }
 
                 /// Obtain the ownllflag  info.
-                bool getLatLonFlag () const
+                const bool getLatLonFlag () const
                 {
                     return this->ownllflag;
                 }
@@ -992,8 +999,8 @@ namespace HDFEOS2
                         }
 
                     protected:
-                        DimensionMap (const std::string & geodim, const std::string & datadim, int32 offset, int32 increment)
-                            : geodim (geodim), datadim (datadim), offset (offset), increment (increment)
+                        DimensionMap (const std::string & eos_geodim, const std::string & eos_datadim, int32 eos_offset, int32 dimmap_increment)
+                            : geodim (eos_geodim), datadim (eos_datadim), offset (eos_offset), increment (dimmap_increment)
                         {
                         }
 
@@ -1070,8 +1077,8 @@ namespace HDFEOS2
                 };
 
             private:
-                 SwathDataset (const std::string & name)
-                    : Dataset (name) {
+                 SwathDataset (const std::string & swath_name)
+                    : Dataset (swath_name),num_map(0) {
                  }
 
 
@@ -1109,12 +1116,12 @@ namespace HDFEOS2
         class PointDataset:public Dataset
         {
             public:
-                static PointDataset *Read (int32 fd, const std::string & pointname) throw (Exception);
+                static PointDataset *Read (int32 fd, const std::string & point_name) throw (Exception);
                 virtual ~ PointDataset ();
 
             private:
-                PointDataset (const std::string & name)
-                    : Dataset (name)
+                PointDataset (const std::string & point_name)
+                    : Dataset (point_name)
                 {
                 }
         };
@@ -1181,8 +1188,8 @@ namespace HDFEOS2
 
 
             protected:
-                File (const char *path)
-                    : path (path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
+                File (const char *eos2_file_path)
+                    : path (eos2_file_path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
                 {
                 }
 

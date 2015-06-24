@@ -1759,6 +1759,9 @@
         <Attribute name="long_name" type="String">
             <value>Latitude</value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
         <Float32/>
         <dimension name="Track" size="22"/>
         <dimension name="XTrack" size="15"/>
@@ -1770,6 +1773,9 @@
         <Attribute name="long_name" type="String">
             <value>Longitude</value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
         <Float32/>
         <dimension name="Track" size="22"/>
         <dimension name="XTrack" size="15"/>
@@ -1780,6 +1786,9 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>Time</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
         </Attribute>
         <Float32/>
         <dimension name="Track" size="22"/>

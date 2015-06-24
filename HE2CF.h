@@ -80,11 +80,17 @@ class HE2CF
         // Not an ideal approach, need to re-visit later. KY 2012-6-11
         vector<string>  eosmetadata_namelist;
     
-        // SDS name to SDS id 
-        map < string, int32 > vg_sd_map;
+        // Data field SDS name to SDS id 
+        map < string, int32 > vg_dsd_map;
 
-        // vdata name to vdata id
-        map < string, int32 > vg_vd_map;
+        // Data field vdata name to vdata id
+        map < string, int32 > vg_dvd_map;
+
+        // Geolocation field SDS name to SDS id 
+        map < string, int32 > vg_gsd_map;
+
+        // Geolocation field vdata name to vdata id
+        map < string, int32 > vg_gvd_map;
 
         // Add metadata_name to the metadata name list.
         void set_eosmetadata_namelist(const string &metadata_name)
@@ -118,7 +124,7 @@ class HE2CF
         void obtain_SD_attr_value(const string &,string&);
 
         // Create SDS name to SDS ID and Vdata name to vdata ID maps.
-        bool set_vgroup_map(int32 refid);
+        bool set_vgroup_map(int32 refid,bool isgeo);
 
         // Write the long_name attribute.
         bool write_attr_long_name(const string& long_name, 
@@ -130,10 +136,14 @@ class HE2CF
             int fieldtype);
 
         // Write the SD attribute.
-        bool write_attr_sd(int32 sds_id, const string& newfname);
+        bool write_attr_sd(int32 sds_id, const string& newfname,int fieldtype);
+
+        /// Check if we can ignore lat/lon scale/offset factors
+        short check_scale_offset(int32 sds_id, bool is_scale);
+
 
         // Write the Vdata attribute.
-        bool write_attr_vdata(int32 vd_id, const string& newfname);
+        bool write_attr_vdata(int32 vd_id, const string& newfname,int fieldtype);
         void throw_error(string _error);
     
     public:
@@ -177,6 +187,7 @@ class HE2CF
         /// 
         /// Any existing units attribute will be overwritten by this function.
         bool write_attribute_units(const string& varname, string units);
+
 
 };
 

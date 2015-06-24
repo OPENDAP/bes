@@ -8602,6 +8602,19 @@
         <Attribute name="long_name" type="String">
             <value>Latitude</value>
         </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-90.00000000</value>
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="line_numbers" type="String">
+            <value>3,8</value>
+        </Attribute>
+        <Attribute name="frame_numbers" type="String">
+            <value>3,8,13,...</value>
+        </Attribute>
         <Float32/>
         <dimension name="_10_nscans" size="2030"/>
         <dimension name="Max_EV_frames" size="1354"/>
@@ -8612,6 +8625,19 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>Longitude</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <value>-180.0000000</value>
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-999.0000000</value>
+        </Attribute>
+        <Attribute name="line_numbers" type="String">
+            <value>3,8</value>
+        </Attribute>
+        <Attribute name="frame_numbers" type="String">
+            <value>3,8,13,...</value>
         </Attribute>
         <Float32/>
         <dimension name="_10_nscans" size="2030"/>

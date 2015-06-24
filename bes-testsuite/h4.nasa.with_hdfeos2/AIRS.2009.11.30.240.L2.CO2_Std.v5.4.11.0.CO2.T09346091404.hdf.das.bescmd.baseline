@@ -2,14 +2,17 @@ Attributes {
     Latitude {
         String units "degrees_north";
         String long_name "Latitude";
+        Float32 _FillValue -9999.000000;
     }
     Longitude {
         String units "degrees_east";
         String long_name "Longitude";
+        Float32 _FillValue -9999.000000;
     }
     Time {
         String coordinates "Latitude Longitude";
         String long_name "Time";
+        Float32 _FillValue -9999.000000;
     }
     AvgKernDim {
         String units "level";

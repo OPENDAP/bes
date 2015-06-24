@@ -695,6 +695,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     GET_SCALE_FACTOR_ATTR_VALUE(UINT32, uint32);
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float);
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                     
                 };
 #undef GET_SCALE_FACTOR_ATTR_VALUE
@@ -752,6 +755,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     GET_ADD_OFFSET_ATTR_VALUE(UINT32, uint32);
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float);
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                 };
 #undef GET_ADD_OFFSET_ATTR_VALUE
             }
@@ -805,6 +811,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     GET_FILLVALUE_ATTR_VALUE(UCHAR, uint8);
                     GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
                     GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                 };
 #undef GET_FILLVALUE_ATTR_VALUE
             }
@@ -1160,6 +1169,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         break;
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                 };
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
                 // Store the count of attributes.
@@ -1250,6 +1262,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         break;
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
                 };
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
                 num_eles_of_an_attr = temp_attrcount; // Store the count of attributes. 

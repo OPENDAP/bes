@@ -133,7 +133,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         // Since it doesn't provide the project code, we double check their information
         // and find that it covers the whole globe with 0.05 degree resolution.
         // Lat. is from 90 to -90 and Lon is from -180 to 180.
-        void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
+        void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step);
 
         // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
         void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, int nelms,bool write_latlon_cache);
@@ -142,7 +142,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         {
             if(isinf(value)) return(true);
             if(isnan(value)) return(true);
-            // GCTP_LAMAZ returns "1e+51" for values at the opposite poles
+            // GCTP_AMAZ returns "1e+51" for values at the opposite poles
             if(value < -90.0 || value > 90.0) return(true);
                 return(false);
         } // end bool isundef_lat(double value)
@@ -259,7 +259,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         void CalculateSOMLatLon(int32, int*, int*, int*, int,const string &, bool);
 
         // Calculate Latitude and Longitude for LAMAZ Projection.
-        void CalculateLAMAZLatLon(int32, int, float64*, float64*,int*, int*, int*, int,bool);
+        void CalculateLAMAZLatLon(int32, int, float64*, float64*,int*, int*, int*, bool);
 
         // Subsetting the latitude and longitude.
         template <class T> void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);

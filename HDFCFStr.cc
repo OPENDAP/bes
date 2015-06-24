@@ -39,13 +39,13 @@
 #include "HDFCFUtil.h"
 
 
-HDFCFStr::HDFCFStr(const int h4fd, int32 field_ref,const string &filename,const string &varname,const string &varnewname, bool is_vdata) 
-      : Str(varnewname, filename),
-        filename(filename),
-        varname(varname),
-        h4fd(h4fd),
-        field_ref(field_ref),
-        is_vdata(is_vdata)
+HDFCFStr::HDFCFStr(const int this_h4fd, int32 sds_field_ref,const string &h4_filename,const string &sds_varname,const string &sds_varnewname, bool is_h4_vdata) 
+      : Str(sds_varnewname, h4_filename),
+        filename(h4_filename),
+        varname(sds_varname),
+        h4fd(this_h4fd),
+        field_ref(sds_field_ref),
+        is_vdata(is_h4_vdata)
 {
 }
 

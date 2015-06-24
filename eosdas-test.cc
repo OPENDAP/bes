@@ -61,7 +61,7 @@ int hdfeoslex();
 
 extern int hdfeosdebug;
 const char *prompt = "hdfeos-test: ";
-const char *version = "$Revision$";
+const char *version = "$Revision: 27207 $";
 
 void usage(string name)
 {

@@ -2,10 +2,24 @@
 #include <BESDebug.h>
 #include <BESLog.h>
 #include <math.h>
+#include"dodsutil.h"
+#include"HDFSPArray_RealField.h"
+#include"HDFSPArrayMissField.h"
 
-#include <debug.h>		// libdap debugging macros
+#include <debug.h>
 
 #define SIGNED_BYTE_TO_INT32 1
+
+// HDF datatype headers for both the default and the CF options
+#include "HDFByte.h"
+#include "HDFInt16.h"
+#include "HDFUInt16.h"
+#include "HDFInt32.h"
+#include "HDFUInt32.h"
+#include "HDFFloat32.h"
+#include "HDFFloat64.h"
+#include "HDFStr.h"
+//
 using namespace std;
 using namespace libdap;
 
@@ -29,15 +43,15 @@ HDFCFUtil::check_beskeys(const string& key) {
         if( dosettrue == doset  || dosetyes == doset )
             return true;
     }
-
     return false;
+
 }
 
-/** 
+/**
  * Copied from stack overflow because valgrind finds the code
  * below (Split) overruns memory, generating errors. jhrg 6/22/15
  */
-static void 
+static void
 split_helper(vector<string> &tokens, const string &text, const char sep)
 {
     string::size_type start = 0, end = 0;
@@ -50,13 +64,13 @@ split_helper(vector<string> &tokens, const string &text, const char sep)
 
 // From a string separated by a separator to a list of string,
 // for example, split "ab,c" to {"ab","c"}
-void 
+void
 HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
 {
     names.clear();
     split_helper(names, string(s, len), sep);
-#if 0    
-    // Replaced with the above since valgrind reports errors 
+#if 0
+    // Replaced with the above since valgrind reports errors
     // with this code. jhrg 6/22/15
     for (int i = 0, j = 0; j <= len; ++j) {
         if ((j == len && len) || s[j] == sep) {
@@ -70,7 +84,7 @@ HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &nam
 }
 
 // Assume sz is Null terminated string.
-void 
+void
 HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
 {
     names.clear();
@@ -86,6 +100,32 @@ HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
     Split(sz, (int)strlen(sz), sep, names);
 #endif
 }
+
+#if 0
+// From a string separated by a separator to a list of string,
+// for example, split "ab,c" to {"ab","c"}
+void 
+HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
+{
+    names.clear();
+    for (int i = 0, j = 0; j <= len; ++j) {
+        if ((j == len && len) || s[j] == sep) {
+            string elem(s + i, j - i);
+            names.push_back(elem);
+            i = j + 1;
+            continue;
+        }
+    }
+}
+
+// Assume sz is Null terminated string.
+void 
+HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
+{
+    Split(sz, (int)strlen(sz), sep, names);
+}
+
+#endif
 
 // This is a safer way to insert and update a c++ map value.
 // Otherwise, the local testsuite at The HDF Group will fail for HDF-EOS2 data
@@ -309,12 +349,12 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
                 && rep.str().find('e') == string::npos)
                 rep << ".";
             return rep.str();
+            break;
         }
     default:
         return string("UNKNOWN");
     }
 
-    return string("UNKNOWN");	// Added to silence a gcc warning. jhrg 6/22/15
 }
 
 // Print datatype in string. This is used to generate DAS.
@@ -378,7 +418,55 @@ HDFCFUtil::print_type(int32 type)
 
 }
 
+// Obtain HDF4 datatype size. 
+short
+HDFCFUtil::obtain_type_size(int32 type)
+{
 
+    // .
+    switch (type) {
+
+    case DFNT_CHAR:
+        return sizeof(char);
+
+    case DFNT_UCHAR8:
+        return sizeof(unsigned char);
+
+    case DFNT_UINT8:
+        return sizeof(unsigned char);
+
+    case DFNT_INT8:
+// ADD the macro
+    {
+#ifndef SIGNED_BYTE_TO_INT32
+        return sizeof(char);
+#else
+        return sizeof(int);
+#endif
+    }
+    case DFNT_UINT16:
+        return sizeof(unsigned short);
+
+    case DFNT_INT16:
+        return sizeof(short);
+
+    case DFNT_INT32:
+        return sizeof(int);
+
+    case DFNT_UINT32:
+        return sizeof(unsigned int);
+
+    case DFNT_FLOAT:
+        return sizeof(float);
+
+    case DFNT_DOUBLE:
+        return sizeof(double);
+
+    default:
+        return -1;
+    }
+
+}
 // Subset of latitude and longitude to follow the parameters from the DAP expression constraint
 // Somehow this function doesn't work. Now it is not used. Still keep it here for the future investigation.
 template < typename T >
@@ -929,9 +1017,9 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
             
             if (true == add_offset_found) {
                 float new_offset_value = (orig_offset_value==0)?0:(-1 * orig_offset_value *new_scale_value); 
-                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
+                string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_offset_value));
                 at->del_attr("add_offset");
-                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
+                at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep2);
             }
 
         }
@@ -1450,6 +1538,8 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_SLOPE(INT32,   int32);
                     GET_SLOPE(FLOAT32, float);
                     GET_SLOPE(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef GET_SLOPE
                 } ;
                 //slope = *(float*)&((*i)->getValue()[0]);
@@ -1470,6 +1560,8 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_INTERCEPT(INT32,   int32);
                     GET_INTERCEPT(FLOAT32, float);
                     GET_INTERCEPT(FLOAT64, double);
+                    default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef GET_INTERCEPT
                 } ;
                 //intercept = *(float*)&((*i)->getValue()[0]);
@@ -1520,6 +1612,9 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
                 GET_SLOPE(INT32,   int32);
                 GET_SLOPE(FLOAT32, float);
                 GET_SLOPE(FLOAT64, double);
+                default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
 #undef GET_SLOPE
                 } ;
                     //slope = *(float*)&((*i)->getValue()[0]);
@@ -1540,6 +1635,9 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
                 GET_INTERCEPT(INT32,   int32);
                 GET_INTERCEPT(FLOAT32, float);
                 GET_INTERCEPT(FLOAT64, double);
+                default:
+                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+
 #undef GET_INTERCEPT
                 } ;
                     //intercept = *(float*)&((*i)->getValue()[0]);
@@ -2076,23 +2174,23 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                         else if(true == has_dBZ) 
                             valid_max = (short)(80*strtof(scale_factor_value.c_str(),NULL));
 
-                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
-                        at->append_attr("valid_min","Int16",print_rep);
-                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
-                        at->append_attr("valid_max","Int16",print_rep);
+                        string print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
+                        at->append_attr("valid_min","Int16",print_rep1);
+                        print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
+                        at->append_attr("valid_max","Int16",print_rep1);
 
                         at->del_attr("scale_factor");
                         if(scale_factor_type == "Float64") {
                             double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
-                            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
-                            at->append_attr("scale_factor", scale_factor_type,print_rep);
+                            string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
+                            at->append_attr("scale_factor", scale_factor_type,print_rep2);
 
                         }
                                
                         if(scale_factor_type == "Float32") {
                             float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
-                            string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
-                            at->append_attr("scale_factor", scale_factor_type,print_rep);
+                            string print_rep3 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
+                            at->append_attr("scale_factor", scale_factor_type,print_rep3);
 
                         }
 
@@ -2579,25 +2677,13 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
      float lon_west = 0.;
      
      vector<string> ind_elems;
-     const char sep='\n';
-#if 1
-     // Patch for Split(). The Split() method expects that 
-     // value will be null terminated, but callers in HDFSP.cc
-     // that set value don't add the null and modifying 
-     // that code so it does add the null might break other
-     // uses of value (i.e., callers of getValue()). Since this
-     // modifies a copy and the return is in a new variable,
-     // I'm going to leave it as is - a patch. jhrg 6/23/15
-     vector<char> text(value.size()+1);
-     text = value;
-     text.push_back('\0');
-     HDFCFUtil::Split(&text[0], sep, ind_elems);
-#else
-     HDFCFUtil::Split(&value[0], sep, ind_elems);
-#endif
-     
-     /* The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.*/
-     if(ind_elems.size()!=10)
+     char sep='\n';
+     HDFCFUtil::Split(&value[0],sep,ind_elems);
+     // The number of elements in the GridHeader is 9. 
+     //The string vector will add a leftover. So the size should be 10.
+     // For the  MacOS clang compiler, the string vector size may become 11.
+     // So we change the condition to be "<9" is wrong.
+     if(ind_elems.size()<9)
         throw InternalErr(__FILE__,__LINE__,"The number of elements in the TRMM level 3 GridHeader is not right.");
 
      if(false == check_reg_orig) {
@@ -2817,19 +2903,22 @@ string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
     
     string str;
     if(x!=0) {
-        char res[total_digit];
+        //char res[total_digit];
+        vector<char> res;
+        res.resize(total_digit);
         for(int i = 0; i<total_digit;i++)
            res[i] = '\0';
         if (x<0) { 
            str.push_back('-');
-           dtoa(-x,res,after_point);
+           dtoa(-x,&res[0],after_point);
            for(int i = 0; i<total_digit;i++) {
                if(res[i] != '\0')
                   str.push_back(res[i]);
            }
         }
         else {
-           dtoa(x, res, after_point);
+           dtoa(x, &res[0], after_point);
+           //dtoa(x, res, after_point);
            for(int i = 0; i<total_digit;i++) {
                if(res[i] != '\0')
                   str.push_back(res[i]);
@@ -2863,9 +2952,13 @@ string HDFCFUtil::get_int_str(int x) {
          num_digit++;
       if(x<=0)
          num_digit++;
-      char buf[num_digit];
-      sprintf(buf,"%d",x);
-      str.assign(buf);
+      //char buf[num_digit];
+      vector<char> buf;
+      buf.resize(num_digit);
+      sprintf(&buf[0],"%d",x);
+      //sprintf(buf,"%d",x);
+      str.assign(&buf[0]);
+      //str.assign(buf);
 
    }      
 
@@ -2923,7 +3016,14 @@ cerr<<"ret_val for write is "<<ret_val <<endl;
 #endif
     return ret_val;
 }
+// Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
+ssize_t HDFCFUtil::read_buffer_from_file(int fd,  void*buf, size_t total_read) {
 
+    ssize_t ret_val;
+    ret_val = read(fd,buf,total_read);
+    
+    return ret_val;
+}
 void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd,bool pass_fileid) {
 
     if(false == pass_fileid) {
@@ -2941,6 +3041,372 @@ void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathf
     }
 
 }
+
+// Obtain the cache name. Since AIRS version 6 level 3 all share the same latitude and longitude,
+// we provide one set of latitude and longitude cache files for all AIRS level 3 version 6 products.
+string HDFCFUtil::obtain_cache_fname(const string & fprefix, const string &fname, const string &vname) {
+
+     string cache_fname = fprefix;
+     string base_file_name = basename(fname);
+     // Identify this file from product name: AIRS, product level: .L3. or .L2. and version .v6. 
+     if((base_file_name.size() >12)  
+         && (base_file_name.compare(0,4,"AIRS") == 0)
+         && (base_file_name.find(".L3.")!=string::npos)
+         && (base_file_name.find(".v6.")!=string::npos)
+         && ((vname == "Latitude") ||(vname == "Longitude"))) 
+         cache_fname = cache_fname +"AIRS"+".L3."+".v6."+vname;
+     else
+         cache_fname = cache_fname + base_file_name +"_"+vname;
+
+     return cache_fname;
+}
+
+// The current DDS cache is only for some products of which object information
+// can be retrieved via HDF4 SDS APIs. Currently only AIRS version 6 products are supported.
+size_t HDFCFUtil::obtain_dds_cache_size(HDFSP::File*spf) {
+
+    size_t total_bytes_written = 0;
+    const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
+    vector<HDFSP::SDField *>::const_iterator it_g;
+    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+        // We will not handle when the SDS datatype is DFNT_CHAR now.
+        if(DFNT_CHAR == (*it_g)->getType()) {
+            total_bytes_written = 0;
+            break;
+        }
+        else {
+            // We need to store dimension names and variable names.
+            int temp_rank = (*it_g)->getRank(); 
+            const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
+            vector<HDFSP::Dimension*>::const_iterator it_d;
+            for(it_d = dims.begin(); it_d != dims.end(); ++it_d) 
+                total_bytes_written += ((*it_d)->getName()).size()+1;
+
+            total_bytes_written +=((*it_g)->getName()).size()+1;
+
+            // Many a time variable new name is the same as variable name,
+            // so we may just save one byte('\0') for such as a case.
+            if(((*it_g)->getName()) != ((*it_g)->getNewName()))
+                total_bytes_written +=((*it_g)->getNewName()).size()+1;
+            else
+                total_bytes_written +=1;
+
+            // We need to store 4 integers: rank, variable datatype, SDS reference number, fieldtype
+            total_bytes_written +=(temp_rank+4)*sizeof(int);
+        }
+    }
+
+    if(total_bytes_written != 0)
+        total_bytes_written +=1;
+
+    return total_bytes_written;
+
+}
+
+// Write the DDS of the special SDS-only HDF to a cache. 
+void HDFCFUtil::write_sp_sds_dds_cache(HDFSP::File* spf,FILE*dds_file,size_t total_bytes_dds_cache,const string &dds_filename) {
+
+    BESDEBUG("h4"," Coming to write SDS DDS to a cache" << endl);
+    char delimiter = '\0';
+    char cend = '\n';
+    size_t total_written_bytes_count = 0;
+
+    // The buffer to hold information to write to a DDS cache file.
+    vector<char>temp_buf;
+    temp_buf.resize(total_bytes_dds_cache);
+    char* temp_pointer = &temp_buf[0];
+
+    const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
+
+    //Read SDS 
+    vector<HDFSP::SDField *>::const_iterator it_g;
+    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+        // First, rank, fieldtype, SDS reference number, variable datatype, dimsize(rank)
+        int sds_rank = (*it_g)->getRank();
+        int sds_ref = (*it_g)->getFieldRef();
+        int sds_dtype = (*it_g)->getType();
+        int sds_ftype = (*it_g)->getFieldType();
+
+        vector<int32>dimsizes;
+        dimsizes.resize(sds_rank);
+  
+        // Size for each dimension
+        const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
+        for(int i = 0; i < sds_rank; i++) 
+            dimsizes[i] = dims[i]->getSize();
+
+        memcpy((void*)temp_pointer,(void*)&sds_rank,sizeof(int));
+        temp_pointer +=sizeof(int);
+        memcpy((void*)temp_pointer,(void*)&sds_ref,sizeof(int));
+        temp_pointer +=sizeof(int);
+        memcpy((void*)temp_pointer,(void*)&sds_dtype,sizeof(int));
+        temp_pointer +=sizeof(int);
+        memcpy((void*)temp_pointer,(void*)&sds_ftype,sizeof(int));
+        temp_pointer +=sizeof(int);
+        
+        memcpy((void*)temp_pointer,(void*)&dimsizes[0],sds_rank*sizeof(int));
+        temp_pointer +=sds_rank*sizeof(int);
+        
+        // total written bytes so far
+        total_written_bytes_count +=(sds_rank+4)*sizeof(int);
+
+        // Second, variable name,variable new name  and SDS dim name(rank)
+        // we need to a delimiter to distinguish each name.
+        string temp_varname = (*it_g)->getName();
+        vector<char>temp_val1(temp_varname.begin(),temp_varname.end());
+        memcpy((void*)temp_pointer,(void*)&temp_val1[0],temp_varname.size());
+        temp_pointer +=temp_varname.size();
+        memcpy((void*)temp_pointer,&delimiter,1);
+        temp_pointer +=1;
+
+        total_written_bytes_count =total_written_bytes_count +(1+temp_varname.size());
+
+        // To save the dds cache size and the speed to retrieve variable new name
+        // we only save variable cf name when the variable cf name is not the
+        // same as the variable name. When they are the same, a delimiter is saved for
+        // variable cf name. 
+        if((*it_g)->getName() == (*it_g)->getNewName()){
+            memcpy((void*)temp_pointer,&delimiter,1);
+            temp_pointer +=1;
+            total_written_bytes_count +=1;
+        }
+        else {
+            string temp_varnewname = (*it_g)->getNewName();
+            vector<char>temp_val2(temp_varnewname.begin(),temp_varnewname.end());
+            memcpy((void*)temp_pointer,(void*)&temp_val2[0],temp_varnewname.size());
+            temp_pointer +=temp_varnewname.size();
+            memcpy((void*)temp_pointer,&delimiter,1);
+            temp_pointer +=1;
+            total_written_bytes_count =total_written_bytes_count +(1+temp_varnewname.size());
+        }
+            
+        // Now the name for each dimensions.
+        for(int i = 0; i < sds_rank; i++) {
+            string temp_dimname = dims[i]->getName();
+            vector<char>temp_val3(temp_dimname.begin(),temp_dimname.end());
+            memcpy((void*)temp_pointer,(void*)&temp_val3[0],temp_dimname.size());
+            temp_pointer +=temp_dimname.size();
+            memcpy((void*)temp_pointer,&delimiter,1);
+            temp_pointer +=1;
+            total_written_bytes_count =total_written_bytes_count +(1+temp_dimname.size());
+        }
+    }
+    
+    memcpy((void*)temp_pointer,&cend,1);
+    total_written_bytes_count +=1;
+
+    if(total_written_bytes_count != total_bytes_dds_cache) {
+        stringstream s_total_written_count;
+        s_total_written_count << total_written_bytes_count;
+        stringstream s_total_bytes_dds_cache;
+        s_total_bytes_dds_cache << total_bytes_dds_cache;
+        string msg = "DDs cached file "+ dds_filename +" buffer size should be " + s_total_bytes_dds_cache.str()  ;
+        msg = msg + ". But the real size written in the buffer is " + s_total_written_count.str();
+        throw InternalErr (__FILE__, __LINE__,msg);
+    }
+
+    size_t bytes_really_written = fwrite((const void*)&temp_buf[0],1,total_bytes_dds_cache,dds_file);
+
+    if(bytes_really_written != total_bytes_dds_cache) { 
+        stringstream s_expected_bytes;
+        s_expected_bytes << total_bytes_dds_cache;
+        stringstream s_really_written_bytes;
+        s_really_written_bytes << bytes_really_written;
+        string msg = "DDs cached file "+ dds_filename +" size should be " + s_expected_bytes.str()  ;
+        msg += ". But the real size written to the file is " + s_really_written_bytes.str();
+        throw InternalErr (__FILE__, __LINE__,msg);
+    }
+
+}
+
+// Read DDS of a special SDS-only HDF file from a cache.
+void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
+                                      const std::string &cache_filename, const std::string &hdf4_filename) {
+
+    BESDEBUG("h4"," Coming to read SDS DDS from a cache" << endl);
+
+    // Check the cache file size.
+    struct stat sb;
+    if(stat(cache_filename.c_str(),&sb)!=0) {
+        string err_mesg="The DDS cache file " + cache_filename;
+        err_mesg = err_mesg + " doesn't exist.  ";
+        throw InternalErr(__FILE__,__LINE__,err_mesg);
+    }
+
+    size_t bytes_expected_read = (size_t)sb.st_size;
+
+    // Allocate the buffer size based on the file size.
+    vector<char> temp_buf;
+    temp_buf.resize(bytes_expected_read);
+    size_t bytes_really_read = fread((void*)&temp_buf[0],1,bytes_expected_read,dds_file);
+
+    // Now bytes_really_read should be the same as bytes_expected_read if the element size is 1.
+    if(bytes_really_read != bytes_expected_read) {
+        stringstream s_bytes_really_read;
+        s_bytes_really_read << bytes_really_read ;
+        stringstream s_bytes_expected_read;
+        s_bytes_expected_read << bytes_expected_read;
+        string msg = "The expected bytes to read from DDS cache file " + cache_filename +" is " + s_bytes_expected_read.str();
+        msg = msg + ". But the real read size from the buffer is  " + s_bytes_really_read.str();
+        throw InternalErr (__FILE__, __LINE__,msg);
+    }
+    char* temp_pointer = &temp_buf[0];
+
+    char delimiter = '\0';
+    // The end of the whole string.
+    char cend = '\n';
+    bool end_file_flag = false;
+
+   
+    do {
+        int sds_rank = *((int *)(temp_pointer));
+        temp_pointer = temp_pointer + sizeof(int);
+
+        int sds_ref = *((int *)(temp_pointer));
+        temp_pointer = temp_pointer + sizeof(int);
+
+        int sds_dtype = *((int *)(temp_pointer));
+        temp_pointer = temp_pointer + sizeof(int);
+
+        int sds_ftype = *((int *)(temp_pointer));
+        temp_pointer = temp_pointer + sizeof(int);
+
+        vector<int32>dimsizes;
+        dimsizes.resize(sds_rank);
+        for (int i = 0; i <sds_rank;i++) {
+            dimsizes[i] = *((int *)(temp_pointer));
+            temp_pointer = temp_pointer + sizeof(int);
+        }
+
+        vector<string>dimnames;
+        dimnames.resize(sds_rank);
+        string varname,varnewname;
+        for (int i = 0; i <sds_rank+2;i++) {
+            vector<char> temp_vchar;
+            char temp_char = *temp_pointer;
+
+            // Only apply when varnewname is stored as the delimiter.
+            if(temp_char == delimiter) 
+                temp_vchar.push_back(temp_char);             
+            while(temp_char !=delimiter) {
+                temp_vchar.push_back(temp_char);
+                temp_pointer++;
+                temp_char = *temp_pointer;
+                //temp_char = *(++temp_pointer); work
+                //temp_char = *(temp_pointer++); not working
+            }
+            string temp_string(temp_vchar.begin(),temp_vchar.end());
+            if(i == 0) 
+                varname = temp_string;
+            else if( i == 1)
+                varnewname = temp_string;
+            else 
+                dimnames[i-2] = temp_string;
+            temp_pointer++;
+        }
+
+        // If varnewname is only the delimiter, varname and varnewname is the same.
+        if(varnewname[0] == delimiter)
+            varnewname = varname;
+        // Assemble DDS. 
+        // 1. Create a basetype
+        BaseType *bt = NULL;
+        switch(sds_dtype) { 
+#define HANDLE_CASE(tid, type) \
+    case tid: \
+        bt = new (type)(varnewname,hdf4_filename); \
+        break; 
+        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32); 
+        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64); 
+        HANDLE_CASE(DFNT_CHAR, HDFStr); 
+#ifndef SIGNED_BYTE_TO_INT32 
+        HANDLE_CASE(DFNT_INT8, HDFByte); 
+#else 
+        HANDLE_CASE(DFNT_INT8,HDFInt32); 
+#endif 
+        HANDLE_CASE(DFNT_UINT8, HDFByte); 
+        HANDLE_CASE(DFNT_INT16, HDFInt16); 
+        HANDLE_CASE(DFNT_UINT16, HDFUInt16); 
+        HANDLE_CASE(DFNT_INT32, HDFInt32); 
+        HANDLE_CASE(DFNT_UINT32, HDFUInt32); 
+        HANDLE_CASE(DFNT_UCHAR8, HDFByte); 
+        default: 
+            InternalErr(__FILE__,__LINE__,"unsupported data type."); 
+#undef HANDLE_CASE 
+        } 
+
+        if(NULL == bt)
+            InternalErr(__FILE__,__LINE__,"Cannot create the basetype when creating DDS from a cache file.");
+
+        SPType sptype = OTHERHDF;
+
+        // sds_ftype indicates if this is a general data field or geolocation field.
+        // 4 indicates this is a missing non-latlon geo-location fields.
+        if(sds_ftype != 4){
+            HDFSPArray_RealField *ar = NULL;
+            try {
+                // pass sds id as 0 since the sds id will be retrieved from SDStart if necessary.
+                ar = new HDFSPArray_RealField(
+                                              sds_rank,
+                                              hdf4_filename,
+                                              0,
+                                              sds_ref,
+                                              sds_dtype,
+                                              sptype,
+                                              varname,
+                                              dimsizes,
+                                              varnewname,
+                                              bt);
+            }
+            catch(...) {
+                delete bt;
+                InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+            }
+
+            for(int i = 0; i <sds_rank; i++)
+                ar->append_dim(dimsizes[i],dimnames[i]);
+            dds_ptr->add_var(ar);
+            delete bt;
+            delete ar;
+        }
+        else {
+            HDFSPArrayMissGeoField *ar = NULL;
+            if(sds_rank == 1) {
+                try {
+                    ar = new HDFSPArrayMissGeoField(
+                                                    sds_rank,
+                                                    dimsizes[0],
+                                                    varnewname,
+                                                    bt);
+                }
+                catch(...) {
+                    delete bt;
+                    InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                }
+
+                ar->append_dim(dimsizes[0],dimnames[0]);
+                dds_ptr->add_var(ar);
+                delete bt;
+                delete ar;
+            }
+            else 
+                InternalErr(__FILE__,__LINE__,"SDS rank  must be 1 for the missing coordinate.");
+        }
+
+        if(*temp_pointer == cend)
+            end_file_flag = true;
+        if((temp_pointer - &temp_buf[0]) > (int)bytes_expected_read) {
+            string msg = cache_filename + " doesn't have the end-line character at the end. The file may be corrupted.";
+            throw InternalErr (__FILE__, __LINE__,msg);
+        }
+    } while(false == end_file_flag);
+
+    dds_ptr->set_dataset_name(basename(hdf4_filename));
+}
+
+
 #if 0
 void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd) {
 

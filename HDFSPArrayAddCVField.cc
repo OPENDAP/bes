@@ -81,9 +81,9 @@ HDFSPArrayAddCVField::read ()
         }
 
         if(tnumelm == 28)
-            Obtain_trmm_v7_layer(nelms,offset,step,count);
+            Obtain_trmm_v7_layer(nelms,offset,step);
         else if(tnumelm == 6)
-            Obtain_trmml3s_v7_nthrash(nelms,offset,step,count);
+            Obtain_trmml3s_v7_nthrash(nelms,offset,step);
         else {
             throw InternalErr (__FILE__, __LINE__,
                 "This special coordinate variable is not supported.");
@@ -100,7 +100,7 @@ HDFSPArrayAddCVField::read ()
         }
 
         if(tnumelm == 28 && name =="nlayer")
-            Obtain_trmm_v7_layer(nelms,offset,step,count);
+            Obtain_trmm_v7_layer(nelms,offset,step);
         else {
             throw InternalErr (__FILE__, __LINE__,
                 "This special coordinate variable is not supported.");
@@ -149,7 +149,7 @@ HDFSPArrayAddCVField::read ()
 #endif
 
 
-void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,vector<int>&step,vector<int>&count) {
+void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,vector<int>&step) {
 
 
         vector<float>total_val;
@@ -180,7 +180,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
 }
 
 
-void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&offset,vector<int>&step,vector<int>&count) {
+void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&offset,vector<int>&step) {
 
     vector<float>total_val;
     total_val.resize(tnumelm);

@@ -34,6 +34,12 @@
         <Attribute name="long_name" type="String">
             <value>Swath1:Latitude</value>
         </Attribute>
+        <Attribute name="fill" type="UInt32">
+            <value>4294967295</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>4294967295</value>
+        </Attribute>
         <Float32/>
         <dimension name="xtrack" size="4"/>
         <dimension name="ytrack" size="8"/>
@@ -44,6 +50,9 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>Swath1:Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>65535</value>
         </Attribute>
         <Float32/>
         <dimension name="xtrack" size="4"/>
@@ -78,6 +87,9 @@
         <Attribute name="long_name" type="String">
             <value>Swath2:Latitude</value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-2147483648</value>
+        </Attribute>
         <Float32/>
         <dimension name="xtrack_1" size="8"/>
         <dimension name="ytrack_1" size="16"/>
@@ -88,6 +100,9 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <value>Swath2:Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
         </Attribute>
         <Float32/>
         <dimension name="xtrack_1" size="8"/>

@@ -112,9 +112,9 @@ namespace HDFSP
             }
 
             /// Set exception message.
-            virtual void setException (std::string message)
+            virtual void setException (std::string exception_message)
             {
-                this->message = message;
+                this->message = exception_message;
             }
 
 
@@ -150,8 +150,8 @@ namespace HDFSP
             }
 
         protected:
-            Dimension (const std::string & name, int32 dimsize, int32 dimtype)
-                : name (name), dimsize (dimsize), dimtype (dimtype)
+            Dimension (const std::string & dim_name, int32 hdf4_dimsize, int32 hdf4_dimtype)
+                : name (dim_name), dimsize (hdf4_dimsize), dimtype (hdf4_dimtype)
             {
             }
 
@@ -238,6 +238,7 @@ namespace HDFSP
         public:
             AttrContainer()
             {
+                name="";
             }
             ~AttrContainer();
 
@@ -281,8 +282,10 @@ namespace HDFSP
         public:
             Field ():type (-1), rank (-1)
             {
+                name="";
+                newname="";
             }
-            ~Field ();
+            virtual ~ Field ();
 
         public:
 
@@ -347,6 +350,10 @@ namespace HDFSP
             SDField ()
                 :fieldtype (0), fieldref (-1), condenseddim (false),is_noscale_dim(false),is_dim_scale(false)
             {
+                coordinates="";
+                units="";
+                special_product_fullpath="";
+                rootfieldname="";
             }
             ~SDField ();
 
@@ -366,9 +373,9 @@ namespace HDFSP
             }
 
             /// Set the list of the corrected dimensions
-            void setCorrectedDimensions (std::vector < Dimension * >dims)
+            void setCorrectedDimensions (std::vector < Dimension * >cor_dims)
             {
-                correcteddims = dims;
+                correcteddims = cor_dims;
             }
 
             /// Get the "coordinates" attribute
@@ -396,7 +403,7 @@ namespace HDFSP
             }
 
             // Get the field type
-            int getFieldType () const
+            const int getFieldType () const
             {
                 return this->fieldtype;
             }
@@ -563,11 +570,14 @@ namespace HDFSP
             /// Read the information of all hybrid SDS objects from the HDF4 file.
             static SD *Read_Hybrid (int32 sdfileid, int32 hfileid) throw (Exception);
 
+            /// Redundant member function.
+#if 0
             /// Retrieve the absolute path of the file(full file name).
             const std::string & getPath () const
             {
                 return this->path;
             }
+#endif
 
             /// Public interface to obtain information of all SDS vectors(objects).
             const std::vector < SDField * >&getFields () const
@@ -597,7 +607,8 @@ namespace HDFSP
         protected:
 
             /// The full path of the file(file name). 
-            std::string path;
+            //  Redundant member.
+            ///std::string path;
 
             /// SDS objects stored in vectors
             std::vector < SDField * >sdfields;
@@ -692,6 +703,8 @@ namespace HDFSP
         protected:
             VDATA (int32 vdata_myid, int32 obj_ref)
                 :vdref(obj_ref),TreatAsAttrFlag (true),vdata_id (vdata_myid) {
+                newname ="";
+                name ="";
             }
 
         protected:
@@ -789,8 +802,8 @@ namespace HDFSP
 
 
         protected:
-            File (const char *path)
-                : path (path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
+            File (const char *hdf4file_path)
+                : path (hdf4file_path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
             {
             }
 

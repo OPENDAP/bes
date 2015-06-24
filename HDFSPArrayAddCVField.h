@@ -62,10 +62,10 @@ class HDFSPArrayAddCVField:public Array
      
         int tnumelm;
         // TRMM version 7 nlayer values are from the document
-        void Obtain_trmm_v7_layer(int, vector<int>&,vector<int>&,vector<int>&);
+        void Obtain_trmm_v7_layer(int, vector<int>&,vector<int>&);
 
         // TRMM version 7 nthrash values are from the document
-        void Obtain_trmml3s_v7_nthrash(int, vector<int>&,vector<int>&,vector<int>&);
+        void Obtain_trmml3s_v7_nthrash(int, vector<int>&,vector<int>&);
 
 };
 

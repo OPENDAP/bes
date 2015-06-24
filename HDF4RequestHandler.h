@@ -37,6 +37,14 @@ using std::string;
 class HDF4RequestHandler:public BESRequestHandler {
   private:
     static string _cachedir;
+    static bool hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_dds_cf_sds(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_das_cf_sds(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_data_cf_sds(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface & dhi);
+#ifdef USE_DAP4
+    static bool hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi);
+#endif
   public:
     HDF4RequestHandler(const string & name);
     virtual ~ HDF4RequestHandler(void);
@@ -44,10 +52,8 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool hdf4_build_das(BESDataHandlerInterface & dhi);
     static bool hdf4_build_dds(BESDataHandlerInterface & dhi);
     static bool hdf4_build_data(BESDataHandlerInterface & dhi);
-    static bool hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi);
 #ifdef USE_DAP4
     static bool hdf4_build_dmr(BESDataHandlerInterface & dhi);
-    static bool hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi);
 #endif
     static bool hdf4_build_help(BESDataHandlerInterface & dhi);
     static bool hdf4_build_version(BESDataHandlerInterface & dhi);
