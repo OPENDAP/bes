@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="time" type="joinNew">
+    <variableAgg name="IRkalmanFilterWeight"/>
+    <variableAgg name="HQprecipSource"/>
+    <variableAgg name="precipitationCal"/>
+    <variableAgg name="precipitationUncal"/>
+    <variableAgg name="HQprecipitation"/>
+    <variableAgg name="probabilityLiquidPrecipitation"/>
+    <variableAgg name="HQobservationTime"/>
+    <variableAgg name="randomError"/>
+    <variableAgg name="IRprecipitation"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5" coordValue="124"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S003000-E005959.0030.V03D.HDF5" coordValue="124.020833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S010000-E012959.0060.V03D.HDF5" coordValue="124.041666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S013000-E015959.0090.V03D.HDF5" coordValue="124.0625"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S020000-E022959.0120.V03D.HDF5" coordValue="124.083333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S023000-E025959.0150.V03D.HDF5" coordValue="124.104166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S030000-E032959.0180.V03D.HDF5" coordValue="124.125"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S033000-E035959.0210.V03D.HDF5" coordValue="124.145833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S040000-E042959.0240.V03D.HDF5" coordValue="124.166666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S043000-E045959.0270.V03D.HDF5" coordValue="124.1875"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S050000-E052959.0300.V03D.HDF5" coordValue="124.208333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S053000-E055959.0330.V03D.HDF5" coordValue="124.229166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S060000-E062959.0360.V03D.HDF5" coordValue="124.25"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S063000-E065959.0390.V03D.HDF5" coordValue="124.270833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S070000-E072959.0420.V03D.HDF5" coordValue="124.291666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S073000-E075959.0450.V03D.HDF5" coordValue="124.3125"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S080000-E082959.0480.V03D.HDF5" coordValue="124.333333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S083000-E085959.0510.V03D.HDF5" coordValue="124.354166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S090000-E092959.0540.V03D.HDF5" coordValue="124.375"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S093000-E095959.0570.V03D.HDF5" coordValue="124.395833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S100000-E102959.0600.V03D.HDF5" coordValue="124.416666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S103000-E105959.0630.V03D.HDF5" coordValue="124.4375"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S110000-E112959.0660.V03D.HDF5" coordValue="124.458333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S113000-E115959.0690.V03D.HDF5" coordValue="124.479166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S120000-E122959.0720.V03D.HDF5" coordValue="124.5"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S123000-E125959.0750.V03D.HDF5" coordValue="124.520833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S130000-E132959.0780.V03D.HDF5" coordValue="124.541666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S133000-E135959.0810.V03D.HDF5" coordValue="124.5625"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S140000-E142959.0840.V03D.HDF5" coordValue="124.583333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S143000-E145959.0870.V03D.HDF5" coordValue="124.604166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S150000-E152959.0900.V03D.HDF5" coordValue="124.625"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S153000-E155959.0930.V03D.HDF5" coordValue="124.645833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S160000-E162959.0960.V03D.HDF5" coordValue="124.666666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S163000-E165959.0990.V03D.HDF5" coordValue="124.6875"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S170000-E172959.1020.V03D.HDF5" coordValue="124.708333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S173000-E175959.1050.V03D.HDF5" coordValue="124.729166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S180000-E182959.1080.V03D.HDF5" coordValue="124.75"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S183000-E185959.1110.V03D.HDF5" coordValue="124.770833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S190000-E192959.1140.V03D.HDF5" coordValue="124.791666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S193000-E195959.1170.V03D.HDF5" coordValue="124.8125"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S200000-E202959.1200.V03D.HDF5" coordValue="124.833333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S203000-E205959.1230.V03D.HDF5" coordValue="124.854166666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S210000-E212959.1260.V03D.HDF5" coordValue="124.875"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S213000-E215959.1290.V03D.HDF5" coordValue="124.895833333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S220000-E222959.1320.V03D.HDF5" coordValue="124.916666666666"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S223000-E225959.1350.V03D.HDF5" coordValue="124.9375"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S230000-E232959.1380.V03D.HDF5" coordValue="124.958333333334"/>
+    <netcdf location="agg/gpm1.gesdisc.eosdis.nasa.gov/GPM_L3/GPM_3IMERGHH.03/2014/125/3B-HHR.MS.MRG.3IMERG.20140505-S233000-E235959.1410.V03D.HDF5" coordValue="124.979166666666"/>
+  </aggregation>
+  <attribute name="Conventions" type="String" value="CF-1.0"/>
+  <variable name="IRkalmanFilterWeight">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="HQprecipSource">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="precipitationCal">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="precipitationUncal">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="HQprecipitation">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="probabilityLiquidPrecipitation">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="HQobservationTime">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="randomError">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="IRprecipitation">
+    <attribute name="coordinates" type="String" value="time lon lat"/>
+  </variable>
+  <variable name="time" shape="time" type="double">
+    <attribute name="standard_name" type="String" value="time"/>
+    <attribute name="units" type="String" value="days since 2014-01-01 00:00:00"/>
+    <attribute name="_CoordinateAxisType" type="String" value="time"/>
+    <values>124 124.020833333334 124.041666666666 124.0625 124.083333333334 124.104166666666 124.125 124.145833333334 124.166666666666 124.1875 124.208333333334 124.229166666666 124.25 124.270833333334 124.291666666666 124.3125 124.333333333334 124.354166666666 124.375 124.395833333334 124.416666666666 124.4375 124.458333333334 124.479166666666 124.5 124.520833333334 124.541666666666 124.5625 124.583333333334 124.604166666666 124.625 124.645833333334 124.666666666666 124.6875 124.708333333334 124.729166666666 124.75 124.770833333334 124.791666666666 124.8125 124.833333333334 124.854166666666 124.875 124.895833333334 124.916666666666 124.9375 124.958333333334 124.979166666666 </values>
+  </variable>
+</netcdf>

@@ -34,9 +34,10 @@ BES Timing Tests
 - Test Commands - 
 
 Beneath this directory you will find two subdirectories, 'test' and
-'agg_per_test'. In each there is a collection of files containing BES
-commands, each one as would be issued by the OLFS to an attached BES
-listener process. The bes command files are named according to the
+four directories named for the four aggregations used in the timing
+and profiling tests. In each there is a collection of files containing
+BES commands, each one as would be issued by the OLFS to an attached
+BES listener process. The bes command files are named according to the
 dataset, the subset, and the response type that is embodied in the
 request.
 
