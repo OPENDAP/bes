@@ -25,9 +25,9 @@ before_install:
   - sudo apt-get install -qq libcurl4-openssl-dev
   - sudo apt-get install -qq libnetcdf-dev
   - sudo apt-get install -qq libhdf4-dev
-# This package seems to be built so the library provides the old 1.6
-# API for hdf5 and our code uses the 1.8 API
-#  - sudo apt-get install -qq libhdf5-serial-dev
+  # This package seems to be built so the library provides the old 1.6
+  # API for hdf5 and our code uses the 1.8 API
+  # - sudo apt-get install -qq libhdf5-serial-dev
   - sudo apt-get install -qq libhdfeos-dev
   - sudo apt-get install -qq libgdal-dev
   - sudo apt-get install -qq libopenjpeg-dev
@@ -42,11 +42,11 @@ install:
   - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
   - wget http://www.opendap.org/pub/tmp/hdf5-1.8.15-patch1.tar.gz
   - tar -xzf bison-3.0.4.tar.gz
-  - (cd bison-3.0.4 && ./configure && make -j7 && sudo make install)
+  - (cd bison-3.0.4 && ./configure && make -j7 > /dev/null && sudo make install)
   - tar -xzf libdap-3.14.0.tar.gz
-  - (cd libdap-3.14.0 && ./configure && make -j7 && sudo make install)
+  - (cd libdap-3.14.0 && ./configure && make -j7 > /dev/null && sudo make install)
   - tar -xzf hdf5-1.8.15-patch1.tar.gz
-  - (cd hdf5-1.8.15-patch1 && ./configure && make -j7 && sudo make install)
+  - (cd hdf5-1.8.15-patch1 && ./configure && make -j7 > /dev/null && sudo make install)
 
 # I tried using a deb package, but it never worked, likely because the 
 # package is not being correctly built.
