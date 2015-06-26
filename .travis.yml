@@ -46,7 +46,7 @@ install:
   - tar -xzf libdap-3.14.0.tar.gz
   - (cd libdap-3.14.0 && ./configure && make -j7 > /dev/null  2>&1 && sudo make install)
   - tar -xzf hdf5-1.8.15-patch1.tar.gz
-  - (cd hdf5-1.8.15-patch1 && ./configure CFLAGS="-fPIC -O2 -w" && make -j7 > /dev/null  2>&1 && sudo make install)
+  - (cd hdf5-1.8.15-patch1 && ./configure --prefix=/usr/local CFLAGS="-fPIC -O2 -w" && make -j7 > /dev/null  2>&1 && sudo make install)
 
 # I tried using a deb package, but it never worked, likely because the 
 # package is not being correctly built.
