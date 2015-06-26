@@ -1,12 +1,13 @@
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dds-bescmd.xml: 998.949300 ms (+/- 8.202874 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dods-bescmd.xml: 5404220.000000 ms (+/- 1036891.782116 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule.dds-bescmd.xml: 2539.314000 ms (+/- 37.365311 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule.dods-bescmd.xml: 49506.670000 ms (+/- 1213.237532 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule_TotCH4_A.dds-bescmd.xml: 2326.646000 ms (+/- 27.574663 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule_TotCH4_A.dods-bescmd.xml: 2251.957000 ms (+/- 21.937361 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_TotCH4_A.dds-bescmd.xml: 2329.545000 ms (+/- 16.147415 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_TotCH4_A.dods-bescmd.xml: 42704.610000 ms (+/- 1548.425759 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf.dds-bescmd.xml: 295.654800 ms (+/- 9.379844 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf.dods-bescmd.xml: 51273.980000 ms (+/- 1394.816747 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf_TotCH4_A.dds-bescmd.xml: 244.462700 ms (+/- 11.840748 ms) avg time for 10 reps.
-AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf_TotCH4_A.dods-bescmd.xml: 268.259100 ms (+/- 7.911317 ms) avg time for 10 reps.
+nohup: ignoring input
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dds-bescmd.xml: 988.650200 ms (+/- 13.889841 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dods-bescmd.xml: 2276142.000000 ms (+/- 22279.571719 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule.dds-bescmd.xml: 982.451000 ms (+/- 11.402666 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule.dods-bescmd.xml: 19330.370000 ms (+/- 332.749350 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule_TotCH4_A.dds-bescmd.xml: 959.454200 ms (+/- 7.002011 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_granule_TotCH4_A.dods-bescmd.xml: 924.059500 ms (+/- 11.123309 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_TotCH4_A.dds-bescmd.xml: 960.553800 ms (+/- 11.703507 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml_TotCH4_A.dods-bescmd.xml: 17747.300000 ms (+/- 322.150530 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf.dds-bescmd.xml: 113.582700 ms (+/- 4.497951 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf.dods-bescmd.xml: 20541.480000 ms (+/- 221.002547 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf_TotCH4_A.dds-bescmd.xml: 93.685500 ms (+/- 3.163305 ms) avg time for 10 reps.
+AIRX3STD/AIRX3STD.006-AIRS.2002.09.01.L3.RetStd001.v6.0.9.0.G13208004820.hdf_TotCH4_A.dods-bescmd.xml: 104.884000 ms (+/- 5.610722 ms) avg time for 10 reps.
