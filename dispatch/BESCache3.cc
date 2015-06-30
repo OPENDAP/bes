@@ -29,6 +29,8 @@
 #include <string>
 #include <sstream>
 
+#include <cstdlib>
+
 #include "BESCache3.h"
 
 #include "BESSyntaxUserError.h"
@@ -44,6 +46,7 @@ BESCache3 *BESCache3::d_instance = 0;
 
 // The BESCache3 code is a singleton that assumes it's running in the absence of threads but that
 // the cache is shared by several processes, each of which have their own instance of BESCache3.
+
 /** Get an instance of the BESCache3 object. This class is a singleton, so the
  * first call to any of three 'get_instance()' methods makes an instance and subsequent call
  * return a pointer to that instance.
@@ -58,8 +61,10 @@ BESCache3 *BESCache3::d_instance = 0;
 BESCache3 *
 BESCache3::get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key)
 {
-    if (d_instance == 0)
+    if (d_instance == 0) {
         d_instance = new BESCache3(keys, cache_dir_key, prefix_key, size_key);
+        atexit(delete_instance);
+    }
 
     return d_instance;
 }
@@ -70,8 +75,10 @@ BESCache3::get_instance(BESKeys *keys, const string &cache_dir_key, const string
 BESCache3 *
 BESCache3::get_instance(const string &cache_dir, const string &prefix, unsigned long size)
 {
-    if (d_instance == 0)
+    if (d_instance == 0) {
         d_instance = new BESCache3(cache_dir, prefix, size);
+        atexit(delete_instance);
+    }
 
     return d_instance;
 }
@@ -82,8 +89,10 @@ BESCache3::get_instance(const string &cache_dir, const string &prefix, unsigned 
 BESCache3 *
 BESCache3::get_instance()
 {
-    if (d_instance == 0)
+    if (d_instance == 0) {
         throw BESInternalError("Tried to get the BESCache3 instance, but it hasn't been created yet", __FILE__, __LINE__);
+        atexit(delete_instance);
+    }
 
     return d_instance;
 }

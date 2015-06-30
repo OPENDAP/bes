@@ -71,6 +71,8 @@ protected:
 public:
     virtual ~BESCache3() { }
 
+    static void delete_instance() { delete d_instance; d_instance = 0; }
+
     static BESCache3 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
     static BESCache3 *get_instance(const string &cache_dir, const string &prefix, unsigned long size); // Testing
     static BESCache3 *get_instance();
