@@ -29,7 +29,9 @@
 #include <string>
 #include <sstream>
 
+#ifdef HAVE_STDLIB_H
 #include <cstdlib>
+#endif
 
 #include "BESCache3.h"
 
@@ -63,7 +65,9 @@ BESCache3::get_instance(BESKeys *keys, const string &cache_dir_key, const string
 {
     if (d_instance == 0) {
         d_instance = new BESCache3(keys, cache_dir_key, prefix_key, size_key);
+#ifdef HAVE_ATEXIT
         atexit(delete_instance);
+#endif
     }
 
     return d_instance;
@@ -77,7 +81,9 @@ BESCache3::get_instance(const string &cache_dir, const string &prefix, unsigned 
 {
     if (d_instance == 0) {
         d_instance = new BESCache3(cache_dir, prefix, size);
+#ifdef HAVE_ATEXIT
         atexit(delete_instance);
+#endif
     }
 
     return d_instance;
@@ -91,7 +97,6 @@ BESCache3::get_instance()
 {
     if (d_instance == 0) {
         throw BESInternalError("Tried to get the BESCache3 instance, but it hasn't been created yet", __FILE__, __LINE__);
-        atexit(delete_instance);
     }
 
     return d_instance;

@@ -69,7 +69,7 @@ BESCatalogList::TheCatalogList() {
 void BESCatalogList::initialize_instance() {
     if (_instance == 0) {
         _instance = new BESCatalogList;
-#if HAVE_ATEXIT
+#ifdef HAVE_ATEXIT
         atexit(delete_instance);
 #endif
     }
