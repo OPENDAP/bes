@@ -42,6 +42,8 @@
 #include <cstdlib>
 #include <cerrno>
 
+#include <libxml/xmlmemory.h>
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -539,6 +541,8 @@ int ServerApp::terminate(int sig)
 		BESDEBUG("beslistener", "beslistener: terminating default module ... " << endl);
 		BESDefaultModule::terminate();
 		BESDEBUG("beslistener", "beslistener: done terminating default module ... " << endl);
+
+		xmlCleanupParser();
 	}
 	return sig;
 }

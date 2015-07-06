@@ -107,7 +107,14 @@ BESXMLInterface::build_data_request_plan()
 	vector<string> parseerrors ;
 	xmlSetGenericErrorFunc( (void *)&parseerrors, BESXMLUtils::XMLErrorFunc );
 
-	doc = xmlParseDoc( (unsigned char *)_dhi->data["XMLDoc"].c_str() ) ;
+	// XML_PARSE_NONET
+	doc = xmlReadMemory(_dhi->data["XMLDoc"].c_str(), _dhi->data["XMLDoc"].size(),
+	        "" /* base URL */, NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+#if 0
+	// This cast is not technically correct; search the web and found that
+	// xmlReadMemory has some interesting options
+	doc = xmlParseDoc( (unsigend char *)_dhi->data["XMLDoc"].c_str() ) ;
+#endif
 	if( doc == NULL )
 	{
 	    string err = "Problem parsing the request xml document:\n" ;
@@ -234,10 +241,10 @@ BESXMLInterface::build_data_request_plan()
 	    current_node = current_node->next ;
 	}
     }
-    catch( BESError &e )
+    catch( ... /* BESError &e; changed 7/1/15 jhrg */ )
     {
 	xmlFreeDoc( doc ) ;
-	throw e ;
+	throw /*e*/ ;
     }
 
     xmlFreeDoc( doc ) ;

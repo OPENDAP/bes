@@ -374,6 +374,8 @@ StandAloneApp::terminate( int sig )
 
     CmdTranslation::terminate( ) ;
 
+    xmlCleanupParser();
+
     return sig ;
 }
 
