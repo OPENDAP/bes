@@ -51,7 +51,10 @@ timing tests and extract a brief summary of the results.
 This shell script runs the 4 different sets of aggregation timing test
 commands in the agg_perf_test directory. The timing summaries are
 recorded in files named in keeping with each aggregation's command
-set.
+set. NB: This command might work a bit differently given changes to
+timeTest. It's best to read it over before using. The key thing is to
+not inadvertently erase any logs you've worked hard to make with
+subsequent runs of the timing code.
 
 -- timeTest --
 
@@ -75,7 +78,14 @@ assumed to contain BES XML requests.
 - There is a shell variable, 'reps', set at the top of the timeTest
   script that controls the number of times timeTest will run the
   command. Depending on the speed of the test execution you may want
-  to adjust that value.
+  to adjust that value. NB: I added a command line option (-r) so that
+  this can be set without hacking the script. jhrg 
+
+- Also added: two more options (in addition to -r) to control the
+  debug command passed to besstandalone: -d <value> adds <value> to
+  the debug symbols and -D which turns off all debugging, including
+  the 'timing' information. Use this to determine the amount of
+  overhead the basic timing code adds.
 
 Once timeTest has completed all of the reps, it analyzes the log file
 and computes the average time it takes for every DDS, DAS, DODS, DMR,
@@ -83,7 +93,18 @@ and DAP response and prints that summary to stdout.
 
 USAGE:
 
+Run the fnoc1*.xml commands 10 times (the default reps) and collect
+data from the 'timing' symbol only (the default debug setting):
+
 ./timeTest tests/fnoc1*.xml
+
+Run the tests two times:
+
+./timeTest -r 2 tests/fnoc1*.xml: Run them twice
+
+Run the tests two time but collect data from 'timing' and 'ncml':
+
+./timeTest -r 2 -d ncml tests/fnoc1*.xml
 
 -- timingIndent --
 

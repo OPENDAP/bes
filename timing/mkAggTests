@@ -3,10 +3,10 @@
 # Removed GPM_3IMERGHH until we get the new hdf5 handler code
 # from THG. jhrg 6/23/15
 
-reps=10
+reps=4
 verbose=yes
 
-for i in TRMM_3A11 TRMM_3B42 AIRX3STD
+for i in TRMM_3A11 TRMM_3B42 AIRX3STD GPM_3IMERGHH
 do
     logFile=${i}_r_${reps}_timing.log
     if test -n $verbose
