@@ -1,0 +1,58 @@
+#!/bin/bash
+
+
+
+
+
+for logFile in $@
+do
+
+   awk 'BEGIN{level=0;}{ \
+        split($0,fields,"\\]\\["); \
+        state=fields[4]; \
+        subjTime=fields[5]; \
+        job_name=fields[7]; \
+        job_elapsed=fields[9]; \
+        
+        
+        if(state=="STARTED"){ \
+            
+            
+            level++; \
+            indent="";
+            for(i=0; i<level ;i++){
+                indent = indent " ";
+            }
+
+            printf("%f %s%s %s \n",subjTime, indent, state, job_name); \
+    
+        } \
+        else if(state=="STOPPED"){ \
+                        
+            if( elapsed[level]!=0) {
+                diff = job_elapsed - elapsed[level];
+                diffPercent = 100.0 * diff / job_elapsed;
+            }
+            else {
+                diff = 0.0;
+                diffPercent = 0.0;
+            }
+
+            printf("%f %s%s %s elapsed: %f sum_children_elapsed: %f  diff: %f ms (%f%%) level: %d\n", subjTime, indent, state, job_name,  job_elapsed,  elapsed[level], diff, diffPercent, level); \
+
+            elapsed[level] = 0.0; \
+            level--; \
+            indent="";
+            for(i=0; i<level ;i++){
+                indent = indent " ";
+            }
+           elapsed[level] += job_elapsed; \
+        }\
+        #printf("%s %s elapsed[%d]: %f \n",job_name, state, level, elapsed[level]); \
+        # print state, " level: ", level ; \
+   }' $logFile
+
+
+
+done
+
