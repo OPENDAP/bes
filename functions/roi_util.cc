@@ -29,12 +29,12 @@
 #include <BaseType.h>
 #include <Structure.h>
 #include <Array.h>
-#include <functions/roi_util.h>
 #include <Int32.h>
 #include <Str.h>
 
 #include <util.h>
 
+#include "roi_util.h"
 
 using namespace libdap;
 

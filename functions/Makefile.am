@@ -22,7 +22,10 @@ endif
 
 SUBDIRS = . unit-tests tests
 
-DIST_SUBDIRS = swath2grid
+# We use DIST_SUBDIRS because we want swath2grid to be part of the dist.
+# However, since we use it we must list all of the subdirs we want; without
+# it, automake will automatically distribute all the stuff in SUBDIRS.
+DIST_SUBDIRS = unit-tests tests swath2grid
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
