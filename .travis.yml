@@ -33,7 +33,7 @@ before_install:
   - sudo apt-get install -qq libopenjpeg-dev
   - sudo apt-get install -qq libcfitsio3-dev
   - sudo apt-get install -qq libicu-dev
-  - dpkg -l
+  # - dpkg -l
   
 # Use this to install any prerequisites or dependencies necessary to
 # run your build
@@ -67,7 +67,8 @@ before_script:
 # considered failure.
 script:
   - make -j7 
-#  - make -j7 check
-#  - make install
+  - make -j7 check
+  - make install
+  - make -j7 distcheck DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=$prefix/deps
   
 # after_script:
