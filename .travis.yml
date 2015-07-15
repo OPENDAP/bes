@@ -77,6 +77,5 @@ before_script:
 # considered failure.
 script:
   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make -j7 check && make install
-  # - make -j7 distcheck CPPFLAGS=-I$HOME/deps/include
   
 # after_script:
