@@ -61,8 +61,8 @@ addons:
 # are available via ubuntu apt-get, but we need newer versions than
 # Ubuntu 12 has.
 install:
-  - bash ./install_bes_source_deps.sh
   - export PATH=$HOME/deps/bin:$PATH
+  - bash ./install_bes_source_deps.sh
 
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
