@@ -2,73 +2,82 @@
 #
 # Initial Travic-CI control file. 6.5.15 jhrg
 
+# Use the docker container-based build systems
+sudo: false
+
+cache:
+  directories:
+  - $HOME/bison
+
 language: cpp
 
 compiler:
   - gcc
-#  - clang
+  # - clang
 
-# whitelist
+# Whitelist; assume tags for releases use the familiar dot notation
+# Building a tag will trigger a deployment; see the 'deploy' section
+# down below
 branches:
   only:
     - master
+    - coverity_scan
+    - /^*_travis/
+    - /^*-[0-9]+\.[0-9]+\.[0-9]+/
+
+# Only use gcc for Coverity builds
+matrix:
+  exclude:
+    - compiler: clang
+    - env: COVERITY_SCAN_BRANCH=1
+
+addons:
+  coverity_scan:
+    project:
+      name: "OPENDAP/bes"
+      description: "Build submitted via Travis CI"
+    notification_email: jgallagher@opendap.org
+    build_command: "make -j7"
+    branch_pattern: coverity_scan
+  apt:
+    packages:
+      - libxml2-dev
+      - uuid-dev
+      - libcurl4-openssl-dev
+      - libcppunit-dev
+      - libnetcdf-dev
+      - libhdf4-dev
+      - libhdfeos-dev
+  	  - libgdal-dev
+      - libopenjpeg-dev
+      - libcfitsio3-dev
+      - libicu-dev
 
 # Use this to prepare the system to install prerequisites or
 # dependencies
-#
-# Building on Ubuntu, we need uuid-dev, xml and curl and more
-# (e.g. gridfields?)
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libxml2-dev
-  - sudo apt-get install -qq uuid-dev
-  - sudo apt-get install -qq libcurl4-openssl-dev
-  - sudo apt-get install -qq libnetcdf-dev
-  - sudo apt-get install -qq libhdf4-dev
-  # This package seems to be built so the library provides the old 1.6
-  # API for hdf5 and our code uses the 1.8 API
-  # - sudo apt-get install -qq libhdf5-serial-dev
-  - sudo apt-get install -qq libhdfeos-dev
-  - sudo apt-get install -qq libgdal-dev
-  - sudo apt-get install -qq libopenjpeg-dev
-  - sudo apt-get install -qq libcfitsio3-dev
-  - sudo apt-get install -qq libicu-dev
-  # - dpkg -l
+# before_install:
   
 # Use this to install any prerequisites or dependencies necessary to
-# run your build
+# run your build. This script builds bison-3, libdap and hdf5 - these
+# are available via ubuntu apt-get, but we need newer versions than
+# Ubuntu 12 has.
 install:
-  - wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
-  - wget http://www.opendap.org/pub/tmp/libdap-3.14.0.tar.gz
-  - wget http://www.opendap.org/pub/tmp/hdf5-1.8.15-patch1.tar.gz
-  - tar -xzf bison-3.0.4.tar.gz
-  - (cd bison-3.0.4 && ./configure && make -j7 > /dev/null 2>&1 && sudo make install)
-  - tar -xzf libdap-3.14.0.tar.gz
-  - (cd libdap-3.14.0 && ./configure && make -j7 > /dev/null  2>&1 && sudo make install)
-  - tar -xzf hdf5-1.8.15-patch1.tar.gz
-  - (cd hdf5-1.8.15-patch1 && ./configure --prefix=/usr/local CFLAGS="-fPIC -O2 -w" && make -j7 > /dev/null  2>&1 && sudo make install)
+  - bash ./install_libdap_source_deps.sh
+  - export PATH=$HOME/deps/bin:$PATH
 
-# I tried using a deb package, but it never worked, likely because the 
-# package is not being correctly built.
-#  - sudo dpkg --install --force-overwrite libdap_3.14.0-1.deb
- 
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
 before_script:
-  - export prefix=$HOME/OPENDAP/build
-  - export PATH=$prefix/bin:/usr/local/bin:$PATH
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
   # Want the hdf5 handler build to find the hdf5 lib headers from the
   # source tarball we just built.
-  - ./configure --prefix=$prefix CPPFLAGS=-I/usr/local/include
+  - ./configure CPPFLAGS=-I$HOME/deps/include
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 script:
-  - make -j7 
-  - make -j7 check
-  - make install
-  - make -j7 distcheck DISTCHECK_CONFIGURE_FLAGS=--with-dependencies=$prefix/deps
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make -j7 check && make install
+  # - make -j7 distcheck CPPFLAGS=-I$HOME/deps/include
   
 # after_script:
