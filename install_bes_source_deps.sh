@@ -15,5 +15,5 @@ then
   tar -xzf hdf5-1.8.15-patch1.tar.gz
   (cd hdf5-1.8.15-patch1 && ./configure --prefix=$HOME/deps/ CFLAGS="-fPIC -O2 -w" && make -j7 && make install)
 else
-  echo 'Using cached dependencies directory.';
+  echo "Using cached dependencies directory."
 fi
