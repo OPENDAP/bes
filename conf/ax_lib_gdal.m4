@@ -59,7 +59,9 @@ AC_DEFUN([AX_LIB_GDAL],
     )
 
     if test ! -x "$GDAL_CONFIG"; then
-        AC_MSG_ERROR([gdal-config does not exist or it is not an exectuable file])
+        # This was AC_MSG_ERROR but that means that if $GDAL_CONFIG cannot be
+	# run (not found, ...) then the build halts. jhrg 7/14/15
+        AC_MSG_WARN([gdal-config does not exist or it is not an exectuable file])
             GDAL_CONFIG="no"
             found_gdal="no"
     fi

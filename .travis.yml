@@ -40,8 +40,8 @@ addons:
     branch_pattern: coverity_scan
   apt:
     packages:
-      - libxml2-dev
       - uuid-dev
+      - libxml2-dev
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libnetcdf-dev
