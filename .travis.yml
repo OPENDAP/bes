@@ -63,6 +63,7 @@ addons:
 install:
   - export PATH=$HOME/deps/bin:$PATH
   - bash ./install_bes_source_deps.sh
+  - ls -R $HOME/deps
 
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
@@ -71,7 +72,7 @@ before_script:
   - autoreconf --force --install --verbose
   # Want the hdf5 handler build to find the hdf5 lib headers from the
   # source tarball we just built.
-  - ./configure CPPFLAGS=-I$HOME/deps/include
+  - ./configure --prefix=$HOME/build CPPFLAGS=-I$HOME/deps/include
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
