@@ -12,9 +12,9 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum site.exp
+CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
-EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4 \
+EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 $(srcdir)/handler_tests_macros.m4 bes.conf.in
 
 DISTCLEANFILES = bes.conf

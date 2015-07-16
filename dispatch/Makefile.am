@@ -18,7 +18,6 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests
-# DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_dispatch.la 
 
@@ -27,23 +26,12 @@ libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
 	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
-# This test program is never used and introduces a libdap dependency
-# where there otherwise in none. jhrg 5/7/14
-#
-# if LIBDAP
-# bin_PROGRAMS = besregtest
-
-# besregtest_SOURCES = besregtest.cc
-# besregtest_CPPFLAGS = $(AM_CPPFLAGS)
-# besregtest_LDADD = libbes_dispatch.la $(XML2_LIBS) 
-# endif
-
 pkginclude_HEADERS = $(HDRS) 
 
 pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
-	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in
+	bes/bes_help.xml
 
 DISTCLEANFILES = bes/bes.conf
 

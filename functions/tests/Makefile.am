@@ -18,7 +18,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum gmon.out
+CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
 EXTRA_DIST = data bescmd functions functionsTest.at functionsTest \
 atlocal.in bes.conf.in handler_tests_macros.m4

@@ -13,9 +13,9 @@ AM_CPPFLAGS = -I$(top_srcdir)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-CLEANFILES = *.log *.sum site.exp
+CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
-EXTRA_DIST = besTest.at $(srcdir)/package.m4 $(TESTSUITE) atlocal.in	\
+EXTRA_DIST = besTest.at $(TESTSUITE) atlocal.in	\
 ff hdf4 hdf5 nc show ssfunc
 
 DISTCLEANFILES = besTest
@@ -41,7 +41,7 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
-package.m4: $(top_srcdir)/configure.ac
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
 	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \

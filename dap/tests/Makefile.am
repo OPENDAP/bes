@@ -19,11 +19,11 @@ noinst_DATA = bes.conf
 #
 TESTS = besDapModuleTest
 
-CLEANFILES = *.log *.trs
+CLEANFILES = *.log *.trs $(srcdir)/package.m4
 
 # NB: Make sure to distribute both the source and generated files
 # for the test
-EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in package.m4 \
+EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 bes.conf.in handler_tests_macros.m4 bescmd
 
 DISTCLEANFILES = bes.conf
