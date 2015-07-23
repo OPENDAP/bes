@@ -580,7 +580,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 if(grid_or_swath==0) {
 
                     HDFEOS2ArrayGridGeoField *ar = NULL;
-                    int fieldtype = (*it_f)->getFieldType();
+                    //int fieldtype = (*it_f)->getFieldType();
                     bool ydimmajor = (*it_f)->getYDimMajor();
                     bool condenseddim = (*it_f)->getCondensedDim();
                     bool speciallon = (*it_f)->getSpecialLon();
@@ -821,6 +821,9 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
         try {
             read_dds_hdfeos2_grid_swath(
                 dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype,sdfd,fileid,gridfd,swathfd);
+            // Add 1-D CF grid projection required coordinate variables. 
+            // Currently only supports sinusoidal projection.
+            HDFCFUtil::add_cf_grid_cvs(dds,*it_g);
         }
         catch(...) {
            // delete f;
@@ -1470,7 +1473,13 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 // (cf requires the type of scale_factor and add_offset the same).
                 if (true == turn_on_enable_check_scale_offset_key && at!=NULL) 
                     HDFCFUtil::correct_scale_offset_type(at);
+
             }
+
+            // Add possible 1-D CV CF attributes to identify projection info. for CF.
+            // Currently only the Sinusoidal projection is supported.
+            HDFCFUtil::add_cf_grid_cv_attrs(das,grid);
+
         }
     }
     catch(...) {

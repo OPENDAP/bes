@@ -67,7 +67,7 @@ HDFCF_SRC = HDFCFUtil.cc BESH4MCache.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc H
 	          HDFCFStrField.cc HDFEOS2CFStrField.cc HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
               HDFEOS2ArraySwathDimMapField.cc HDFEOS2ArraySwathGeoDimMapExtraField.cc \
-	     HE2CF.cc misr_init.cc misrinv.cc
+	      HDFEOS2GeoCFProj.cc HDFEOS2GeoCF1D.cc HE2CF.cc misr_init.cc misrinv.cc
 
 HDFTYPE_SRC += $(HDFCF_SRC)
 
@@ -87,6 +87,8 @@ HDFCF_HDR = HDFEOS2.h HDFSP.h HDFCFUtil.h \
         HDFCFStrField.h \
 	HDFEOS2CFStr.h \
 	HDFEOS2CFStrField.h \
+        HDFEOS2GeoCFProj.h \
+        HDFEOS2GeoCF1D.h \
 	HE2CF.h misrproj.h errormacros.h
 
 HDFTYPE_HDR += $(HDFCF_HDR)
