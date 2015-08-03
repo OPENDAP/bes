@@ -8,11 +8,14 @@ for logFile in $@
 do
 
    awk 'BEGIN{level=0; lastSubjTime=-1.0;}{ \
-        split($0,fields,"\\]\\["); \
+        fcount = split($0,fields,"\\]\\["); \
         state=fields[4]; \
         subjTime=fields[5]; \
         job_name=fields[7]; \
-        job_elapsed=fields[9]; \
+        job_elapsed=fields[fcount-1]; \
+        
+    
+        # printf("state: %s job_elapsed: %s\n",state,job_elapsed); \
         
         if(lastSubjTime==-1.0){ \
             lastSubjTime = subjTime; \
@@ -31,7 +34,7 @@ do
         
         
         if(state=="STARTED"){ \
-            
+            job_elapsed = 0.0
             
             level++; \
             indent=""; \

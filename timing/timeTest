@@ -13,8 +13,8 @@
 
 # defaults
 
-reps=10
-debug="-d cerr,timing"
+reps=1
+debug="-d cerr,timing,bes,xml,dap"
 
 # do the options thing...
 
