@@ -84,6 +84,7 @@
 #include "BESDapResponseCache.h"
 #include "BESStoredDapResultCache.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
@@ -717,6 +718,10 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
  */
 void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, ConstraintEvaluator &eval, bool ce_eval)
 {
+	  BESStopWatch sw;
+	  if (BESISDEBUG( TIMING_LOG ))
+		  sw.start("BESDapResponseBuilder::serialize_dap2_data_dds","");
+
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_dds() - BEGIN" << endl);
 
     dds.print_constrained(out);

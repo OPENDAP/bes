@@ -426,39 +426,39 @@ BESInterface::transmit_data()
 	if (BESISDEBUG( TIMING_LOG ))
 		sw.start("BESInterface::transmit_data",_dhi->data[REQUEST_ID]);
 
-    BESDEBUG("bes", "Transmitting request: " << _dhi->data[DATA_REQUEST] << endl) ;
-    if (_transmitter)
-    {
-        if( _dhi->error_info )
+	BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting request: " << _dhi->data[DATA_REQUEST] << endl) ;
+	if (_transmitter)
 	{
-	    ostringstream strm ;
-	    _dhi->error_info->print( strm ) ;
-	    (*BESLog::TheLog()) << strm.str() << endl ;
-	    BESDEBUG( "bes", "  transmitting error info using transmitter ... "
-			     << endl << strm.str() << endl ) ;
-            _dhi->error_info->transmit( _transmitter, *_dhi ) ;
-        }
-	else if( _dhi->response_handler )
-	{
-	    BESDEBUG( "bes", "  transmitting response using transmitter ...  " << endl ) ;
-            _dhi->response_handler->transmit( _transmitter, *_dhi ) ;
-        }
-    }
-    else
-    {
-        if( _dhi->error_info )
-	{
-	    BESDEBUG( "bes", "  transmitting error info using cout ... " << endl ) ;
-            _dhi->error_info->print( cout ) ;
-        }
+		if( _dhi->error_info )
+		{
+			ostringstream strm ;
+			_dhi->error_info->print( strm ) ;
+			(*BESLog::TheLog()) << strm.str() << endl ;
+			BESDEBUG( "bes", "  transmitting error info using transmitter ... "
+					<< endl << strm.str() << endl ) ;
+			_dhi->error_info->transmit( _transmitter, *_dhi ) ;
+		}
+		else if( _dhi->response_handler )
+		{
+			BESDEBUG( "bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl ) ;
+			_dhi->response_handler->transmit( _transmitter, *_dhi ) ;
+		}
+	}
 	else
 	{
-	    BESDEBUG( "bes", "  Unable to transmit the response ... FAILED " << endl ) ;
-	    string err = "Unable to transmit the response, no transmitter" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		if( _dhi->error_info )
+		{
+			BESDEBUG( "bes", "BESInterface::transmit_data() - Ttransmitting error info using cout ... " << endl ) ;
+			_dhi->error_info->print( cout ) ;
+		}
+		else
+		{
+			BESDEBUG( "bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl ) ;
+			string err = "Unable to transmit the response, no transmitter" ;
+			throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		}
 	}
-    }
-    BESDEBUG("bes", "OK" << endl) ;
+	BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl) ;
 }
 
 /** @brief Log the status of the request
