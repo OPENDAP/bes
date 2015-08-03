@@ -448,7 +448,7 @@ BESInterface::transmit_data()
 	{
 		if( _dhi->error_info )
 		{
-			BESDEBUG( "bes", "BESInterface::transmit_data() - Ttransmitting error info using cout ... " << endl ) ;
+			BESDEBUG( "bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl ) ;
 			_dhi->error_info->print( cout ) ;
 		}
 		else
