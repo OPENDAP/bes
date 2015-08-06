@@ -14,7 +14,10 @@
 # defaults
 
 reps=1
-debug="-d cerr,timing,bes,xml,dap"
+debug="-d cerr,timing"
+
+# I removed ,bes,xml,dap from debug above to simplify reading the timing
+# test data and to avoid timing lots of dubugging statements. jhrg 7/6/15
 
 # do the options thing...
 
