@@ -146,6 +146,7 @@ private:
     AttrTable *cont_a;
     DAS *das;
     DDS *dds;
+    TestTypeFactory *ttf;
 
     DMR *test_01_dmr;
     D4ParserSax2 *d4_parser;
@@ -202,12 +203,9 @@ public:
         now_array[255] = '\0';
 
         loadServerSideFunction();
-
-	//        clean_cache_dir(d_stored_result_subdir);
     }
 
     ~ResponseBuilderTest() {
-    	// delete rbSSF; NB: ServerFunctionsList is a singleton that deletes its entries at exit.
     	clean_cache_dir(d_stored_result_subdir);
     }
 
@@ -234,8 +232,8 @@ public:
         // loadServerSideFunction(); NB: This is called by the test's ctor
         drb6 = new BESDapResponseBuilder();
         drb6->set_dataset_name((string)TEST_SRC_DIR + "/input-files/bears.data");
-        //drb6->set_ce("rbFuncTest()");
-        drb6->set_timeout(1);
+        drb6->set_ce("rbSimpleFunc()");
+        drb6->set_timeout(10);
 
         cont_a = new AttrTable;
         cont_a->append_attr("size", "Int32", "7");
@@ -251,18 +249,18 @@ public:
         //          }
         //      }
 
-        TestTypeFactory ttf;
-        dds = new DDS(&ttf, "test");
-        TestByte a("a");
-        dds->add_var(&a);
+	ttf = new TestTypeFactory;
+        dds = new DDS(ttf, "test");
+        TestByte *a = new TestByte("a");
+        dds->add_var(a);
 
         dds->transfer_attributes(das);
         dds->set_dap_major(3);
         dds->set_dap_minor(2);
 
     	string cid;
-    	DDXParser dp(&ttf);
-    	test_05_dds = new DDS(&ttf);
+    	DDXParser dp(ttf);
+    	test_05_dds = new DDS(ttf);
 	dp.intern((string)TEST_SRC_DIR + "/input-files/test.05.ddx", test_05_dds, cid);
 	// for these tests, set the filename to the dataset_name. ...keeps the cache names short
 	test_05_dds->filename(test_05_dds->get_dataset_name());
@@ -297,14 +295,13 @@ public:
 
         delete das; das = 0;
         delete dds; dds = 0;
+	delete ttf; ttf = 0;
 
         delete test_05_dds; test_05_dds = 0;
         delete d4_parser; d4_parser = 0;
         delete d4_ttf; d4_ttf = 0;
         delete d4_btf; d4_btf = 0;
         delete test_01_dmr; test_01_dmr = 0;
-
-        // remove(stored_dap2_result_filename.c_str());
     }
 
     bool re_match(Regex &r, const string &s) {
@@ -474,9 +471,6 @@ public:
             CPPUNIT_FAIL("ERROR: " + e.get_error_message());
         }
 
-        /**
-         * Clean up the keys and shut down the cache  for the next test (a key neutral footprint)
-         */
         BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
         sdrc->delete_instance();
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
@@ -622,11 +616,6 @@ public:
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
 
-
-
-        /**
-         * Clean up the keys and shut down the cache  for the next test (a key neutral footprint)
-         */
         BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
         sdrc->delete_instance();
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
@@ -634,10 +623,6 @@ public:
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "");
         TheBESKeys::TheKeys()->set_key( D4AsyncUtil::STYLESHEET_REFERENCE_KEY,    "");
-
-
-
-
     }
 #endif
 
@@ -677,11 +662,9 @@ public:
             Regex r1(baseline.c_str());
 
             DBG( cerr << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-#if 1
-            drb6->set_ce("rbSimpleFunc()");
-#else
-            df6->set_ce("");
-#endif
+
+            //drb6->set_ce("rbSimpleFunc()");
+
             ConstraintEvaluator ce;
             DBG( cerr << "invoke_server_side_function_test() - Calling BESDapResponseBuilder.send_dap2_data()" << endl);
             drb6->send_dap2_data(oss, *dds, ce);
