@@ -39,8 +39,9 @@ BES_CMD=$1
 # Use valgrind to profile heap usage. The $BES_CMD.massif file is the data file
 # to use with ms_print.
 #
-massif_options="--tool=massif --time-unit=i --heap=yes --max-snapshots=1000 --track-fds=yes \
---max-stackframe=2600000 --massif-out-file=$BES_CMD.massif --log-file=$BES_CMD.massif.log"
+massif_options="--tool=massif --time-unit=ms --heap=yes --max-snapshots=1000 --track-fds=yes \
+--depth=1 --max-stackframe=2600000 --massif-out-file=$BES_CMD.massif \
+--log-file=$BES_CMD.massif.log"
 
 if test "$os" == "Darwin"
 then
