@@ -5,9 +5,9 @@ BES_DEBUG_BASE="cerr,timing,bes,xml,dap"
 
 #BES_CMD="TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml.dods-bescmd.xml"
 #BES_CMD="TRMM_3A11/TRMM_3A11_Aggregation.ncml.dods-bescmd.xml"
-#BES_CMD="GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml.dods-bescmd.xml"
+BES_CMD="GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml.dods-bescmd.xml"
 #BES_CMD="AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dods-bescmd.xml"
-BES_CMD="small_aggregations/AIRX3_hdf4_aggregation_small.dods-bescmd.xml"
+#BES_CMD="small_aggregations/AIRX3_hdf4_aggregation_small.dods-bescmd.xml"
 
 
 
@@ -45,8 +45,8 @@ iprofiler_osx()
 
 doAll() 
 {
-    #valgrind_massif
-    #valgrind_memcheck
+    valgrind_massif
+    valgrind_memcheck
     
     os=`uname -a | awk '{print $1}' -`
     if [ "$os" = "Darwin" ]; then
