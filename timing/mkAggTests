@@ -2,14 +2,45 @@
 #
 # Removed GPM_3IMERGHH until we get the new hdf5 handler code
 # from THG. jhrg 6/23/15
+# Added an option to limit the tests to 'resonable' ones that will
+# complete in less than one hour. Use -F to run all the tests including 
+# the monstrous AIRX3STD tests.
 
 reps=4
-verbose=yes
+verbose=
+directories="small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH"
 
-for i in TRMM_3A11 TRMM_3B42 AIRX3STD GPM_3IMERGHH
+args=`getopt "r:Fv" $*`
+if test $? != 0
+then
+	echo "Usage: mkAggTests [-r reps][-F][-v]"
+	exit 2
+fi
+
+set -- $args
+
+for i
+do
+    case "$i"
+    in
+        -r)
+            reps=$2; shift;
+            shift;;
+	-F)
+	    directories="$directories AIRX3STD";
+	    shift;;
+	-v)
+	    verbose=yes;
+	    shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+for i in $directories
 do
     logFile=${i}_r_${reps}_timing.log
-    if test -n $verbose
+    if test -n "$verbose"
     then
 	echo "Working on $i aggregation timing evaluation. log: $logFile"
 	echo "./timeTest -r $reps $i/*.xml > $logFile 2>&1"

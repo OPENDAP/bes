@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# Profile heap use for the aggregation timing tests
+# This script assumes that $prefix is set and that it points to the place
+# where Hyrax has been installed. the besstandalone tool is used for the
+# profiling so the server does not need to be running.
+#
+# Usage: heap_profiler <bes command>
+# Run the command using besstandalone, assuming $prefix is set correctly,
+# and puts the resulting 'massif' data file in <bes command>.massif. Also
+# saves the log from massif (<bes command>.massif.log) and the output/error
+# (...massif.out)
+
+os=`uname -a | awk '{print $1}' -`
+
+BES="$prefix/bin/besstandalone"
+BES_CONF="$prefix/etc/bes/bes.conf"
+BES_DEBUG="cerr,timing"
+
+#BES_CMD="TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml.dods-bescmd.xml"
+#BES_CMD="TRMM_3A11/TRMM_3A11_Aggregation.ncml.dods-bescmd.xml"
+#BES_CMD="GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml.dods-bescmd.xml"
+#BES_CMD="AIRX3STD/AIRX3STD.006_Aggregation_2002.ncml.dods-bescmd.xml"
+#BES_CMD="small_aggregations/AIRX3_hdf4_aggregation_small.dods-bescmd.xml"
+#
+# Instead of hardcoding the bes command files, use one from the command line
+
+BES_CMD=$1
+
+#
+# Use valgrind to search for memory leaks
+#
+# valgrind_memcheck()
+# {
+#     valgrind --tool=Memcheck --leak-check=full  --track-fds=yes --log-file=$output_base.memcheck.log --max-stackframe=2600000 --dsymutil=yes --show-leak-kinds=all $BES -c $BES_CONF -i $BES_CMD -d $BES_DEBUG > $output_base.memcheck.stdout 2>$output_base.memcheck.stderr
+# }
+
+#
+# Use valgrind to profile heap usage. The $BES_CMD.massif file is the data file
+# to use with ms_print.
+#
+massif_options="--tool=massif --time-unit=i --heap=yes --max-snapshots=1000 --track-fds=yes \
+--max-stackframe=2600000 --massif-out-file=$BES_CMD.massif --log-file=$BES_CMD.massif.log"
+
+if test "$os" == "Darwin"
+then
+    massif_options="$massif_options --dsymutil=yes"
+fi
+
+valgrind $massif_options $BES -c $BES_CONF -i $BES_CMD -d $BES_DEBUG >$BES_CMD.massif.out 2>&1
