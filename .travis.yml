@@ -47,7 +47,8 @@ addons:
       - libnetcdf-dev
       - libhdf4-dev
       - libhdfeos-dev
-      - libgdal-dev
+      # Depends on libhdf4-alt-dev, libcurl4-gnutls-dev, libdap-dev but 
+      # those "won't be installed" jhrg 8/7/15- libgdal-dev
       - libopenjpeg-dev
       - libcfitsio3-dev
       - libicu-dev
