@@ -47,7 +47,8 @@ addons:
       - libnetcdf-dev
       - libhdf4-dev
       - libhdfeos-dev
-      - libgdal-dev
+      # Depends on libhdf4-alt-dev, libcurl4-gnutls-dev, libdap-dev but 
+      # those "won't be installed" jhrg 8/7/15- libgdal-dev
       - libopenjpeg-dev
       - libcfitsio3-dev
       - libicu-dev
@@ -77,7 +78,6 @@ before_script:
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make check -j7 -k && make install; fi
 
-# removed until I get it working: && make -j7 check
 # after_script:
