@@ -114,6 +114,9 @@ BESInterface::~BESInterface()
     @see end_request()
     @see exception_manager()
  */
+extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
+extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
+
 int
 BESInterface::execute_request( const string &from )
 {
@@ -121,6 +124,12 @@ BESInterface::execute_request( const string &from )
 	BESStopWatch sw;
 	if (BESISDEBUG( TIMING_LOG ))
 		sw.start("BESInterface::execute_request",_dhi->data[REQUEST_ID]);
+
+	bes_timing::elapsedTimeToReadStart = new BESStopWatch();
+	bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START",_dhi->data[REQUEST_ID]);
+
+	bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
+	bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START",_dhi->data[REQUEST_ID]);
 
 	if( !_dhi )
 	{
@@ -174,6 +183,12 @@ BESInterface::execute_request( const string &from )
 		BESInternalError ex( serr, __FILE__, __LINE__ ) ;
 		return exception_manager( ex ) ;
 	}
+
+	delete bes_timing::elapsedTimeToReadStart;
+	bes_timing::elapsedTimeToReadStart = 0;
+
+	delete bes_timing::elapsedTimeToTransmitStart;
+	bes_timing::elapsedTimeToTransmitStart = 0;
 
 	return finish( status ) ;
 }
