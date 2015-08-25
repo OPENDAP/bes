@@ -1,5 +1,9 @@
+
+This README contains information about both the BES timing tests and 
+the memory profiling tests.
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- Timing Code
+Timing Code
 
 Utilizing a stopwatch/timer class, with a use pattern that guarantees
 that the stop method for the timer will be called, we instrumented the
@@ -27,6 +31,70 @@ We have instrumented the BES in the following locations:
    
  - Additional timing instrumentation may be added to as we come to
    understand more clearly where time is being spent.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Memory profiling
+
+To see how much memory the BES was using for a particular request, 
+we used valgrind and its 'massif' tool. This provides both detailed and
+overview information about the heap allocation patterns made by the
+server. 
+
+The script 'heap_profiler' can be used to simplify replicating the 
+same set of options when calling valgrind. We call heap_profler
+with a bescmd file as its argument. The result is a 'massif' output
+file with the same basename as that bescmd file. Then use ms_print
+to look at the data in the *.massif file.
+
+Examples:
+
+The command
+
+./heap_profiler small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml
+
+will run the given bescmd file and write three files:
+
+small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml.massif
+small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml.massif.log
+small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml.massif.out
+
+Use ms_print to look at the heap; the .log and .out files are the 
+output of valgrind (which shows file open/close operations with 
+massif) and the timing information (largely moot since heap profiling
+slows the code).
+
+Here's how we looked at the heap profiler data:
+
+ms_print --x=60 small_aggregations/AIRX3_hdf4_aggregation_small_2.dods-bescmd.xml.massif | more
+
+Note that the --x=60 limits the ASCII graph to 60 characters width
+which can be pasted into a Google doc without looking too ugly. Piping
+through more makes the long profile output more manageable.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Memory tests run on the aggregation files
+
+We looked at the heap profiles for four different aggregations: Two for
+the AIRX 'small' aggregation made using 10 files and two for the TRMM_3A11
+aggregation. The bescmd files were (all inside bes/timing/
+small_aggregations):
+
+     File						What
+_______________________________________________________________________
+AIRX3_hdf4_aggregation_small.dods-bescmd.xml		14 vars
+AIRX3_hdf4_aggregation_small_2.dods-bescmd.xml		43 vars
+TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml	1 var
+TRMM_3A11_hdf4_aggregation_small_2.ncml.dods-bescmd.xml	Whole dataset
+
+For each of these, we ran the tests on a 'baseline' BES that used libdap
+3.14.1 and also an 'improved' libdap (3.14.2) that is more efficient in
+the way it uses its memory. We did this using two VMs (from the same 
+snapshot), but building from two versions of libdap will work as well.
+
+To get the 'baseline' version of libdap, get the code tagged 3.14.1; 
+the improved code is now the master branch.
+
+To see our results, look at: https://docs.google.com/a/opendap.org/document/d/1qOWmuhSWEthW2dCMlRcWzbjQsvobMSO1hJAp3RkoqB0/edit?usp=sharing
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BES Timing Tests

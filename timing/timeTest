@@ -15,6 +15,7 @@
 
 reps=1
 debug="-d cerr,timing"
+#clean_cache="/Users/ndp/scratch/hdf4_cache"
 
 # I removed ,bes,xml,dap from debug above to simplify reading the timing
 # test data and to avoid timing lots of dubugging statements. jhrg 7/6/15
@@ -61,6 +62,12 @@ do
     
     while [ $repCount -lt $reps ]
     do
+    
+        if [ $clean_cache ]; then
+            echo "Pass $repCount: Cleaning cache dir '$clean_cache'"
+            rm -r $clean_cache/*
+        fi
+
         besstandalone -c $prefix/etc/bes/bes.conf $debug -i $command > $resultFile 2>>$logFile
         repCount=$[repCount + 1] 
     done

@@ -45,6 +45,13 @@
 #define TIMING_LOG "timing"
 #define MISSING_LOG_PARAM ""
 
+class BESStopWatch;
+
+namespace bes_timing {
+extern BESStopWatch *elapsedTimeToReadStart;
+extern BESStopWatch *elapsedTimeToTransmitStart;
+}
+
 class BESStopWatch : public BESObj
 {
  private:

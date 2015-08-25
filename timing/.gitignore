@@ -1,0 +1,5 @@
+*.massif
+*.massif.*
+ms_print.tmp.*
+
+nohup.out

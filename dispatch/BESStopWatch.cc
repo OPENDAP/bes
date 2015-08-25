@@ -42,6 +42,11 @@ using std::endl ;
 #include "BESStopWatch.h"
 #include "BESDebug.h"
 
+namespace bes_timing {
+BESStopWatch *elapsedTimeToReadStart;
+BESStopWatch *elapsedTimeToTransmitStart;
+}
+
 /**
  * Starts the timer. NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
