@@ -41,51 +41,51 @@ using std::endl;
 
 void DapModule::initialize(const string &modname)
 {
-	BESDEBUG(modname, "Initializing Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Initializing Dap Reader Module " << modname << endl);
 
-	BESRequestHandlerList::TheList()->add_handler(modname, new DapRequestHandler(modname));
+    BESRequestHandlerList::TheList()->add_handler(modname, new DapRequestHandler(modname));
 
-	BESDapService::handle_dap_service( modname ) ;
+    BESDapService::handle_dap_service(modname);
 
-	if (!BESCatalogList::TheCatalogList()->ref_catalog(DAP_CATALOG)) {
-		BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(DAP_CATALOG));
-	}
+    if (!BESCatalogList::TheCatalogList()->ref_catalog(DAP_CATALOG)) {
+        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(DAP_CATALOG));
+    }
 
-	if (!BESContainerStorageList::TheList()->ref_persistence(DAP_CATALOG)) {
-		BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(DAP_CATALOG);
-		BESContainerStorageList::TheList()->add_persistence(csc);
-	}
+    if (!BESContainerStorageList::TheList()->ref_persistence(DAP_CATALOG)) {
+        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(DAP_CATALOG);
+        BESContainerStorageList::TheList()->add_persistence(csc);
+    }
 
-	BESDebug::Register(modname);
+    BESDebug::Register(modname);
 
-	BESDEBUG(modname, "Done Initializing Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Done Initializing Dap Reader Module " << modname << endl);
 }
 
 void DapModule::terminate(const string &modname)
 {
-	BESDEBUG(modname, "Cleaning Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Cleaning Dap Reader Module " << modname << endl);
 
-	BESRequestHandler *rh = 0;
+    BESRequestHandler *rh = 0;
 
-	rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-	if (rh) delete rh;
+    rh = BESRequestHandlerList::TheList()->remove_handler(modname);
+    if (rh) delete rh;
 
-	BESContainerStorageList::TheList()->deref_persistence(DAP_CATALOG);
+    BESContainerStorageList::TheList()->deref_persistence(DAP_CATALOG);
 
-	BESCatalogList::TheCatalogList()->deref_catalog(DAP_CATALOG);
+    BESCatalogList::TheCatalogList()->deref_catalog(DAP_CATALOG);
 
-	BESDEBUG(modname, "Done Cleaning Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Done Cleaning Dap Reader Module " << modname << endl);
 }
 
 extern "C" {
 BESAbstractModule *maker()
 {
-	return new DapModule;
+    return new DapModule;
 }
 }
 
 void DapModule::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "DapModule::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DapModule::dump - (" << (void *) this << ")" << endl;
 }
 
