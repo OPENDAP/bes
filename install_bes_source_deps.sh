@@ -4,7 +4,7 @@ set -e
 
 # we could test for versions...
 
-if test ! -x "$HOME/deps/bin/bison
+if test ! -x "$HOME/deps/bin/bison"
 then
   wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
   tar -xzf bison-3.0.4.tar.gz
@@ -13,7 +13,7 @@ else
     echo "Using cached bison."
 fi
 
-if test ! -x "$HOME/deps/bin/dap-config
+if test ! -x "$HOME/deps/bin/dap-config"
 then
   wget http://www.opendap.org/pub/tmp/libdap-3.15.0.tar.gz
   tar -xzf libdap-3.15.0.tar.gz
@@ -22,7 +22,7 @@ else
     echo "Using cached libdap."
 fi
 
-if test ! -x "$HOME/deps/bin/h5ls
+if test ! -x "$HOME/deps/bin/h5ls"
 then
   wget http://www.opendap.org/pub/tmp/hdf5-1.8.15-patch1.tar.gz
   tar -xzf hdf5-1.8.15-patch1.tar.gz
