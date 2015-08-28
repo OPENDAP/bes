@@ -60,15 +60,19 @@ HDF4.CacheDir=/tmp
 H4.EnableCF=true
 
 # I. Introduction of the BES keys for the CF option
+#
 # The CF option is complicated. Furthermore, we add various options via BES keys to
-# ensure different users to be able to use different features of the handler. 
+# ensure different users are able to use different features of the handler.
+#
 # The BES keys are largely divided into three categories:
 # 1. Performance keys
 # 2. Vdata and Vgroup keys
 # 3. Misc. keys
-# For each category, two tables(descrption and default values(products)) are listed first,  
+#
+# For each category, two tables (description and default values(products)) are listed first,
 # then keys are set.
-# More description for some keys can be found after all the tables and the set of all keys.
+#
+# More descriptions for some keys can be found after all the tables and the set of all keys.
 # Keys with more description are marked with * in the tables.
 #
 # II. Performance keys
@@ -77,11 +81,11 @@ H4.EnableCF=true
 #==========================================================================================
 #  EnablePassFileID            |   Valid file IDs are passed from metadata to data services
 #                              |   Avoid multiple file open/close calls 
-#                              |   Work best with fileout netCDF module and with many variables in a file
+#                              |   Works best with fileout netCDF module and with many variables in a file
 #                              |   The NcML module may not work when this key is turned on
 #------------------------------------------------------------------------------------------
 #  DisableStructMetaAttr       |   ECS Struct metadata attribute is not mapped to DAP
-#                              |   The handler makes metadata to follow CF based on this attribute
+#                              |   The handler makes metadata follow CF based on this attribute
 #-----------------------------------------------------------------------------------------
 #  EnableEOSGeoCacheFile*      |   HDF-EOS2 Grid lat and lon values are cached in two files
 #                              |   Cache directory must be created first
@@ -246,7 +250,7 @@ H4.EnableCheckScaleOffsetType=false
 # KEY = H4.EnableHybridVdata
 # 
 # If this key's value is false, additional Vdata such as "Level 1B Swath 
-# Metadta" in LAADS MYD021KM product will not be processed and visible 
+# Metadata" in LAADS MYD021KM product will not be processed and visible
 # in the DAS/DDS output. Those additional Vdatas are added directly using 
 # HDF4 APIs and HDF-EOS2 APIs cannot access them.
  
