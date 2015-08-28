@@ -59,12 +59,13 @@ else
 TESTSUITE = $(srcdir)/hdf4_handlerTest
 endif
 
-check-local: atconfig atlocal $(TESTSUITE)
+check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-
+	-rm $(srcdir)/package.m4
+	
 distclean-local:
 	-rm atconfig
 	-rm $(srcdir)/hdf4_handlerTest.with_hdfeos2

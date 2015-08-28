@@ -180,6 +180,22 @@ struct HDFCFUtil
 
     /// Make AMSR-E attributes follow CF.
     static void handle_amsr_attrs(libdap::AttrTable *at);
+
+    // The following four functions is to handle 1-D CF CV variables required by CF projection conventions for grid. 
+    // Obtains the latitude and longitude dimension info. of an HDF-EOS2 grid.
+    static void obtain_grid_latlon_dim_info(HDFEOS2::GridDataset*,string &,int32 &,string &,int32 &);
+
+    // Adds the 1-D cf grid projection mapping attribute to data variables
+    // It is called by the function add_cf_grid_attrs. 
+    static void add_cf_grid_mapping_attr(libdap::DAS &das, HDFEOS2::GridDataset*gdset,const string& cf_projection,
+                                         const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size);
+
+    // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
+    static void add_cf_grid_cvs(libdap::DDS & dds, HDFEOS2::GridDataset *gdset);
+
+    //Adds 1D grid mapping CF attributes to CV and data variables.
+    static void add_cf_grid_cv_attrs(libdap::DAS &das, HDFEOS2::GridDataset *gdset);
+
 #endif 
 
     // Check OBPG attributes. Specifically, check if slope and intercept can be obtained from the file level. 
