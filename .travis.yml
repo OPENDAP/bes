@@ -79,8 +79,6 @@ before_script:
 # All commands must exit with code 0 on success. Anything else is
 # considered failure.
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install; fi
-
-# && make check -j7 -k
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 -k; fi
 
 # after_script:
