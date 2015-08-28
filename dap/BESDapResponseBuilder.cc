@@ -635,86 +635,6 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 
 }
 
-#if 0
-// the original version. jhrg 3/9/15
-bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, ConstraintEvaluator &eval)
-{
-
-    if (get_store_result().length() != 0) {     // use !empty()
-        string serviceUrl = get_store_result();
-
-        XMLWriter xmlWrtr;
-        D4AsyncUtil d4au;
-
-        bool found;
-        string *stylesheet_ref = 0, ss_ref_value;
-        TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
-        if (found && ss_ref_value.length() > 0) {
-            stylesheet_ref = &ss_ref_value;
-        }
-
-        BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-        if (resultCache == NULL) {
-
-            /**
-             * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
-             * Looks like need to reject the request and move on.
-             *
-             */
-            string msg = "The Stored Result request cannot be serviced. ";
-            msg += "Unable to acquire StoredResultCache instance. ";
-            msg += "This is most likely because the StoredResultCache is not (correctly) configured.";
-
-            BESDEBUG("dap", "[WARNING] " << msg << endl);
-            d4au.writeD4AsyncResponseRejected(xmlWrtr, UNAVAILABLE, msg, stylesheet_ref);
-            out << xmlWrtr.get_doc();
-            out << flush;
-            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - Sent AsyncRequestRejected" << endl);
-            return true;
-        }
-
-        if (get_async_accepted().length() != 0) {
-
-            /**
-             * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
-             */
-            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - serviceUrl="<< serviceUrl << endl);
-
-            BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-            string storedResultId = "";
-            storedResultId = resultCache->store_dap2_result(dds, get_ce(), this, &eval);
-
-            BESDEBUG("dap",
-                "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
-
-            string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
-            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
-
-            XMLWriter xmlWrtr;
-            d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
-            out << xmlWrtr.get_doc();
-            out << flush;
-            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncAccepted response" << endl);
-
-        }
-        else {
-            /**
-             * Client didn't indicate a willingness to accept an async response
-             * So - we tell them that async is required.
-             */
-            d4au.writeD4AsyncRequired(xmlWrtr, 0, 0, stylesheet_ref);
-            out << xmlWrtr.get_doc();
-            out << flush;
-            BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - sent DAP4 AsyncRequired  response" << endl);
-        }
-
-        return true;
-
-    }
-    return false;
-}
-#endif
-
 /**
  * Build/return the BLOB part of the DAP2 data response.
  */
@@ -746,7 +666,9 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
 
 /**
  * Serialize a DAP3.2 DataDDX to the stream "out".
- * This was originally intended to be used for DAP4.
+ * This was originally intended to be used for DAP4, now it is used to
+ * store responses for the async response feature as well as response
+ * caching for function results.
  */
 void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
     const string &boundary, const string &start, bool ce_eval)
@@ -861,6 +783,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, dds, eval)) {
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
@@ -886,6 +809,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, dds, eval)) {
             serialize_dap2_data_dds(data_stream, dds, eval);
         }
