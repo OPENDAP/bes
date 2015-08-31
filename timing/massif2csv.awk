@@ -9,7 +9,7 @@ BEGIN {
     if($1=="cmd:"){
         cmd = $0;
         title = $6;
-        }
+    }
     
     split($0,val,"=");
     snapshot[val[1]] = val[2];
