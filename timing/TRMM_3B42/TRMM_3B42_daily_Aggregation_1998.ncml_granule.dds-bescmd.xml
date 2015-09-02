@@ -9,7 +9,6 @@
     <bes:container name="catalogContainer">
       <!--
       Full constraint includes variable time, but we dropped it to move forward because of an issue subsetting the aggregation variable.
-      <bes:constraint>precipitation[2][0:10:399][0:10:1439],rows,cols,time[2]</bes:constraint>
       -->
       <bes:constraint>precipitation[2][0:10:399][0:10:1439],rows,cols</bes:constraint>
     </bes:container>

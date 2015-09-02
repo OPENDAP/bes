@@ -13,7 +13,7 @@
 	   the whole thing, we don't need a CE at all. I'm going to leave the
 	   original code commented out, just in case we _do_ need the CE for
 	   some timing-related reason. jhrg 6/24/15 -->
-      <!-- bes:constraint>lon,lat,Grid_lat,Grid_lon,IRkalmanFilterWeight[0:100:3599][0:100:1799],HQprecipSource[0:100:3599][0:100:1799],precipitationCal[0:100:3599][0:100:1799],precipitationUncal[0:100:3599][0:100:1799],HQprecipitation[0:100:3599][0:100:1799],probabilityLiquidPrecipitation[0:100:3599][0:100:1799],HQobservationTime[0:100:3599][0:100:1799],randomError[0:100:3599][0:100:1799],IRprecipitation[0:100:3599][0:100:1799]</bes:constraint -->
+      <bes:constraint>lon,lat,IRkalmanFilterWeight[0:100:3599][0:100:1799],HQprecipSource[0:100:3599][0:100:1799],precipitationCal[0:100:3599][0:100:1799],precipitationUncal[0:100:3599][0:100:1799],HQprecipitation[0:100:3599][0:100:1799],probabilityLiquidPrecipitation[0:100:3599][0:100:1799],HQobservationTime[0:100:3599][0:100:1799],randomError[0:100:3599][0:100:1799],IRprecipitation[0:100:3599][0:100:1799]</bes:constraint>
     </bes:container>
   </bes:define>
   <bes:get type="dds" definition="d1" />
