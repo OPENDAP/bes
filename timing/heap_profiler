@@ -40,7 +40,7 @@ BES_CMD=$1
 # to use with ms_print.
 #
 massif_options="--tool=massif --time-unit=ms --heap=yes --max-snapshots=1000 --track-fds=yes \
---depth=1 --max-stackframe=2600000 --massif-out-file=$BES_CMD.massif \
+--depth=2 --max-stackframe=2600000 --massif-out-file=$BES_CMD.massif \
 --log-file=$BES_CMD.massif.log"
 
 if test "$os" == "Darwin"
