@@ -1,5 +1,6 @@
 *.massif
 *.massif.*
+*.curl.*
 ms_print.tmp.*
 
 nohup.out
