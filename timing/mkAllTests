@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+
+reps=4
+verbose=
+directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
+
+args=`getopt "r:Fv" $*`
+if test $? != 0
+then
+	echo "Usage: mkAggTests [-r reps][-F][-v]"
+	exit 2
+fi
+
+set -- $args
+
+for i
+do
+    case "$i"
+    in
+        -r)
+            reps=$2; shift;
+            shift;;
+	-F)
+	    directories="$directories AIRX3STD";
+	    shift;;
+	-v)
+	    verbose=yes;
+	    shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+for dir in $directories
+do
+    timingLogFile=${dir}_r_${reps}_timing.log
+
+    rm -f $timingLogFile
+
+    for cmd in $dir/*.xml
+    do
+    
+        if test -n "$verbose"
+        then
+            echo "Working on $i aggregation heap analysis."
+            echo "./heap_profiler $cmd"
+        fi
+        ./heap_profiler $cmd
+    
+        if test -n "$verbose"
+        then
+            echo "Working on $i aggregation timing evaluation. log: $timingLogFile"
+            echo "./timeTest -r $reps $cmd > $timingLogFile 2>&1"
+        fi
+        ./timeTest -r $reps $cmd >> $timingLogFile 2>&1   
+    done
+done
+
