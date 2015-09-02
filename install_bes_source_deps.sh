@@ -3,7 +3,7 @@
 set -e
 
 # check to see if dependencies folder is empty
-if test ! -d "$HOME/deps/bin" -o true
+if test ! -d "$HOME/deps/bin"
 then
   wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
   wget http://www.opendap.org/pub/tmp/libdap-3.15.0.tar.gz
