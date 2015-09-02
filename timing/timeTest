@@ -13,6 +13,12 @@
 
 # defaults
 
+
+exec_besstandalone(){
+    besstandalone -c $prefix/etc/bes/bes.conf $debug -i $command > $resultFile 2>>$logFile
+}
+
+
 reps=1
 debug="-d cerr,timing"
 #clean_cache="/Users/ndp/scratch/hdf4_cache"
@@ -56,7 +62,7 @@ do
     logFile=$command".log"
     resultFile=$command".result"
     
-    rm -f $logFile $resultFile 2>/dev/null
+    rm -f $logFile* $resultFile 2>/dev/null
 
     repCount=0
     
@@ -68,7 +74,8 @@ do
             rm -r $clean_cache/*
         fi
 
-        besstandalone -c $prefix/etc/bes/bes.conf $debug -i $command > $resultFile 2>>$logFile
+        { time exec_besstandalone; } 2>>$logFile.time
+       
         repCount=$[repCount + 1] 
     done
     

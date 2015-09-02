@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+
+
+for logFile in $@
+do
+    
+    runs=`grep ELAPSED $logFile |  grep -E "TIME_TO_TRANSMIT_START" | wc | awk '{print $1;}' -`
+    
+    #echo "Found $runs runs."
+    
+    times=`grep ELAPSED $logFile |  grep -E "TIME_TO_TRANSMIT_START\]\[ELAPSED" | awk '{ split($0,s,"["); print s[10];}' - | sed "s/]//g"`
+    
+    #echo times: $times
+    metrics=`echo $times | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%f %f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`
+    
+    avg=`echo $metrics | awk '{print $1}' -`
+    stdev=`echo $metrics | awk '{print $2}' -`
+
+    #echo "$logFile: $avg ms (+/- $stdev ms) avg time for "$runs" reps."
+    echo "$logFile,  $avg, $stdev,  $runs"
+    
+done

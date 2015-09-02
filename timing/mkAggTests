@@ -8,7 +8,8 @@
 
 reps=4
 verbose=
-directories="small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH"
+directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
+#directories="AIRX3STD"
 
 args=`getopt "r:Fv" $*`
 if test $? != 0
