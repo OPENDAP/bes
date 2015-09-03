@@ -50,6 +50,7 @@ addons:
       - libopenjpeg-dev
       - libcfitsio3-dev
       - libicu-dev
+      - sshpass
 
 # Use this to prepare the system to install prerequisites or
 # dependencies
