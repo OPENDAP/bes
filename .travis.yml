@@ -90,5 +90,5 @@ env:
   - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 after_failure:
-  - get_autotest_logs.sh /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
-  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz travis:@www.opendap.org:
+  - ./get_autotest_logs.sh /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz travis@www.opendap.org:
