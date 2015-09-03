@@ -3,6 +3,9 @@
 
 reps=1
 
+directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
+#directories="AIRX3STD"
+
 args=`getopt "r:" $*`
 if test $? != 0
 then
@@ -26,18 +29,13 @@ do
             shift; break;;
     esac
 done
-
-# now process all of the bescmd files...
-
-
 server=$1
 
-directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
-#directories="AIRX3STD"
+# now process all of the bescmd files...
 for dir in $directories
 do
-    for bescmd in `grep -l dds $dir/*.xml`
-    #for bescmd in $dir/*.xml
+    #for bescmd in `grep -l dds $dir/*.xml`
+    for bescmd in $dir/*.xml
     do
         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"  
         echo "bescmd: $bescmd"  
