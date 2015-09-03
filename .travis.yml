@@ -91,4 +91,5 @@ env:
 
 after_failure:
   - ./get_autotest_logs.sh /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+  - ls -lh /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
   - sshpass -p ${TRAVIS_AT_OO} scp /tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz travis@www.opendap.org:
