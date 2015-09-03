@@ -100,4 +100,4 @@ after_failure:
   - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
   - ./get_autotest_logs.sh /tmp/${LOG_FILE_TGZ}
   - ls -lh /tmp/${LOG_FILE_TGZ}
-  - sshpass -p ${TRAVIS_AT_OO} scp ${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
+  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
