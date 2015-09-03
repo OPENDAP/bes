@@ -43,6 +43,7 @@ addons:
       - libxml2-dev
       - libcurl4-openssl-dev
       - libcppunit-dev
+      - netcdf-bin
       - libnetcdf-dev
       - libhdf4-dev
       - libhdfeos-dev
@@ -82,7 +83,7 @@ before_script:
 # so we don't want to repeat that here.
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install; make check -j7; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install; make check -j7 -k; fi
 
 # TRAVIS_AT_OO
 # Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
@@ -93,7 +94,7 @@ env:
   - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 after_failure:
-    - LOG_FILE_TGZ=/tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+  - LOG_FILE_TGZ=/tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
   - ./get_autotest_logs.sh ${LOG_FILE_TGZ}
   - ls -lh ${LOG_FILE_TGZ}
   - sshpass -p ${TRAVIS_AT_OO} scp ${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
