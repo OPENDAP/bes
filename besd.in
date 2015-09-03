@@ -12,6 +12,8 @@
 # Path to the besctl script. Note: If the BES is installed using a prefix
 # that is not set in the besctl script, add '-i <bes_prefix>' to the value
 # of besctl here. This should only be needed in unusual situations.
+prefix=@prefix@
+exec_prefix=@exec_prefix@
 besctl=@bindir@/besctl
 prog=besd
 RETVAL=0
