@@ -10,7 +10,7 @@ set -e
 
 TRAVIS_BUILD_NUMBER=0
 
-cat <<EOF | xargs $1
+cat <<EOF | xargs tar -czf $1
 ./cmdln/testsuite/besTest.log
 ./dap/tests/besDapModuleTest.log
 ./dapreader/tests/DapReaderTest.log
