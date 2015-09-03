@@ -83,11 +83,12 @@ install:
 #
 # We want the hdf5 handler build to find the hdf5 lib headers from the
 # source tarball we just built so run configure using CPPFLAGS=...
+# removed CPPFLAGS=-I$HOME/deps/include added --with-hdf5... jhrg 9/3/15
 
 before_script:
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  - ./configure --prefix=$HOME/build CPPFLAGS=-I$HOME/deps/include
+  - ./configure --prefix=$HOME/build --with-hdf5=$HOME/deps
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure. Note that the coverity scan addon runs make
