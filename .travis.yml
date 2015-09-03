@@ -31,6 +31,7 @@ matrix:
     - env: COVERITY_SCAN_BRANCH=1
 
 addons:
+  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -51,6 +52,14 @@ addons:
       - libcfitsio3-dev
       - libicu-dev
       - sshpass
+
+# TRAVIS_AT_OO
+# Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
+# where -r <...> is the name of the travis repo from our Travis landing page.
+
+env:
+  global:
+  - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 # Use this to prepare the system to install prerequisites or
 # dependencies
@@ -85,14 +94,6 @@ before_script:
 
 script:
   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install; make check -j7 -k; fi
-
-# TRAVIS_AT_OO
-# Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
-# where -r <...> is the name of the travis repo from our Travis landing page.
-
-env:
-  global:
-  - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 after_failure:
   - LOG_FILE_TGZ=/tmp/bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
