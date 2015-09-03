@@ -1,6 +1,33 @@
 #!/bin/bash
 #
 
+reps=1
+
+args=`getopt "r:" $*`
+if test $? != 0
+then
+	echo "Usage: mkCurlTests [-r reps] servername:port/hyrax_end_point"
+	echo "Example: mkCurlTests -r 4 128.0.0.1:8080/opendap"
+	exit 2
+fi
+
+set -- $args
+
+for i
+do
+    case "$i"
+    in
+        -r)
+            reps=$2; 
+            echo "Reps set to $reps"
+            shift;
+            shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+# now process all of the bescmd files...
 
 
 server=$1
@@ -9,8 +36,8 @@ directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH A
 #directories="AIRX3STD"
 for dir in $directories
 do
-    #for bescmd in `grep -l dds $dir/*.xml`
-    for bescmd in $dir/*.xml
+    for bescmd in `grep -l dds $dir/*.xml`
+    #for bescmd in $dir/*.xml
     do
         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"  
         echo "bescmd: $bescmd"  
@@ -42,7 +69,7 @@ do
             url="$url?$constraint"
         fi
         
-        echo ""
+        #echo ""
         echo "request_url: $url"
 
         
@@ -55,11 +82,18 @@ do
         echo "-o $curlResult" >> $curlCmd
         # echo "--trace-ascii -" >> $curlCmd
 
-        echo ""
-        echo "curl comand: $curlCmd"
-
-        { time curl -K $curlCmd 2>$curlResult; } 2>$curlTime
+        #echo ""
+        echo "curl_cmd: $curlCmd"
+        echo "reps: $reps"
         
+        rm -f $curlTime
+
+        repCount=0
+        while [ $repCount -lt $reps ]
+        do
+            { time curl -K $curlCmd 2>$curlResult; } 2>>$curlTime
+            repCount=$[repCount + 1] 
+        done  
       
     done
 
