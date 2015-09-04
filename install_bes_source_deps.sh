@@ -14,7 +14,7 @@ then
   rm -rf $HOME/deps/*
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
-  (cd hyrax-dependencies && mkdir src && make for-travis -j7 prefix=$HOME/deps)
+  (cd hyrax-dependencies && mkdir src && make for-travis -j7 prefix=$HOME)
 else
     echo "Using cached hyrax-dependencies."
 fi
