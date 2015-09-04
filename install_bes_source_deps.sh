@@ -1,24 +1,40 @@
 #!/bin/sh
+#
+# Build the dependencies for the Travis-CI build of the BES and all of
+# its modules that are distributed with Hyrax.
+#
+# Two things about this script: 1. It builds both the dependencies for
+# a complete set of Hyrax modules and that is quite taxing for the Travis
+# system since Travis allows logs of 4MB or less. When the log hits the
+# 4MB size, Travis stops the build. To get around that limitation, I send
+# stdout output of the hyrax deps build to /dev/null. The output to stderr
+# still shows up in the log, however, and that turns out to be important
+# since output has to appear once every X minutes (5, 10?) or the build 
+# will be stopped.
+# 2. We have tired building using Ubuntu packages, but the Ubuntu 12 pkgs
+# are just not current enough for Hyrax. We could drop a handful of the
+# deps built here and get them from packages, but it's not enough to make
+# a big difference. Also, building this way mimics what we will do when it's
+# time to make the release RPMs.
 
 set -e
 
 # Add in a better test that looks at the version numbers of the stuff
-# in hyrax-dependencies/downloads or src. Just get the basic build working
-# for now.
+# in hyrax-dependencies/downloads or src. Same 
 
 # hyrax-dependencies appends '/deps' to 'prefix'
 export prefix=$HOME
 export PATH=$HOME/deps/bin:$PATH
 
-# Force the build FIXME
-rm -rf $HOME/deps
+# Force the build by un-commenting the following line
+# rm -rf $HOME/deps
 
 if test ! -d "$HOME/deps"
 then
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
   (cd hyrax-dependencies && make for-travis -j7 > /dev/null)
-  echo "Completed dependency build - routed all messages to /dev/null"
+  echo "Completed dependency build - stdout to /dev/null to save space"
 else
     echo "Using cached hyrax-dependencies."
 fi
