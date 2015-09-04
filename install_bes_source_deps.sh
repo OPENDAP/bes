@@ -17,7 +17,8 @@ if test ! -d "$HOME/deps"
 then
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
-  (cd hyrax-dependencies && make for-travis -j7)
+  (cd hyrax-dependencies && make for-travis -j7 > /dev/null)
+  echo "Completed dependency build - routed all messages to /dev/null"
 else
     echo "Using cached hyrax-dependencies."
 fi
