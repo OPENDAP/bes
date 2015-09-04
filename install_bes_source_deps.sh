@@ -8,8 +8,9 @@ set -e
 
 if test ! -d "$HOME/deps/lib" || true
 then
+  rm -rf $HOME/deps/*
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
-  tar -xzf hyrax-dependencies-1.11.2.tar
+  tar -xf hyrax-dependencies-1.11.2.tar
   (cd hyrax-dependencies && make -j7 prefix=$HOME/deps)
 else
     echo "Using cached hyrax-dependencies."
