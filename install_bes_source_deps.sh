@@ -5,13 +5,16 @@ set -e
 # Add in a better test that looks at the version numbers of the stuff
 # in hyrax-dependencies/downloads or src. Just get the basic build working
 # for now.
+#
+# FIXME reset the deps and remove the mkdir src and upload a new hyrax tar
+# jhrg 9/4/15
 
 if test ! -d "$HOME/deps/lib" || true
 then
   rm -rf $HOME/deps/*
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
-  (cd hyrax-dependencies && make -j7 prefix=$HOME/deps)
+  (cd hyrax-dependencies && mkdir src && make for-travis -j7 prefix=$HOME/deps)
 else
     echo "Using cached hyrax-dependencies."
 fi
