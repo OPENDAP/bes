@@ -6,7 +6,7 @@ set -e
 # in hyrax-dependencies/downloads or src. Just get the basic build working
 # for now.
 
-if test ! -d "$HOME/deps/lib"
+if test ! -d "$HOME/deps/lib" || true
 then
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xzf hyrax-dependencies-1.11.2.tar
