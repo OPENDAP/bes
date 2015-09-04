@@ -45,12 +45,6 @@ addons:
       - libxml2-dev
       - libcurl4-openssl-dev
       - libcppunit-dev
-      - netcdf-bin
-      - libnetcdf-dev
-      - libhdf4-dev
-      - libhdfeos-dev
-      - libopenjpeg-dev
-      - libcfitsio3-dev
       - libicu-dev
       - sshpass
 
@@ -74,7 +68,6 @@ env:
 # NB: Should add gdal here. 9/3/15
 
 install:
-  - export PATH=$HOME/deps/bin:$PATH
   - bash ./install_bes_source_deps.sh
   - ls -R $HOME/deps
 
@@ -88,7 +81,8 @@ install:
 before_script:
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  - ./configure --prefix=$HOME/build --with-hdf5=$HOME/deps
+  - export PATH=$HOME/deps/bin:$PATH
+  - ./configure --prefix=$HOME/build --with-dependencies=$HOME/deps
 
 # All commands must exit with code 0 on success. Anything else is
 # considered failure. Note that the coverity scan addon runs make
