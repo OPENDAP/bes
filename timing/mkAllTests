@@ -1,14 +1,17 @@
 #!/bin/bash
-#
+# Added an option to limit the tests to 'reasonable' ones that will
+# complete in less than one hour. Use -F to run all the tests including 
+# the monstrous AIRX3STD tests.
+
 
 reps=4
 verbose=
-directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
+directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH"
 
 args=`getopt "r:Fv" $*`
 if test $? != 0
 then
-	echo "Usage: mkAggTests [-r reps][-F][-v]"
+	echo "Usage: mkAllTests [-r reps][-F][-v]"
 	exit 2
 fi
 

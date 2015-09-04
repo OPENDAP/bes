@@ -2,13 +2,13 @@
 #
 # Removed GPM_3IMERGHH until we get the new hdf5 handler code
 # from THG. jhrg 6/23/15
-# Added an option to limit the tests to 'resonable' ones that will
+# Added an option to limit the tests to 'reasonable' ones that will
 # complete in less than one hour. Use -F to run all the tests including 
 # the monstrous AIRX3STD tests.
 
 reps=4
 verbose=
-directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH AIRX3STD"
+directories="heap_analysis small_aggregations TRMM_3A11 TRMM_3B42 GPM_3IMERGHH"
 #directories="AIRX3STD"
 
 args=`getopt "r:Fv" $*`
