@@ -42,7 +42,7 @@ fi
 # unlike hyrax-dependencies, the libdap tar needs --prefix to be the
 # complete dir name. The hyrax-deps... project is a bit of a hack...
 
-if test ! -x "$HOME/deps/bin/dap-config"
+if test ! -x "$HOME/deps/bin/dap-config" -o true
 then
   wget http://www.opendap.org/pub/tmp/travis/libdap-3.15.0.tar.gz
   tar -xzf libdap-3.15.0.tar.gz
