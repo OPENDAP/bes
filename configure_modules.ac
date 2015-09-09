@@ -628,7 +628,7 @@ AC_ARG_WITH([gridfields],
 		[AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
          GF_LIBS="-L$withval/lib -lgridfields"
          GF_CFLAGS="-I$withval/include"
-	 	 GF_PATH=$withval
+ 	 GF_PATH=$withval
          AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
          libgf_ok="yes"])],
     [ libgf_ok="no" ])
@@ -650,14 +650,15 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
 
 AC_MSG_CHECKING([for libgridfields $libgf_needed])
 
+dnl Use AS_VERSION_COMPARE to test version numbers. jhrg 9/9/15
+
 if gridfields-config --version > /dev/null 2>&1
 then
     version_libgf=`gridfields-config --version | sed 's@gridfields \(.*\)@\1@'`
-    AX_COMPARE_VERSION([$version_libgf], [ge], [$libgf_needed], [libgf_ok="yes"], [libgf_ok="no"])
-
-    if test "$libgf_ok"="no"
+    AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
+    if test x$libgf_ok = xno
     then
-        AC_MSG_ERROR([must have libgf $libgf_needed or greater, found $version_libgf])
+        AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
     fi
 
     GF_LIBS="`gridfields-config --libs`"
