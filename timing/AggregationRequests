@@ -1,0 +1,45 @@
+
+#Single Variable, multiple time slabs (multi file aggregations)
+
+heap_analysis/AIRX3_Aggregation_01_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_02_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_04_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_08_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_16_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_32_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_64_timeslab.ncml.dods-bescmd.xml
+
+
+# Multiple large variables spanning the aggregation
+
+heap_analysis/AIRX3_hdf4_aggregation_small_01_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_02_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_04_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_08_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_16_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_32_bigvar.dods-bescmd.xml
+
+# 15 vars of the small AIRX aggregation
+small_aggregations/AIRX3_hdf4_aggregation_small.dods-bescmd.xml
+
+# 42 vars of the small AIRX aggregation
+small_aggregations/AIRX3_hdf4_aggregation_small_2.dods-bescmd.xml
+
+# Single var acorss full aggregation request
+
+small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dods-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_monthRain.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_precipitation.dods-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_HQprecip.dods-bescmd.xml
+
+# entire aggregation
+
+small_aggregations/TRMM_3A11_hdf4_aggregation_small_2.ncml.dods-bescmd.xml
+small_aggregations/TRMM_3B42_freeform_aggregation_small.ncml.dods-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml.dods-bescmd.xml
+
+# All granules, variables subset 
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml.dods-bescmd.xml
+
+

@@ -1,0 +1,26 @@
+# All the DDS requests in the performance test suite
+
+small_aggregations/AIRX3_hdf4_aggregation_small.dds-bescmd.xml
+small_aggregations/AIRX3_hdf4_granule.dds.bescmd.xml
+small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dds-bescmd.xml
+small_aggregations/TRMM_3A11_hdf4_granule.dds.bescmd.xml
+small_aggregations/TRMM_3B42_freeform_aggregation_small.ncml.dds-bescmd.xml
+small_aggregations/TRMM_3B42_freeform_granule.ncml.dds-bescmd.xml
+small_aggregations/VariableRenameOnly.ncml.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_3A11.20020301.7.HDF.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_3A11.20020301.7.HDF_monthRain.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_granule.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_granule_monthRain.dds-bescmd.xml
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_monthRain.dds-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily.1998.01.02.7.bin.dds-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml.dds-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_granule.dds-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_granule_precipitation.dds-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_precipitation.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_HQprecip.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_granule.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_granule_HQprecip.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH_3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5.dds-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH_3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5_HQprecip.dds-bescmd.xml

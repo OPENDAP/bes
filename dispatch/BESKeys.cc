@@ -168,7 +168,8 @@ bool BESKeys::LoadedKeys(const string &key_file)
 
 void BESKeys::load_keys()
 {
-    char buffer[255];
+#if 0 // Replaced this use of character buffer code with the string based version below. ndp 09/09/2015
+	char buffer[255];
     string key, value;
     while (!(*_keys_file).eof())
     {
@@ -194,6 +195,32 @@ void BESKeys::load_keys()
             }
         }
     }
+#endif
+
+
+    string key, value, line;
+    while(!_keys_file->eof() )
+    {
+        bool addto = false;
+        getline( *_keys_file, line );
+        if (break_pair(line.c_str(), key, value, addto))
+        {
+            if (key == BES_INCLUDE_KEY)
+            {
+                // We make this call to set_key() and force 'addto' to
+            	// be true because we need access to the child configuration
+            	// files and their values for the admin interface.
+                set_key(key, value, true);
+                load_include_files(value);
+            }
+            else
+            {
+                set_key(key, value, addto);
+            }
+        }
+
+    }
+
 }
 
 // The string contained in the character buffer b should be of the

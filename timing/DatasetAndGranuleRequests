@@ -1,0 +1,35 @@
+
+# Multiple large variables
+
+heap_analysis/AIRX3STD_hdf_01_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3STD_hdf_02_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3STD_hdf_04_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3STD_hdf_08_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3STD_hdf_16_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3STD_hdf_32_bigvar.dods-bescmd.xml
+
+
+# Multiple subset variables
+small_aggregations/AIRX3_hdf4_granule.dods.bescmd.xml
+
+# All variables
+small_aggregations/TRMM_3A11_hdf4_granule.dods.bescmd.xml
+small_aggregations/TRMM_3B42_freeform_granule.ncml.dods-bescmd.xml
+TRMM_3A11/TRMM_3A11_3A11.20020301.7.HDF.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily.1998.01.02.7.bin.dods-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH_3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5.dods-bescmd.xml
+
+# Single variable
+TRMM_3A11/TRMM_3A11_3A11.20020301.7.HDF_monthRain.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily.1998.01.02.7.bin_precipitation.dods-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH_3B-HHR.MS.MRG.3IMERG.20140505-S000000-E002959.0000.V03D.HDF5_HQprecip.dods-bescmd.xml
+
+# Multiple subset variables from a single granule
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_granule.dods-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_granule.dods-bescmd.xml
+
+# Subset variable(s) from a single granule in an aggregation
+TRMM_3A11/TRMM_3A11_Aggregation.ncml_granule_monthRain.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_granule.dods-bescmd.xml
+TRMM_3B42/TRMM_3B42_daily_Aggregation_1998.ncml_granule_precipitation.dods-bescmd.xml
+GPM_3IMERGHH/GPM_3IMERGHH.03_Aggregation_20140505.ncml_granule_HQprecip.dods-bescmd.xml

@@ -1,0 +1,8 @@
+# Multiple large variables spanning the aggregation
+heap_analysis/AIRX3_hdf4_aggregation_small_01_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_02_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_04_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_08_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_16_bigvar.dods-bescmd.xml
+heap_analysis/AIRX3_hdf4_aggregation_small_32_bigvar.dods-bescmd.xml
+
