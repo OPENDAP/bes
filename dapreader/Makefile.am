@@ -39,7 +39,7 @@ $(top_builddir)/dispatch/libbes_dispatch.la
 libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
-libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS) -ltest-types 
+libdapreader_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
 
 EXTRA_PROGRAMS = 
 

@@ -23,7 +23,6 @@ branches:
     - master
     - aggregation_improvements
     - coverity_scan
-    - /^*_travis/
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 
 # Only use gcc for Coverity builds
@@ -33,6 +32,7 @@ matrix:
     - env: COVERITY_SCAN_BRANCH=1
 
 addons:
+  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -45,14 +45,16 @@ addons:
       - libxml2-dev
       - libcurl4-openssl-dev
       - libcppunit-dev
-      - libnetcdf-dev
-      - libhdf4-dev
-      - libhdfeos-dev
-      # Depends on libhdf4-alt-dev, libcurl4-gnutls-dev, libdap-dev but 
-      # those "won't be installed" jhrg 8/7/15- libgdal-dev
-      - libopenjpeg-dev
-      - libcfitsio3-dev
       - libicu-dev
+      - sshpass
+
+# TRAVIS_AT_OO
+# Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
+# where -r <...> is the name of the travis repo from our Travis landing page.
+
+env:
+  global:
+  - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
 
 # Use this to prepare the system to install prerequisites or
 # dependencies
@@ -62,23 +64,35 @@ addons:
 # run your build. This script builds bison-3, libdap and hdf5 - these
 # are available via ubuntu apt-get, but we need newer versions than
 # Ubuntu 12 has.
+#
+# NB: Should add gdal here. 9/3/15
+
 install:
-  - export PATH=$HOME/deps/bin:$PATH
   - bash ./install_bes_source_deps.sh
   - ls -R $HOME/deps
 
 # Use this to prepare your build for testing e.g. copy database
 # configurations, environment variables, etc.
+#
+# We want the hdf5 handler build to find the hdf5 lib headers from the
+# source tarball we just built so run configure using CPPFLAGS=...
+# removed CPPFLAGS=-I$HOME/deps/include added --with-hdf5... jhrg 9/3/15
+
 before_script:
   - ln -s configure_modules.ac configure.ac
   - autoreconf --force --install --verbose
-  # Want the hdf5 handler build to find the hdf5 lib headers from the
-  # source tarball we just built.
-  - ./configure --prefix=$HOME/build CPPFLAGS=-I$HOME/deps/include
+  - export PATH=$HOME/deps/bin:$PATH
+  - ./configure --prefix=$HOME/build --with-dependencies=$HOME/deps
 
 # All commands must exit with code 0 on success. Anything else is
-# considered failure.
+# considered failure. Note that the coverity scan addon runs make
+# so we don't want to repeat that here.
+
 script:
   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j7 && make install && make check -j7 -k; fi
 
-# after_script:
+after_failure:
+  - LOG_FILE_TGZ=bes-autotest-${TRAVIS_BUILD_NUMBER}-logs.tar.gz
+  - tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print`
+  - ls -lh /tmp/${LOG_FILE_TGZ}
+  - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:${LOG_FILE_TGZ}
