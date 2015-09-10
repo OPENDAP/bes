@@ -1,3 +1,5 @@
+# All the DDS requests in the performance test suite
+
 small_aggregations/AIRX3_hdf4_aggregation_small.dds-bescmd.xml
 small_aggregations/AIRX3_hdf4_granule.dds.bescmd.xml
 small_aggregations/TRMM_3A11_hdf4_aggregation_small.ncml.dds-bescmd.xml
