@@ -1,0 +1,8 @@
+#!/bin/bash
+# Retrieves the source data files from our www.opendap.org/pub server.
+
+curl http://www.opendap.org/pub/aggregation_performance_test_data/agg_perf_test_baseline.20150904.tgz > agg_perf_test_baseline.20150904.tgz
+curl http://www.opendap.org/pub/aggregation_performance_test_data/agg_perf_test_parallel_io.20150904.tgz > agg_perf_test_parallel_io.20150904.tgz
+curl http://www.opendap.org/pub/aggregation_performance_test_data/curl_baseline_20150903.tgz > curl_baseline_20150903.tgz
+curl http://www.opendap.org/pub/aggregation_performance_test_data/curl_parallel_io_20150903.tgz > curl_parallel_io_20150903.tgz
+

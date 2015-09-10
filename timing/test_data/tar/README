@@ -1,0 +1,3 @@
+This directory holds just the tar zipped files of the raw data. They are not 
+checked into git, but the shell script "retrieve_raw_data" can be run to get 
+them. Unpack the files in the parent directory to this one.
