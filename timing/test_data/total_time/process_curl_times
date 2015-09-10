@@ -3,7 +3,7 @@
 echo "FullTestName, ShortName, baseline_totalTime, +-, improved_total_time, +-"
 
 suffix=".curl.time"
-files="curl_baseline_20150903/*dods*$suffix"
+files="../curl_baseline_20150903/*dods*$suffix"
 # echo "There are "`echo $files | wc -w`" files."
 for baseline_file in $files 
 do

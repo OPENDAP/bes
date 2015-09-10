@@ -1,0 +1,15 @@
+This directory should hold the contents of the tar file located here:
+
+http://www.opendap.org/pub/aggregation_performance_test_data/agg_perf_test_parallel_io.20150904.tgz
+
+(But doesn't because it's a big thing and doesn't belong in GitHub.)
+
+The files (that would be herein) represent the performance test output 
+of the Hyrax server with the parallel_io performance improvements.
+
+These improvements include:
+ - The serialize and release memory managment changes.
+ - The serialization pipelining changes.
+ - The double buffering and mutli threaded serialization scheme aka parallel_io.
+ 
+ 
