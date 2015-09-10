@@ -1,0 +1,9 @@
+#Single Variable, multiple time slabs (multi file aggregations)
+
+heap_analysis/AIRX3_Aggregation_01_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_02_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_04_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_08_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_16_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_32_timeslab.ncml.dods-bescmd.xml
+heap_analysis/AIRX3_Aggregation_64_timeslab.ncml.dods-bescmd.xml
