@@ -1,3 +1,19 @@
+News for version 3.15.0
+
+This version of the BES includes many build fixes including better
+support for the 'standard' build where only need modules are built.
+Thanks to Patrick West.
+
+The code in bes/dap now frees data once it has been sent using libdap's
+serialize() methods. This can result in dramatic reduction in memory
+use. However, it requires libdap 3.15.0 or greater.
+
+Combined with the above fix, other improvments in libdap in support of
+parallel I/O and matching improvements in the NCML handler, Hyrax using
+this version of the BES can build and return aggregations is less time,
+with far less latency and much less total memory. These improvments are
+directed at JoinNew aggregations.
+
 News for version 3.14.0
 
 This version of the BES incorporates all the 'standard' handlers

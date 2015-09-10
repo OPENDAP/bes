@@ -1,7 +1,7 @@
 
 README for the OpenDAP BES
 
-Updated for version 3.14.
+Updated for version 3.15.
 
 See the INSTALL file for build instructions, including special
 instructions for building from a (git) cloned repo. This code can
@@ -11,6 +11,9 @@ For more information on Hyrax and the BES, please visit our documentation
 wiki at docs.opendap.org. This will include the latest install and build
 instructions, the latest configuration inforamtion, tutorials, how to
 develop new modules for the BES, and more.
+
+This version has significant performance improvements for aggregations,
+particularly those that use the JoinNew directive.
 
 Contents
 
