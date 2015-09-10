@@ -1,5 +1,7 @@
 #!/bin/bash
-#
+# Processes all of the bes commands in the test suite and produces
+# and runs (and times) curl commands that are the equivalent of each of the source
+# bes commads, directing them at the server identified on the command line.
 
 reps=1
 

@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-# Removed GPM_3IMERGHH until we get the new hdf5 handler code
-# from THG. jhrg 6/23/15
+# runs the timing tests using besstandalone
+# and the suite of bes command files contained in the subdirectories found 
+# beneath this ( the "bes/timing") directory.
+#
 # Added an option to limit the tests to 'reasonable' ones that will
 # complete in less than one hour. Use -F to run all the tests including 
 # the monstrous AIRX3STD tests.
