@@ -1,0 +1,57 @@
+#!/bin/bash
+
+echo "FullTestName, ShortName, baseline_totalTime, +-, improved_total_time, +-"
+
+suffix=".curl.time"
+files="curl_baseline_20150903/*dods*$suffix"
+# echo "There are "`echo $files | wc -w`" files."
+for baseline_file in $files 
+do
+
+    baselineDirName=`dirname $baseline_file`
+    #echo "BaselineDirName: "$baselineDirName
+    
+    improvedDirName=`echo $baselineDirName | sed -e "s/baseline/parallel_io/g"`
+    #echo "ImprovedDirName: "$improvedDirName
+
+    full_test_name=`basename $baseline_file | sed -e "s/$suffix//g"`
+    
+    echo -n "$full_test_name, "
+    
+    short_name=`echo $full_test_name | awk '{                      
+                 FS="[_\\.-]";
+                 n = split($0,v);
+                 test_name="";
+                 for(i=1; i<=n ;i++){
+                     if(v[i] ~ /^[0-9]*$/){
+                         test_name = test_name v[i];
+                     } else {
+                         test_name = test_name substr(v[i],1,1);
+                     }
+                 }
+                 
+                 test_name = substr(test_name,1,length(test_name)-3);
+                                      
+                 print test_name
+                 
+                 
+                 }' -`
+
+    echo -n  "$short_name, "
+    
+    
+    for file in $baselineDirName/$full_test_name$suffix $improvedDirName/$full_test_name$suffix
+    do
+        #echo $file
+        real_times=`grep real $file | awk '{split($2,s,"m"); gsub("s","",s[2]); msecs=s[1]*60*1000+s[2]*1000; printf("%s ",msecs);}' -`
+        #echo "times (ms): $real_times"
+        real_metrics=`echo $real_times | awk '{for(i=1;i<=NF;i++){sum += $i; sumsq += ($i)^2;}}END {printf("%.3f %.3f \n", sum/NF, sqrt((sumsq-sum^2/NF)/NF))}' -`
+        avg=`echo $real_metrics | awk '{print $1}' -`
+        stdev=`echo $real_metrics | awk '{print $2}' -`
+        echo -n "$avg, $stdev,"   
+    done
+    
+    echo ""
+    
+    
+done

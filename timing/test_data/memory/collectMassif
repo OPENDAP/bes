@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+files="../agg_perf_test_baseline.20150904/*dods*.massif.csv ../agg_perf_test_parallel_io.20150904/*dods*.massif.csv"
+echo "There are "`echo $files | wc -w`" files."
+for i in $files 
+do
+
+    echo "----------------------------------------------------------------"
+    echo FileName: `basename $i`   
+    echo DirName: `dirname $i`
+
+    if [[ `dirname $i` == *"baseline"* ]]
+    then
+        collection="bln_";
+        color=$bln_color;
+    elif [[ `dirname $i` == *"parallel_io"* ]]
+    then 
+        collection="imprvd_";
+        color=$imprvd_color;
+    else
+        collection="unknwn_";
+        color=00FF00
+    fi
+    
+    echo Collection: $collection
+
+    test_name=`basename $i | awk '{                      
+                     FS="[_\\.-]";
+                     n = split($0,v);
+                     test_name="";
+                     for(i=1; i<=n ;i++){
+                         if(v[i] ~ /^[0-9]*$/){
+                             test_name = test_name v[i];
+                         } else {
+                             test_name = test_name substr(v[i],1,1);
+                         }
+                     }
+                     
+                     test_name = substr(test_name,1,length(test_name)-5);
+                                          
+                     print test_name
+                     
+                     
+                     }' -`
+                     
+    test_name=$collection$test_name     
+    echo test_name: $test_name
+    
+    cat $i | awk -v name=$test_name '{ if(NR==1){ print name"_"$2, name"_"$3;}else{ print $2, $3;}}' -  > $test_name.csv
+
+done
+
+

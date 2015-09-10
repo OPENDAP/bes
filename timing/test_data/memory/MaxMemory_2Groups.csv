@@ -1,0 +1,14 @@
+ShortName, CommandFileName, Label, baseline_max_memory, improved_max_memory
+AA01tn, AIRX3_Aggregation_01_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 01 Granule, 25367164, 19147300
+AA02tn, AIRX3_Aggregation_02_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 02 Granules, 42687770, 19832757
+AA04tn, AIRX3_Aggregation_04_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 04 Granules, 100642319, 21802218
+AA08tn, AIRX3_Aggregation_08_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 08 Granules, 177915052, 24440441
+AA16tn, AIRX3_Aggregation_16_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 16 Granules, 332463874, 29683412
+AA32tn, AIRX3_Aggregation_32_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 32 Granules, 641554562, 40165148
+AA64tn, AIRX3_Aggregation_64_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 64 Granules, 1259735938, 61156681
+Ahas01b, AIRX3_hdf4_aggregation_small_01_bigvar.dods-bescmd.xml, Agg. 01 BigVar 10 Granules, 196509790, 24361647
+Ahas02b, AIRX3_hdf4_aggregation_small_02_bigvar.dods-bescmd.xml, Agg. 02 BigVars 10 Granules, 320925801, 24361658
+Ahas04b, AIRX3_hdf4_aggregation_small_04_bigvar.dods-bescmd.xml, Agg. 04 BigVars 10 Granules, 569757943, 24361800
+Ahas08b, AIRX3_hdf4_aggregation_small_08_bigvar.dods-bescmd.xml, Agg. 08 BigVars 10 Granules, 1067422075, 24361932
+Ahas16b, AIRX3_hdf4_aggregation_small_16_bigvar.dods-bescmd.xml, Agg. 16 BigVars 10 Granules, 2062750589, 24362446
+Ahas32b, AIRX3_hdf4_aggregation_small_32_bigvar.dods-bescmd.xml, Agg. 32 BigVars 10 Granules, 4053408468, 24364325

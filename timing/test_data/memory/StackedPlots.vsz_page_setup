@@ -1,0 +1,14 @@
+# ---- Page Setup -------------------------------------
+Add('page', name='page1', autoadd=False)
+To('page1')
+Set('width', '20cm')
+Set('height', '200cm')
+# ---- Grid Setup  -------------------------------------
+Add('grid', name='grid1', autoadd=False)
+To('grid1')
+Set('rows', 2)
+Set('columns', 1)
+Set('leftMargin', '0.218cm')
+Set('rightMargin', '0.2cm')
+Set('topMargin', '0.2cm')
+Set('bottomMargin', '0.183cm')
