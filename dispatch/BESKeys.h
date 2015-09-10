@@ -38,10 +38,10 @@
 #include <vector>
 #include <string>
 
-using std::string ;
-using std::map ;
-using std::vector ;
-using std::ifstream ;
+using std::string;
+using std::map;
+using std::vector;
+using std::ifstream;
 
 #include "BESObj.h"
 
@@ -81,50 +81,55 @@ using std::ifstream ;
  * BES provides a single object for access to a single BESKeys object,
  * TheBESKeys.
  */
-class BESKeys : public BESObj
+class BESKeys: public BESObj
 {
 private:
-    ifstream *		_keys_file ;
-    string		_keys_file_name ;
-    map<string,vector<string> > *_the_keys ;
-    bool		_own_keys ;
+	ifstream * _keys_file;
+	string _keys_file_name;
+	map<string, vector<string> > *_the_keys;
+	bool _own_keys;
 
-    static vector<string> KeyList ;
-    static bool		LoadedKeys( const string &key_file ) ;
+	static vector<string> KeyList;
+	static bool LoadedKeys(const string &key_file);
 
-    void		clean() ;
-    void 		initialize_keys() ;
-    void 		load_keys() ;
-    bool 		break_pair( const char* b,
-				    string& key,
-				    string &value,
-				    bool &addto ) ;
-    bool		only_blanks( const char *line ) ;
-    void		load_include_files( const string &files ) ;
-    void		load_include_file( const string &file ) ;
-    			BESKeys(): _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)   {}
-			BESKeys( const string &keys_file_name,
-				 map<string,vector<string> > *keys ) ;
+	void clean();
+	void initialize_keys();
+	void load_keys();
+	bool break_pair(const char* b, string& key, string &value, bool &addto);
+	bool only_blanks(const char *line);
+	void load_include_files(const string &files);
+	void load_include_file(const string &file);
+	BESKeys() :
+			_keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
+	{
+	}
+	BESKeys(const string &keys_file_name, map<string, vector<string> > *keys);
 protected:
-    			BESKeys( const string &keys_file_name ) ;
+	BESKeys(const string &keys_file_name);
 public:
-    			~BESKeys() ;
+	~BESKeys();
 
-    string		keys_file_name() { return _keys_file_name ; }
+	string keys_file_name()
+	{
+		return _keys_file_name;
+	}
 
-    void		set_key( const string &key, const string &val,
-				 bool addto = false ) ;
-    void		set_key( const string &pair ) ;
-    void		get_value( const string& s, string &val,
-				   bool &found ) ;
-    void		get_values( const string& s, vector<string> &vals,
-				    bool &found ) ;
+	void set_key(const string &key, const string &val, bool addto = false);
+	void set_key(const string &pair);
+	void get_value(const string& s, string &val, bool &found);
+	void get_values(const string& s, vector<string> &vals, bool &found);
 
-    typedef map< string, vector< string > >::const_iterator Keys_citer ;
-    Keys_citer		keys_begin() { return _the_keys->begin() ; }
-    Keys_citer		keys_end() { return _the_keys->end() ; }
+	typedef map<string, vector<string> >::const_iterator Keys_citer;
+	Keys_citer keys_begin()
+	{
+		return _the_keys->begin();
+	}
+	Keys_citer keys_end()
+	{
+		return _the_keys->end();
+	}
 
-    virtual void	dump( ostream &strm ) const ;
+	virtual void dump(ostream &strm) const;
 };
 
 #endif // BESKeys_h_
