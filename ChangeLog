@@ -1,3 +1,850 @@
+2015-09-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fix configure_modules.ac for CentOS6
+	The .ac file used 'if test "$libgf_ok"="no" but that
+	doesn't work. there must be spaces between the '=' and
+	its arguments. Also, the double quotes are not needed.
+	Lastly, the AX_COMAPRE_VERSION macro can be replaced
+	by AS_COMPARE_VERSION, but the conf/ax_compare_version.m4
+	file must remain, maybe because it's needed by other AX
+	macros...
+
+	Force a rebuild of the cached libdap 3.15
+	This should fix a bug in the FreeForm handler - the new libdap on both
+	master and parallel_io has the fix.
+
+2015-09-04  James Gallagher  <jgallagher@opendap.org>
+
+	Test Travis builds pulling hyrax-deps from Travis' cache.
+
+	Silence the non-error messages from the hyrax-deps build for travis
+
+	More work on the Travis build
+
+	another fix - prefix should not end in 'deps' for hyrax-dependencies
+
+	Another fix/workaround for install_bes-deps...
+
+	Error in install_bes_dep...
+
+	Must force a rebuild of the deps...
+
+	Travis now used hyrax-dependencies
+	...instead of a one-off process. No guarantee this will work
+	because it's huge, but it's also worth a try.
+
+2015-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Travis fix for hdf5
+
+	travis. bug. fix.
+
+	Merged master down to agg improve; another fix for travis
+
+	Merge branch 'master' into aggregation_improvements
+
+	Another fix for travis - ssh known hosts this time
+
+	Added sshpass to the packges travis loads
+	This should fix the last issue with getting the test logs.
+
+	Module updates plus another stab at travis.yml and make check
+
+	Build updates: more travis debugging and fixes in csv and freeform
+	The submodule fixes we pick up as new commit hashes
+
+	Merge pull request #5 from OPENDAP/westp-standard-build
+	Compile, test and deploy BES using standard configuration
+
+	Debugging travis and the mystery autotest fails...
+
+2015-09-03  Nathan Potter  <ndp@opendap.org>
+
+	More changes to mkCurlTests
+
+	Added command line option for number of reps to mkCurlTests
+
+2015-09-02  James Gallagher  <jgallagher@opendap.org>
+
+	Borked this script - testing/debuggin travis is tedious...
+
+	Minor error in the travis.yml file...
+
+	Added upload of tar ball with test logs to travis.yml
+
+2015-09-02  Nathan Potter  <ndp@opendap.org>
+
+	Ignoring the output files from mkCurlTests.
+
+	Cleaned up bescmd files for easier munging. Added mkCurlTests
+	script that reads bescmd files and produces valid DAP URLs and
+	then times how long it takes curl to get the result.
+
+2015-09-02  James Gallagher  <jgallagher@opendap.org>
+
+	Use cached libdap, etc., and run make check
+
+	correction - build libdap 3.15.0
+
+	For install source deps to rebuild.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Update travis.yml so that bes:master will build the correct version of lobdap
+
+2015-09-02  Nathan Potter  <ndp@opendap.org>
+
+	Added toplevel test script for running timing and heap profiling tests
+
+	Merge branch 'master' into aggregation_improvements
+
+	updates to test scripts
+
+2015-08-31  Nathan Potter  <ndp@opendap.org>
+
+	arrrrrg
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	 new scrpit for processing massif output
+
+2015-08-31  Patrick West  <pwest@opendap.tw.rpi.edu>
+
+	Compile, test and deploy BES using standard configuration
+	Attempting to build a standard configuration of the BES using just the
+	modules that I need and without all of the dependencies that I don't
+	need. So using the configure_standard.ac configuration file.
+	The besd.in file which builds the besd initialization script that goes
+	into /etc/init.d was not setting up the prefix variables correctly so
+	the bes was not launching using that script.
+	configure_standard.ac seemed to have not been updated with the other
+	configuration file as it appears to be working.
+	dapreader Makefile.am was missing the inclusion of the dap server libs
+	to resolve the Ancillary methods used, specificall reading a das
+	ancillary file.
+
+2015-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a missing double quote in install_bes_source_deps.sh
+
+	Added 'make check' to travis
+	... and spiffed up the bes source deps script
+
+	Fixed the install_bes_source_deps.sh script
+	...so that it will build libdap 3.15
+
+	The aggregation_improvements branch.
+	Requires the parallel_io branch version of libdap and uses the
+	pipelining branch version of ncml_module. This version also will
+	rebuild the bes deps built using the install_bes_source_deps
+	script.
+
+	Removed some very old code that was not used
+
+2015-08-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Formatting
+
+	Call clear_local_data() in dap/ResponseBuilder
+	This matches a change made on the libdap parallel io branch
+	that will be merged ASAP.
+
+2015-08-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of github.com:opendap/bes
+
+	Make heap_profiler's output more legible
+	Drop the 'depth' down to 1; some other changes.
+
+2015-08-21  Nathan Potter  <ndp@opendap.org>
+
+	Removed the 'xml' string from the dapreader typematch string.
+
+2015-08-19  Nathan Potter  <ndp@opendap.org>
+
+	Added new global timing variables so that we can see how long it takes before we begin the first data read and how long it takes before we begin the first data transmission.
+
+2015-08-11  Nathan Potter  <ndp@opendap.org>
+
+	Added bes commands to illuminate the costs adding additional (time) hyperslabs to a request.
+
+	Added new bes commands to illuminate the memory usage for NcML aggregations and HDF4 files on a per variable basis.
+
+2015-08-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes.git
+
+2015-08-10  James Gallagher  <jgallagher@opendap.org>
+
+	Formatted code and added the OPeNDAP formatting settings
+	...that can be imported to Eclipse.
+	[ci skip]
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2015-08-10  Nathan Potter  <ndp@opendap.org>
+
+	small updates to test coide
+
+2015-08-10  James Gallagher  <jgallagher@opendap.org>
+
+	Updated README so that it explains how to run the heap profiler
+
+	Added git ignore
+
+2015-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge branch 'master' of github.com:opendap/bes
+
+	Removed make check for now
+	Will have to debug on an ubuntu machine...
+
+	tests in dapreader fail
+	Add -k to make check to see all the tests that fail and if the missing
+	gdal library is a problem with the check target.
+
+	test if make check -j7 work with travis
+	Removing libgdal fixed the issue with uuid/uuid.h - apparently one
+	failed apt-get lib caused the other to not load as well. Will make check
+	work without libgdal?
+
+	removed libgdal from packages loaded by travis.yml
+	This may fix the build, or at least address the uuid/uuid.h not
+	found problem (uuid/uuid.h) is found by libdap when building on travis.
+
+2015-08-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	Conflicts:
+		modules/ncml_module
+
+	tweaked heap_profiler and addedsome info about the AIRX aggregation
+
+	Two new aggregations for use with the heap_profiler script
+	These use much smaller variables and smaller data sets, so the
+	affect is less pronounced, but it's easy to see how much memory
+	was allocated for the actual data returned.
+
+	Added a second 'small aggregation'
+	This also uses AIRX and builds a much larger response using a larger
+	number of variables. It's about four times the memory footprint of
+	the first 'small' aggregation.
+
+	Merge branch 'master' of github.com:opendap/bes
+	Conflicts:
+		timing/mkAggTests
+
+	Added options to mkAggTests
+	...to switch between verbose and not and AIRX and not.
+
+	Added a heap_profiler
+	Based on code Nathan wrote
+
+2015-08-07  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	tuning test scripts
+
+2015-08-06  James Gallagher  <jgallagher@opendap.org>
+
+	timeTest now just runing the timing debug key by default.
+
+	Clean up the ResponseBuilderTest
+	The SetUp() method was passing the address to two local objects into
+	dynamically allocated objects that have/had a lifetime that exceeded
+	their scope. Oops. This does not fix the broken test, but it's a problem
+	all the same.
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	changes in the modules to make 'check' build the package.m4 files.
+
+2015-08-04  Nathan Potter  <ndp@opendap.org>
+
+	Updated mac_profiler script so that it runs valgrind in memcheck and massif mode in addtion to running iprofile if the OS is dected as OS-X (Darwin). Probably need to change the name of the script now that it is getting platform independence.
+
+2015-08-03  Nathan Potter  <ndp@opendap.org>
+
+	spellcheck
+
+	Additional instrumentation in BES request food chain
+
+	New timing tests, aggregations, and profiling
+
+2015-07-16  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for 'make install' since the docker container doesn't allow sudo.
+	The fix is to use --prefix with configure.
+
+2015-07-15  James Gallagher  <jgallagher@opendap.org>
+
+	Fixing how bes uses autotest
+	Also removed make check from travis until the container system is
+	working correctly.
+
+	Reorder the libraries in dap/unit-tests
+	...to fix the travis build
+
+	travis syntax error
+
+2015-07-14  James Gallagher  <jgallagher@opendap.org>
+
+	Changed the ax_lib_gdal.m4 macro.
+	Now not finding a copy of gdal-config that will run is not an
+	error, just a warning.
+
+	Set PATH before the source deps build script
+
+	mis-named the source deps script
+
+	travis fix for container build
+
+	install_bes_source_deps.sh fix
+
+	.travis indentation fix
+
+	Travis now uses docker containers.
+	Added install_bes_source_deps.sh script as part of this change
+
+	updated gdal_handler
+
+	updated modules
+
+2015-07-12  James Gallagher  <jgallagher@opendap.org>
+
+	Modification to travis: added check, install and distcheck
+
+2015-07-10  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for distcheck - it's still not working
+	..but it gets further along.
+
+2015-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Updated submodule ncml_handler and its commit hash here
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Submodule commits
+
+2015-07-09  Nathan Potter  <ndp@opendap.org>
+
+	 INstrumentation adjustment
+
+	more leakCheck
+
+2015-07-08  Nathan Potter  <ndp@opendap.org>
+
+	Adding new analysis script
+
+2015-07-07  James Gallagher  <jgallagher@opendap.org>
+
+	Timing run on 7/7/2015
+
+2015-07-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added calls to xmlCleanupParser() and fixed a catch() block in XMLInterface.
+	I added calls to xmlCleanupParser() in the terminate() methods
+	of ServerApp and StandAloneApp - this elimiates some reported
+	leaks from valgrind although they are likely once-per-process
+	leaks. Also changed a catch() block in XMLInterface so that
+	all excpetions are caught (it is logged and re-thrown); before
+	only BESError was caught.
+
+2015-06-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added compile guards for stdlib.h and atexit
+
+	Resource leak in BESCache3 fixed
+	This is a minor issue, but the storage for the singleton was being
+	leaked and showes upin valgrind leak reports. This fix was to add a
+	void () function that deletes the global pointer and is called using
+	atexit().
+
+2015-06-26  James Gallagher  <jgallagher@opendap.org>
+
+	Travis build; hdf5 fix
+	Changed the HDF5 library configure so that the HDF5 library is installed
+	in /usr/local.
+
+	Fixed timeTest so that it will work for DDX responses.
+
+	*.log --> *.txt: Easier to import to a spreadsheet.
+
+	Reran the AIRX timing tests
+	I think the timing was stoped while it ran the first time,
+	leading to values that were way too high (by a factor of two).
+	[ci skip]
+
+2015-06-24  James Gallagher  <jgallagher@opendap.org>
+
+	another hack to the travis.yml file.
+	Also a minor edit to the configure.ac file.
+
+	The log is just too big - redirect stdout from the three source builds to /dev/null
+
+	Baselines for the four sample aggregations.
+
+	Removed the hdf5-serial-dev package in favor of a source tar ball.
+	This addresses an issue where the debian package using an older
+	API than our code. The newer ubuntu dists have packages that
+	don't look like they have this problem, but we're stuck at ubuntu 12
+	with Travis.
+
+	Added the ncml used to build the aggregations
+	... and made minor edits to the README
+
+	Added the 6.19.15 baselines
+	These files contain performance data from an early run of these
+	tests. There were a number of problems with the handlers/datasets
+	that had to be sorted out, but I thought it was important to save
+	this data. The raw logs are huge (many files > 500M) so I'll not
+	put those in github now (but they are backed up using an AMI
+	snapshot).
+
+	Removed the Grid_lat and Grid_lon variables from the GPM aggregations.
+	With the changes made by THG, these variables no longer appear
+	in the DDS.
+
+2015-06-23  James Gallagher  <jgallagher@opendap.org>
+
+	Moved the rest of the DMR commadn files to 'DMR_command' dirs
+
+	Moved the DMR bescmd in TRMM_3B42 to DMR_commands
+	...because the dmr response does not work yet.
+
+	Moved the TRM_3A11 dmr tests to DMR_commands
+	...so they will not be run. The NcML handler does not build valid
+	DMR responses. These are not properly constrained.
+
+2015-06-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added 'ddx' to the set of extensions recognized.
+	...but we don't actually run ddx tests
+
+	bes cmd files changed
+	I found that the 'granule' files were actually accessing all of the
+	granules in the aggregation. I edited them so that only one granule
+	is accessed.
+
+	Merge branch 'timing_jhrg' of https://github.com/opendap/bes into timing_jhrg
+	Fixed conflicts with timeTest.
+
+2015-06-20  James Gallagher  <jgallagher@opendap.org>
+
+	Removed tests and install from travis.yml
+	...just get the build working for now
+
+	travis.yml: break the build apart to find if make works but the tests fail.
+
+	travis.yml: The libdap dep seems set now... turn on the handlers
+
+	travis.yml: libdap-3.14.0 needs bison
+	Actually, configure requires it, but the new tar.gz is built with the
+	generated sources, so it's not really needed.
+
+	New approach to the libdap dependency - build it from a tar.gz
+
+2015-06-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes into timing_jhrg
+
+	Added -d and -D options to timeTest
+
+	Merge branch 'master' of github.com:opendap/bes
+
+	Changed reps and the order of debug options
+	Changed debug options from cerr,timing,ncml to cerr,ncml,timing
+
+	Merge branch 'master' of https://github.com/opendap/bes.git into timing_jhrg
+
+	Reorganization of the bescmd files and minor changes to the bash scripts
+	...with an eye toward being able to run these independently and making
+	the result(s) a little easier to understand.
+
+2015-06-19  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	simple timing tests
+
+2015-06-18  James Gallagher  <jgallagher@opendap.org>
+
+	Hack travis.yml: run configure using --without-dap-modules
+
+	Reformat and cleanup the timing/README
+	[ci skip]
+
+2015-06-17  James Gallagher  <jgallagher@opendap.org>
+
+	Modify the travis bes build to use make -k -j7
+	I need to see all the places the build will fail...
+
+	Changed the libcurl4 package to libcurl4-gnutls-dev
+	...since that's what seems to be loaded. I also changed the dep in the
+	libdap.deb to that as well.
+
+	debugging the travis.yml
+	...there's some issue with libcurl4 and libdap.deb
+
+	More travis/libdap.deb work...
+
+	travis hack Re: libdap deb (--force-overwrite)
+
+	Fixed broken hdf5 dev packge in travis.yml
+
+	Updates to travis.yml
+	Now attempts to use apt-get for all the dependencies. Uses a .deb
+	package for libdap to avoid building it, as well.
+
+2015-06-15  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added travis.yml
+	This (initial) version of travis.yml builds the hyrax-dependencies and
+	libdap4 projects too. There might be a better way, to do this, however.
+
+2015-06-12  Nathan Potter  <ndp@opendap.org>
+
+	Dropped h4 and h5 debug switches from basic timing
+
+	Adjusted constraint ecpressions in  agg performance test commands to avoid invoking the subset of aggregation var bug
+
+2015-06-10  Nathan Potter  <ndp@opendap.org>
+
+	Updated READEME
+
+	Added top level timing test driver script
+
+	Added README and organized timing directory
+
+2015-06-05  Nathan Potter  <ndp@opendap.org>
+
+	Rmoved aggregation variable 'time'from constraint expression used in grnule file.
+
+2015-06-04  Nathan Potter  <ndp@opendap.org>
+
+	 Tuning timing tests and commands
+
+2015-06-03  Nathan Potter  <ndp@opendap.org>
+
+	Adding timing tests (bes command files)
+
+	Changes from github
+
+	Small updates to StopWatch implementation.
+
+	Adding timing tests to BES.
+
+2015-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	BESStopWatch changes
+	I added to the previous fixes: Fixed up the ctor parameters so
+	they used the initialization list, reordered them to match the
+	declaration order, removed the static string object, and moved
+	the cotrs to the header (still they only contain inits).
+
+2015-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'make-mask-alternative'
+
+2015-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added modules with new commits
+
+2015-05-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for 'configure can't find gdal' bug
+
+2015-05-27  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused includes; fixed a comment
+
+	Added back second test; removed some dead code
+
+	Reformatted BESDapResponseCache.cc
+	It has a bug, but this just fixes teh formatting and not the bug
+
+	Modified make_mask()
+	This version of make_mask() no longer takes a Grid size as its first
+	two arguments; now it takes a 'shape string' that provides the number
+	and size of each dimension of the resulting mask. However, I realized
+	that was probably not needed since that same info can come from the
+	dimensions that are passed in. I'm commiting this version, all the
+	same.
+
+2015-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Changed the name of dilate_array to dilate_mask
+	But left the C++ files DilateArrayFunction.cc/h since changing those
+	takes more effort.
+
+	Copyright date correction
+
+	Added the dilate_array() function to the handler and added reg. tests
+
+	Fixed some minor compilation issues in DilateArrayFunction
+
+2015-05-26  dh-opendap  <d.holloway@opendap.org>
+
+	Merge branch 'uri-mask' of https://github.com/opendap/bes into uri-mask
+
+	Updated functionsTest.at
+
+2015-05-26  Dan Holloway  <dan@Dans-MBP.home>
+
+	Added DilateArrayFunction
+
+2015-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Hacked version of make_mase()
+	For this version, floating point values only have to be <= 0.1 different
+	to match. This is a hack, but we can revisit it later. It's in Jira.
+
+	Fixed/Added tests for make_mask()
+	I moved and renamed the initial test bescmd file from tests/functions
+	to tests/bescmd/make_mask_coads_{1,2}.bescmd and changed the data set
+	the the coads.dods file in tests/data (that is read using dapreader).
+	Both tests pass and it seems like the values are correct.
+
+	Added 'optimization' for Odometer::set_indices()
+	Removed multiply by one.
+
+	Added 3D test for make_mask
+	also reformatted Odometer.h
+
+	Removed DODS_DEBUG; added 2D unit test for make_mask_helper
+
+	Initial unit test - a one-dimensional case
+
+	Merge branch 'uri-mask' of https://github.com/opendap/bes into uri-mask
+
+	Added extract_uint_value() to functions_util.h
+	..,just needed a declaration. Also added some documentation to the make
+	mask helper.
+
+2015-05-25  Dan Holloway  <dan@Dans-MBP.home>
+
+	Added mask_coads test files.
+
+	Added extract_uint_value(), and returned DAP Array from MakeMaskFunction.
+
+2015-05-24  Nathan Potter  <ndp@opendap.org>
+
+	Added BES command to timing log
+
+2015-05-22  Dan Holloway  <dan@Dans-MBP.fios-router.home>
+
+	New version of MakeMaskFunction.cc
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Added new BESStopWatch support.
+
+	merge debris
+
+	Updated BESStopWatch with a new use pattern and guaranteed stopping.
+
+2015-05-22  Dan Holloway  <dan@Dans-MBP.home>
+
+	updated to use odometer::set_indices
+
+2015-05-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added set_indices() to Odometer.
+	...and tests
+
+	Added all_indices_valid() function
+	Also added a test, just to be complete...
+
+	Minor compiler error in MakeMaskFunction.cc fixed
+
+2015-05-22  Dan Holloway  <dan@Dans-MBP.home>
+
+	Including odometer construction.
+
+	Updated, removing #if0, and converted to mask to vector<byte>
+
+2015-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	Modifications to MakeMaskFunction
+	The code compiles. To get that I used #if 0 ... endif to remove some of
+	the code (because it called functions that haven't been written). I
+	added two new functions that I hope will make it easier to build up
+	information needed to set pixels in the mask. I added unit tests for
+	those new functions.
+
+	Added unit test for find_value_indices()
+
+	Added a unit test for find_value_index().
+
+	Added a proto-unit-test for Make Mask
+
+	Merge branch 'uri-mask' of https://github.com/opendap/bes.git into uri-mask
+
+2015-05-21  Dan Holloway  <dan@Dans-MBP.home>
+
+	Latest changes.
+
+	Latest changes committed.
+
+2015-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'uri-mask' of https://github.com/opendap/bes.git into uri-mask
+
+2015-05-21  Dan Holloway  <dan@Dans-MBP.home>
+
+	Calculate offsets based on sizes of intermediate array dimensions.
+
+	Added MaskDIM type-definition.
+
+2015-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the copyright information
+
+2015-05-20  Dan Holloway  <dan@Dans-MBP.home>
+
+	Updated mask_coads bescmd
+
+	Updated bes/functions/Makefile.am
+
+	bescmd for make_mask
+
+	Added MakeMaskFunction definitions.
+
+2015-05-18  Dan Holloway  <dan@Dans-MBP.fios-router.home>
+
+	Started work on URI-Mask-Function
+
+2015-05-14  James Gallagher  <jgallagher@opendap.org>
+
+	Module update (commit and push)
+
+	modules sync
+
+	Formatting
+
+	Now functions/swath2grid builds correctly; it is not included, however.
+	Repaired the configure search for gdal. Also fixed an
+	error in the software. This code is not, however, included
+	in the build by default. It's just not quite ready. Modify
+	functions/Makefile.am to build/use it.
+
+	Call setgroups() before relinquishing root.
+
+2015-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Making it easier to build dapreader-uasable data for tests
+	...but it's still not 100% there. DAP2 Grids fail.
+
+	Removed old cruft about functions module from dapreader/tests/bes.conf.in
+
+	Fixed an issue with --without-dap-modules
+
+	Fixed getopt() use. Patch from O. Poplawski.
+
+2015-05-07  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting; BESKeys default ctor lacked field inializers.
+
+2015-05-06  James Gallagher  <jgallagher@opendap.org>
+
+	All-static module build now works.
+
+2015-05-05  James Gallagher  <jgallagher@opendap.org>
+
+	Simple formatting fixes for code in 'functions'
+
+	Fixed problems in besd and bescmdln
+	The besd script failed with installed from the rpm because the
+	bes prefix was set to /usr and then passed to besctl, which broke
+	all kinds of things. I removed that and the unused exec_prefix
+	and 'source functions' lines. Also, bescmdln logic made it so
+	that the value given with -p was ignored.
+
+2015-05-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added #include <iterator> to MaskArrayFunctionTest.cc
+	...for CentOS 6
+
+2015-05-01  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DAP4 function evaluation
+	There was a bug where the result of the function was followed
+	by a dump of the entire DMR.
+
+	Reformatted files
+
+	Fixed an integration test for mask_array()
+	The test used the wrong variable. I also found that some of the
+	data files used by the integration tests were not in git.
+
+	Added (more) test baselines for mask_array()
+
+2015-04-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added the mask_array() function to the functions module
+	... and added regression tests for mask_array(). DAP4 function working
+	although there's a bug with the libdap evaluator code.
+
+	mask_array() unit tests include a test for the DAP4 version.
+
+	mask_array() now has complete QC and more tests
+
+2015-04-29  James Gallagher  <jgallagher@opendap.org>
+
+	Proto version of mask_array()
+	Helper function working and unit tests written
+
+2015-04-28  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint: Adding mask_array() server function
+
+	Formatting edits to MakeArrayFunction.cc/h
+
+2015-04-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed typo in configure_modules.ac
+	GRIDFIELDS was spelled incorrectly.
+
+2015-04-14  James Gallagher  <jgallagher@opendap.org>
+
+	Gridfields fix
+	configure was not finding libgridfields - or rather - when it
+	did find it in the supplied dependencies, the library was not
+	used.
+
+	doxygen fixes
+	doxy.conf is now a generated file.
+
+2015-04-10  James Gallagher  <jgallagher@opendap.org>
+
+	submodule commits
+
+	Added #include of <cstdlib> for OdometerTest
+	C++ failed to sort out the abs() overload without <cstdlib>. ...but
+	not on OSX.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	distcheck now works with configure_modules.ac
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	ChangeLog, NEWS, READ and INSTALL updates for 3.14
+	This includes updates to the ChangeLog and version information
+	for all of the submodule handlers.
+
 2015-04-06  James Gallagher  <jgallagher@opendap.org>
 
 	Version number in NEWS to 3.14.0
