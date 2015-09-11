@@ -14,16 +14,16 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf bes.default.conf
 
-CLEANFILES = *.log *.sum *.out site.exp
+CLEANFILES = *.log *.sum *.out $(TESTSUITE) $(srcdir)/package.m4
 
-EXTRA_DIST = hdf5_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 \
-h5 h5.nasa bes.conf.in bes.default.conf.in bes.conf.modules.in \
-bes.default.conf.modules.in
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in		\
+$(srcdir)/package.m4 h5 h5.nasa bes.conf.in bes.default.conf.in	\
+bes.conf.modules.in bes.default.conf.modules.in
 
 # hdf5_handlerTest.nasa.at 
 # Do not prefix the DISTCLEANFILES with $(srcdir) because that
 # will result in a warning from distcheck
-DISTCLEANFILES = bes.conf bes.default.conf package.m4 hdf5_handlerTest
+DISTCLEANFILES = bes.conf bes.default.conf atconfig
 
 if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
@@ -57,10 +57,6 @@ check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm $(srcdir)/package.m4
-	
-distclean-local:
-	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 $(TESTSUITE): $(srcdir)/hdf5_handlerTest.at $(srcdir)/package.m4
