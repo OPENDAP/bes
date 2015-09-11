@@ -13,7 +13,6 @@ language: cpp
 
 compiler:
   - gcc
-  # - clang
 
 # Whitelist; assume tags for releases use the familiar dot notation
 # Building a tag will trigger a deployment; see the 'deploy' section
