@@ -49,17 +49,17 @@ addons:
       - libicu-dev
       - sshpass
 
-# TRAVIS_AT_OO
+# The first 'secure' line is TRAVIS_AT_OO
 # Made using: travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes
 # where -r <...> is the name of the travis repo from our Travis landing page.
+# The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+# via the "travis encrypt" command using the project repo's public key
+# and copied from the Coverity web site where there's a how-to for setting
+# this stuff up.
 
 env:
   global:
   - secure: "TukKQWS5cIh0D2Py3K4HFs9R1hHzU63XQ7jcv0GsiVD73Lpx/ZtejoCPkIs++VQWUVT8z7iXZ5cJ9MMGTA8oqz+tAOTDFc4CJCCOyetJlkxvnl8+3fm8j8ipwrDj/uznh45NrhfFNnAB4Pf1OoEWEgDjLA9N434J1eK3w+CFNz8="
-  # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-  #  via the "travis encrypt" command using the project repo's public key
-  # and copied from the Coverity web site where there's a how-to for setting
-  # this stuff up.
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
 
 # Use this to prepare the system to install prerequisites or
