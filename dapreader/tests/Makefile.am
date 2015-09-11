@@ -12,12 +12,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum $(srcdir)/package.m4
+CLEANFILES = *.log *.sum $(TESTSUITE) $(srcdir)/package.m4
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-$(srcdir)/handler_tests_macros.m4 bes.conf.in
+$(srcdir)/handler_tests_macros.m4 bes.conf.in $(srcdir)/package.m4
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,9 +38,6 @@ check-local: atconfig atlocal $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-
-distclean-local:
-	-rm atconfig
 
 # Why are these dependencies prefixed by $(srcdir)? jhrg 3/17/15
 AUTOTEST = $(AUTOM4TE) --language=autotest

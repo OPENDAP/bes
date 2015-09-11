@@ -18,12 +18,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum $(srcdir)/package.m4
+CLEANFILES = *.log *.sum $(TESTSUITE) $(srcdir)/package.m4
 
-EXTRA_DIST = data bescmd functions functionsTest.at functionsTest \
-atlocal.in bes.conf.in handler_tests_macros.m4
+EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
+$(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -37,7 +37,6 @@ build_responses.conf: build_responses.conf.in $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > build_responses.conf
-
 
 ############## Autotest follows #####################
 
@@ -54,9 +53,6 @@ check-local: atconfig atlocal $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-
-distclean-local:
-	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

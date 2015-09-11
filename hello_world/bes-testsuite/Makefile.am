@@ -15,11 +15,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log
+CLEANFILES = *.log $(TESTSUITE) $(srcdir)/package.m4
 
-EXTRA_DIST = hello_handlerTest.at $(TESTSUITE) atlocal.in bes.conf.in
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4	\
+atlocal.in bes.conf.in
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -32,7 +33,7 @@ bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/hello_handlerTest
 
 check-local: atconfig atlocal $(TESTSUITE)
@@ -40,9 +41,6 @@ check-local: atconfig atlocal $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-
-distclean-local:
-	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 $(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
@@ -59,5 +57,3 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
-
