@@ -1,1 +1,6 @@
-This directory contains test data (in the form of some local files and some that reference remote tar balls that would need to be retrieved to access the source data), along with scripts and and plot formatting files for the Veusz application. All of this represents the data colletion and analysis efforts used to guide the performance improvements made to the ncml_handler during the summer of 2015.
+This directory contains test data (in the form of some local files and some that 
+reference remote tar balls that would need to be retrieved to access the source 
+data), along with scripts and and plot formatting files for the Veusz 
+application. All of this represents the data colletion and analysis efforts used 
+to guide the performance improvements made to the ncml_handler during the summer 
+of 2015.
