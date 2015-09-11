@@ -35,7 +35,8 @@ addons:
   ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
-      name: "OPENDAP/bes"
+    name: "OPENDAP/bes"
+     description: "Build submitted via Travis CI"
     notification_email: jgallagher@opendap.org
     build_command: "make -j7"
     branch_pattern: coverity_scan
