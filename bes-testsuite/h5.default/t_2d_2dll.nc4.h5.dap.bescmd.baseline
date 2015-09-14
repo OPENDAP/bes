@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_2d_2dll.nc4.h5">
+    <Dimension name="xc" size="4"/>
+    <Dimension name="yc" size="4"/>
+    <Float32 name="lon">
+        <Dim name="/xc"/>
+        <Dim name="/yc"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>100bca24</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="yc">
+        <Dim name="/yc"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>ecbb4b55</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/xc"/>
+        <Dim name="/yc"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>100bca24</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="xc">
+        <Dim name="/xc"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>ecbb4b55</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="mydata">
+        <Dim name="/xc"/>
+        <Dim name="/yc"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>8d88d674</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 lon[xc = 4][yc = 4] = {{10, 12.5, 15, 17.5},{20, 22.5, 25, 27.5},{30, 32.5, 35, 37.5},{40, 42.5, 45, 47.5}};
+Float32 yc[yc = 4] = {0, 0, 0, 0};
+Float32 lat[xc = 4][yc = 4] = {{10, 12.5, 15, 17.5},{20, 22.5, 25, 27.5},{30, 32.5, 35, 37.5},{40, 42.5, 45, 47.5}};
+Float32 xc[xc = 4] = {0, 0, 0, 0};
+Float32 mydata[xc = 4][yc = 4] = {{1, 2, 3, 4},{5, 6, 7, 8},{9, 10, 11, 12},{13, 14, 15, 16}};
+

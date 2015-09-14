@@ -1,0 +1,6 @@
+Dataset {
+    String _array_1d[4];
+    String _array_2d[2][2];
+    String _array_special_case[1][1];
+    String _scalar;
+} t_string.h5;

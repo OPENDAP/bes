@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nest_comp_scalar.h5">
+    <Structure name="phony_compound_var">
+        <Structure name="xx">
+            <Int16 name="i"/>
+            <Int32 name="j"/>
+        </Structure>
+        <Structure name="yy">
+            <Float32 name="x"/>
+            <Float64 name="y"/>
+        </Structure>
+        <Attribute name="desc" type="String">
+            <Value>A scalar nested compound dataset</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>08f5b017</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Structure {
+        Int16 i;
+        Int32 j;
+    } xx;
+    Structure {
+        Float32 x;
+        Float64 y;
+    } yy;
+} phony_compound_var = { { 20000, 300000 }, { 100000, -100000.028899567 } };
+

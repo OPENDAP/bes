@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="tcompound" space="catalog">/data/tcompound.h5</setContainer>
+    <define name="d">
+	<container name="tcompound">
+           <constraint>
+/dset3.float_array[1:2:4][0:3:5]
+           </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

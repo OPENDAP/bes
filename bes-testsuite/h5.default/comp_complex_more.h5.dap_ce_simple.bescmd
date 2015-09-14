@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContainer name="comp_complex_more" space="catalog">/data/comp_complex_more.h5</setContainer>
+    <define name="d">
+	<container name="comp_complex_more" >
+	<dap4constraint>phony_compound_var.yy.y[0:1:2]</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

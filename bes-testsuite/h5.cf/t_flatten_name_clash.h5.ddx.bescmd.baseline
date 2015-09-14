@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_flatten_name_clash.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="_a" type="Container"/>
+    <Attribute name="_a_b" type="Container"/>
+    <Attribute name="_a_b_c" type="Container"/>
+    <Attribute name="_a_b_c_1" type="Container"/>
+    <Array name="_a_b_c_d">
+        <Attribute name="origname" type="String">
+            <value>d</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/a/b/c/d</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+        <dimension size="6"/>
+    </Array>
+    <Array name="_a_b_c_d_1">
+        <Attribute name="origname" type="String">
+            <value>d</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/a_b_c/d</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

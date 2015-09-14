@@ -1,0 +1,12 @@
+Dataset {
+    Structure {
+        Structure {
+            Float32 f;
+            Structure {
+                Int16 i;
+                Int32 j;
+            } x;
+            Float64 y[2];
+        } yy[5];
+    } /phony_compound_var;
+} comp_complex_scalar.h5;

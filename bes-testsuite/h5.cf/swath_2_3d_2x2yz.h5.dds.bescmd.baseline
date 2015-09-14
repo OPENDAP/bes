@@ -1,0 +1,11 @@
+Dataset {
+    Float32 Swath1_Temperature[Swath1_ZDim = 2][Swath1_YDim = 4][Swath1_XDim = 8];
+    Float32 Swath2_Temperature[Swath2_ZDim = 4][Swath2_YDim = 8][Swath2_XDim = 16];
+    String StructMetadata_0;
+    Float32 Swath1_Latitude[Swath1_YDim = 4][Swath1_XDim = 8];
+    Float32 Swath1_Longitude[Swath1_YDim = 4][Swath1_XDim = 8];
+    Float32 Swath1_Pressure[Swath1_ZDim = 2];
+    Float32 Swath2_Latitude[Swath2_YDim = 8][Swath2_XDim = 16];
+    Float32 Swath2_Longitude[Swath2_YDim = 8][Swath2_XDim = 16];
+    Float32 Swath2_Pressure[Swath2_ZDim = 4];
+} swath_2_3d_2x2yz.h5;

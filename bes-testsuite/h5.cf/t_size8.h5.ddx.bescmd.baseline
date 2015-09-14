@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_size8.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="_dchar">
+        <Attribute name="minimum" type="Int16">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>dchar</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/dchar</value>
+        </Attribute>
+        <Int16/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_dschar">
+        <Attribute name="minimum" type="Int16">
+            <value>-128</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int16">
+            <value>127</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>dschar</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/dschar</value>
+        </Attribute>
+        <Int16/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_duchar_1">
+        <Attribute name="minimum" type="Byte">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="maximum" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>duchar_1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/duchar_1</value>
+        </Attribute>
+        <Byte/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_duchar_2">
+        <Attribute name="minimum" type="Byte">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="maximum" type="Byte">
+            <value>255</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>duchar_2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/duchar_2</value>
+        </Attribute>
+        <Byte/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

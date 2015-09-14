@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="t_unsupported" space="catalog">/data/t_unsupported.h5</setContainer>
+    <define name="d">
+	<container name="t_unsupported" />
+    </define>
+    <get type="dods" definition="d" />
+</request>

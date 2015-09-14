@@ -1,0 +1,7 @@
+Dataset {
+    Float32 GeoGrid1_temperature[lat = 4][lon = 8];
+    Float32 GeoGrid2_temperature[lat = 4][lon = 8];
+    String StructMetadata_0;
+    Float32 lon[lon = 8];
+    Float32 lat[lat = 4];
+} grid_2_2d.h5;

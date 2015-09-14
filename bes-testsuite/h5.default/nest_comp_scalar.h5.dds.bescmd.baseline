@@ -1,0 +1,12 @@
+Dataset {
+    Structure {
+        Structure {
+            Int16 i;
+            Int32 j;
+        } xx;
+        Structure {
+            Float32 x;
+            Float64 y;
+        } yy;
+    } /phony_compound_var;
+} nest_comp_scalar.h5;

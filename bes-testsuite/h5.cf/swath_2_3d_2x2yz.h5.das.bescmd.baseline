@@ -1,0 +1,72 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_Swath1 {
+    }
+    HDFEOS_SWATHS_Swath1_Data_Fields {
+    }
+    HDFEOS_SWATHS_Swath1_Geolocation_Fields {
+    }
+    HDFEOS_SWATHS_Swath2 {
+    }
+    HDFEOS_SWATHS_Swath2_Data_Fields {
+    }
+    HDFEOS_SWATHS_Swath2_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Swath1_Temperature {
+        String units "K";
+        String origname "Temperature";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Data Fields/Temperature";
+        String coordinates "Swath1_Pressure Swath1_Latitude Swath1_Longitude";
+    }
+    Swath2_Temperature {
+        String units "K";
+        String origname "Temperature";
+        String fullnamepath "/HDFEOS/SWATHS/Swath2/Data Fields/Temperature";
+        String coordinates "Swath2_Pressure Swath2_Latitude Swath2_Longitude";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Swath1_Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Latitude";
+    }
+    Swath1_Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Longitude";
+    }
+    Swath1_Pressure {
+        String units "hPa";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Pressure";
+    }
+    Swath2_Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath2/Geolocation Fields/Latitude";
+    }
+    Swath2_Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath2/Geolocation Fields/Longitude";
+    }
+    Swath2_Pressure {
+        String units "hPa";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Swath2/Geolocation Fields/Pressure";
+    }
+}

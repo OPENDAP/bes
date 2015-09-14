@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="comp_complex_more" space="catalog">/data/comp_complex_more.h5</setContainer>
+    <define name="d">
+	<container name="comp_complex_more">
+        </container>
+    </define>
+    <get type="dmr" definition="d" />
+</request>

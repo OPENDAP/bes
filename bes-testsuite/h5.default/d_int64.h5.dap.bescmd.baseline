@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_size64.h5">
+    <Int64 name="temp">
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <Attribute name="_FillValue" type="UInt64">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>12d36139</Value>
+        </Attribute>
+    </Int64>
+</Dataset>
+
+The data:
+Int64 temp[2][3] = {{280, 280, 1},{1, 1, 1}};
+

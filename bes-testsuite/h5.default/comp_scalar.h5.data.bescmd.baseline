@@ -1,0 +1,14 @@
+The data:
+Structure {
+    Int16 a_name;
+    Byte b_name;
+    Int16 c_name;
+    UInt16 d_name;
+    Int32 e_name;
+    UInt32 f_name;
+    String vs_name;
+    String s_name;
+    Float32 g_name;
+    Float64 h_name;
+} /ArrayOfStructures = { 127, 255, 32767, 65535, 2147483647, 4294967295, "dummy variable length string", "TEST0", 100.1, -10000.2 };
+

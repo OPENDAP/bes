@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_complex_more.h5">
+    <Dimension name="n" size="4"/>
+    <Float32 name="n">
+        <Dim name="/n"/>
+        <Attribute name="CLASS" type="String">
+            <Value>DIMENSION_SCALE</Value>
+        </Attribute>
+        <Attribute name="NAME" type="String">
+            <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
+        </Attribute>
+    </Float32>
+    <Structure name="phony_compound_var">
+        <Structure name="yy">
+            <Structure name="x">
+                <Int16 name="i"/>
+                <Int32 name="j"/>
+            </Structure>
+            <Float64 name="y">
+                <Dim size="3"/>
+            </Float64>
+            <Dim size="3"/>
+        </Structure>
+        <Dim name="/n"/>
+    </Structure>
+</Dataset>

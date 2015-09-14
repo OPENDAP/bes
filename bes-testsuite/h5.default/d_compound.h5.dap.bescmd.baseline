@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_compound.h5">
+    <Structure name="compound">
+        <Int32 name="Serial number"/>
+        <String name="Location"/>
+        <Float64 name="Temperature (F)"/>
+        <Float64 name="Pressure (inHg)"/>
+        <Dim size="4"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>9856e7ec</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Int32 Serial%20number;
+    String Location;
+    Float64 Temperature%20%28F%29;
+    Float64 Pressure%20%28inHg%29;
+} compound[4] = {{ 1153, "Exterior (static)", 53.23, 24.57 }, { 1184, "Intake", 55.12, 22.95 }, { 1027, "Intake manifold", 103.55, 31.23 }, { 1313, "Exhaust manifold", 1252.89, 84.11 }};
+

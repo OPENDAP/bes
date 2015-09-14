@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_link_comment.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="_g1" type="Container"/>
+    <Attribute name="_g1_g3" type="Container"/>
+    <Attribute name="_g1_g3_g4_hard" type="Container"/>
+    <Attribute name="_g2" type="Container"/>
+    <Attribute name="_g2_g4_hard" type="Container"/>
+    <Attribute name="_g4" type="Container"/>
+    <Array name="_dset1">
+        <Attribute name="origname" type="String">
+            <value>dset1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/dset1</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+    </Array>
+    <Array name="_g1_dset2">
+        <Attribute name="origname" type="String">
+            <value>dset2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/g1/dset2</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+    </Array>
+    <Array name="_g1_g3_dset1_hard">
+        <Attribute name="origname" type="String">
+            <value>dset1_hard</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/g1/g3/dset1_hard</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+    </Array>
+    <Array name="_g2_dset1_hard">
+        <Attribute name="origname" type="String">
+            <value>dset1_hard</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/g2/dset1_hard</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

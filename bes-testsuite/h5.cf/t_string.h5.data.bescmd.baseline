@@ -1,0 +1,6 @@
+The data:
+String _array_1d[4] = {"Parting", "is so  ", "swe    ", "       "};
+String _array_2d[2][2] = {{"Parting", "is so  "},{"swe    ", "       "}};
+String _array_special_case[1][1] = {{"A"}};
+String _scalar = "Parting is such sweet sorrow.";
+

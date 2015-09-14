@@ -1,0 +1,12 @@
+Dataset {
+    Structure {
+        Int32 a_name;
+        String b_name[4];
+        String c_name;
+        String s_name[6];
+        Int16 d_name[5][6];
+        Float32 e_name;
+        Float64 f_name[10];
+        Int16 g_name;
+    } /Compound_more_types[6];
+} compound_more_types.h5;

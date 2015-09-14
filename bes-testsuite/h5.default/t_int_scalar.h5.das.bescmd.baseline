@@ -1,0 +1,9 @@
+Attributes {
+    HDF5_ROOT_GROUP {
+        String Dataset "scalar";
+    }
+    /scalar {
+        String HDF5_OBJ_FULLPATH "/scalar";
+        Int32 value 45;
+    }
+}

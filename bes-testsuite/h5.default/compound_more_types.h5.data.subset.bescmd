@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="compound_more_types" space="catalog">/data/compound_more_types.h5</setContainer>
+    <define name="d">
+	<container name="compound_more_types">
+           <constraint>
+/Compound_more_types.b_name[1:2:3],
+/Compound_more_types.s_name[2:2:5],
+/Compound_more_types.d_name[1:2:3][0:3:5]
+           </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
