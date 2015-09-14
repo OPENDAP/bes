@@ -84,6 +84,18 @@ File::Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr)
 throw(Exception) {
 
     // "h5","coming to Retrieve_H5_Info "<<endl;
+
+    if (true == include_attr) {
+
+        // Check if the BES key is set to check the ignored objects
+        // We will only use DAS to output these information.
+        string check_ignored_objects_key_str="H5.CheckIgnoreObj";
+        this->check_ignored = HDF5CFDAPUtil::check_beskeys(check_ignored_objects_key_str);
+        if(true == this->check_ignored) 
+            this->add_ignored_info_page_header();
+
+    }
+
     hid_t root_id;
     if ((root_id = H5Gopen(file_id,"/",H5P_DEFAULT))<0){
         throw1 ("Cannot open the HDF5 root group " );
@@ -175,8 +187,18 @@ throw(Exception) {
                 throw2 ("HDF5 link name error from ", gname);
 
             // We ignore soft link and external links in this release 
-            if(H5L_TYPE_SOFT == linfo.type  || H5L_TYPE_EXTERNAL == linfo.type)
+            if(H5L_TYPE_SOFT == linfo.type  || H5L_TYPE_EXTERNAL == linfo.type){
+                if(true == include_attr && true == check_ignored) {
+                    this->add_ignored_info_links_header();
+                    string full_path_name;
+                    string temp_oname(oname.begin(),oname.end());
+                    full_path_name = ((string(gname) != "/") 
+                                ?(string(gname)+"/"+temp_oname.substr(0,temp_oname.size()-1)):("/"+temp_oname.substr(0,temp_oname.size()-1)));
+                    this->add_ignored_info_links(full_path_name);
+
+                }
                 continue;
+            }
 
             // Obtain the object type, such as group or dataset. 
             H5O_info_t oinfo;
@@ -292,8 +314,11 @@ throw(Exception) {
                 }
                     break;
 
-                case H5O_TYPE_NAMED_DATATYPE:
-
+                case H5O_TYPE_NAMED_DATATYPE:{
+                    if(true == include_attr && true == check_ignored) {
+                        this->add_ignored_info_namedtypes(string(gname),string(oname.begin(),oname.end()));
+                    }
+                }
                     // ignore the named datatype
                     break;
                 default:
@@ -658,7 +683,7 @@ throw(Exception)
             temp_buf.resize(total_bytes);
 
             if (H5Aread(attr_id, memtype_id, &temp_buf[0]) < 0) 
-                throw4("Cannot obtain the dtype size for the attribute ",attr->name, " of object ",obj_name);
+                throw4("Cannot obtain the value of the attribute ",attr->name, " of object ",obj_name);
 
             char *temp_bp = NULL;
             temp_bp = &temp_buf[0];
@@ -771,10 +796,16 @@ for (int temp_i = 0; temp_i <num_sect; temp_i ++)
 
 }
  
-
-
 void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
+    if (true == include_attr) {
+        Handle_Group_Unsupported_Dtype();
+        Handle_VarAttr_Unsupported_Dtype();
+    }
+
+    Handle_Var_Unsupported_Dtype();
+
+#if 0
     // First the root attributes
     if (true == include_attr) {
         if  (false == this->root_attrs.empty()) {
@@ -845,11 +876,196 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
             }
         }
     }
+#endif
 }
 
+void File::Handle_Group_Unsupported_Dtype() throw(Exception) {
+
+        // First root
+        if  (false == this->root_attrs.empty()) {
+            if (true == this->unsupported_attr_dtype) {
+                for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
+                    ira != this->root_attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        delete (*ira);
+		        this->root_attrs.erase(ira);
+		        ira--;
+		    }
+                }
+            }
+        }
+
+        // Then the group attributes
+        if (false == this->groups.empty()) {
+            for (vector<Group *>::iterator irg = this->groups.begin();
+                    irg != this->groups.end(); ++irg) {
+                if (false == (*irg)->attrs.empty()) {
+                    if (true == (*irg)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                            ira != (*irg)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                delete (*ira);
+                                (*irg)->attrs.erase(ira);
+                                ira--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+ 
+}
+
+void File:: Gen_Group_Unsupported_Dtype_Info() throw(Exception) {
+
+        // First root
+        if  (false == this->root_attrs.empty()) {
+            if (true == this->unsupported_attr_dtype) {
+                for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
+                    ira != this->root_attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        this->add_ignored_info_attrs(true,"/",(*ira)->name);
+		    }
+                }
+            }
+        }
+
+        // Then the group attributes
+        if (false == this->groups.empty()) {
+            for (vector<Group *>::iterator irg = this->groups.begin();
+                    irg != this->groups.end(); ++irg) {
+                if (false == (*irg)->attrs.empty()) {
+                    if (true == (*irg)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                            ira != (*irg)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                this->add_ignored_info_attrs(true,(*irg)->path,(*ira)->name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+ 
+}
+
+void File:: Handle_Var_Unsupported_Dtype() throw(Exception) {
+    if (false == this->vars.empty()) {
+       if (true == this->unsupported_var_dtype) {
+           // "h5","having unsupported variable datatype" <<endl;
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                H5DataType temp_dtype = (*irv)->getType();
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                    delete (*irv);
+                    this->vars.erase(irv);
+                    irv--;
+                }
+            }
+        }
+    }
+
+}
+
+
+void File:: Gen_Var_Unsupported_Dtype_Info() throw(Exception) {
+
+    if (false == this->vars.empty()) {
+       if (true == this->unsupported_var_dtype) {
+           // "h5","having unsupported variable datatype" <<endl;
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                H5DataType temp_dtype = (*irv)->getType();
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                    this->add_ignored_info_objs(false,(*irv)->fullpath);
+                }
+            }
+        }
+    }
+
+}
+
+// The variable(HDF5 dataset) and the correponding attributes.
+void File::Handle_VarAttr_Unsupported_Dtype() throw(Exception) {
+    if (false == this->vars.empty()) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                if (false == (*irv)->attrs.empty()) {
+                    if (true == (*irv)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                            ira != (*irv)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                delete (*ira);
+                                (*irv)->attrs.erase(ira);
+                                ira--;
+                            }
+                        }
+                    }
+                }
+           }
+       
+    }
+ 
+
+}
+
+void File:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
+
+    if (false == this->vars.empty()) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                if (false == (*irv)->attrs.empty()) {
+                    if (true == (*irv)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                            ira != (*irv)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
+                            }
+                        }
+                    }
+                }
+           }
+       
+    }
+ 
+}
+
+void File:: Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+                // attribute REFERENCE_LIST is okay to ignore. No need to report.
+                bool is_ignored = ignored_dimscale_ref_list((*irv));
+                if (false == (*irv)->attrs.empty()) {
+                    if (true == (*irv)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                            ira != (*irv)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                                // is okay to ignore if the variable has another attribute
+                                // CLASS="DIMENSION_SCALE"
+                                if (("DIMENSION_LIST" !=(*ira)->name) &&
+                                    (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                                    this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+}
 void File::Handle_Unsupported_Dspace() throw(Exception) {
 
-    // Then the variable(HDF5 dataset) and the correponding attributes.
+    // The unsupported data space 
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
             for (vector<Var *>::iterator irv = this->vars.begin();
@@ -863,6 +1079,74 @@ void File::Handle_Unsupported_Dspace() throw(Exception) {
         }
     }
 }
+
+
+void File:: Gen_Unsupported_Dspace_Info() throw(Exception) {
+
+    if (false == this->vars.empty()) {
+        if (true == this->unsupported_var_dspace) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                if (true  == (*irv)->unsupported_dspace) {
+                    this->add_ignored_info_objs(true,(*irv)->fullpath);
+                }
+            }
+        }
+    }
+ 
+}
+void File:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
+
+    if(true == this->check_ignored && true == include_attr) {
+
+        // Check the drop long string feature.
+        string check_droplongstr_key ="H5.EnableDropLongString";
+        bool is_droplongstr = false;
+        is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        if(true == is_droplongstr){
+
+            for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
+                ira != this->root_attrs.end(); ++ira) {
+                if(H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
+                    if((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_grp_longstr_info("/",(*ira)->name);
+                    }
+                }
+            }
+
+            for (vector<Group *>::iterator irg = this->groups.begin();
+                        irg != this->groups.end(); ++irg) {
+                for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                     ira != (*irg)->attrs.end(); ++ira) {
+                    if(H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
+                       if((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
+                           this->add_ignored_droplongstr_hdr();
+                           this->add_ignored_grp_longstr_info((*irg)->path,(*ira)->name);
+                       }
+                   }
+ 
+                }
+            }
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                if(true == Check_DropLongStr((*irv),NULL)) {
+                    this->add_ignored_droplongstr_hdr();
+                    this->add_ignored_var_longstr_info((*irv),NULL);
+                }
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end();++ira) {
+                    if(true == Check_DropLongStr((*irv),(*ira))) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_var_longstr_info((*irv),(*ira));
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 void File::Flatten_Obj_Name(bool include_attr) throw(Exception) {
 
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -908,7 +1192,7 @@ void File::Handle_Var_NameClashing(set<string>&objnameset ) throw(Exception) {
     Handle_General_NameClashing(objnameset,this->vars);
 }
 
-void File::Handle_RootGroup_NameClashing(set<string> &objnameset ) throw(Exception) {
+void File::Handle_Group_NameClashing(set<string> &objnameset ) throw(Exception) {
 
 
     pair<set<string>::iterator,bool> setret;
@@ -1017,7 +1301,7 @@ void File::Handle_GeneralObj_NameClashing(bool include_attr,set<string>& objname
 
     Handle_Var_NameClashing(objnameset);
     if (true == include_attr) {
-        Handle_RootGroup_NameClashing(objnameset );
+        Handle_Group_NameClashing(objnameset );
         Handle_Obj_AttrNameClashing();
     }
 }
@@ -1362,6 +1646,43 @@ File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) throw(Exception) {
 
 }
 
+void 
+File:: Replace_Var_Str_Attr(Var* var ,const string &attr_name, const string& strvalue) {
+
+    bool rep_attr = true;
+    bool rem_attr = false;
+    for(vector<Attribute *>::iterator ira = var->attrs.begin();
+        ira != var->attrs.end();ira++) {
+        if((*ira)->name == attr_name){
+            if(true == Is_Str_Attr(*ira,var->fullpath,attr_name,strvalue)) 
+                rep_attr = false; 
+            else 
+                rem_attr = true;
+            break;
+        }
+    }
+
+    // Remove the attribute if the attribute value is not strvalue
+    if( true == rem_attr) {
+       for(vector<Attribute *>::iterator ira = var->attrs.begin();
+                            ira != var->attrs.end();ira++) {
+           if((*ira)->name == attr_name){
+               delete(*ira);
+               var->attrs.erase(ira);
+               break;
+           }
+       }
+   }
+
+   // Add the attribute with strvalue
+   if(true == rep_attr) {
+       Attribute * attr = new Attribute();
+       Add_Str_Attr(attr,attr_name,strvalue);
+       var->attrs.push_back(attr);
+   }
+}
+
+
 
 void 
 File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
@@ -1496,3 +1817,385 @@ File:: Replace_Var_Attrs(Var *src, Var *target) {
     }
 
 }              
+
+void 
+File:: add_ignored_info_page_header() {
+    ignored_msg = " \n This page is for HDF5 CF hyrax data providers or distributors to check if any HDF5 object or attribute information are ignored during the mapping. \n\n";
+}
+
+void 
+File:: add_ignored_info_obj_header() {
+
+    ignored_msg += " Some HDF5 objects or the object information are ignored when mapping to DAP2 by the HDF5 OPeNDAP";
+    ignored_msg += " handler due to the restrictions of DAP2, CF conventions or CF tools.";
+    ignored_msg += " Please use HDF5 tools(h5dump or HDFView) to check carefully and make sure that these objects";
+    ignored_msg += " are OK to ignore for your service. For questions or requests to find a way to handle the ignored objects, please";
+    ignored_msg += " contact the HDF5 OPeNDAP handler developer or send an email to help@hdfgroup.org.\n";
+
+    ignored_msg += " \n In general, ignored HDF5 objects include HDF5 soft links, external links and named datatype.\n";
+    ignored_msg += " \n The HDF5 datasets(variables in the CF term) and attributes that have the following datatypes are ignored: \n";
+    ignored_msg += " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable length(excluding variable length string),";
+    ignored_msg += " HDF5 reference, HDF5 enum, HDF5 opaque , HDF5 bitfield, HDF5 Array and HDF5 Time datatypes.\n";
+
+    ignored_msg += " \n The HDF5 datasets(variables in the CF term) and attributes associated with the following dimensions are ignored: \n";
+    ignored_msg += " 1) non-string datatype scalar variables\n";
+    ignored_msg += " 2) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
+    ignored_msg += " 3) variables that have any zero size dimensions\n\n";
+
+}
+
+void 
+File:: add_ignored_info_links_header() {
+
+    if(false == this->have_ignored) {
+        add_ignored_info_obj_header();
+        have_ignored = true;
+    }
+    // Add ignored datatype header.
+    string lh_msg =  "******WARNING******\n";
+    lh_msg +=  "IGNORED soft links or external links are: ";
+    if(ignored_msg.rfind(lh_msg) == string::npos)
+        ignored_msg += lh_msg + "\n";
+
+}
+#if 0
+void 
+File:: add_ignored_info_obj_dtype_header() {
+
+    // Add ignored datatype header.
+    ignored_msg += " \n Variables and attributes ignored due to the unsupported datatypes. \n";
+    ignored_msg += " In general, the unsupported datatypes include: \n";
+    ignored_msg += " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable length(excluding variable length string),";
+    ignored_msg += " HDF5 reference, HDF5 enum, HDF5 opaque , HDF5 bitfield, HDF5 Array and HDF5 Time datatypes.\n";
+
+}
+
+void 
+File:: add_ignored_info_obj_dspace_header() {
+
+    // Add ignored dataspace header.
+    ignored_msg += " \n Variables and attributes ignored due to the unsupported dimensions. \n";
+    ignored_msg += " In general, the unsupported dimensions include: \n";
+    ignored_msg += " 1) non-string datatype scalar variables\n";
+    ignored_msg += " 2) variables that have HDF5 NULL dataspace(H5S_NULL)(rarely occurred)\n";
+    ignored_msg += " 3) variables that have any zero size dimensions\n";
+
+
+}
+#endif
+void 
+File:: add_ignored_info_links(const string & link_path) {
+    if(ignored_msg.find("Link paths: ")== string::npos) 
+        ignored_msg += " Link paths: " + link_path ;
+    else 
+        ignored_msg += " "+ link_path;
+}
+
+void 
+File:: add_ignored_info_namedtypes(const string& grp_name, const string& named_dtype_name) {
+
+    if(false == this->have_ignored) {
+        add_ignored_info_obj_header();
+        have_ignored = true;
+    }
+
+    string ignored_HDF5_named_dtype_hdr = "\n******WARNING******";
+    ignored_HDF5_named_dtype_hdr += "\n IGNORED HDF5 named datatype objects:\n";
+    string ignored_HDF5_named_dtype_msg = " Group name: " + grp_name + "  HDF5 named datatype name: " +named_dtype_name + "\n";
+    if(ignored_msg.find(ignored_HDF5_named_dtype_hdr) == string::npos) 
+        ignored_msg += ignored_HDF5_named_dtype_hdr + ignored_HDF5_named_dtype_msg;   
+    else 
+        ignored_msg += ignored_HDF5_named_dtype_msg;
+    
+}
+
+void 
+File:: add_ignored_info_attrs(bool is_grp,const string & obj_path, const string & attr_name) {
+
+    if(false == this->have_ignored) {
+        add_ignored_info_obj_header();
+        have_ignored = true;
+    }
+
+ //   string ignored_dtype_header_substr = "unsupported datatypes include: ";
+    
+    string ignored_warning_str = "\n******WARNING******";
+    string ignored_HDF5_grp_hdr = ignored_warning_str +"\n Ignored attributes under root and groups:\n";
+    string ignored_HDF5_grp_msg = " Group path: " + obj_path + "  Attribute names: " +attr_name + "\n";
+    string ignored_HDF5_var_hdr = ignored_warning_str +"\n Ignored attributes for variables:\n";
+    string ignored_HDF5_var_msg = " Variable path: " + obj_path + "  Attribute names: " +attr_name + "\n";
+
+
+//    if(ignored_msg.find(ignored_dtype_header_substr) == string::npos) 
+ //       add_ignored_info_obj_dtype_header();
+    
+    if( true == is_grp) {
+        if(ignored_msg.find(ignored_HDF5_grp_hdr) == string::npos) 
+            ignored_msg += ignored_HDF5_grp_hdr + ignored_HDF5_grp_msg;   
+        else 
+            ignored_msg += ignored_HDF5_grp_msg;
+    }
+    else {
+        if(ignored_msg.find(ignored_HDF5_var_hdr) == string::npos) 
+            ignored_msg += ignored_HDF5_var_hdr + ignored_HDF5_var_msg;   
+        else 
+            ignored_msg += ignored_HDF5_var_msg;
+    }
+    
+}
+
+void 
+File:: add_ignored_info_objs(bool is_dim_related,const string & obj_path) {
+
+    if(false == this->have_ignored) {
+        add_ignored_info_obj_header();
+        have_ignored = true;
+    }
+
+ //   string ignored_dtype_header_substr = "unsupported datatypes include";
+ //   string ignored_dspace_header_substr = "unsupported dimensions include";
+    string ignored_warning_str = "\n******WARNING******";
+    string ignored_HDF5_dtype_var_hdr = ignored_warning_str +"\n IGNORED variables due to unsupported datatypes:\n";
+    string ignored_HDF5_dspace_var_hdr = ignored_warning_str + "\n IGNORED variables due to unsupported dimensions:\n";
+    string ignored_HDF5_var_msg = " Variable path: " + obj_path  + "\n";
+
+
+    if(true == is_dim_related) {
+  //      if(ignored_msg.find(ignored_dspace_header_substr) == string::npos) 
+   //         add_ignored_info_obj_dspace_header();
+        if(ignored_msg.find(ignored_HDF5_dspace_var_hdr) == string::npos) 
+            ignored_msg += ignored_HDF5_dspace_var_hdr + ignored_HDF5_var_msg;   
+        else 
+            ignored_msg += ignored_HDF5_var_msg;
+ 
+    }
+    else {
+    //    if(ignored_msg.find(ignored_dtype_header_substr) == string::npos) 
+    //        add_ignored_info_obj_dtype_header();
+        if(ignored_msg.find(ignored_HDF5_dtype_var_hdr) == string::npos) 
+            ignored_msg += ignored_HDF5_dtype_var_hdr + ignored_HDF5_var_msg;   
+        else 
+            ignored_msg += ignored_HDF5_var_msg;
+    }
+ 
+}
+
+void 
+File:: add_no_ignored_info() {
+
+   ignored_msg += "There are no ignored HDF5 objects or attributes.";
+
+}
+
+// This function should only be used when the HDF5 file is following the netCDF data model.
+bool
+File::ignored_dimscale_ref_list(Var *var) {
+
+    bool ignored_dimscale = true;
+    //if(General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern) {
+
+        bool has_dimscale = false;
+        bool has_reference_list = false;
+        for(vector<Attribute *>::iterator ira = var->attrs.begin();
+                     ira != var->attrs.end();ira++) {
+             if((*ira)->name == "REFERENCE_LIST" && 
+                false == HDF5CFUtil::cf_strict_support_type((*ira)->getType()))
+                has_reference_list = true;
+             if((*ira)->name == "CLASS") {
+                Retrieve_H5_Attr_Value(*ira,var->fullpath);
+                string class_value;
+                class_value.resize((*ira)->value.size());
+                copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
+
+                // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                // "DIMENSION_SCALE", which is 15.
+                if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
+                    has_dimscale = true;
+                }
+            }
+ 
+            if(true == has_dimscale && true == has_reference_list) {
+                ignored_dimscale= false;
+                break;
+            }
+           
+        }
+    //}
+    return ignored_dimscale;
+}
+
+bool File::Check_DropLongStr(Var *var,Attribute * attr) throw(Exception) {
+
+    bool drop_longstr = false;
+    if(NULL == attr) {
+        if(H5FSTRING == var->dtype || H5VSTRING == var->dtype) {
+            try {
+                drop_longstr = Check_VarDropLongStr(var->fullpath,var->dims,var->dtype);
+            }
+            catch(...) {
+                throw1("Check_VarDropLongStr fails ");
+
+            }
+        }
+        
+    }
+    else {
+        if(H5FSTRING == attr->dtype || H5VSTRING == attr->dtype) {
+            if(attr->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
+               drop_longstr = true;
+}
+        }
+
+    }
+    return drop_longstr;
+}
+
+bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype) throw(Exception) {
+
+    bool drop_longstr = false;
+
+    unsigned long long total_elms = 1;
+    if(dims.size() !=0) {
+        for(int i = 0; i <dims.size(); i++)
+            total_elms = total_elms *((dims[i])->size);
+        
+    }
+
+    if(total_elms > NC_JAVA_STR_SIZE_LIMIT) 
+        drop_longstr = true;
+
+    else {
+
+        hid_t dset_id = H5Dopen2(this->fileid,varpath.c_str(),H5P_DEFAULT);
+        if(dset_id < 0) 
+            throw2 ("Cannot open the dataset  ", varpath);
+
+        hid_t dtype_id = -1;
+        if ((dtype_id = H5Dget_type(dset_id)) < 0) {
+            H5Dclose(dset_id);
+            throw2 ("Cannot obtain the datatype of the dataset  ", varpath);
+        }
+        
+        size_t ty_size =  H5Tget_size(dtype_id);
+        if (ty_size == 0) {
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            throw2 ("Cannot obtain the datatype size of the dataset  ", varpath);
+        }
+
+        if(H5FSTRING == dtype) {
+            if((ty_size * total_elms) > NC_JAVA_STR_SIZE_LIMIT)
+                drop_longstr = true;
+
+        }
+ 
+    
+
+    else if(H5VSTRING == dtype) {
+
+#if 0
+        hid_t dset_id = H5Dopen2(this->fileid,varpath.c_str(),H5P_DEFAULT);
+        if(dset_id < 0) 
+            throw2 ("Cannot open the dataset  ", varpath);
+
+        hid_t dtype_id = -1;
+        if ((dtype_id = H5Dget_type(dset_id)) < 0) {
+            H5Dclose(dset_id);
+            throw2 ("Cannot obtain the datatype of the dataset  ", varpath);
+        }
+        
+        size_t ty_size =  H5Tget_size(dtype_id);
+        if (ty_size == 0) {
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            throw2 ("Cannot obtain the datatype size of the dataset  ", varpath);
+        }
+#endif
+        vector <char> strval;
+        strval.resize(total_elms*ty_size);
+        hid_t read_ret = H5Dread(dset_id,dtype_id,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
+        if(read_ret < 0) {
+            H5Tclose(dtype_id);
+            H5Dclose(dset_id);
+            throw2 ("Cannot read the data of the dataset  ", varpath);
+        }
+
+        
+        vector<string>finstrval;
+        finstrval.resize(total_elms);
+        char*temp_bp = &strval[0];
+        char*onestring = NULL;
+        for (unsigned long long  i =0;i<total_elms;i++) {
+            onestring = *(char**)temp_bp;
+            if(onestring!=NULL )
+                finstrval[i] =string(onestring);
+            else // We will add a NULL if onestring is NULL.
+                finstrval[i]="";
+            temp_bp +=ty_size;
+        }
+
+        if (false == strval.empty()) {
+            herr_t ret_vlen_claim;
+            hid_t dspace_id = H5Dget_space(dset_id);
+            if(dspace_id < 0) {
+                H5Tclose(dtype_id);
+                H5Dclose(dset_id);
+               throw2("Cannot obtain the dataspace id.",varpath);
+            }
+            ret_vlen_claim = H5Dvlen_reclaim(dtype_id,dspace_id,H5P_DEFAULT,(void*)&strval[0]);
+            if (ret_vlen_claim < 0){
+                H5Tclose(dtype_id);
+                H5Sclose(dspace_id);
+                H5Dclose(dset_id);
+                throw2 ("Cannot reclaim the vlen space  ", varpath);
+            }
+            H5Sclose(dspace_id);
+        }
+        unsigned long long  total_str_size = 0;
+        for (unsigned long long  i =0;i<total_elms;i++) {
+            total_str_size += finstrval[i].size();
+            if (total_str_size  > NC_JAVA_STR_SIZE_LIMIT) {
+                drop_longstr = true;
+                break;
+            } 
+        }
+         
+    }
+        H5Tclose(dtype_id);
+        H5Dclose(dset_id);
+    }
+    return drop_longstr;
+}
+
+void File::add_ignored_grp_longstr_info(const string& grp_path,const string & attr_name) {
+
+    ignored_msg +="The HDF5 group: " + grp_path + " has an empty-set string attribute: "+ attr_name +"\n";
+ 
+    return;
+}
+
+void File::add_ignored_var_longstr_info(Var *var,Attribute *attr) throw(Exception) {
+
+    if(NULL == attr) 
+        ignored_msg +="String variable: " + var->fullpath +" value is set to empty.\n";
+    else {
+        ignored_msg +="The variable: " + var->fullpath + " has an empty-set string attribute: "+ attr->name +"\n";
+ 
+    }
+    return;
+}
+void File::add_ignored_droplongstr_hdr( ) {
+
+    if(false == this->have_ignored)
+       this->have_ignored = true;
+    string hdr = "\n\n The value of the following string variables or attributes" ;
+    hdr += " are set to empty because the string size exceeds netCDF Java string limit(32767 bytes).\n";
+    hdr += " Note: for string datasets, if the DAP subset feature is applied and the total subsetted";
+    hdr += " string doesn't exceed the netCDF Java string limit, the string value should still return.\n";
+    hdr +="To obtain the string value, change the BES key H5.EnableDropLongString=true at the handler BES";
+    hdr +=" configuration file(h5.conf)\nto H5.EnableDropLongString=false.\n\n";
+
+    if(ignored_msg.rfind(hdr) == string::npos)
+        ignored_msg +=hdr;
+
+}

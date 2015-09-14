@@ -90,3 +90,10 @@ H5.EnableAddPathAttrs=true
 # key to false if that long string information is necessary or visualization clients
 # are not used.
 H5.EnableDropLongString=true
+
+
+# This BES key must be set to false for the real service. Set it to true 
+# will generate a DAS output that lists the ignored HDF5 objects and attributes
+# during the mapping from HDF5 to DAP2.
+# Also this key should only be used when the H5.EnableCF key is set to true.
+H5.CheckIgnoreObj=false

@@ -35,6 +35,47 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for version 2.3.0
+----------------------------
+Default option:
+ -  Add the pure DAP4 support.
+    a) HDF5 group is mapped to DAP4 group.
+    b) HDF5 dimensions that follow netCDF-4 data model are mapped to DAP4 dimensions.
+    c) HDF5 signed 8-bit integer, signed and unsigned 64-bit integers are mapped to correspondng DAP4 datatypes.
+
+ -  Re-implement the data access of DAP structure mapped from an HDF5 compound datatype dataset.
+    a) The nested compound datatype(array or scalar) and the array type inside a compound datatype are supported.
+    b) The base datatype inside an HDF5 compound datatype can contain compound, array datatype and integer,float and string(including variable length string) datatypes. Other HDF5 datatypes are not supported. 
+    c) The base datatype of an array datatype inside an HDF5 compound datatype can be compound datatype and integer, float and string(including variable length string).
+  
+ -  Re-implment the data access of a DAP string(array or scalar)  mapped from an HDF5 variable length string dataset.
+ -  New enforced limitations
+    these limitations were not clearly stated in the previous versions. 
+    a) We don't support the mapping of HDF5 array datatype to DAP except when the array datatype is used inside an HDF5 compound datatype.
+    b) We don't support the mapping of HDF5 compound datatype to DAP when an attribute datatype is an HDF5 compound. Such an HDF5 attribute is ignored in the DAP DAS.
+CF option: 
+ -  Add an option to generate ignored object information from HDF5 to DAP2 mapping.
+ -  Add the support of new GPM level 3 products. 
+ -  Add the support of OCO-2 products.
+ -  Add the support of netCDF-4 classic-like HDF5 files that have 2-D lat/lon. This effectively supports the ASF SeaSat product.
+ -  Add the support of generic HDF5 files that have 1-D or 2-D lat/lon. This also generally supports the LP DAAC ASTER GED product.
+ -  Fix a few bugs related to _FillValue and duplicate coordiate variables discovered when testing with OMI,GPM and Aquarius products.
+
+
+[Known Issues]
+
+  - We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
+  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler
+  or libdap and BES.
+  The detailed description of this issue can be found in OPeNDAP's trac ticket
+  http://scm.opendap.org/trac/ticket/2189 .
+
+  - We also found that "Get as NetCDF 4" function may not work with hdf5_handler especially when
+    you download the entire data on big HDF5 files without subsetting. One reason is that
+    the current CentOS 6 uses the old NetCDF-4 and HDF5 RPM packages.
+    Please contact RedHat directly to speed up the release of new RPM packages through EPEL.
+
+
 What's new for version 2.2.3
 ----------------------------
 For the CF option: 
@@ -52,7 +93,7 @@ For the CF option:
 [Known Issues]
 
   - We found that the file netCDF module still fails to generate a netCDF-4 file when a DAP string array
-  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF5 handler
+  is mapped to netCDF-4. It can generate the netCDF-3 files correctly. This is not a bug inside the HDF4 handler
   or libdap and BES.
   The detailed description of this issue can be found in OPeNDAP's trac ticket
   http://scm.opendap.org/trac/ticket/2189 .

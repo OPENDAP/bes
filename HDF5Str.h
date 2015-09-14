@@ -63,11 +63,12 @@ class HDF5Str:public Str {
 //    hid_t dset_id;
 //    hid_t ty_id;
 //    int array_flag;
+    string var_path;
 
  public:
 
     /// Constructor
-    HDF5Str(const string &n, const string &d);
+    HDF5Str(const string &n, const string &vpath, const string &d);
     virtual ~ HDF5Str() { }
 
     /// Clone this instance.

@@ -1,3 +1,12 @@
+News for version 2.3.0
+
+This version adds the pure DAP4(not converted from DAP2) support for the default option.
+
+Compound datatype mapping for the default option is also greatly improved.
+
+We also added the support of general 1D and 2D lat/lon HDF5 and netCDF-4-classic-like 2D lat/lon products.
+A BES option to check the ignored object mapping information from HDF5 to DAP2 is also added for the CF option. 
+
 News for version 2.2.3
 
 This version implement an option not to pass HDF5 file ID from DDS/DAS service

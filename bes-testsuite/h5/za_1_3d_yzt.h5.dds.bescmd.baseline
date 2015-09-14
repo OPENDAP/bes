@@ -1,7 +1,0 @@
-Dataset {
-    Float32 Latitude[YDim = 8];
-    Float32 Pressure[ZDim = 4];
-    Float32 Temperature[TDim = 2][ZDim = 4][YDim = 8];
-    Float32 Time[TDim = 2];
-    String StructMetadata_0;
-} za_1_3d_yzt.h5;

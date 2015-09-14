@@ -50,9 +50,11 @@ class HDF5Array:public Array {
   private:
     int d_num_dim;
     int d_num_elm;
+    
 //    hid_t d_dset_id;
 //    hid_t d_ty_id;
     size_t d_memneed;
+    string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
@@ -113,6 +115,9 @@ class HDF5Array:public Array {
 
     /// remembers number of elements in this array.  
     void set_numelm(int nelms);
+
+    void set_varpath(const string vpath) { var_path = vpath;}
+    BaseType *h5dims_transform_to_dap4(D4Group *root);
 };
 
 #endif

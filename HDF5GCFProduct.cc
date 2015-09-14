@@ -97,17 +97,17 @@ H5GCFProduct check_product(hid_t file_id) {
     }
     else { 
         int smap_flag = 1; // This is SMAP 
-        if (true == check_smap_acosl2s(root_id,smap_flag)) 
+        if (true == check_smap_acosl2s_oco2l1b(root_id,smap_flag)) 
             product_type =  SMAP;
         // "h5","After checking smap, product type is " << product_type << endl;
 
         if (General_Product == product_type) {
 
-            int acosl2s_flag = 2; // This is ACOSL2S
-            if (true == check_smap_acosl2s(root_id,acosl2s_flag)) 
-                product_type =  ACOS_L2S;
+            int acosl2s_oco2l1b_flag = 2; // This is ACOSL2S_OR_OCO2L1B
+            if (true == check_smap_acosl2s_oco2l1b(root_id,acosl2s_oco2l1b_flag)) 
+                product_type =  ACOS_L2S_OR_OCO2_L1B;
                 
-            // "h5"," After checking acos, product type is " << product_type <<endl;
+            // "h5"," After checking acos(oco2), product type is " << product_type <<endl;
         }
        
     }
@@ -688,7 +688,7 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
     return ret_flag;
 }
 // Function to check if the product is ACOS Level 2 or SMAP.
-bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
+bool check_smap_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
 
     htri_t has_smac_group;
     // "h5","coming to smap acos "<<endl;
@@ -735,19 +735,19 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
             }
         }
         else if (2 == which_pro) {
-            // "h5","coming to acos l2s "<<endl;
+            // "h5","coming to acos l2s(oco2_l1b) "<<endl;
 
             htri_t has_acos_dset = -1;
 
-            // ACOSL2S will have a dataset called ProjectID
-            has_acos_dset = H5Lexists(s_group_id,ACOS_L2S_DSET_NAME,H5P_DEFAULT);
+            // ACOSL2S(OCO2L1B) will have a dataset called ProjectId
+            has_acos_dset = H5Lexists(s_group_id,ACOS_L2S_OCO2_L1B_DSET_NAME,H5P_DEFAULT);
             if (has_acos_dset > 0) {
                 // "h5","coming to acos l2s dataset "<<endl;
                 // Obtain the dataset ID
                 hid_t s_dset_id = -1;
-                if ((s_dset_id = H5Dopen(s_group_id, ACOS_L2S_DSET_NAME,H5P_DEFAULT)) < 0) {
+                if ((s_dset_id = H5Dopen(s_group_id, ACOS_L2S_OCO2_L1B_DSET_NAME,H5P_DEFAULT)) < 0) {
                     string msg = "cannot open the HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     throw InternalErr(__FILE__, __LINE__, msg);
@@ -760,7 +760,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "cannot get the datatype of HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -772,7 +772,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "cannot get the datatype class of HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -782,7 +782,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "This dataset must be a H5T_STRING class  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -794,7 +794,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the dataspace of HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -806,7 +806,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the number of points of HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
@@ -818,7 +818,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the dataspace of HDF5 dataset  ";
-                    msg += string(ACOS_L2S_DSET_NAME);
+                    msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
  
@@ -838,7 +838,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                         H5Gclose(s_group_id);
                         H5Gclose(s_root_id);
                	        string msg = "cannot get the the dataspace of HDF5 dataset  ";
-                        msg += string(ACOS_L2S_DSET_NAME);
+                        msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
 
@@ -870,7 +870,9 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Dclose(s_dset_id);
                     H5Gclose(s_group_id);
  
-                    if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0) 
+                    if (total_string.compare(ACOS_L2S_ATTR_VALUE) ==0 ||
+                        total_string.compare(OCO2_L1B_ATTR_VALUE) ==0 ||
+                        total_string.compare(OCO2_L1B_ATTR_VALUE2)==0) 
                         return_flag = true;
                 }
                 else {
@@ -882,7 +884,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                            H5Gclose(s_group_id);
                            H5Gclose(s_root_id);
                	           string msg = "cannot data of HDF5 dataset  ";
-                           msg += string(ACOS_L2S_DSET_NAME);
+                           msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                            throw InternalErr(__FILE__, __LINE__, msg);
                     }
 
@@ -893,7 +895,8 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_group_id);
                     // cerr<<"total_string "<<total_string <<endl;
 
-                    if (0 == total_string.compare(ACOS_L2S_ATTR_VALUE)) 
+                    if (0 == total_string.compare(ACOS_L2S_ATTR_VALUE) || 
+                        0 == total_string.compare(OCO2_L1B_ATTR_VALUE)) 
                         return_flag = true;
                     else 
                         return_flag = false;
@@ -905,7 +908,7 @@ bool check_smap_acosl2s(hid_t s_root_id, int which_pro) {
             }
             else {
                 string msg = "Fail to determine if the HDF5 link  "; 
-                msg += string(ACOS_L2S_DSET_NAME);
+                msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                 msg +="  exists ";
                 H5Gclose(s_group_id);
                 H5Gclose(s_root_id);

@@ -54,8 +54,9 @@ typedef struct s2_int16_t {
 
 #endif
 
-HDF5Int16::HDF5Int16(const string & n, const string &d) : Int16(n, d)
+HDF5Int16::HDF5Int16(const string & n, const string &vpath,const string &d) : Int16(n, d)
 {
+    var_path = vpath;
 }
 
 BaseType *HDF5Int16::ptr_duplicate()
@@ -74,7 +75,12 @@ bool HDF5Int16::read()
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
    
-    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+    hid_t dset_id = -1;
+    if(true == is_dap4())
+        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    else
+        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
@@ -97,9 +103,11 @@ bool HDF5Int16::read()
     }
 
     try {
-        if (get_dap_type(memtype) == "Int8") {
+      if(false == is_dap4()) {
+        //if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
+        if (get_dap_type(memtype,false) == "Int8") {//wrong, needs to be corrected
 	    dods_int16 buf;
-	    dods_byte buf2;
+	    dods_byte buf2; // wrong, needs to be corrected with signed int8 buffer.
 	    get_data(dset_id, (void *) &buf2);
 	    buf = (signed char) buf2;
 	    set_read_p(true);
@@ -107,7 +115,7 @@ bool HDF5Int16::read()
 
         }
 
-        if (get_dap_type(memtype) == "Int16") {
+        if (get_dap_type(memtype,false) == "Int16") {
     	    dods_int16 buf;
 	    get_data(dset_id, (void *) &buf);
 
@@ -115,6 +123,16 @@ bool HDF5Int16::read()
 	    set_value(buf);
 
         }
+      }
+      else {
+    	    dods_int16 buf;
+	    get_data(dset_id, (void *) &buf);
+
+	    set_read_p(true);
+	    set_value(buf);
+
+      }
+         
         // Release the handles.
         if (H5Tclose(memtype) < 0) {
             throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");

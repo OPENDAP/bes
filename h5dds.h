@@ -37,8 +37,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/// Maximum size of error message buffer.
-#define MAX_ERROR_MESSAGE 512
 
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>

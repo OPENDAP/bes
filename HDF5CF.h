@@ -353,7 +353,7 @@ namespace HDF5CF
        friend class EOS5File;
     };
 
-    /// This class is a derived class of Var. It represents a special general HDF5 product(currently ACOS)
+    /// This class is a derived class of Var. It represents a special general HDF5 product(currently ACOS and OCO-2)
     class GMSPVar:public Var {
         public:
             GMSPVar():otype(H5UNSUPTYPE),
@@ -528,6 +528,9 @@ namespace HDF5CF
             /// Handle unsupported HDF5 dataspaces for datasets
             virtual void Handle_Unsupported_Dspace() throw(Exception);
 
+            /// Handle other unmapped objects/attributes
+            virtual void Handle_Unsupported_Others(bool) throw(Exception);
+
             /// Flatten the object name
             virtual void Flatten_Obj_Name(bool) throw(Exception);
 
@@ -588,6 +591,14 @@ namespace HDF5CF
                 return this->groups;
             }
 
+            /// Obtain the flag to see if ignored objects should be generated.
+            virtual bool Get_IgnoredInfo_Flag() = 0;
+
+
+            /// Obtain the message that contains the ignored object info.
+            virtual const string & Get_Ignored_Msg() = 0;
+
+
             virtual ~File ();
 
         protected:
@@ -599,9 +610,17 @@ namespace HDF5CF
             void Retrieve_H5_VarType(Var*,hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw(Exception);
             void Retrieve_H5_VarDim(Var*,hid_t dset_id,const string &varname, bool & unsup_var_dspace) throw(Exception);
 
+            void Handle_Group_Unsupported_Dtype() throw(Exception);
+            void Handle_Var_Unsupported_Dtype() throw(Exception);
+            void Handle_VarAttr_Unsupported_Dtype() throw(Exception);
+
+            void Gen_Group_Unsupported_Dtype_Info() throw(Exception);
+            void Gen_Var_Unsupported_Dtype_Info() throw(Exception);
+            virtual void Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception);
+
             void Handle_GeneralObj_NameClashing(bool,set<string> &objnameset) throw(Exception);
             void Handle_Var_NameClashing(set<string> &objnameset) throw(Exception);
-            void Handle_RootGroup_NameClashing(set<string> &objnameset) throw(Exception);
+            void Handle_Group_NameClashing(set<string> &objnameset) throw(Exception);
             void Handle_Obj_AttrNameClashing() throw(Exception);
             template <typename T> void Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
 
@@ -616,12 +635,32 @@ namespace HDF5CF
             virtual void Replace_Var_Attrs(Var *src, Var*target);
 
             void Add_Str_Attr(Attribute* attr,const string &attrname, const string& strvalue) throw(Exception);
-            // TEMP: new method to check attribute value.
             bool Is_Str_Attr(Attribute* attr,string varfullpath, const string &attrname, const string& strvalue);
             void Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception);
+            void Replace_Var_Str_Attr(Var* var, const string &attr_name, const string& strvalue); 
             void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) throw(Exception);
 
- 
+            virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
+            virtual void Gen_Unsupported_Dspace_Info() throw(Exception);
+            void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception);
+            void add_ignored_info_page_header();
+            void add_ignored_info_obj_header();
+            // void add_ignored_info_obj_dtype_header();
+            //void add_ignored_info_obj_dspace_header();
+            void add_ignored_info_links_header();
+            void add_ignored_info_links(const string& link_name);
+            void add_ignored_info_namedtypes(const string&, const string&);
+            void add_ignored_info_attrs(bool is_grp,const string & obj_path, const string &attr_name);
+            void add_ignored_info_objs(bool is_dim_related,const string & obj_path );
+            void add_no_ignored_info();
+            bool ignored_dimscale_ref_list(Var *var);
+            bool Check_DropLongStr(Var *var,Attribute *attr) throw(Exception);
+            void add_ignored_var_longstr_info(Var*var, Attribute *attr) throw(Exception);
+            void add_ignored_grp_longstr_info(const string& grp_path, const string& attr_name) ;
+            void add_ignored_droplongstr_hdr();
+            bool Check_VarDropLongStr(const string &varpath, const vector<Dimension *>&,H5DataType) throw(Exception);
+
+
 
         protected:
             File (const char *h5_path, hid_t file_id)
@@ -631,7 +670,9 @@ namespace HDF5CF
                     unsupported_var_dtype(false),
                     unsupported_attr_dtype(false),
                     unsupported_var_dspace(false),
-                    addeddimindex(0)
+                    addeddimindex(0),
+                    check_ignored(false),
+                    have_ignored(false)
             {
 	    }
 
@@ -661,6 +702,10 @@ namespace HDF5CF
             /// Handle added dimension names
             map<hsize_t,string> dimsize_to_fakedimname;
             int addeddimindex;
+
+            bool check_ignored;
+            bool have_ignored;
+            string ignored_msg;
 
     };
 
@@ -697,6 +742,9 @@ namespace HDF5CF
 
             /// Handle unsupported HDF5 dataspaces for general HDF5 products
             void Handle_Unsupported_Dspace() throw(Exception);
+ 
+            /// Handle other unmapped objects/attributes for general HDF5 products
+            void Handle_Unsupported_Others(bool) throw(Exception);
 
             /// Add dimension name
             void Add_Dim_Name()throw(Exception);
@@ -735,6 +783,13 @@ namespace HDF5CF
             /// Update "product type" attributes for general HDF5 products
             void Update_Product_Type() throw(Exception);
 
+            /// Obtain ignored info. flag 
+            bool Get_IgnoredInfo_Flag() { return check_ignored; }
+
+            /// Get the message that contains the ignored obj. info
+            const string& Get_Ignored_Msg() { return ignored_msg; }
+
+
         protected: 
             void Add_Dim_Name_GPM() throw(Exception);
             void Add_Dim_Name_Mea_SeaWiFS() throw(Exception);
@@ -748,7 +803,7 @@ namespace HDF5CF
             void Add_Dim_Name_Aqu_L3()throw(Exception);
             void Add_Dim_Name_OBPG_L3()throw(Exception);
             void Add_Dim_Name_SMAP()throw(Exception);
-            void Add_Dim_Name_ACOS_L2S()throw(Exception);
+            void Add_Dim_Name_ACOS_L2S_OCO2_L1B()throw(Exception);
 
             void Add_Dim_Name_General_Product()throw(Exception);
             void Check_General_Product_Pattern() throw(Exception);
@@ -771,7 +826,7 @@ namespace HDF5CF
             void Handle_CVar_OBPG_L3() throw(Exception);
             void Handle_CVar_SMAP() throw(Exception);
             void Handle_CVar_Mea_Ozone() throw(Exception);
-            void Handle_SpVar_ACOS() throw(Exception);
+            void Handle_SpVar_ACOS_OCO2() throw(Exception);
             void Handle_CVar_Dimscale_General_Product() throw(Exception);
             void Handle_CVar_LatLon2D_General_Product() throw(Exception);
             void Handle_CVar_LatLon1D_General_Product() throw(Exception);
@@ -795,7 +850,21 @@ namespace HDF5CF
             void Add_SeaWiFS_Attrs() throw(Exception);
             void Create_Missing_CV(GMCVar*,const string &) throw(Exception);
             bool Is_netCDF_Dimension(Var *var) throw(Exception);
- 
+
+            //void add_ignored_info_attrs(bool is_grp,bool is_first);
+            //void add_ignored_info_objs(bool is_dim_related, bool is_first);
+            void Gen_Unsupported_Dtype_Info(bool);
+            void Gen_VarAttr_Unsupported_Dtype_Info()throw(Exception);
+            void Gen_GM_VarAttr_Unsupported_Dtype_Info();
+            void Gen_Unsupported_Dspace_Info() throw(Exception);
+            void Handle_GM_Unsupported_Dtype(bool) throw(Exception);
+            void Handle_GM_Unsupported_Dspace() throw(Exception);
+            //bool ignored_var_transformed(Var* var);
+            //bool ignored_var_attr_transformed();
+            // bool ignored_GM_CVar_dimscale_ref_list(GMCVar* var);
+            // bool ignored_GM_SPVar_dimscale_ref_list(GMSPVar* var);
+
+
         private:
             H5GCFProduct product_type;
             GMPattern gproduct_pattern;
@@ -928,8 +997,11 @@ namespace HDF5CF
             /// Handle unsupported HDF5 datatypes for HDF-EOS5 products.
             void Handle_Unsupported_Dtype(bool) throw(Exception);
 
-             /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
+            /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
             void Handle_Unsupported_Dspace() throw(Exception);
+
+            /// Handle other unmapped objects/attributes for HDF-EOS5 products
+            void Handle_Unsupported_Others(bool) throw(Exception);
 
             /// Adjust HDF-EOS5 dimension information 
             void Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception);
@@ -986,6 +1058,10 @@ namespace HDF5CF
             void Adjust_Dim_Name() throw(Exception);
 
             void Handle_DimNameClashing() throw(Exception);
+
+            bool Get_IgnoredInfo_Flag() { return check_ignored; }
+
+            const string& Get_Ignored_Msg() { return ignored_msg; }
 
         protected:
             void Adjust_H5_Attr_Value(Attribute *attr) throw (Exception);
@@ -1055,6 +1131,21 @@ namespace HDF5CF
             template <typename T> void Create_Missing_CV(T*, EOS5CVar*,const string &, EOS5Type, int) throw(Exception);
             void Create_Added_Var_NewName_FullPath(EOS5Type, const string& , const string& , string &, string &)  throw(Exception);
 
+            //void add_ignored_info_attrs(bool is_grp,bool is_first);
+            //void add_ignored_info_objs(bool is_dim_related, bool is_first);
+
+            //bool ignored_var_transformed();
+            //bool ignored_var_attr_transformed();
+           
+            void Handle_EOS5_Unsupported_Dtype(bool) throw(Exception);
+            void Handle_EOS5_Unsupported_Dspace() throw(Exception);
+            
+            void Gen_Unsupported_Dtype_Info(bool);
+            void Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception);
+            void Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw(Exception);
+
+            //void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception);
+            void Gen_Unsupported_Dspace_Info() throw(Exception);
 
         private:
              vector <EOS5CVar *>cvars;

@@ -40,12 +40,12 @@
 
 //#undef USE_DAP4 
 //#define USE_DAP4 1
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 #include <DMR.h>
 #include <D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
 #include "HDF5_DMR.h"
-#endif
+//#endif
 
 #include<mime_util.h>
 #include "hdf5_handler.h"
@@ -89,10 +89,10 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
     add_handler(DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data);
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
     add_handler(DMR_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
     add_handler(DAP4DATA_RESPONSE, HDF5RequestHandler::hdf5_build_dmr);
-#endif
+//#endif
 
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
@@ -279,15 +279,6 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
             find_gloattr(fileid, *das);
             depth_first(fileid, "/", *das);
             close_fileid(fileid);
-
-        // WARNING: I add this line because for the default option, the handler will hold
-        // the HDF5 object handles that are generated when handling DDS. If one only
-        // wants to run DDS, I assume that those resources will be lost and may cause the
-        // memory leaking..
-        // So adding H5close() will release all the resources HDF5 is using.
-        // Should ask James to see if this makes sense. KY-2011-11-17
-        // 
-            //H5close();
         }
 
         if(cf_fileid != -1)
@@ -305,6 +296,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
+
+        if(fileid != -1)
+            H5Fclose(fileid);
+
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
@@ -312,6 +307,9 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
@@ -320,7 +318,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        string s = "unknown exception caught building HDF5 DDS";
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+       string s = "unknown exception caught building HDF5 DDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
@@ -422,9 +423,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
         if(true == usecf) {
+
             // CF option
             read_cfdas( *das,filename,cf_fileid);
-            // cerr<<"end of DAS "<<endl;
 
         }
         else {
@@ -452,14 +453,30 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     }
     catch(InternalErr & e) {
 
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+       throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(...) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
         string s = "unknown exception caught building HDF5 DataDDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -520,15 +537,20 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     }
 
     catch(InternalErr & e) {
-
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(Error & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(...) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
         string s = "unknown exception caught building HDF5 DataDDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -536,7 +558,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     return true;
 }
 
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
 
@@ -559,118 +581,116 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         }
     }    
 
-    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
-    hid_t fileid = -1;
-    hid_t cf_fileid = -1;
-
-
-    string filename = dhi.container->access();
-
-    if(true ==usecf) { 
-       
-        if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
-            return hdf5_build_dmr_with_IDs(dhi);
-
-        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (cf_fileid < 0){
-            throw BESNotFoundError((string) "Could not open this hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-
-    }
-    else {
-        // Obtain the HDF5 file ID. 
-        fileid = get_fileid(filename.c_str());
-        if (fileid < 0) {
-            throw BESNotFoundError(string("hdf5_build_dmr: ")
-                               + "Could not open hdf5 file: "
-                               + filename, __FILE__, __LINE__);
-        }
-    }
-
-    BESDEBUG("h5","Building DMR without passing file IDs. "<<endl);
-
-    BaseTypeFactory factory;
-    DDS dds(&factory, name_path(filename), "3.2");
-    dds.filename(filename);
-
-    DAS das;
-
-    try {
-
-        if(true == usecf) { 
-
-            // This is the CF option
-            read_cfdds( dds,filename,cf_fileid);
-        }
-        else {
-            depth_first(fileid, (char*)"/", dds, filename.c_str());
-        }
-
-        if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
-            dds.print(cerr);
-            throw InternalErr(__FILE__, __LINE__,
-                              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
-        }
-        
-        Ancillary::read_ancillary_dds( dds, filename ) ;
-
-
-        if(true == usecf) {
-            // CF option
-            read_cfdas(das,filename,cf_fileid);
-
-        }
-        else {
-            
-            // Obtain the global attributes and map them to DAS
-            find_gloattr(fileid, das);
-
-            // Obtain the rest attributes and map them to DAS
-            depth_first(fileid, "/", das);
-
-            // The HDF5 file id will be closed now!
-            close_fileid(fileid);
-        }
-
-        Ancillary::read_ancillary_das( das, filename ) ;
-
-        dds.transfer_attributes(&das);
-
-        ////close the file ID.
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-
-    }
-    catch(InternalErr & e) {
-
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(...) {
-        string s = "unknown exception caught building HDF5 DataDDS";
-        throw BESInternalFatalError(s, __FILE__, __LINE__);
-    }
-    //dds.print(cout);
-    //dds.print_das(cout);
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse &bes_dmr = dynamic_cast<BESDMRResponse &>(*response);
 
-    // In this handler we use a different pattern since the handler specializes the DDS/DMR.
-    // First, build the DMR adding the open handle to the HDF4 dataset, then free the DMR
-    // the BES built and add this one. The HDF4DMR object will close the open dataset when
-    // the BES runs the DMR's destructor.
-
     DMR *dmr = bes_dmr.get_dmr();
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
-    dmr->build_using_dds(dds);
+ 
+    // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+    hid_t fileid = -1;
+    hid_t cf_fileid = -1;
+
+    string filename = dhi.container->access();
+
+    try {
+        if(true ==usecf) { 
+       
+            if(true == HDF5CFDAPUtil::check_beskeys("H5.EnablePassFileID"))
+                return hdf5_build_dmr_with_IDs(dhi);
+
+            cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (cf_fileid < 0){
+                throw BESNotFoundError((string) "Could not open this hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
+
+            BaseTypeFactory factory;
+            DDS dds(&factory, name_path(filename), "3.2");
+            dds.filename(filename);
+
+            DAS das;
+
+            read_cfdds( dds,filename,cf_fileid);
+            if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+                dds.print(cerr);
+                throw InternalErr(__FILE__, __LINE__,
+                                  "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
+            }
+
+            read_cfdas(das,filename,cf_fileid);
+            Ancillary::read_ancillary_das( das, filename ) ;
+
+            dds.transfer_attributes(&das);
+
+            ////close the file ID.
+            if(cf_fileid !=-1)
+                H5Fclose(cf_fileid);
+
+            dmr->build_using_dds(dds);
+
+        }
+        else {
+
+            // Obtain the HDF5 file ID. 
+            fileid = get_fileid(filename.c_str());
+            if (fileid < 0) {
+                throw BESNotFoundError(string("hdf5_build_dmr: ")
+                                   + "Could not open hdf5 file: "
+                                   + filename, __FILE__, __LINE__);
+            }
+
+            bool use_dimscale = check_dimscale(fileid);
+//if(true == use_dimscale)
+//    cerr<<"this file contains dimension scales."<<endl;
+            dmr->set_name(name_path(filename));
+            dmr->set_filename(name_path(filename));
+
+            D4Group* root_grp = dmr->root();
+
+           //depth_first(fileid,(char*)"/",root_grp,filename.c_str());
+           //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
+           if(true == use_dimscale) 
+                breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),use_dimscale);
+           else 
+                depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
+
+           close_fileid(fileid);
+
+        }
+    }
+
+    catch(InternalErr & e) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
+    }
+    catch(Error & e) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
+    }
+    catch(...) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+        string s = "unknown exception caught building HDF5 DMR";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
 
     //dmr->print(cout);
 
@@ -686,6 +706,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     return true;
 }
 
+// This function is only used when EnableCF is true.
 bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 {
 
@@ -693,12 +714,11 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t cf_fileid = -1;
 
-
-        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (cf_fileid < 0){
-            throw BESNotFoundError((string) "Could not open this hdf5 file: "
+    cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (cf_fileid < 0){
+         throw BESNotFoundError((string) "Could not open this hdf5 file: "
                                + filename, __FILE__, __LINE__);
-        }
+    }
 
     BaseTypeFactory factory;
     DDS dds(&factory, name_path(filename), "3.2");
@@ -734,14 +754,25 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     }
     catch(InternalErr & e) {
 
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(Error & e) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(...) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+
         string s = "unknown exception caught building HDF5 DataDDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -781,7 +812,6 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 
     return true;
 }
-#endif
 
 bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 {

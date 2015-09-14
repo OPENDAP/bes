@@ -1,6 +1,0 @@
-The data:
-Float32 temperature[ZDim = 1][lat = 1][lon = 1] = {{{52}}};
-Float32 lon[lon = 1] = {4.5};
-Float32 lat[lat = 1] = {1.5};
-Int32 ZDim[ZDim = 1] = {1};
-

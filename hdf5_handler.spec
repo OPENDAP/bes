@@ -1,18 +1,18 @@
 Summary:         HDF5 data handler for the OPeNDAP Data server
 Name:            hdf5_handler
-Version:         2.2.3
+Version:         2.3.0
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 
 Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
-Requires:        libdap >= 3.13.3
-Requires:        bes >= 3.13.2
+Requires:        libdap >= 3.15.0
+Requires:        bes >= 3.14.0
 Requires:        hdf5 => 1.8
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.13.3
-BuildRequires:	 bes-devel >= 3.13.2
+BuildRequires:   libdap-devel >= 3.15.0
+BuildRequires:	 bes-devel >= 3.14.0
 # BuildRequires:   hdf5-devel >= 1.8
 
 %description

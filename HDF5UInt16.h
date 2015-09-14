@@ -47,14 +47,15 @@ using namespace libdap;
 ///
 class HDF5UInt16:public UInt16 {
 
-//  private:
+  private:
 //    hid_t dset_id;
 //    hid_t ty_id;
+    string var_path;
 
   public:
 
     /// Constructor
-    HDF5UInt16(const string &n, const string &d);
+    HDF5UInt16(const string &n, const string &vpath, const string &d);
     virtual ~ HDF5UInt16() { }
 
     /// Clone this instance.

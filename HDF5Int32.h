@@ -51,10 +51,11 @@ class HDF5Int32:public Int32 {
   private:
 //    hid_t dset_id;
 //    hid_t ty_id;
+    string var_path;
 
   public:
     /// Constructor
-    HDF5Int32(const string &n, const string &d);
+    HDF5Int32(const string &n, const string &vpath,const string &d);
     virtual ~ HDF5Int32() { }
 
     /// Clone this instance.

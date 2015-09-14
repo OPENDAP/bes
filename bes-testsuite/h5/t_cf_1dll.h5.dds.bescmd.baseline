@@ -1,5 +1,0 @@
-Dataset {
-    Float32 temp[lat = 180][lon = 360];
-    Float32 lat[lat = 180];
-    Float32 lon[lon = 360];
-} t_cf_1dll.h5;

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset name="t_flatten.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
-    <Attribute name="_a" type="Container"/>
-    <Attribute name="_a_b" type="Container"/>
-    <Attribute name="_a_b_c" type="Container"/>
-    <Attribute name="_a_b_c_1" type="Container"/>
-    <dataBLOB href=""/>
-</Dataset>

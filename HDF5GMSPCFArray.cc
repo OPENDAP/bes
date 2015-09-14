@@ -22,7 +22,7 @@
 /////////////////////////////////////////////////////////////////////////////
 /// \file HDF5GMSPCFArray.cc
 /// \brief The implementation of the retrieval of data values for special  HDF5 products
-/// Currently this only applies to ACOS level 2 data.
+/// Currently this only applies to ACOS level 2 and OCO2 level 1B data.
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
 /// Copyright (C) 2011-2013 The HDF Group

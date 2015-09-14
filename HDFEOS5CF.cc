@@ -155,7 +155,16 @@ void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 
 void EOS5File:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
+    if(true == check_ignored) {
+        Gen_Unsupported_Dtype_Info(include_attr);
+    }
+
     File::Handle_Unsupported_Dtype(include_attr);
+    Handle_EOS5_Unsupported_Dtype(include_attr);
+}
+
+void EOS5File:: Handle_EOS5_Unsupported_Dtype(bool include_attr) throw(Exception) {
+
     for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
                 ircv != this->cvars.end(); ++ircv) {
         if (true == include_attr) {
@@ -179,10 +188,68 @@ void EOS5File:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     }
 }
+void EOS5File::  Gen_Unsupported_Dtype_Info(bool include_attr) {
+
+    if(true == include_attr) {
+
+        File::Gen_Group_Unsupported_Dtype_Info();
+        File::Gen_Var_Unsupported_Dtype_Info();
+        Gen_VarAttr_Unsupported_Dtype_Info();
+
+    }
+
+}
+
+void EOS5File:: Gen_VarAttr_Unsupported_Dtype_Info() throw(Exception){
+
+    Gen_DimScale_VarAttr_Unsupported_Dtype_Info();
+    //File::Gen_VarAttr_Unsupported_Dtype_Info();
+    Gen_EOS5_VarAttr_Unsupported_Dtype_Info();
+
+}
+
+void EOS5File:: Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw(Exception) {
+
+            for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
+                 irv != this->cvars.end(); ++irv) {
+                // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+                // attribute REFERENCE_LIST is okay to ignore. No need to report.
+                bool is_ignored = ignored_dimscale_ref_list((*irv));
+                if (false == (*irv)->attrs.empty()) {
+                    if (true == (*irv)->unsupported_attr_dtype) {
+                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                            ira != (*irv)->attrs.end(); ++ira) {
+                            H5DataType temp_dtype = (*ira)->getType();
+                            if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                                // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                                // is okay to ignore if the variable has another attribute
+                                // CLASS="DIMENSION_SCALE"
+                                if (("DIMENSION_LIST" !=(*ira)->name) &&
+                                    (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                                    this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+}
+
 
 void EOS5File:: Handle_Unsupported_Dspace() throw(Exception) {
 
+    if(true == check_ignored) {
+        Gen_Unsupported_Dspace_Info();
+    }
+
     File::Handle_Unsupported_Dspace();
+    Handle_EOS5_Unsupported_Dspace();
+ 
+}
+
+void EOS5File:: Handle_EOS5_Unsupported_Dspace() throw(Exception) {
+
  
     if (true == this->unsupported_var_dspace) {
         for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
@@ -195,6 +262,86 @@ void EOS5File:: Handle_Unsupported_Dspace() throw(Exception) {
         }
     }
 }
+
+void EOS5File:: Gen_Unsupported_Dspace_Info() throw(Exception) {
+
+     File::Gen_Unsupported_Dspace_Info();
+
+}
+
+void EOS5File::Handle_Unsupported_Others(bool include_attr) throw(Exception) {
+
+    // We cannot use the general routine from the base class since
+    // the information of ignored ECS metadata variables is transferred
+    // to DAS. The ignored ECS metadata variables should not be reported.
+    //File::Handle_Unsupported_Others(include_attr);
+    if(true == this->check_ignored && true == include_attr) {
+
+        // Check the drop long string feature.
+        string check_droplongstr_key ="H5.EnableDropLongString";
+        bool is_droplongstr = false;
+        is_droplongstr = HDF5CFDAPUtil::check_beskeys(check_droplongstr_key);
+        if(true == is_droplongstr){
+             for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
+                ira != this->root_attrs.end(); ++ira) {
+                if(H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
+                    if((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_grp_longstr_info("/",(*ira)->name);
+                    }
+                }
+            }
+
+            for (vector<Group *>::iterator irg = this->groups.begin();
+                        irg != this->groups.end(); ++irg) {
+                for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                     ira != (*irg)->attrs.end(); ++ira) {
+                    if(H5FSTRING == (*ira)->dtype || H5VSTRING == (*ira)->dtype) {
+                       if((*ira)->getBufSize() > NC_JAVA_STR_SIZE_LIMIT) {
+                           this->add_ignored_droplongstr_hdr();
+                           this->add_ignored_grp_longstr_info((*irg)->path,(*ira)->name);
+                       }
+                   }
+ 
+                }
+            }
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                 irv != this->vars.end(); ++irv) {
+                if(true == Check_DropLongStr((*irv),NULL)) {
+                    string ecsmeta_grp = "/HDFEOS INFORMATION";
+                    // Ignored ECS metadata should not be reported.
+                    if((*irv)->fullpath.find(ecsmeta_grp)!=0 || ((*irv)->fullpath.rfind("/")!= ecsmeta_grp.size())) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_var_longstr_info((*irv),NULL);
+                    }
+                }
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end();++ira) {
+                    if(true == Check_DropLongStr((*irv),(*ira))) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_var_longstr_info((*irv),(*ira));
+                    }
+                }
+            }
+            for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
+                 irv != this->cvars.end(); ++irv) {
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end();++ira) {
+                    if(true == Check_DropLongStr((*irv),(*ira))) {
+                        this->add_ignored_droplongstr_hdr();
+                        this->add_ignored_var_longstr_info((*irv),(*ira));
+                    }
+                }
+            }
+        }
+    }
+
+
+    if(false == this->have_ignored)
+        this->add_no_ignored_info();
+
+}
+
 void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw(Exception) {
     
     // Condense redundant XDim, YDim in the grid/swath/za dimension list
@@ -3518,3 +3665,15 @@ void EOS5File::Replace_Var_Attrs(EOS5CVar *src, EOS5CVar*target) {
     File::Replace_Var_Attrs(src,target);
     
 }
+
+#if 0
+void
+EOS5File:: add_ignored_info_attrs(bool is_grp,bool is_first) {
+
+}
+void
+EOS5File:: add_ignored_info_objs(bool is_dim_related, bool is_first) {
+
+}
+#endif
+

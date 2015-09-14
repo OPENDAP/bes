@@ -35,38 +35,45 @@
 #define _H5GET_H
 #include "hdf5_handler.h"
 
-bool
-check_h5str(hid_t);
+bool check_h5str(hid_t);
 
-void 
-close_fileid(hid_t fid);
+void close_fileid(hid_t fid);
 
+hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 
-hid_t 
-get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, bool*);
+string get_dap_type(hid_t type,bool);
 
-string
-get_dap_type(hid_t type);
+void get_data(hid_t dset, void *buf);
 
-void
-get_data(hid_t dset, void *buf);
+void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool has_dimscale);
 
-void
-get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr);
+hid_t get_fileid(const char *filename);
 
-hid_t
-get_fileid(const char *filename);
+int get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
 
-int
-get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
-
-void
-get_strdata(int, char *, char *, int);
+void get_strdata(int, char *, char *, int);
 
 bool read_vlen_string(hid_t d_dset_id, int nelms, hsize_t *offset, hsize_t *step, hsize_t *count,std::vector<string> &finstrval);
 
 bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id);
 
 void get_vlen_str_data(char*src,std::string &finalstrval);
+
+string print_attr(hid_t type, int loc, void *sm_buf);
+
+D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s);
+
+//static BaseType *Get_bt(const string &vname,
+BaseType *Get_bt(const string &vname,const string &var_path,
+                        const string &dataset,
+                        hid_t datatype,bool is_dap4);
+
+//static Structure *Get_structure(const string &varname,
+Structure *Get_structure(const string &varname,const string &var_path,
+                                const string &dataset,
+                                hid_t datatype,bool is_dap4);
+
+bool check_dimscale(hid_t fid);
+void obtain_dimnames(hid_t dset,int, DS_t*dt_inst_ptr);
 
 #endif                          //_H5GET_H

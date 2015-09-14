@@ -186,9 +186,16 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         // Remove unsupported dataspace 
         f->Handle_Unsupported_Dspace();
 
-
         // Need to retrieve the attribute values to feed DAS
         f->Retrieve_H5_Supported_Attr_Values();
+
+        // Handle other unsupported objects,
+        // currently it mainly generates the info. for the
+        // unsupported objects other than datatype, dataspace,links and named datatype
+        // One area is maybe very long string. So we retrieve the attribute
+        // values before calling this function.
+        f->Handle_Unsupported_Others(include_attr);
+
 
         // Need to add original variable name and path
         // and other special attributes
@@ -260,6 +267,12 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
     BESDEBUG("h5","Coming to GM DAS generation function gen_gmh5_cfdas  "<<endl);
     // "h5","coming to gen_gmh5_cfdas "<<endl;
+
+    // First check if this is for generating the ignored object info.
+    if(true == f->Get_IgnoredInfo_Flag()) {
+        gen_gmh5_cf_ignored_obj_info(das, f);
+        return;
+    }
 
     const vector<HDF5CF::Var *>& vars             = f->getVars();
     const vector<HDF5CF::GMCVar *>& cvars         = f->getCVars();
@@ -355,6 +368,16 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     // cerr<<"end of gen_gmh5_cfdas "<<endl;
 }
 
+void gen_gmh5_cf_ignored_obj_info(DAS &das, HDF5CF::GMFile *f) {
+
+    AttrTable *at = das.get_table("Ignored_Object_Info");
+    if (NULL == at)
+        at = das.add_table("Ignored_Object_Info", new AttrTable);
+
+    at->append_attr("Message","String",f->Get_Ignored_Msg());
+
+
+}
 
 void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file_id, const string & filename) {
 

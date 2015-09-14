@@ -47,8 +47,9 @@
 #include "BESDebug.h"
 
 
-HDF5Int32::HDF5Int32(const string & n, const string &d) : Int32(n, d)
+HDF5Int32::HDF5Int32(const string & n, const string &vpath, const string &d) : Int32(n, d)
 {
+    var_path = vpath;
 }
 
 BaseType *HDF5Int32::ptr_duplicate()
@@ -67,10 +68,17 @@ bool HDF5Int32::read()
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
    
-    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+//cerr<<"variable name is : "<<name() <<endl;
+
+    hid_t dset_id = -1;
+    if(true == is_dap4())
+        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    else
+        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
     }
     
     try {

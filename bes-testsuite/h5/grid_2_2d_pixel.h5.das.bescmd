@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="grid_2_2d_pixel" space="catalog">/data/grid_2_2d_pixel.h5</setContainer>
-    <define name="d">
-	<container name="grid_2_2d_pixel" />
-    </define>
-    <get type="das" definition="d" />
-</request>

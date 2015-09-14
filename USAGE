@@ -3,7 +3,9 @@
 HDF5/HDF-EOS5 products in a manner that follows the CF conventions.
 
 1. Please refer to h5.conf.in for the descriptions of different BES keys for 
-   the CF option.
+   the CF option. Especially check the descriptions for the H5.CheckIgnoreObj
+   key to how to use this key to check if there are any ignored objects mapping
+   from HDF5 to DAP2.
 
 2. Using the NcML handler to modify attributes that do not follow the CF 
 conventions 

@@ -601,8 +601,18 @@ bool HDF5Array::read()
 	    << endl);
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+BESDEBUG("h5","after H5Fopen "<<endl);
+BESDEBUG("h5","variable name is "<<name() <<endl);
+BESDEBUG("h5","variable path is  "<<var_path <<endl);
 
+    hid_t dset_id = -1;
+
+    if(true == is_dap4()) 
+        dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    else 
+        dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+
+BESDEBUG("h5","after H5Dopen2 "<<endl);
     // Leave the following code. We may replace the struct DS and DSattr(see hdf5_handler.h)
 #if 0
     hid_t dspace_id = H5Dget_space(dset_id);
@@ -642,7 +652,7 @@ bool HDF5Array::read()
     //hid_t dtype_id = d_ty_id;
 
     // We only map the reference to URL when the dataset is an array of reference.
-    if (get_dap_type(dtype_id) == "Url") {
+    if (get_dap_type(dtype_id,is_dap4()) == "Url") {
         bool ret_ref = false;
         try {
 	    ret_ref = m_array_of_reference(dset_id,dtype_id);
@@ -739,7 +749,8 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	    vector<char> convbuf(d_memneed);
 	    get_data(dset_id, (void *) &convbuf[0]);
 
-	    // Check if a Signed Byte to Int16 conversion is necessary.
+	    // Check if a Signed Byte to Int16 conversion is necessary, this is only valid for DAP2.
+          if(false == is_dap4()) {
             if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) 
             {
 	        vector<short> convbuf2(nelms);
@@ -756,6 +767,9 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	    }
 	    else 
                 m_intern_plain_array_data(&convbuf[0],memtype);
+          }
+          else 
+              m_intern_plain_array_data(&convbuf[0],memtype);
         } // if (nelms == d_num_elm)
         else {
     	    size_t data_size = nelms * H5Tget_size(memtype);
@@ -766,7 +780,9 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	    get_slabdata(dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);
 
 	    // Check if a Signed Byte to Int16 conversion is necessary.
-	    if (get_dap_type(memtype) == "Int8") {
+          if(false == is_dap4()){
+            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+	    //if (get_dap_type(memtype,false) == "Int8") {// bug, get_dap_type never returns Int8 type.
 	        vector<short> convbuf2(data_size);
 	        for (int i = 0; i < (int)data_size; i++) {
 	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
@@ -776,6 +792,9 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	    else {
 	        m_intern_plain_array_data(&convbuf[0],memtype);
 	    }
+          }
+          else 
+	      m_intern_plain_array_data(&convbuf[0],memtype);
 
         }
         H5Tclose(memtype);
@@ -1051,7 +1070,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         else { // Adjust the value for the subset of the array datatype
 
             // Obtain the correponding DAP type of the HDF5 data type
-            string dap_type = get_dap_type(at_base_type);
+            string dap_type = get_dap_type(at_base_type,is_dap4());
 
             // The total array type data is read.
             void*src = (void*)(&values[0] + values_offset);
@@ -1454,3 +1473,61 @@ hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
     return str_type;
 }
 
+// We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
+BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
+
+    Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
+
+    // If there is just a size, don't make
+    // a D4Dimension (In DAP4 you cannot share a dimension unless it has
+    // a name). jhrg 3/18/14
+cerr<<"Variable name is "<<this->name() <<endl;
+
+    for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
+        if (false == (*d).name.empty()) {
+cerr<<"dimension name " <<(*d).name <<endl;
+
+            D4Group *temp_grp   = grp;
+            //D4Group *dim_grp    = NULL;
+            D4Dimension *d4_dim = NULL;
+            while(temp_grp) {
+
+                D4Dimensions *temp_dims = temp_grp->dims();
+                // Check if the dimension is defined in this group
+                d4_dim = temp_dims->find_dim((*d).name);
+                if(d4_dim) { 
+                  (*d).dim = d4_dim;
+                  break;
+
+                }
+
+                if(temp_grp->get_parent()) 
+                    temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                else 
+                    temp_grp = 0;
+
+            }
+
+            // Not find this dimension in any of the ancestor groups, add it to this group.
+            if(d4_dim == NULL) {
+cerr<<"Added to the group "<<grp->name() <<endl;
+                d4_dim = new D4Dimension((*d).name, (*d).size);
+//cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
+                D4Dimensions * dims = grp->dims();
+                //d4_dim->set_parent(dims);
+                dims->add_dim_nocopy(d4_dim);
+                (*d).dim = d4_dim;
+                //if(dims->parent() !=grp)
+                 //   dims->set_parent(grp);
+            }
+
+        }
+        
+
+    }
+
+    dest->set_is_dap4(true);
+
+    return dest;
+
+}

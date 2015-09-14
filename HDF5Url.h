@@ -48,14 +48,16 @@ using namespace libdap;
 ////////////////////////////////////////////////////////////////////////////////
 class HDF5Url:public Url {
 
-//  private:
+  private:
 //    hid_t dset_id;
 //    hid_t ty_id;
+
+    string var_path;
 
   public:
 
     /// Constructor
-    HDF5Url(const string &n, const string &d);
+    HDF5Url(const string &n, const string &vname,const string &d);
     virtual ~ HDF5Url() { }
 
     /// Clone this instance.

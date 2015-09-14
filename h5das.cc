@@ -42,7 +42,6 @@
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder paths;
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, const char *gname, DAS & das)
 /// depth first traversal of hdf5 file attributes.
@@ -281,6 +280,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     BESDEBUG("h5", "<depth_first():" << gname << endl);
 }
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
 /// will get the printed representation of an attribute.
@@ -467,6 +467,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
     string rep_str(rep.begin(),rep.end());
     return rep_str;
 }
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -478,8 +479,8 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 /// \param oid  HDF5 object id(a handle)
 /// \param num_attr number of attributes.
 /// \return nothing
-/// \see get_attr_info(hid_t dset, int index,
-///                    DSattr_t * attr_inst_ptr,int *ignoreptr, char *error)
+/// \see get_attr_info(hid_t dset, int index,bool,
+///                    DSattr_t * attr_inst_ptr,bool *ignoreptr)
 /// \see get_dap_type()
 ///////////////////////////////////////////////////////////////////////////////
 void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
@@ -519,7 +520,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         // Ignore the attributes of which the HDF5 datatype 
         // cannot be mapped to DAP2. The ignored attribute datatypes can be found 
         // at function get_attr_info in h5get.cc.
-	attr_id = get_attr_info(oid, j, &attr_inst, &ignore_attr);
+	attr_id = get_attr_info(oid, j, false,&attr_inst, &ignore_attr);
 	if (true == ignore_attr) { 
             H5Aclose(attr_id);
             continue;
@@ -528,7 +529,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	// Since HDF5 attribute may be in string datatype, it must be dealt
 	// properly. Get data type.
 	hid_t ty_id = attr_inst.type;
-	string dap_type = get_dap_type(ty_id);
+	string dap_type = get_dap_type(ty_id,false);
 	string attr_name = attr_inst.name;
 
 
@@ -930,7 +931,6 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     // Otherwise, replacing the first "/" with the string "HDF5_ROOT_GROUP.",
     // (note the . after "HDF5_ROOT_GROUP." .  Then cutting the last "/".
 
-    // TODO I don't think sizeof(gname) is right. jhrg 9/26/13
     if (strncmp(gname, "/", strlen(gname)) == 0) {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP");
     }
@@ -940,7 +940,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     }
 
     BESDEBUG("h5", full_path << endl);
-
+    // TODO: Not sure if we need to create a table for each group. KY 2015-07-08
     AttrTable *at = das.get_table(full_path);
     if(at == NULL){
         throw InternalErr(__FILE__, __LINE__,

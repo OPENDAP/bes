@@ -42,7 +42,6 @@
 
 #include <mime_util.h>
 
-//#include "h5dds.h"
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
 #include "HDF5UInt32.h"
@@ -55,7 +54,11 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
+
 //#include "h5get.h"
+//#ifdef USE_DAP4
+#include "HDF5CFUtil.h"
+//#endif
 
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
@@ -138,10 +141,18 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-            
-        // We ignore soft link and hard link in this release 
-        if(linfo.type == H5L_TYPE_SOFT || linfo.type == H5L_TYPE_EXTERNAL) 
+
+        // External links are not supported in this release
+        if(linfo.type == H5L_TYPE_EXTERNAL)
             continue;
+
+        // Remember the information of soft links in DAS, not in DDS
+        if(linfo.type == H5L_TYPE_SOFT)
+            continue;
+
+        // Soft link and hard link information are stored at DAS, not in DDS.
+        //if(linfo.type == H5L_TYPE_SOFT || linfo.type == H5L_TYPE_EXTERNAL) 
+        //    continue;
 
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
@@ -154,7 +165,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
         }
 
         H5O_type_t obj_type = oinfo.type;
-
         switch (obj_type) {  
 
             case H5O_TYPE_GROUP: 
@@ -209,7 +219,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
                 // All the metadata information in the handler is stored in dt_inst.
-                get_dataset(pid, full_path_name, &dt_inst);
+                // Don't consider the dim. scale support for DAP2 now.
+                get_dataset(pid, full_path_name, &dt_inst,false);
 
                 // Put the hdf5 dataset structure into DODS dds.
                 read_objects(dds, full_path_name, fname);
@@ -231,7 +242,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     return true;
 }
 
-
+// move to h5get.cc. may delete them later. 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_bt(const string &varname,  const string  &dataset, hid_t datatype)
 /// returns the pointer to the base type
@@ -431,6 +443,7 @@ static BaseType *Get_bt(const string &vname,
 ///
 ///////////////////////////////////////////////////////////////////////////////
 static Structure *Get_structure(const string &varname,
+                                const string &vpath,
                                 const string &dataset,
                                 hid_t datatype)
 {
@@ -446,7 +459,7 @@ static Structure *Get_structure(const string &varname,
                           + varname);
 
     try {
-        structure_ptr = new HDF5Structure(varname, dataset);
+        structure_ptr = new HDF5Structure(varname, vpath,dataset);
         //structure_ptr->set_did(dt_inst.dset);
         //structure_ptr->set_tid(dt_inst.type);
 
@@ -476,7 +489,7 @@ static Structure *Get_structure(const string &varname,
             
             // ~Structure() will delete these if they are added.
             if (memb_cls == H5T_COMPOUND) {
-                Structure *s = Get_structure(memb_name, dataset, memb_type);
+                Structure *s = Get_structure(memb_name, memb_name,dataset, memb_type);
                 structure_ptr->add_var(s);
                 delete s; s = 0;
             } 
@@ -523,7 +536,7 @@ static Structure *Get_structure(const string &varname,
                     }
                     if(H5T_COMPOUND == array_memb_cls) {
 
-                        s = Get_structure(memb_name, dataset, dtype_base);
+                        s = Get_structure(memb_name, memb_name,dataset, dtype_base);
                         HDF5Array *h5_ar = new HDF5Array(memb_name, dataset, s);
                     
                         for (int dim_index = 0; dim_index < ndim; dim_index++) {
@@ -545,7 +558,7 @@ static Structure *Get_structure(const string &varname,
 	
                     }
                     else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) { 
-                        ar_bt = Get_bt(memb_name, dataset, dtype_base);
+                        ar_bt = Get_bt(memb_name, memb_name,dataset, dtype_base);
                         HDF5Array *h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
                         //btp = new HDF5Array(memb_name, dataset, ar_bt);
                         //HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
@@ -584,7 +597,7 @@ static Structure *Get_structure(const string &varname,
 
             }
             else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
-                BaseType *bt = Get_bt(memb_name, dataset, memb_type);
+                BaseType *bt = Get_bt(memb_name, memb_name,dataset, memb_type);
                 structure_ptr->add_var(bt);
                 delete bt; bt = 0;
             }
@@ -614,6 +627,7 @@ static Structure *Get_structure(const string &varname,
     return structure_ptr;
 }
 
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_base_type(DDS & dds_table,
@@ -645,7 +659,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 
     // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
-    BaseType *bt = Get_bt(varname, filename, dt_inst.type);
+    // DDS: varname is the absolute path
+    BaseType *bt = Get_bt(varname, varname,filename, dt_inst.type,false);
     
     if (!bt) {
         // NB: We're throwing InternalErr even though it's possible that
@@ -698,7 +713,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
 {
     dds_table.set_dataset_name(name_path(filename));
 
-    Structure *structure = Get_structure(varname, filename, dt_inst.type);
+    Structure *structure = Get_structure(varname, varname,filename, dt_inst.type,false);
 
     try {
         // Assume Get_structure() uses exceptions to signal an error. jhrg
@@ -783,5 +798,4 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
         throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
     }
 }
-
 

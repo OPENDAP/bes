@@ -44,7 +44,7 @@
 // Here H5UNSUPTYPE includes H5T_TIME, H5T_BITFIELD, H5T_OPAQUE,H5T_ENUM, H5T_VLEN.
 // For CF option, H5REFERENCE, H5COMPOUND, H5ARRAY will not be supported. We leave them
 // here for future merging of default option and CF option. Currently DAP2 doesn't 
-// support 64-bit integer. We still list int64 bit types since we find ACOSL2S has this
+// support 64-bit integer. We still list int64 bit types since we find ACOSL2S or OCO2L1B have this
 // datatype and we need to provide a special mapping for this datatype. 
 // H5UCHAR also needs a special mapping. Similiarly other unsupported types may need to 
 // have special mappings in the future. So the following enum type may be extended 

@@ -12,25 +12,27 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf bes.default.conf
+noinst_DATA = bes.conf bes.default.conf bes.ignore.conf
 
 CLEANFILES = *.log *.sum *.out $(TESTSUITE) $(srcdir)/package.m4
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in		\
-$(srcdir)/package.m4 h5 h5.nasa bes.conf.in bes.default.conf.in	\
-bes.conf.modules.in bes.default.conf.modules.in
+$(srcdir)/package.m4 h5 h5.nasa bes.conf.in bes.default.conf.in	 bes.ignore.conf.in \
+bes.conf.modules.in bes.default.conf.modules.in bes.ignore.conf.modules.in
 
 # hdf5_handlerTest.nasa.at 
 # Do not prefix the DISTCLEANFILES with $(srcdir) because that
 # will result in a warning from distcheck
-DISTCLEANFILES = bes.conf bes.default.conf atconfig
+DISTCLEANFILES = bes.conf bes.default.conf bes.ignore.conf atconfig
 
 if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_DEFAULT_CONF_IN = bes.default.conf.modules.in
+BES_IGNORE_CONF_IN = bes.ignore.conf.modules.in
 else
 BES_CONF_IN = bes.conf.in
 BES_DEFAULT_CONF_IN = bes.default.conf.in
+BES_IGNORE_CONF_IN = bes.ignore.conf.in
 endif
 
 # Build the bes.conf used for testing so that the value substituted for
@@ -45,6 +47,12 @@ bes.default.conf: $(BES_DEFAULT_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.default.conf
+
+bes.ignore.conf: $(BES_IGNORE_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.ignore.conf
+
 
 ############## Autotest follows #####################
 

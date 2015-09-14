@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContainer name="d_group" space="catalog">/data/d_group.h5</setContainer>
-    <define name="d">
-	<container name="d_group" />
-    </define>
-    <get type="dmr" definition="d" />
-</request>

@@ -1,7 +1,0 @@
-Attributes {
-    _scalar {
-        Int32 value 45;
-        String origname "scalar";
-        String fullnamepath "/scalar";
-    }
-}

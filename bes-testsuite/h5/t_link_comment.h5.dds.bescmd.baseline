@@ -1,6 +1,0 @@
-Dataset {
-    Int32 _dset1[5];
-    Int32 _g1_dset2[5];
-    Int32 _g1_g3_dset1_hard[5];
-    Int32 _g2_dset1_hard[5];
-} t_link_comment.h5;

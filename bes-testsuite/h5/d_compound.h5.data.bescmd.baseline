@@ -1,8 +1,0 @@
-The data:
-Structure {
-    Int32 Serial%20number;
-    String Location;
-    Float64 Temperature%20%28F%29;
-    Float64 Pressure%20%28inHg%29;
-} /compound[4] = {{ 1153, "Exterior (static)", 53.23, 24.57 }, { 1184, "Intake", 55.12, 22.95 }, { 1027, "Intake manifold", 103.55, 31.23 }, { 1313, "Exhaust manifold", 1252.89, 84.11 }};
-

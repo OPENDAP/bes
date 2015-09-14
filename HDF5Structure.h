@@ -44,11 +44,12 @@ using namespace libdap;
 class HDF5Structure:public Structure {
   private:
 
+    string var_path;
     void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
     friend class HDF5Array;
   public:
     /// Constructor
-    HDF5Structure(const string &n, const string &d);
+    HDF5Structure(const string &n, const string &vpath, const string &d);
     HDF5Structure(const HDF5Structure &rhs);
     virtual ~ HDF5Structure();
 

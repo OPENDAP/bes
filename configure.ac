@@ -88,8 +88,7 @@ AC_CHECK_LIBDAP([3.11.0],
 ])
 
 dnl Checks for specific libraries
-dnl In the future, make it optional if you want to support both 1.6 and 1.8.
-dnl At this point, we don't use HDF5 1.8.0 specific APIs in our hdf5 handler.
+dnl At this point, we use HDF5 1.8.0 specific APIs in our hdf5 handler.
 AC_CHECK_HDF5(
   [
       LIBS="$LIBS $H5_LIBS"
@@ -105,10 +104,11 @@ AC_CHECK_HDF5(
   ]
 )
 
-AC_CHECK_PROGS([GETDAP4],[getdap4])
-if test -n "$GETDAP4"; then
-    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
-fi
+dnl No need to check if having getdap4 since we will support both DAP2 and DAP4 from this version
+dnl AC_CHECK_PROGS([GETDAP4],[getdap4])
+dnl if test -n "$GETDAP4"; then
+dnl    CPPFLAGS="$CPPFLAGS -DUSE_DAP4"
+dnl fi
 
 AC_CHECK_BES([3.9.0],
 [
@@ -144,5 +144,5 @@ dnl #endif /* _config_hdf5_h */])
 modulesdir=$BES_MODULE_DIR
 AC_SUBST(modulesdir)
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf bes-testsuite/bes.default.conf])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf bes-testsuite/bes.default.conf bes-testsuite/bes.ignore.conf])
 AC_OUTPUT

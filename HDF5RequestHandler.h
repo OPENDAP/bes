@@ -43,10 +43,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool hdf5_build_dds(BESDataHandlerInterface & dhi);
     static bool hdf5_build_data(BESDataHandlerInterface & dhi);
     static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
     static bool hdf5_build_dmr(BESDataHandlerInterface & dhi);
     static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
-#endif
+//#endif
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
 };

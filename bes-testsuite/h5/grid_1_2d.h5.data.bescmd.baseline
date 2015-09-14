@@ -1,6 +1,0 @@
-The data:
-Float32 temperature[lat = 4][lon = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
-String StructMetadata_0 = "GROUP=SwathStructure\012END_GROUP=SwathStructure\012GROUP=GridStructure\012\011GROUP=GRID_1\012\011\011GridName=\"GeoGrid\"\012\011\011XDim=8\012\011\011YDim=4\012\011\011UpperLeftPointMtrs=(0.000000,4000000.000000)\012\011\011LowerRightMtrs=(8000000.000000,0.000000)\012\011\011Projection=HE5_GCTP_GEO\012\011\011GROUP=Dimension\012\011\011END_GROUP=Dimension\012\011\011GROUP=DataField\012\011\011\011OBJECT=DataField_1\012\011\011\011\011DataFieldName=\"temperature\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"YDim\",\"XDim\")\012\011\011\011\011MaxdimList=(\"YDim\",\"XDim\")\012\011\011\011END_OBJECT=DataField_1\012\011\011END_GROUP=DataField\012\011\011GROUP=MergedFields\012\011\011END_GROUP=MergedFields\012\011END_GROUP=GRID_1\012END_GROUP=GridStructure\012GROUP=PointStructure\012END_GROUP=PointStructure\012GROUP=ZaStructure\012END_GROUP=ZaStructure\012END\012";
-Float32 lon[lon = 8] = {0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
-Float32 lat[lat = 4] = {3.5, 2.5, 1.5, 0.5};
-

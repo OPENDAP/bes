@@ -1,2 +1,8 @@
-All programs require HDF5 version 1.8.8 or above.
-All HDF-EOS programs require HDF-EOS5 version 1.13 or above.
+1. There are several CDL files that are used to generate HDF5 files the testsuite uses. 
+One can use ncgen to generate a corresponding netcdf4 file and then change the name to .h5.
+The command to generate nc files are ncgen -k3 ???.cdl or ncgen -k4 ???.cdl .
+k3 will generate an enhanced nc-4 file, k4 will generate a classic nc-4 file.
+
+2. tcompound.h5 is generated from running h5dumpgentest which is under hdf5 standard release tools/h5dump directory.
+
+3. Several python examples are also provided.

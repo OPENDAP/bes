@@ -52,11 +52,12 @@ class HDF5Float64:public Float64 {
   private:
 //    hid_t dset_id;
 //    hid_t ty_id;
+    string var_path;
 
   public:
 
     /// Constructor.
-    HDF5Float64(const string &n, const string &d);
+    HDF5Float64(const string &n, const string &vpath, const string &d);
     virtual ~ HDF5Float64() { }
 
     /// Clone this instance.

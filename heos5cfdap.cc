@@ -320,9 +320,16 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         // Remove unsupported dataspace 
         f->Handle_Unsupported_Dspace();
 
-
         // Need to retrieve the attribute values.
         f->Retrieve_H5_Supported_Attr_Values();
+
+
+        // Handle other unsupported objects, 
+        // currently it mainly generates the info. for the
+        // unsupported objects other than datatype, dataspace,links and named datatype
+        // This function needs to be called after retrieving supported attributes.
+        f->Handle_Unsupported_Others(include_attr);
+
 
         // Add/adjust CF attributes
         f->Adjust_Attr_Info();
@@ -386,6 +393,18 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     }
 
 }
+
+void gen_eos5_cf_ignored_obj_info(DAS &das, HDF5CF::EOS5File *f) {
+
+    AttrTable *at = das.get_table("Ignored_Object_Info");
+    if (NULL == at)
+        at = das.add_table("Ignored_Object_Info", new AttrTable);
+
+    at->append_attr("Message","String",f->Get_Ignored_Msg());
+
+
+}
+
 
 void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t file_id, const string & filename) {
 
@@ -582,6 +601,12 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS generation function gen_eos5_cfdas  "<<endl);
     // cerr<<"read_cfdas()"<<endl;
+
+     // First check if this is for generating the ignored object info.
+    if(true == f->Get_IgnoredInfo_Flag()) {
+        gen_eos5_cf_ignored_obj_info(das, f);
+        return;
+    }
 
     const vector<HDF5CF::Var *>& vars             = f->getVars();
     const vector<HDF5CF::EOS5CVar *>& cvars       = f->getCVars();
