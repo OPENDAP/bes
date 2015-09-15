@@ -265,13 +265,15 @@ void TcpSocket::listen()
 	}
 
 	int on = 1;
-	struct sockaddr_in server;
+	struct sockaddr_in server = {}; // initialize server's fields to zero
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY ;
+#if 0
 	struct servent *sir = 0;
+#endif
 	BESDEBUG( "ppt", "Checking /etc/services for port " << _portVal << endl );
 
-	sir = getservbyport(htons(_portVal), 0);
+	struct servent *sir = getservbyport(htons(_portVal), 0);
 	if (sir) {
 		std::ostringstream error_oss;
 		error_oss << endl << "CONFIGURATION ERROR: The requested port (" << _portVal
