@@ -34,11 +34,11 @@
 
 //#undef USE_DAP4 
 //#define USE_DAP4 1
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 #include <DMR.h>
 #include <D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
-#endif
+//#endif
 #include <mime_util.h>
 #include <InternalErr.h>
 #include <Ancillary.h>
@@ -70,18 +70,18 @@
 #include "HE2CF.h"
 #include "HDF4_DDS.h"
 
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 #include "HDF4_DMR.h"
-#endif 
+//#endif 
 
 #include "HDFCFUtil.h"
 #include "HDFFloat32.h"
 #include "HDFSPArray_RealField.h"
 
 #include "dodsutil.h"
-#if 0
+//#if 0
 #include <sys/time.h>
-#endif
+//#endif
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -110,10 +110,10 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
 	add_handler(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
 	add_handler(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 	add_handler(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
 	add_handler(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-#endif
+//#endif
 	add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 }
@@ -1309,7 +1309,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 
     return true;
 }
-#ifdef USE_DAP4
+//#ifdef USE_DAP4
 bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 {
 
@@ -1673,7 +1673,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
 }
 
-#endif
+//#endif
 bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
 	BESInfo *info = dynamic_cast<BESInfo *> (response);

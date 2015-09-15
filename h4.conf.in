@@ -49,7 +49,7 @@ HDF4.CacheDir=/tmp
 # HDF4 handler specific parameters: 
 #-----------------------------------------------------------------------#
 # EnableCF: Handle HDF data to follow the CF conventions
-#          (true,yes|false,no, defaults to false)
+#          (true,yes|false,no, defaults to true)
 #
 # If this key's value is false, the handler will behave same as the default 
 # handler. The output will not follow basic CF conventions and most of NASA 
@@ -62,17 +62,17 @@ H4.EnableCF=true
 # I. Introduction of the BES keys for the CF option
 #
 # The CF option is complicated. Furthermore, we add various options via BES keys to
-# ensure different users are able to use different features of the handler.
+# ensure different users to be able to use different features of the handler. 
 #
 # The BES keys are largely divided into three categories:
 # 1. Performance keys
 # 2. Vdata and Vgroup keys
 # 3. Misc. keys
 #
-# For each category, two tables (description and default values(products)) are listed first,
+# For each category, two tables(descrption and default values(products)) are listed first,  
 # then keys are set.
 #
-# More descriptions for some keys can be found after all the tables and the set of all keys.
+# More description for some keys can be found after all the tables and the set of all keys.
 # Keys with more description are marked with * in the tables.
 #
 # II. Performance keys
@@ -111,6 +111,10 @@ H4.EnableCF=true
 #  ----------------------------------------------------------------------
 #  EnableEOSGeoCacheFile       |   false           | HDF-EOS2 Grid
 #  ----------------------------------------------------------------------
+#  EnableDataCacheFile         |   false           | variables read by HDF4 SD interfaces
+#  ----------------------------------------------------------------------
+#  EnableMetaDataCacheFile     |   false           | AIRS v. 6
+#  ----------------------------------------------------------------------
 #  EnableSpecialEOS            |   true            | AIRS v.6, MOD/MYD-M8
 #  ----------------------------------------------------------------------
 #  DisableScaleOffsetComp      |   true            | MODIS that use non-CF scale rules 
@@ -123,8 +127,11 @@ H4.EnableCF=true
 H4.EnablePassFileID=false
 H4.DisableStructMetaAttr=true
 H4.EnableEOSGeoCacheFile=false
-######### Additional keys when EnableEOSGeoCacheFile is set.##################
-#HDF4.Cache.latlon.path must be set if H4.EnableEOSGeoCacheFile is true. 
+H4.EnableDataCacheFile=false
+H4.EnableMetaDataCacheFile=false
+
+######### Additional keys when EnableEOSGeoCacheFile or EnableDataCachefile are set.##################
+#HDF4.Cache.latlon.path must be set if H4.EnableEOSGeoCacheFile or H4.EnableDataCacheFile are true. 
 # Users can change the value, but the path(/tmp/latlon) must exist with the proper permission.
 HDF4.Cache.latlon.path=/tmp/latlon
 
@@ -134,6 +141,12 @@ HDF4.Cache.latlon.prefix=l
 #The size of the cache in megabytes, currently ~20GB cache for lat,lon
 # The size must be >0
 HDF4.Cache.latlon.size=20000 
+
+######### Additional keys when EnableMetaDataCacheFile is set.##################
+# HDF4.Cache.metadata.path must be set if H4.EnableMetaDataCacheFile is true. 
+# Users can change the value, but the path(/tmp/md) must exist with the proper permission.
+
+H4.Cache.metadata.path=/tmp/md
 
 ######### End of the additional cached keys ############################
 
@@ -223,6 +236,26 @@ H4.EnableCheckScaleOffsetType=false
 # the HDF4.Cache.latlon.path key. The latter service that accesses the same lat/lon will fetch
 # the lat/lon values from the binary file.
 
+# KEY = H4.EnableDataCacheFile
+#
+# When this key is set to true, data opened by the HDF4 SDS API will write
+# into a local file in the server under the HDF4.Cache directory. Data will be read in
+# from the cached file since the second time.
+# The cached parameters(path, prefix, size) are the same as
+# the H4.EnableEOSGeoCacheFile. 
+
+# KEY = H4.EnableMetaDataCacheFile
+#
+# When this key is set to true,  
+# DDS and DAS of special products(currently AIRS version 6 only) will be  
+# written to local files of the server under the H4.Cache.metadata.path directory. 
+# DDS and DAS will be read directly from the server since the second time.
+# Note: no total file size under the directory is enforced since
+# DDS and DAS are relatively small and each HDF4 file may only have
+# 2-3 DAS and DDS local files.
+#
+
+#
 # KEY = H4.EnableSpecialEOS 
 #
 # When this key is set to be true, the handler will build DDS and DAS for AIRS version 6 products 
@@ -250,7 +283,7 @@ H4.EnableCheckScaleOffsetType=false
 # KEY = H4.EnableHybridVdata
 # 
 # If this key's value is false, additional Vdata such as "Level 1B Swath 
-# Metadata" in LAADS MYD021KM product will not be processed and visible
+# Metadata" in LAADS MYD021KM product will not be processed and visible 
 # in the DAS/DDS output. Those additional Vdatas are added directly using 
 # HDF4 APIs and HDF-EOS2 APIs cannot access them.
  
