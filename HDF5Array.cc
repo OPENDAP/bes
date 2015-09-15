@@ -1481,11 +1481,11 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
     // If there is just a size, don't make
     // a D4Dimension (In DAP4 you cannot share a dimension unless it has
     // a name). jhrg 3/18/14
-cerr<<"Variable name is "<<this->name() <<endl;
+//cerr<<"Variable name is "<<this->name() <<endl;
 
     for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
         if (false == (*d).name.empty()) {
-cerr<<"dimension name " <<(*d).name <<endl;
+//cerr<<"dimension name " <<(*d).name <<endl;
 
             D4Group *temp_grp   = grp;
             //D4Group *dim_grp    = NULL;
@@ -1510,7 +1510,7 @@ cerr<<"dimension name " <<(*d).name <<endl;
 
             // Not find this dimension in any of the ancestor groups, add it to this group.
             if(d4_dim == NULL) {
-cerr<<"Added to the group "<<grp->name() <<endl;
+//cerr<<"Added to the group "<<grp->name() <<endl;
                 d4_dim = new D4Dimension((*d).name, (*d).size);
 //cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
                 D4Dimensions * dims = grp->dims();
