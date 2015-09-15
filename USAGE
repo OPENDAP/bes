@@ -91,7 +91,7 @@ default, generic, and hdfeos2 for convenience.
  
    %/usr/bin/besctl (re)start
 
-2.2 Build with the HDF-EOS2 library if you plant to support HDF-EOS2 products.
+2.2 Build with the HDF-EOS2 library if you plan to support HDF-EOS2 products.
 
   If you plan to build one instead of using RPMs and to support HDF-EOS2
  products, please consider installing the HDF-EOS2 library first. Then, build 
@@ -125,12 +125,16 @@ key values in a configuration file called "h4.conf".
  If you used RPMs, you can find the h4.conf file in /etc/bes/modules/.
  If you built one, you can find the h4.conf file in {prefix}/etc/bes/modules.
 
-  Please refer to the file h4.conf.in for descriptions of the following keys.
+  As we improve the performance and support more NASA HDF4 and HDF-EOS2 products,
+More BES keys are added to the CF option of the handler. 
+Please refer to the file h4.conf.in for the descriptions and usage of the BES keys,
+especially for NASA data centers that may need to choose different key values for
+their specific usage. 
 The default configuration values are specified after the "=" sign.
 
 3.1 H4.EnableCF=true
 
-  If this key's value is false, the handler will behave same as the default 
+  If this key's value is false, the handler will behave the same as the default 
 handler. The output will not follow basic CF conventions. Object and attribute
 names will not be corrected to follow the CF conventions.  Most NASA 
 products cannot be visualized by visualization tools that follow the CF 
@@ -138,28 +142,27 @@ conventions. Such tools include IDV and Panoply.
 
   The rest of keys below relies on this option. This key must be set to be 
 "true" to ensure other keys to be valid. Thus, this is the most important key 
-to be turned on. Please read h4.conf.in or h4.conf for detailed descriptions.
+to be turned on.
 
 3.2 BES keys removed at this version
+
 none
 
 3.3 BES keys added at this version
 
+H4.EnableDataCacheFile=false (Only apply to data variables read via HDF4 SDS interfaces)
+H4.EnableMetaDataCacheFile=false(Only apply to AIRS version 6 HDF products)
+
+
+3.4 BES keys from the previous versions
+
 H4.EnablePassFileID=false
 H4.DisableStructMetaAttr=true
 H4.EnableEOSGeoCacheFile=false
-( If setting H4.EnableEOSGeoCacheFile, also need to use the following keys:
-  check h4.conf.in for detailed description.
-HDF4.Cache.latlon.path=/tmp/latlon
-HDF4.Cache.latlon.prefix=l
-HDF4.Cache.latlon.size=20000)
-
 H4.DisableECSMetaDataMin=true
 H4.DisableECSMetaDataAll=false
 H4.EnableVgroupAttr=true
 H4.EnableSwathGridAttr=true
-
-3.4 BES keys from the previous versions
 
 H4.EnableSpecialEOS=true
 H4.DisableScaleOffsetComp=true
@@ -171,6 +174,8 @@ H4.EnableCERESMERRAShortName=true
 H4.DisableVdataNameclashingCheck=true
 H4.EnableVdataDescAttr=false
 H4.EnableCheckMODISGeoFile=false
+
+3.5 DO read h4.conf for more detailed description of BES keys.
 
 4. How to easily modify attributes that do not follow the CF conventions 
    using NcML handler

@@ -1,3 +1,10 @@
+
+Version 3.11.7 (15 September 2015)
+
+  Added DDS/DAS cache support for AIRS version 6 products.
+  Added data cache support for variables read by HDF SD interaces.
+  Added 1-D coordinate variables and grid_mapping CF attributes for HDF-EOS2 Sinusoidal projection products.
+
 Version 3.11.6 (15 November 2014)
 
   Added support for geo-location cache for HDF-EOS2 products.
