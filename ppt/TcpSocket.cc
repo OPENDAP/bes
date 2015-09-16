@@ -85,7 +85,7 @@ void TcpSocket::connect()
 	if (_host == "") _host = "localhost";
 
 	struct protoent *pProtoEnt;
-	struct sockaddr_in sin;
+	struct sockaddr_in sin = {};
 	struct hostent *ph;
 	long address;
 	if (isdigit(_host[0])) {

@@ -29,7 +29,7 @@ export PATH=$HOME/deps/bin:$PATH
 # Force the build by un-commenting the following line
 # rm -rf $HOME/deps
 
-if test ! -d "$HOME/deps"
+if test ! -d "$HOME/deps" -o true
 then
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
