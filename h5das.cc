@@ -38,7 +38,6 @@
 #include "hdf5_handler.h"
 #include <BESDebug.h>
 
-
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder paths;
 
@@ -60,7 +59,7 @@ HDF5PathFinder paths;
 void depth_first(hid_t pid, const char *gname, DAS & das)
 {
     /// To keep track of soft links.
-     int slinkindex = 0;
+    int slinkindex = 0;
 
     // Although HDF5 comments are rarely used, we still keep this
     // function.
@@ -69,9 +68,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     H5G_info_t g_info;
     hsize_t nelems;
 
-    if (H5Gget_info(pid,&g_info) <0) {
-       string msg =
-            "h5_das handler: unable to obtain the HDF5 group info. for ";
+    if (H5Gget_info(pid, &g_info) < 0) {
+        string msg = "h5_das handler: unable to obtain the HDF5 group info. for ";
         msg += gname;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
@@ -80,201 +78,198 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     ssize_t oname_size = 0;
     for (hsize_t i = 0; i < nelems; i++) {
 
-	// Query the length of object name.
-	oname_size =
-            H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
-                (size_t)DODS_NAMELEN, H5P_DEFAULT); 
+        // Query the length of object name.
+        oname_size = H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, NULL, (size_t) DODS_NAMELEN,
+            H5P_DEFAULT);
 
-	if (oname_size <= 0) {
-	    string msg = "hdf5 object name error from: ";
-	    msg += gname;
-	    throw InternalErr(__FILE__, __LINE__, msg);
-	}
-	// Obtain the name of the object.
-	vector<char> oname(oname_size + 1);
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
-                (size_t)(oname_size+1), H5P_DEFAULT)<0){
-	    string msg = "hdf5 object name error from: ";
-	    msg += gname;
-	    throw InternalErr(__FILE__, __LINE__, msg);
-	}
+        if (oname_size <= 0) {
+            string msg = "hdf5 object name error from: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        // Obtain the name of the object.
+        vector<char> oname(oname_size + 1);
+        if (H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oname[0], (size_t) (oname_size + 1),
+            H5P_DEFAULT) < 0) {
+            string msg = "hdf5 object name error from: ";
+            msg += gname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(pid, &oname[0], &linfo, H5P_DEFAULT) < 0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         // This is the soft link.
-        if (linfo.type == H5L_TYPE_SOFT){ 
+        if (linfo.type == H5L_TYPE_SOFT) {
             slinkindex++;
             size_t val_size = linfo.u.val_size;
-            get_softlink(das, pid, gname,&oname[0], slinkindex,val_size);
+            get_softlink(das, pid, gname, &oname[0], slinkindex, val_size);
             continue;
         }
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
+        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
         H5O_type_t obj_type = oinfo.type;
 
-	switch (obj_type) {
+        switch (obj_type) {
 
-	case H5O_TYPE_GROUP: {
+        case H5O_TYPE_GROUP: {
 
-	    BESDEBUG("h5", "=depth_first():H5G_GROUP " << &oname[0] << endl);
+            BESDEBUG("h5", "=depth_first():H5G_GROUP " << &oname[0] << endl);
 
             // This function will store the HDF5 group hierarchy into an DAP attribute. 
-	    add_group_structure_info(das, gname, &oname[0], true);
+            add_group_structure_info(das, gname, &oname[0], true);
 
-	    string full_path_name = string(gname) + string(&oname[0]) + "/";
+            string full_path_name = string(gname) + string(&oname[0]) + "/";
 
-	    hid_t cgroup = H5Gopen(pid, full_path_name.c_str(),H5P_DEFAULT);
-	    if (cgroup < 0) {
-		string msg = "opening hdf5 group failed for ";
-		msg += full_path_name;
-		throw InternalErr(__FILE__, __LINE__, msg);
-	    }
+            hid_t cgroup = H5Gopen(pid, full_path_name.c_str(), H5P_DEFAULT);
+            if (cgroup < 0) {
+                string msg = "opening hdf5 group failed for ";
+                msg += full_path_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             // Get the object info
             H5O_info_t obj_info;
-            if (H5Oget_info(cgroup, &obj_info) <0) { 
+            if (H5Oget_info(cgroup, &obj_info) < 0) {
                 H5Gclose(cgroup);
-		string msg = "Obtaining the hdf5 group info. failed for ";
-		msg += full_path_name;
-		throw InternalErr(__FILE__, __LINE__, msg);
-            }   
+                string msg = "Obtaining the hdf5 group info. failed for ";
+                msg += full_path_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             // Obtain the number of attributes
             int num_attr = obj_info.num_attrs;
-            if (num_attr < 0 ) {
-               H5Gclose(cgroup);
-               string msg = "Fail to get the number of attributes for group ";
-               msg += full_path_name;
-               throw InternalErr(__FILE__, __LINE__,msg);
+            if (num_attr < 0) {
+                H5Gclose(cgroup);
+                string msg = "Fail to get the number of attributes for group ";
+                msg += full_path_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
 
             // Read all attributes in this group and map to DAS.
             try {
-	        read_objects(das, full_path_name.c_str(), cgroup, num_attr);
+                read_objects(das, full_path_name.c_str(), cgroup, num_attr);
             }
-            catch(...) {
+            catch (...) {
                 H5Gclose(cgroup);
                 throw;
             }
 
             // Check if this group has been visited by using the hardlink
-	    string oid = get_hardlink(cgroup, full_path_name.c_str());
+            string oid = get_hardlink(cgroup, full_path_name.c_str());
 
-	    // Break the cyclic loop created by hard links.
-	    if (oid.empty()) {// The group has never been visited, go to the next level.
-		depth_first(cgroup, full_path_name.c_str(), das);
-	    }
-	    else {
+            // Break the cyclic loop created by hard links.
+            if (oid.empty()) {    // The group has never been visited, go to the next level.
+                depth_first(cgroup, full_path_name.c_str(), das);
+            }
+            else {
 
-		// This group has been visited.  
+                // This group has been visited.
                 // Add the attribute table with the attribute name as HDF5_HARDLINK.
                 // The attribute value is the name of the group when it is first visited.
-		AttrTable *at = das.get_table(full_path_name);
-                if(!at){
-		  at = das.add_table(full_path_name, new AttrTable);
+                AttrTable *at = das.get_table(full_path_name);
+                if (!at) {
+                    at = das.add_table(full_path_name, new AttrTable);
                 }
 
                 // Note that "paths" is a global object to find the visited path. 
                 // It is defined at the beginning of this source code file.
-		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
-	    }
+                at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
+            }
 
-	    if (H5Gclose(cgroup) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "H5Gclose() failed.");
-	    }
-	    break;
-	} // case H5G_GROUP
+            if (H5Gclose(cgroup) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "H5Gclose() failed.");
+            }
+            break;
+        } // case H5G_GROUP
 
-	case H5O_TYPE_DATASET: {
+        case H5O_TYPE_DATASET: {
 
-	    BESDEBUG("h5", "=depth_first():H5G_DATASET " << &oname[0] <<
-		    endl);
+            BESDEBUG("h5", "=depth_first():H5G_DATASET " << &oname[0] << endl);
 
             // This function will store the HDF5 group hierarchy into an DAP attribute.
-	    add_group_structure_info(das, gname, &oname[0], false);
+            add_group_structure_info(das, gname, &oname[0], false);
 
-	    string full_path_name = string(gname) + string(&oname[0]);
-	    hid_t dset = -1;
+            string full_path_name = string(gname) + string(&oname[0]);
+            hid_t dset = -1;
 
-	    // Open the dataset
-	    if ((dset = H5Dopen(pid, full_path_name.c_str(),H5P_DEFAULT)) < 0) {
-		string msg = "unable to open the hdf5 dataset of the group ";
-		msg += gname;
-		throw InternalErr(__FILE__, __LINE__, msg);
-	    }
+            // Open the dataset
+            if ((dset = H5Dopen(pid, full_path_name.c_str(), H5P_DEFAULT)) < 0) {
+                string msg = "unable to open the hdf5 dataset of the group ";
+                msg += gname;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             // Get the object info
             H5O_info_t obj_info;
-            if (H5Oget_info(dset, &obj_info) <0) { 
+            if (H5Oget_info(dset, &obj_info) < 0) {
                 H5Dclose(dset);
-		string msg = "Obtaining the info. failed for the dataset ";
-		msg += full_path_name;
-		throw InternalErr(__FILE__, __LINE__, msg);
-            }   
+                string msg = "Obtaining the info. failed for the dataset ";
+                msg += full_path_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             // Obtain the number of attributes
             int num_attr = obj_info.num_attrs;
-            if (num_attr < 0 ) {
-               H5Dclose(dset);
-               string msg = "Fail to get the number of attributes for dataset ";
-               msg += full_path_name;
-               throw InternalErr(__FILE__, __LINE__,msg);
+            if (num_attr < 0) {
+                H5Dclose(dset);
+                string msg = "Fail to get the number of attributes for dataset ";
+                msg += full_path_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
 
             // Read all attributes in this dataset and map to DAS.
             try {
-	        read_objects(das, full_path_name, dset, num_attr);
+                read_objects(das, full_path_name, dset, num_attr);
             }
-            catch(...) {
+            catch (...) {
                 H5Dclose(dset);
                 throw;
             }
 
-	    string oid = get_hardlink(dset, full_path_name);
+            string oid = get_hardlink(dset, full_path_name);
 
-	    // Break the cyclic loop created by hard links
+            // Break the cyclic loop created by hard links
 
             // If this HDF5 dataset has been visited, 
             // Add the DAS table with the attribute name as HDF5_HARDLINK.
             // The attribute value is the name of the HDF5 dataset when it is first visited.
-	    if (!oid.empty()) {
-		// Add attribute table with HARDLINK
+            if (!oid.empty()) {
+                // Add attribute table with HARDLINK
                 AttrTable *at = das.get_table(full_path_name);
-                if(!at) {
-		  at = das.add_table(full_path_name, new AttrTable);
+                if (!at) {
+                    at = das.add_table(full_path_name, new AttrTable);
                 }
 
                 // Note that "paths" is a global object to find the visited path. 
                 // It is defined at the beginning of this source code file.
-		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
-	    }
+                at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
+            }
 
-	    if (H5Dclose(dset) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
-	    }
-	    break;
-	} // case H5G_DATASET
+            if (H5Dclose(dset) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
+            }
+            break;
+        } // case H5G_DATASET
 
-	case H5O_TYPE_NAMED_DATATYPE:
+        case H5O_TYPE_NAMED_DATATYPE:
             // ignore the named datatype
-	    break;
+            break;
 
-	default:
-	    break;
-	}
+        default:
+            break;
+        }
     } //  for (int i = 0; i < nelems; i++)
 
     BESDEBUG("h5", "<depth_first():" << gname << endl);
@@ -306,7 +301,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
         long *tlp;
         float *tfp;
         double *tdp;
-    } gp;
+    }gp;
 
     vector<char> rep;
 
@@ -318,7 +313,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             // floating point number.
             //rep = new char[32];
             //memset(rep, 0, 32);
-             rep.resize(32);
+            rep.resize(32);
 
             if (H5Tequal(type, H5T_STD_U8BE) || H5Tequal(type, H5T_STD_U8LE)
                 || H5Tequal(type, H5T_NATIVE_UCHAR)) {
@@ -331,32 +326,32 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             }
 
             else if (H5Tequal(type, H5T_STD_U16BE)
-                     || H5Tequal(type, H5T_STD_U16LE)
-                     || H5Tequal(type, H5T_NATIVE_USHORT)) {
+                || H5Tequal(type, H5T_STD_U16LE)
+                || H5Tequal(type, H5T_NATIVE_USHORT)) {
                 gp.tusp = (unsigned short *) sm_buf;
                 snprintf(&rep[0], 32, "%hu", *(gp.tusp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_U32BE)
-                     || H5Tequal(type, H5T_STD_U32LE)
-                     || H5Tequal(type, H5T_NATIVE_UINT)) {
+                || H5Tequal(type, H5T_STD_U32LE)
+                || H5Tequal(type, H5T_NATIVE_UINT)) {
 
                 gp.tip = (int *) sm_buf;
                 snprintf(&rep[0], 32, "%u", *(gp.tip + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_U64BE)
-                     || H5Tequal(type, H5T_STD_U64LE)
-                     || H5Tequal(type, H5T_NATIVE_ULONG)
-                     || H5Tequal(type, H5T_NATIVE_ULLONG)) {
+                || H5Tequal(type, H5T_STD_U64LE)
+                || H5Tequal(type, H5T_NATIVE_ULONG)
+                || H5Tequal(type, H5T_NATIVE_ULLONG)) {
 
                 gp.tlp = (long *) sm_buf;
                 snprintf(&rep[0], 32, "%lu", *(gp.tlp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I8BE)
-                     || H5Tequal(type, H5T_STD_I8LE)
-                     || H5Tequal(type, H5T_NATIVE_CHAR)) {
+                || H5Tequal(type, H5T_STD_I8LE)
+                || H5Tequal(type, H5T_NATIVE_CHAR)) {
 
                 gp.tcp = (char *) sm_buf;
                 // Display byte in numerical form. This is for Aura file.
@@ -370,25 +365,25 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             }
 
             else if (H5Tequal(type, H5T_STD_I16BE)
-                     || H5Tequal(type, H5T_STD_I16LE)
-                     || H5Tequal(type, H5T_NATIVE_SHORT)) {
+                || H5Tequal(type, H5T_STD_I16LE)
+                || H5Tequal(type, H5T_NATIVE_SHORT)) {
 
                 gp.tsp = (short *) sm_buf;
                 snprintf(&rep[0], 32, "%hd", *(gp.tsp + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I32BE)
-                     || H5Tequal(type, H5T_STD_I32LE)
-                     || H5Tequal(type, H5T_NATIVE_INT)) {
+                || H5Tequal(type, H5T_STD_I32LE)
+                || H5Tequal(type, H5T_NATIVE_INT)) {
 
                 gp.tip = (int *) sm_buf;
                 snprintf(&rep[0], 32, "%d", *(gp.tip + loc));
             }
 
             else if (H5Tequal(type, H5T_STD_I64BE)
-                     || H5Tequal(type, H5T_STD_I64LE)
-                     || H5Tequal(type, H5T_NATIVE_LONG)
-                     || H5Tequal(type, H5T_NATIVE_LLONG)) {
+                || H5Tequal(type, H5T_STD_I64LE)
+                || H5Tequal(type, H5T_NATIVE_LONG)
+                || H5Tequal(type, H5T_NATIVE_LLONG)) {
 
                 gp.tlp = (long *) sm_buf;
                 snprintf(&rep[0], 32, "%ld", *(gp.tlp + loc));
@@ -402,7 +397,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             char gps[30];
 
             if (H5Tget_size(type) == 4) {
-                
+
                 // Represent the float number.
                 // Some space may be wasted. But it is okay.
                 gp.tfp = (float *) sm_buf;
@@ -411,34 +406,34 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
                 // Add the dot to assure this is a floating number
                 if (!strchr(gps, '.') && !strchr(gps, 'e'))
-                    gps[ll++] = '.';
+                gps[ll++] = '.';
 
                 gps[ll] = '\0';
                 snprintf(&rep[0], 32, "%s", gps);
-            } 
+            }
             else if (H5Tget_size(type) == 8) {
 
                 gp.tdp = (double *) sm_buf;
                 snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
                 int ll = strlen(gps);
                 if (!strchr(gps, '.') && !strchr(gps, 'e'))
-                    gps[ll++] = '.';
+                gps[ll++] = '.';
                 gps[ll] = '\0';
                 snprintf(&rep[0], 32, "%s", gps);
-            } 
-            else if (H5Tget_size(type) == 0){
-		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
-	    }
+            }
+            else if (H5Tget_size(type) == 0) {
+                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+            }
             break;
         }
 
         case H5T_STRING: {
             int str_size = H5Tget_size(type);
-            if(H5Tis_variable_str(type) == true) 
-                //    "h5","variable length string "<<endl;
-	    if (str_size == 0){
-		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
-	    }
+            if(H5Tis_variable_str(type) == true)
+            //    "h5","variable length string "<<endl;
+            if (str_size == 0) {
+                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+            }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
             char *buf = NULL;
@@ -461,14 +456,13 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
         }
 
         default:
-	    break;
+        break;
     } // switch(H5Tget_class(type))
 
     string rep_str(rep.begin(),rep.end());
     return rep_str;
 }
 #endif
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // \fn read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
@@ -486,8 +480,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 {
 
-    BESDEBUG("h5", ">read_objects():"
-	    << "varname=" << varname << " id=" << oid << endl);
+    BESDEBUG("h5", ">read_objects():" << "varname=" << varname << " id=" << oid << endl);
 
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
@@ -496,9 +489,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // If not finding the table, add a table of which the name is the variable name.
     AttrTable *attr_table_ptr = das.get_table(varname);
     if (!attr_table_ptr) {
-	BESDEBUG("h5", "=read_objects(): adding a table with name " << varname
-		<< endl);
-	attr_table_ptr = das.add_table(varname, new AttrTable);
+        BESDEBUG("h5", "=read_objects(): adding a table with name " << varname << endl);
+        attr_table_ptr = das.add_table(varname, new AttrTable);
     }
 
     // Add a DAP attribute that stores the HDF5 absolute path 
@@ -508,152 +500,147 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // put HDF5 attribute information into the DAS table.
     //char *print_rep = NULL;
     string print_rep;
-    vector<char>temp_buf;
+    vector<char> temp_buf;
 
     bool ignore_attr = false;
     hid_t attr_id = -1;
     for (int j = 0; j < num_attr; j++) {
 
-	// Obtain attribute information.
-	DSattr_t attr_inst;
+        // Obtain attribute information.
+        DSattr_t attr_inst;
 
         // Ignore the attributes of which the HDF5 datatype 
         // cannot be mapped to DAP2. The ignored attribute datatypes can be found 
         // at function get_attr_info in h5get.cc.
-	attr_id = get_attr_info(oid, j, false,&attr_inst, &ignore_attr);
-	if (true == ignore_attr) { 
+        attr_id = get_attr_info(oid, j, false, &attr_inst, &ignore_attr);
+        if (true == ignore_attr) {
             H5Aclose(attr_id);
             continue;
         }
 
-	// Since HDF5 attribute may be in string datatype, it must be dealt
-	// properly. Get data type.
-	hid_t ty_id = attr_inst.type;
-	string dap_type = get_dap_type(ty_id,false);
-	string attr_name = attr_inst.name;
-
+        // Since HDF5 attribute may be in string datatype, it must be dealt
+        // properly. Get data type.
+        hid_t ty_id = attr_inst.type;
+        string dap_type = get_dap_type(ty_id, false);
+        string attr_name = attr_inst.name;
 
         // We have to handle variable length string differently. 
-        if (H5Tis_variable_str(ty_id)) { 
+        if (H5Tis_variable_str(ty_id)) {
 
-            BESDEBUG("h5","attribute name " << attr_name <<endl);
-            BESDEBUG("h5","attribute size " <<attr_inst.need <<endl);
-            BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl); 
+            BESDEBUG("h5", "attribute name " << attr_name <<endl);
+            BESDEBUG("h5", "attribute size " <<attr_inst.need <<endl);
+            BESDEBUG("h5", "attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl);
 
             hid_t temp_space_id = H5Aget_space(attr_id);
-            BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
-            if(temp_space_id <0) {
+            BESDEBUG("h5",
+                "attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
+            if (temp_space_id < 0) {
                 H5Tclose(ty_id);
                 H5Aclose(attr_id);
-	       	throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
 
             }
 
             // Variable length string attribute values only store pointers of the actual string value.
-            temp_buf.resize((size_t)attr_inst.need);
-                
-	    if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
+            temp_buf.resize((size_t) attr_inst.need);
+
+            if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
                 H5Sclose(temp_space_id);
                 H5Tclose(ty_id);
                 H5Aclose(attr_id);
-	       	    throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
 
             char *temp_bp;
             temp_bp = &temp_buf[0];
             char* onestring;
-            for (unsigned int temp_i = 0; temp_i <attr_inst.nelmts; temp_i++) {
+            for (unsigned int temp_i = 0; temp_i < attr_inst.nelmts; temp_i++) {
 
                 // This line will assure that we get the real variable length string value.
-                onestring =*(char **)temp_bp;
+                onestring = *(char **) temp_bp;
 
                 // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-                if (onestring !=NULL) {
+                if (onestring != NULL) {
                     string tempstring(onestring);
                     attr_table_ptr->append_attr(attr_name, dap_type, tempstring);
                 }
 
                 // going to the next value.
-                temp_bp +=H5Tget_size(attr_inst.type);
+                temp_bp += H5Tget_size(attr_inst.type);
             }
             if (temp_buf.empty() != true) {
                 // Reclaim any VL memory if necessary.
-                H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+                H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
                 temp_buf.clear();
             }
             H5Sclose(temp_space_id);
         }
         else {
-
             vector<char> value;
             value.resize(attr_inst.need + sizeof(char));
-	    BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
-  
-	    // Read HDF5 attribute data.
-	    if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
-	        // value is deleted in the catch block below so
-		// shouldn't be deleted here. pwest Mar 18, 2009
-		throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-	    }
+            BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
 
-	    // For scalar data, just read data once.
-	    if (attr_inst.ndims == 0) {
-		for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-		    print_rep = print_attr(ty_id, loc, &value[0]);
-		    if (print_rep.c_str() != NULL) {
-			attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+            // Read HDF5 attribute data.
+            if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
+                // value is deleted in the catch block below so
+                // shouldn't be deleted here. pwest Mar 18, 2009
+                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+            }
+
+            // For scalar data, just read data once.
+            if (attr_inst.ndims == 0) {
+                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
+                    print_rep = print_attr(ty_id, loc, &value[0]);
+                    if (print_rep.c_str() != NULL) {
+                        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
                     }
-		}
+                }
 
-	    }
-	    else {
-	    	// If the hdf5 data type is HDF5 string or number of dimension is >  0;
-		// handle this differently.
-		BESDEBUG("h5", "=read_objects(): ndims=" << (int) attr_inst.
-			ndims << endl);
+            }
+            else {
+                // If the hdf5 data type is HDF5 string or number of dimension is >  0;
+                // handle this differently.
+                BESDEBUG("h5", "=read_objects(): ndims=" << (int) attr_inst. ndims << endl);
 
                 // Get the attribute datatype size
-		int elesize = (int) H5Tget_size(ty_id);
-		if (elesize == 0) {
-		    BESDEBUG("h5", "=read_objects(): elesize=0" << endl);
+                int elesize = (int) H5Tget_size(ty_id);
+                if (elesize == 0) {
+                    BESDEBUG("h5", "=read_objects(): elesize=0" << endl);
                     H5Tclose(ty_id);
-		    H5Aclose(attr_id); 
-		    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
-		}
+                    H5Aclose(attr_id);
+                    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+                }
 
                 // Due to the implementation of print_attr, the attribute value will be 
                 // written one by one.
-		char *tempvalue = &value[0];
+                char *tempvalue = &value[0];
 
                 // Write this value. the "loc" can always be set to 0 since
                 // tempvalue will be moved to the next value.
-                for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
-		    print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-	            if (print_rep.c_str() != NULL) {
-		        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
-			tempvalue = tempvalue + elesize;
+                for (hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index++) {
+                    print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
+                    if (print_rep.c_str() != NULL) {
+                        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+                        tempvalue = tempvalue + elesize;
 
-			BESDEBUG("h5",
-				 "tempvalue=" << tempvalue
-				 << "elesize=" << elesize
-				 << endl);
+                        BESDEBUG("h5", "tempvalue=" << tempvalue << "elesize=" << elesize << endl);
 
-	            }
-	            else {
+                    }
+                    else {
                         H5Tclose(ty_id);
                         H5Aclose(attr_id);
                         throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
-		    }
+                    }
                 }
-	    } // if attr_inst.ndims != 0
+            } // if attr_inst.ndims != 0
         }
-        if(H5Tclose(ty_id) < 0) {
+        if (H5Tclose(ty_id) < 0) {
             H5Aclose(attr_id);
             throw InternalErr(__FILE__, __LINE__, "unable to close HDF5 type id");
         }
-	if (H5Aclose(attr_id) < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
-	}
+        if (H5Aclose(attr_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
+        }
     } // for (int j = 0; j < num_attr; j++)
     BESDEBUG("h5", "<read_objects()" << endl);
 }
@@ -673,67 +660,63 @@ void find_gloattr(hid_t file, DAS & das)
 {
     BESDEBUG("h5", ">find_gloattr()" << endl);
 
-    hid_t root = H5Gopen(file, "/",H5P_DEFAULT);
+    hid_t root = H5Gopen(file, "/", H5P_DEFAULT);
     try {
-	if (root < 0)
-	    throw InternalErr(__FILE__, __LINE__,
-			      "unable to open the HDF5 root group");
-        
+        if (root < 0) throw InternalErr(__FILE__, __LINE__, "unable to open the HDF5 root group");
+
         // In the default option of the HDF5 handler, the 
         // HDF5 file structure(group hierarchy) will be mapped to 
         // a DAP attribute HDF5_ROOT_GROUP. In a sense, this created
         // attribute can be treated as an HDF5 attribute under the root group,
         // so to say, a global attribute. 
-	das.add_table("HDF5_ROOT_GROUP", new AttrTable);
+        das.add_table("HDF5_ROOT_GROUP", new AttrTable);
 
         // Since the root group is the first HDF5 object to visit(in HDF5RequestHandler.cc, find_gloattr() 
         // is before the depth_first()), it will always be not visited. However, to find the cyclic groups 
         // to root, we still need to add the object name to the global variable name list "paths" defined at
         // the beginning of the h5das.cc file.
-	get_hardlink(root, "/");    
+        get_hardlink(root, "/");
 
         // Obtain the number of "real" attributes of the root group.
-	int num_attrs;
+        int num_attrs;
         H5O_info_t obj_info;
-        if (H5Oget_info(root, &obj_info) <0) {
+        if (H5Oget_info(root, &obj_info) < 0) {
             H5Gclose(root);
             string msg = "Obtaining the info. failed for the root group ";
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-        
+
         // Obtain the number of attributes
         num_attrs = obj_info.num_attrs;
-	if (num_attrs < 0) {
+        if (num_attrs < 0) {
             H5Gclose(root);
-	    throw InternalErr(__FILE__, __LINE__,
-			      "unable to get the number of attributes for the HDF root group ");
+            throw InternalErr(__FILE__, __LINE__, "unable to get the number of attributes for the HDF root group ");
 
         }
-	if (num_attrs == 0) {
-	    if(H5Gclose(root) < 0){
-		throw InternalErr(__FILE__, __LINE__,
-                                  "Could not close the group.");
-	    }
-	    BESDEBUG("h5", "<find_gloattr():no attributes" << endl);
-	    return;
-	}
+        if (num_attrs == 0) {
+            if (H5Gclose(root) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+            }
+            BESDEBUG("h5", "<find_gloattr():no attributes" << endl);
+            return;
+        }
 
         // Map the HDF5 root attributes to DAP and save it in a DAS table "H5_GLOBAL". 
         // In theory, we can just "/" as the table name. To help clients better understand,
         // we use "H5_GLOBAL" which is a more meaningful name.
         read_objects(das, "H5_GLOBAL", root, num_attrs);
 
-	BESDEBUG("h5", "=find_gloattr(): H5Gclose()" << endl);
-	if(H5Gclose(root) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-	}
-	BESDEBUG("h5", "<find_gloattr()" << endl);
+        BESDEBUG("h5", "=find_gloattr(): H5Gclose()" << endl);
+        if (H5Gclose(root) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+        }
+        BESDEBUG("h5", "<find_gloattr()" << endl);
     }
     catch (...) {
-	if(H5Gclose(root) < 0){	
-	   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-	}
-	throw;
+        if (H5Gclose(root) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+        }
+        throw;
     }
 }
 
@@ -765,36 +748,33 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     BESDEBUG("h5", "=get_softlink():" << temp_varname << endl);
     AttrTable *attr_table_ptr = das.get_table(gname);
-    if (!attr_table_ptr)
-	attr_table_ptr = das.add_table(gname, new AttrTable);
+    if (!attr_table_ptr) attr_table_ptr = das.add_table(gname, new AttrTable);
 
     AttrTable *attr_softlink_ptr;
     attr_softlink_ptr = attr_table_ptr->append_container(temp_varname);
 
     string softlink_name = "linkname";
-    attr_softlink_ptr->append_attr(softlink_name,STRING,oname);
-    string softlink_value_name ="LINKTARGET";
-   
+    attr_softlink_ptr->append_attr(softlink_name, STRING, oname);
+    string softlink_value_name = "LINKTARGET";
 
     // Get the link target information. We always return the link value in a string format.
 
     char *buf = 0;
     try {
-    	// TODO replace buf with vector<char> buf(val_size + 1);
-    	// then access as a char * using &buf[0]
-	buf = new char[(val_size + 1) * sizeof(char)];
-	// get link target name
-	if (H5Lget_val(pgroup, oname.c_str(), (void*) buf,val_size + 1, H5P_DEFAULT)
-	    < 0) {
+        // TODO replace buf with vector<char> buf(val_size + 1);
+        // then access as a char * using &buf[0]
+        buf = new char[(val_size + 1) * sizeof(char)];
+        // get link target name
+        if (H5Lget_val(pgroup, oname.c_str(), (void*) buf, val_size + 1, H5P_DEFAULT) < 0) {
             delete[] buf;
-	    throw InternalErr(__FILE__, __LINE__, "unable to get link value");
-	}
+            throw InternalErr(__FILE__, __LINE__, "unable to get link value");
+        }
         attr_softlink_ptr->append_attr(softlink_value_name, STRING, buf);
-        delete[]buf;
+        delete[] buf;
     }
     catch (...) {
-	delete[] buf;
-	throw;
+        delete[] buf;
+        throw;
     }
 }
 
@@ -811,13 +791,14 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 ///          to the DAP interface.
 /// \warning This is only a test, not supported in current version.
 ///////////////////////////////////////////////////////////////////////////////
-string get_hardlink(hid_t pgroup, const string & oname) {
-    
+string get_hardlink(hid_t pgroup, const string & oname)
+{
+
     BESDEBUG("h5", ">get_hardlink():" << oname << endl);
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5Oget_info(pgroup, &obj_info) <0) { 
+    if (H5Oget_info(pgroup, &obj_info) < 0) {
         throw InternalErr(__FILE__, __LINE__, "H5Oget_info() failed.");
     }
 
@@ -825,7 +806,7 @@ string get_hardlink(hid_t pgroup, const string & oname) {
     // hard links are found. return the original object name this
     // hard link points to. 
 
-    if (obj_info.rc >1) {
+    if (obj_info.rc > 1) {
 
         ostringstream oss;
         oss << hex << obj_info.addr;
@@ -860,24 +841,21 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 
     // Obtain the comment size
     int comment_size;
-    comment_size=(int)(H5Oget_comment(oid,NULL,0));
-    if (comment_size <0) {
-       throw InternalErr(__FILE__, __LINE__,
-                          "Could not retrieve the comment size.");
+    comment_size = (int) (H5Oget_comment(oid, NULL, 0));
+    if (comment_size < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment size.");
     }
 
     if (comment_size > 0) {
         vector<char> comment;
-        comment.resize(comment_size+1);
-        if (H5Oget_comment(oid,&comment[0],comment_size+1)<0) {
-	    throw InternalErr(__FILE__, __LINE__,
-                          "Could not retrieve the comment.");
+        comment.resize(comment_size + 1);
+        if (H5Oget_comment(oid, &comment[0], comment_size + 1) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment.");
         }
 
         // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);
-        if (!at)
-            at = das.add_table(varname, new AttrTable);
+        if (!at) at = das.add_table(varname, new AttrTable);
         at->append_attr("HDF5_COMMENT", STRING, &comment[0]);
 
         //delete[] comment;
@@ -903,20 +881,17 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 /// \param is_group indicates whether it's a dataset or group
 /// \return nothing
 ///////////////////////////////////////////////////////////////////////////////
-void add_group_structure_info(DAS & das, const char *gname, char *oname,
-                              bool is_group)
+void add_group_structure_info(DAS & das, const char *gname, char *oname, bool is_group)
 {
-
 
     string h5_spec_char("/");
     string dap_notion(".");
     string::size_type pos = 1;
 
-    if(gname == NULL){
-        throw InternalErr(__FILE__, __LINE__,
-                          "The wrong HDF5 group name.");
+    if (gname == NULL) {
+        throw InternalErr(__FILE__, __LINE__, "The wrong HDF5 group name.");
     }
-    
+
     string full_path = string(gname);
 
     // Change the HDF5 special character '/' with DAP notion '.' 
@@ -942,12 +917,10 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     BESDEBUG("h5", full_path << endl);
     // TODO: Not sure if we need to create a table for each group. KY 2015-07-08
     AttrTable *at = das.get_table(full_path);
-    if(at == NULL){
+    if (at == NULL) {
         throw InternalErr(__FILE__, __LINE__,
-                           "Failed to add group structure information for "
-                          + full_path
-                          + " attribute table."
-                          + "This happens when a group name has . character.");
+            "Failed to add group structure information for " + full_path + " attribute table."
+                + "This happens when a group name has . character.");
     }
 
     // group will be mapped to a container
@@ -958,6 +931,4 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
         at->append_attr("Dataset", "String", oname);
     }
 }
-
-
 
