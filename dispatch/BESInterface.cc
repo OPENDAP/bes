@@ -122,14 +122,15 @@ BESInterface::execute_request( const string &from )
 {
 
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESISDEBUG( TIMING_LOG )){
 		sw.start("BESInterface::execute_request",_dhi->data[REQUEST_ID]);
 
-	bes_timing::elapsedTimeToReadStart = new BESStopWatch();
-	bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START",_dhi->data[REQUEST_ID]);
+		bes_timing::elapsedTimeToReadStart = new BESStopWatch();
+		bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START",_dhi->data[REQUEST_ID]);
 
-	bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
-	bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START",_dhi->data[REQUEST_ID]);
+		bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
+		bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START",_dhi->data[REQUEST_ID]);
+	}
 
 	if( !_dhi )
 	{

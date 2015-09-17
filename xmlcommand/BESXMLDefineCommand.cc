@@ -173,6 +173,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
 	_str_cmd += ";";
 
+	BESDEBUG( "xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << _str_cmd << endl );
+
 	// now that we've set the action, go get the response handler for the
 	// action
 	BESXMLCommand::set_response();
@@ -362,7 +364,7 @@ void BESXMLDefineCommand::prep_request()
 		string attrs = _attributes[(*i)];
 		c->set_attributes(attrs);
 		_dhi.containers.push_back(c);
-		BESDEBUG( "xml", "define using container: " << endl << *c << endl );
+		BESDEBUG( "xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl );
 		}
 	}
 

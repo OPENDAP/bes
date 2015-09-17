@@ -43,8 +43,8 @@ using std::endl ;
 #include "BESDebug.h"
 
 namespace bes_timing {
-BESStopWatch *elapsedTimeToReadStart;
-BESStopWatch *elapsedTimeToTransmitStart;
+BESStopWatch *elapsedTimeToReadStart=0;
+BESStopWatch *elapsedTimeToTransmitStart=0;
 }
 
 /**
