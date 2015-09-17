@@ -122,14 +122,20 @@ int BESInterface::execute_request(const string &from)
     }
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::execute_request", _dhi->data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) {
+        sw.start("BESInterface::execute_request", _dhi->data[REQUEST_ID]);
 
-    bes_timing::elapsedTimeToReadStart = new BESStopWatch();
-    bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START", _dhi->data[REQUEST_ID]);
+        bes_timing::elapsedTimeToReadStart = new BESStopWatch();
+        bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START", _dhi->data[REQUEST_ID]);
 
-    bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
-    bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START", _dhi->data[REQUEST_ID]);
+        bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
+        bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START", _dhi->data[REQUEST_ID]);
+    }
 
+    if (!_dhi) {
+        string err = "DataHandlerInterface can not be null";
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
     _dhi->set_output_stream(_strm);
     _dhi->data[REQUEST_FROM] = from;
 
@@ -153,12 +159,13 @@ int BESInterface::execute_request(const string &from)
         validate_data_request();
         build_data_request_plan();
         execute_data_request_plan();
-        /* These two functions are now being called inside
-         * execute_data_request_plan as they are really a part of executing
-         * the request and not separate.
-         invoke_aggregation();
-         transmit_data();
-         */
+#if 0
+        // These two functions are now being called inside
+        // execute_data_request_plan as they are really a part of executing
+        // the request and not separate.
+        invoke_aggregation();
+        transmit_data();
+#endif
         _dhi->executed = true;
     }
     catch (BESError & ex) {
@@ -283,7 +290,7 @@ void BESInterface::initialize()
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::initialize", _dhi->data[REQUEST_ID]);
 
-    BESDEBUG("bes", "Initializing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl );
+    BESDEBUG("bes", "Initializing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
     bool do_continue = true;
     init_iter i = _init_list.begin();
 
@@ -294,17 +301,16 @@ void BESInterface::initialize()
 
     if (!do_continue) {
         BESDEBUG("bes", "FAILED" << endl);
-            string se = "Initialization callback failed, exiting";
-            throw BESInternalError( se, __FILE__, __LINE__ );
-        }
-        else
-        {
-            BESDEBUG("bes", "OK" << endl);
-        }
+        string se = "Initialization callback failed, exiting";
+        throw BESInternalError(se, __FILE__, __LINE__);
     }
+    else {
+        BESDEBUG("bes", "OK" << endl);
+    }
+}
 
-    /** @brief Validate the incoming request information
-     */
+/** @brief Validate the incoming request information
+ */
 void BESInterface::validate_data_request()
 {
     //BESStopWatch sw;
@@ -333,20 +339,19 @@ void BESInterface::execute_data_request_plan()
         sw.start("BESInterface::execute_data_request_plan(\"" + _dhi->data[DATA_REQUEST] + "\")",
             _dhi->data[REQUEST_ID]);
 
-    BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl );
+    BESDEBUG("bes", "Executing request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
     BESResponseHandler *rh = _dhi->response_handler;
     if (rh) {
         rh->execute(*_dhi);
     }
     else {
         BESDEBUG("bes", "FAILED" << endl);
-            string se = "The response handler \"" + _dhi->action
-            + "\" does not exist";
-            throw BESInternalError( se, __FILE__, __LINE__ );
-        }
+        string se = "The response handler \"" + _dhi->action + "\" does not exist";
+        throw BESInternalError(se, __FILE__, __LINE__);
+    }
     BESDEBUG("bes", "OK" << endl);
 
-        // Now we need to do the post processing piece of executing the request
+    // Now we need to do the post processing piece of executing the request
     invoke_aggregation();
 
     // And finally, transmit the response of this request
@@ -361,37 +366,33 @@ void BESInterface::invoke_aggregation()
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::invoke_aggregation", _dhi->data[REQUEST_ID]);
 
     if (_dhi->data[AGG_CMD] != "") {
-        BESDEBUG("bes", "aggregating with: " << _dhi->data[AGG_CMD] << " ...  "<< endl );
-            BESAggregationServer *agg =
-            BESAggFactory::TheFactory()->find_handler( _dhi->data[AGG_HANDLER] );
-            if( agg )
-            {
-                agg->aggregate( *_dhi );
-            }
-            else
-            {
-                BESDEBUG("bes", "FAILED" << endl);
-                string se = "The aggregation handler " + _dhi->data[AGG_HANDLER]
-                + "does not exist";
-                throw BESInternalError( se, __FILE__, __LINE__ );
-            }
-            BESDEBUG("bes", "OK" << endl);
+        BESDEBUG("bes", "aggregating with: " << _dhi->data[AGG_CMD] << " ...  "<< endl);
+        BESAggregationServer *agg = BESAggFactory::TheFactory()->find_handler(_dhi->data[AGG_HANDLER]);
+        if (agg) {
+            agg->aggregate(*_dhi);
         }
+        else {
+            BESDEBUG("bes", "FAILED" << endl);
+            string se = "The aggregation handler " + _dhi->data[AGG_HANDLER] + "does not exist";
+            throw BESInternalError(se, __FILE__, __LINE__);
+        }
+        BESDEBUG("bes", "OK" << endl);
     }
+}
 
-    /** @brief Transmit the resulting response object
+/** @brief Transmit the resulting response object
 
-     The derived classes are responsible for specifying a transmitter object
-     for use in transmitting the response object. Again, the
-     BESResponseHandler knows how to transmit itself.
+ The derived classes are responsible for specifying a transmitter object
+ for use in transmitting the response object. Again, the
+ BESResponseHandler knows how to transmit itself.
 
-     If no response handler or no response object or no transmitter is
-     specified then do nothing here.
+ If no response handler or no response object or no transmitter is
+ specified then do nothing here.
 
-     @see BESResponseHandler
-     @see BESResponseObject
-     @see BESTransmitter
-     */
+ @see BESResponseHandler
+ @see BESResponseObject
+ @see BESTransmitter
+ */
 void BESInterface::transmit_data()
 {
     BESStopWatch sw;
@@ -403,34 +404,31 @@ void BESInterface::transmit_data()
             ostringstream strm;
             _dhi->error_info->print(strm);
             (*BESLog::TheLog()) << strm.str() << endl;
-            BESDEBUG( "bes", "  transmitting error info using transmitter ... "
-                << endl << strm.str() << endl );
+            BESDEBUG("bes", "  transmitting error info using transmitter ... " << endl << strm.str() << endl);
             _dhi->error_info->transmit(_transmitter, *_dhi);
         }
         else if (_dhi->response_handler) {
-            BESDEBUG( "bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl );
-                _dhi->response_handler->transmit( _transmitter, *_dhi );
-            }
+            BESDEBUG("bes",
+                "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+            _dhi->response_handler->transmit(_transmitter, *_dhi);
         }
-        else
-        {
-            if( _dhi->error_info )
-            {
-                BESDEBUG( "bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl );
-                _dhi->error_info->print( cout );
-            }
-            else
-            {
-                BESDEBUG( "bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl );
-                string err = "Unable to transmit the response, no transmitter";
-                throw BESInternalError( err, __FILE__, __LINE__ );
-            }
-        }
-    BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
     }
+    else {
+        if (_dhi->error_info) {
+            BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl);
+            _dhi->error_info->print(cout);
+        }
+        else {
+            BESDEBUG("bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl);
+            string err = "Unable to transmit the response, no transmitter";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
+    BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
+}
 
-    /** @brief Log the status of the request
-     */
+/** @brief Log the status of the request
+ */
 void BESInterface::log_status()
 {
 }
@@ -448,13 +446,12 @@ void BESInterface::log_status()
  */
 void BESInterface::report_request()
 {
-    BESDEBUG( "bes", "Reporting on request: " << _dhi->data[DATA_REQUEST]
-        << " ... " << endl );
+    BESDEBUG("bes", "Reporting on request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
 
-        BESReporterList::TheList()->report( *_dhi );
+    BESReporterList::TheList()->report(*_dhi);
 
-        BESDEBUG( "bes", "OK" << endl );
-    }
+    BESDEBUG("bes", "OK" << endl);
+}
 
 void BESInterface::add_end_callback(p_bes_end end)
 {
@@ -468,29 +465,27 @@ void BESInterface::add_end_callback(p_bes_end end)
  */
 void BESInterface::end_request()
 {
-    BESDEBUG("bes", "Ending request: " << _dhi->data[DATA_REQUEST] << " ... " << endl );
-        end_iter i = _end_list.begin();
-        for(; i != _end_list.end(); i++ )
-        {
-            p_bes_end p = *i;
-            p( *_dhi );
-        }
-
-        // now clean up any containers that were used in the request, release
-        // the resource
-        _dhi->first_container();
-        while( _dhi->container )
-        {
-            BESDEBUG("bes", "Calling BESContainer::release()" << endl);
-            _dhi->container->release();
-            _dhi->next_container();
-        }
-
-        BESDEBUG("bes", "OK" << endl);
+    BESDEBUG("bes", "Ending request: " << _dhi->data[DATA_REQUEST] << " ... " << endl);
+    end_iter i = _end_list.begin();
+    for (; i != _end_list.end(); i++) {
+        p_bes_end p = *i;
+        p(*_dhi);
     }
 
-    /** @brief Clean up after the request
-     */
+    // now clean up any containers that were used in the request, release
+    // the resource
+    _dhi->first_container();
+    while (_dhi->container) {
+        BESDEBUG("bes", "Calling BESContainer::release()" << endl);
+        _dhi->container->release();
+        _dhi->next_container();
+    }
+
+    BESDEBUG("bes", "OK" << endl);
+}
+
+/** @brief Clean up after the request
+ */
 void BESInterface::clean()
 {
     if (_dhi) _dhi->clean();

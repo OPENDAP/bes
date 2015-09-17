@@ -173,6 +173,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
     _str_cmd += ";";
 
+    BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << _str_cmd << endl);
+
     // now that we've set the action, go get the response handler for the
     // action
     BESXMLCommand::set_response();
@@ -324,6 +326,7 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
  */
 void BESXMLDefineCommand::prep_request()
 {
+
     vector<string>::iterator i = _containers.begin();
     vector<string>::iterator e = _containers.end();
     for (; i != e; i++) {
@@ -362,7 +365,7 @@ void BESXMLDefineCommand::prep_request()
         string attrs = _attributes[(*i)];
         c->set_attributes(attrs);
         _dhi.containers.push_back(c);
-        BESDEBUG("xml", "define using container: " << endl << *c << endl);
+        BESDEBUG("xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl);
     }
 }
 
@@ -372,6 +375,7 @@ void BESXMLDefineCommand::prep_request()
  *
  * @param strm C++ i/o stream to dump the information to
  */
+
 void BESXMLDefineCommand::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESXMLDefineCommand::dump - (" << (void *) this << ")" << endl;
