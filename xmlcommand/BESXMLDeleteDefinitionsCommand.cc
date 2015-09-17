@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,47 +39,43 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-BESXMLDeleteDefinitionsCommand::BESXMLDeleteDefinitionsCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+BESXMLDeleteDefinitionsCommand::BESXMLDeleteDefinitionsCommand(const BESDataHandlerInterface &base_dhi) :
+    BESXMLCommand(base_dhi)
 {
 }
 
 /** @brief parse a delete definitions command.
  *
-     &lt;deleteContainers space="storeName" /&gt;
+ &lt;deleteContainers space="storeName" /&gt;
  *
  * @param node xml2 element node pointer
  */
-void
-BESXMLDeleteDefinitionsCommand::parse_request( xmlNode *node )
+void BESXMLDeleteDefinitionsCommand::parse_request(xmlNode *node)
 {
-    string name ;
-    string value ;
-    map<string, string> props ;
-    BESXMLUtils::GetNodeInfo( node, name, value, props ) ;
-    if( name != DELETE_DEFINITIONS_STR )
-    {
-	string err = "The specified command " + name
-		     + " is not a delete definitions command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string name;
+    string value;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, name, value, props);
+    if (name != DELETE_DEFINITIONS_STR) {
+        string err = "The specified command " + name + " is not a delete definitions command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
     // optional property, defaults to default
-    string storage = props["space"] ; 
-    _dhi.data[STORE_NAME] = storage ;
-    if( _dhi.data[STORE_NAME].empty() )
-    {
-	_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
-	storage = PERSISTENCE_VOLATILE ;
+    string storage = props["space"];
+    _dhi.data[STORE_NAME] = storage;
+    if (_dhi.data[STORE_NAME].empty()) {
+        _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+        storage = PERSISTENCE_VOLATILE;
     }
 
-    _dhi.action = DELETE_DEFINITIONS ;
+    _dhi.action = DELETE_DEFINITIONS;
 
-    _str_cmd = (string)"delete definitions from " + storage + ";" ;
+    _str_cmd = (string) "delete definitions from " + storage + ";";
 
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response() ;
+    BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object
@@ -88,19 +84,17 @@ BESXMLDeleteDefinitionsCommand::parse_request( xmlNode *node )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLDeleteDefinitionsCommand::dump( ostream &strm ) const
+void BESXMLDeleteDefinitionsCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLDeleteDefinitionsCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESXMLCommand::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLDeleteDefinitionsCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLDeleteDefinitionsCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+BESXMLDeleteDefinitionsCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new BESXMLDeleteDefinitionsCommand( base_dhi ) ;
+    return new BESXMLDeleteDefinitionsCommand(base_dhi);
 }
 

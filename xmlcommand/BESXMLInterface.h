@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,43 +36,41 @@
 #include <new>
 #include <vector>
 
-using std::new_handler ;
-using std::bad_alloc ;
-using std::vector ;
+using std::new_handler;
+using std::bad_alloc;
+using std::vector;
 
 #include "BESBasicInterface.h"
 #include "BESXMLUtils.h"
 
-class BESXMLCommand ;
+class BESXMLCommand;
 
 /** @brief Entry point into BES using xml document requests
 
-    @see BESInterface
+ @see BESInterface
  */
-class BESXMLInterface : public BESBasicInterface
-{
+class BESXMLInterface: public BESBasicInterface {
 private:
-    vector<BESXMLCommand *>	_cmd_list ;
-    BESDataHandlerInterface	_base_dhi ;
+    vector<BESXMLCommand *> _cmd_list;
+    BESDataHandlerInterface _base_dhi;
 protected:
-    virtual void		initialize() ;
-    virtual void		validate_data_request() ;
-    virtual void		build_data_request_plan() ;
-    virtual void		execute_data_request_plan() ;
-    virtual void		invoke_aggregation();
-    virtual void		transmit_data() ;
-    virtual void		log_status() ;
-    virtual void		report_request() ;
-    virtual void		clean() ;
+    virtual void initialize();
+    virtual void validate_data_request();
+    virtual void build_data_request_plan();
+    virtual void execute_data_request_plan();
+    virtual void invoke_aggregation();
+    virtual void transmit_data();
+    virtual void log_status();
+    virtual void report_request();
+    virtual void clean();
 public:
-    				BESXMLInterface( const string &cmd,
-						 ostream *strm ) ;
-    virtual			~BESXMLInterface() ;
+    BESXMLInterface(const string &cmd, ostream *strm);
+    virtual ~BESXMLInterface();
 
-    virtual int			execute_request( const string &from ) ;
+    virtual int execute_request(const string &from);
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BESXMLInterface_h_
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,33 +36,34 @@
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class BESXMLGetCommand : public BESXMLCommand
-{
+class BESXMLGetCommand: public BESXMLCommand {
 private:
-    BESXMLCommand *		_sub_cmd ;
-    string			_definition ;
-    string			_space ;
+    BESXMLCommand * _sub_cmd;
+    string _definition;
+    string _space;
 protected:
-    virtual void		parse_basic_get( xmlNode *node,
-						 const string &name,
-						 const string &type,
-						 const string &value,
-						 map<string,string> &props ) ;
+    virtual void parse_basic_get(xmlNode *node, const string &name, const string &type, const string &value,
+        map<string, string> &props);
 public:
-    				BESXMLGetCommand( const BESDataHandlerInterface &base_dhi ) ;
-    virtual			~BESXMLGetCommand() {}
+    BESXMLGetCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~BESXMLGetCommand()
+    {
+    }
 
-    virtual void		parse_request( xmlNode *node ) ;
-    virtual BESDataHandlerInterface &get_dhi() ;
+    virtual void parse_request(xmlNode *node);
+    virtual BESDataHandlerInterface &get_dhi();
 
-    virtual bool		has_response() { return true ; }
+    virtual bool has_response()
+    {
+        return true;
+    }
 
-    virtual void		prep_request() ;
+    virtual void prep_request();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
-} ;
+    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+};
 
 #endif // A_BESXMLGetCommand_h
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,40 +37,28 @@
 #include <vector>
 #include <string>
 
-using std::map ;
-using std::vector ;
-using std::string ;
+using std::map;
+using std::vector;
+using std::string;
 
 #include <libxml/encoding.h>
 
-class BESXMLUtils
-{
+class BESXMLUtils {
 private:
-    				BESXMLUtils() ;
+    BESXMLUtils();
 public:
-    virtual			~BESXMLUtils() ;
+    virtual ~BESXMLUtils();
 
-    static void			XMLErrorFunc( void *context,
-					      const char *msg, ... ) ;
-    static void			GetProps( xmlNode *node,
-					  map<string, string> &props ) ;
-    static void			GetNodeInfo( xmlNode *node,
-					     string &name,
-					     string &value,
-					     map<string, string> &props ) ;
-    static xmlNode *		GetFirstChild( xmlNode *node,
-					    string &child_name,
-					    string &child_value,
-					    map<string, string> &child_props ) ;
-    static xmlNode *		GetNextChild( xmlNode *child_node,
-					     string &next_name,
-					     string &next_value,
-					     map<string, string> &next_props ) ;
-    static xmlNode *		GetChild( xmlNode *node,
-					  const string &child_name,
-					  string &child_value,
-					  map<string, string> &child_props ) ;
-} ;
+    static void XMLErrorFunc(void *context, const char *msg, ...);
+    static void GetProps(xmlNode *node, map<string, string> &props);
+    static void GetNodeInfo(xmlNode *node, string &name, string &value, map<string, string> &props);
+    static xmlNode * GetFirstChild(xmlNode *node, string &child_name, string &child_value,
+        map<string, string> &child_props);
+    static xmlNode * GetNextChild(xmlNode *child_node, string &next_name, string &next_value,
+        map<string, string> &next_props);
+    static xmlNode * GetChild(xmlNode *node, const string &child_name, string &child_value,
+        map<string, string> &child_props);
+};
 
 #endif // BESXMLUtils_h_
 

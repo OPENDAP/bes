@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,14 +38,14 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-BESXMLShowErrorCommand::BESXMLShowErrorCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+BESXMLShowErrorCommand::BESXMLShowErrorCommand(const BESDataHandlerInterface &base_dhi) :
+    BESXMLCommand(base_dhi)
 {
 }
 
 /** @brief parse a set context command.
  *
-    &lt;showError type="error_type_num" /&gt;
+ &lt;showError type="error_type_num" /&gt;
  *
  * Where error_type_num is one of the following
  * 1. Internal Error - the error is internal to the BES Server
@@ -56,36 +56,32 @@ BESXMLShowErrorCommand::BESXMLShowErrorCommand( const BESDataHandlerInterface &b
  *
  * @param node xml2 element node pointer
  */
-void
-BESXMLShowErrorCommand::parse_request( xmlNode *node )
+void BESXMLShowErrorCommand::parse_request(xmlNode *node)
 {
-    string etype ;
-    string value ;
-    string action ;
-    map<string, string> props ;
-    BESXMLUtils::GetNodeInfo( node, action, value, props ) ;
-    if( action != SHOW_ERROR_STR )
-    {
-	string err = "The specified command " + action
-		     + " is not a show error command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string etype;
+    string value;
+    string action;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, action, value, props);
+    if (action != SHOW_ERROR_STR) {
+        string err = "The specified command " + action + " is not a show error command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _dhi.action = SHOW_ERROR ;
+    _dhi.action = SHOW_ERROR;
 
-    etype = props["type"] ;
-    if( etype.empty() )
-    {
-	string err = action + " command: error type property missing" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    etype = props["type"];
+    if (etype.empty()) {
+        string err = action + " command: error type property missing";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
     // test the error type number in the response handler
-    _dhi.data[SHOW_ERROR_TYPE] = etype ;
-    _str_cmd = (string)"show error " + etype + ";" ;
+    _dhi.data[SHOW_ERROR_TYPE] = etype;
+    _str_cmd = (string) "show error " + etype + ";";
 
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response() ;
+    BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object
@@ -94,19 +90,17 @@ BESXMLShowErrorCommand::parse_request( xmlNode *node )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLShowErrorCommand::dump( ostream &strm ) const
+void BESXMLShowErrorCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLShowErrorCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESXMLCommand::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLShowErrorCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLShowErrorCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+BESXMLShowErrorCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new BESXMLShowErrorCommand( base_dhi ) ;
+    return new BESXMLShowErrorCommand(base_dhi);
 }
 
