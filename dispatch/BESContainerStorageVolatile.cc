@@ -48,7 +48,7 @@
  * @see BESContainer
  */
 BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n) :
-        BESContainerStorage(n)
+    BESContainerStorage(n), _root_dir(""), _follow_sym_links(false)
 {
     string key = "BES.Data.RootDirectory";
     bool found = false;

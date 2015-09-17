@@ -33,16 +33,20 @@
 #include <cstring>
 #include <iostream>
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 
 #include "BESTokenizer.h"
 #include "BESSyntaxUserError.h"
 
-BESTokenizer::BESTokenizer( )
-: _counter( -1 ) {}
+BESTokenizer::BESTokenizer() :
+    _counter(-1), _number_tokens(0)
+{
+}
 
-BESTokenizer::~BESTokenizer() {}
+BESTokenizer::~BESTokenizer()
+{
+}
 
 /** @brief throws an exception giving the tokens up to the point of the
  * problem
@@ -56,19 +60,18 @@ BESTokenizer::~BESTokenizer() {}
  * @throws BESSyntaxUserError with the passed error string as well as all tokens
  * leading up to the error.
  */
-void
-BESTokenizer::parse_error( const string &s ) {
-    string error = "Parse error." ;
-    string where = "" ;
-    if( _counter >= 0 ) {
-        for( int w = 0; w < _counter+1; w++ )
-            where += tokens[w] + " " ;
-        where += "<----HERE IS THE ERROR" ;
-        error += "\n" + where ;
+void BESTokenizer::parse_error(const string &s)
+{
+    string error = "Parse error.";
+    string where = "";
+    if (_counter >= 0) {
+        for (int w = 0; w < _counter + 1; w++)
+            where += tokens[w] + " ";
+        where += "<----HERE IS THE ERROR";
+        error += "\n" + where;
     }
-    if( s != "" )
-        error += "\n" + s ;
-    throw BESSyntaxUserError( error, __FILE__, __LINE__ ) ;
+    if (s != "") error += "\n" + s;
+    throw BESSyntaxUserError(error, __FILE__, __LINE__);
 }
 
 /** @brief returns the first token from the token list
@@ -80,9 +83,10 @@ BESTokenizer::parse_error( const string &s ) {
  * @returns the first token in the token list
  */
 string &
-BESTokenizer::get_first_token() {
-    _counter = 0 ;
-    return tokens[_counter] ;
+BESTokenizer::get_first_token()
+{
+    _counter = 0;
+    return tokens[_counter];
 }
 
 /** @brief returns the current token from the token list
@@ -95,16 +99,17 @@ BESTokenizer::get_first_token() {
  * @see BESError
  */
 string &
-BESTokenizer::get_current_token() {
-    if( _counter == -1 ) {
-        parse_error( "incomplete expression!" ) ;
+BESTokenizer::get_current_token()
+{
+    if (_counter == -1) {
+        parse_error("incomplete expression!");
     }
 
-    if( _counter > _number_tokens-1 ) {
-        parse_error( "incomplete expression!" ) ;
+    if (_counter > (int) (_number_tokens - 1)) {
+        parse_error("incomplete expression!");
     }
 
-    return tokens[_counter] ;
+    return tokens[_counter];
 }
 
 /** @brief returns the next token from the token list
@@ -117,16 +122,17 @@ BESTokenizer::get_current_token() {
  * @see BESError
  */
 string &
-BESTokenizer::get_next_token() {
-    if( _counter == -1 ) {
-        parse_error( "incomplete expression!" ) ;
+BESTokenizer::get_next_token()
+{
+    if (_counter == -1) {
+        parse_error("incomplete expression!");
     }
 
-    if( _counter >= _number_tokens-1 ) {
-        parse_error( "incomplete expression!" ) ;
+    if (_counter >= (int) (_number_tokens - 1)) {
+        parse_error("incomplete expression!");
     }
 
-    return tokens[++_counter] ;
+    return tokens[++_counter];
 }
 
 /** @brief tokenize the BES request/command string
@@ -155,82 +161,77 @@ BESTokenizer::get_next_token() {
  * is less than 2.
  * @see BESError
  */
-void
-BESTokenizer::tokenize( const char *p ) {
-    size_t len = strlen( p ) ;
-    string s = "" ;
-    bool passing_raw = false ;
-    bool escaped = false ;
-    
+void BESTokenizer::tokenize(const char *p)
+{
+    size_t len = strlen(p);
+    string s = "";
+    bool passing_raw = false;
+    bool escaped = false;
 
-    
-    for( unsigned int j = 0; j < len; j++ ) {
-    	
-    	
-        if( !escaped && p[j] == '\"') {
+    for (unsigned int j = 0; j < len; j++) {
 
-            if( s != "" ) {
-                if( passing_raw ) {
-                    s += "\"" ;
-                    tokens.push_back( s ) ;
-                    s = "" ;
-                } else {
-                    tokens.push_back( s ) ;
-                    s = "\"" ;
+        if (!escaped && p[j] == '\"') {
+
+            if (s != "") {
+                if (passing_raw) {
+                    s += "\"";
+                    tokens.push_back(s);
+                    s = "";
                 }
-            } else {
-                s += "\"" ;
+                else {
+                    tokens.push_back(s);
+                    s = "\"";
+                }
             }
-            passing_raw =! passing_raw ;
-            
-        } else if( passing_raw ) {
-             
-        	if(!escaped && p[j] == '\\' ){
-        	    escaped = true;
-        	} else {          
-                s += p[j] ;
-                               
-                if(escaped)
-                    escaped = false;     
-        	}  
-           
-        } else {
-            if( ( p[j] == ' ' ) ||
-                    ( p[j] == '\n' ) ||
-                    ( p[j] == 0x0D ) ||
-                    ( p[j] == 0x0A ) ) {
-                if( s != "" ) {
-                    tokens.push_back( s ) ;
-                    s = "" ;
+            else {
+                s += "\"";
+            }
+            passing_raw = !passing_raw;
+
+        }
+        else if (passing_raw) {
+
+            if (!escaped && p[j] == '\\') {
+                escaped = true;
+            }
+            else {
+                s += p[j];
+
+                if (escaped) escaped = false;
+            }
+
+        }
+        else {
+            if ((p[j] == ' ') || (p[j] == '\n') || (p[j] == 0x0D) || (p[j] == 0x0A)) {
+                if (s != "") {
+                    tokens.push_back(s);
+                    s = "";
                 }
-            } else if( ( p[j] == ',' ) || ( p[j] == ';' ) ) {
-                if( s!= "" ) {
-                    tokens.push_back( s ) ;
-                    s = "" ;
+            }
+            else if ((p[j] == ',') || (p[j] == ';')) {
+                if (s != "") {
+                    tokens.push_back(s);
+                    s = "";
                 }
-                switch( p[j] ) {
+                switch (p[j]) {
                 case ',':
-                    tokens.push_back( "," ) ;
+                    tokens.push_back(",");
                     break;
                 case ';':
-                    tokens.push_back( ";" ) ;
+                    tokens.push_back(";");
                     break;
                 }
-            } else
-                s += p[j] ;
+            }
+            else
+                s += p[j];
         }
     }
 
-
-    if( s != "" )
-        tokens.push_back( s ) ;
-    _number_tokens = tokens.size() ;
-    if( passing_raw )
-        parse_error( "Unclose quote found.(\")" ) ;
-    if( _number_tokens < 1 )
-        parse_error( "Unknown command: '" + (string)p + (string)"'") ;
-    if( tokens[_number_tokens - 1] != ";" )
-        parse_error( "The request must be terminated by a semicolon (;)" ) ;
+    if (s != "") tokens.push_back(s);
+    _number_tokens = tokens.size();
+    if (passing_raw) parse_error("Unclose quote found.(\")");
+    if (_number_tokens < 1) parse_error("Unknown command: '" + (string) p + (string) "'");
+    if (tokens[_number_tokens - 1] != ";") parse_error("The request must be terminated by a semicolon (;)");
 }
 
 /** @brief parses a container name for constraint and attributes
@@ -253,30 +254,28 @@ BESTokenizer::tokenize( const char *p ) {
  * @throws BESError if the syntax is incorrect
  * @see BESError
  */
-string
-BESTokenizer::parse_container_name( const string &s, unsigned int &type ) {
-    string::size_type where = s.rfind( ".constraint=", s.size() ) ;
-    if( where == string::npos ) {
-        where = s.rfind( ".attributes=", s.size() ) ;
-        if( where == string::npos ) {
-            parse_error( "Expected property declaration." ) ;
-        } else {
-            type = 2 ;
+string BESTokenizer::parse_container_name(const string &s, unsigned int &type)
+{
+    string::size_type where = s.rfind(".constraint=", s.size());
+    if (where == string::npos) {
+        where = s.rfind(".attributes=", s.size());
+        if (where == string::npos) {
+            parse_error("Expected property declaration.");
         }
-    } else {
-        type = 1 ;
+        else {
+            type = 2;
+        }
     }
-    string valid = s.substr( where, s.size() ) ;
-    if( (valid != ".constraint=") && (valid != ".attributes=") ) {
-        string err = (string)"Invalid container property "
-                     + valid
-                     + " for container "
-                     + s.substr( 0, where )
-                     + ". constraint expressions and attribute lists "
-                     + "must be wrapped in quotes"  ;
-        parse_error( err ) ;
+    else {
+        type = 1;
     }
-    return s.substr( 0, where ) ;
+    string valid = s.substr(where, s.size());
+    if ((valid != ".constraint=") && (valid != ".attributes=")) {
+        string err = (string) "Invalid container property " + valid + " for container " + s.substr(0, where)
+            + ". constraint expressions and attribute lists " + "must be wrapped in quotes";
+        parse_error(err);
+    }
+    return s.substr(0, where);
 }
 
 /** @brief removes quotes from a quoted token
@@ -290,12 +289,12 @@ BESTokenizer::parse_container_name( const string &s, unsigned int &type ) {
  * quote
  * @see BESError
  */
-string
-BESTokenizer::remove_quotes( const string &s ) {
-    if( (s[0] != '"' ) || (s[s.size() - 1] != '"' ) ) {
-        parse_error( "item " + s + " must be enclosed by quotes" ) ;
+string BESTokenizer::remove_quotes(const string &s)
+{
+    if ((s[0] != '"') || (s[s.size() - 1] != '"')) {
+        parse_error("item " + s + " must be enclosed by quotes");
     }
-    return s.substr( 1, s.size() - 2 ) ;
+    return s.substr(1, s.size() - 2);
 }
 
 /** @brief dump the tokens that have been tokenized in the order in which
@@ -306,12 +305,12 @@ BESTokenizer::remove_quotes( const string &s ) {
  * in. The tokens are all displayed with double quotes around them to show
  * if there are any spaces or special characters in the token.
  */
-void
-BESTokenizer::dump_tokens() {
-    tokens_citerator i = tokens.begin() ;
-    tokens_citerator ie = tokens.end() ;
-    for( ; i != ie; i++ ) {
-        cout << "\"" << (*i) << "\"" << endl ;
+void BESTokenizer::dump_tokens()
+{
+    tokens_citerator i = tokens.begin();
+    tokens_citerator ie = tokens.end();
+    for (; i != ie; i++) {
+        cout << "\"" << (*i) << "\"" << endl;
     }
 }
 
@@ -321,16 +320,15 @@ BESTokenizer::dump_tokens() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESTokenizer::dump( ostream &strm ) const {
-    strm << BESIndent::LMarg << "BESTokenizer::dump - ("
-    << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    tokens_citerator i = tokens.begin() ;
-    tokens_citerator ie = tokens.end() ;
-    for( ; i != ie; i++ ) {
-    strm << BESIndent::LMarg << "\"" << (*i) << "\"" << endl ;
+void BESTokenizer::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << "BESTokenizer::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    tokens_citerator i = tokens.begin();
+    tokens_citerator ie = tokens.end();
+    for (; i != ie; i++) {
+        strm << BESIndent::LMarg << "\"" << (*i) << "\"" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

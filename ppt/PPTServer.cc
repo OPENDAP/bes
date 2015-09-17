@@ -66,7 +66,7 @@ using std::ostringstream;
 
 PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure) :
 		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure),
-		d_num_children(0)
+		_securePort(0), d_num_children(0)
 {
 	if (!handler) {
 		string err("Null handler passed to PPTServer");

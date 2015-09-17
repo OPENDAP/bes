@@ -50,6 +50,7 @@ BESXMLUtils::XMLErrorFunc( void *context, const char *msg, ... )
     va_start( args, msg ) ;
     char mymsg[1024] ;
     vsnprintf( mymsg, sizeof mymsg, msg, args ) ;
+    va_end(args) ; // Added jhrg 9/17/15
     vector<string> *myerrors = (vector<string> *)context ;
     myerrors->push_back( mymsg ) ;
 }

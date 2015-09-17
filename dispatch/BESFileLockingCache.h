@@ -29,6 +29,8 @@
 #ifndef BESFileLockingCache_h_
 #define BESFileLockingCache_h_ 1
 
+#include <unistd.h>
+
 #include <map>
 #include <string>
 #include <list>
@@ -107,10 +109,10 @@ private:
 
 protected:
 
-    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(0){};
+    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
     void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
-    virtual ~BESFileLockingCache() { }
+    virtual ~BESFileLockingCache() { if (d_cache_info_fd != -1) close(d_cache_info_fd); }
 
 public:
 

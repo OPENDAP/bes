@@ -19,9 +19,6 @@
 
 set -e
 
-# Add in a better test that looks at the version numbers of the stuff
-# in hyrax-dependencies/downloads or src. Same 
-
 # hyrax-dependencies appends '/deps' to 'prefix'
 export prefix=$HOME
 export PATH=$HOME/deps/bin:$PATH
@@ -29,7 +26,7 @@ export PATH=$HOME/deps/bin:$PATH
 # Force the build by un-commenting the following line
 # rm -rf $HOME/deps
 
-if test ! -d "$HOME/deps" -o true
+if test ! -d "$HOME/deps"
 then
   wget http://www.opendap.org/pub/tmp/travis/hyrax-dependencies-1.11.2.tar
   tar -xf hyrax-dependencies-1.11.2.tar
@@ -42,7 +39,7 @@ fi
 # unlike hyrax-dependencies, the libdap tar needs --prefix to be the
 # complete dir name. The hyrax-deps... project is a bit of a hack...
 
-if test ! -x "$HOME/deps/bin/dap-config" -o true
+if test ! -x "$HOME/deps/bin/dap-config"
 then
   wget http://www.opendap.org/pub/tmp/travis/libdap-3.15.0.tar.gz
   tar -xzf libdap-3.15.0.tar.gz

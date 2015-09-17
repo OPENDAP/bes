@@ -54,7 +54,7 @@
  * @param type type of the data represented in the file
  */
 BESFileContainer::BESFileContainer(const string &sym_name, const string &real_name, const string &type) :
-        BESContainer(sym_name, real_name, type)
+    BESContainer(sym_name, real_name, type), _cached(false), _target("")
 {
     string::size_type dotdot = real_name.find("..");
     if (dotdot != string::npos) {
@@ -68,9 +68,8 @@ BESFileContainer::BESFileContainer(const string &sym_name, const string &real_na
  * @param copy_from The container to copy
  */
 BESFileContainer::BESFileContainer(const BESFileContainer &copy_from) :
-        BESContainer(copy_from)
-{
-}
+    BESContainer(copy_from), _cached(copy_from._cached), _target(copy_from._target)
+{}
 
 void BESFileContainer::_duplicate(BESContainer &copy_to)
 {

@@ -55,20 +55,29 @@ int set_sups(const int target_sups_size, const gid_t* const target_sups_list)
     if (geteuid() == 0) { /* allowed to setgroups, let's not take any chances */
         if (-1 == setgroups(targetsups_size, targetsups_list)) {
             /* handle error */
+            return -1;
         }
     }
     else {
         int cursups_size = getgroups(0, NULL);
+        if (cursups_size == -1)
+            return -1;
+
         gid_t* cursups_list = (gid_t*) malloc(sizeof(gid_t) * cursups_size);
         if (cursups_list == NULL) {
             /* handle error */
+            return -1;
         }
         if (-1 == getgroups(cursups_size, cursups_list)) {
             /* handle error */
+            free(cursups_list);
+            return -1;
         }
         if (!eql_sups(cursups_size, cursups_list, targetsups_size, targetsups_list)) {
             if (-1 == setgroups(targetsups_size, targetsups_list)) { /* will probably fail... :( */
                 /* handle error */
+                free(cursups_list);
+                return -1;
             }
         }
         free(cursups_list);

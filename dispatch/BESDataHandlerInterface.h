@@ -67,7 +67,37 @@ private:
 	void clone(const BESDataHandlerInterface &copy_from);
 
 public:
-	BESDataHandlerInterface() :
+    typedef map<string, string>::const_iterator data_citer;
+
+    BESResponseHandler *response_handler;
+
+    list<BESContainer *> containers;
+    list<BESContainer *>::iterator containers_iterator;
+
+    /** @brief pointer to current container in this interface
+     */
+    BESContainer *container;
+
+    /** @brief the response object requested, e.g. das, dds
+     */
+    string action;
+    string action_name;
+    bool executed;
+
+    /** @brief request protocol, such as HTTP
+     */
+    string transmit_protocol;
+
+    /** @brief the map of string data that will be required for the current
+     * request.
+     */
+    map<string, string> data;
+
+    /** @brief error information object
+     */
+    BESInfo *error_info;
+
+    BESDataHandlerInterface() :
 			output_stream(0), response_handler(0), container(0), executed(false), error_info(0)
 	{
 	}
@@ -102,15 +132,7 @@ public:
 		return *output_stream;
 	}
 
-	BESResponseHandler *response_handler;
 	BESResponseObject *get_response_object();
-
-	list<BESContainer *> containers;
-	list<BESContainer *>::iterator containers_iterator;
-
-	/** @brief pointer to current container in this interface
-	 */
-	BESContainer *container;
 
 	/** @brief set the container pointer to the first container in the containers list
 	 */
@@ -134,33 +156,12 @@ public:
 			container = NULL;
 	}
 
-	/** @brief the response object requested, e.g. das, dds
-	 */
-	string action;
-	string action_name;
-	bool executed;
-
-	/** @brief request protocol, such as HTTP
-	 */
-	string transmit_protocol;
-
-	/** @brief the map of string data that will be required for the current
-	 * request.
-	 */
-	map<string, string> data;
 	const map<string, string> &data_c() const
 	{
 		return data;
 	}
 
-	typedef map<string, string>::const_iterator data_citer;
-
-	/** @brief error information object
-	 */
-	BESInfo *error_info;
-
 	void dump(ostream &strm) const;
-
 };
 
 #endif //  BESDataHandlerInterface_h_
