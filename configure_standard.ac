@@ -117,7 +117,12 @@ AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h limits.h unistd.h pthread.h bzlib.h)
+AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h strings.h)
+
+dnl AC_CHECK_HEADERS_ONCE([uuid/uuid.h uuid.h])
+dnl Do this because we have had a number of problems with the UUID header/library
+AC_CHECK_HEADERS([uuid/uuid.h],[found_uuid_uuid_h=true],[found_uuid_uuid_h=false])
+AC_CHECK_HEADERS([uuid.h],[found_uuid_h=true],[found_uuid_h=false])
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

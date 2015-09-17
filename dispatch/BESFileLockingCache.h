@@ -71,9 +71,7 @@ typedef std::list<cache_entry> CacheFiles;
  * on the cache info file must only be called when the lock has been obtained.
  */
 class BESFileLockingCache: public BESObj {
-
 private:
-
     static const char DAP_CACHE_CHAR = '#';
 
     string d_cache_dir;  /// pathname of the cache directory
