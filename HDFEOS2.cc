@@ -1785,7 +1785,7 @@ void File::handle_grid_SOM_projection() throw(Exception) {
 
             // Here we cannot use getDataFields() since the returned elements cannot be modified. KY 2012-6-12
             for (vector<Field *>::iterator j = (*i)->datafields.begin();
-                j != (*i)->datafields.end(); ++j) {
+                j != (*i)->datafields.end(); ) {
                     
                 // Only 6-7 fields, so just loop through 
                 // 1. Set the SOM dimension for latitude and longitude
@@ -1801,6 +1801,7 @@ void File::handle_grid_SOM_projection() throw(Exception) {
                     it_d = (*j)->correcteddims.begin();
                     (*j)->correcteddims.insert(it_d,newcor_dim);
 
+
                 } 
 
                 // 2. Remove the added coordinate variable for the SOM dimension
@@ -1810,12 +1811,15 @@ void File::handle_grid_SOM_projection() throw(Exception) {
                 if ( 4 == (*j)->fieldtype) {
                     cor_som_cvname = (*j)->newname;
                     delete (*j);
-                    (*i)->datafields.erase(j);
+                    j = (*i)->datafields.erase(j);
                     // When erasing the iterator for the vector, the iterator will automatically go to the next element, 
                     // so we need to go back 1 in order not to miss the next element.
                     // Again, check stackoverflow and find this is true. So the following operation is valid.
                     // KY 2014-02-27
-                    j--;
+                    //j--;
+                }
+                else {
+                   ++j;
                 }
             }
 

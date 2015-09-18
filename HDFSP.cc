@@ -1047,28 +1047,35 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
     // b2) In the scaled-dim name set but not in the scaled-dim-marker set, 
     //     remove the variable from the variable vector.
     for (std::vector < SDField * >::iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
         if(1 == (*i)->getRank()) {
             if(scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
                 if(scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
                     scaled_dname_set_marker.erase((*i)->getNewName());
+                    ++i;
                 }
 
                 else {// Redundant variables
 //cerr<<"redundant variable names "<< (*i)->newname <<endl;
                     delete(*i);
-                    file->sd->sdfields.erase(i);
+                    i= file->sd->sdfields.erase(i);
                     // when erasing the iterator, it always goes to the next elment, so move back.
-                    i--;
+                    //i--;
                 }
+            }
+            else {
+                ++i;
             }
         }
         // Remove Latitude and Longitude 
         else if( 2 == (*i)->getRank()) {
             if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
                 delete(*i);
-                file->sd->sdfields.erase(i);
-                i--;
+                i = file->sd->sdfields.erase(i);
+                //i--;
+            }
+            else {
+                ++i;
             }
         }
         else 
@@ -3995,10 +4002,10 @@ File::Prepare() throw(Exception)
         for (std::vector < SDField * >::const_iterator i =
             file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
             for (vector<AttrContainer *>::iterator j = (*i)->dims_info.begin();
-                j!= (*i)->dims_info.end(); ++j) { 
+                j!= (*i)->dims_info.end(); ) { 
                 delete (*j);
-                (*i)->dims_info.erase(j);
-                j--;
+                j = (*i)->dims_info.erase(j);
+                //j--;
             }
             if ((*i)->dims_info.size() != 0) 
                 throw1("Not totally erase the dimension container ");
@@ -4334,26 +4341,28 @@ File::PrepareTRMML3S_V7() throw(Exception) {
 
     File *file = this;
     for (std::vector < SDField * >::iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
 
         //According to GES DISC, the next three variables should be removed from the list.
         if((*i)->name == "InputFileNames") {
             delete (*i);
-            file->sd->sdfields.erase(i); 
-            i--;
+            i = file->sd->sdfields.erase(i); 
+            //i--;
         }
         else if((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
-            file->sd->sdfields.erase(i);
-            i--;
+            i = file->sd->sdfields.erase(i);
+            //i--;
         }
         else if((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
-            file->sd->sdfields.erase(i);
-            i--;
+            i = file->sd->sdfields.erase(i);
+            //i--;
         }
-        else // Just use SDS names and for performance reasons, change them here.
+        else {// Just use SDS names and for performance reasons, change them here.
             (*i)->newname = (*i)->name;
+             ++i;
+        }
     }
 
     
@@ -4666,22 +4675,26 @@ File::PrepareTRMML3M_V7() throw(Exception) {
 
     File *file = this;
     for (std::vector < SDField * >::iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
 
         if((*i)->name == "InputFileNames") {
             delete (*i);
-            file->sd->sdfields.erase(i); 
-            i--;
+            i = file->sd->sdfields.erase(i); 
+            //i--;
         }
         else if((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
-            file->sd->sdfields.erase(i);
-            i--;
+            i = file->sd->sdfields.erase(i);
+            //i--;
         }
         else if((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
-            file->sd->sdfields.erase(i);
-            i--;
+            i = file->sd->sdfields.erase(i);
+            //i--;
+        }
+        else {
+            ++i;
+
         }
     }
 
@@ -5592,7 +5605,7 @@ throw (Exception)
     // SDField *beerased; Unused jhrg 3/16/11
 
     for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
-        i != file->sd->sdfields.end (); ++i) {
+        i != file->sd->sdfields.end (); ) {
 
         // This product uses "Colatitude".
         if (((*i)->getName ()).find ("Colatitude") != std::string::npos) {
@@ -5619,14 +5632,16 @@ throw (Exception)
                 colatflag = true;
                 (*i)->fieldtype = 1;
                 tempcvarname1 = (*i)->getName ();
+
+                ++i;
             }
             else {//remove the redundant Colatitude field
                 delete (*i);
-                file->sd->sdfields.erase (i);
+                i = file->sd->sdfields.erase (i);
                 // When erasing the iterator, the iterator will 
                 // automatically go to the next element, 
                 // so we need to go back 1 in order not to miss the next element.
-                i--;
+                //i--;
             }
         }
 
@@ -5635,17 +5650,21 @@ throw (Exception)
                 lonflag = true;
                 (*i)->fieldtype = 2;
                 tempcvarname2 = (*i)->getName ();
+                ++i;
             }
             else {//remove the redundant Longitude field
                 delete (*i);
-                file->sd->sdfields.erase (i);
+                i = file->sd->sdfields.erase (i);
                 // When erasing the iterator, the iterator will 
                 // automatically go to the next element, so we need to go back 1 
                 // in order not to miss the next element.
-                i--;
+                //i--;
             }
         }
-    }
+        else {
+            ++i;
+        }
+    }//end for (vector ....)
 
     file->sd->nonmisscvdimnamelist.insert (tempnewdimname1);
     file->sd->nonmisscvdimnamelist.insert (tempnewdimname2);
@@ -5673,7 +5692,7 @@ throw (Exception)
     // The original latitude is 3-D array; we have to use the dimension name to determine which dimension is the final dimension
     // for 1-D array. "regional colat" and "regional lon" are consistently used in these two CERES cases.
     for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
-        i != file->sd->sdfields.end (); ++i) {
+        i != file->sd->sdfields.end (); ) {
         std::string tempfieldname = (*i)->getName ();
         if (tempfieldname.find ("Colatitude") != std::string::npos) {
             // They may have more than 2 dimensions, so we have to adjust it.
@@ -5714,15 +5733,16 @@ throw (Exception)
                 (*i)->correcteddims.push_back (dim);
                 file->sd->nonmisscvdimnamelist.insert (tempdimname1);
                 cvflag = false;
+                ++i;
             }
             else {//delete this element from the vector and erase it.
                 delete (*i);
-                file->sd->sdfields.erase (i);
+                i = file->sd->sdfields.erase (i);
 
                 // When erasing the iterator, the iterator will automatically 
                 // go to the next element, so we need to go back 1 in order not 
                 // to miss the next element.
-                i--;
+                //i--;
             }
         }
 
@@ -5766,17 +5786,21 @@ throw (Exception)
 
                 file->sd->nonmisscvdimnamelist.insert (tempdimname2);
                 cvflag = false;
+                ++i;
             }
             else{//delete this element from the vector and erase it.
                 delete (*i);
-                file->sd->sdfields.erase (i);
+                i = file->sd->sdfields.erase (i);
                 // When erasing the iterator, the iterator 
                 // will automatically go to the next element, 
                 // so we need to go back 1 in order not to miss the next element.
-                i--;
+                //i--;
             }
         }
-    }
+        else {
+            ++i;
+        }
+    }// end for(vector ....)
 }
 
 
