@@ -193,35 +193,26 @@ int StandAloneApp::initialize(int argc, char **argv)
     }
 
     try {
-        BESDEBUG( "standalone", "ServerApp: initializing default module ... "
-            << endl );
-            BESDefaultModule::initialize( argc, argv );
-            BESDEBUG( "standalone", "ServerApp: done initializing default module"
-                << endl );
+        BESDEBUG("standalone", "ServerApp: initializing default module ... " << endl);
+        BESDefaultModule::initialize(argc, argv);
+        BESDEBUG("standalone", "ServerApp: done initializing default module" << endl);
 
-            BESDEBUG( "standalone", "ServerApp: initializing default commands ... "
-                << endl );
-            BESXMLDefaultCommands::initialize( argc, argv );
-            BESDEBUG( "standalone", "ServerApp: done initializing default commands"
-                << endl );
+        BESDEBUG("standalone", "ServerApp: initializing default commands ... " << endl);
+        BESXMLDefaultCommands::initialize(argc, argv);
+        BESDEBUG("standalone", "ServerApp: done initializing default commands" << endl);
 
-            BESDEBUG( "standalone", "ServerApp: initializing loaded modules ... "
-                << endl );
-            int retval = BESModuleApp::initialize( argc, argv );
-            BESDEBUG( "standalone", "ServerApp: done initializing loaded modules"
-                << endl );
-            if( retval )
-            return retval;
-        }
-        catch( BESError &e )
-        {
-            cerr << "Failed to initialize stand alone app" << endl;
-            cerr << e.get_message() << endl;
-            return 1;
-        }
+        BESDEBUG("standalone", "ServerApp: initializing loaded modules ... " << endl);
+        int retval = BESModuleApp::initialize(argc, argv);
+        BESDEBUG("standalone", "ServerApp: done initializing loaded modules" << endl);
+        if (retval) return retval;
+    }
+    catch (BESError &e) {
+        cerr << "Failed to initialize stand alone app" << endl;
+        cerr << e.get_message() << endl;
+        return 1;
+    }
 
-    BESDEBUG( "standalone", "StandAloneApp: initialized settings:"
-        << endl << *this );
+    BESDEBUG("standalone", "StandAloneApp: initialized settings:" << endl << *this);
 
     return 0;
 }
@@ -236,111 +227,93 @@ int StandAloneApp::run()
         else {
             _client->setOutput(&cout, false);
         }
-        BESDEBUG( "standalone", "OK" << endl );
+        BESDEBUG("standalone", "OK" << endl);
+    }
+    catch (BESError &e) {
+        if (_client) {
+            delete _client;
+            _client = 0;
         }
-        catch( BESError &e )
-        {
-            if( _client )
-            {
-                delete _client;
-                _client = 0;
-            }
-            BESDEBUG( "standalone", "FAILED" << endl );
-            cerr << "error starting the client" << endl;
-            cerr << e.get_message() << endl;
-            exit( 1 );
-        }
-
-        try
-        {
-            if( _cmd != "" )
-            {
-                _client->executeCommands( _cmd, _repeat );
-            }
-            else if( _inputStrm )
-            {
-                _client->executeCommands( *_inputStrm, _repeat );
-            }
-            else
-            {
-                _client->interact();
-            }
-        }
-        catch( BESError &e )
-        {
-            cerr << "error processing commands" << endl;
-            cerr << e.get_message() << endl;
-        }
-
-        try
-        {
-            BESDEBUG( "standalone", "StandAloneApp: shutting down client ... "
-                << endl );
-            if( _client )
-            {
-                delete _client;
-                _client = 0;
-            }
-            BESDEBUG( "standalone", "OK" << endl );
-
-            BESDEBUG( "standalone", "StandAloneApp: closing input stream ... " << endl );
-            if( _createdInputStrm && _inputStrm )
-            {
-                _inputStrm->close();
-                delete _inputStrm;
-                _inputStrm = 0;
-            }
-            BESDEBUG( "standalone", "OK" << endl );
-        }
-        catch( BESError &e )
-        {
-            BESDEBUG( "standalone", "FAILED" << endl );
-            cerr << "error closing the client" << endl;
-            cerr << e.get_message() << endl;
-            return 1;
-        }
-
-        return 0;
+        BESDEBUG("standalone", "FAILED" << endl);
+        cerr << "error starting the client" << endl;
+        cerr << e.get_message() << endl;
+        exit(1);
     }
 
-    /** @brief clean up after the application
-     *
-     * @param sig return value from run that should be returned from method
-     * @returns signal or return value passed to the terminate method
-     */
+    try {
+        if (_cmd != "") {
+            _client->executeCommands(_cmd, _repeat);
+        }
+        else if (_inputStrm) {
+            _client->executeCommands(*_inputStrm, _repeat);
+        }
+        else {
+            _client->interact();
+        }
+    }
+    catch (BESError &e) {
+        cerr << "error processing commands" << endl;
+        cerr << e.get_message() << endl;
+    }
+
+    try {
+        BESDEBUG("standalone", "StandAloneApp: shutting down client ... " << endl);
+        if (_client) {
+            delete _client;
+            _client = 0;
+        }
+        BESDEBUG("standalone", "OK" << endl);
+
+        BESDEBUG("standalone", "StandAloneApp: closing input stream ... " << endl);
+        if (_createdInputStrm && _inputStrm) {
+            _inputStrm->close();
+            delete _inputStrm;
+            _inputStrm = 0;
+        }
+        BESDEBUG("standalone", "OK" << endl);
+    }
+    catch (BESError &e) {
+        BESDEBUG("standalone", "FAILED" << endl);
+        cerr << "error closing the client" << endl;
+        cerr << e.get_message() << endl;
+        return 1;
+    }
+
+    return 0;
+}
+
+/** @brief clean up after the application
+ *
+ * @param sig return value from run that should be returned from method
+ * @returns signal or return value passed to the terminate method
+ */
 int StandAloneApp::terminate(int sig)
 {
-    BESDEBUG( "standalone", "ServerApp: terminating loaded modules ... "
-        << endl );
-        BESModuleApp::terminate( sig );
-        BESDEBUG( "standalone", "ServerApp: done terminating loaded modules"
-            << endl );
+    BESDEBUG("standalone", "ServerApp: terminating loaded modules ... " << endl);
+    BESModuleApp::terminate(sig);
+    BESDEBUG("standalone", "ServerApp: done terminating loaded modules" << endl);
 
-        BESDEBUG( "standalone", "ServerApp: terminating default commands ...  "
-            << endl );
-        BESXMLDefaultCommands::terminate( );
-        BESDEBUG( "standalone", "ServerApp: done terminating default commands"
-            << endl );
+    BESDEBUG("standalone", "ServerApp: terminating default commands ...  " << endl);
+    BESXMLDefaultCommands::terminate();
+    BESDEBUG("standalone", "ServerApp: done terminating default commands" << endl);
 
-        BESDEBUG( "standalone", "ServerApp: terminating default module ... "
-            << endl );
-        BESDefaultModule::terminate( );
-        BESDEBUG( "standalone", "ServerApp: done terminating default module"
-            << endl );
+    BESDEBUG("standalone", "ServerApp: terminating default module ... " << endl);
+    BESDefaultModule::terminate();
+    BESDEBUG("standalone", "ServerApp: done terminating default module" << endl);
 
-        CmdTranslation::terminate( );
+    CmdTranslation::terminate();
 
-        xmlCleanupParser();
+    xmlCleanupParser();
 
-        return sig;
-    }
+    return sig;
+}
 
-    /** @brief dumps information about this object
-     *
-     * Displays the pointer value of this instance
-     *
-     * @param strm C++ i/o stream to dump the information to
-     */
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
 void StandAloneApp::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "StandAloneApp::dump - (" << (void *) this << ")" << endl;
