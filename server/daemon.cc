@@ -1186,32 +1186,47 @@ int main(int argc, char *argv[])
 
     BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
 
-    // start_command_processor() does not return unless all commands have been
-    // processed and the daemon has been told to exit (status == 1) or the
-    // bes.conf file was set so that the processor never starts (status == 0).
-    DaemonCommandHandler handler(TheBESKeys::ConfigFile);
-    int status = start_command_processor(handler);
+    int status = 0;
+    try {
+        // start_command_processor() does not return unless all commands have been
+        // processed and the daemon has been told to exit (status == 1) or the
+        // bes.conf file was set so that the processor never starts (status == 0).
+        DaemonCommandHandler handler(TheBESKeys::ConfigFile);
+        status = start_command_processor(handler);
 
-    // if the command processor does not start, drop into this loop which
-    // implements the simple restart-on-HUP behavior of the daemon.
-    if (status == 0) {
-        bool done = false;
-        while (!done) {
-            pause();
+        // if the command processor does not start, drop into this loop which
+        // implements the simple restart-on-HUP behavior of the daemon.
+        if (status == 0) {
+            bool done = false;
+            while (!done) {
+                pause();
 
-            process_signals();
+                process_signals();
 
-            BESDEBUG("besdaemon", "besdaemon: master_beslistener_status: " << master_beslistener_status << endl);
-            if (master_beslistener_status == BESLISTENER_RESTART) {
-                master_beslistener_status = BESLISTENER_STOPPED;
-                // master_beslistener_pid = start_master_beslistener();
-                start_master_beslistener();
-            }
-            // If the status is not 'restart' and not running, then exit loop
-            else if (master_beslistener_status != BESLISTENER_RUNNING) {
-                done = true;
+                BESDEBUG("besdaemon", "besdaemon: master_beslistener_status: " << master_beslistener_status << endl);
+                if (master_beslistener_status == BESLISTENER_RESTART) {
+                    master_beslistener_status = BESLISTENER_STOPPED;
+                    // master_beslistener_pid = start_master_beslistener();
+                    start_master_beslistener();
+                }
+                // If the status is not 'restart' and not running, then exit loop
+                else if (master_beslistener_status != BESLISTENER_RUNNING) {
+                    done = true;
+                }
             }
         }
+    }
+    catch (BESError &e) {
+        status = 1;
+        (*BESLog::TheLog()) << "Caught BES Error while starting the command handler: " << e.get_message() << endl;
+    }
+    catch (std::exception &e) {
+        status = 2;
+        (*BESLog::TheLog()) << "Caught C++ error while starting the command handler: " << e.what() << endl;
+    }
+    catch (...) {
+        status = 3;
+        (*BESLog::TheLog()) << "Caught unknown error while starting the command handler." << endl;
     }
 
     BESDEBUG("besdaemon", "besdaemon: past the command processor start" << endl);

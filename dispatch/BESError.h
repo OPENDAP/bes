@@ -55,10 +55,8 @@ protected:
     string _file;
     unsigned int _line;
 
-    BESError()
-    {
-        _msg = "UNDEFINED";
-    }
+    BESError(): _msg("UNDEFINED"), _type(0), _file(""), _line(0) { }
+
 public:
     /** @brief constructor that takes message, type of error, source file
      * the error originated and the line number in the source file

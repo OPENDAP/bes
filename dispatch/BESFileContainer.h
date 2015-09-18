@@ -61,11 +61,13 @@ private:
     bool _cached;
     string _target;
 
-    BESFileContainer() : BESContainer()
+    BESFileContainer() : BESContainer(), _cached(false), _target("")
     {
     }
+
 protected:
     virtual void _duplicate(BESContainer &copy_to);
+
 public:
     BESFileContainer(const string &sym_name, const string &real_name, const string &type);
 

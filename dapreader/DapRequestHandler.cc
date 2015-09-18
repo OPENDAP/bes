@@ -460,16 +460,17 @@ bool DapRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
 
 bool DapRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
+    if (!info) throw BESInternalFatalError("Expected a BESVersionInfo instance.", __FILE__, __LINE__);
+
     info->add_module(DAPREADER_PACKAGE, DAPREADER_VERSION);
-    return ret;
+    return true;
 }
 
 bool DapRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    if (!info) throw BESInternalFatalError("Expected a BESVersionInfo instance.", __FILE__, __LINE__);
 
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
@@ -485,7 +486,7 @@ bool DapRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     info->begin_tag("module", &attrs);
     info->end_tag("module");
 
-    return ret;
+    return true;
 }
 
 void DapRequestHandler::dump(ostream &strm) const

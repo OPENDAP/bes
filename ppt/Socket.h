@@ -49,14 +49,17 @@ protected:
 	bool _addr_set;
 public:
 	Socket() :
-			_socket(0), _connected(false), _listening(false), _addr_set(false)
+			_socket(0), _connected(false), _listening(false), _ip(""), _port(0), _addr_set(false)
 	{
 	}
+
 	Socket(int socket, struct sockaddr *addr);
+
 	virtual ~Socket()
 	{
 		close();
 	}
+
 	virtual void connect() = 0;
 	virtual bool isConnected()
 	{

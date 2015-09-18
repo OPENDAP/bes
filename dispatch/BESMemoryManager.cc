@@ -103,16 +103,20 @@ BESMemoryManager::check_memory_pool()
 void
 BESMemoryManager::release_global_pool() throw (bad_alloc)
 {
-    // This is really the final resource for BES since therefore 
-    // this method must be second level handler.
-    // It releases enough memory for an exception sequence to be carried.
-    // Without this pool of memory for emergencies we will get really
-    // unexpected behavior from the program.
-    BESDEBUG( "bes", "BES Warning: low in memory, "
-	      << "releasing global memory pool!" << endl ) ;
-    *(BESLog::TheLog()) << "BES Warning: low in memory, "
-                        << "releasing global memory pool!"
-		        << endl;
+    try {
+        // This is really the final resource for BES since therefore
+        // this method must be second level handler.
+        // It releases enough memory for an exception sequence to be carried.
+        // Without this pool of memory for emergencies we will get really
+        // unexpected behavior from the program.
+        BESDEBUG("bes", "BES Warning: low in memory, " << "releasing global memory pool!" << endl);
+
+        *(BESLog::TheLog()) << "BES Warning: low in memory, " << "releasing global memory pool!" << endl;
+    }
+    catch (...) {
+        // Do nothing with whatever exception these call throw...
+    }
+
     _storage_used = true ;
     _memory->release_memory() ;
 

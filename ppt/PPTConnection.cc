@@ -413,24 +413,25 @@ void PPTConnection::read_extensions(map<string, string> &extensions, const strin
  */
 int PPTConnection::readBufferNonBlocking(char *inBuff, const /* unsigned*/int buffer_size)
 {
-	struct pollfd p;
-	p.fd = getSocket()->getSocketDescriptor();
-	p.events = POLLIN;
-	struct pollfd arr[1];
-	arr[0] = p;
-
+    struct pollfd arr[1];
+    arr[0].fd = getSocket()->getSocketDescriptor();
+    arr[0].events = POLLIN;
+    arr[0].revents = 0;
+#if 0
+    struct pollfd p = {};
+    p.fd = getSocket()->getSocketDescriptor();
+    p.events = POLLIN;
+    struct pollfd arr[1];
+    arr[0] = p;
+#endif
 	// Lets loop _timeout times with a delay block on poll of 1000 milliseconds
 	// and see if there are any data.
 	for (int j = 0; j < _timeout; j++) {
 		if (poll(arr, 1, 1000) < 0) {
-			string error("poll error");
-
 			// Allow this call to be interrupted without it being an error. jhrg 6/15/11
 			if (errno == EINTR || errno == EAGAIN) continue;
 
-			const char* error_info = strerror(errno);
-			if (error_info) error += " " + (string) error_info;
-			throw BESInternalError(error, __FILE__, __LINE__);
+			throw BESInternalError(string("poll error") + " " + strerror(errno), __FILE__, __LINE__);
 		}
 		else {
 			if (arr[0].revents == POLLIN) {

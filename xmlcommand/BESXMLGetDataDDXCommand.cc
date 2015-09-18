@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -41,92 +41,78 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-BESXMLGetDataDDXCommand::BESXMLGetDataDDXCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLGetCommand( base_dhi )
+BESXMLGetDataDDXCommand::BESXMLGetDataDDXCommand(const BESDataHandlerInterface &base_dhi) :
+    BESXMLGetCommand(base_dhi)
 {
 }
 
 /** @brief parse a get dataddx command.
  *
-    &gt;get  type="dataddx" definition="d" returnAs="name" /&gt;
+ &gt;get  type="dataddx" definition="d" returnAs="name" /&gt;
  *
  * @param node xml2 element node pointer
  */
-void
-BESXMLGetDataDDXCommand::parse_request( xmlNode *node )
+void BESXMLGetDataDDXCommand::parse_request(xmlNode *node)
 {
-    string name ;
-    string value ;
-    map<string, string> props ;
-    BESXMLUtils::GetNodeInfo( node, name, value, props ) ;
+    string name;
+    string value;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, name, value, props);
 
-    if( name != GET_RESPONSE )
-    {
-	string err = "The specified command " + name
-		     + " is not a get command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    if (name != GET_RESPONSE) {
+        string err = "The specified command " + name + " is not a get command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    string type = props["type"] ;
-    if( type.empty() || type != DATADDX_SERVICE )
-    {
-	string err = name + " command: data product must be "
-			  + DATADDX_SERVICE ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string type = props["type"];
+    if (type.empty() || type != DATADDX_SERVICE) {
+        string err = name + " command: data product must be " + DATADDX_SERVICE;
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    parse_basic_get( node, name, type, value, props ) ;
+    parse_basic_get(node, name, type, value, props);
 
     // Get the elements for contentStartId and mimeBoundary
-    map<string,string> cprops ;
-    string cname ;
-    string cval ;
-    int elems = 0 ;
-    xmlNode *cnode = BESXMLUtils::GetFirstChild( node, cname, cval, cprops ) ;
-    while( cnode && (elems < 2) )
-    {
-	if( cname == "contentStartId" )
-	{
-	    if( !_contentStartId.empty() )
-	    {
-		string err = name
-			     + " command: contentStartId has multiple values" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    _contentStartId = cval ;
-	    _str_cmd += " contentStartId " + _contentStartId ;
-	    elems++ ;
-	}
-	if( cname == "mimeBoundary" )
-	{
-	    if( !_mimeBoundary.empty() )
-	    {
-		string err = name
-			     + " command: mimeBoundary has multiple values" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    _mimeBoundary = cval ;
-	    _str_cmd += " mimeBoundary " + _mimeBoundary ;
-	    elems++ ;
-	}
-	cprops.clear() ;
-	cnode = BESXMLUtils::GetNextChild( cnode, cname, cval, cprops ) ;
+    map<string, string> cprops;
+    string cname;
+    string cval;
+    int elems = 0;
+    xmlNode *cnode = BESXMLUtils::GetFirstChild(node, cname, cval, cprops);
+    while (cnode && (elems < 2)) {
+        if (cname == "contentStartId") {
+            if (!_contentStartId.empty()) {
+                string err = name + " command: contentStartId has multiple values";
+                throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            }
+            _contentStartId = cval;
+            _str_cmd += " contentStartId " + _contentStartId;
+            elems++;
+        }
+        if (cname == "mimeBoundary") {
+            if (!_mimeBoundary.empty()) {
+                string err = name + " command: mimeBoundary has multiple values";
+                throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            }
+            _mimeBoundary = cval;
+            _str_cmd += " mimeBoundary " + _mimeBoundary;
+            elems++;
+        }
+        cprops.clear();
+        cnode = BESXMLUtils::GetNextChild(cnode, cname, cval, cprops);
     }
-    if( _contentStartId.empty() )
-    {
-	string err = name + " command: contentStartId not specified" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    if (_contentStartId.empty()) {
+        string err = name + " command: contentStartId not specified";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    if( _mimeBoundary.empty() )
-    {
-	string err = name + " command: mimeBoundary not specified" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    if (_mimeBoundary.empty()) {
+        string err = name + " command: mimeBoundary not specified";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _str_cmd += ";" ;
+    _str_cmd += ";";
 
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response() ;
+    BESXMLCommand::set_response();
 }
 
 /** @brief prepare the get dataddx command
@@ -134,12 +120,11 @@ BESXMLGetDataDDXCommand::parse_request( xmlNode *node )
  * set the contentStartId and mimeBoundary values in the data handler
  * interface
  */
-void
-BESXMLGetDataDDXCommand::prep_request()
+void BESXMLGetDataDDXCommand::prep_request()
 {
-    BESXMLGetCommand::prep_request() ;
-    _dhi.data[DATADDX_STARTID] = _contentStartId ;
-    _dhi.data[DATADDX_BOUNDARY] = _mimeBoundary ;
+    BESXMLGetCommand::prep_request();
+    _dhi.data[DATADDX_STARTID] = _contentStartId;
+    _dhi.data[DATADDX_BOUNDARY] = _mimeBoundary;
 }
 
 /** @brief dumps information about this object
@@ -148,19 +133,17 @@ BESXMLGetDataDDXCommand::prep_request()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLGetDataDDXCommand::dump( ostream &strm ) const
+void BESXMLGetDataDDXCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLGetDataDDXCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESXMLCommand::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLGetDataDDXCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLGetDataDDXCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+BESXMLGetDataDDXCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new BESXMLGetDataDDXCommand( base_dhi ) ;
+    return new BESXMLGetDataDDXCommand(base_dhi);
 }
 

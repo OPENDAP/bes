@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,8 +32,8 @@
 
 #include <iostream>
 
-using std::endl ;
-using std::cout ;
+using std::endl;
+using std::cout;
 
 #include "BESXMLDapCommandModule.h"
 #include "BESDapNames.h"
@@ -51,67 +51,62 @@ using std::cout ;
  *
  * @param modname The name of the module being loaded and initialized
  */
-void
-BESXMLDapCommandModule::initialize( const string &/*modname*/ )
+void BESXMLDapCommandModule::initialize(const string &/*modname*/)
 {
-    BESDEBUG( "dap", "Initializing DAP Commands:" << endl ) ;
+    BESDEBUG( "dap", "Initializing DAP Commands:" << endl );
 
-    BESDEBUG( "besxml", "    adding " << CATALOG_RESPONSE_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( CATALOG_RESPONSE_STR,
-				BESXMLCatalogCommand::CommandBuilder ) ;
+        BESDEBUG( "besxml", "    adding " << CATALOG_RESPONSE_STR
+            << " command" << endl );
+        BESXMLCommand::add_command( CATALOG_RESPONSE_STR,
+            BESXMLCatalogCommand::CommandBuilder );
 
-    BESDEBUG( "besxml", "    adding " << SHOW_INFO_RESPONSE_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
-				BESXMLCatalogCommand::CommandBuilder ) ;
+        BESDEBUG( "besxml", "    adding " << SHOW_INFO_RESPONSE_STR
+            << " command" << endl );
+        BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
+            BESXMLCatalogCommand::CommandBuilder );
 
-    BESDEBUG( "besxml", "    adding " << DATADDX_RESPONSE
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DATADDX_RESPONSE,
-				BESXMLGetDataDDXCommand::CommandBuilder ) ;
+        BESDEBUG( "besxml", "    adding " << DATADDX_RESPONSE
+            << " command" << endl );
+        BESXMLCommand::add_command( DATADDX_RESPONSE,
+            BESXMLGetDataDDXCommand::CommandBuilder );
 
-    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl ) ;
-}
-
-/** @brief Cleans up the DAP XML commands from the list of possible commands
- *
- * When the BES is being shut down, each dynamically loaded module is
- * allowed to clean up after itself before the module is unloaded. This
- * function is called to do the cleanup work for the DAP XML command module
- *
- * @param modname The name of the DAP XML command module.
- */
-void
-BESXMLDapCommandModule::terminate( const string &/*modname*/ )
-{
-    BESDEBUG( "dap", "Removing DAP Commands" << endl ) ;
-
-    BESXMLCommand::del_command( CATALOG_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( DATADDX_RESPONSE ) ;
-
-    BESDEBUG( "dap", "Done Removing DAP Commands" << endl ) ;
-}
-
-/** @brief dumps information about this object
- *
- * Displays the pointer value of this class
- *
- * @param strm C++ i/o stream to dump the information to
- */
-void
-BESXMLDapCommandModule::dump( ostream &strm ) const
-{
-    strm << BESIndent::LMarg << "BESXMLDapCommandModule::dump - ("
-			     << (void *)this << ")" << endl ;
-}
-
-extern "C"
-{
-    BESAbstractModule *maker()
-    {
-	return new BESXMLDapCommandModule ;
+        BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl );
     }
+
+    /** @brief Cleans up the DAP XML commands from the list of possible commands
+     *
+     * When the BES is being shut down, each dynamically loaded module is
+     * allowed to clean up after itself before the module is unloaded. This
+     * function is called to do the cleanup work for the DAP XML command module
+     *
+     * @param modname The name of the DAP XML command module.
+     */
+void BESXMLDapCommandModule::terminate(const string &/*modname*/)
+{
+    BESDEBUG( "dap", "Removing DAP Commands" << endl );
+
+        BESXMLCommand::del_command( CATALOG_RESPONSE_STR );
+        BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR );
+        BESXMLCommand::del_command( DATADDX_RESPONSE );
+
+        BESDEBUG( "dap", "Done Removing DAP Commands" << endl );
+    }
+
+    /** @brief dumps information about this object
+     *
+     * Displays the pointer value of this class
+     *
+     * @param strm C++ i/o stream to dump the information to
+     */
+void BESXMLDapCommandModule::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << "BESXMLDapCommandModule::dump - (" << (void *) this << ")" << endl;
+}
+
+extern "C" {
+BESAbstractModule *maker()
+{
+    return new BESXMLDapCommandModule;
+}
 }
 

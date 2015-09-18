@@ -63,8 +63,8 @@ using std::ofstream;
 #define DEFAULT_HOST "localhost"
 
 CmdApp::CmdApp() :
-        BESBaseApp(), _client(0), _hostStr(DEFAULT_HOST), _unixStr(""), _portVal(DEFAULT_PORT), _outputStrm(0), _inputStrm(
-                0), _createdInputStrm(false), _timeout(0), _repeat(0)
+    BESBaseApp(), _client(0), _hostStr(DEFAULT_HOST), _unixStr(""), _portVal(DEFAULT_PORT), _outputStrm(0), _inputStrm(
+        0), _createdInputStrm(false), _timeout(0), _repeat(0)
 {
 }
 
@@ -107,7 +107,7 @@ void CmdApp::signalCannotConnect(int sig)
             CmdClient *client = app->client();
             if (client && !client->isConnected()) {
                 cout << BESApp::TheApplication()->appName() << ": No response, server may be down or "
-                        << "busy with another incoming connection. exiting!\n";
+                    << "busy with another incoming connection. exiting!\n";
                 exit(1);
             }
         }
@@ -138,7 +138,7 @@ void CmdApp::signalBrokenPipe(int sig)
 {
     if (sig == SIGPIPE) {
         cout << BESApp::TheApplication()->appName() << ": got a broken pipe, server may be down or the port invalid."
-                << endl << "Please check parameters and try again" << endl;
+            << endl << "Please check parameters and try again" << endl;
         CmdApp *app = dynamic_cast<CmdApp *>(BESApp::TheApplication());
         if (app) {
             CmdClient *client = app->client();
@@ -336,7 +336,8 @@ int CmdApp::run()
             _client->startClient(_unixStr, _timeout);
         }
         else {
-            BESDEBUG("cmdln", "CmdApp: Connecting to host: " << _hostStr << " at port: " << _portVal << " ... " << endl);
+            BESDEBUG("cmdln",
+                "CmdApp: Connecting to host: " << _hostStr << " at port: " << _portVal << " ... " << endl);
             _client->startClient(_hostStr, _portVal, _timeout);
         }
 
@@ -388,7 +389,7 @@ int CmdApp::run()
         BESDEBUG("cmdln", "OK" << endl);
 
         BESDEBUG("cmdln", "CmdApp: closing input stream ... " << endl);
-        if (_createdInputStrm) {
+        if (_createdInputStrm && _inputStrm) {
             _inputStrm->close();
             delete _inputStrm;
             _inputStrm = 0;

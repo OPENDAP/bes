@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,63 +36,61 @@
 #include <vector>
 #include <string>
 
-using std::vector ;
-using std::string ;
+using std::vector;
+using std::string;
 
 #include "BESObj.h"
 
 /** @brief tokenizer for the BES request command string
 
-    BESTokenizer tokenizes an BES request command string, such as a get
-    request, a define command, a set command, etc... Tokens are separated by
-    the following characters:
+ BESTokenizer tokenizes an BES request command string, such as a get
+ request, a define command, a set command, etc... Tokens are separated by
+ the following characters:
 
-    '"'
-    ' '
-    '\n'
-    0x0D
-    0x0A
+ '"'
+ ' '
+ '\n'
+ 0x0D
+ 0x0A
 
-    When the tokenizer sees a double quote it then finds the next double
-    quote and includes all test between the quotes, and including the
-    quotes, as a single token.
+ When the tokenizer sees a double quote it then finds the next double
+ quote and includes all test between the quotes, and including the
+ quotes, as a single token.
 
-    If there is any problem in the syntax of the request or command then you
-    can use the method parse_error, which will display all of the tokens up
-    to the point of the error.
+ If there is any problem in the syntax of the request or command then you
+ can use the method parse_error, which will display all of the tokens up
+ to the point of the error.
 
-    If the user of the tokenizer attempts to access the next token before
-    the first token is accessed, a BESExcpetion is thrown.
+ If the user of the tokenizer attempts to access the next token before
+ the first token is accessed, a BESExcpetion is thrown.
 
-    If the user of the tokenizer attempts to access more tokens than were
-    read in, an exception is thrown.
+ If the user of the tokenizer attempts to access more tokens than were
+ read in, an exception is thrown.
  */
-class BESTokenizer : public BESObj
-{
+class BESTokenizer: public BESObj {
 private:
-    vector <string>		tokens ;
-    typedef vector <string>::iterator		tokens_iterator ;
-    typedef vector <string>::const_iterator	tokens_citerator ;
-    int				_counter ;
-    int				_number_tokens ;
+    vector<string> tokens;
+    typedef vector<string>::iterator tokens_iterator;
+    typedef vector<string>::const_iterator tokens_citerator;
+    int _counter;
+    unsigned int _number_tokens;
 
 public:
-    				BESTokenizer() ;
-    				~BESTokenizer();
+    BESTokenizer();
+    ~BESTokenizer();
 
-    void			tokenize( const char *p ) ;
-    string &			get_first_token() ;
-    string &			get_current_token() ;
-    string &			get_next_token() ;
-    void			parse_error( const string &s = "" ) ;
-    string			parse_container_name( const string &s,
-                                                      unsigned int &type ) ;
-    string			remove_quotes( const string &s ) ;
+    void tokenize(const char *p);
+    string & get_first_token();
+    string & get_current_token();
+    string & get_next_token();
+    void parse_error(const string &s = "");
+    string parse_container_name(const string &s, unsigned int &type);
+    string remove_quotes(const string &s);
 
-    void			dump_tokens() ;
+    void dump_tokens();
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BESTokenizer_h_
 

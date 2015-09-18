@@ -85,16 +85,21 @@ void TcpSocket::connect()
 	if (_host == "") _host = "localhost";
 
 	struct protoent *pProtoEnt;
-	struct sockaddr_in sin;
+	struct sockaddr_in sin = {};
 	struct hostent *ph;
 	long address;
 	if (isdigit(_host[0])) {
+	    if (0 == inet_aton(_host.c_str(), &sin.sin_addr)) {
+	        throw BESInternalError(string("Invalid host ip address ") + _host, __FILE__, __LINE__);
+	    }
+#if 0
 		if ((address = inet_addr(_host.c_str())) == -1) {
 			string err("Invalid host ip address ");
 			err += _host;
 			throw BESInternalError(err, __FILE__, __LINE__);
 		}
 		sin.sin_addr.s_addr = address;
+#endif
 		sin.sin_family = AF_INET;
 	}
 	else {
@@ -265,13 +270,15 @@ void TcpSocket::listen()
 	}
 
 	int on = 1;
-	struct sockaddr_in server;
+	struct sockaddr_in server = {}; // initialize server's fields to zero
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY ;
+#if 0
 	struct servent *sir = 0;
+#endif
 	BESDEBUG( "ppt", "Checking /etc/services for port " << _portVal << endl );
 
-	sir = getservbyport(htons(_portVal), 0);
+	struct servent *sir = getservbyport(htons(_portVal), 0);
 	if (sir) {
 		std::ostringstream error_oss;
 		error_oss << endl << "CONFIGURATION ERROR: The requested port (" << _portVal

@@ -63,7 +63,7 @@ void BESXMLCommand::set_response()
     }
     _dhi.data[DATA_REQUEST] = _str_cmd;
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID] << " from " << _dhi.data[REQUEST_FROM] << " [" << _str_cmd
-            << "] received" << endl;
+        << "] received" << endl;
 }
 
 /** @brief Add a command to the possible commands allowed by this BES

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,15 +35,18 @@
 
 #include "BESAbstractModule.h"
 
-class BESXMLDapCommandModule : public BESAbstractModule
-{
+class BESXMLDapCommandModule: public BESAbstractModule {
 public:
-    				BESXMLDapCommandModule() {}
-    virtual		    	~BESXMLDapCommandModule() {}
-    virtual void		initialize( const string &modname ) ;
-    virtual void		terminate( const string &modname ) ;
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    BESXMLDapCommandModule()
+    {
+    }
+    virtual ~BESXMLDapCommandModule()
+    {
+    }
+    virtual void initialize(const string &modname);
+    virtual void terminate(const string &modname);
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // A_BESXMLDapCommandModule_H
 

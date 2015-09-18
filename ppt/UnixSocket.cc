@@ -44,218 +44,187 @@
 #include "BESInternalError.h"
 #include "SocketUtilities.h"
 
-void
-UnixSocket::connect()
+void UnixSocket::connect()
 {
-    if( _listening )
-    {
-	string err( "Socket is already listening" ) ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (_listening) {
+        string err("Socket is already listening");
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    if( _connected )
-    {
-	string err( "Socket is already connected" ) ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (_connected) {
+        string err("Socket is already connected");
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    struct sockaddr_un client_addr ;
-    struct sockaddr_un server_addr ;
+    struct sockaddr_un client_addr;
+    struct sockaddr_un server_addr;
 
     // what is the max size of the path to the unix socket
-    unsigned int max_len = sizeof( client_addr.sun_path ) ;
+    unsigned int max_len = sizeof(client_addr.sun_path);
 
-    char path[107] = "" ;
-    getcwd( path, sizeof( path ) ) ;
-    _tempSocket = path ;
-    _tempSocket += "/" ;
-    _tempSocket += SocketUtilities::create_temp_name() ;
-    _tempSocket += ".unixSocket" ;
+    char path[107] = "";
+    getcwd(path, sizeof(path));
+    _tempSocket = path;
+    _tempSocket += "/";
+    _tempSocket += SocketUtilities::create_temp_name();
+    _tempSocket += ".unixSocket";
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
     // 107 characters in pathname + '\0'
-    if( _tempSocket.length() > max_len - 1 )
-    {
-	string msg = "path to temporary unix socket " ;
-	msg += _tempSocket + " is too long" ;
-	throw( BESInternalError( msg, __FILE__, __LINE__ ) ) ;
+    if (_tempSocket.length() > max_len - 1) {
+        string msg = "path to temporary unix socket ";
+        msg += _tempSocket + " is too long";
+        throw(BESInternalError(msg, __FILE__, __LINE__));
     }
-    if( _unixSocket.length() > max_len - 1 )
-    {
-	string msg = "path to unix socket " ;
-	msg += _unixSocket + " is too long" ;
-	throw( BESInternalError( msg, __FILE__, __LINE__ ) ) ;
+    if (_unixSocket.length() > max_len - 1) {
+        string msg = "path to unix socket ";
+        msg += _unixSocket + " is too long";
+        throw(BESInternalError(msg, __FILE__, __LINE__));
     }
 
     strncpy(server_addr.sun_path, _unixSocket.c_str(), _unixSocket.size());
     server_addr.sun_path[_unixSocket.size()] = '\0';
-    server_addr.sun_family = AF_UNIX ;
+    server_addr.sun_family = AF_UNIX;
 
-    int descript = socket( AF_UNIX, SOCK_STREAM, 0 ) ;
-    if( descript != -1 )
-    {
-	strncpy( client_addr.sun_path, _tempSocket.c_str(), _tempSocket.size());
-	client_addr.sun_path[_tempSocket.size()] = '\0';
-	client_addr.sun_family = AF_UNIX ;
+    int descript = socket( AF_UNIX, SOCK_STREAM, 0);
+    if (descript != -1) {
+        strncpy(client_addr.sun_path, _tempSocket.c_str(), _tempSocket.size());
+        client_addr.sun_path[_tempSocket.size()] = '\0';
+        client_addr.sun_family = AF_UNIX;
 
-	int clen = sizeof( client_addr.sun_family ) ;
-	clen += strlen( client_addr.sun_path )  + 1;
+        int clen = sizeof(client_addr.sun_family);
+        clen += strlen(client_addr.sun_path) + 1;
 
-	if( bind( descript, (struct sockaddr*)&client_addr, clen + 1) != -1 )
-	{
-	    int slen = sizeof( server_addr.sun_family ) ;
-	    slen += strlen( server_addr.sun_path) + 1;
+        if (bind(descript, (struct sockaddr*) &client_addr, clen + 1) != -1) {
+            int slen = sizeof(server_addr.sun_family);
+            slen += strlen(server_addr.sun_path) + 1;
 
-	    // we aren't setting the send and receive buffer sizes for a
-	    // unix socket. These will default to a set value
+            // we aren't setting the send and receive buffer sizes for a
+            // unix socket. These will default to a set value
 
-	    if( ::connect( descript, (struct sockaddr*)&server_addr, slen ) != -1)
-	    {
-		_socket = descript ;
-		_connected = true ;
-	    }
-	    else
-	    {
-	    	::close( descript ) ;
-		string msg = "could not connect via " ;
-		msg += _unixSocket ;
-		char *err = strerror( errno ) ;
-		if( err )
-		    msg = msg + "\n" + err ;
-		else
-		    msg = msg + "\nCould not retrieve error message" ;
-		throw BESInternalError( msg, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-		::close( descript ) ;
-	    string msg = "could not bind to Unix socket " ;
-	    msg += _tempSocket ;
-	    char *err = strerror( errno ) ;
-	    if( err )
-		msg = msg + "\n" + err ;
-	    else
-		msg = msg + "\nCould not retrieve error message" ;
-	    throw BESInternalError( msg, __FILE__, __LINE__ ) ;
-	}
+            if (::connect(descript, (struct sockaddr*) &server_addr, slen) != -1) {
+                _socket = descript;
+                _connected = true;
+            }
+            else {
+                ::close(descript);
+                string msg = "could not connect via ";
+                msg += _unixSocket;
+                char *err = strerror( errno);
+                if (err)
+                    msg = msg + "\n" + err;
+                else
+                    msg = msg + "\nCould not retrieve error message";
+                throw BESInternalError(msg, __FILE__, __LINE__);
+            }
+        }
+        else {
+            ::close(descript);
+            string msg = "could not bind to Unix socket ";
+            msg += _tempSocket;
+            char *err = strerror( errno);
+            if (err)
+                msg = msg + "\n" + err;
+            else
+                msg = msg + "\nCould not retrieve error message";
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
     }
-    else
-    {
-	string msg = "could not create a Unix socket" ;
-	char *err = strerror( errno ) ;
-	if( err )
-	    msg = msg + "\n" + err ;
-	else
-	    msg = msg + "\nCould not retrieve error message" ;
-	throw BESInternalError( msg, __FILE__, __LINE__ ) ;
+    else {
+        string msg = "could not create a Unix socket";
+        char *err = strerror( errno);
+        if (err)
+            msg = msg + "\n" + err;
+        else
+            msg = msg + "\nCould not retrieve error message";
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
 }
 
-void
-UnixSocket::listen()
+void UnixSocket::listen()
 {
-    if( _connected )
-    {
-	string err( "Socket is already connected" ) ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (_connected) {
+        string err("Socket is already connected");
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    if( _listening )
-    {
-	string err( "Socket is already listening" ) ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (_listening) {
+        string err("Socket is already listening");
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    int on = 1 ;
-    static struct sockaddr_un server_add ;
-    _socket = socket( AF_UNIX,SOCK_STREAM, 0 ) ;
-    if( _socket >= 0 )
-    {
-	server_add.sun_family = AF_UNIX;
-	// Changed the call below to strncpy; sockaddr_un.sun_path is a char[104]
-	// on OS/X. jhrg 5/26/06
-	strncpy( server_add.sun_path, _unixSocket.c_str(), 103) ;
-	server_add.sun_path[103] = '\0';
+    int on = 1;
+    static struct sockaddr_un server_add;
+    _socket = socket( AF_UNIX, SOCK_STREAM, 0);
+    if (_socket >= 0) {
+        server_add.sun_family = AF_UNIX;
+        // Changed the call below to strncpy; sockaddr_un.sun_path is a char[104]
+        // on OS/X. jhrg 5/26/06
+        strncpy(server_add.sun_path, _unixSocket.c_str(), 103);
+        server_add.sun_path[103] = '\0';
 
-	(void)unlink( _unixSocket.c_str() ) ;
-	if( setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
-	                 (char*)&on, sizeof( on ) ) )
-	{
-	    string error( "could not set SO_REUSEADDR on Unix socket" ) ;
-	    const char *error_info = strerror( errno ) ;
-	    if( error_info )
-		error += " " + (string)error_info ;
-	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	}
+        (void) unlink(_unixSocket.c_str());
+        if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (char*) &on, sizeof(on))) {
+            string error("could not set SO_REUSEADDR on Unix socket");
+            const char *error_info = strerror( errno);
+            if (error_info) error += " " + (string) error_info;
+            throw BESInternalError(error, __FILE__, __LINE__);
+        }
 
-	// we aren't setting the send and receive buffer sizes for a unix
-	// socket. These will default to a set value
+        // we aren't setting the send and receive buffer sizes for a unix
+        // socket. These will default to a set value
 
-	// Added a +1 to the size computation. jhrg 5/26/05
-	if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
-	{
-	    if( ::listen( _socket, 5 ) == 0 )
-	    {
-		_listening = true ;
-	    }
-	    else
-	    {
-		string error( "could not listen Unix socket" ) ;
-		const char* error_info = strerror( errno ) ;
-		if( error_info )
-		    error += " " + (string)error_info ;
-		throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-	    string error( "could not bind Unix socket" ) ;
-	    const char* error_info = strerror( errno ) ;
-	    if( error_info )
-		error += " " + (string)error_info ;
-	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	}
+        // Added a +1 to the size computation. jhrg 5/26/05
+        if (bind(_socket, (struct sockaddr*) &server_add,
+            sizeof(server_add.sun_family) + strlen(server_add.sun_path) + 1) != -1) {
+            if (::listen(_socket, 5) == 0) {
+                _listening = true;
+            }
+            else {
+                string error("could not listen Unix socket");
+                const char* error_info = strerror( errno);
+                if (error_info) error += " " + (string) error_info;
+                throw BESInternalError(error, __FILE__, __LINE__);
+            }
+        }
+        else {
+            string error("could not bind Unix socket");
+            const char* error_info = strerror( errno);
+            if (error_info) error += " " + (string) error_info;
+            throw BESInternalError(error, __FILE__, __LINE__);
+        }
     }
-    else
-    {
-	string error( "could not get Unix socket" ) ;
-	const char *error_info = strerror( errno ) ;
-	if( error_info )
-	    error += " " + (string)error_info ;
-	throw BESInternalError( error, __FILE__, __LINE__ ) ;
+    else {
+        string error("could not get Unix socket");
+        const char *error_info = strerror( errno);
+        if (error_info) error += " " + (string) error_info;
+        throw BESInternalError(error, __FILE__, __LINE__);
     }
 }
 
-void
-UnixSocket::close()
+void UnixSocket::close()
 {
-    Socket::close() ;
-    if( _tempSocket != "" )
-    {
-	if( !access( _tempSocket.c_str(), F_OK ) )
-	{
-	    (void)remove( _tempSocket.c_str() ) ;
-	}
-	_connected = false ;
+    Socket::close();
+    if (_tempSocket != "") {
+        if (!access(_tempSocket.c_str(), F_OK)) {
+            (void) remove(_tempSocket.c_str());
+        }
+        _connected = false;
     }
-    if( _listening && _unixSocket != "" )
-    {
-	if( !access( _unixSocket.c_str(), F_OK ) )
-	{
-	    (void)remove( _unixSocket.c_str() ) ;
-	}
-	_listening = false ;
+    if (_listening && _unixSocket != "") {
+        if (!access(_unixSocket.c_str(), F_OK)) {
+            (void) remove(_unixSocket.c_str());
+        }
+        _listening = false;
     }
 }
 
 /** @brief is there any wrapper code for unix sockets
  *
  */
-bool
-UnixSocket::allowConnection()
+bool UnixSocket::allowConnection()
 {
-    return true ;
+    return true;
 }
 
 /** @brief dumps information about this object
@@ -264,15 +233,13 @@ UnixSocket::allowConnection()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-UnixSocket::dump( ostream &strm ) const
+void UnixSocket::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "UnixSocket::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl ;
-    strm << BESIndent::LMarg << "temp socket: " << _tempSocket << endl ;
-    Socket::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "UnixSocket::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl;
+    strm << BESIndent::LMarg << "temp socket: " << _tempSocket << endl;
+    Socket::dump(strm);
+    BESIndent::UnIndent();
 }
 

@@ -42,110 +42,98 @@
 #include "BESRegex.h"
 #include "BESInternalError.h"
 
-BESFSDir::BESFSDir(const string &dirName)
-        : _dirName(dirName),
-        _fileExpr(""),
-        _dirLoaded(false)
-{}
+BESFSDir::BESFSDir(const string &dirName) :
+    _dirName(dirName), _fileExpr(""), _dirLoaded(false)
+{
+}
 
-BESFSDir::BESFSDir(const string &dirName, const string &fileExpr)
-        : _dirName(dirName),
-        _fileExpr(fileExpr),
-        _dirLoaded(false)
-{}
+BESFSDir::BESFSDir(const string &dirName, const string &fileExpr) :
+    _dirName(dirName), _fileExpr(fileExpr), _dirLoaded(false)
+{
+}
 
-BESFSDir::BESFSDir(const BESFSDir &copyFrom)
-        : _dirName(copyFrom._dirName),
-        _fileExpr(copyFrom._fileExpr),
-        _dirLoaded(false)
-{}
+BESFSDir::BESFSDir(const BESFSDir &copyFrom) :
+    _dirName(copyFrom._dirName), _fileExpr(copyFrom._fileExpr), _dirLoaded(false)
+{
+}
 
 BESFSDir::~BESFSDir()
-{}
-
-BESFSDir::dirIterator
-BESFSDir::beginOfDirList()
 {
-    if (_dirLoaded == false) {
-        loadDir() ;
-        _dirLoaded = true ;
-    }
-    return _dirList.begin() ;
 }
 
-BESFSDir::dirIterator
-BESFSDir::endOfDirList()
+BESFSDir::dirIterator BESFSDir::beginOfDirList()
 {
     if (_dirLoaded == false) {
-        loadDir() ;
-        _dirLoaded = true ;
+        loadDir();
+        _dirLoaded = true;
     }
-    return _dirList.end() ;
+    return _dirList.begin();
 }
 
-BESFSDir::fileIterator
-BESFSDir::beginOfFileList()
+BESFSDir::dirIterator BESFSDir::endOfDirList()
 {
     if (_dirLoaded == false) {
-        loadDir() ;
-        _dirLoaded = true ;
+        loadDir();
+        _dirLoaded = true;
     }
-    return _fileList.begin() ;
+    return _dirList.end();
 }
 
-BESFSDir::fileIterator
-BESFSDir::endOfFileList()
+BESFSDir::fileIterator BESFSDir::beginOfFileList()
 {
     if (_dirLoaded == false) {
-        loadDir() ;
-        _dirLoaded = true ;
+        loadDir();
+        _dirLoaded = true;
     }
-    return _fileList.end() ;
+    return _fileList.begin();
 }
 
-void
-BESFSDir::loadDir()
+BESFSDir::fileIterator BESFSDir::endOfFileList()
+{
+    if (_dirLoaded == false) {
+        loadDir();
+        _dirLoaded = true;
+    }
+    return _fileList.end();
+}
+
+void BESFSDir::loadDir()
 {
     DIR * dip;
     struct dirent *dit;
 
     // open a directory stream
     // make sure the directory is valid and readable
-    if( ( dip = opendir( _dirName.c_str() ) ) == NULL )
-    {
-        string err_str = "ERROR: failed to open directory '" + _dirName + "'" ;
-        throw BESInternalError( err_str, __FILE__, __LINE__ ) ;
+    if ((dip = opendir(_dirName.c_str())) == NULL) {
+        string err_str = "ERROR: failed to open directory '" + _dirName + "'";
+        throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
     }
-    else
-    {
+    else {
         // read in the files in this directory
         // add each filename to the list of filenames
-        while ((dit = readdir(dip)) != NULL)
-	{
+        while ((dit = readdir(dip)) != NULL) {
             struct stat buf;
-            string dirEntry = dit->d_name ;
+            string dirEntry = dit->d_name;
             if (dirEntry != "." && dirEntry != "..") {
-                string fullPath = _dirName + "/" + dirEntry ;
-                stat(fullPath.c_str(), &buf) ;
+                string fullPath = _dirName + "/" + dirEntry;
+                if (-1 == stat(fullPath.c_str(), &buf))
+                    throw BESError(string("Did not find the path: '") + fullPath + "'", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
                 // look at the mode and determine if this is a filename
                 // or a directory name
                 if (S_ISDIR(buf.st_mode)) {
-                    _dirList.push_back(BESFSDir(fullPath)) ;
+                    _dirList.push_back(BESFSDir(fullPath));
                 }
                 else {
                     if (_fileExpr != "") {
-                        BESRegex reg_expr(_fileExpr.c_str()) ;
-			int match_ret = reg_expr.match( dirEntry.c_str(),
-						        dirEntry.length() ) ;
-			if( match_ret == static_cast<int>(dirEntry.length()) )
-		        {
+                        BESRegex reg_expr(_fileExpr.c_str());
+                        int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.length());
+                        if (match_ret == static_cast<int>(dirEntry.length())) {
                             _fileList.push_back(BESFSFile(_dirName, dirEntry));
                         }
                     }
-                    else
-		    {
-                        _fileList.push_back(BESFSFile(_dirName, dirEntry)) ;
+                    else {
+                        _fileList.push_back(BESFSFile(_dirName, dirEntry));
                     }
                 }
             }
@@ -153,6 +141,6 @@ BESFSDir::loadDir()
     }
 
     // close the directory
-    closedir(dip) ;
+    closedir(dip);
 }
 
