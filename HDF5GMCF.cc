@@ -222,15 +222,17 @@ void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
+                ircv != this->cvars.end(); ) {
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                 ira != (*ircv)->attrs.end(); ++ira) {
+                 ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                     delete (*ira);
-                    (*ircv)->attrs.erase(ira);
-                     ira--;
+                    ira = (*ircv)->attrs.erase(ira);
+                }
+                else {
+                    ++ira;
                 }
             }
         }
@@ -243,30 +245,38 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr) throw(Exception) {
             // Currently we don't find any NASA files in this category.
             // KY 2012-5-21
             delete (*ircv);
-            this->cvars.erase(ircv);
-            ircv--;
+            ircv = this->cvars.erase(ircv);
         }
+        else {
+            ++ircv;
+        }
+       
     } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
     for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ++ircv) {
+                ircv != this->spvars.end(); ) {
 
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                ira != (*ircv)->attrs.end(); ++ira) {
+                ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                     delete (*ira);
-                    (*ircv)->attrs.erase(ira);
-                    ira--;
+                    ira = (*ircv)->attrs.erase(ira);
+                }
+                else {
+                    ++ira;
                 }
             }
         }
         H5DataType temp_dtype = (*ircv)->getType();
         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
             delete (*ircv);
-            this->spvars.erase(ircv);
-            ircv--;
+            ircv = this->spvars.erase(ircv);
         }
+        else {
+            ++ircv;
+        }
+            
     }// for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
 }
 
@@ -401,7 +411,7 @@ void GMFile:: Handle_GM_Unsupported_Dspace() throw(Exception) {
 
     if(true == this->unsupported_var_dspace) {
         for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
+                ircv != this->cvars.end(); ) {
             if (true  == (*ircv)->unsupported_dspace ) {
             
                 // This may need to be checked carefully in the future,
@@ -410,19 +420,26 @@ void GMFile:: Handle_GM_Unsupported_Dspace() throw(Exception) {
                 // Currently we don't find any NASA files in this category.
                 // KY 2012-5-21
                 delete (*ircv);
-                this->cvars.erase(ircv);
-                ircv--;
+                ircv = this->cvars.erase(ircv);
+                //ircv--;
+            }
+            else {
+                ++ircv;
+
             }
         } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
 
         for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ++ircv) {
+                ircv != this->spvars.end(); ) {
 
             if (true == (*ircv)->unsupported_dspace) {
                 delete (*ircv);
-                this->spvars.erase(ircv);
-                ircv--;
+                ircv = this->spvars.erase(ircv);
             }
+            else {
+                ++ircv;
+            }
+            
         }// for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
     }// if(true == this->unsupported_dspace) 
 
@@ -1825,7 +1842,7 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
     //string ll_dim0,ll_dim1;
     set<string> ll_dim_set;
     for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+        irv != this->vars.end(); ) {
         if((*irv)->rank == 2 && (*irv)->name == "Latitude") {
             GMCVar* GMcvar = new GMCVar(*irv);
             size_t lat_pos = (*irv)->fullpath.rfind("Latitude");
@@ -1837,9 +1854,10 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
             GMcvar->product_type = product_type;
             this->cvars.push_back(GMcvar);
             delete(*irv);
-            this->vars.erase(irv);
-            irv--;
+            irv = this->vars.erase(irv);
+            //irv--;
         }
+       
         if((*irv)->rank == 2 && (*irv)->name == "Longitude") {
             GMCVar* GMcvar = new GMCVar(*irv);
             size_t lon_pos = (*irv)->fullpath.rfind("Longitude");
@@ -1851,8 +1869,11 @@ void GMFile::Handle_CVar_GPM_L1() throw(Exception) {
             GMcvar->product_type = product_type;
             this->cvars.push_back(GMcvar);
             delete(*irv);
-            this->vars.erase(irv);
-            irv--;
+            irv = this->vars.erase(irv);
+            //irv--;
+        }
+        else {
+            ++irv;
         }
     }// for (vector<Var *>::iterator irv = this->vars.begin();...
 
@@ -1957,25 +1978,28 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
     for (set<string>::iterator irs = dimnamelist.begin();
             irs != dimnamelist.end();++irs) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
             if ((*irs)== (*irv)->fullpath) {
 
                 if (!iscoard && (("/natrack" == (*irs)) 
-                                 || "/nxtrack" == (*irs)))
+                                 || "/nxtrack" == (*irs))) {
+                    ++irv;
                     continue;
+                 }
 
                 if((*irv)->dims.size()!=1) 
                     throw3("Coard coordinate variable",(*irv)->name, "is not 1D");
-                   // Create Coordinate variables.
-                   tempdimnamelist.erase(*irs);
-                   GMCVar* GMcvar = new GMCVar(*irv);
-                   GMcvar->cfdimname = *irs;
-                   GMcvar->cvartype = CV_EXIST;
-                   GMcvar->product_type = product_type;
-                   this->cvars.push_back(GMcvar); 
-                   delete(*irv);
-                   this->vars.erase(irv);
-                   irv--;
+
+                // Create Coordinate variables.
+                tempdimnamelist.erase(*irs);
+                GMCVar* GMcvar = new GMCVar(*irv);
+                GMcvar->cfdimname = *irs;
+                GMcvar->cvartype = CV_EXIST;
+                GMcvar->product_type = product_type;
+                this->cvars.push_back(GMcvar); 
+                delete(*irv);
+                irv = this->vars.erase(irv);
+                   //irv--;
             } // if ((*irs)== (*irv)->fullpath)
             else if(false == iscoard) { 
             // 2-D lat/lon, natrack maps to lat, nxtrack maps to lon.
@@ -1989,10 +2013,17 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
                     GMcvar->product_type = product_type;
                     this->cvars.push_back(GMcvar);
                     delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                    //irv--;
                 }
+                else {
+                    ++irv;
+                }
+
             }// else if(false == iscoard)
+            else {
+                ++irv;
+            }
         } // for (vector<Var *>::iterator irv = this->vars.begin() ... 
     } // for (set<string>::iterator irs = dimnamelist.begin() ...
 
@@ -2024,49 +2055,55 @@ void GMFile::Handle_CVar_SMAP() throw(Exception) {
     set<string> itset;
 
     for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
 
         tempvarname = (*irv)->name;
 
         if ((tempvarname.size() > key0.size())&&
                 (key0 == tempvarname.substr(tempvarname.size()-key0.size(),key0.size()))){
-                foundkey0 = true;
+
+            foundkey0 = true;
+
             if (dimnamelist.find(smapdim0)== dimnamelist.end()) 
                 throw5("variable ",tempvarname," must have dimension ",smapdim0," , but not found ");
 
-                tempdimnamelist.erase(smapdim0);
-                GMCVar* GMcvar = new GMCVar(*irv);
-                GMcvar->newname = GMcvar->name; // Remove the path, just use the variable name
-                GMcvar->cfdimname = smapdim0;    
-                GMcvar->cvartype = CV_EXIST;
-                GMcvar->product_type = product_type;
-                this->cvars.push_back(GMcvar);
-                delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+            tempdimnamelist.erase(smapdim0);
+            GMCVar* GMcvar = new GMCVar(*irv);
+            GMcvar->newname = GMcvar->name; // Remove the path, just use the variable name
+            GMcvar->cfdimname = smapdim0;    
+            GMcvar->cvartype = CV_EXIST;
+            GMcvar->product_type = product_type;
+            this->cvars.push_back(GMcvar);
+            delete(*irv);
+            irv = this->vars.erase(irv);
+            //    irv--;
         }// if ((tempvarname.size() > key0.size())&& ...
                     
         else if ((tempvarname.size() > key1.size())&& 
                 (key1 == tempvarname.substr(tempvarname.size()-key1.size(),key1.size()))){
-                foundkey1 = true;
+
+            foundkey1 = true;
+
             if (dimnamelist.find(smapdim1)== dimnamelist.end()) 
                 throw5("variable ",tempvarname," must have dimension ",smapdim1," , but not found ");
 
-                tempdimnamelist.erase(smapdim1);
+            tempdimnamelist.erase(smapdim1);
 
-                GMCVar* GMcvar = new GMCVar(*irv);
-                GMcvar->newname = GMcvar->name;
-                GMcvar->cfdimname = smapdim1;    
-                GMcvar->cvartype = CV_EXIST;
-                GMcvar->product_type = product_type;
-                this->cvars.push_back(GMcvar);
-                delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+            GMCVar* GMcvar = new GMCVar(*irv);
+            GMcvar->newname = GMcvar->name;
+            GMcvar->cfdimname = smapdim1;    
+            GMcvar->cvartype = CV_EXIST;
+            GMcvar->product_type = product_type;
+            this->cvars.push_back(GMcvar);
+            delete(*irv);
+            irv = this->vars.erase(irv);
+            //    irv--;
         }// else if ((tempvarname.size() > key1.size())&& ...
+        else {
+            ++irv;
+        }
         if (true == foundkey0 && true == foundkey1) 
             break;
-            
     } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
 
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2122,24 +2159,27 @@ void GMFile::Handle_CVar_Mea_Ozone() throw(Exception){
     for (set<string>::iterator irs = dimnamelist.begin();
             irs != dimnamelist.end();++irs) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
             if ((*irs)== (*irv)->fullpath) {
 
                 if((*irv)->dims.size()!=1) 
                     throw3("Coard coordinate variable",(*irv)->name, "is not 1D");
 
-                   // Create Coordinate variables.
-                   tempdimnamelist.erase(*irs);
-                   GMCVar* GMcvar = new GMCVar(*irv);
-                   GMcvar->cfdimname = *irs;
-                   GMcvar->cvartype = CV_EXIST;
-                   GMcvar->product_type = product_type;
-                   this->cvars.push_back(GMcvar); 
-                   delete(*irv);
-                   this->vars.erase(irv);
-                   irv--;
+                // Create Coordinate variables.
+                tempdimnamelist.erase(*irs);
+                GMCVar* GMcvar = new GMCVar(*irv);
+                GMcvar->cfdimname = *irs;
+                GMcvar->cvartype = CV_EXIST;
+                GMcvar->product_type = product_type;
+                this->cvars.push_back(GMcvar); 
+                delete(*irv);
+                irv = this->vars.erase(irv);
+                //irv--;
             } // if ((*irs)== (*irv)->fullpath)
-       } // for (vector<Var *>::iterator irv = this->vars.begin();
+            else {
+                ++irv;
+            }
+        } // for (vector<Var *>::iterator irv = this->vars.begin();
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2160,7 +2200,7 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     for (set<string>::iterator irs = dimnamelist.begin();
             irs != dimnamelist.end();++irs) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
 
             // This is the dimension scale dataset; it should be changed to a coordinate variable.
             if ((*irs)== (*irv)->fullpath) {
@@ -2185,9 +2225,12 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
                 GMcvar->product_type = product_type;
                 this->cvars.push_back(GMcvar); 
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
+                //irv--;
             } // if ((*irs)== (*irv)->fullpath)
+            else {
+                ++irv;
+            }
        } // for (vector<Var *>::iterator irv = this->vars.begin();
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
@@ -2644,21 +2687,21 @@ void GMFile::Handle_SpVar() throw(Exception){
     else if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
 
         for (vector<Var *>::iterator irv = this->vars.begin();
-                    irv != this->vars.end(); ++irv) {
+                    irv != this->vars.end(); ) {
             if((*irv)->name=="InputFileNames") {
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
             }
             else if((*irv)->name=="InputAlgorithmVersions") {
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
             }
             else if((*irv)->name=="InputGenerationDateTimes") {
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
+            }
+            else {
+                ++irv;
             }
 
         }
@@ -2673,7 +2716,7 @@ void GMFile::Handle_SpVar_ACOS_OCO2() throw(Exception) {
     //The ACOS or OCO2 have 64-bit variables. DAP2 doesn't support 64-bit variables.
     // So we will not handle attributes yet.
     for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
         if (H5INT64 == (*irv)->getType()) {
             
             // First: Time Part of soundingid
@@ -2701,9 +2744,11 @@ void GMFile::Handle_SpVar_ACOS_OCO2() throw(Exception) {
             this->spvars.push_back(spvar2);
 
             delete(*irv);
-            this->vars.erase(irv);
-            irv--;
+            irv = this->vars.erase(irv);
         } // if (H5INT64 == (*irv)->getType())
+        else {
+            ++irv;
+        }
     } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
 }
 
@@ -3675,7 +3720,7 @@ void GMFile:: Handle_Coor_Attr() {
         bool coor_attr_keep_exist = false;
 
         for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
-            ira !=(*irv)->attrs.end();++ira) {
+            ira !=(*irv)->attrs.end();) {
             if (((*ira)->newname == "coordinates")) {
                 if (product_type == SMAP) {
                     coor_attr_keep_exist = true;
@@ -3686,9 +3731,11 @@ void GMFile:: Handle_Coor_Attr() {
                     // We need to keep an eye on the future CF conventions on the "coordinates" attribute.
                     // This approach may need to be modified. KY 2015-05-18
                     delete (*ira);
-                    (*irv)->attrs.erase(ira);
-                    ira --;
+                    ira = (*irv)->attrs.erase(ira);
                 }
+            }
+            else {
+                ++ira;
             }
         }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
 
