@@ -166,15 +166,18 @@ void EOS5File:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
 void EOS5File:: Handle_EOS5_Unsupported_Dtype(bool include_attr) throw(Exception) {
 
     for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
+                ircv != this->cvars.end(); ) {
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                 ira != (*ircv)->attrs.end(); ++ira) {
+                 ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                     delete (*ira);
-                    (*ircv)->attrs.erase(ira);
-                    ira--;
+                    ira = (*ircv)->attrs.erase(ira);
+                }
+                else {
+                    ++ira;
+
                 }
             }
         }
@@ -182,10 +185,12 @@ void EOS5File:: Handle_EOS5_Unsupported_Dtype(bool include_attr) throw(Exception
         H5DataType temp_dtype = (*ircv)->getType();
         if (!HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
             delete (*ircv);
-            this->cvars.erase(ircv);
-            ircv--;
+            ircv = this->cvars.erase(ircv);
+            //ircv--;
         }
-
+        else {
+            ++ircv;
+        }
     }
 }
 void EOS5File::  Gen_Unsupported_Dtype_Info(bool include_attr) {
@@ -253,11 +258,15 @@ void EOS5File:: Handle_EOS5_Unsupported_Dspace() throw(Exception) {
  
     if (true == this->unsupported_var_dspace) {
         for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
+                ircv != this->cvars.end(); ) {
             if (true == (*ircv)->unsupported_dspace) {
                 delete (*ircv);
-                this->cvars.erase(ircv);
-                ircv--;
+                ircv = this->cvars.erase(ircv);
+                //ircv--;
+            }
+            else {
+                ++ircv;
+
             }
         }
     }
@@ -396,10 +405,13 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw(Excep
     // datasets when data is written. It is not useful for data accessing as far as I know.
     // So we will remove it from the list. 
     // This algoritm will also remove  any dimension with size <=0. KY 2011-1-14
-    for (id = groupdimlist.begin(); id != groupdimlist.end(); ++id) {
+    for (id = groupdimlist.begin(); id != groupdimlist.end(); ) {
         if ((*id).size <= 0) {
-            groupdimlist.erase(id);
-            id --;
+            id = groupdimlist.erase(id);
+            //id --;
+        }
+        else {
+           ++id;
         }
     }
 }
@@ -411,27 +423,44 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw(Excepti
     pair<set<int>::iterator,bool> setret;
     vector <HE5Dim>:: iterator id;
 
-    for (id = groupdimlist.begin(); id != groupdimlist.end(); ++id) {
+    for (id = groupdimlist.begin(); id != groupdimlist.end(); ) {
         if ("XDim" == (*id).name || "Xdim" == (*id).name) {
             setret = xdimsizes.insert((*id).size);
             if (false == setret.second) {
-                groupdimlist.erase(id);
-                id--;
+                id = groupdimlist.erase(id);
+                //id--;
             }
-            else if ("Xdim" == (*id).name) (*id).name = "XDim";
+            else if ("Xdim" == (*id).name) {
+                (*id).name = "XDim";
+                ++id;
+            }
+            else {
+                ++id;
+            }
                 
+        }
+        else {
+            ++id;
         }
     }
   
-    for (id = groupdimlist.begin(); id != groupdimlist.end(); ++id) {
+    for (id = groupdimlist.begin(); id != groupdimlist.end(); ) {
         if ("YDim" == (*id).name || "Ydim" ==(*id).name) {
             setret = ydimsizes.insert((*id).size);
             if (false == setret.second) {
-                groupdimlist.erase(id);
-                id--;
+                id = groupdimlist.erase(id);
+                //id--;
             }
-            else if ("Ydim" == (*id).name) 
+            else if ("Ydim" == (*id).name) {
                 (*id).name = "YDim";
+                ++id;
+            }
+            else {
+                ++id;
+            }
+        }
+        else {
+            ++id;
         }
     }
 }
@@ -1595,7 +1624,7 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
 //"h5","coming to Single Augment Grid "<<endl;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
 
             bool is_augmented = Check_Augmented_Var_Candidate(cfeos5data,*irv,eos5type);
 
@@ -1622,10 +1651,16 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
 
                     // Remove this var from the var vector since it becomes a cv.
                     delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                    //irv--;
+                }
+                else {
+                    ++irv;
                 }
             } // if (true == is_augmented)
+            else {
+                ++irv;
+            }
         } // for (vector<Var *>::iterator irv = this->vars.begin();....
     } // for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
 
@@ -1644,7 +1679,7 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
 void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
 
     for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin();
-         irg != this->eos5cfgrids.end(); ++irg) {
+         irg != this->eos5cfgrids.end(); ) {
 
         // If number of dimension latitude/longitude is >=2, no cooridnate variables will be generated.
         // We will simply remove this grid from the vector eos5cfgrids.
@@ -1654,6 +1689,8 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
         // the projection. So I don't remove this OMI grid from the grid list. KY 2012-2-9
         // However, I do remove the "Longitude" and "Latitude" fields since "Latitude" and "Longitude"
         // can be calculated. 
+        
+        bool irg_erase = false;
 
         if (true  == (*irg)->has_2dlatlon) {
 
@@ -1668,7 +1705,7 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
                 int catch_latlon = 0;
 
                 for (vector<Var *>::iterator irv = this->vars.begin();
-                    (irv != this->vars.end()) && (catch_latlon!=2); ++irv) {
+                    (irv != this->vars.end()) && (catch_latlon!=2); ) {
                     if (GRID == Get_Var_EOS5_Type(*irv) &&
                             ((*irv)->fullpath.size() > THIS_EOS5GRIDPATH.size())) {
 
@@ -1678,10 +1715,19 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
                                 catch_latlon++;
                                 // Remove this var from the var vector since it becomes a cv.
                                 delete(*irv);
-                                this->vars.erase(irv);
-                                irv--;
+                                irv = this->vars.erase(irv);
+                                //irv--;
+                           }
+                           else {
+                                ++irv;
                            }
                        }
+                       else {
+                            ++irv;
+                       }
+                    }
+                    else {
+                       ++irv;
                     }
                 } //  for (vector<Var *>::iterator irv = this->vars.begin() ...
                 if (2 == catch_latlon) {
@@ -1689,18 +1735,34 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw(Exception)         {
                     (*irg)->has_nolatlon = true;
                     (*irg)->has_2dlatlon = false;
                 }
+
             } // if ((true == this->isaura) ...
             else {// remove this grid from the eos5cfgrids list.
                 delete (*irg);
-                this->eos5cfgrids.erase(irg);
-                irg--;
+                irg = this->eos5cfgrids.erase(irg);
+                irg_erase = true;
+                
+                //irg--;
             }
         } // if (true  == (*irg) ...
-            
+
+        if(false == irg_erase){
+            ++irg;
+        }
+
+    } // for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ...
+
+    // Also remove >2d latlon grids.
+    for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin();
+         irg != this->eos5cfgrids.end(); ) {
+           
         if (true == (*irg)->has_g2dlatlon)  {
             delete (*irg);
-            this->eos5cfgrids.erase(irg);
-            irg--;
+            irg = this->eos5cfgrids.erase(irg);
+            //irg--;
+        }
+        else {
+            ++irg;
         }
     } // for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ...
 }
@@ -1950,7 +2012,7 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         if (cfgrid->dnames_to_1dvnames.find(*its) !=cfgrid->dnames_to_1dvnames.end()){
             for (vector<Var *>::iterator irv = this->vars.begin();
-                    has_dimnames && (irv != this->vars.end()); ++irv) {
+                    has_dimnames && (irv != this->vars.end()); ) {
                 // We need to check if this var is a grid and use "newname"
                 // of var to check the dnames_to_1dvnames since it is 
                 // possible to have name clashings for the "name" of a var.
@@ -1971,12 +2033,15 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
         
                     // Remove this var from the var vector since it becomes a cv.
                     delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                    //irv--;
                     num_dimnames--;
                     if (0 == num_dimnames) 
                         has_dimnames = false;
                 } // if (GRID == Get_Var_EOS5_Type(*irv) ...
+                else {
+                    ++irv;
+                }
             } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
         } // if (cfgrid->dnames_to_1dvnames.find(*its) !=cfgrid->dnames_to_1dvnames.end())
     } // for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
@@ -2125,13 +2190,15 @@ void EOS5File::Handle_Swath_CVar(bool isaugmented) throw(Exception){
     // since MLS products don't use the recent version of the augmentation tool to allocate their 
     // coordinate variables.
     for (vector <EOS5CFSwath *>::iterator irs = this->eos5cfswaths.begin();
-            irs !=this->eos5cfswaths.end();++irs) {
-        if ((*irs)->has_1dlatlon) 
+            irs !=this->eos5cfswaths.end();) {
+        if ((*irs)->has_1dlatlon) {
             Handle_Single_1DLatLon_Swath_CVar(*irs,isaugmented);
-
-        else if((*irs)->has_2dlatlon) 
+            ++irs;
+        }
+        else if((*irs)->has_2dlatlon) {
             Handle_Single_2DLatLon_Swath_CVar(*irs,isaugmented);
-
+            ++irs;
+        }
         // If number of dimension latitude/longitude is >2 or no lat/lon, 
         // no cooridnate variables will be generated.
         // We will simply remove this swath from the vector eos5cfswaths.
@@ -2139,8 +2206,8 @@ void EOS5File::Handle_Swath_CVar(bool isaugmented) throw(Exception){
         // KY 2011-1-20
         else {
             delete (*irs);
-            this->eos5cfswaths.erase(irs);
-            irs--;
+            irs = this->eos5cfswaths.erase(irs);
+            //irs--;
         }
 //cerr<<"eos5 cf swath name "<<(*irs)->name <<endl;
     } // for (vector <EOS5CFSwath *>::iterator irs = this->eos5cfswaths.begin();
@@ -2185,7 +2252,7 @@ cerr<<"Dimension name befor latitude " << *its << endl;
                 // Remove this var from the var vector since it becomes a cv.
                 delete(*irv);
                 this->vars.erase(irv);
-                irv--;
+                //irv--;
                 find_lat = true;
                 break;
             } // if ((var_swath_name == cfswath->name) && ...
@@ -2220,7 +2287,7 @@ cerr<<"Dimension name afte latitude " << *its << endl;
     // Remove the added variables during the augmentation process
     if (true == is_augmented) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
 
             if (SWATH == Get_Var_EOS5_Type(*irv)) {
 #if 0
@@ -2235,12 +2302,21 @@ cerr<<"Dimension name afte latitude " << *its << endl;
                     string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
                     if (var_path_after_swathname == (*irv)->name) {
                         delete(*irv);
-                        this->vars.erase(irv);
-                        irv--;
+                        irv = this->vars.erase(irv);
+                        //irv--;
+                    }
+                    else {
+                        ++irv;
                     }
                 }
+                else {
+                    ++irv;
+                }
             }
-        }
+            else {
+                ++irv;
+            }
+        }// for (vector<Var*>::iterator irv = 
     } // if (true == is_augmented)
 }
 
@@ -2262,7 +2338,7 @@ cerr<<"Dimension name befor latitude " << *its << endl;
 
     // Find latitude and assign to the coordinate variable
     for (vector<Var *>::iterator irv = this->vars.begin();
-                    irv != this->vars.end(); ++irv) {
+                    irv != this->vars.end(); ) {
         if (SWATH == Get_Var_EOS5_Type(*irv) &&
                   ((*irv)->fullpath.size() > THIS_EOS5SWATHPATH.size())) {
             string var_swath_name = Obtain_Var_EOS5Type_GroupName(*irv,SWATH);
@@ -2283,8 +2359,8 @@ cerr<<"Dimension name befor latitude " << *its << endl;
 
                 // Remove this var from the var vector since it becomes a cv.
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
+                //irv--;
                 find_lat = true;
             } // if ( (var_swath_name == cfswath->name) && ...
             else if ( (var_swath_name == cfswath->name) && ((*irv)->name == "Longitude")) {
@@ -2304,12 +2380,18 @@ cerr<<"Dimension name befor latitude " << *its << endl;
 
                 // Remove this var from the var vector since it becomes a cv.
                 delete(*irv);
-                this->vars.erase(irv);
-                irv--;
+                irv = this->vars.erase(irv);
+                //irv--;
                 find_lon = true;
 
             } // else if ( (var_swath_name == cfswath->name) && ...
+            else {
+                ++irv;
+            }
         } // if (SWATH == Get_Var_EOS5_Type(*irv) && ...
+        else {
+            ++irv;
+        }
 
         if (true == find_lat && true == find_lon) break;
     } // for (vector<Var *>::iterator irv = this->vars.begin();
@@ -2365,7 +2447,7 @@ cerr<<"Dimension name afte latitude " << *its << endl;
     // revise the following section as needed. KY 2012-03-09
     if (true == is_augmented) {
         for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
 
             if (SWATH == Get_Var_EOS5_Type(*irv)) { 
 
@@ -2374,12 +2456,21 @@ cerr<<"Dimension name afte latitude " << *its << endl;
                     string var_path_after_swathname = (*irv)->fullpath.substr(THIS_EOS5SWATHPATH.size());
                     if (var_path_after_swathname == (*irv)->name) {
                         delete(*irv);
-                        this->vars.erase(irv);
-                        irv--;
+                        irv = this->vars.erase(irv);
+                        //irv--;
+                    }
+                    else {
+                        ++irv;
                     }
                 }
+                else {
+                    ++irv;
+                }
             }
-        }
+            else {
+                ++irv;
+            }
+        }// for (vector<Var *>::iterator irv
     }
 }
 
@@ -2392,7 +2483,7 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
         if (cfswath->dnames_to_geo1dvnames.find(*its) !=cfswath->dnames_to_geo1dvnames.end()){
             for (vector<Var *>::iterator irv = this->vars.begin();
-                    has_dimnames && (irv != this->vars.end()); ++irv) {
+                    has_dimnames && (irv != this->vars.end()); ) {
 
                 // We need to check if this var is a swath and use "newname"
                 // of var to check the dnames_to_1dvnames since it is 
@@ -2414,12 +2505,15 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
         
                     // Remove this var from the var vector since it becomes a cv.
                     delete(*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                    //irv--;
                     num_dimnames--;
                     if (0 == num_dimnames) 
                         has_dimnames = false;
                 } // if (SWATH == Get_Var_EOS5_Type(*irv) && ...)
+                else {
+                    ++irv;
+                }
             } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
         } // if (cfswath->dnames_to_geo1dvnames.find(*its) ....
     } // for (its = tempvardimnamelist.begin()...

@@ -811,13 +811,16 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
         if  (false == this->root_attrs.empty()) {
             if (true == this->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
-                    ira != this->root_attrs.end(); ++ira) {
+                    ira != this->root_attrs.end(); ) {
                     H5DataType temp_dtype = (*ira)->getType();
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                         delete (*ira);
-		        this->root_attrs.erase(ira);
-		        ira--;
+		        ira = this->root_attrs.erase(ira);
+		        
 		    }
+                    else {
+                        ++ira;
+                    }
                 }
             }
         }
@@ -829,12 +832,14 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
                 if (false == (*irg)->attrs.empty()) {
                     if (true == (*irg)->unsupported_attr_dtype) {
                         for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
-                            ira != (*irg)->attrs.end(); ++ira) {
+                            ira != (*irg)->attrs.end(); ) {
                             H5DataType temp_dtype = (*ira)->getType();
                             if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                                 delete (*ira);
-                                (*irg)->attrs.erase(ira);
-                                ira--;
+                                ira = (*irg)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
                             }
                         }
                     }
@@ -847,16 +852,19 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
     if (false == this->vars.empty()) {
         if (true == include_attr) {
             for (vector<Var *>::iterator irv = this->vars.begin();
-                 irv != this->vars.end(); ++irv) {
+                 irv != this->vars.end();++irv ) {
                 if (false == (*irv)->attrs.empty()) {
                     if (true == (*irv)->unsupported_attr_dtype) {
                         for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
+                            ira != (*irv)->attrs.end(); ) {
                             H5DataType temp_dtype = (*ira)->getType();
                             if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                                 delete (*ira);
-                                (*irv)->attrs.erase(ira);
-                                ira--;
+                                ira = (*irv)->attrs.erase(ira);
+                                //ira--;
+                            }
+                            else {
+                                ++ira;
                             }
                         }
                     }
@@ -866,13 +874,15 @@ void File::Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
        if (true == this->unsupported_var_dtype) {
            // "h5","having unsupported variable datatype" <<endl;
             for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
                 H5DataType temp_dtype = (*irv)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                     delete (*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                    //irv--;
                 }
+                else 
+                   ++irv;
             }
         }
     }
@@ -885,13 +895,15 @@ void File::Handle_Group_Unsupported_Dtype() throw(Exception) {
         if  (false == this->root_attrs.empty()) {
             if (true == this->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = this->root_attrs.begin();
-                    ira != this->root_attrs.end(); ++ira) {
+                    ira != this->root_attrs.end(); ) {
                     H5DataType temp_dtype = (*ira)->getType();
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                         delete (*ira);
-		        this->root_attrs.erase(ira);
-		        ira--;
+		        ira = this->root_attrs.erase(ira);
 		    }
+                    else {
+                        ++ira;
+                    }
                 }
             }
         }
@@ -903,12 +915,14 @@ void File::Handle_Group_Unsupported_Dtype() throw(Exception) {
                 if (false == (*irg)->attrs.empty()) {
                     if (true == (*irg)->unsupported_attr_dtype) {
                         for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
-                            ira != (*irg)->attrs.end(); ++ira) {
+                            ira != (*irg)->attrs.end(); ) {
                             H5DataType temp_dtype = (*ira)->getType();
                             if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                                 delete (*ira);
-                                (*irg)->attrs.erase(ira);
-                                ira--;
+                                ira = (*irg)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
                             }
                         }
                     }
@@ -958,13 +972,17 @@ void File:: Handle_Var_Unsupported_Dtype() throw(Exception) {
        if (true == this->unsupported_var_dtype) {
            // "h5","having unsupported variable datatype" <<endl;
             for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+                irv != this->vars.end(); ) {
                 H5DataType temp_dtype = (*irv)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                     delete (*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv= this->vars.erase(irv);
                 }
+                else {
+                    ++irv;
+
+                }
+                
             }
         }
     }
@@ -997,12 +1015,14 @@ void File::Handle_VarAttr_Unsupported_Dtype() throw(Exception) {
                 if (false == (*irv)->attrs.empty()) {
                     if (true == (*irv)->unsupported_attr_dtype) {
                         for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                            ira != (*irv)->attrs.end(); ++ira) {
+                            ira != (*irv)->attrs.end(); ) {
                             H5DataType temp_dtype = (*ira)->getType();
                             if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
                                 delete (*ira);
-                                (*irv)->attrs.erase(ira);
-                                ira--;
+                                ira = (*irv)->attrs.erase(ira);
+                            }
+                            else {
+                                ++ira;
                             }
                         }
                     }
@@ -1069,11 +1089,14 @@ void File::Handle_Unsupported_Dspace() throw(Exception) {
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
             for (vector<Var *>::iterator irv = this->vars.begin();
-                 irv != this->vars.end(); ++irv) {
+                 irv != this->vars.end(); ) {
                 if (true  == (*irv)->unsupported_dspace) {
                     delete (*irv);
-                    this->vars.erase(irv);
-                    irv--;
+                    irv = this->vars.erase(irv);
+                }
+                else {
+                    ++irv;
+
                 }
             }
         }
@@ -1754,10 +1777,11 @@ File:: Replace_Var_Info(Var *src, Var *target) {
     }
 #endif
     for (vector<Dimension*>::iterator ird = target->dims.begin();
-        ird!=target->dims.end(); ++ird) {
+        ird!=target->dims.end(); ) {
         delete (*ird);
-        target->dims.erase(ird);
-        ird--;
+        ird = target->dims.erase(ird);
+        //ird--;
+
     }
  
     // Somehow attributes cannot be replaced. 
@@ -1798,10 +1822,10 @@ File:: Replace_Var_Attrs(Var *src, Var *target) {
 #endif
 
     for (vector<Attribute*>::iterator ira = target->attrs.begin();
-        ira!=target->attrs.end(); ++ira) {
+        ira!=target->attrs.end(); ) {
         delete (*ira);
-        target->attrs.erase(ira);
-        ira--;
+        ira = target->attrs.erase(ira);
+        //ira--;
     }
     for (vector<Attribute*>::iterator ira = src->attrs.begin();
         ira!=src->attrs.end(); ++ira) {
