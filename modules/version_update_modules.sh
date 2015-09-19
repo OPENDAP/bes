@@ -15,9 +15,10 @@
 # person has to intentionally remove it to get the script to run and
 # edit the configure.ac, etc., files.
 
-for module in "$*"
+for module in $*
 do
-
+    echo "Entering $module"
+    
     (cd $module
 
      # Test the sentinel file. If this is here, do nothing.
