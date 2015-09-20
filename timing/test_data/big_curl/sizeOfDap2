@@ -1,0 +1,56 @@
+#!/bin/bash
+
+
+for ddsFile in $*
+do
+    echo "Working on DDS: $ddsFile  Dataset {"
+    awk '
+        BEGIN{datasetSize=0;}
+        {
+        
+            if($1=="Byte" || $1=="UByte" || $1=="Int8" || $1=="UInt8" || $1=="Char"){
+                typeSizeInBytes=1;
+            }
+            else if($1=="Int16" || $1=="UInt16"){
+                typeSizeInBytes=2;
+            }
+            else if($1 == "Float32" || $1=="Int32" || $1=="UInt32"){
+                typeSizeInBytes = 4;
+            }
+            else if($1=="Float64" || $1=="Int64" || $1=="UInt64"){
+                typeSizeInBytes=8;
+            }
+            
+            if ( $1 ~ /^(Float|(U)?Int|Byte|Char)/ ){         
+                
+                arrayShape=substr($0,index($0,"["));
+                an1=substr($2,0,index($0,"["));
+                split(an1,an2,"[");
+                arrayName = an2[1];
+                # print arrayShape;
+
+
+                printf("%s %s %d bytes ",arrayName,$1,typeSizeInBytes);
+
+                numdims=split(arrayShape,dims,"]");
+                
+                arraysize=typeSizeInBytes;
+                for(i=1; i<numdims ;i++){
+                    #print "Dim: "dims[i];
+                    split(dims[i],size," = ");
+                    
+                    printf("[%s]",size[2]);
+                    arraysize *= size[2];
+                }
+                printf(" = %d bytes\n",arraysize);
+                datasetSize += arraysize
+            }
+          
+          } 
+          END { print "}  ESTIMATED TOTAL DATASET SIZE: "datasetSize" bytes in "NR" lines read"; }
+      ' $ddsFile
+done
+      
+      
+# 151,092,221,568
+# 166,099,584,385

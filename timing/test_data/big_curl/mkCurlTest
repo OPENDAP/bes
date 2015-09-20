@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+
+reps=1
+
+args=`getopt "r:" $*`
+if test $? != 0
+then
+	echo "Usage: mkCurlTests [-r reps]"
+	echo "Example: mkCurlTests -r 4"
+	exit 2
+fi
+
+set -- $args
+
+for i
+do
+    case "$i"
+    in
+        -r)
+            reps=$2; 
+            echo "Reps set to $reps"
+            shift;
+            shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+
+for i in baseline parallel_io
+do
+
+curlCmd=$i"_curl.cmd"
+curlLog=$i"_curl.log"
+curlTime=$i"_curl.time"
+
+rm -f $curlLog $curlTime
+
+repCount=0
+while [ $repCount -lt $reps ]
+do
+    echo "Working on $curlCmd Pass: $repCount"
+    # { time curl -K $curlCmd 2>$curlResult; } 2>>$curlTime
+    { time curl -K $curlCmd | wc -c > $i"_curl.count" 2>$curlLog; } 2>>$curlTime
+    repCount=$[repCount + 1] 
+done  
+      
+done
