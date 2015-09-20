@@ -1,0 +1,20 @@
+ShortName, CommandFileName, Label, BaselineAvgTime, +-, ImprovedTime, +-, Reps
+Ah01b, AIRX3STD_hdf_01_bigvar.dods-bescmd.xml, Single File 01 Var, 87.986600, 2.407904, 90.186300, 2.599515, 10
+Ah02b, AIRX3STD_hdf_02_bigvar.dods-bescmd.xml, Single File 02 Vars, 151.877000, 2.981107, 153.476600, 3.073760, 10
+Ah04b, AIRX3STD_hdf_04_bigvar.dods-bescmd.xml, Single File 04 Vars, 275.457900, 3.584090, 285.556600, 5.003027, 10
+Ah08b, AIRX3STD_hdf_08_bigvar.dods-bescmd.xml, Single File 08 Vars, 522.320500, 3.772956, 534.818500, 5.922778, 10
+Ah16b, AIRX3STD_hdf_16_bigvar.dods-bescmd.xml, Single File 16 Vars, 1015.748000, 8.968033, 1039.741000, 11.289473, 10
+Ah32b, AIRX3STD_hdf_32_bigvar.dods-bescmd.xml, Single File 32 Vars, 1968.100000, 31.011257, 2037.090000, 18.396739, 10
+AA01tn, AIRX3_Aggregation_01_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 01 Granule, 458.730300, 6.430188, 455.230700, 4.690648, 10
+AA02tn, AIRX3_Aggregation_02_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 02 Granules, 541.517700, 6.068539, 456.730800, 7.452726, 10
+AA04tn, AIRX3_Aggregation_04_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 04 Granules, 796.578700, 9.390443, 457.530400, 5.624191, 10
+AA08tn, AIRX3_Aggregation_08_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 08 Granules, 1145.326000, 16.410607, 458.930100, 8.909265, 10
+AA16tn, AIRX3_Aggregation_16_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 16 Granules, 1837.720000, 18.127327, 456.430700, 6.814272, 10
+AA32tn, AIRX3_Aggregation_32_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 32 Granules, 3229.609000, 31.842962, 457.730500, 6.568485, 10
+AA64tn, AIRX3_Aggregation_64_timeslab.ncml.dods-bescmd.xml, Agg. 1 Var 64 Granules, 6061.077000, 102.257930, 458.330200, 4.840851, 10
+Ahas01b, AIRX3_hdf4_aggregation_small_01_bigvar.dods-bescmd.xml, Agg. 01 BigVar 10 Granules, 1004.349800, 7.915365, 238.763700, 6.257066, 10
+Ahas02b, AIRX3_hdf4_aggregation_small_02_bigvar.dods-bescmd.xml, Agg. 02 BigVars 10 Granules, 1001.449400, 7.116567, 238.463600, 3.852921, 10
+Ahas04b, AIRX3_hdf4_aggregation_small_04_bigvar.dods-bescmd.xml, Agg. 04 BigVars 10 Granules, 1013.846600, 14.418808, 238.763600, 7.109518, 10
+Ahas08b, AIRX3_hdf4_aggregation_small_08_bigvar.dods-bescmd.xml, Agg. 08 BigVars 10 Granules, 1007.847500, 9.876569, 236.963800, 3.405496, 10
+Ahas16b, AIRX3_hdf4_aggregation_small_16_bigvar.dods-bescmd.xml, Agg. 16 BigVars 10 Granules, 1011.646800, 12.620552, 238.463600, 3.694103, 10
+Ahas32b, AIRX3_hdf4_aggregation_small_32_bigvar.dods-bescmd.xml, Agg. 32 BigVars 10 Granules, 1013.547800, 13.286787, 240.763100, 6.689383, 10
