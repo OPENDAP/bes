@@ -1,3 +1,96 @@
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #2 from OPENDAP/hdf4_handler_local
+	Use the correct way to handle erase operation in an iterator>
+
+2015-09-18  muqun yang  <myang6@hdfgroup.org>
+
+	Use the correct way to handle erase operation in an iterator>
+
+2015-09-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1 from OPENDAP/hdf4_handler_local
+	1. Mainly update the documents(version , new keys and new features/bu…
+
+2015-09-15  muqun yang  <myang6@hdfgroup.org>
+
+	1. Mainly update the documents(version , new keys and new features/bug fixes) 2. Remove USE_DAP4 macro from the source code since Hyrax is including DAP4 by default
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf4_handler
+
+	Spelling in h4.conf.in
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-07-23  Kent Yang  <myang6@hdfgroup.org>
+
+	Add 1-D horizontal CF cv variables and corresponding CF attributes for the HDF-EOS2 sinussoidal projection products.
+
+2015-06-24  Muqun (Kent) Yang  <myang6@jam.hdfgroup.uiuc.edu>
+
+	Make the code follow the snapshot version.(BESStopwatch can be
+	used to track performance.)
+
+	This check-in 1) Improves the performance of special NASA products
+	2) Fixes a bug when casting values via pointers between different
+	datatypes. This is revealed via gcc 4.8.2 at CentOS 6. 3) Fixes
+	the missing attributes under "Geolocation Fields" of HDF-EOS2
+	swath. 4) Also fixes a bug to access TRMM version 7 3A25 products.
+
+2015-06-23  James Gallagher  <jgallagher@opendap.org>
+
+	I patched the call to Split() HDFCFUtil::Split() expected that the
+	arrribute text (well text, it doesn't know it's an attribute) is
+	null terminated. However, the text comes from a vector<char> and I
+	can see the 16 calls in HDFSP.cc that assign to Attribute::value
+	are not appending a null - at least the ones I looked at. My
+	patch/hack copies the text, glues on a null and then calls
+	Split(). This works fine since the result of Split() is a new
+	variable. The valgrind off-by-one errors are now gone.
+
+2015-06-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added a data file and bescmd to the valgrind branch
+
+	Working on errors for TRMM 7 reported by valgrind.
+
+2015-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added USE_DAP4 to AM_CPPFLAGS.
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf4_handler
+
+	Added new BESStopWatch support.
+
+2015-04-10  muqun yang  <myang6@hdfgroup.org>
+
+	Update Makefile.am and at files to reduce the package size. Some big testing data files will be removed. One big data file test and one big ddx file test are removed. Comments are made in the at files to reflect the change.
+
+	Update Makefile.am and at files to reduce the package size. Some big testing data files will be removed. One big data file test and one big ddx file test are removed. Comments are made in the at files to reflect the change.
+
+	Update Makefile.am and at files to reduce the package size. Some big testing data files will be removed. One big data file test and one big ddx file test are removed. Comments are made in the at files to reflect the change.
+
+	Update Makefile.am and at files to reduce the package size. Some big testing data files will be removed. One big data file test and one big ddx file test are removed. Comments are made in the at files to reflect the change.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf4_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 3.11.7
 2015-03-19  James Gallagher  <jgallagher@opendap.org>
 
 	Fix for	distclean and the modules build.

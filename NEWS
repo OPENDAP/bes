@@ -1,4 +1,19 @@
 
+Version 3.11.8
+
+Add 1-D horizontal CF cv variables and corresponding CF attributes for
+the HDF-EOS2 sinussoidal projection products.
+
+Improve the performance of special NASA products: 
+
+ * Fixes a bug when casting values via pointers between different
+   datatypes. This is revealed via gcc 4.8.2 at CentOS 6.
+
+ * Fixes the missing attributes under "Geolocation Fields" of HDF-EOS2
+   swath.
+
+ * Also fixes a bug to access TRMM version 7 3A25 products.
+
 Version 3.11.7 (15 September 2015)
 
   Added DDS/DAS cache support for AIRS version 6 products.
