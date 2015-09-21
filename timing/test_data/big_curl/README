@@ -18,12 +18,12 @@ I computed an esitimate of the size of the returned data object using the shell 
 
 ** The full output is lengthy as is omitted here. It is left as an exercise for the reader to verify the result using the script herein.
 
-The test''s curl command files are:
+The test's curl command files are:
 
     baseline_curl.cmd
     parallel_io_curl.cmd
 
-The request URL with the hostname/ip address for each of the basleine and parallel srevers is stored there.
+The request URL with the hostname/ip address for each of the basleine and parallel srevers is stored there, and by the time you read this those servers will be gone. Let's just remember that I am simply documenting the test process.
 
 I utilized two AWS systems (Servers Centos6.6, Instance m4.large, Client Centos6.6, Instance t2.medium) in the US East (N. Virginia) region. On the servers I ran a complete Hyrax instance of the baseline code and the imprved parallel code, with all of the aggregartion data.
 
