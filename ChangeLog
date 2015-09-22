@@ -1,3 +1,85 @@
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #2 from OPENDAP/hdf5_handler_local
+	Hdf5 handler local
+
+2015-09-18  muqun yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
+
+	 Use the right and platform-independent way to handle the erase operation in the iterator loop. Although the previous way passes all the tests, it may still crash Linux and MacOS according to JG's experience.
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for issues found by Coverity
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+	Fixed DIST_EXTRA for the new test directories
+
+	Merge branch 'hdf5_handler_local' of
+	https://github.com/opendap/hdf5_handler into hdf5_handler_local
+
+2015-09-15  muqun yang  <myang6@hdfgroup.org>
+
+	This at file was not up-to-dated in the previous check-in.
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added bes.ignore.conf.modules.in
+
+2015-09-15  muqun yang  <myang6@hdfgroup.org>
+
+	comment out cerr debugging lines.
+
+2015-09-14  muqun yang  <myang6@hdfgroup.org>
+
+	Forgot adding new files(both source code and testing files) for
+	the last commit.
+
+	This check-in includes a new bes option to list the ignored object
+	info from HDF5 to DAP2 for the CF option and also include the HDF5
+	to DAP4 mapping(group, dimension,64-bit integer and 8-bit integer)
+	for the default option. Also add/improve few NASA HDF5
+	products(GES DISC GPM, ASF SeaSat and LP DAAC ASTER AED) and the
+	handling of netCDF4-like products for the CF option.
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified Makefile.am to support distcheck
+
+2015-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed package.m4 in the autoconf dirs Makefile.am files
+
+2015-06-23  muqun yang  <myang6@hdfgroup.org>
+
+	This check-in mainly fixes and addes features for the following:
+	For CF option: 1) Updated the code to work with the latest GPM
+	level 3 version 2) Added the support for ASF SEASAT, LP DAAC ASTER
+	GED products 3) Updated the code to support latest Aquarius level
+	3 product 4) Fixed the bug when _Fillvalue attribute datatype is
+	not the same as variable datatype For default option: 1) Fixed the
+	compound data type reading and added complex tests to the
+	testsuite
+
+2015-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Added new BESStopWatch support.
+
+2015-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Modified Makefile.am to support bes distcheck
+
+2015-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Version 2.3.0
 2015-03-31  James Gallagher  <jgallagher@opendap.org>
 
 	Added to gitignore
