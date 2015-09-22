@@ -54,4 +54,8 @@
 // The server itself never uses this value, just the daemon initializes with this number
 #define SERVER_EXIT_UNDEFINED_STATE 7
 #endif
+
+// Added jhrg 9/22/15
+#define SERVER_EXIT_SIGPIPE 8
+
 #endif // ServerExitConditions_h_

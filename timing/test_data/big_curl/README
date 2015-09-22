@@ -6,9 +6,14 @@
 # 09/19/2015
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 
-In this directory are such data as I collected in an effort to compare the baseline software from before the improvements project began to the curr improved code. The test was to measure the total transmit time for the AIRX3STD aggregegation with 121 graniules.
+In this directory are such data as I collected in an effort to compare
+the baseline software from before the improvements project began to
+the curr improved code. The test was to measure the total transmit
+time for the AIRX3STD aggregegation with 121 graniules.
 
-I computed an esitimate of the size of the returned data object using the shell script "sizeOfDap" against the DDS file from the AIRX3STD aggregation:
+I computed an esitimate of the size of the returned data object using
+the shell script "sizeOfDap" against the DDS file from the AIRX3STD
+aggregation:
 
     ./sizeOfDap2 AIRX3STD.006_Aggregation_2002.ncml.dds
     .
@@ -16,18 +21,31 @@ I computed an esitimate of the size of the returned data object using the shell 
     .
     }  ESTIMATED TOTAL DATASET SIZE: 151092221568 bytes in 780 lines read
 
-** The full output is lengthy as is omitted here. It is left as an exercise for the reader to verify the result using the script herein.
+** The full output is lengthy as is omitted here. It is left as an
+   exercise for the reader to verify the result using the script
+   herein.
 
 The test's curl command files are:
 
     baseline_curl.cmd
     parallel_io_curl.cmd
 
-The request URL with the hostname/ip address for each of the basleine and parallel srevers is stored there, and by the time you read this those servers will be gone. Let's just remember that I am simply documenting the test process.
+The request URL with the hostname/ip address for each of the basleine
+and parallel srevers is stored there, and by the time you read this
+those servers will be gone. Let's just remember that I am simply
+documenting the test process.
 
-I utilized two AWS systems (Servers Centos6.6, Instance m4.large, Client Centos6.6, Instance t2.medium) in the US East (N. Virginia) region. On the servers I ran a complete Hyrax instance of the baseline code and the imprved parallel code, with all of the aggregartion data.
+I utilized two AWS systems (Servers Centos6.6, Instance m4.large,
+Client Centos6.6, Instance t2.medium) in the US East (N. Virginia)
+region. On the servers I ran a complete Hyrax instance of the baseline
+code and the imprved parallel code, with all of the aggregartion data.
 
-On the client, not enough disk space was available to store the entire estimated result so we simply counted bytes and discarded them. Thus, time to enshirne the response on disk is not part of this comutation, for better or worse. The bash script mkCurlTest employs 'curl', the curl command files to run the tests and count the bytes returned by the requests (using 'wc -c').
+On the client, not enough disk space was available to store the entire
+estimated result so we simply counted bytes and discarded them. Thus,
+time to enshirne the response on disk is not part of this comutation,
+for better or worse. The bash script mkCurlTest employs 'curl', the
+curl command files to run the tests and count the bytes returned by
+the requests (using 'wc -c').
 
 mkCurlTest places the byte counts are located in:
 
@@ -45,27 +63,26 @@ TestName,    BytesReceived,  TotalTime, TotalTimeSeconds, BytesPerSecond, BitsPe
 baseline,    8,217,229,009,  26m7.176s,             1567,      5,243,924,    41,951,392
 parallel,  166,099,584,385, 84m34.705s,             5074,     32,735,432,   261,883,456
 
-
 Estimated, 151,092,221,568
 
 Several things of note:
 
 The "ESTIMATED TOTAL DATASET SIZE" for the dataset differs from BOTH responses. 
 
-Where the estimated size is 15,007,362,817 bytes smaller than what was retrieved from the parallel code system based and on the DDS, and 142,874,992,559 bytes larger than what was received from the baseline system.
+Where the estimated size is 15,007,362,817 bytes smaller than what was
+retrieved from the parallel code system based and on the DDS, and
+142,874,992,559 bytes larger than what was received from the baseline
+system.
 
-This difference in bytes received is likely due to the OS killing the beslistener that handling the response because wnated ALL OF THE MEMORY. Memory profiles run against smaller aggregations on the baseline server would support this supposition. 
+This difference in bytes received is likely due to the OS killing the
+beslistener that was handling the response because it wanted ALL OF
+THE MEMORY. Memory profiles run against smaller aggregations on the
+baseline server would support this supposition.
   
-
-Also of interest is that the transmission speeds of the two servers differ by a factor of 6.8 with the parallel server being the faster of the two. It may be worth going back and running multpile reps of these tests to build a measure the confidence of that difference.
-
-
-
-
-
-
-
-
+Also of interest is that the transmission speeds of the two servers
+differ by a factor of 6.8 with the parallel server being the faster of
+the two. It may be worth going back and running multpile reps of these
+tests to build a measure the confidence of that difference.
 
 
 
