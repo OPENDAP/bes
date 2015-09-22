@@ -163,26 +163,30 @@ static void CatchSigHup(int sig)
 static void CatchSigPipe(int sig)
 {
     if (sig == SIGPIPE) {
-        // When a child listener catches sigpipe it is because of a failure
-        // on one of its I/O connections - file I/O or,  more likely, network
-        // I/O. I have found that C++ ostream objects seem to 'hide' sigpipe
-        // so that a child listener will run for some time after the client
-        // has dropped the connection. Whether this is from buffering or some
-        // other problem, the situation happens when either the remote client
-        // to Hyrax exits (e.g., curl) or when Tomcat is stopped using SIGTERM.
-        // So, even though the normal behavior for a Unix daemon is to look at
-        // error codes from write(), etc., and exit based on those. Note that
-        // exit() is not safe for use in a signal handler, so we fallback to the
-        // default behavior, which is to exit. However, if this is the Master
-        // listener, allow the processing loop to handle this signal and do not exit.
-        // jhrg 9/22/15
+        // When a child listener catches SIGPIPE it is because of a
+        // failure on one of its I/O connections - file I/O or, more
+        // likely, network I/O. I have found that C++ ostream objects
+        // seem to 'hide' sigpipe so that a child listener will run
+        // for some time after the client has dropped the
+        // connection. Whether this is from buffering or some other
+        // problem, the situation happens when either the remote
+        // client to exits (e.g., curl) or when Tomcat is stopped
+        // using SIGTERM. So, even though the normal behavior for a
+        // Unix daemon is to look at error codes from write(), etc.,
+        // and exit based on those, this code exits whenever the child
+        // listener catches SIGPIPE. However, if this is the Master
+        // listener, allow the processing loop to handle this signal
+        // and do not exit.  jhrg 9/22/15
         if (getpid() != master_listener_pid) {
-            (*BESLog::TheLog()) << "Child listener caught SISPIPE. Exiting" << endl;
+	  (*BESLog::TheLog()) << "Child listener caught SIGPIPE (master listener PID: " << master_listener_pid << "). Child listener Exiting." << endl;
 
             // cleanup code here; only the Master listener should run the code
             // in ServerApp::terminate(); do nothing for cleanup for a child
             // listener. jhrg 9/22/15
 
+	    // Note that exit() is not safe for use in a signal
+            // handler, so we fallback to the default behavior, which
+            // is to exit.
             signal (sig, SIG_DFL);
             raise (sig);
         }
