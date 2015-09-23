@@ -178,17 +178,18 @@ static void CatchSigPipe(int sig)
         // listener, allow the processing loop to handle this signal
         // and do not exit.  jhrg 9/22/15
         if (getpid() != master_listener_pid) {
-	  (*BESLog::TheLog()) << "Child listener caught SIGPIPE (master listener PID: " << master_listener_pid << "). Child listener Exiting." << endl;
+            (*BESLog::TheLog()) << "Child listener caught SIGPIPE (master listener PID: " << master_listener_pid
+                << "). Child listener Exiting." << endl;
 
             // cleanup code here; only the Master listener should run the code
             // in ServerApp::terminate(); do nothing for cleanup for a child
             // listener. jhrg 9/22/15
 
-	    // Note that exit() is not safe for use in a signal
+            // Note that exit() is not safe for use in a signal
             // handler, so we fallback to the default behavior, which
             // is to exit.
-            signal (sig, SIG_DFL);
-            raise (sig);
+            signal(sig, SIG_DFL);
+            raise(sig);
         }
         else {
             sigpipe = 1;
