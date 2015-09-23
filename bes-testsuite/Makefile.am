@@ -15,16 +15,14 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf bes.with_hdfeos2.conf
 
-CLEANFILES = *.log *.sum $(srcdir)/package.m4 hdf4_handlerTest	\
-hdf4_handlerTest.with_hdfeos2 
+CLEANFILES = bes.conf bes.with_hdfeos2.conf
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4 atlocal.in		\
 bes.conf.in bes.with_hdfeos2.conf.in bes.conf.modules.in		\
 bes.with_hdfeos2.conf.modules.in generate_metadata_baseline.sh.in \
 h4 h4.cf h4.nasa.with_hdfeos2 h4.with_hdfeos2
 
-DISTCLEANFILES = bes.conf bes.with_hdfeos2.conf	\
-generate_metadata_baseline.sh atconfig
+DISTCLEANFILES = generate_metadata_baseline.sh atconfig
 
 if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
@@ -62,6 +60,7 @@ check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
