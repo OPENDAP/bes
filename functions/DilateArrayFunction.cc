@@ -80,7 +80,7 @@ string dilate_array_info =
  * @return The modified Mask Array.
  * @exception Error Thrown for a variety of errors.
  */
-void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
+void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &/*dds*/, BaseType **btpp)
 {
     if (argc == 0) {
         Str *response = new Str("info");

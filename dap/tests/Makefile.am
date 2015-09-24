@@ -19,14 +19,14 @@ noinst_DATA = bes.conf
 #
 TESTS = besDapModuleTest
 
-CLEANFILES = *.log *.trs $(srcdir)/package.m4 $(TESTSUITE)
+CLEANFILES = bes.conf
 
 # NB: Make sure to distribute both the source and generated files
 # for the test
 EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 bes.conf.in handler_tests_macros.m4 bescmd $(srcdir)/package.m4
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = atconfig
 
 ############## Autotest follows #####################
 
@@ -36,6 +36,7 @@ TESTSUITE = $(srcdir)/besDapModuleTest
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

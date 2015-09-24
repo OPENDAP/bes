@@ -18,12 +18,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum $(TESTSUITE) $(srcdir)/package.m4
+CLEANFILES = bes.conf
 
 EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
 $(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4
 
-DISTCLEANFILES = bes.conf atconfig
+DISTCLEANFILES = atconfig generate_data_baselines.sh generate_metadata_baselines.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -44,7 +44,6 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/functionsTest
 TESTSUITEFLAGS =
-# -j7
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
 
@@ -53,6 +52,7 @@ check-local: atconfig atlocal $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
