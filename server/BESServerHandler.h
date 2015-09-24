@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,25 +35,32 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "ServerHandler.h"
 
-class Connection ;
+class Connection;
 
-class BESServerHandler : public ServerHandler
-{
+/**
+ * This class and the ServerApp class are main code for the beslistener.
+ * The besdaemon is made from the code in daemon.cc along with DaemonCommandHandler
+ * and BESXMLWriter. Both programs use common code in BESServerUtils which
+ * provides two functions for info and usage messges.
+ */
+class BESServerHandler: public ServerHandler {
 private:
-    string			_method ;
-    void			execute( Connection *c ) ;
+    string _method;
+    void execute(Connection *c);
 public:
-    				BESServerHandler() ;
-    virtual			~BESServerHandler() {}
+    BESServerHandler();
+    virtual ~BESServerHandler()
+    {
+    }
 
-    virtual void		handle( Connection *c ) ;
+    virtual void handle(Connection *c);
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BESServerHandler_h
 
