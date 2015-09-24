@@ -14,8 +14,46 @@
 # probably an error. The idea behind the sentinel file is that a
 # person has to intentionally remove it to get the script to run and
 # edit the configure.ac, etc., files.
+#
+# Options: -n: Do not modify files like Makefile.am but do make the 
+#              the temp files.
+#          -v: Verbose
 
-for module in $*
+args=`getopt "nv" $*`
+if test $? != 0
+then
+    echo "Usage: version_update_modules.sh [-nv] <directories>"
+    exit 2
+fi
+
+non_destructive=
+verbose=
+
+set -- $args
+
+for i
+do
+    case "$i"
+    in
+        -n)
+            non_destructive=yes
+            shift;;
+        -v)
+            verbose=yes;
+            shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+verbose() {
+    if test -n $verbose
+    then
+        echo $1
+    fi
+}
+
+for module in $@
 do
     echo "Entering $module"
     
@@ -24,41 +62,58 @@ do
      # Test the sentinel file. If this is here, do nothing.
      if test -f version_updated
      then
-	 echo "Found a 'version_updated' file, exiting."
-	 exit 1
+	   echo "Found a 'version_updated' file, exiting."
+	   exit 1
      fi
 
      # If the sentinel file was not found, update the module's version information,
-     # by first creating teh sentinel file...
-     cat <<EOF >version_updated
+     # by first creating the sentinel file... But don't make it in non_destructive mode
+     if test -z $non_destructive
+     then
+        verbose "Updating sentinel file"
+        cat <<EOF >version_updated
 Updated on `date`
 EOF
+     fi
      
-     # Get the version number and module from the configure.ac.
+     # Get the version number and module from the Makefile.am.
 
-     name=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\1@'`
-     version=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\2@'`
+     #name=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\1@'`
+     #version=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\2@'`
 
+     name=`grep '^M_NAME.*' Makefile.am | sed 's@M_NAME=\(.*\)$@\1@'`
+     version=`grep '^M_VER.*' Makefile.am | sed 's@M_VER=\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)$@\1@'`
+     
+     verbose "Name: $name; Version: $version"
+     
      # gnarly awk code from stack overflow
      new_version=`echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}'`
-     echo "New Version: $new_version"
+     verbose "New Version: $new_version"
 
      # Update configure.ac
-     new_ac_init_line="AC_INIT($name, $new_version, opendap-tech@opendap.org)"
+     verbose "Updating configure.ac"
+     new_ac_init_line="AC_INIT([$name], [$new_version], [opendap-tech@opendap.org])"
      sed "s/AC_INIT.*/$new_ac_init_line/g" < configure.ac > configure.ac.tmp
 
-     mv configure.ac configure.ac.bak
-     mv configure.ac.tmp configure.ac
-
+     if test -z $non_destructive
+     then
+        mv configure.ac configure.ac.bak
+        mv configure.ac.tmp configure.ac
+     fi
+     
      # Update Makefile.am
-
+     verbose "Updating Makefile.am"
      new_m_ver_line="M_VER=$new_version"
-     sed "s/M_VER.*/$new_m_ver_line/g" < Makefile.am > Makefile.am.tmp
+     sed "s/^M_VER.*/$new_m_ver_line/g" < Makefile.am > Makefile.am.tmp
 
-     mv Makefile.am Makefile.am.bak
-     mv Makefile.am.tmp Makefile.am
-
+     if test -z $non_destructive
+     then
+        mv Makefile.am Makefile.am.bak
+        mv Makefile.am.tmp Makefile.am
+     fi
+     
      # Update ChangeLog
+     verbose "Updating ChangeLog"
      start_date=`awk '/....-..-../ {print $1 ; exit}' ChangeLog`
      if test -z "$start_date"; then start_date="1970-01-01"; fi
 
@@ -66,11 +121,14 @@ EOF
      cat ChangeLog.tmp.top ChangeLog > ChangeLog.tmp
      rm ChangeLog.tmp.top
 
-     mv ChangeLog ChangeLog.bak
-     mv ChangeLog.tmp ChangeLog
-
+     if test -z $non_destructive
+     then
+        mv ChangeLog ChangeLog.bak
+        mv ChangeLog.tmp ChangeLog
+     fi
+     
      # Update NEWS
-
+     verbose "Updating NEWS"
      cat <<EOF >NEWS.tmp.top
 News for version $new_version
 
@@ -81,9 +139,12 @@ EOF
      cat NEWS.tmp.top NEWS > NEWS.tmp
      rm NEWS.tmp.top
 
-     mv NEWS NEWS.bak
-     mv NEWS.tmp NEWS
-
+     if test -z $non_destructive
+     then
+        mv NEWS NEWS.bak
+        mv NEWS.tmp NEWS
+     fi
+     
      # This ends the subshell that processes a given module
     )
 
