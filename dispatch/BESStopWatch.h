@@ -100,7 +100,7 @@ class BESStopWatch : public BESObj
      * BESDebug::GetStrm() stream. If the start method has not been
      * called then the method exits silently.
      */
-    ~BESStopWatch();
+    virtual ~BESStopWatch();
 
     /**
      * Starts the timer.
