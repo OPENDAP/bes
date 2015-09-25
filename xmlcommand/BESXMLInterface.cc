@@ -210,7 +210,7 @@ void BESXMLInterface::build_data_request_plan()
     }
     catch (... /* BESError &e; changed 7/1/15 jhrg */) {
         xmlFreeDoc(doc);
-	xmlCleanupParser();
+        xmlCleanupParser();
         throw /*e*/;
     }
 
@@ -219,7 +219,7 @@ void BESXMLInterface::build_data_request_plan()
     // Removed since the docs indicate it's not needed and it might be
     // contributing to memory issues flagged by valgrind. 2/25/09 jhrg
     //
-    // Added this back in. It seems to tbe the cause of BES-40 - where
+    // Added this back in. It seems to the the cause of BES-40 - where
     // When certain tests are run, the order of <Dimension..> elements
     // in a DMR for a server function result is different when the BESDEBUG
     // output is on versus when it is not. This was true only when the

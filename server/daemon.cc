@@ -565,57 +565,12 @@ static int start_command_processor(DaemonCommandHandler &handler)
 
         // Once the handler exits, close sockets and free memory
         command_server->closeConnection();
-#if 0
-        delete command_server;
-        command_server = 0;
-
-        // delete closes the sockets
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        // When/if the command interpreter exits, stop the all listeners.
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-
-        // FIXME jhrg 3/5/14
-        // Pick up all the listener's status codes
-        return 1;
-#endif
     }
     catch (BESError &se) {
         cerr << "daemon: " << se.get_message() << endl;
-#if 0
-        delete command_server;
-        command_server = 0;
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-        return 1;
-#endif
     }
     catch (...) {
         cerr << "daemon: " << "caught unknown exception" << endl;
-#if 0
-        delete command_server;
-        command_server = 0;
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-        return 1;
-#endif
     }
 
     delete command_server;
