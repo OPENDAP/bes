@@ -554,9 +554,10 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 		// set the default error function to my own
 		vector<string> parseerrors;
 		xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
-#if 0
+#if 1
 		// We would like this, but older versions of libxml don't use 'const'.
 		// Older == 2.6.16. jhrg 12.13.11
+		// We require libxml2 >= 2.7.0
 		doc = xmlParseDoc((const xmlChar*) command.c_str());
 #else
 		doc = xmlParseDoc((xmlChar*) command.c_str());
@@ -886,16 +887,16 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 			current_node = current_node->next;
 		}
 	}
-	catch (BESError &e) {
-		xmlFreeDoc(doc);
-		throw e;
-	}
 	catch (...) {
 		xmlFreeDoc(doc);
+		xmlCleanupParser();
 		throw;
 	}
 
 	xmlFreeDoc(doc);
+	// Added this call based on a problem (BES-40) in BESXMLInterface.cc.
+	// jhrg 9/25/15
+	xmlCleanupParser();
 }
 
 static void send_bes_error(BESXMLWriter &writer, BESError &e)

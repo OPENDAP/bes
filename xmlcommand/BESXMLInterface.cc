@@ -210,6 +210,7 @@ void BESXMLInterface::build_data_request_plan()
     }
     catch (... /* BESError &e; changed 7/1/15 jhrg */) {
         xmlFreeDoc(doc);
+	xmlCleanupParser();
         throw /*e*/;
     }
 
