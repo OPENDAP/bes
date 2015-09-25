@@ -889,14 +889,10 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 	}
 	catch (...) {
 		xmlFreeDoc(doc);
-		xmlCleanupParser();
 		throw;
 	}
 
 	xmlFreeDoc(doc);
-	// Added this call based on a problem (BES-40) in BESXMLInterface.cc.
-	// jhrg 9/25/15
-	xmlCleanupParser();
 }
 
 static void send_bes_error(BESXMLWriter &writer, BESError &e)
