@@ -82,7 +82,9 @@ void BESXMLInterface::validate_data_request()
  */
 void BESXMLInterface::build_data_request_plan()
 {
+
     BESDEBUG("besxml", "building request plan for xml document: " << endl << _dhi->data["XMLDoc"] << endl);
+
     if (BESLog::TheLog()->is_verbose()) {
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << "] building" << endl;
     }
@@ -101,11 +103,7 @@ void BESXMLInterface::build_data_request_plan()
         // XML_PARSE_NONET
         doc = xmlReadMemory(_dhi->data["XMLDoc"].c_str(), _dhi->data["XMLDoc"].size(), "" /* base URL */,
             NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
-#if 0
-        // This cast is not technically correct; search the web and found that
-        // xmlReadMemory has some interesting options
-        doc = xmlParseDoc( (unsigend char *)_dhi->data["XMLDoc"].c_str() );
-#endif
+
         if (doc == NULL) {
             string err = "Problem parsing the request xml document:\n";
             bool isfirst = true;
@@ -149,6 +147,7 @@ void BESXMLInterface::build_data_request_plan()
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
         _dhi->data[REQUEST_ID] = reqId;
+
         BESDEBUG("besxml", "request id = " << _dhi->data[REQUEST_ID] << endl);
 
         // iterate through the children of the request element. Each child is an
@@ -161,7 +160,7 @@ void BESXMLInterface::build_data_request_plan()
                 // given the name of this node we should be able to find a
                 // BESXMLCommand object
                 string node_name = (char *) current_node->name;
-                BESDEBUG("besxml", "looking for command " << node_name << endl);
+
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
                 if (bldr) {
                     BESXMLCommand *current_cmd = bldr(_base_dhi);
@@ -187,7 +186,9 @@ void BESXMLInterface::build_data_request_plan()
                     current_cmd->parse_request(current_node);
 
                     BESDataHandlerInterface &current_dhi = current_cmd->get_dhi();
-                    BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
+
+		    BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
+
                     string returnAs = current_dhi.data[RETURN_CMD];
                     if (returnAs != "") {
                         BESDEBUG("xml", "Finding transmitter: " << returnAs << " ...  " << endl);
@@ -213,11 +214,19 @@ void BESXMLInterface::build_data_request_plan()
     }
 
     xmlFreeDoc(doc);
-#if 0
+
     // Removed since the docs indicate it's not needed and it might be
     // contributing to memory issues flagged by valgrind. 2/25/09 jhrg
+    //
+    // Added this back in. It seems to tbe the cause of BES-40 - where
+    // When certain tests are run, the order of <Dimension..> elements
+    // in a DMR for a server function result is different when the BESDEBUG
+    // output is on versus when it is not. This was true only when the
+    // BESDEBUG context was 'besxml' or timing,' which lead me here.
+    // Making this call removes the errant behavior. I've run tests using
+    // valgrind and I see no memory problems from this call. jhrg 9/25/15
     xmlCleanupParser();
-#endif
+
     BESDEBUG("besxml", "Done building request plan" << endl);
 
     BESBasicInterface::build_data_request_plan();
