@@ -1707,7 +1707,7 @@ bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi) {
 	if (!info)
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
+	info->add_module(MODULE_NAME, MODULE_VERSION);
 
 	return true;
 }
