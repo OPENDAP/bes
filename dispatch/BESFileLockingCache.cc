@@ -365,7 +365,7 @@ void BESFileLockingCache::m_initialize_cache_info()
 
     m_check_ctor_params(); // Throws BESInternalError on error.
 
-    d_cache_info = d_cache_dir + "/dap.cache.info";
+    d_cache_info = d_cache_dir + "/" + d_prefix + ".cache_control";
 
     // See if we can create it. If so, that means it doesn't exist. So make it and
     // set the cache initial size to zero.
@@ -713,7 +713,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     // start with the matching prefix
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0) {
+        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0 && dirEntry!=d_cache_info) {
             files.push_back(d_cache_dir + "/" + dirEntry);
         }
     }
