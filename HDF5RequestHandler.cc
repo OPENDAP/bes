@@ -821,8 +821,8 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     map<string,string> attrs ;
-    attrs["name"] = PACKAGE_NAME ;
-    attrs["version"] = PACKAGE_VERSION ;
+    attrs["name"] = MODULE_NAME ;
+    attrs["version"] = MODULE_VERSION ;
     list<string> services ;
     BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
     if( services.size() > 0 )
@@ -843,7 +843,7 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     if( !info )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
-    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
+    info->add_module( MODULE_NAME, MODULE_VERSION ) ;
 
     return true;
 }
