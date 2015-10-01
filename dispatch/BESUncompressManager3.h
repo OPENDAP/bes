@@ -71,6 +71,7 @@ public:
     virtual bool add_method(const string &name, p_bes_uncompress method);
     virtual p_bes_uncompress find_method(const string &name);
 
+    // TODO This use of BESCache3 can be transparently by BESFileLockingCache
     virtual bool uncompress(const string &src, string &target, BESCache3 *cache);
 
     virtual void dump(ostream &strm) const ;

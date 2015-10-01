@@ -33,6 +33,8 @@ using std::istringstream;
 #include "BESUncompress3GZ.h"
 #include "BESUncompress3BZ2.h"
 #include "BESUncompress3Z.h"
+
+// TODO This use of BESCache3 can be transparently by BESFileLockingCache.h
 #include "BESCache3.h"
 
 #include "BESInternalError.h"
@@ -128,6 +130,7 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  * @throws BESInternalError if there is a problem uncompressing
  * the file
  */
+// TODO This use of BESCache3 can be transparently replaced by BESFileLockingCache
 bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCache3 *cache)
 {
     BESDEBUG( "uncompress2", "uncompress - src: " << src << endl );
