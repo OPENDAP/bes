@@ -69,7 +69,7 @@ H4.EnableCF=true
 # 2. Vdata and Vgroup keys
 # 3. Misc. keys
 #
-# For each category, two tables(descrption and default values(products)) are listed first,  
+# For each category, two tables(description and default values(products)) are listed first,  
 # then keys are set.
 #
 # More description for some keys can be found after all the tables and the set of all keys.
