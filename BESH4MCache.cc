@@ -163,6 +163,9 @@ BESH4Cache::get_instance()
         if((stat(cache_dir.c_str(),&buf)==0) && (buf.st_mode & S_IFDIR)){
             try {
                 d_instance = new BESH4Cache();
+#ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+#endif
             }
             catch(BESInternalError &bie){
                 BESDEBUG("cache", "BESH4Cache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -173,12 +176,6 @@ BESH4Cache::get_instance()
     return d_instance;
 }
 
-void BESH4Cache::delete_instance() {
-    BESDEBUG("cache","BESH4Cache::delete_instance() - Deleting singleton BESH4Cache instance." << endl);
-    cerr << "BESH4Cache::delete_instance() - Deleting singleton BESH4Cache instance. d_instance="<< d_instance << endl;
-    delete d_instance;
-    d_instance = 0;
-}
 
 // Check whether the real lat/lon file size is the same as the expected lat/lon size. If not, return false. 
 bool BESH4Cache::is_valid(const string & cache_file_name, const int expected_file_size){
