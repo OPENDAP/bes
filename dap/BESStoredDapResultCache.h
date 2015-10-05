@@ -111,7 +111,7 @@ public:
     // virtual void unlock_and_close(const std::string &cache_token);
 
     // Overrides parent
-    virtual string get_cache_file_name(const string &src, bool mangle = false);
+    // virtual string get_cache_file_name(const string &src, bool mangle = false);
 
 };
 

@@ -410,7 +410,7 @@ void BESFileLockingCache::m_initialize_cache_info()
  * string) but do turn the string into a pathname located in the cache directory
  * with the cache prefix. the 'mangle' param is true by default.
  */
-const string chars_excluded_from_filenames = "<>=,/()\"\':? ";
+const string chars_excluded_from_filenames = "<>=,/()\"\':? []()$";
 string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 {
 	// Old way of building String, retied 10/02/2015 - ndp

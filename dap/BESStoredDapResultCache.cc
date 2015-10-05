@@ -725,6 +725,7 @@ BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const
 
 
 
+#if 0
 
 /** Build the name of file that will holds the uncompressed data from
  * 'src' in the cache.
@@ -756,6 +757,7 @@ string BESStoredDapResultCache::get_cache_file_name(const string &local_id, bool
 
     return cacheFile;
 }
+#endif
 
 /**
  *

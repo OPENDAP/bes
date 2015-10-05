@@ -111,7 +111,7 @@ string BESUncompressCache::getDimCachePrefixFromConfig(){
  */
 string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
 {
-    string target = BESFileLockingCache::get_cache_file_name(src);
+    string target = src;
 
     if (mangle) {
         string::size_type last_dot = target.rfind('.');
@@ -119,6 +119,8 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
             target = target.substr(0, last_dot);
         }
     }
+    target = BESFileLockingCache::get_cache_file_name(target);
+
     //BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - d_cache_dir: '" << d_cache_dir << "'" << endl);
     //BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - d_prefix:    '" << d_prefix << "'" << endl);
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - target:      '" << target  << "'" << endl);
