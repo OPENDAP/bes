@@ -47,7 +47,8 @@ class BESDapResponseCache: public BESFileLockingCache
 {
 private:
 
-    static BESDapResponseCache * d_instance;
+    static BESDapResponseCache *d_instance;
+    static void delete_instance() { delete d_instance; d_instance = 0; }
 
     /** Initialize the cache using the default values for the cache. */
     BESDapResponseCache();
@@ -61,7 +62,6 @@ private:
     friend class ResponseCacheTest;
     friend class StoredResultTest;
 
-    static void delete_instance();
 
 protected:
 
@@ -73,10 +73,12 @@ public:
 	static const string PREFIX_KEY;
 	static const string SIZE_KEY;
 
+
     static BESDapResponseCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static BESDapResponseCache *get_instance();
 
-    virtual ~BESDapResponseCache() {}
+    // virtual ~BESDapResponseCache() { BESDapResponseCache::delete_instance(); }
+    virtual ~BESDapResponseCache();
 
 #if 0
     // If the DDS is in the cache and valid, return it

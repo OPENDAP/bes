@@ -42,6 +42,7 @@
 
 #include "BESDapResponseCache.h"
 #include "BESDapResponseBuilder.h"
+#include "BESDebug.h"
 
 #include "test_utils.h"
 #include "test_config.h"
@@ -53,6 +54,7 @@ using namespace libdap;
 int test_variable_sleep_interval = 0;
 
 static bool debug = false;
+static bool bes_debug = false;
 static bool clean = true;
 static const string c_cache_name = "/response_cache";
 
@@ -82,6 +84,8 @@ public:
 
     void setUp() {
     	DBG(cerr << "setUp() - BEGIN" << endl);
+		if(bes_debug)
+			BESDebug::SetUp("cerr,all");
 
     	string cid;
     	test_05_dds = new DDS(&ttf);
@@ -397,12 +401,16 @@ int main(int argc, char*argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dk");
+    GetOpt getopt(argc, argv, "dbk");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
+            break;
+        case 'b':
+            bes_debug = true;  // bes_debug is a static global
+            cerr << "##### BES DEBUG is ON" << endl;
             break;
         case 'k':   // -k turns off cleaning the response_cache dir
             clean = false;

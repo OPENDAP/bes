@@ -53,8 +53,8 @@ class BESStoredDapResultCache: public BESFileLockingCache
 {
 private:
 
-    static BESStoredDapResultCache * d_instance;
-    static void delete_instance();
+    static BESStoredDapResultCache *d_instance;
+    static void delete_instance() { delete d_instance; d_instance = 0; }
 
     string d_storedResultsSubdir;
     string d_dataRootDir;
@@ -91,12 +91,15 @@ public:
 
     static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static BESStoredDapResultCache *get_instance();
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+
+    // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
     libdap::DDS *get_cached_dap2_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
     libdap::DMR *get_cached_dap4_data(const string &cache_file_name, libdap::D4BaseTypeFactory *factory, const string &filename);
 
-    virtual ~BESStoredDapResultCache() {}
+    virtual ~BESStoredDapResultCache() {
+    	// delete_instance();
+    }
 
     // Store the passed DDS to disk as a serialized DAP2 object.
     virtual string store_dap2_result(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,

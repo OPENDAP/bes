@@ -39,17 +39,14 @@
 #if NEW_CACHE
 // New cache system
 #include "BESUncompressManager3.h"
-#include "BESCache3.h"
+#include "BESUncompressCache.h"
+// #include "BESCache3.h"
 #else
 // Old cache system
 #include "BESUncompressManager.h"
 #include "BESCache.h"
 #endif
 #include "BESForbiddenError.h"
-
-const string BESFileContainer::UNCOMPRESS_CACHE_DIR_KEY    = "BES.UncompressCache.dir";
-const string BESFileContainer::UNCOMPRESS_CACHE_PREFIX_KEY = "BES.UncompressCache.prefix";
-const string BESFileContainer::UNCOMPRESS_CACHE_SIZE_KEY   = "BES.UncompressCache.size";
 
 
 /** @brief construct a container representing a file
@@ -102,12 +99,7 @@ string BESFileContainer::access()
 {
 #if NEW_CACHE
     // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache =
-    		BESCache3::get_instance(
-    				TheBESKeys::TheKeys(),
-					UNCOMPRESS_CACHE_DIR_KEY,
-					UNCOMPRESS_CACHE_PREFIX_KEY,
-					UNCOMPRESS_CACHE_SIZE_KEY);
+    BESUncompressCache *cache = BESUncompressCache::get_instance();
 
     // If the file is in the cache, this is nearly a no-op; if the file is compressed,
     // uncompress it, add it to the class and return the name of the file in the cache.
@@ -146,7 +138,7 @@ bool BESFileContainer::release()
 {
 #if NEW_CACHE
     if (_cached)
-        BESCache3::get_instance()->unlock_and_close(_target);
+    	BESUncompressCache::get_instance()->unlock_and_close(_target);
 #endif
     return true;
 }

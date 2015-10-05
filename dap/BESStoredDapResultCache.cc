@@ -158,6 +158,7 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
 
 }
 
+#if 0
 string BESStoredDapResultCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
 	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  BEGIN" << endl);
@@ -199,6 +200,7 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
 
 	return newPath;
 }
+#endif
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
 	BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
@@ -238,6 +240,9 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
     	if(dir_exists(data_root_dir)){
         	try {
                 d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix, max_cache_size);
+#ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+#endif
         	}
         	catch(BESInternalError &bie){
         	    BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -256,6 +261,9 @@ BESStoredDapResultCache::get_instance()
     if (d_instance == 0) {
 		try {
 			d_instance = new BESStoredDapResultCache();
+#ifdef HAVE_ATEXIT
+            atexit(delete_instance);
+#endif
 		}
 		catch(BESInternalError &bie){
 			BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -265,12 +273,6 @@ BESStoredDapResultCache::get_instance()
     return d_instance;
 }
 
-
-void BESStoredDapResultCache::delete_instance() {
-    BESDEBUG("cache","BESStoredDapResultCache::delete_instance() - Deleting singleton BESStoredDapResultCache instance." << endl);
-    delete d_instance;
-    d_instance = 0;
-}
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
@@ -498,7 +500,7 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
 DDS *
 BESStoredDapResultCache::get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
 {
-    BESDEBUG("cache", "Reading cache for " << cache_file_name << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap2_data_ddx() - Reading cache for " << cache_file_name << endl);
 
     DDS *fdds = new DDS(factory);
 

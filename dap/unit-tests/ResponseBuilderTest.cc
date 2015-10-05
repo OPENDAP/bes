@@ -257,6 +257,7 @@ public:
         dds->transfer_attributes(das);
         dds->set_dap_major(3);
         dds->set_dap_minor(2);
+        dds->filename("JustAByte");
 
     	string cid;
     	DDXParser dp(ttf);
@@ -472,8 +473,11 @@ public:
         }
 
         BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
+		DBG(cerr << "Retrieved BESStoredDapResultCache instance:  " << sdrc << endl);
         sdrc->delete_instance();
-        TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
+		DBG(cerr << "Deleted BESStoredDapResultCache instance:  " << sdrc << endl);
+
+		TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT,  "");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SUBDIR_KEY,  "");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::PREFIX_KEY,  "");
         TheBESKeys::TheKeys()->set_key( BESStoredDapResultCache::SIZE_KEY,    "");
