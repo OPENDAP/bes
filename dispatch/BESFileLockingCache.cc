@@ -1,5 +1,3 @@
-// BESFileLockingCache.cc
-
 // This file was originally part of bes, A C++ back-end server
 // implementation framework for the OPeNDAP Data Access Protocol.
 // Copied to libdap. This is used to cache responses built from
@@ -209,6 +207,7 @@ bool BESFileLockingCache::getExclusiveLock(string file_name, int &ref_fd)
             return false;
 
         default:
+            BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() -  FAILED to open file. name: " << file_name << " name_length: " << file_name.length( )<<endl);
             throw BESInternalError(get_errno(), __FILE__, __LINE__);
         }
     }
