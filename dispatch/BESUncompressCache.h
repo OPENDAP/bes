@@ -29,7 +29,7 @@ private:
 
 
     static string getCacheDirFromConfig();
-    static string getDimCachePrefixFromConfig();
+    static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
 
@@ -47,9 +47,6 @@ public:
     static BESUncompressCache *get_instance();
 
 
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
-
-    // Overrides parent method
     virtual string get_cache_file_name(const string &src, bool mangle = true);
 
 	virtual ~BESUncompressCache();

@@ -77,7 +77,6 @@ public:
     static BESDapResponseCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static BESDapResponseCache *get_instance();
 
-    // virtual ~BESDapResponseCache() { BESDapResponseCache::delete_instance(); }
     virtual ~BESDapResponseCache();
 
 #if 0
@@ -89,7 +88,6 @@ public:
     virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
     		libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
-    // virtual void unlock_and_close(const std::string &cache_token);
 
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();

@@ -66,7 +66,7 @@ string BESUncompressCache::getCacheDirFromConfig(){
 }
 
 
-string BESUncompressCache::getDimCachePrefixFromConfig(){
+string BESUncompressCache::getCachePrefixFromConfig(){
 	bool found;
     string prefix = "";
     TheBESKeys::TheKeys()->get_value( PREFIX_KEY, prefix, found ) ;
@@ -87,18 +87,18 @@ string BESUncompressCache::getDimCachePrefixFromConfig(){
  * 'src' in the cache.
  *
  * Overrides the generic file name generator in BESFileLocking cache.
- * Becuase this is the uncompress cache, we know that our job is
- * to simply decompress the file and han it off to the appropriate
+ * Because this is the uncompress cache, we know that our job is
+ * to simply decompress the file and hand it off to the appropriate
  * response handler for the associated file type. Since the state of
  * file's "compressedness" is determined in ALL cases by suffix on the
  * file name (or resource ID if you wish) we know that in addition to
  * building the generic name we want to remove the compression suffix
  * so that the resulting name/id (unmangled if previously mangled)
- * while correctly match the BES TypeMatch regex system.
+ * will correctly match the BES TypeMatch regex system.
  *
  *
  * @note How names are mangled: 'src' is the full name of the file to be
- * cached.Tthe file name passed has an extension on the end that will be
+ * cached.The file name passed has an extension on the end that will be
  * stripped once the file is cached. For example, if the full path to the
  * file name is /usr/lib/data/fnoc1.nc.gz then the resulting file name
  * will be \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
@@ -135,7 +135,7 @@ BESUncompressCache::BESUncompressCache()
 	BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
 
 	d_dimCacheDir = getCacheDirFromConfig();
-    d_dimCacheFilePrefix = getDimCachePrefixFromConfig();
+    d_dimCacheFilePrefix = getCachePrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
 
     BESDEBUG("cache", "BESUncompressCache() - Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
@@ -258,6 +258,7 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
     return true;
 }
 
+#if 0
 string BESUncompressCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
 	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  BEGIN" << endl);
@@ -299,4 +300,5 @@ string BESUncompressCache::assemblePath(const string &firstPart, const string &s
 
 	return newPath;
 }
+#endif
 
