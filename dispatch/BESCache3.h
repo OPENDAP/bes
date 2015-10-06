@@ -26,6 +26,7 @@
 
 #ifndef BESCache3_h_
 #define BESCache3_h_ 1
+#if 0
 
 #include <string>
 
@@ -33,7 +34,6 @@
 #include "BESDebug.h"
 
 class BESKeys;
-
 /** @brief This class is a shallow wrapper for BESFileLockingCache. It is only
  * used by gateway_module and BESFileContainer. DO NOT USE THIS CLASS! Use the
  * BESFileLockingCache instead!!
@@ -83,5 +83,6 @@ public:
 
     virtual void dump(ostream &strm) const ;
 };
+#endif
 
 #endif // BESCache3_h_
