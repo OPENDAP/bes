@@ -43,9 +43,9 @@ DAP.Help.XML=@pkgdatadir@/dap_help.txt
 BES.Info.Buffered=no
 BES.Info.Type=xml
 
-BES.CacheDir=/tmp
-BES.CachePrefix=bes_cache
-BES.CacheSize=500
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
 
 BES.Container.Persistence=strict
 

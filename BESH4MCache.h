@@ -17,6 +17,8 @@ class BESH4Cache: public BESFileLockingCache
 {
 private: 
     static BESH4Cache *d_instance;
+    static void delete_instance() { delete d_instance; d_instance = 0; }
+
     BESH4Cache();
 
 public:
@@ -37,7 +39,7 @@ public:
     bool  get_data_from_cache(const string &cache_file_name, const int expected_file_size,int &fd);
     bool write_cached_data(const string &cache_file_name,const int expected_file_size,const std::vector<double> &val);
     bool write_cached_data2(const string &cache_file_name,const int expected_file_size,const void *buf);
-    static void delete_instance();
+
     //void dummy_test_func();
     //string get_cache_file_name_h4(const string &src, bool mangle = false);
 
