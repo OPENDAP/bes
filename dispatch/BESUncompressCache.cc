@@ -11,7 +11,6 @@
 #include <sstream>
 #include <sys/stat.h>
 
-#include "util.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
@@ -121,8 +120,6 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
     }
     target = BESFileLockingCache::get_cache_file_name(target);
 
-    //BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - d_cache_dir: '" << d_cache_dir << "'" << endl);
-    //BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - d_prefix:    '" << d_prefix << "'" << endl);
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - target:      '" << target  << "'" << endl);
 
     return target;
