@@ -239,9 +239,9 @@ public:
 	string src_file = cache_dir + "/testfile.txt" ;
 	string com_file = cache_dir + "/testfile.txt.gz" ;
 
-	TheBESKeys::TheKeys()->set_key( "BES.CacheDir", cache_dir ) ;
-	TheBESKeys::TheKeys()->set_key( "BES.CachePrefix", "cont_cache" ) ;
-	TheBESKeys::TheKeys()->set_key( "BES.CacheSize", "1" ) ;
+	TheBESKeys::TheKeys()->set_key( "BES.UncompressCache.dir", cache_dir ) ;
+	TheBESKeys::TheKeys()->set_key( "BES.UncompressCache.prefix", "cont_cache" ) ;
+	TheBESKeys::TheKeys()->set_key( "BES.UncompressCache.size", "1" ) ;
 
 	string chmod = (string)"chmod a+w " + TEST_SRC_DIR + "/cache" ;
 	system( chmod.c_str() ) ;

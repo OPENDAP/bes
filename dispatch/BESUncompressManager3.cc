@@ -33,7 +33,8 @@ using std::istringstream;
 #include "BESUncompress3GZ.h"
 #include "BESUncompress3BZ2.h"
 #include "BESUncompress3Z.h"
-#include "BESCache3.h"
+
+#include "BESFileLockingCache.h"
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -128,7 +129,7 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  * @throws BESInternalError if there is a problem uncompressing
  * the file
  */
-bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCache3 *cache)
+bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFileLockingCache *cache)
 {
     BESDEBUG( "uncompress2", "uncompress - src: " << src << endl );
 

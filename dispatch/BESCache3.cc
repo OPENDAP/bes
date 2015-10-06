@@ -23,6 +23,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
+#if 0
 
 #include "config.h"
 
@@ -155,3 +156,5 @@ void BESCache3::dump(ostream &strm) const
     strm << BESIndent::LMarg << "BESCache3::dump - (" << (void *) this << ")" << endl;
 }
 
+
+#endif

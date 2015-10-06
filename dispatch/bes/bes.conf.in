@@ -159,19 +159,20 @@ BES.Info.Type=xml
 # Currently the bz2 and gz file compression methods are understood by the
 # BES. We will add support for Z (Unix compress) if there's demand for it.
 
-## The BES cache directory is used to store decompressed data files. This
-# directory will be shared by all of the BES processes running on a given
-# host. The directory should not be an NFS mount unless the NFS option
-# enabling fcntl(2) locking has been set. The caching software will purge
-# older files from the cache when 100% of the cache size is reached; removing
-# 20% of the files (in terms of size) using a least-recently-used test.
-# the cache size is given in megabytes. Note cached files are named using
-# the CachePrefix, so it's easy to see what's in the cache at any given
-# time, even when it's a directory like /tmp that's used by many programs. 
+# The BES uncompress cache directory is used to store decompressed 
+# data files. This directory will be shared by all of the BES processes 
+# running on a given host. The directory should not be an NFS mount 
+# unless the NFS option enabling fcntl(2) locking has been set. The 
+# caching software will purge older files from the cache when 100% of 
+# the cache size is reached; removing 20% of the files (in terms of size) 
+# using a least-recently-used test. The cache size is given in megabytes. 
+# Note cached files are named using the UncompressCache.prefix, so it's 
+# easy to see what's in the cache at any given time, even when it's a 
+# directory like /tmp that's used by many programs. 
 
-BES.CacheDir=/tmp
-BES.CachePrefix=bes_cache
-BES.CacheSize=500
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#

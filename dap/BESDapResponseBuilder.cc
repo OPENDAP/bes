@@ -114,7 +114,7 @@ void BESDapResponseBuilder::initialize()
 
     d_default_protocol = DAP_PROTOCOL_VERSION;
 
-    d_response_cache = 0;
+    // d_response_cache = 0;
 
     d_dap4ce = "";
     d_dap4function = "";
@@ -122,6 +122,7 @@ void BESDapResponseBuilder::initialize()
     d_async_accepted = "";
 }
 
+#if 0
 /** Lazy getter for the ResponseCache. */
 BESDapResponseCache *
 BESDapResponseBuilder::responseCache()
@@ -130,10 +131,15 @@ BESDapResponseBuilder::responseCache()
 
     return d_response_cache;
 }
+#endif
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
+#if 0
+	// NO!!! The response cache is a singleton! It takes care of it's own destruction.
+	// BAD! Don't use this pattern!
     if (d_response_cache) delete d_response_cache;
+#endif
 
     // If an alarm was registered, delete it. The register code in SignalHandler
     // always deletes the old alarm handler object, so only the one returned by
@@ -329,12 +335,15 @@ static string::size_type find_closing_paren(const string &ce, string::size_type 
  */
 void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &expr)
 {
-    BESDEBUG("dap", "Entering ResponseBuilder::split_ce" << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - source expression: " << expr << endl);
+
     string ce;
     if (!expr.empty())
         ce = expr;
     else
         ce = d_dap2ce;
+
+    BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - ce: " << ce << endl);
 
     string btp_function_ce = "";
     string::size_type pos = 0;
@@ -371,8 +380,9 @@ void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &ex
     d_dap2ce = ce;
     d_btp_func_ce = btp_function_ce;
 
-    BESDEBUG("dap", "Modified constraint: " << d_dap2ce << endl);
-    BESDEBUG("dap", "BTP Function part: " << btp_function_ce << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - Modified constraint: " << d_dap2ce << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - BTP Function part: " << btp_function_ce << endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - END" << endl);
 }
 
 /** This function formats and prints an ASCII representation of a
@@ -440,9 +450,10 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
         DDS *fdds = 0;
         string cache_token = "";
         ConstraintEvaluator func_eval;
+        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache()) {
-            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        if (responseCache) {
+            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
         }
         else {
             func_eval.parse_constraint(d_btp_func_ce, dds);
@@ -454,7 +465,8 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS &dds, ConstraintEvaluator
 
         fdds->print_das(out);
 
-        if (responseCache()) responseCache()->unlock_and_close(cache_token);
+        if (responseCache)
+        	responseCache->unlock_and_close(cache_token);
 
         delete fdds;
     }
@@ -515,8 +527,10 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         DDS *fdds = 0;
         ConstraintEvaluator func_eval;
 
-        if (responseCache()) {
-            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+
+        if (responseCache) {
+            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
         }
         else {
             func_eval.parse_constraint(d_btp_func_ce, dds);
@@ -537,7 +551,8 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
 
         fdds->print_constrained(out);
 
-        if (responseCache()) responseCache()->unlock_and_close(cache_token);
+        if (responseCache)
+        	responseCache->unlock_and_close(cache_token);
 
         delete fdds;
     }
@@ -759,10 +774,12 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
         ConstraintEvaluator func_eval;
-        if (responseCache()) {
+        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+
+        if (responseCache) {
             BESDEBUG("dap",
                 "BESDapResponseBuilder::send_dap2_data() - Using the cache for the server function CE" << endl);
-            fdds = responseCache()->cache_dataset(dds, get_btp_func_ce(), this, &func_eval, cache_token);
+            fdds = responseCache->cache_dataset(dds, get_btp_func_ce(), this, &func_eval, cache_token);
         }
         else {
             BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Cache not found; (re)calculating" << endl);
@@ -796,7 +813,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
 
-        if (responseCache()) responseCache()->unlock_and_close(cache_token);
+        if (responseCache)
+        	responseCache->unlock_and_close(cache_token);
 
         delete fdds;
     }
@@ -868,9 +886,10 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         string cache_token = "";
         DDS *fdds = 0;
         ConstraintEvaluator func_eval;
+        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
 
-        if (responseCache()) {
-            fdds = responseCache()->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
+        if (responseCache) {
+            fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
         }
         else {
             func_eval.parse_constraint(d_btp_func_ce, dds);
@@ -891,7 +910,8 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
 
         fdds->print_constrained(out);
 
-        if (responseCache()) responseCache()->unlock_and_close(cache_token);
+        if (responseCache)
+        	responseCache->unlock_and_close(cache_token);
 
         delete fdds;
     }
