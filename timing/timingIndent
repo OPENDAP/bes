@@ -1,3 +1,0 @@
-#!/bin/bash
-
-cat - | awk 'BEGIN{ inc=4; indent=inc; }{ if(index($0,"STOPPED")){ indent -= inc; } for(i=0; i<indent ; i++){ printf(" "); } print $0; if(index($0,"START")){ indent +=inc;}  }' -

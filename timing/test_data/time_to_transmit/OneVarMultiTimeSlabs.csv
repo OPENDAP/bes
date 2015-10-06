@@ -1,8 +1,0 @@
-CommandFileName, BaselineAvgTime, +-, ImprovedTime, +-, Reps
-AIRX3_Aggregation_01_timeslab.ncml.dods-bescmd.xml.log, 458.730300, 6.430188, 455.230700, 4.690648, 10
-AIRX3_Aggregation_02_timeslab.ncml.dods-bescmd.xml.log, 541.517700, 6.068539, 456.730800, 7.452726, 10
-AIRX3_Aggregation_04_timeslab.ncml.dods-bescmd.xml.log, 796.578700, 9.390443, 457.530400, 5.624191, 10
-AIRX3_Aggregation_08_timeslab.ncml.dods-bescmd.xml.log, 1145.326000, 16.410607, 458.930100, 8.909265, 10
-AIRX3_Aggregation_16_timeslab.ncml.dods-bescmd.xml.log, 1837.720000, 18.127327, 456.430700, 6.814272, 10
-AIRX3_Aggregation_32_timeslab.ncml.dods-bescmd.xml.log, 3229.609000, 31.842962, 457.730500, 6.568485, 10
-AIRX3_Aggregation_64_timeslab.ncml.dods-bescmd.xml.log, 6061.077000, 102.257930, 458.330200, 4.840851, 10
