@@ -437,6 +437,14 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
     }
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target  << "'" << endl);
 
+    if(target.length()>254){
+    	ostringstream msg;
+    	msg << "[ERROR} OOPS! Cache filename is longer than 254 characters. The file system is going to balk at that. name.length: ";
+    	msg << target.length() << " characters. name.value: " << target;
+    	BESDEBUG("cache","BESFileLockingCache::get_cache_file_name() - " << msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+
+    }
 
 	target = assemblePath( getCacheDirectory(),  target, true);
 
