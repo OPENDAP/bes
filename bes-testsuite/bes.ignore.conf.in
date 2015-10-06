@@ -191,16 +191,16 @@ BES.Info.Type=xml
 
 # All of the following five parameters must be set in this file.
 
-# BES.CacheDir: Where should the result of decompressing a file be stored?
-# We've set the value to '/tmp' but you might want to change that to
-# /tmp/bes, /var/cache/bes, et c., depending on the server-host's
-# organization.
+# BES.UncompressCache.dir: Where should the result of decompressing a 
+# file be stored?  We've set the value to '/tmp' but you might want to 
+# change that to /tmp/bes, /var/cache/bes, et c., depending on the 
+# server-host's organization.
 
-# BES.CachePrefix: Prefix for the name of the file used to store the result
-# of decompression.
+# BES.UncompressCache.prefix: Prefix for the name of the file used to 
+# store the result of decompression.
 
-# BES.CacheSize: Size of the cache in megabytes. When the size of the cached
-# files exceeds this value, the cache will be purged using a
+# BES.UncompressCache.size: Size of the cache in megabytes. When the size 
+# of the cached files exceeds this value, the cache will be purged using a
 # last-accessed-first-removed approach. Because it's usually impossible to
 # determine the sizes of data files before decompressing them, there may be
 # times when the cache holds more data than this value. Ideally this value
@@ -223,9 +223,9 @@ BES.Info.Type=xml
 # microseconds. If you have really large files (e.g., decompressed they are
 # 500MB), try setting NumTries to 100.
 
-BES.CacheDir=/tmp
-BES.CachePrefix=bes_cache
-BES.CacheSize=500
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
 BES.Uncompress.Retry=2000
 BES.Uncompress.NumTries=10
 
