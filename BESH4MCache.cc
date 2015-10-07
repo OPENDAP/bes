@@ -72,7 +72,6 @@ string BESH4Cache::getCacheDirFromConfig(){
     if( found ) {
         BESDEBUG("cache", "In BESH4Cache::getCachePrefix(): Located BES key " <<
                         PATH_KEY<< "=" << cacheDir << endl);
-        cacheDir = BESUtil::lowercase( cacheDir ) ;
     }
     else {
         string msg =   "[ERROR] BESH4Cache::getCacheDir() - The BES Key " + PATH_KEY + " is not set! It MUST be set to utilize the HDF4 cache. ";
