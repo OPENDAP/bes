@@ -53,13 +53,6 @@ string BESUncompressCache::getCacheDirFromConfig(){
     	BESDEBUG("cache", msg << endl);
         throw BESInternalError(msg , __FILE__, __LINE__);
 	}
-	else {
-		while(*subdir.begin() == '/' && subdir.length()>0){
-			subdir = subdir.substr(1);
-		}
-		// So if it's value is "/" or the empty string then the subdir will default to the root
-		// directory of the BES data system.
-	}
 
     return subdir;
 }
@@ -137,7 +130,6 @@ BESUncompressCache::BESUncompressCache()
 
     BESDEBUG("cache", "BESUncompressCache() - Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
 
-  	// initialize(d_dimCacheDir, CACHE_CONTROL_FILE, d_dimCacheFilePrefix, d_maxCacheSize);
   	initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
     BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
@@ -152,7 +144,6 @@ BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string
 	d_dimCacheFilePrefix = prefix;
 	d_maxCacheSize = size;
 
-//  	initialize(d_dimCacheDir, CACHE_CONTROL_FILE, d_dimCacheFilePrefix, d_maxCacheSize);
   	initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
   	BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);

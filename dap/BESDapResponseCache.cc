@@ -112,7 +112,6 @@ string BESDapResponseCache::getCacheDirFromConfig()
     if (found) {
         BESDEBUG("cache",
                 "BESDapResponseCache::getCacheDirFromConfig(): Located BES key " << PATH_KEY<< "=" << cacheDir << endl);
-        cacheDir = BESUtil::lowercase(cacheDir);
     }
     else {
         string msg = "[ERROR] BESDapResponseCache::getCacheDirFromConfig() - The BES Key " + PATH_KEY
