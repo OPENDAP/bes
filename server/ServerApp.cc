@@ -255,7 +255,7 @@ static void register_signal_handlers()
 }
 
 ServerApp::ServerApp() :
-    BESModuleApp(), _portVal(0), _gotPort(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
+    BESModuleApp(), _portVal(0), _gotPort(false), _IPVal(""), _gotIP(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
 {
     _mypid = getpid();
 }
@@ -277,7 +277,7 @@ int ServerApp::initialize(int argc, char **argv)
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
-    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
+    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:H:")) != -1) {
         switch (c) {
         case 'i':
             dashi = optarg;
@@ -290,6 +290,10 @@ int ServerApp::initialize(int argc, char **argv)
         case 'p':
             _portVal = atoi(optarg);
             _gotPort = true;
+            break;
+        case 'H':
+            _IPVal = optarg;
+            _gotIP = true;
             break;
         case 'u':
             _unixSocket = optarg;
@@ -353,8 +357,7 @@ int ServerApp::initialize(int argc, char **argv)
             TheBESKeys::TheKeys()->get_value(port_key, sPort, found);
         }
         catch (BESError &e) {
-            BESDEBUG("beslistener", "beslistener: FAILED" << endl);
-            string err = (string) "FAILED: " + e.get_message();
+            string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
             exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -368,14 +371,31 @@ int ServerApp::initialize(int argc, char **argv)
     }
 
     found = false;
+    string ip_key = "BES.ServerIP";
+    if (!_gotIP) {
+        try {
+            TheBESKeys::TheKeys()->get_value(ip_key, _IPVal, found);
+        }
+        catch (BESError &e) {
+            string err = string("FAILED: ") + e.get_message();
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CANNOT_START);
+        }
+
+        if (found) {
+                _gotIP = true;
+        }
+    }
+
+    found = false;
     string socket_key = "BES.ServerUnixSocket";
     if (_unixSocket == "") {
         try {
             TheBESKeys::TheKeys()->get_value(socket_key, _unixSocket, found);
         }
         catch (BESError &e) {
-            BESDEBUG("server", "beslistener: FAILED" << endl);
-            string err = (string) "FAILED: " + e.get_message();
+            string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
             exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -400,8 +420,7 @@ int ServerApp::initialize(int argc, char **argv)
             TheBESKeys::TheKeys()->get_value(key, isSecure, found);
         }
         catch (BESError &e) {
-            BESDEBUG("server", "beslistener: FAILED" << endl);
-            string err = (string) "FAILED: " + e.get_message();
+            string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
             exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -451,12 +470,15 @@ int ServerApp::run()
 
         SocketListener listener;
         if (_portVal) {
-            _ts = new TcpSocket(_portVal);
+            if (!_IPVal.empty())
+                 _ts = new TcpSocket(_IPVal, _portVal);
+            else
+                _ts = new TcpSocket(_portVal);
+
             listener.listen(_ts);
 
             BESDEBUG("beslistener", "beslistener: listening on port (" << _portVal << ")" << endl);
 
-            BESDEBUG("beslistener", "beslistener: about to write status (4)" << endl);
             // Write to stdout works because the besdaemon is listening on the
             // other end of a pipe where the pipe fd[1] has been dup2'd to
             // stdout. See daemon.cc:start_master_beslistener.
@@ -464,7 +486,6 @@ int ServerApp::run()
             int status = BESLISTENER_RUNNING;
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
-            BESDEBUG("beslistener", "beslistener: wrote status (" << res << ")" << endl);
             if (res == -1) {
                 (*BESLog::TheLog()) << "Master listener could not send status to daemon: " << strerror(errno) << endl;
                 ::exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -605,6 +626,8 @@ void ServerApp::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "ServerApp::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
+    strm << BESIndent::LMarg << "got IP? " << _gotIP << endl;
+    strm << BESIndent::LMarg << "IP: " << _IPVal << endl;
     strm << BESIndent::LMarg << "got port? " << _gotPort << endl;
     strm << BESIndent::LMarg << "port: " << _portVal << endl;
     strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl;

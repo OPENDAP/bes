@@ -19,7 +19,7 @@
 #              the temp files.
 #          -v: Verbose
 
-args=`getopt "nv" $*`
+args=`getopt "nvk" $*`
 if test $? != 0
 then
     echo "Usage: version_update_modules.sh [-nv] <directories>"
@@ -28,6 +28,7 @@ fi
 
 non_destructive=
 verbose=
+clean=
 
 set -- $args
 
@@ -40,6 +41,9 @@ do
             shift;;
         -v)
             verbose=yes;
+            shift;;
+        -k)
+            clean=yes;
             shift;;
         --)
             shift; break;;
@@ -101,6 +105,11 @@ EOF
         mv configure.ac.tmp configure.ac
      fi
      
+     if test -n $clean
+     then
+	 rm configure.ac.bak
+     fi
+
      # Update Makefile.am
      verbose "Updating Makefile.am"
      new_m_ver_line="M_VER=$new_version"
@@ -112,6 +121,11 @@ EOF
         mv Makefile.am.tmp Makefile.am
      fi
      
+     if test -n $clean
+     then
+	 rm Makefile.am.bak
+     fi 
+
      # Update ChangeLog
      verbose "Updating ChangeLog"
      start_date=`awk '/....-..-../ {print $1 ; exit}' ChangeLog`
@@ -127,6 +141,11 @@ EOF
         mv ChangeLog.tmp ChangeLog
      fi
      
+     if test -n $clean
+     then
+	 rm ChangeLog.bak
+     fi 
+
      # Update NEWS
      verbose "Updating NEWS"
      cat <<EOF >NEWS.tmp.top
@@ -145,6 +164,11 @@ EOF
         mv NEWS.tmp NEWS
      fi
      
+     if test -n $clean
+     then
+	 rm News.bak
+     fi 
+
      # This ends the subshell that processes a given module
     )
 

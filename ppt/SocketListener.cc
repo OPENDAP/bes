@@ -95,22 +95,14 @@ SocketListener::accept()
 		if (s_ptr->getSocketDescriptor() > maxfd) maxfd = s_ptr->getSocketDescriptor();
 		FD_SET(s_ptr->getSocketDescriptor(), &read_fd);
 	}
-#if 0
-	// Without this loop one client will always get an error like:
-	// Could not connect to host localhost on port 10022.  Connection reset by peer.
-	// when the server is first started. This may be an artifact of the test client
-	// when it is used to make many (e.g., 20) simultaneous requests. jhrg 3/5/14
-	pid_t cpid;
-	int stat;
-	while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
-		--bes_num_children;
-		BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << bes_num_children << endl);
-	}
-#endif
+
 	struct timeval timeout;
 	timeout.tv_sec = 120;
 	timeout.tv_usec = 0;
-	while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
+	int status = select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout);
+	if (status < 0) {
+	    // left over and not needed. jhrg 10/14/15
+	    // while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
 		switch (errno) {
 		case EAGAIN:	// rerun select on interrupted calls, ...
 			BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);
@@ -136,12 +128,12 @@ SocketListener::accept()
 			struct sockaddr from;
 			socklen_t len_from = sizeof(from);
 
-			BESDEBUG("ppt",
-					"SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() <<":"<<s_ptr->getPort() << endl);
+			BESDEBUG("ppt", "SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() << ":"
+			    << s_ptr->getPort() << endl);
+
 			int msgsock;
 			while ((msgsock = ::accept(s_ptr->getSocketDescriptor(), &from, &len_from)) < 0) {
 				if (errno == EINTR) {
-					BESDEBUG("ppt2", "SocketListener::accept() - accept() was interrupted" << endl);
 					continue;
 				}
 				else {
