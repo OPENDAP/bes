@@ -48,6 +48,7 @@
 
 #include "BESInternalError.h"
 
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESLog.h"
 
@@ -369,7 +370,7 @@ void BESFileLockingCache::m_initialize_cache_info()
 
     m_check_ctor_params(); // Throws BESInternalError on error.
 
-    d_cache_info =  assemblePath(d_cache_dir, d_prefix+".cache_control", true);
+    d_cache_info =  BESUtil::assemblePath(d_cache_dir, d_prefix+".cache_control", true);
 
     BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
 
@@ -419,7 +420,7 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 
 	string target = src;
 
-	target = assemblePath( getCacheFilePrefix(), src);
+	target = BESUtil::assemblePath( getCacheFilePrefix(), src);
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target  << "'" << endl);
 
     if (mangle) {
@@ -446,7 +447,7 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 
     }
 
-	target = assemblePath( getCacheDirectory(),  target, true);
+	target = BESUtil::assemblePath( getCacheDirectory(),  target, true);
 
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_cache_dir: '" << d_cache_dir << "'" << endl);
     BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_prefix:    '" << d_prefix << "'" << endl);
@@ -931,6 +932,7 @@ bool BESFileLockingCache::dir_exists(const string &dir)
     return (stat(dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR);
 }
 
+#if 0
 string BESFileLockingCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
 	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  BEGIN" << endl);
@@ -972,6 +974,7 @@ string BESFileLockingCache::assemblePath(const string &firstPart, const string &
 
 	return newPath;
 }
+#endif
 
 /** @brief dumps information about this object
  *

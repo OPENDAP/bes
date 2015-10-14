@@ -737,3 +737,51 @@ string BESUtil::url_create(BESUtil::url &url_parts)
     return url;
 }
 
+/**
+ * @brief Assemble path fragments making sure that they are separated by a single '/' character.
+ *
+ * If the parameter ensureLeadingSlash is true then the returned string will begin with
+ * a single '/' character followed by the string firstPart, a single '/' character, and
+ * the string secondPart.
+ */
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash){
+
+	//BESDEBUG("util", "BESUtil::assemblePath() -  BEGIN" << endl);
+	//BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
+	//BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
+
+	string firstPathFragment = firstPart;
+	string secondPathFragment = secondPart;
+
+
+	if(ensureLeadingSlash){
+	    if(*firstPathFragment.begin() != '/')
+	    	firstPathFragment = "/" + firstPathFragment;
+	}
+
+	// make sure there are not multiple slashes at the end of the first part...
+	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
+		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
+		//BESDEBUG("util", "BESUtil::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+	}
+
+	// make sure first part ends with a "/"
+    if(*firstPathFragment.rbegin() != '/'){
+    	firstPathFragment += "/";
+    }
+	//BESDEBUG("util", "BESUtil::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
+
+	// make sure second part does not BEGIN with a slash
+	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
+		secondPathFragment = secondPathFragment.substr(1);
+	}
+
+	//BESDEBUG("util", "BESUtil::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
+
+	string newPath = firstPathFragment + secondPathFragment;
+
+	//BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
+	//BESDEBUG("util", "BESUtil::assemblePath() -  END" << endl);
+
+	return newPath;
+}

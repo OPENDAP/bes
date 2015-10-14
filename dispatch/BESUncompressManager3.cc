@@ -131,12 +131,12 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  */
 bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFileLockingCache *cache)
 {
-    BESDEBUG( "uncompress2", "uncompress - src: " << src << endl );
+    BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
 
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
     if (dot == string::npos) {
-        BESDEBUG( "uncompress2", "uncompress - no file extension" << endl );
+        BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - no file extension" << endl );
         return false;
     }
 
@@ -146,7 +146,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
     // Otherwise, 'p' points to a function that uncompresses the data.
     p_bes_uncompress p = find_method(ext);
     if (!p) {
-        BESDEBUG( "uncompress2", "uncompress - not compressed " << endl );
+        BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - not compressed " << endl );
         return false;
     }
 
@@ -155,18 +155,18 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
     cfile = cache->get_cache_file_name(src);
 
     try {
-        BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
+        BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - is cached? " << src << endl );
 
         int fd;
         if (cache->get_read_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
+            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cfile << endl );
             return true;
         }
 
         // Now we actually try to uncompress the file, given that there's not a decomp'd version
         // in the cache. First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
+            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caching " << cfile << endl );
 
             // uncompress. Make sure that the decompression function does not close
             // the file descriptor.
@@ -188,7 +188,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
         }
         else {
             if (cache->get_read_lock(cfile, fd)) {
-                BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
+                BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cfile << endl );
                 return true;
             }
         }
@@ -196,7 +196,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESFile
         return false;
     }
     catch (...) {
-    	BESDEBUG( "uncompress", "caught exception, unlocking cache and re-throw." << endl );
+    	BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caught exception, unlocking cache and re-throw." << endl );
         cache->unlock_cache();
         throw;
     }

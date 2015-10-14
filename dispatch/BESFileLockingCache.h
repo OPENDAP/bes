@@ -145,7 +145,7 @@ public:
     const string getCacheDirectory();
 
     static bool dir_exists(const string &dir);
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+    // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 
 
     virtual void dump(ostream &strm) const ;

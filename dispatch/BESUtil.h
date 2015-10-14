@@ -116,6 +116,7 @@ public:
     static void			url_explode( const string &url_str,
 					     BESUtil::url &url_parts ) ;
     static string		url_create( BESUtil::url &url_parts ) ;
+    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
 } ;
 
 #endif // E_BESUtil_h

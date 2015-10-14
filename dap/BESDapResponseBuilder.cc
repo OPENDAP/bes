@@ -90,6 +90,7 @@
 #include "BESContextManager.h"
 #include "BESDapResponseCache.h"
 #include "BESStoredDapResultCache.h"
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
@@ -632,7 +633,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
         BESDEBUG("dap",
             "BESDapResponseBuilder::store_dap2_result() - storedResultId='"<< storedResultId << "'" << endl);
 
-        string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
+        string targetURL = BESUtil::assemblePath(serviceUrl, storedResultId);
         BESDEBUG("dap", "BESDapResponseBuilder::store_dap2_result() - targetURL='"<< targetURL << "'" << endl);
 
         XMLWriter xmlWrtr;
@@ -1119,7 +1120,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
             BESDEBUG("dap",
                 "BESDapResponseBuilder::store_dap4_result() - storedResultId='"<< storedResultId << "'" << endl);
 
-            string targetURL = resultCache->assemblePath(serviceUrl, storedResultId);
+            string targetURL = BESUtil::assemblePath(serviceUrl, storedResultId);
             BESDEBUG("dap", "BESDapResponseBuilder::store_dap4_result() - targetURL='"<< targetURL << "'" << endl);
 
             d4au.writeD4AsyncAccepted(xmlWrtr, 0, 0, targetURL, stylesheet_ref);
