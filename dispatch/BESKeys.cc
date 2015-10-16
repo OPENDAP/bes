@@ -139,6 +139,7 @@ void BESKeys::clean()
         _keys_file->close();
         delete _keys_file;
     }
+
     if (_the_keys && _own_keys)
     {
         delete _the_keys;

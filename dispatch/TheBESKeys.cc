@@ -32,52 +32,68 @@
 
 #include "config.h"
 
-#include <sys/stat.h>
-#include <cstdlib>
+#include <unistd.h>
 
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"
-
-// left in for now... It would be better to not use an env var
-// since these are easily hacked. jhrg 10/12/11
-// Removed 8/28/13 jhrg #define BES_CONF getenv("BES_CONF")
 
 BESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
 BESKeys *TheBESKeys::TheKeys()
 {
+#if 1
+    if (_instance)
+        return _instance;
+
+    if (!TheBESKeys::ConfigFile.empty()) {
+        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return _instance;
+    }
+
+    // _instance is a nullptr and TheBESKeys::ConfigFile is ""
+    // so lets try some obvious places...
+
+    string try_ini = "/usr/local/etc/bes/bes.conf";
+    if (access(try_ini.c_str(), R_OK) == 0) {
+        TheBESKeys::ConfigFile = try_ini;
+        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return _instance;
+    }
+
+    try_ini = "/etc/bes/bes.conf";
+    if (access(try_ini.c_str(), R_OK) == 0) {
+        TheBESKeys::ConfigFile = try_ini;
+        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return _instance;
+    }
+
+    try_ini = "/usr/etc/bes/bes.conf";
+    if (access(try_ini.c_str(), R_OK) == 0) {
+        TheBESKeys::ConfigFile = try_ini;
+        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return _instance;
+    }
+
+    throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
+
+#else
+
     if (_instance == 0) {
         string use_ini = TheBESKeys::ConfigFile;
         if (use_ini == "") {
-#ifdef BES_CONF
-            char *ini_file = BES_CONF;
-            if (!ini_file) {
-#endif
-                string try_ini = "/usr/local/etc/bes/bes.conf";
-                struct stat buf;
+            string try_ini = "/usr/local/etc/bes/bes.conf";
+            struct stat buf;
+            int statret = stat(try_ini.c_str(), &buf);
+            if (statret == -1 || !S_ISREG(buf.st_mode)) {
+                try_ini = "/etc/bes/bes.conf";
                 int statret = stat(try_ini.c_str(), &buf);
-                if (statret == -1 || !S_ISREG( buf.st_mode )) {
-                    try_ini = "/etc/bes/bes.conf";
+                if (statret == -1 || !S_ISREG(buf.st_mode)) {
+                    try_ini = "/usr/etc/bes/bes.conf";
                     int statret = stat(try_ini.c_str(), &buf);
-                    if (statret == -1 || !S_ISREG( buf.st_mode )) {
-                        try_ini = "/usr/etc/bes/bes.conf";
-                        int statret = stat(try_ini.c_str(), &buf);
-                        if (statret == -1 || !S_ISREG( buf.st_mode )) {
-                            string s = "Unable to find a conf file or module version mismatch.";
-#if 0
-                            // This message is confusing because it often appears when
-                            // the user has passed -c to besctl. It makes the command
-                            // (besctl) more confusing to use. jhrg 10/12/11
-                            "Unable to locate BES config file. " + "Please either pass -c "
-                            + "option when starting the BES, set " + "the environment variable BES_CONF, "
-                            + "or install in /usr/local/etc/bes/bes.conf " + "or /etc/bes/bes.conf.";
-#endif
-                            throw BESInternalFatalError(s, __FILE__, __LINE__);
-                        }
-                        else {
-                            use_ini = try_ini;
-                        }
+                    if (statret == -1 || !S_ISREG(buf.st_mode)) {
+                        throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__,
+                            __LINE__);
                     }
                     else {
                         use_ini = try_ini;
@@ -86,33 +102,15 @@ BESKeys *TheBESKeys::TheKeys()
                 else {
                     use_ini = try_ini;
                 }
-#ifdef BES_CONF
             }
             else {
-                use_ini = ini_file;
+                use_ini = try_ini;
             }
-#endif
         }
         _instance = new TheBESKeys(use_ini);
     }
+
     return _instance;
-}
 
-#if 0
-// I think adding this was a mistake because the bes really needs to restart
-// to have it's configuration updated - either that or this code must get
-// much more complex - e.g., reload all modules (not just their configuration
-// files). jhrg 5/27/11
-void TheBESKeys::updateKeys()
-{
-    delete _instance; _instance = 0;
-    _instance = new TheBESKeys(TheBESKeys::ConfigFile);
-}
-
-void TheBESKeys::updateKeys( const string &keys_file_name )
-{
-    delete _instance; _instance = 0;
-    TheBESKeys::ConfigFile = keys_file_name;
-    _instance = new TheBESKeys(keys_file_name);
-}
 #endif
+}

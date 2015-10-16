@@ -64,13 +64,13 @@ using std::ifstream;
  #
  # Who is responsible for this server
  #
- BES.ServerAdministrator=dods-tech@unidata.ucar.edu
+ BES.ServerAdministrator=support@opendap.org
 
  #
  # Default server port and unix socket information and whether the server
  #is secure or not.
  #
- BES.ServerPort=10002
+ BES.ServerPort=10022
  BES.ServerUnixSocket=/tmp/bes.socket
  BES.ServerSecure=no
  * @endverbatim
@@ -99,15 +99,19 @@ private:
 	bool only_blanks(const char *line);
 	void load_include_files(const string &files);
 	void load_include_file(const string &file);
+
 	BESKeys() :
 			_keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
 	{
 	}
+
 	BESKeys(const string &keys_file_name, map<string, vector<string> > *keys);
+
 protected:
 	BESKeys(const string &keys_file_name);
+
 public:
-	~BESKeys();
+	virtual ~BESKeys();
 
 	string keys_file_name()
 	{
@@ -120,10 +124,12 @@ public:
 	void get_values(const string& s, vector<string> &vals, bool &found);
 
 	typedef map<string, vector<string> >::const_iterator Keys_citer;
+
 	Keys_citer keys_begin()
 	{
 		return _the_keys->begin();
 	}
+
 	Keys_citer keys_end()
 	{
 		return _the_keys->end();
