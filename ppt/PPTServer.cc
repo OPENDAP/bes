@@ -31,11 +31,6 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "config.h"
-#if 0
-#include <signal.h>
-#include <sys/wait.h> // for wait
-#include <sys/types.h>
-#endif
 #include <unistd.h>
 
 #include <string>
