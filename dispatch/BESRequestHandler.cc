@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -47,16 +47,13 @@
  * @see BESResponseObject
  * @see BESResponseNames
  */
-bool
-BESRequestHandler::add_handler( const string &handler_name,
-			        p_request_handler handler_method )
+bool BESRequestHandler::add_handler(const string &handler_name, p_request_handler handler_method)
 {
-    if( find_handler( handler_name ) == 0 )
-    {
-	_handler_list[handler_name] = handler_method ;
-	return true ;
+    if (find_handler(handler_name) == 0) {
+        _handler_list[handler_name] = handler_method;
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief remove the specified handler method from this request handler
@@ -66,17 +63,15 @@ BESRequestHandler::add_handler( const string &handler_name,
  * @return true if successfully removed, false if not found
  * @see BESResponseNames
  */
-bool
-BESRequestHandler::remove_handler( const string &handler_name )
+bool BESRequestHandler::remove_handler(const string &handler_name)
 {
-    BESRequestHandler::Handler_iter i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	_handler_list.erase( i ) ;
-	return true ;
+    BESRequestHandler::Handler_iter i;
+    i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        _handler_list.erase(i);
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief find the method that can handle the specified response object type
@@ -89,16 +84,14 @@ BESRequestHandler::remove_handler( const string &handler_name )
  * @see BESResponseObject
  * @see BESResponseNames
  */
-p_request_handler
-BESRequestHandler::find_handler( const string &handler_name )
+p_request_handler BESRequestHandler::find_handler(const string &handler_name)
 {
-    BESRequestHandler::Handler_citer i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	return (*i).second;
+    BESRequestHandler::Handler_citer i;
+    i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        return (*i).second;
     }
-    return 0 ;
+    return 0;
 }
 
 /** @brief return a comma separated list of response object types handled by
@@ -108,20 +101,17 @@ BESRequestHandler::find_handler( const string &handler_name )
  * @see BESResponseObject
  * @see BESResponseNames
  */
-string
-BESRequestHandler::get_handler_names()
+string BESRequestHandler::get_handler_names()
 {
     string ret = "";
-    bool first_name = true ;
-    BESRequestHandler::Handler_citer i = _handler_list.begin() ;
-    for( ; i != _handler_list.end(); i++ )
-    {
-	if( !first_name )
-	    ret += ", " ;
-	ret += (*i).first ;
-	first_name = false ;
+    bool first_name = true;
+    BESRequestHandler::Handler_citer i = _handler_list.begin();
+    for (; i != _handler_list.end(); i++) {
+        if (!first_name) ret += ", ";
+        ret += (*i).first;
+        first_name = false;
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief dumps information about this object
@@ -131,29 +121,24 @@ BESRequestHandler::get_handler_names()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESRequestHandler::dump( ostream &strm ) const
+void BESRequestHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESRequestHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name: " << _name << endl ;
-    if( _handler_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered handler functions:" << endl ;
-	BESIndent::Indent() ;
-	BESRequestHandler::Handler_citer i = _handler_list.begin() ;
-	BESRequestHandler::Handler_citer ie = _handler_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    strm << BESIndent::LMarg << (*i).first << endl ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESRequestHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name: " << _name << endl;
+    if (_handler_list.size()) {
+        strm << BESIndent::LMarg << "registered handler functions:" << endl;
+        BESIndent::Indent();
+        BESRequestHandler::Handler_citer i = _handler_list.begin();
+        BESRequestHandler::Handler_citer ie = _handler_list.end();
+        for (; i != ie; i++) {
+            strm << BESIndent::LMarg << (*i).first << endl;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered handler functions: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "registered handler functions: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

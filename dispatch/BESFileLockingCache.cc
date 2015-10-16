@@ -479,7 +479,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 
     bool status = getSharedLock(target, fd);
 
-    BESDEBUG("cache", "BESFileLockingCache::get_read_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+    BESDEBUG("cache2", "BESFileLockingCache::get_read_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -507,7 +507,7 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     bool status = createLockedFile(target, fd);
 
-    BESDEBUG("cache", "BESFileLockingCache::create_and_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+    BESDEBUG("cache2", "BESFileLockingCache::create_and_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -605,38 +605,16 @@ void BESFileLockingCache::unlock_cache()
  * @throws BESBESInternalErroror */
 void BESFileLockingCache::unlock_and_close(const string &file_name)
 {
-	BESDEBUG("cache", "BESFileLockingCache::unlock_and_close() - BEGIN file: " << file_name << endl);
+	BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() - BEGIN file: " << file_name << endl);
 
     int fd = m_get_descriptor(file_name);	// returns -1 when no more files desp. remain
     while (fd != -1) {
     	unlock(fd);
     	fd = m_get_descriptor(file_name);
     }
-	BESDEBUG("cache", "BESFileLockingCache::unlock_and_close() -  END"<< endl);
+	BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() -  END"<< endl);
 
 }
-
-#if 0
-// I removed this because it will unlock() the file descriptor without
-// removing it from the list of registered fds. This can lead to errors
-// when the other version is called because a given descriptor appears
-// more than once in the list of descriptors or a fd in the list is no
-// longer open. jhrg 8/13/14
-
-/** Unlock the file.
- *
- * @see unlock_and_close(const string &)
- * @param fd The descriptor of the file to unlock.
- * @throws BESBESInternalErroror */
-void BESFileLockingCache::unlock_and_close(int fd)
-{
-	BESDEBUG("cache", "DAP Cache: unlock fd: " << fd << endl);
-
-    unlock(fd);
-
-    BESDEBUG("cache", "DAP Cache: unlock " << fd << " Success" << endl);
-}
-#endif
 
 /** @brief Update the cache info file to include 'target'
  *
@@ -931,50 +909,6 @@ bool BESFileLockingCache::dir_exists(const string &dir)
 
     return (stat(dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR);
 }
-
-#if 0
-string BESFileLockingCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
-
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  BEGIN" << endl);
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  firstPart: "<< firstPart << endl);
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  secondPart: "<< secondPart << endl);
-
-	string firstPathFragment = firstPart;
-	string secondPathFragment = secondPart;
-
-
-	if(addLeadingSlash){
-	    if(*firstPathFragment.begin() != '/')
-	    	firstPathFragment = "/" + firstPathFragment;
-	}
-
-	// make sure there are not multiple slashes at the end of the first part...
-	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
-		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
-		//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
-	}
-
-	// make sure first part ends with a "/"
-    if(*firstPathFragment.rbegin() != '/'){
-    	firstPathFragment += "/";
-    }
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
-
-	// make sure second part does not BEGIN with a slash
-	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
-		secondPathFragment = secondPathFragment.substr(1);
-	}
-
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
-
-	string newPath = firstPathFragment + secondPathFragment;
-
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  newPath: "<< newPath << endl);
-	//BESDEBUG("cache", "BESFileLockingCache::assemblePath() -  END" << endl);
-
-	return newPath;
-}
-#endif
 
 /** @brief dumps information about this object
  *

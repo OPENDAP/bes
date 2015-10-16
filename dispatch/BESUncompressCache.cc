@@ -1,9 +1,23 @@
-/*
- * BESUncompressCache.cc
- *
- *  Created on: Oct 2, 2015
- *      Author: ndp
- */
+
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
+
+// Copyright (c) 2015 OPeNDAP, Inc
+// Author: Nathan Potter <npotter@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "BESUncompressCache.h"
 #include <string>
@@ -16,61 +30,60 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
-
-static const string BES_DATA_ROOT("BES.Data.RootDirectory");
-static const string BES_CATALOG_ROOT("BES.Catalog.catalog.RootDirectory");
-
 BESUncompressCache *BESUncompressCache::d_instance = 0;
-const string BESUncompressCache::DIR_KEY       = "BES.UncompressCache.dir";
-const string BESUncompressCache::PREFIX_KEY    = "BES.UncompressCache.prefix";
-const string BESUncompressCache::SIZE_KEY      = "BES.UncompressCache.size";
+const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
+const string BESUncompressCache::PREFIX_KEY = "BES.UncompressCache.prefix";
+const string BESUncompressCache::SIZE_KEY = "BES.UncompressCache.size";
 
-
-unsigned long BESUncompressCache::getCacheSizeFromConfig(){
-
-	bool found;
+unsigned long BESUncompressCache::getCacheSizeFromConfig()
+{
+    bool found;
     string size;
     unsigned long size_in_megabytes = 0;
-    TheBESKeys::TheKeys()->get_value( SIZE_KEY, size, found ) ;
-    if( found ) {
-    	std::istringstream iss(size);
-    	iss >> size_in_megabytes;
+    TheBESKeys::TheKeys()->get_value(SIZE_KEY, size, found);
+    if (found) {
+        std::istringstream iss(size);
+        iss >> size_in_megabytes;
     }
     else {
-    	string msg = "[ERROR] BESUncompressCache::getCacheSize() - The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
-    	BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg , __FILE__, __LINE__);
+        string msg = "[ERROR] BESUncompressCache::getCacheSize() - The BES Key " + SIZE_KEY
+            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+        BESDEBUG("cache", msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
     return size_in_megabytes;
 }
 
-string BESUncompressCache::getCacheDirFromConfig(){
-	bool found;
+string BESUncompressCache::getCacheDirFromConfig()
+{
+    bool found;
     string subdir = "";
-    TheBESKeys::TheKeys()->get_value( DIR_KEY, subdir, found ) ;
+    TheBESKeys::TheKeys()->get_value(DIR_KEY, subdir, found);
 
-	if( !found ) {
-    	string msg = "[ERROR] BESUncompressCache::getSubDirFromConfig() - The BES Key " + DIR_KEY + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
-    	BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg , __FILE__, __LINE__);
-	}
+    if (!found) {
+        string msg = "[ERROR] BESUncompressCache::getSubDirFromConfig() - The BES Key " + DIR_KEY
+            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+        BESDEBUG("cache", msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
 
     return subdir;
 }
 
-
-string BESUncompressCache::getCachePrefixFromConfig(){
-	bool found;
+string BESUncompressCache::getCachePrefixFromConfig()
+{
+    bool found;
     string prefix = "";
-    TheBESKeys::TheKeys()->get_value( PREFIX_KEY, prefix, found ) ;
-	if( found ) {
-		prefix = BESUtil::lowercase( prefix ) ;
-	}
-	else {
-    	string msg = "[ERROR] BESUncompressCache::getResultPrefix() - The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
-    	BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg , __FILE__, __LINE__);
-	}
+    TheBESKeys::TheKeys()->get_value(PREFIX_KEY, prefix, found);
+    if (found) {
+        prefix = BESUtil::lowercase(prefix);
+    }
+    else {
+        string msg = "[ERROR] BESUncompressCache::getResultPrefix() - The BES Key " + PREFIX_KEY
+            + " is not set! It MUST be set to utilize the NcML Dimension Cache. ";
+        BESDEBUG("cache", msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
 
     return prefix;
 }
@@ -114,59 +127,60 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
     }
     target = BESFileLockingCache::get_cache_file_name(target);
 
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - target:      '" << target  << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - target:      '" << target << "'" << endl);
 
     return target;
 }
 
-
-
 BESUncompressCache::BESUncompressCache()
 {
-	BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
+    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
 
-	d_dimCacheDir = getCacheDirFromConfig();
+    d_dimCacheDir = getCacheDirFromConfig();
     d_dimCacheFilePrefix = getCachePrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
 
-    BESDEBUG("cache", "BESUncompressCache() - Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
+    BESDEBUG("cache",
+        "BESUncompressCache() - Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
 
-  	initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
+    initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
     BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
 
 }
-BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix, unsigned long long size){
+BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
+    unsigned long long size)
+{
 
-	BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
+    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
 
-	d_dataRootDir = data_root_dir;
-	d_dimCacheDir = cache_dir;
-	d_dimCacheFilePrefix = prefix;
-	d_maxCacheSize = size;
+    d_dataRootDir = data_root_dir;
+    d_dimCacheDir = cache_dir;
+    d_dimCacheFilePrefix = prefix;
+    d_maxCacheSize = size;
 
-  	initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
+    initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
-  	BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
+    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
 }
 
-
-
 BESUncompressCache *
-BESUncompressCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix, unsigned long long max_cache_size)
+BESUncompressCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix,
+    unsigned long long max_cache_size)
 {
-    if (d_instance == 0){
+    if (d_instance == 0) {
         if (dir_exists(cache_dir)) {
-        	try {
+            try {
                 d_instance = new BESUncompressCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
 #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
 #endif
-        	}
-        	catch(BESInternalError &bie){
-        	    BESDEBUG("cache", "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-        	}
-    	}
+            }
+            catch (BESInternalError &bie) {
+                BESDEBUG("cache",
+                    "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            }
+        }
     }
     return d_instance;
 }
@@ -178,26 +192,24 @@ BESUncompressCache *
 BESUncompressCache::get_instance()
 {
     if (d_instance == 0) {
-		try {
-			d_instance = new BESUncompressCache();
+        try {
+            d_instance = new BESUncompressCache();
 #ifdef HAVE_ATEXIT
             atexit(delete_instance);
 #endif
-		}
-		catch(BESInternalError &bie){
-			BESDEBUG("cache", "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
-		}
+        }
+        catch (BESInternalError &bie) {
+            BESDEBUG("cache",
+                "[ERROR] BESUncompressCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+        }
     }
 
     return d_instance;
 }
 
-
-
-
 BESUncompressCache::~BESUncompressCache()
 {
-	delete_instance();
+    delete_instance();
 }
 
 /**
@@ -214,7 +226,7 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
 {
     // If the cached response is zero bytes in size, it's not valid.
     // (hmmm...)
-	string datasetFileName = BESUtil::assemblePath(d_dataRootDir,local_id, true);
+    string datasetFileName = BESUtil::assemblePath(d_dataRootDir, local_id, true);
 
     off_t entry_size = 0;
     time_t entry_time = 0;
@@ -227,8 +239,7 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
         return false;
     }
 
-    if (entry_size == 0)
-        return false;
+    if (entry_size == 0) return false;
 
     time_t dataset_time = entry_time;
     if (stat(datasetFileName.c_str(), &buf) == 0) {
@@ -240,54 +251,10 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
 
     // TODO Fix this so that the code can get a LMT from the correct handler.
     // TODO Consider adding a getLastModified() method to the libdap::DDS object to support this
-    // TODO The DDS may be expensive to instantiate - I think the handler may be a better location for an LMT method, if we can access the handler when/where needed.
-    if (dataset_time > entry_time)
-        return false;
+    // TODO The DDS may be expensive to instantiate - I think the handler may be a better location
+    // for an LMT method, if we can access the handler when/where needed.
+    if (dataset_time > entry_time) return false;
 
     return true;
 }
-
-#if 0
-string BESUncompressCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
-
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  BEGIN" << endl);
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  firstPart: "<< firstPart << endl);
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  secondPart: "<< secondPart << endl);
-
-	string firstPathFragment = firstPart;
-	string secondPathFragment = secondPart;
-
-
-	if(addLeadingSlash){
-	    if(*firstPathFragment.begin() != '/')
-	    	firstPathFragment = "/" + firstPathFragment;
-	}
-
-	// make sure there are not multiple slashes at the end of the first part...
-	while(*firstPathFragment.rbegin() == '/' && firstPathFragment.length()>0){
-		firstPathFragment = firstPathFragment.substr(0,firstPathFragment.length()-1);
-		//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
-	}
-
-	// make sure first part ends with a "/"
-    if(*firstPathFragment.rbegin() != '/'){
-    	firstPathFragment += "/";
-    }
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  firstPathFragment: "<< firstPathFragment << endl);
-
-	// make sure second part does not BEGIN with a slash
-	while(*secondPathFragment.begin() == '/' && secondPathFragment.length()>0){
-		secondPathFragment = secondPathFragment.substr(1);
-	}
-
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  secondPathFragment: "<< secondPathFragment << endl);
-
-	string newPath = firstPathFragment + secondPathFragment;
-
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  newPath: "<< newPath << endl);
-	//BESDEBUG("cache", "BESUncompressCache::assemblePath() -  END" << endl);
-
-	return newPath;
-}
-#endif
 
