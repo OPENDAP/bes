@@ -136,12 +136,6 @@ BESDapResponseBuilder::responseCache()
 
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
-#if 0
-	// NO!!! The response cache is a singleton! It takes care of it's own destruction.
-	// BAD! Don't use this pattern!
-    if (d_response_cache) delete d_response_cache;
-#endif
-
     // If an alarm was registered, delete it. The register code in SignalHandler
     // always deletes the old alarm handler object, so only the one returned by
     // remove_handler needs to be deleted at this point.
@@ -205,7 +199,7 @@ string BESDapResponseBuilder::get_dap4function() const
     return d_dap4function;
 }
 
-/** Set the DAP4 Server Side Fucntion expression. This will filter the
+/** Set the DAP4 Server Side Function expression. This will filter the
  * function expression text removing
  * any 'WWW' escape characters except space. Spaces are left in the CE
  * because the CE parser uses whitespace to delimit tokens while some
@@ -693,12 +687,14 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS &dds, Cons
  * This was originally intended to be used for DAP4, now it is used to
  * store responses for the async response feature as well as response
  * caching for function results.
+ *
+ * FIXME Comment is probably wrong jhrg 10/20/15
  */
 void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, ConstraintEvaluator &eval,
     const string &boundary, const string &start, bool ce_eval)
 {
-    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - BEGIN" << endl);
-
+    BESDEBUG("dap", __PRETTY_FUNCTION__ << " BEGIN" << endl);
+#if 1
     // Write the MPM headers for the DDX (text/xml) part of the response
     libdap::set_mime_ddx_boundary(out, boundary, start, dods_ddx, x_plain);
 
@@ -711,15 +707,20 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
     if (getdomainname(domain, 255) != 0 || strlen(domain) == 0) strncpy(domain, "opendap.org", 255);
 
     string cid = string(&uuid[0]) + "@" + string(&domain[0]);
-    // Send constrained DDX with a data blob reference
+#endif
+    // Send constrained DDX with a data blob reference.
+    // FIXME Comment CID passed but ignored jhrg 10/20/15
     dds.print_xml_writer(out, true, cid);
 
+#if 1
     // write the data part mime headers here
     set_mime_data_boundary(out, boundary, cid, dods_data_ddx /* old value dap4_data*/, x_plain);
-
+#endif
     XDRStreamMarshaller m(out);
 
-    // Send all variables in the current projection (send_p()). In DAP4,
+    // Send all variables in the current projection (send_p()).
+
+    // FIXME: This part is misleading. This is not DAP4: In DAP4,
     // all of the top-level variables are serialized with their checksums.
     // Internal variables are not.
     for (DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
@@ -731,7 +732,7 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS &dds, Cons
         }
     }
 
-    BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap2_data_ddx() - END" << endl);
+    BESDEBUG("dap", __PRETTY_FUNCTION__ << " END" << endl);
 }
 
 /** Send the data in the DDS object back to the client program. The data is
@@ -809,10 +810,14 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+#if 1
         // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, dds, eval)) {
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
+#else
+        serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
+#endif
 
         if (responseCache)
         	responseCache->unlock_and_close(cache_token);
