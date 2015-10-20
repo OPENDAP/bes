@@ -18,15 +18,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-noinst_SCRIPTS = cleanup.sh
-
 CLEANFILES = bes.conf
 
 EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
-$(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4 \
-cleanup.sh.in
+$(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4
 
-DISTCLEANFILES = atconfig cleanup.sh generate_data_baselines.sh generate_metadata_baselines.sh
+DISTCLEANFILES = atconfig generate_data_baselines.sh generate_metadata_baselines.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -59,10 +56,13 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/packag
 check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with an empty cache"
 	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	@echo "Run tests with a full cache"
-	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	-rm -f dap_cache
 	
+# When caching is working again for function results, add this back into the 
+# target's actions. jhrg 10/20/15
+# 	@echo "Run tests with a full cache"
+#	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f dap_cache

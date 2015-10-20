@@ -95,6 +95,8 @@
 #include "BESStopWatch.h"
 
 #define CLEAR_LOCAL_DATA
+#undef FUNCTION_CACHING
+
 #define DAP_PROTOCOL_VERSION "3.2"
 
 const std::string CRLF = "\r\n";             // Change here, expr-test.cc
@@ -776,7 +778,11 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         // won't get treated like selection clauses later on when serialize is called
         // on the DDS (fdds)
         ConstraintEvaluator func_eval;
-        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+        BESDapResponseCache *responseCache = 0;
+
+#if FUNCTION_CACHING
+        responseCache = BESDapResponseCache::get_instance();
+#endif
 
         if (responseCache) {
             BESDEBUG("dap",
@@ -810,7 +816,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-#if 1
+#if FUNCTION_CACHING
         // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, dds, eval)) {
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
