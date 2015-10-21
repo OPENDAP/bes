@@ -24,7 +24,7 @@ export prefix=$HOME
 export PATH=$HOME/deps/bin:$PATH
 
 # Force the build by un-commenting the following line
-rm -rf $HOME/deps
+# rm -rf $HOME/deps
 
 if test ! -d "$HOME/deps"
 then
@@ -39,11 +39,11 @@ fi
 # unlike hyrax-dependencies, the libdap tar needs --prefix to be the
 # complete dir name. The hyrax-deps... project is a bit of a hack...
 
-if test ! -x "$HOME/deps/bin/dap-config"
+if test ! -x "$HOME/deps/bin/dap-config" -o ! "`dap-config --version`" = "libdap 3.16.0"
 then
-    wget http://www.opendap.org/pub/tmp/travis/libdap-3.15.1.tar.gz
-    tar -xzf libdap-3.15.1.tar.gz
-    (cd libdap-3.15.1 && ./configure --prefix=$prefix/deps/ && make -j7 && make install)
+    wget http://www.opendap.org/pub/tmp/travis/libdap-3.16.0.tar.gz
+    tar -xzf libdap-3.16.0.tar.gz
+    (cd libdap-3.16.0 && ./configure --prefix=$prefix/deps/ && make -j7 && make install)
 else
     echo "Using cached libdap."
 fi
