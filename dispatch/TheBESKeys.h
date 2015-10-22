@@ -46,12 +46,6 @@ protected:
     }
 
 public:
-    // I added this
-    virtual ~TheBESKeys() {
-        delete _instance;
-        _instance = 0;
-    }
-
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.
