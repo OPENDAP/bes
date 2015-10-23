@@ -326,7 +326,6 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
  */
 void BESXMLDefineCommand::prep_request()
 {
-
     vector<string>::iterator i = _containers.begin();
     vector<string>::iterator e = _containers.end();
     for (; i != e; i++) {
@@ -342,22 +341,29 @@ void BESXMLDefineCommand::prep_request()
         else {
             c = BESContainerStorageList::TheList()->look_for((*i));
         }
-        if (!c && BESContainerStorageList::TheList()->isnice() == false) {
-            string s = (string) "Could not find the container " + (*i);
-            throw BESSyntaxUserError(s, __FILE__, __LINE__);
-        }
 
-        // FIXME What use case do we have in which the "default" value of the constraint is not an empty string?
+        // I don't understand this test. If 'c' is null, then the code below will
+        // fail. If 'c' is not null, then what does it matter that the
+        // BES.Container.Persistence is set to 'nice' - dereferencing 'c' is still
+        // not going to work. I'm changing the test to be 'if (c == 0)...'.
+        // jhrg 10/23/15
+        //
+        // if (!c && BESContainerStorageList::TheList()->isnice() == false) {
+
+        if (c == 0)
+            throw BESSyntaxUserError(string("Could not find the container ") + (*i), __FILE__, __LINE__);
+
+        // What use case do we have in which the "default" value of the constraint is not an empty string?
         string constraint = _constraints[(*i)];
         if (constraint.empty()) constraint = _default_constraint;
         c->set_constraint(constraint);
 
-        // FIXME What use case do we have in which the "default" value of the dap4constraint is not an empty string?
+        // What use case do we have in which the "default" value of the dap4constraint is not an empty string?
         string dap4constraint = _dap4constraints[(*i)];
         if (dap4constraint.empty()) dap4constraint = _default_dap4_constraint;
         c->set_dap4_constraint(dap4constraint);
 
-        // FIXME What use case do we have in which the "default" value of the dap4function is not an empty string?
+        // What use case do we have in which the "default" value of the dap4function is not an empty string?
         string function = _dap4functions[(*i)];
         if (function.empty()) function = _default_dap4_function;
         c->set_dap4_function(function);
@@ -365,6 +371,7 @@ void BESXMLDefineCommand::prep_request()
         string attrs = _attributes[(*i)];
         c->set_attributes(attrs);
         _dhi.containers.push_back(c);
+
         BESDEBUG("xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl);
     }
 }

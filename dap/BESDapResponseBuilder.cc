@@ -821,12 +821,12 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (!store_dap2_result(data_stream, dds, eval)) {
             serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
         }
+
+        if (responseCache)
+            responseCache->unlock_and_close(cache_token);
 #else
         serialize_dap2_data_dds(data_stream, *fdds, eval, true /* was 'false'. jhrg 3/10/15 */);
 #endif
-
-        if (responseCache)
-        	responseCache->unlock_and_close(cache_token);
 
         delete fdds;
     }

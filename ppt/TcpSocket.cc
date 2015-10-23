@@ -151,10 +151,7 @@ void TcpSocket::connect()
     int descript = socket(AF_INET, SOCK_STREAM, pProtoEnt->p_proto);
 
     if (descript == -1) {
-        string err("getting socket descriptor: ");
-        const char* error_info = strerror(errno);
-        if (error_info) err += (string) error_info;
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError(string("getting socket descriptor: ") + strerror(errno), __FILE__, __LINE__);
     }
     else {
         long holder;
@@ -163,7 +160,9 @@ void TcpSocket::connect()
         //set socket to non-blocking mode
         holder = fcntl(_socket, F_GETFL, NULL);
         holder = holder | O_NONBLOCK;
-        fcntl(_socket, F_SETFL, holder);
+        int status = fcntl(_socket, F_SETFL, holder);
+        if (status == -1)
+           throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
 
         // we must set the send and receive buffer sizes before the connect call
         setTcpRecvBufferSize();
@@ -186,72 +185,77 @@ void TcpSocket::connect()
 
                 if (select(maxfd + 1, NULL, &write_fd, NULL, &timeout) < 0) {
 
-                    //reset socket to blocking mode
+                    // reset socket to blocking mode
                     holder = fcntl(_socket, F_GETFL, NULL);
                     holder = holder & (~O_NONBLOCK);
-                    fcntl(_socket, F_SETFL, holder);
+                    int status = fcntl(_socket, F_SETFL, holder);
+                    if (status == -1)
+                       throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
 
                     //throw error - select could not resolve socket
-                    string err("selecting sockets: ");
-                    const char *error_info = strerror(errno);
-                    if (error_info) err += (string) error_info;
-                    throw BESInternalError(err, __FILE__, __LINE__);
+                    throw BESInternalError(string("selecting sockets: ") + strerror(errno), __FILE__, __LINE__);
 
                 }
                 else {
 
-                    //check socket status
+                    // check socket status
                     socklen_t lon;
                     int valopt;
                     lon = sizeof(int);
-                    getsockopt(_socket, SOL_SOCKET, SO_ERROR, (void*) &valopt, &lon);
+                    int status = getsockopt(_socket, SOL_SOCKET, SO_ERROR, (void*) &valopt, &lon);
+                    if (status == -1)
+                       throw BESInternalError(string("Could not check socket status: ") + strerror(errno), __FILE__, __LINE__);
 
                     if (valopt) {
 
-                        //reset socket to blocking mode
+                        // reset socket to blocking mode
                         holder = fcntl(_socket, F_GETFL, NULL);
                         holder = holder & (~O_NONBLOCK);
-                        fcntl(_socket, F_SETFL, holder);
+                        int status = fcntl(_socket, F_SETFL, holder);
+                        if (status == -1)
+                            throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
 
                         //throw error - did not successfully connect
-                        string err("Did not successfully connect to server\n");
-                        err += "Server may be down or you may be trying on the wrong port";
-                        throw BESInternalError(err, __FILE__, __LINE__);
+                        throw BESInternalError("Did not successfully connect to server\n"
+                            "Server may be down or you may be trying on the wrong port", __FILE__, __LINE__);
 
                     }
                     else {
                         //reset socket to blocking mode
                         holder = fcntl(_socket, F_GETFL, NULL);
                         holder = holder & (~O_NONBLOCK);
-                        fcntl(_socket, F_SETFL, holder);
+                        int status = fcntl(_socket, F_SETFL, holder);
+                        if (status == -1)
+                            throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
 
-                        //succesful connetion to server
+                        // succesful connetion to server
                         _connected = true;
                     }
                 }
             }
             else {
-
-                //reset socket to blocking mode
+                // reset socket to blocking mode
                 holder = fcntl(_socket, F_GETFL, NULL);
                 holder = holder & (~O_NONBLOCK);
-                fcntl(_socket, F_SETFL, holder);
+                int status = fcntl(_socket, F_SETFL, holder);
+                if (status == -1)
+                    throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
 
-                //throw error - errno was not EINPROGRESS
-                string err("socket connect: ");
-                const char* error_info = strerror(errno);
-                if (error_info) err += (string) error_info;
-                throw BESInternalError(err, __FILE__, __LINE__);
+                // throw error - errno was not EINPROGRESS
+                throw BESInternalError(string("socket connect: ") + strerror(errno), __FILE__, __LINE__);
             }
         }
         else {
             // The socket connect request completed immediately
             // even that the socket was in non-blocking mode
 
-            //reset socket to blocking mode
+            // reset socket to blocking mode
             holder = fcntl(_socket, F_GETFL, NULL);
             holder = holder & (~O_NONBLOCK);
-            fcntl(_socket, F_SETFL, holder);
+            int status = fcntl(_socket, F_SETFL, holder);
+            if (status == -1)
+                throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
+
             _connected = true;
         }
     }
