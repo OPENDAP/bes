@@ -158,6 +158,7 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig(){
 
 }
 
+#if 0
 string BESStoredDapResultCache::assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash){
 
 	//BESDEBUG("cache", "BESStoredDapResultCache::assemblePath() -  BEGIN" << endl);
@@ -199,13 +200,14 @@ string BESStoredDapResultCache::assemblePath(const string &firstPart, const stri
 
 	return newPath;
 }
+#endif
 
 BESStoredDapResultCache::BESStoredDapResultCache(){
 	BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
 
 	d_storedResultsSubdir = getSubDirFromConfig();
 	d_dataRootDir = getBesDataRootDirFromConfig();
-    string resultsDir = assemblePath(d_dataRootDir,d_storedResultsSubdir);
+    string resultsDir = BESUtil::assemblePath(d_dataRootDir,d_storedResultsSubdir);
 
     d_resultFilePrefix = getResultPrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
@@ -227,7 +229,7 @@ BESStoredDapResultCache::BESStoredDapResultCache( const string &data_root_dir, c
 	d_dataRootDir = data_root_dir;
 	d_resultFilePrefix = result_file_prefix;
 	d_maxCacheSize = max_cache_size;
-	initialize(assemblePath(d_dataRootDir,stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
+	initialize(BESUtil::assemblePath(d_dataRootDir,stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
 }
 
 
@@ -238,6 +240,9 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
     	if(dir_exists(data_root_dir)){
         	try {
                 d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix, max_cache_size);
+#ifdef HAVE_ATEXIT
+                atexit(delete_instance);
+#endif
         	}
         	catch(BESInternalError &bie){
         	    BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -256,6 +261,9 @@ BESStoredDapResultCache::get_instance()
     if (d_instance == 0) {
 		try {
 			d_instance = new BESStoredDapResultCache();
+#ifdef HAVE_ATEXIT
+            atexit(delete_instance);
+#endif
 		}
 		catch(BESInternalError &bie){
 			BESDEBUG("cache", "[ERROR] BESStoredDapResultCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
@@ -265,12 +273,6 @@ BESStoredDapResultCache::get_instance()
     return d_instance;
 }
 
-
-void BESStoredDapResultCache::delete_instance() {
-    BESDEBUG("cache","BESStoredDapResultCache::delete_instance() - Deleting singleton BESStoredDapResultCache instance." << endl);
-    delete d_instance;
-    d_instance = 0;
-}
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
@@ -498,7 +500,7 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
 DDS *
 BESStoredDapResultCache::get_cached_dap2_data_ddx(const string &cache_file_name, BaseTypeFactory *factory, const string &filename)
 {
-    BESDEBUG("cache", "Reading cache for " << cache_file_name << endl);
+    BESDEBUG("cache", "BESStoredDapResultCache::get_cached_dap2_data_ddx() - Reading cache for " << cache_file_name << endl);
 
     DDS *fdds = new DDS(factory);
 
@@ -715,7 +717,7 @@ BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const
     string local_id = d_resultFilePrefix + hashed_name + suffix;
     BESDEBUG("cache", "get_stored_result_local_id() - file: " << local_id << endl);
 
-    local_id = assemblePath(d_storedResultsSubdir,local_id);
+    local_id = BESUtil::assemblePath(d_storedResultsSubdir,local_id);
 
     BESDEBUG("cache", "get_stored_result_local_id() - END. local_id: " << local_id << endl);
     return local_id;
@@ -723,6 +725,7 @@ BESStoredDapResultCache::get_stored_result_local_id(const string &dataset, const
 
 
 
+#if 0
 
 /** Build the name of file that will holds the uncompressed data from
  * 'src' in the cache.
@@ -754,6 +757,7 @@ string BESStoredDapResultCache::get_cache_file_name(const string &local_id, bool
 
     return cacheFile;
 }
+#endif
 
 /**
  *

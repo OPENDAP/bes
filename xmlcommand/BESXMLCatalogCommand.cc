@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,58 +39,52 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-BESXMLCatalogCommand::BESXMLCatalogCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+BESXMLCatalogCommand::BESXMLCatalogCommand(const BESDataHandlerInterface &base_dhi) :
+    BESXMLCommand(base_dhi)
 {
 }
 
 /** @brief parse a show command. No properties or children elements
  *
-    &lt;showCatalog node="containerName" /&gt;
+ &lt;showCatalog node="containerName" /&gt;
  *
  * @param node xml2 element node pointer
  */
-void
-BESXMLCatalogCommand::parse_request( xmlNode *node )
+void BESXMLCatalogCommand::parse_request(xmlNode *node)
 {
-    string name ;
-    string value ;
-    map<string, string> props ;
-    BESXMLUtils::GetNodeInfo( node, name, value, props ) ;
-    if( name != CATALOG_RESPONSE_STR && name != SHOW_INFO_RESPONSE_STR )
-    {
-	string err = "The specified command " + name
-		     + " is not a show catalog or show info command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string name;
+    string value;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, name, value, props);
+    if (name != CATALOG_RESPONSE_STR && name != SHOW_INFO_RESPONSE_STR) {
+        string err = "The specified command " + name + " is not a show catalog or show info command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
     // the action is the same for show catalog and show info
-    _dhi.action = CATALOG_RESPONSE ;
+    _dhi.action = CATALOG_RESPONSE;
 
     // the CATALOG_OR_INFO data value will say if it's a show catalog or
     // show info
-    if( name == CATALOG_RESPONSE_STR )
-    {
-	_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
-	_str_cmd = "show catalog" ;
+    if (name == CATALOG_RESPONSE_STR) {
+        _dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+        _str_cmd = "show catalog";
     }
-    else
-    {
-	_dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
-	_str_cmd = "show info" ;
+    else {
+        _dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
+        _str_cmd = "show info";
     }
 
     // node is an optional property, so could be empty string
-    _dhi.data[CONTAINER] = props["node"] ;
-    if( !_dhi.data[CONTAINER].empty() )
-    {
-	_str_cmd += " for " + _dhi.data[CONTAINER] ;
+    _dhi.data[CONTAINER] = props["node"];
+    if (!_dhi.data[CONTAINER].empty()) {
+        _str_cmd += " for " + _dhi.data[CONTAINER];
     }
-    _str_cmd += ";" ;
+    _str_cmd += ";";
 
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response() ;
+    BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object
@@ -99,19 +93,17 @@ BESXMLCatalogCommand::parse_request( xmlNode *node )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLCatalogCommand::dump( ostream &strm ) const
+void BESXMLCatalogCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLCatalogCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESXMLCommand::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLCatalogCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLCatalogCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+BESXMLCatalogCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new BESXMLCatalogCommand( base_dhi ) ;
+    return new BESXMLCatalogCommand(base_dhi);
 }
 

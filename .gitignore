@@ -18,6 +18,7 @@ lex.*.cc
 *.pc
 *.log
 *.trs
+*.Po
 
 ## OS-X Finder spoo
 *.DS_Store

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,45 +35,45 @@
 
 #include <vector>
 
-using std::vector ;
+using std::vector;
 
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class BESXMLDefineCommand : public BESXMLCommand
-{
+class BESXMLDefineCommand: public BESXMLCommand {
 private:
-    string			_default_constraint ;
-    string			_default_dap4_constraint ;
-    string			_default_dap4_function ;
-    vector<string>		_containers ;
-    map<string,string>		_stores ;
-    map<string,string>		_constraints ;
-    map<string,string>		_dap4constraints ;
-    map<string,string>		_dap4functions ;
-    map<string,string>		_attributes ;
-    void			handle_container_element( const string &action,
-						  xmlNode *node,
-						  const string &vallues,
-						  map<string,string> &props ) ;
-    void			handle_aggregate_element( const string &action,
-						  xmlNode *node,
-						  const string &vallues,
-						  map<string,string> &props ) ;
+    string _default_constraint;
+    string _default_dap4_constraint;
+    string _default_dap4_function;
+    vector<string> _containers;
+    map<string, string> _stores;
+    map<string, string> _constraints;
+    map<string, string> _dap4constraints;
+    map<string, string> _dap4functions;
+    map<string, string> _attributes;
+    void handle_container_element(const string &action, xmlNode *node, const string &vallues,
+        map<string, string> &props);
+    void handle_aggregate_element(const string &action, xmlNode *node, const string &vallues,
+        map<string, string> &props);
 public:
-    				BESXMLDefineCommand( const BESDataHandlerInterface &base_dhi ) ;
-    virtual			~BESXMLDefineCommand() {}
+    BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi);
+    virtual ~BESXMLDefineCommand()
+    {
+    }
 
-    virtual void		parse_request( xmlNode *node ) ;
+    virtual void parse_request(xmlNode *node);
 
-    virtual bool		has_response() { return false ; }
+    virtual bool has_response()
+    {
+        return false;
+    }
 
-    virtual void		prep_request() ;
+    virtual void prep_request();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
-} ;
+    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+};
 
 #endif // A_BESXMLDefineCommand_h
 

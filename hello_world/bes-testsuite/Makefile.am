@@ -15,12 +15,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log $(TESTSUITE) $(srcdir)/package.m4
+CLEANFILES = bes.conf
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4	\
 atlocal.in bes.conf.in
 
-DISTCLEANFILES = bes.conf atconfig
+DISTCLEANFILES = atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -41,6 +41,7 @@ check-local: atconfig atlocal $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 $(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4

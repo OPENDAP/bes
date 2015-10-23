@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,56 +39,50 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-BESXMLDeleteDefinitionCommand::BESXMLDeleteDefinitionCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+BESXMLDeleteDefinitionCommand::BESXMLDeleteDefinitionCommand(const BESDataHandlerInterface &base_dhi) :
+    BESXMLCommand(base_dhi)
 {
 }
 
 /** @brief parse a delete definition command.
  *
-    &lt;deleteDefinition name="definitionName" space="storeName" /&gt;
+ &lt;deleteDefinition name="definitionName" space="storeName" /&gt;
  *
  * @param node xml2 element node pointer
  */
-void
-BESXMLDeleteDefinitionCommand::parse_request( xmlNode *node )
+void BESXMLDeleteDefinitionCommand::parse_request(xmlNode *node)
 {
-    string name ;
-    string value ;
-    map<string, string> props ;
-    BESXMLUtils::GetNodeInfo( node, name, value, props ) ;
-    if( name != DELETE_DEFINITION_STR )
-    {
-	string err = "The specified command " + name
-		     + " is not a delete definition command" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string name;
+    string value;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, name, value, props);
+    if (name != DELETE_DEFINITION_STR) {
+        string err = "The specified command " + name + " is not a delete definition command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    string def_name = props["name"] ;
-    if( def_name.empty() )
-    {
-	string err = name + " command: Must specify the definition to delete" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    string def_name = props["name"];
+    if (def_name.empty()) {
+        string err = name + " command: Must specify the definition to delete";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    _dhi.data[DEF_NAME] = def_name ;
+    _dhi.data[DEF_NAME] = def_name;
 
     // optional property
-    string storage = props["space"] ; 
-    _dhi.data[STORE_NAME] = storage ;
-    if( _dhi.data[STORE_NAME].empty() )
-    {
-	_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
-	storage = PERSISTENCE_VOLATILE ;
+    string storage = props["space"];
+    _dhi.data[STORE_NAME] = storage;
+    if (_dhi.data[STORE_NAME].empty()) {
+        _dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+        storage = PERSISTENCE_VOLATILE;
     }
 
-    _dhi.action = DELETE_DEFINITION ;
+    _dhi.action = DELETE_DEFINITION;
 
-    _str_cmd = (string)"delete definition " + def_name
-	       + " from " + storage + ";" ;
+    _str_cmd = (string) "delete definition " + def_name + " from " + storage + ";";
 
     // now that we've set the action, go get the response handler for the
     // action
-    BESXMLCommand::set_response() ;
+    BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object
@@ -97,19 +91,17 @@ BESXMLDeleteDefinitionCommand::parse_request( xmlNode *node )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESXMLDeleteDefinitionCommand::dump( ostream &strm ) const
+void BESXMLDeleteDefinitionCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLDeleteDefinitionCommand::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESXMLCommand::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESXMLDeleteDefinitionCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-BESXMLDeleteDefinitionCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+BESXMLDeleteDefinitionCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new BESXMLDeleteDefinitionCommand( base_dhi ) ;
+    return new BESXMLDeleteDefinitionCommand(base_dhi);
 }
 

@@ -18,12 +18,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum $(TESTSUITE) $(srcdir)/package.m4
+CLEANFILES = bes.conf
 
 EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
 $(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4
 
-DISTCLEANFILES = bes.conf atconfig
+DISTCLEANFILES = atconfig generate_data_baselines.sh generate_metadata_baselines.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,21 +38,35 @@ build_responses.conf: build_responses.conf.in $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > build_responses.conf
 
+# This is a more general tool for managing cache contents for tests.
+# This code only needs to clean out the cache.
+# cleanup.sh: cleanup.sh.in ../../config.status
+#	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > cleanup.sh
+#	chmod +x cleanup.sh
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/functionsTest
 TESTSUITEFLAGS =
-# -j7
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
 
 check-local: atconfig atlocal $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@echo "Run tests with an empty cache"
+	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-rm -f dap_cache
+	
+# When caching is working again for function results, add this back into the 
+# target's actions. jhrg 10/20/15
+# 	@echo "Run tests with a full cache"
+#	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f dap_cache
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

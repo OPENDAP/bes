@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-using std::endl ;
+using std::endl;
 
 #include "BESXMLDefaultCommands.h"
 
@@ -53,106 +53,34 @@ using std::endl ;
 
 /** @brief Loads the default set of BES XML commands
  */
-int
-BESXMLDefaultCommands::initialize( int, char** )
+int BESXMLDefaultCommands::initialize(int, char**)
 {
-    BESDEBUG( "besxml", "Initializing default commands:" << endl ) ;
+    BESDEBUG("besxml", "Initializing default commands:" << endl);
 
-    // unused. jhrg 4/18/14 BESXMLCommand *cmd = NULL ;
-
-    BESDEBUG( "besxml", "    adding " << SHOW_CONTEXT_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( SHOW_CONTEXT_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SHOWDEFS_RESPONSE_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( SHOWDEFS_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SHOWCONTAINERS_RESPONSE_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( SHOWCONTAINERS_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SHOW_ERROR_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( SHOW_ERROR_STR,
-				BESXMLShowErrorCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << HELP_RESPONSE_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( HELP_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
+    BESXMLCommand::add_command( SHOW_CONTEXT_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( SHOWDEFS_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( SHOWCONTAINERS_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( SHOW_ERROR_STR, BESXMLShowErrorCommand::CommandBuilder);
+    BESXMLCommand::add_command( HELP_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
 #ifdef BES_DEVELOPER
-    BESDEBUG( "besxml", "    adding " << PROCESS_RESPONSE_STR
-			<< " command" << endl) ;
     BESXMLCommand::add_command( PROCESS_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << CONFIG_RESPONSE_STR
-			<< " command" << endl) ;
+        BESXMLShowCommand::CommandBuilder );
     BESXMLCommand::add_command( CONFIG_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
+        BESXMLShowCommand::CommandBuilder );
 #endif
+    BESXMLCommand::add_command( VERS_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( STATUS_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( SERVICE_RESPONSE_STR, BESXMLShowCommand::CommandBuilder);
+    BESXMLCommand::add_command( SET_CONTEXT_STR, BESXMLSetContextCommand::CommandBuilder);
+    BESXMLCommand::add_command( SETCONTAINER_STR, BESXMLSetContainerCommand::CommandBuilder);
+    BESXMLCommand::add_command( DEFINE_RESPONSE_STR, BESXMLDefineCommand::CommandBuilder);
+    BESXMLCommand::add_command( GET_RESPONSE, BESXMLGetCommand::CommandBuilder);
+    BESXMLCommand::add_command( DELETE_CONTAINER_STR, BESXMLDeleteContainerCommand::CommandBuilder);
+    BESXMLCommand::add_command( DELETE_CONTAINERS_STR, BESXMLDeleteContainersCommand::CommandBuilder);
+    BESXMLCommand::add_command( DELETE_DEFINITION_STR, BESXMLDeleteDefinitionCommand::CommandBuilder);
+    BESXMLCommand::add_command( DELETE_DEFINITIONS_STR, BESXMLDeleteDefinitionsCommand::CommandBuilder);
 
-    BESDEBUG( "besxml", "    adding " << VERS_RESPONSE_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( VERS_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << STATUS_RESPONSE_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( STATUS_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SERVICE_RESPONSE_STR
-			<< " command" << endl) ;
-    BESXMLCommand::add_command( SERVICE_RESPONSE_STR,
-				BESXMLShowCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SET_CONTEXT_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( SET_CONTEXT_STR,
-				BESXMLSetContextCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << SETCONTAINER_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( SETCONTAINER_STR,
-				BESXMLSetContainerCommand::CommandBuilder);
-
-    BESDEBUG( "besxml", "    adding " << DEFINE_RESPONSE_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DEFINE_RESPONSE_STR,
-				BESXMLDefineCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << GET_RESPONSE
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( GET_RESPONSE,
-				BESXMLGetCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << DELETE_CONTAINER_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DELETE_CONTAINER_STR,
-				BESXMLDeleteContainerCommand::CommandBuilder ) ;
-
-    BESDEBUG( "besxml", "    adding " << DELETE_CONTAINERS_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DELETE_CONTAINERS_STR,
-				BESXMLDeleteContainersCommand::CommandBuilder );
-
-    BESDEBUG( "besxml", "    adding " << DELETE_DEFINITION_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DELETE_DEFINITION_STR,
-				BESXMLDeleteDefinitionCommand::CommandBuilder );
-
-    BESDEBUG( "besxml", "    adding " << DELETE_DEFINITIONS_STR
-			<< " command" << endl ) ;
-    BESXMLCommand::add_command( DELETE_DEFINITIONS_STR,
-				BESXMLDeleteDefinitionsCommand::CommandBuilder);
-
-    BESDEBUG( "besxml", "Done Initializing default commands:" << endl ) ;
+    BESDEBUG("besxml", "Done Initializing default commands:" << endl);
 
     return 0;
 }
@@ -160,30 +88,29 @@ BESXMLDefaultCommands::initialize( int, char** )
 /** @brief Removes the default set of BES XML commands from the list of
  * possible commands
  */
-int
-BESXMLDefaultCommands::terminate( void )
+int BESXMLDefaultCommands::terminate(void)
 {
-    BESDEBUG( "besxml", "Removing default commands:" << endl ) ;
+    BESDEBUG("besxml", "Removing default commands:" << endl);
 
-    BESXMLCommand::del_command( GET_RESPONSE ) ;
-    BESXMLCommand::del_command( SHOW_CONTEXT_STR ) ;
-    BESXMLCommand::del_command( SHOWDEFS_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( SHOWCONTAINERS_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( HELP_RESPONSE_STR ) ;
+    BESXMLCommand::del_command( GET_RESPONSE);
+    BESXMLCommand::del_command( SHOW_CONTEXT_STR);
+    BESXMLCommand::del_command( SHOWDEFS_RESPONSE_STR);
+    BESXMLCommand::del_command( SHOWCONTAINERS_RESPONSE_STR);
+    BESXMLCommand::del_command( HELP_RESPONSE_STR);
 #ifdef BES_DEVELOPER
-    BESXMLCommand::del_command( PROCESS_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( CONFIG_RESPONSE_STR ) ;
+    BESXMLCommand::del_command( PROCESS_RESPONSE_STR );
+    BESXMLCommand::del_command( CONFIG_RESPONSE_STR );
 #endif
-    BESXMLCommand::del_command( VERS_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( STATUS_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( SET_CONTEXT_STR ) ;
-    BESXMLCommand::del_command( SETCONTAINER_STR ) ;
-    BESXMLCommand::del_command( DEFINE_RESPONSE_STR ) ;
-    BESXMLCommand::del_command( DELETE_CONTAINER_STR ) ;
-    BESXMLCommand::del_command( DELETE_CONTAINERS_STR ) ;
-    BESXMLCommand::del_command( DELETE_DEFINITION_STR ) ;
+    BESXMLCommand::del_command( VERS_RESPONSE_STR);
+    BESXMLCommand::del_command( STATUS_RESPONSE_STR);
+    BESXMLCommand::del_command( SET_CONTEXT_STR);
+    BESXMLCommand::del_command( SETCONTAINER_STR);
+    BESXMLCommand::del_command( DEFINE_RESPONSE_STR);
+    BESXMLCommand::del_command( DELETE_CONTAINER_STR);
+    BESXMLCommand::del_command( DELETE_CONTAINERS_STR);
+    BESXMLCommand::del_command( DELETE_DEFINITION_STR);
 
-    BESDEBUG( "besxml", "Done Removing default commands:" << endl ) ;
+    BESDEBUG("besxml", "Done Removing default commands:" << endl);
 
     return true;
 }

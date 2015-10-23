@@ -39,7 +39,7 @@
 #include "BESDebug.h"
 
 BESXMLSetContextCommand::BESXMLSetContextCommand(const BESDataHandlerInterface &base_dhi) :
-		BESXMLCommand(base_dhi)
+    BESXMLCommand(base_dhi)
 {
 }
 
@@ -51,34 +51,34 @@ BESXMLSetContextCommand::BESXMLSetContextCommand(const BESDataHandlerInterface &
  */
 void BESXMLSetContextCommand::parse_request(xmlNode *node)
 {
-	string value;
-	string name;
-	string action;
-	map<string, string> props;
-	BESXMLUtils::GetNodeInfo(node, action, value, props);
-	if (action != SET_CONTEXT_STR) {
-		string err = "The specified command " + action + " is not a set context command";
-		throw BESSyntaxUserError(err, __FILE__, __LINE__);
-	}
+    string value;
+    string name;
+    string action;
+    map<string, string> props;
+    BESXMLUtils::GetNodeInfo(node, action, value, props);
+    if (action != SET_CONTEXT_STR) {
+        string err = "The specified command " + action + " is not a set context command";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
 
-	_dhi.action = SET_CONTEXT;
+    _dhi.action = SET_CONTEXT;
 
-	name = props["name"];
-	if (name.empty()) {
-		string err = action + " command: name property missing";
-		throw BESSyntaxUserError(err, __FILE__, __LINE__);
-	}
-	if (value.empty()) {
-		string err = action + " command: context value missing";
-		throw BESSyntaxUserError(err, __FILE__, __LINE__);
-	}
-	_dhi.data[CONTEXT_NAME] = name;
-	_dhi.data[CONTEXT_VALUE] = value;
-	_str_cmd = (string) "set context " + name + " to " + value + ";";
+    name = props["name"];
+    if (name.empty()) {
+        string err = action + " command: name property missing";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
+    if (value.empty()) {
+        string err = action + " command: context value missing";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
+    _dhi.data[CONTEXT_NAME] = name;
+    _dhi.data[CONTEXT_VALUE] = value;
+    _str_cmd = (string) "set context " + name + " to " + value + ";";
 
-	// now that we've set the action, go get the response handler for the
-	// action
-	BESXMLCommand::set_response();
+    // now that we've set the action, go get the response handler for the
+    // action
+    BESXMLCommand::set_response();
 }
 
 /** @brief dumps information about this object
@@ -89,15 +89,15 @@ void BESXMLSetContextCommand::parse_request(xmlNode *node)
  */
 void BESXMLSetContextCommand::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "BESXMLSetContextCommand::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	BESXMLCommand::dump(strm);
-	BESIndent::UnIndent();
+    strm << BESIndent::LMarg << "BESXMLSetContextCommand::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESXMLCommand::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESXMLCommand *
 BESXMLSetContextCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-	return new BESXMLSetContextCommand(base_dhi);
+    return new BESXMLSetContextCommand(base_dhi);
 }
 

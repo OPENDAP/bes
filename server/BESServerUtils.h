@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,13 +35,12 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
-class BESServerUtils
-{
+class BESServerUtils {
 public:
-    static void				show_usage( const string &app_name ) ;
-    static void				show_version( const string &app_name ) ;
-} ;
+    static void show_usage(const string &app_name);
+    static void show_version(const string &app_name);
+};
 
 #endif // S_BESServerUtils_h

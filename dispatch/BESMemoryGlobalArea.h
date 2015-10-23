@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,28 +39,31 @@
 
 #define MEGABYTE 1024*1024
 
-class BESMemoryGlobalArea : public BESObj
-{
-    struct rlimit limit ;
-    static unsigned long _size ;
-    static int _counter ;
-    static void *_buffer ;
+class BESMemoryGlobalArea: public BESObj {
+    struct rlimit limit;
+    static unsigned long _size;
+    static int _counter;
+    static void *_buffer;
 
-    unsigned long megabytes( unsigned int s ) 
+    unsigned long megabytes(unsigned int s)
     {
-	return s*MEGABYTE ;
+        return s * MEGABYTE;
     }
-    void			log_limits( const string &msg ) ;
+
+    void log_limits(const string &msg);
 
 public:
-    				BESMemoryGlobalArea() ;
-    				~BESMemoryGlobalArea() ;
+    BESMemoryGlobalArea();
+    ~BESMemoryGlobalArea();
 
-    void			release_memory() ;
-    bool			reclaim_memory() ;
-    unsigned long		SizeOfEmergencyPool() { return _size; }
+    void release_memory();
+    bool reclaim_memory();
+    unsigned long SizeOfEmergencyPool() const
+    {
+        return _size;
+    }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESMemoryGlobalArea_h_

@@ -92,8 +92,8 @@ BESUncompress3BZ2::uncompress( const string &src_name, int fd )
     int bzerror = 0; // any error flags will be stored here
     int verbosity = 0; // 0 is silent up to 4 which is very verbose
     int small = 0; // if non zero then memory management is different
-    void *unused = NULL; // any unused bytes would be stored in here
-    int nunused = 0; // the size of the unused buffer
+    // unused void *unused = NULL; // any unused bytes would be stored in here
+    // unused int nunused = 0; // the size of the unused buffer
     char in[CHUNK]; // input buffer used to read uncompressed data in bzRead
 
     BZFILE *bsrc = NULL;

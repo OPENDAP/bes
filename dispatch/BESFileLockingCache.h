@@ -29,6 +29,8 @@
 #ifndef BESFileLockingCache_h_
 #define BESFileLockingCache_h_ 1
 
+#include <unistd.h>
+
 #include <map>
 #include <string>
 #include <list>
@@ -69,19 +71,24 @@ typedef std::list<cache_entry> CacheFiles;
  * on the cache info file must only be called when the lock has been obtained.
  */
 class BESFileLockingCache: public BESObj {
-
 private:
-
     static const char DAP_CACHE_CHAR = '#';
 
-    string d_cache_dir;  /// pathname of the cache directory
-    string d_prefix;     /// tack this on the front of cache file name
+protected:
 
-    /// How many megabytes can the cache hold before we have to purge
+    // pathname of the cache directory
+    string d_cache_dir;
+
+    // tack this on the front of each cache file name
+    string d_prefix;
+
+    /// How many bytes can the cache hold before we have to purge
     unsigned long long d_max_cache_size_in_bytes;
+
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
     unsigned long long d_target_size;
-    // Testing
+
+private:
 
     // Suppress the assignment operator and default copy ctor, ...
     BESFileLockingCache(const BESFileLockingCache &);
@@ -107,10 +114,10 @@ private:
 
 protected:
 
-    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(0){};
+    BESFileLockingCache(): d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0), d_target_size(0),  d_cache_info(""), d_cache_info_fd(-1){};
     void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
     BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
-    virtual ~BESFileLockingCache() { }
+    virtual ~BESFileLockingCache() { if (d_cache_info_fd != -1){ close(d_cache_info_fd); d_cache_info_fd=-1;} }
 
 public:
 
@@ -136,6 +143,10 @@ public:
 
     const string getCacheFilePrefix();
     const string getCacheDirectory();
+
+    static bool dir_exists(const string &dir);
+    // static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+
 
     virtual void dump(ostream &strm) const ;
 };

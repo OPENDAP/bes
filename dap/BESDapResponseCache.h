@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
@@ -29,13 +28,12 @@
 #include <string>
 #include "BESFileLockingCache.h"
 
-
 class BESDapResponseBuilder;
 
 namespace libdap {
-    class DDS;
-    class ConstraintEvaluator;
-    class BaseTypeFactory;
+class DDS;
+class ConstraintEvaluator;
+class BaseTypeFactory;
 }
 
 /**
@@ -43,56 +41,68 @@ namespace libdap {
  * @author jhrg 5/3/13
  */
 
-class BESDapResponseCache: public BESFileLockingCache
-{
+class BESDapResponseCache: public BESFileLockingCache {
 private:
 
-    static BESDapResponseCache * d_instance;
+    static BESDapResponseCache *d_instance;
+    static void delete_instance()
+    {
+        delete d_instance;
+        d_instance = 0;
+    }
 
     /** Initialize the cache using the default values for the cache. */
     BESDapResponseCache();
 
-	BESDapResponseCache(const BESDapResponseCache &src);
+    BESDapResponseCache(const BESDapResponseCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
     void read_data_from_cache(const string &cache_file_name/*FILE *data*/, libdap::DDS *fdds);
-    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory, const std::string &dataset);
+    libdap::DDS *get_cached_data_ddx(const std::string &cache_file_name, libdap::BaseTypeFactory *factory,
+        const std::string &dataset);
 
     friend class ResponseCacheTest;
     friend class StoredResultTest;
 
-    static void delete_instance();
-
 protected:
 
-    BESDapResponseCache(const string &cache_dir, const string &prefix, unsigned long long size);
-
+    /** @brief Protected constructor that takes as arguments keys to the cache directory,
+     * file prefix, and size of the cache to be looked up a configuration file
+     *
+     * The keys specified are looked up in the specified keys object. If not
+     * found or not set correctly then an exception is thrown. I.E., if the
+     * cache directory is empty, the size is zero, or the prefix is empty.
+     *
+     * @param cache_dir_key key to look up in the keys file to find cache dir
+     * @param prefix_key key to look up in the keys file to find the cache prefix
+     * @param size_key key to look up in the keys file to find the cache size (in MBytes)
+     * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
+     * size is 0, or if cache dir does not exist.
+     */
+    BESDapResponseCache(const string &cache_dir, const string &prefix, unsigned long long size) :
+        BESFileLockingCache(cache_dir, prefix, size)
+    {
+    }
 
 public:
-	static const string PATH_KEY;
-	static const string PREFIX_KEY;
-	static const string SIZE_KEY;
+    static const string PATH_KEY;
+    static const string PREFIX_KEY;
+    static const string SIZE_KEY;
 
     static BESDapResponseCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static BESDapResponseCache *get_instance();
 
-    virtual ~BESDapResponseCache() {}
-
-#if 0
-    // If the DDS is in the cache and valid, return it
-    virtual libdap::DDS *read_dataset(const std::string &filename, const std::string &constraint, std::string &cache_token);
-#endif
+    virtual ~BESDapResponseCache()
+    {
+    }
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
     virtual libdap::DDS *cache_dataset(libdap::DDS &dds, const std::string &constraint, BESDapResponseBuilder *rb,
-    		libdap::ConstraintEvaluator *eval, std::string &cache_token);
-
-    // virtual void unlock_and_close(const std::string &cache_token);
+        libdap::ConstraintEvaluator *eval, std::string &cache_token);
 
     static string getCacheDirFromConfig();
     static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
-
 };
 
 #endif // _bes_dap_response_cache_h

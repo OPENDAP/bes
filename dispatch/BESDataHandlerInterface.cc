@@ -54,11 +54,6 @@
 void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from)
 {
 	clone(copy_from);
-#if 0
-    this->data = copy_from.data;
-    this->output_stream = copy_from.output_stream;
-    this->transmit_protocol = copy_from.transmit_protocol;
-#endif
 }
 
 /** @brief Clone
@@ -72,11 +67,16 @@ void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from
  */
 void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from)
 {
+#if 0
 	// Added because this can be called from make_copy() which is public.
 	// jhrg 4/18/14
+    // I removed this because I think it's bogus but having it here confuses
+    // coverity into thinking that parts of the object built be the copy ctor
+    // might be uninitialized. All of the NCML handler tests pass with this
+    // modification. jhrg 9/17/15
 	if (this == &copy_from)
 		return;
-
+#endif
 	output_stream = copy_from.output_stream;
 	response_handler = copy_from.response_handler;
 
@@ -91,7 +91,7 @@ void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from)
     transmit_protocol = copy_from.transmit_protocol;
 
     // I do this because clang 5 (on OSX 10.9) will remove everything from 'data'
-    // if copy_from.data and 'data are the same object. Since the ncml handler uses
+    // if copy_from.data and 'data' are the same object. Since the ncml handler uses
 	// make_copy() and may be using a reference to a DHI and/or the DHI's 'data' map,
 	// I'm leaving the test in here. That is, it could be building a new DHI instance
     // that uses a reference to an existing 'data' field and then assign the original

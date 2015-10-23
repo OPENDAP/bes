@@ -31,11 +31,6 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "config.h"
-#if 0
-#include <signal.h>
-#include <sys/wait.h> // for wait
-#include <sys/types.h>
-#endif
 #include <unistd.h>
 
 #include <string>
@@ -66,7 +61,7 @@ using std::ostringstream;
 
 PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure) :
 		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure),
-		d_num_children(0)
+		_securePort(0), d_num_children(0)
 {
 	if (!handler) {
 		string err("Null handler passed to PPTServer");

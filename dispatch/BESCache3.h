@@ -26,6 +26,7 @@
 
 #ifndef BESCache3_h_
 #define BESCache3_h_ 1
+#if 0
 
 #include <string>
 
@@ -33,8 +34,11 @@
 #include "BESDebug.h"
 
 class BESKeys;
-
-/** @brief Implementation of a caching mechanism for compressed data.
+/** @brief This class is a shallow wrapper for BESFileLockingCache. It is only
+ * used by gateway_module and BESFileContainer. DO NOT USE THIS CLASS! Use the
+ * BESFileLockingCache instead!!
+ *
+ * Implementation of a caching mechanism for compressed data.
  * This cache uses simple advisory locking found on most modern unix file systems.
  * Compressed files are uncompressed and stored in a cache where they can be
  * used over and over until removed from the cache. Several processes can
@@ -79,5 +83,6 @@ public:
 
     virtual void dump(ostream &strm) const ;
 };
+#endif
 
 #endif // BESCache3_h_

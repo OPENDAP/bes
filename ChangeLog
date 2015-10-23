@@ -1,3 +1,136 @@
+2015-09-19  Nathan Potter  <ndp@opendap.org>
+
+	Oops, data files huge, removing.
+
+	Added data files to timing
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added big_curl subdir with large aggregation request curl results.
+
+2015-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	quick fix for version_update_modules.sh
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	moved version_update_modules.sh to the modules dir
+
+	Added a script to help speed future releases of the BES
+	The script version_update_modules.sh will update modules'
+	version numbers. It is useful when the modules have changed,
+	but not in a way that's hugely important.
+
+	Added exception catches in daemon.cc
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Added a bit more info about the coverity models
+
+	Added a coverity modeling file
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	Conflicts:
+	dispatch/BESInterface.cc
+	xmlcommand/BESXMLDefineCommand.cc
+	Modified:
+	xmlcommand/BESXMLDefineCommand.cc
+
+	Updated the submodules
+
+2015-09-17  Nathan Potter  <ndp@opendap.org>
+
+	BESStopWatch - Fixed timing instrumentation so that it only runs under timing debug
+
+2015-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	xmlcommand code formatted w/o tabs
+	...so it displays correctly
+
+	uuid.h fix here that parallels the one in libdap
+	I now test for uuid.h and uuid/uuid.h in configure and trigger an
+	error if neither is found.
+
+	Fixes for issues found by coverity
+
+2015-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Updated source dpes build; fixes; new versions fo submodules
+	This commit references the updated code from THG for the HDF5 and HDF5
+	handlers. It also has fixes for the networking code and for the
+	travis build.
+
+2015-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Remove aggregation_improvements branch from travis.yml
+	...and force a build
+
+	Fixed an uninitialized variable in TcpSocket.cc
+	[ci skip]
+
+2015-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Another try with coverity
+	Using travis-lint; it may be that the indentation of the
+	coverity part in the addons section was confusing the
+	travis parser
+	Since this is going to be chewed on by coverity [ci skip]
+
+	Trigger coverity
+
+	Merge branch 'aggregation_improvements' into coverity_scan
+	Conflicts:
+	.travis.yml
+
+	Updated for coverity - I also commited this on master by mistake
+
+	Merge branch 'master' into coverity_scan
+
+	Update to configure Coverity link
+	...also updates to teh commit hashs for the modules
+
+	Added coverity scan to travis.yml
+
+	Modified Makefile.am files to support distcheck.
+	All the modules were updated too...
+
+2015-09-11  Nathan Potter  <ndp@opendap.org>
+
+	Updated plot for total time improvments.
+
+	Updated README
+
+2015-09-10  Nathan Potter  <ndp@opendap.org>
+
+	More README files and file retrieval scripts added
+
+	Reduced data volumes in the test_data directory by shipping raw data off to the www.opendap.org/pub server and compress all possible.
+
+	Merge branch 'aggregation_improvements' of https://github.com/opendap/bes into aggregation_improvements
+
+	Added test_data directory that contains raw test data from our aggregation performance tests (both baseline tests and imporved code tests) in addition to shell scripts for processing the data into intermediate files and Veusz visualization graphs.
+
+2015-09-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'aggregation_improvements' of https://github.com/opendap/bes into aggregation_improvements
+
+	Updates for the 3.15 beta release
+
+2015-09-10  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'aggregation_improvements' of https://github.com/opendap/bes into aggregation_improvements
+
+	Added some simple lists that identify the test suite commands by the type of thing being requested.
+
+	Added some simple lists that identify the test suite commands by the type of thing being requested.
+
+	SMall changes to script functionality
+
+	Comments added to timing evaluation scripts
+
+	Fixed HR-38 BES key/value character limit of 255 bug. Changed BESKeys::load_keys() to work with string objects and not char*
+
+	Reduced the scope of the dapreader TypeMatch so that DAS and general XML files are not gnerally identified as daprreader data.
 2015-09-09  James Gallagher  <jgallagher@opendap.org>
 
 	Fix configure_modules.ac for CentOS6

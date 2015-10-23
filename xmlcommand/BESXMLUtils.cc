@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -43,15 +43,15 @@
  * @param msg the error message format string
  * @param ... the arguments to the error message format string
  */
-void
-BESXMLUtils::XMLErrorFunc( void *context, const char *msg, ... )
+void BESXMLUtils::XMLErrorFunc(void *context, const char *msg, ...)
 {
-    va_list args ;
-    va_start( args, msg ) ;
-    char mymsg[1024] ;
-    vsnprintf( mymsg, sizeof mymsg, msg, args ) ;
-    vector<string> *myerrors = (vector<string> *)context ;
-    myerrors->push_back( mymsg ) ;
+    va_list args;
+    va_start( args, msg );
+    char mymsg[1024];
+    vsnprintf(mymsg, sizeof mymsg, msg, args);
+    va_end(args); // Added jhrg 9/17/15
+    vector<string> *myerrors = (vector<string> *) context;
+    myerrors->push_back(mymsg);
 }
 
 /** @brief given an xml node, build the map of properties for that node
@@ -62,34 +62,29 @@ BESXMLUtils::XMLErrorFunc( void *context, const char *msg, ... )
  * @param node xml node to retrieve properties from
  * @param props map to store the property name and values in
  */
-void
-BESXMLUtils::GetProps( xmlNode *node, map< string, string> &props )
+void BESXMLUtils::GetProps(xmlNode *node, map<string, string> &props)
 {
-    if( !node )
-    {
-	return ;
+    if (!node) {
+        return;
     }
 
-    if( node->properties == NULL )
-    {
-	return ;
+    if (node->properties == NULL) {
+        return;
     }
 
-    xmlAttr *curr_prop = node->properties ;
-    while( curr_prop )
-    {
-	string prop_name = (char *)curr_prop->name ;
-	BESUtil::removeLeadingAndTrailingBlanks( prop_name ) ;
-	string prop_val ;
-	xmlNode *curr_val = curr_prop->children ;
-	if( curr_val && curr_val->content )
-	{
-	    prop_val = BESUtil::xml2id( (char *)curr_val->content ) ;
-	    BESUtil::removeLeadingAndTrailingBlanks( prop_val ) ;
-	}
-	props[prop_name] = prop_val ;
+    xmlAttr *curr_prop = node->properties;
+    while (curr_prop) {
+        string prop_name = (char *) curr_prop->name;
+        BESUtil::removeLeadingAndTrailingBlanks(prop_name);
+        string prop_val;
+        xmlNode *curr_val = curr_prop->children;
+        if (curr_val && curr_val->content) {
+            prop_val = BESUtil::xml2id((char *) curr_val->content);
+            BESUtil::removeLeadingAndTrailingBlanks(prop_val);
+        }
+        props[prop_name] = prop_val;
 
-	curr_prop = curr_prop->next ;
+        curr_prop = curr_prop->next;
     }
 }
 
@@ -101,36 +96,27 @@ BESXMLUtils::GetProps( xmlNode *node, map< string, string> &props )
  * @param value parameter to store the value, if any, of the node
  * @param props parameter to store any properties of the node
  */
-void
-BESXMLUtils::GetNodeInfo( xmlNode *node,
-			  string &name,
-			  string &value,
-			  map<string, string> &props )
+void BESXMLUtils::GetNodeInfo(xmlNode *node, string &name, string &value, map<string, string> &props)
 {
-    if( node )
-    {
-	name = (char *)node->name ;
-	BESUtil::removeLeadingAndTrailingBlanks( name ) ;
-	BESXMLUtils::GetProps( node, props ) ;
-	xmlNode *child_node = node->children ;
-	bool done = false ;
-	while( child_node && !done )
-	{
-	    if( child_node->type == XML_TEXT_NODE )
-	    {
-		if( child_node->content )
-		{
-		    value = BESUtil::xml2id( (char *)child_node->content ) ;
-		    BESUtil::removeLeadingAndTrailingBlanks( value ) ;
-		}
-		else
-		{
-		    value = "" ;
-		}
-		done = true ;
-	    }
-	    child_node = child_node->next ;
-	}
+    if (node) {
+        name = (char *) node->name;
+        BESUtil::removeLeadingAndTrailingBlanks(name);
+        BESXMLUtils::GetProps(node, props);
+        xmlNode *child_node = node->children;
+        bool done = false;
+        while (child_node && !done) {
+            if (child_node->type == XML_TEXT_NODE) {
+                if (child_node->content) {
+                    value = BESUtil::xml2id((char *) child_node->content);
+                    BESUtil::removeLeadingAndTrailingBlanks(value);
+                }
+                else {
+                    value = "";
+                }
+                done = true;
+            }
+            child_node = child_node->next;
+        }
     }
 }
 
@@ -142,31 +128,23 @@ BESXMLUtils::GetNodeInfo( xmlNode *node,
  * @param child_props parameter to store any properties of the first child
  */
 xmlNode *
-BESXMLUtils::GetFirstChild( xmlNode *node,
-			    string &child_name,
-			    string &child_value,
-			    map<string, string> &child_props )
+BESXMLUtils::GetFirstChild(xmlNode *node, string &child_name, string &child_value, map<string, string> &child_props)
 {
-    xmlNode *child_node = NULL ;
-    if( node )
-    {
-	child_node = node->children ;
-	bool done = false ;
-	while( child_node && !done )
-	{
-	    if( child_node->type == XML_ELEMENT_NODE )
-	    {
-		done = true ;
-		BESXMLUtils::GetNodeInfo( child_node, child_name,
-					  child_value, child_props ) ;
-	    }
-	    else
-	    {
-		child_node = child_node->next ;
-	    }
-	}
+    xmlNode *child_node = NULL;
+    if (node) {
+        child_node = node->children;
+        bool done = false;
+        while (child_node && !done) {
+            if (child_node->type == XML_ELEMENT_NODE) {
+                done = true;
+                BESXMLUtils::GetNodeInfo(child_node, child_name, child_value, child_props);
+            }
+            else {
+                child_node = child_node->next;
+            }
+        }
     }
-    return child_node ;
+    return child_node;
 }
 
 /** @brief get the next element child node after the given child node
@@ -177,30 +155,22 @@ BESXMLUtils::GetFirstChild( xmlNode *node,
  * @param next_props parameter to store any properties of the next child
  */
 xmlNode *
-BESXMLUtils::GetNextChild( xmlNode *child_node,
-			  string &next_name,
-			  string &next_value,
-			  map<string, string> &next_props )
+BESXMLUtils::GetNextChild(xmlNode *child_node, string &next_name, string &next_value, map<string, string> &next_props)
 {
-    if( child_node )
-    {
-	child_node = child_node->next ;
-	bool done = false ;
-	while( child_node && !done )
-	{
-	    if( child_node->type == XML_ELEMENT_NODE )
-	    {
-		done = true ;
-		BESXMLUtils::GetNodeInfo( child_node, next_name,
-					  next_value, next_props ) ;
-	    }
-	    else
-	    {
-		child_node = child_node->next ;
-	    }
-	}
+    if (child_node) {
+        child_node = child_node->next;
+        bool done = false;
+        while (child_node && !done) {
+            if (child_node->type == XML_ELEMENT_NODE) {
+                done = true;
+                BESXMLUtils::GetNodeInfo(child_node, next_name, next_value, next_props);
+            }
+            else {
+                child_node = child_node->next;
+            }
+        }
     }
-    return child_node ;
+    return child_node;
 }
 
 /** @brief get the element child node of the given node with the given name
@@ -211,39 +181,29 @@ BESXMLUtils::GetNextChild( xmlNode *child_node,
  * @param child_props parameter to store any properties of the named child
  */
 xmlNode *
-BESXMLUtils::GetChild( xmlNode *node,
-		       const string &child_name,
-		       string &child_value,
-		       map<string, string> &child_props )
+BESXMLUtils::GetChild(xmlNode *node, const string &child_name, string &child_value, map<string, string> &child_props)
 {
-    xmlNode *child_node = NULL ;
-    if( node )
-    {
-	child_node = node->children ;
-	bool done = false ;
-	while( child_node && !done )
-	{
-	    if( child_node->type == XML_ELEMENT_NODE )
-	    {
-		string name = (char *)child_node->name ;
-		BESUtil::removeLeadingAndTrailingBlanks( name ) ;
-		if( name == child_name )
-		{
-		    done = true ;
-		    BESXMLUtils::GetNodeInfo( child_node, name,
-					      child_value, child_props ) ;
-		}
-		else
-		{
-		    child_node = child_node->next ;
-		}
-	    }
-	    else
-	    {
-		child_node = child_node->next ;
-	    }
-	}
+    xmlNode *child_node = NULL;
+    if (node) {
+        child_node = node->children;
+        bool done = false;
+        while (child_node && !done) {
+            if (child_node->type == XML_ELEMENT_NODE) {
+                string name = (char *) child_node->name;
+                BESUtil::removeLeadingAndTrailingBlanks(name);
+                if (name == child_name) {
+                    done = true;
+                    BESXMLUtils::GetNodeInfo(child_node, name, child_value, child_props);
+                }
+                else {
+                    child_node = child_node->next;
+                }
+            }
+            else {
+                child_node = child_node->next;
+            }
+        }
     }
-    return child_node ;
+    return child_node;
 }
 

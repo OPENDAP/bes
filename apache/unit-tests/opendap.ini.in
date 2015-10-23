@@ -13,9 +13,9 @@ Cedar.Help.HTTP=/project/cedar/src/pwest/opendap-g/cedar-handler/cedar_help.html
 
 BES.Data.RootDirectory=/project/cedar/data
 
-BES.CacheDir=/tmp
-BES.CachePrefix=bes_cache
-BES.CacheSize=500
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
 BES.Uncompress.Retry=2000
 BES.Uncompress.NumTries=10
 

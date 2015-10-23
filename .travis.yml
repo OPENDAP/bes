@@ -3,6 +3,7 @@
 # Initial Travic-CI control file. 6.5.15 jhrg
 
 # Use the docker container-based build systems
+
 sudo: false
 
 cache:
@@ -20,7 +21,6 @@ compiler:
 branches:
   only:
     - master
-    - aggregation_improvements
     - coverity_scan
     - /^*-[0-9]+\.[0-9]+\.[0-9]+/
 

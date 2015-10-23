@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,12 +33,11 @@
 #ifndef BESXMLDefaultCommands_h
 #define BESXMLDefaultCommands_h 1
 
-class BESXMLDefaultCommands
-{
+class BESXMLDefaultCommands {
 public:
-    static int initialize( int argc, char **argv ) ;
-    static int terminate( void ) ;
-} ;
+    static int initialize(int argc, char **argv);
+    static int terminate(void);
+};
 
 #endif // BESXMLDefaultCommands_h
 

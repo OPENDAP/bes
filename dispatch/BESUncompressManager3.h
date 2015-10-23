@@ -35,7 +35,7 @@ using std::string;
 
 #include "BESObj.h"
 
-class BESCache3;
+class BESFileLockingCache;
 
 typedef void (*p_bes_uncompress)(const string &src, int fd);
 
@@ -71,7 +71,7 @@ public:
     virtual bool add_method(const string &name, p_bes_uncompress method);
     virtual p_bes_uncompress find_method(const string &name);
 
-    virtual bool uncompress(const string &src, string &target, BESCache3 *cache);
+    virtual bool uncompress(const string &src, string &target, BESFileLockingCache *cache);
 
     virtual void dump(ostream &strm) const ;
 
