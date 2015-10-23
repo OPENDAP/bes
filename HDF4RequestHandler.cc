@@ -1793,7 +1793,10 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
                 das_ptr->parse(das_file);
             }
             catch(...) {
-                fcntl(fd_das,F_SETLK,lock(F_UNLCK)); 
+                if(fcntl(fd_das,F_SETLK,lock(F_UNLCK)) == -1) {
+                    fclose(das_file);
+                    throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
+                }
                 fclose(das_file);
                 throw InternalErr(__FILE__,__LINE__,"Fail to parse the das from a das file.");
             }
@@ -1805,7 +1808,10 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
                 das_ptr->print(das_file);
             }
             catch(...) {
-                fcntl(fd_das,F_SETLK,lock(F_UNLCK));        
+                if(fcntl(fd_das,F_SETLK,lock(F_UNLCK)) == -1) {
+                    fclose(das_file);
+                    throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
+                }
                 fclose(das_file);
                 throw InternalErr(__FILE__,__LINE__,"Fail to generate a das cache file.");
             }
@@ -1814,8 +1820,8 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
 
         // Unlock the cache file
         if(fcntl(fd_das,F_SETLK,lock(F_UNLCK)) == -1) { 
-            throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
             fclose(das_file);
+            throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
         }
         fclose(das_file);
 
@@ -1860,14 +1866,18 @@ bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string &
             HDFCFUtil::read_sp_sds_dds_cache(dds_file,dds_ptr,cache_filename,hdf4_filename);
         }
         catch(...) {
-            fcntl(fd_dds,F_SETLK,lock(F_UNLCK));        
+            if(fcntl(fd_dds,F_SETLK,lock(F_UNLCK)) == -1) { 
+                fclose(dds_file);
+                throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
+            }
+
             fclose(dds_file);
             throw InternalErr(__FILE__,__LINE__,"Fail to generate a dds cache file.");
         }
 
         if(fcntl(fd_dds,F_SETLK,lock(F_UNLCK)) == -1) { 
-            throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
             fclose(dds_file);
+            throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
         }
 
         fclose(dds_file);

@@ -125,7 +125,7 @@ HDFEOS2CFStrField::read ()
     intn r = 0;
     int32 tmp_rank = 0;
     char tmp_dimlist[1024];
-    int32 tmp_dims[rank];
+    int32 tmp_dims[rank+1];
     int32 field_dtype = 0;
 
     r = fieldinfofunc (gsid, const_cast < char *>(varname.c_str ()),

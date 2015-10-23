@@ -774,8 +774,15 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 	    at->append_attr(attr_cf_name, HDFCFUtil::print_type(datatype), print_rep);
 
 	}
-        status = SDendaccess(_sds_id); 
     }
+
+    status = SDendaccess(_sds_id); 
+    if(status < 0) {
+        ostringstream error;
+        error << "SDendaccess failed on variable  " << _newfname;
+        throw_error(error.str());
+    }
+
     return true;
 }
 

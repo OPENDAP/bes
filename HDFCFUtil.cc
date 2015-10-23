@@ -1442,8 +1442,12 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     //istringstream(scale_factor_value)>>scale_factor_number;
     scale_factor_number = atoi(scale_factor_value.c_str());
 
-    valid_min = (float)(vip_orig_valid_min/scale_factor_number);
-    valid_max = (float)(vip_orig_valid_max/scale_factor_number);
+    if(scale_factor_number !=0) {
+        valid_min = (float)(vip_orig_valid_min/scale_factor_number);
+        valid_max = (float)(vip_orig_valid_max/scale_factor_number);
+    }
+    else
+        throw InternalErr(__FILE__,__LINE__,"The scale_factor_number should not be zero.");
 }
 
 // Make AMSR-E attributes follow CF.

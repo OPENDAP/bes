@@ -836,7 +836,8 @@ vector < float32 > hdf_genvec::exportv_float32(void) const
 {
     if (_nt != DFNT_FLOAT32) {
         THROW(hcerr_dataexport);
-        return vector < float32 > (0);
+        // Comment out this line since the following line will never be reached. KY 2015-10-23
+        //return vector < float32 > (0);
     } else
         return vector < float32 > ((float32 *) _data,
                                    (float32 *) _data + _nelts);

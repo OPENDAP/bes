@@ -1899,7 +1899,7 @@ throw (Exception)
             delete attr;
             delete sd;
             throw3 ("Cannot read SD attribute", " Attribute name ",
-                     attr->name);
+                     attr_name);
         }
         sd->attrs.push_back (attr);
     }
@@ -5185,40 +5185,42 @@ throw (Exception)
                  latflag, "lon. flag= ", lonflag);
     }
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    else {// Without else this is fine since throw5 will go before this. This is just make Coverity happy.KY 2015-10-23
+        for (std::vector < SDField * >::const_iterator i =
+            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
 
 
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+            for (std::vector < Dimension * >::const_iterator k =
+                (*i)->getDimensions ().begin ();
+                k != (*i)->getDimensions ().end (); ++k) {
 
-                if ((*k)->getSize () == 360 ) 
-                    (*k)->name = longitude->name;
+                    if ((*k)->getSize () == 360 ) 
+                        (*k)->name = longitude->name;
 
-                if ((*k)->getSize () == 180 ) 
-                    (*k)->name = latitude->name;
+                    if ((*k)->getSize () == 180 ) 
+                        (*k)->name = latitude->name;
+
+            }
+
+            for (std::vector < Dimension * >::const_iterator k =
+                (*i)->getCorrectedDimensions ().begin ();
+                k != (*i)->getCorrectedDimensions ().end (); ++k) {
+
+                    if ((*k)->getSize () == 360 ) 
+                        (*k)->name = longitude->name;
+
+                    if ((*k)->getSize () == 180 ) 
+                        (*k)->name = latitude->name;
+
+            }
+
 
         }
-
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getCorrectedDimensions ().begin ();
-            k != (*i)->getCorrectedDimensions ().end (); ++k) {
-
-                if ((*k)->getSize () == 360 ) 
-                    (*k)->name = longitude->name;
-
-                if ((*k)->getSize () == 180 ) 
-                    (*k)->name = latitude->name;
-
-        }
-
-
-    }
 
    
-    file->sd->sdfields.push_back (latitude);
-    file->sd->sdfields.push_back (longitude);
+        file->sd->sdfields.push_back (latitude);
+        file->sd->sdfields.push_back (longitude);
+    }
  
 
     // Create the <dimname,coordinate variable> map from the corresponding dimension names to the latitude and the longitude

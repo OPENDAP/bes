@@ -2913,9 +2913,14 @@ bool read_dds_special_1d_grid(DDS &dds,HDFSP::File* spf,const string& filename, 
                 HDFCFUtil::write_sp_sds_dds_cache(spf,dds_file,total_bytes_dds_cache,dds_filename);
             }
             catch(...) {
-                fcntl(fd,F_SETLK,lock(F_UNLCK));
+                if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
+                    fclose(dds_file);
+                    string msg = "Cannot release the write lock for dds cached file "+ dds_filename;
+                    throw InternalErr (__FILE__, __LINE__,msg);
+                }
+ 
                 fclose(dds_file);
-                 throw InternalErr(__FILE__,__LINE__,"Fail to generate a dds cache file.");
+                throw InternalErr(__FILE__,__LINE__,"Fail to generate a dds cache file.");
             }
             if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
                 fclose(dds_file);
