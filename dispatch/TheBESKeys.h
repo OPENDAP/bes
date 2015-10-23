@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,25 +35,28 @@
 
 #include "BESKeys.h"
 
-class TheBESKeys : public BESKeys
-{
-  private:
-    static BESKeys *_instance ;
-  protected:
-    TheBESKeys( const string &keys_file_name ) : BESKeys( keys_file_name ) {}
-  public:
-#if 0
-    // See comment in the .cc file... jhrg
-    static void updateKeys() ;
-    static void updateKeys( const string &keys_file_name ) ;
-#endif
-    static string ConfigFile ;
-    static BESKeys *TheKeys() ;
+class TheBESKeys: public BESKeys {
+private:
+    static BESKeys *_instance;
 
-    // Tried adding this; didn't work. What's being leaked from the
-    // keys? jhrg 12/21/12
-    //virtual ~TheBESKeys() {}
-} ;
+protected:
+    TheBESKeys(const string &keys_file_name) :
+        BESKeys(keys_file_name)
+    {
+    }
+
+public:
+    /**
+     * TheBESKeys::ConfigFile provides a way for the daemon and test code to
+     * set the location of a particular configuration file.
+     */
+    static string ConfigFile;
+
+    /**
+     * Access to the singleton.
+     */
+    static BESKeys *TheKeys();
+};
 
 #endif // E_TheBESKeys_h
 

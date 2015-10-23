@@ -6,9 +6,7 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-AM_LDADD =  $(top_builddir)/dap/libdap_module.la \
-$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types \
-$(top_builddir)/dispatch/libbes_dispatch.la
+AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) -ltest-types
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -34,7 +32,7 @@ EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h test_config.h.in
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
-DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
+DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 
 ############################################################################
 # Unit Tests
@@ -66,10 +64,14 @@ endif
 TEST_SRC = test_utils.cc test_utils.h
 
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
-ResponseBuilderTest_LDADD = $(AM_LDADD) 
+ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDapResponseCache.o ../../dispatch/BESFileLockingCache.o \
+../BESStoredDapResultCache.o 
+ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(AM_LDADD) 
 
 ResponseCacheTest_SOURCES = ResponseCacheTest.cc  $(TEST_SRC)
-ResponseCacheTest_LDADD = $(AM_LDADD)
+ResponseCacheTest_OBJS = ../BESDapResponseBuilder.o ../BESDapResponseCache.o \
+../BESStoredDapResultCache.o 
+ResponseCacheTest_LDADD = $(ResponseCacheTest_OBJS) $(AM_LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(AM_LDADD)

@@ -42,6 +42,8 @@ class ServerApp: public BESModuleApp {
 private:
 	int _portVal;
 	bool _gotPort;
+	std::string _IPVal;
+	bool _gotIP;
 	std::string _unixSocket;
 	bool _secure;
 	pid_t _mypid;

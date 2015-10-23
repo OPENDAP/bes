@@ -6,7 +6,8 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/functions $(GF_CFLAGS) $(XML2_CFLAGS) $(DAP_CFLAGS)
-AM_LDADD =  $(GF_LIBS) -L.. -lfunctions_module  $(top_builddir)/dispatch/libbes_dispatch.la
+AM_LDADD =  $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
+#-L.. -lfunctions_module  
 # ../libfunctions_module.la
 
 if CPPUNIT
@@ -37,7 +38,7 @@ CLEANFILES = testout .dodsrc  *.gcda *.gcno
 
 # I added '*.po' because there are dependencies on ../*.o files and
 # that seems to leave *.Po files here that distclean complains about.
-DISTCLEANFILES = test_config.h *.strm *.file tmp.txt
+DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 
 # TODO Check if this sed command to filter out the ../ from the value of 
 # ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
@@ -73,46 +74,52 @@ endif
 
 # These are used to read in baselines from files
 TEST_SRC = test_utils.cc test_utils.h 
+
+# Many of the tests use these - build once
 TEST_OBJ = ../roi_util.o ../functions_util.o
 
-CEFunctionsTest_SOURCES = CEFunctionsTest.cc
-CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+# Listing the objects here keeps from having to link with the module - not a portable
+# solution - and listing these as source breaks distcheck jhrg 9/24/15
+CEFunctionsTest_SOURCES = CEFunctionsTest.cc  $(TEST_SRC)
+CEFunctionsTest_OBJ = ../GridFunction.o ../BindNameFunction.o ../BindShapeFunction.o \
+../LinearScaleFunction.o ../MakeArrayFunction.o ../gse.tab.o ../lex.gse.o ../grid_utils.o \
+../GSEClause.o ../GeoConstraint.o ../GridGeoConstraint.o
+CEFunctionsTest_LDADD = $(CEFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 Dap4_CEFunctionsTest_SOURCES = Dap4_CEFunctionsTest.cc
-Dap4_CEFunctionsTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+Dap4_CEFunctionsTest_OBJ = ../BindNameFunction.o ../BindShapeFunction.o ../LinearScaleFunction.o \
+../MakeArrayFunction.o ../functions_util.o
+Dap4_CEFunctionsTest_LDADD = $(Dap4_CEFunctionsTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
-GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc
-GridGeoConstraintTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc 
+GridGeoConstraintTest_OBJ = ../GeoConstraint.o ../GridGeoConstraint.o
+GridGeoConstraintTest_LDADD = $(GridGeoConstraintTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
-# If dist/distclean fails here, look at the ../ SOURCES and the value of subdir-objects.
-# It may be that subdir-objects must be set up higher in the chain of Makefiles.
-TabularFunctionTest_OBJ = ../TabularFunction.o
-TabularFunctionTest_SOURCES = TabularFunctionTest.cc
-TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+TabularFunctionTest_SOURCES = TabularFunctionTest.cc 
+TabularFunctionTest_OBJ = ../TabularFunction.o  ../TabularSequence.o
+TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
-# Dap4_TabularFunctionTest_SOURCES = ../TabularFunction.cc ../TabularFunction.h Dap4_TabularFunctionTest.cc
-# Dap4_TabularFunctionTest_LDADD = $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)  -ltest-types
-BBoxFunctionTest__OBJ = ../BBoxFunction.o
+BBoxFunctionTest_OBJ = ../BBoxFunction.o
 BBoxFunctionTest_SOURCES = BBoxFunctionTest.cc $(TEST_SRC)
-BBoxFunctionTest_LDADD = $(BBoxFunctionTest__OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+BBoxFunctionTest_LDADD = $(BBoxFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 BBoxUnionFunctionTest_OBJ = ../BBoxUnionFunction.o
 BBoxUnionFunctionTest_SOURCES = BBoxUnionFunctionTest.cc $(TEST_SRC)
-BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 RoiFunctionTest_OBJ = ../RoiFunction.o
 RoiFunctionTest_SOURCES = RoiFunctionTest.cc $(TEST_SRC)
-RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 OdometerTest_OBJ = ../Odometer.o
 OdometerTest_SOURCES = OdometerTest.cc $(TEST_SRC)
-OdometerTest_LDADD = $(OdometerTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+OdometerTest_LDADD = $(OdometerTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_LIBS)
 
 MaskArrayFunctionTest_OBJ = ../MaskArrayFunction.o
 MaskArrayFunctionTest_SOURCES = MaskArrayFunctionTest.cc $(TEST_SRC)
-MaskArrayFunctionTest_LDADD = $(MaskArrayFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+MaskArrayFunctionTest_LDADD = $(MaskArrayFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 MakeMaskFunctionTest_OBJ = ../MakeMaskFunction.o
 MakeMaskFunctionTest_SOURCES = MakeMaskFunctionTest.cc $(TEST_SRC)
-MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types
+MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 

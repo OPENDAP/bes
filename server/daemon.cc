@@ -156,7 +156,7 @@ static int pr_exit(int status)
     }
     else if (WIFSIGNALED(status)) {
         cerr << daemon_name << ": abnormal server termination, signaled with signal number " << WTERMSIG(status)
-                << endl;
+            << endl;
 #ifdef WCOREDUMP
         if (WCOREDUMP(status)) {
             cerr << daemon_name << ": server dumped core." << endl;
@@ -234,13 +234,13 @@ bool stop_all_beslisteners(int sig)
 
     case EPERM:
         cerr
-                << "The sending process is not the super-user and one or more of the target processes has an effective user ID different from that of the sending process."
-                << endl;
+            << "The sending process is not the super-user and one or more of the target processes has an effective user ID different from that of the sending process."
+            << endl;
         break;
 
     case ESRCH:
         cerr << "No process can be found in the process group specified by the process group ("
-                << master_beslistener_pid << ")." << endl;
+            << master_beslistener_pid << ")." << endl;
         break;
 
     default: // No error
@@ -255,7 +255,7 @@ bool stop_all_beslisteners(int sig)
             master_beslistener_status = pr_exit(status);
             mbes_status_caught = true;
             BESDEBUG("besdaemon",
-                    "besdaemon: caught master beslistener: " << pid << " status: " << master_beslistener_status << endl);
+                "besdaemon: caught master beslistener: " << pid << " status: " << master_beslistener_status << endl);
         }
     }
 
@@ -388,7 +388,7 @@ int start_master_beslistener()
     }
     else if (beslistener_start_status != BESLISTENER_RUNNING) {
         cerr << "The beslistener status is not 'BESLISTENER_RUNNING' (it is '" << beslistener_start_status
-                << "')  the master pid was not changed." << endl;
+            << "')  the master pid was not changed." << endl;
         close(pipefd[0]);
         return 0;
     }
@@ -565,57 +565,12 @@ static int start_command_processor(DaemonCommandHandler &handler)
 
         // Once the handler exits, close sockets and free memory
         command_server->closeConnection();
-#if 0
-        delete command_server;
-        command_server = 0;
-
-        // delete closes the sockets
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        // When/if the command interpreter exits, stop the all listeners.
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-
-        // FIXME jhrg 3/5/14
-        // Pick up all the listener's status codes
-        return 1;
-#endif
     }
     catch (BESError &se) {
         cerr << "daemon: " << se.get_message() << endl;
-#if 0
-        delete command_server;
-        command_server = 0;
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-        return 1;
-#endif
     }
     catch (...) {
         cerr << "daemon: " << "caught unknown exception" << endl;
-#if 0
-        delete command_server;
-        command_server = 0;
-        delete my_socket;
-        my_socket = 0;
-        delete unix_socket;
-        unix_socket = 0;
-
-        block_signals();
-        stop_all_beslisteners(SIGTERM);
-        unblock_signals();
-        return 1;
-#endif
     }
 
     delete command_server;
@@ -771,7 +726,7 @@ static bool load_names(const string &install_dir, const string &pid_dir)
 
     if (access(beslistener_path.c_str(), F_OK) != 0) {
         cerr << daemon_name << ": cannot find " << beslistener_path << endl
-                << "Please either pass -i <install_dir> on the command line." << endl;
+            << "Please either pass -i <install_dir> on the command line." << endl;
         return false;
     }
 
@@ -973,218 +928,253 @@ int main(int argc, char *argv[])
         BESServerUtils::show_usage(daemon_name);
     }
 
-    // Most of the argument processing is just for vetting the arguments
-    // that will be passed onto the beslistener(s), but we do grab some info
-    string config_file = "";
-    // argv[0] is the name of the program, so start num_args at 1
-    unsigned short num_args = 1;
-    // If you change the getopt statement below, be sure to make the
-    // corresponding change in ServerApp.cc and besctl.in
-    int c = 0;
-    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
-        switch (c) {
-        case 'v': // version
-            BESServerUtils::show_version(daemon_name);
-            break;
-        case '?': // unknown option
-        case 'h': // help
-            BESServerUtils::show_usage(daemon_name);
-            break;
-        case 'i': // BES install directory
-            install_dir = optarg;
-            if (BESScrub::pathname_ok(install_dir, true) == false) {
-                cout << "The specified install directory (-i option) " << "is incorrectly formatted. Must be less than "
-                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
-                return 1;
-            }
-            global_args["-i"] = install_dir;
-            num_args += 2;
-            break;
-        case 's': // secure server
-            global_args["-s"] = "";
-            num_args++;
-            break;
-        case 'r': // where to write the pid file
-            pid_dir = optarg;
-            if (BESScrub::pathname_ok(pid_dir, true) == false) {
-                cout << "The specified state directory (-r option) " << "is incorrectly formatted. Must be less than "
-                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
-                return 1;
-            }
-            global_args["-r"] = pid_dir;
-            num_args += 2;
-            break;
-        case 'c': // configuration file
-            config_file = optarg;
-            if (BESScrub::pathname_ok(config_file, true) == false) {
-                cout << "The specified configuration file (-c option) "
+    try {
+        // Most of the argument processing is just for vetting the arguments
+        // that will be passed onto the beslistener(s), but we do grab some info
+        string config_file = "";
+        // argv[0] is the name of the program, so start num_args at 1
+        unsigned short num_args = 1;
+
+        // If you change the getopt statement below, be sure to make the
+        // corresponding change in ServerApp.cc and besctl.in
+        int c = 0;
+        while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != -1) {
+            switch (c) {
+            case 'v': // version
+                BESServerUtils::show_version(daemon_name);
+                break;
+            case '?': // unknown option
+            case 'h': // help
+                BESServerUtils::show_usage(daemon_name);
+                break;
+            case 'i': // BES install directory
+                install_dir = optarg;
+                if (BESScrub::pathname_ok(install_dir, true) == false) {
+                    cout << "The specified install directory (-i option) "
                         << "is incorrectly formatted. Must be less than "
                         << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
-                return 1;
-            }
-            global_args["-c"] = config_file;
-            num_args += 2;
-            break;
-        case 'u': // unix socket
-        {
-            string check_path = optarg;
-            if (BESScrub::pathname_ok(check_path, true) == false) {
-                cout << "The specified unix socket (-u option) " << "is incorrectly formatted. Must be less than "
-                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
-                return 1;
-            }
-            global_args["-u"] = check_path;
-            num_args += 2;
-            break;
-        }
-        case 'p': // TCP port
-        {
-            string port_num = optarg;
-            for (unsigned int i = 0; i < port_num.length(); i++) {
-                if (!isdigit(port_num[i])) {
-                    cout << "The specified port contains non-digit " << "characters: " << port_num << endl;
                     return 1;
                 }
+                global_args["-i"] = install_dir;
+                num_args += 2;
+                break;
+            case 's': // secure server
+                global_args["-s"] = "";
+                num_args++;
+                break;
+            case 'r': // where to write the pid file
+                pid_dir = optarg;
+                if (BESScrub::pathname_ok(pid_dir, true) == false) {
+                    cout << "The specified state directory (-r option) "
+                        << "is incorrectly formatted. Must be less than "
+                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
+                    return 1;
+                }
+                global_args["-r"] = pid_dir;
+                num_args += 2;
+                break;
+            case 'c': // configuration file
+                config_file = optarg;
+                if (BESScrub::pathname_ok(config_file, true) == false) {
+                    cout << "The specified configuration file (-c option) "
+                        << "is incorrectly formatted. Must be less than "
+                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
+                    return 1;
+                }
+                global_args["-c"] = config_file;
+                num_args += 2;
+                break;
+            case 'u': // unix socket
+            {
+                string check_path = optarg;
+                if (BESScrub::pathname_ok(check_path, true) == false) {
+                    cout << "The specified unix socket (-u option) " << "is incorrectly formatted. Must be less than "
+                        << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
+                    return 1;
+                }
+                global_args["-u"] = check_path;
+                num_args += 2;
+                break;
             }
-            global_args["-p"] = port_num;
-            num_args += 2;
-        }
-            break;
-        case 'd': // debug
-        {
-            string check_arg = optarg;
-            if (BESScrub::command_line_arg_ok(check_arg) == false) {
-                cout << "The specified debug options \"" << check_arg << "\" contains invalid characters" << endl;
-                return 1;
+            case 'p': // TCP port
+            {
+                string port_num = optarg;
+                for (unsigned int i = 0; i < port_num.length(); i++) {
+                    if (!isdigit(port_num[i])) {
+                        cout << "The specified port contains non-digit " << "characters: " << port_num << endl;
+                        return 1;
+                    }
+                }
+                global_args["-p"] = port_num;
+                num_args += 2;
             }
-            BESDebug::SetUp(check_arg);
-            global_args["-d"] = check_arg;
-            debug_sink = check_arg.substr(0, check_arg.find(','));
-            num_args += 2;
-            break;
+                break;
+            case 'd': // debug
+            {
+                string check_arg = optarg;
+                if (BESScrub::command_line_arg_ok(check_arg) == false) {
+                    cout << "The specified debug options \"" << check_arg << "\" contains invalid characters" << endl;
+                    return 1;
+                }
+                BESDebug::SetUp(check_arg);
+                global_args["-d"] = check_arg;
+                debug_sink = check_arg.substr(0, check_arg.find(','));
+                num_args += 2;
+                break;
+            }
+            default:
+                BESServerUtils::show_usage(daemon_name);
+                break;
+            }
         }
-        default:
+
+        // if the number of arguments is greater than the number of allowed arguments
+        // then extra arguments were passed that aren't options. Show usage and
+        // exit.
+        if (argc > num_args) {
+            cout << daemon_name << ": too many arguments passed to the BES";
             BESServerUtils::show_usage(daemon_name);
-            break;
+        }
+
+        if (pid_dir.empty()) {
+            pid_dir = install_dir;
+        }
+
+        // If the -c option was passed, set the config file name in TheBESKeys
+        if (!config_file.empty()) {
+            TheBESKeys::ConfigFile = config_file;
+        }
+
+        // If the -c option was not passed, but the -i option
+        // was passed, then use the -i option to construct
+        // the path to the config file
+        if (install_dir.empty() && !install_dir.empty()) {
+            if (install_dir[install_dir.length() - 1] != '/') {
+                install_dir += '/';
+            }
+            string conf_file = install_dir + "etc/bes/bes.conf";
+            TheBESKeys::ConfigFile = conf_file;
         }
     }
-
-    // if the number of arguments is greater than the number of allowed arguments
-    // then extra arguments were passed that aren't options. Show usage and
-    // exit.
-    if (argc > num_args) {
-        cout << daemon_name << ": too many arguments passed to the BES";
-        BESServerUtils::show_usage(daemon_name);
-    }
-
-    if (pid_dir.empty()) {
-        pid_dir = install_dir;
-    }
-
-    // If the -c option was passed, set the config file name in TheBESKeys
-    if (!config_file.empty()) {
-        TheBESKeys::ConfigFile = config_file;
-    }
-
-    // If the -c option was not passed, but the -i option
-    // was passed, then use the -i option to construct
-    // the path to the config file
-    if (install_dir.empty() && !install_dir.empty()) {
-        if (install_dir[install_dir.length() - 1] != '/') {
-            install_dir += '/';
-        }
-        string conf_file = install_dir + "etc/bes/bes.conf";
-        TheBESKeys::ConfigFile = conf_file;
-    }
-
-    // Set the name of the listener and the file for the listener pid
-    if (!load_names(install_dir, pid_dir)) return 1;
-
-    if (!access(file_for_daemon_pid.c_str(), F_OK)) {
-        ifstream temp(file_for_daemon_pid.c_str());
-        cout << daemon_name << ": there seems to be a BES daemon already running at ";
-        char buf[500];
-        temp.getline(buf, 500);
-        cout << buf << endl;
-        temp.close();
+    catch (BESError &e) {
+        // (*BESLog::TheLog())
+        // BESLog::TheLog throws exceptions...
+        cerr << "Caught BES Error while processing the daemon's options: " << e.get_message() << endl;
         return 1;
     }
-
-    daemon_init();
-
-    store_daemon_id(getpid());
-
-    register_signal_handlers();
-
-    // Load the modules in the conf file(s) so that the debug (log) contexts
-    // will be available to the BESDebug singleton so we can tell the OLFS/HAI
-    // about them. Then Register the 'besdaemon' context.
-    BESModuleApp app;
-    if (app.initialize(argc, argv) != 0) {
-        cerr << "Could not initialize the modules to get the log contexts." << endl;
+    catch (std::exception &e) {
+        cerr << "Caught C++ error while processing the daemon's options: " << e.what() << endl;
+        return 2;
     }
-    BESDebug::Register("besdaemon");
+    catch (...) {
+        cerr << "Caught unknown error while processing the daemon's options." << endl;
+        return 3;
+    }
 
-    // These are from the beslistener - they are valid contexts but are not
-    // registered by a module. See ServerApp.cc
-    BESDebug::Register("server");
-    BESDebug::Register("ppt");
+    try {
+        // Set the name of the listener and the file for the listener pid
+        if (!load_names(install_dir, pid_dir)) return 1;
 
-    if (curr_euid == 0) {
+        if (!access(file_for_daemon_pid.c_str(), F_OK)) {
+            ifstream temp(file_for_daemon_pid.c_str());
+            cout << daemon_name << ": there seems to be a BES daemon already running at ";
+            char buf[500];
+            temp.getline(buf, 500);
+            cout << buf << endl;
+            temp.close();
+            return 1;
+        }
+
+        daemon_init();
+
+        store_daemon_id(getpid());
+
+        register_signal_handlers();
+
+        // Load the modules in the conf file(s) so that the debug (log) contexts
+        // will be available to the BESDebug singleton so we can tell the OLFS/HAI
+        // about them. Then Register the 'besdaemon' context.
+        BESModuleApp app;
+        if (app.initialize(argc, argv) != 0) {
+            cerr << "Could not initialize the modules to get the log contexts." << endl;
+        }
+        BESDebug::Register("besdaemon");
+
+        // These are from the beslistener - they are valid contexts but are not
+        // registered by a module. See ServerApp.cc
+        BESDebug::Register("server");
+        BESDebug::Register("ppt");
+
+        if (curr_euid == 0) {
 #ifdef BES_DEVELOPER
-        cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
+            cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
 #endif
-        set_group_id();
-        set_user_id();
-    }
-    else {
-        cerr << "Developer Mode: Not setting group or user ids" << endl;
-    }
-
-    // The stuff in global_args is used whenever a call to start_master_beslistener()
-    // is made, so any time the BESDebug contexts are changed, a change to the
-    // global_args will change the way the the beslistener is started. In fact,
-    // it's not limited to the debug stuff, but that's we're using it for now.
-    // jhrg 6/16/11
-
-    // The -d option was not given; add one setting up a default log sink using
-    // the log file from the bes.conf file or the name "LOG".
-    if (global_args.count("-d") == 0) {
-        bool found = false;
-        // string log_file_name;
-        TheBESKeys::TheKeys()->get_value("BES.LogName", debug_sink, found);
-        if (!found) {
-            // This is a crude fallback that avoids a value without any name
-            // for a log file (which would be a syntax error).
-            global_args["-d"] = "cerr," + BESDebug::GetOptionsString();
+            set_group_id();
+            set_user_id();
         }
         else {
-            // I use false for the 'created' flag so that subsequent changes to the
-            // debug stream won't do odd things like delete the ostream pointer.
-            // Note that the beslistener has to recognize that "LOG" means to use
-            // the bes.log file for a debug/log sink
-            BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false);
+            cerr << "Developer Mode: Not setting group or user ids" << endl;
+        }
 
+        // The stuff in global_args is used whenever a call to start_master_beslistener()
+        // is made, so any time the BESDebug contexts are changed, a change to the
+        // global_args will change the way the the beslistener is started. In fact,
+        // it's not limited to the debug stuff, but that's we're using it for now.
+        // jhrg 6/16/11
+
+        // The -d option was not given; add one setting up a default log sink using
+        // the log file from the bes.conf file or the name "LOG".
+        if (global_args.count("-d") == 0) {
+            bool found = false;
+            // string log_file_name;
+            TheBESKeys::TheKeys()->get_value("BES.LogName", debug_sink, found);
+            if (!found) {
+                // This is a crude fallback that avoids a value without any name
+                // for a log file (which would be a syntax error).
+                global_args["-d"] = "cerr," + BESDebug::GetOptionsString();
+            }
+            else {
+                // I use false for the 'created' flag so that subsequent changes to the
+                // debug stream won't do odd things like delete the ostream pointer.
+                // Note that the beslistener has to recognize that "LOG" means to use
+                // the bes.log file for a debug/log sink
+                BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false);
+
+                global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
+            }
+        }
+        // The option was given; use the token read from the options for the sink
+        // so that the beslistener will open the correct thing.
+        else {
             global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
         }
-    }
-    // The option was given; use the token read from the options for the sink
-    // so that the beslistener will open the correct thing.
-    else {
-        global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
-    }
 
-    // master_beslistener_pid is global so that the signal handlers can use it;
-    // it is actually assigned a value in start_master_beslistener but it's
-    // assigned here to make it clearer what's going on.
-    master_beslistener_pid = start_master_beslistener();
-    if (master_beslistener_pid == 0) {
-        cerr << daemon_name << ": server cannot mount at first try (core dump). "
+        // master_beslistener_pid is global so that the signal handlers can use it;
+        // it is actually assigned a value in start_master_beslistener but it's
+        // assigned here to make it clearer what's going on.
+        master_beslistener_pid = start_master_beslistener();
+        if (master_beslistener_pid == 0) {
+            cerr << daemon_name << ": server cannot mount at first try (core dump). "
                 << "Please correct problems on the process manager " << beslistener_path << endl;
-        return master_beslistener_pid;
-    }
+            return master_beslistener_pid;
+        }
 
-    BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
+        BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
+    }
+    catch (BESError &e) {
+        // (*BESLog::TheLog())
+        // BESLog::TheLog throws exceptions...
+        cerr << "Caught BES Error during initialization: " << e.get_message() << endl;
+        return 1;
+    }
+    catch (std::exception &e) {
+        cerr << "Caught C++ error during initialization: " << e.what() << endl;
+        return 2;
+    }
+    catch (...) {
+        cerr << "Caught unknown error during initialization." << endl;
+        return 3;
+    }
 
     int status = 0;
     try {
@@ -1218,15 +1208,17 @@ int main(int argc, char *argv[])
     }
     catch (BESError &e) {
         status = 1;
-        (*BESLog::TheLog()) << "Caught BES Error while starting the command handler: " << e.get_message() << endl;
+        // (*BESLog::TheLog())
+        // BESLog::TheLog throws exceptions...
+        cerr << "Caught BES Error while starting the command handler: " << e.get_message() << endl;
     }
     catch (std::exception &e) {
         status = 2;
-        (*BESLog::TheLog()) << "Caught C++ error while starting the command handler: " << e.what() << endl;
+        cerr << "Caught C++ error while starting the command handler: " << e.what() << endl;
     }
     catch (...) {
         status = 3;
-        (*BESLog::TheLog()) << "Caught unknown error while starting the command handler." << endl;
+        cerr << "Caught unknown error while starting the command handler." << endl;
     }
 
     BESDEBUG("besdaemon", "besdaemon: past the command processor start" << endl);

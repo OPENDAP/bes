@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,10 +36,10 @@
 #include <fstream>
 #include <string>
 
-using std::ofstream ;
-using std::ios ;
-using std::ostream ;
-using std::string ;
+using std::ofstream;
+using std::ios;
+using std::ostream;
+using std::string;
 
 #include "BESObj.h"
 
@@ -84,22 +84,21 @@ using std::string ;
  *
  * @see BESKeys
  */
-class BESLog : public BESObj
-{
+class BESLog: public BESObj {
 private:
-    static BESLog *	_instance ;
-    int			_flushed ;
-    ofstream *		_file_buffer ;
-    string		_file_name ;
+    static BESLog * _instance;
+    int _flushed;
+    ofstream * _file_buffer;
+    string _file_name;
     // Flag to indicate the object is not routing data to its associated stream
-    int			_suspended ;
+    int _suspended;
     // Flag to indicate whether to log verbose messages
-    bool		_verbose ;
+    bool _verbose;
 protected:
-    BESLog(); 
+    BESLog();
 
     // Dumps the current system time.
-    void		dump_time() ;
+    void dump_time();
 public:
     ~BESLog();
 
@@ -110,7 +109,7 @@ public:
      */
     void suspend()
     {
-	_suspended = 1 ;
+        _suspended = 1;
     }
 
     /** @brief Resumes logging after being suspended.
@@ -120,7 +119,7 @@ public:
      */
     void resume()
     {
-	_suspended = 0 ;
+        _suspended = 0;
     }
 
     /** @brief turn on verbose logging
@@ -131,7 +130,7 @@ public:
      */
     void verbose_on()
     {
-	_verbose = true ;
+        _verbose = true;
     }
 
     /** @brief turns off verbose logging
@@ -141,7 +140,7 @@ public:
      */
     void verbose_off()
     {
-	_verbose = false ;
+        _verbose = false;
     }
 
     /** @brief Returns true if verbose logging is requested.
@@ -161,35 +160,38 @@ public:
      */
     bool is_verbose()
     {
-	return _verbose ;
+        return _verbose;
     }
 
     /// Defines a data type p_ios_manipulator "pointer to function that takes ios& and returns ios&".
-    typedef ios& (*p_ios_manipulator) (ios&);
+    typedef ios& (*p_ios_manipulator)(ios&);
     /// Defines a data type p_ostream_manipulator "pointer to function that takes ostream& and returns ostream&".
-    typedef ostream& (*p_ostream_manipulator) (ostream&);
+    typedef ostream& (*p_ostream_manipulator)(ostream&);
 
-    BESLog& operator << (string&);
-    BESLog& operator << (const string&);
-    BESLog& operator << (char*);
-    BESLog& operator << (const char*);
-    BESLog& operator << (int);
-    BESLog& operator << (char);
-    BESLog& operator << (long);
-    BESLog& operator << (unsigned long);
-    BESLog& operator << (double);
+    BESLog& operator <<(string&);
+    BESLog& operator <<(const string&);
+    BESLog& operator <<(char*);
+    BESLog& operator <<(const char*);
+    BESLog& operator <<(int);
+    BESLog& operator <<(char);
+    BESLog& operator <<(long);
+    BESLog& operator <<(unsigned long);
+    BESLog& operator <<(double);
 
-    BESLog& operator<<(p_ostream_manipulator); 
-    BESLog& operator<<(p_ios_manipulator); 
+    BESLog& operator<<(p_ostream_manipulator);
+    BESLog& operator<<(p_ios_manipulator);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESLog *TheLog() ;
+    static BESLog *TheLog();
 
     // I added this so that it's easy to route the BESDebug messages to the
     // log file. This will enable the Admin Interface to display the contents
     // of those debug messages when it displays the log file. jhrg
-    ostream *get_log_ostream() { return _file_buffer; }
+    ostream *get_log_ostream()
+    {
+        return _file_buffer;
+    }
 };
 
 #endif // BESLog_h_

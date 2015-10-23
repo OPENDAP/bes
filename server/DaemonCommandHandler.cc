@@ -262,182 +262,6 @@ static void write_file(const string &name, const string &buffer)
 	}
 }
 
-#if 0
-
-// This has an infinite loop in it under some circumstances.
-
-/** This version of get_bes_log_lines() is an attempt to improve the efficiency
- * of the process using an estimate of the size of the log lines to skip over
- * the vast majority of the log file.
- *
- * @note if num_lines is zero, that means get the whole file. This will have
- * the awful side affect of allocating memory for the whole file, which may be
- * very large.
- *
- * @todo Change the estimated number of chars per log line dynamically.
- */
-#define BES_LOG_CHARS_EST_PER_LINE 126
-
-static char *get_bes_log_lines(const string &log_file_name, long num_lines)
-{
-	ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
-	if (!infile.is_open())
-	throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
-
-	// This is used to save time counting lines in large files
-	static ifstream::pos_type prev_end_pos = 0;
-	// static long prev_line_count = 0;
-
-	ifstream::pos_type start_from_pos = 0;
-	// num_line == 0 is special value that means get all the lines
-	if (num_lines > 0)
-	{
-		// Get size of file in bytes, then estimate where to start looking for
-		// num_lines lines, then set the file pointer there.
-		infile.seekg(0, ios::end);
-		ifstream::pos_type end_pos = infile.tellg();
-		long est_num_lines = end_pos / BES_LOG_CHARS_EST_PER_LINE;
-		if (num_lines >= est_num_lines)
-		infile.seekg(0, ios::beg);
-		else
-		infile.seekg((est_num_lines - num_lines) * BES_LOG_CHARS_EST_PER_LINE, ios::beg);
-		ifstream::pos_type start_from_pos = infile.tellg();
-
-		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - end_pos: " << end_pos << " start_from_pos: " << start_from_pos << endl);
-
-		// No laughing at my goto...
-		retry:
-		// start_from_pos points to where we start looking for num_lines
-		long count = 0;
-		while (!infile.eof() && !infile.fail())
-		{
-			infile.ignore(1024, '\n');  // Assume no line is > 1024
-			++count;
-		}
-
-		infile.clear(); // Needed to reset eof() or fail() so tellg/seekg work.
-
-		// if the start_from_pos is too far along (there are not num_lines
-		// left), scale it back and try again.
-		if (count < num_lines) {
-			BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Retrying; Log length  (count)" << count << ", num_lines " << num_lines << endl);
-			// 10 isa fudge factor...
-			long size = start_from_pos;
-			size -= ((num_lines - count + 10) * BES_LOG_CHARS_EST_PER_LINE);
-			infile.seekg(size, ios::beg);
-			start_from_pos = infile.tellg();
-			goto retry;
-		}
-
-		infile.seekg(start_from_pos, ios::beg);
-
-		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Log length  (count)" << count << endl);
-
-		if (count > num_lines)
-		{
-			// Skip count - num-lines
-			long skip = count - num_lines;
-			while (skip > 0 && !infile.eof() && !infile.fail())
-			{
-				infile.ignore(1024, '\n');
-				--skip;
-			}
-
-			infile.clear();
-		}
-	}
-
-	// Read remaining lines as a block of stuff.
-	ifstream::pos_type start_pos = infile.tellg();
-	infile.seekg(0, ios::end);
-	ifstream::pos_type end_pos = infile.tellg();
-
-	unsigned long size = end_pos - start_pos;
-	char *memblock = new char[size + 1];
-
-	infile.seekg(start_pos, ios::beg);
-	infile.read(memblock, size);
-	infile.close();
-
-	memblock[size] = '\0';
-
-	return memblock;
-}
-#endif
-
-#if 0
-// This is an older version of get_bes_log_lines(). It's not as inefficient as
-// the first version, but it's not great either. This version remembers how big
-// the log was and so skips one of two reads of the entire log. It will still
-// read the entire log just to print the last 200 lines (the log might be 1 GB).
-
-// if num_lines is == 0, get all the lines; if num_lines < 0, also get all the
-// lines, but this is really an error, should be trapped by caller.
-static char *get_bes_log_lines(const string &log_file_name, long num_lines)
-{
-	ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
-	if (!infile.is_open())
-	throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
-
-	// This is used to save time counting lines in large files
-	static ifstream::pos_type prev_end_pos = 0;
-	static long prev_line_count = 0;
-
-	BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - prev_line_count: " << prev_line_count << endl);
-	// num_lines == 0 is special value that means get all the lines
-	if (num_lines > 0)
-	{
-		// static values saved from the previous run saves recounting
-		infile.seekg(prev_end_pos, ios::beg);
-		long count = prev_line_count;
-		while (!infile.eof() && !infile.fail())
-		{
-			infile.ignore(1024, '\n');
-			++count;
-		}
-
-		infile.clear(); // Needed to reset eof() or fail() so tellg/seekg work.
-
-		prev_end_pos = infile.tellg();// Save the end pos
-		prev_line_count = count - 1;// The loop always adds one
-
-		infile.seekg(0, ios::beg);
-
-		BESDEBUG("besdaemon", "DaemonCommandHandler()::get_bes_log_lines() - Log length  " << count << endl);
-
-		if (count > num_lines)
-		{
-			// Skip count - num-lines
-			long skip = count - num_lines;
-			do
-			{
-				infile.ignore(1024, '\n');
-				--skip;
-			}while (skip > 0 && !infile.eof() && !infile.fail());
-
-			infile.clear();
-		}
-	}
-
-	// Read remaining lines as a block of stuff.
-	ifstream::pos_type start_pos = infile.tellg();
-	infile.seekg(0, ios::end);
-	ifstream::pos_type end_pos = infile.tellg();
-
-	unsigned long size = end_pos - start_pos;
-	char *memblock = new char[size + 1];
-
-	infile.seekg(start_pos, ios::beg);
-	infile.read(memblock, size);
-	infile.close();
-
-	memblock[size] = '\0';
-
-	return memblock;
-}
-#endif
-
-#if 1
 // Count forward 'lines', leave the file pointer at the place just past that
 // and return the number of lines actually read (which might be less if eof
 // is found before 'lines' lines are read.
@@ -506,12 +330,7 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
 	ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
 	if (!infile.is_open())
 		throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
-#if 0
-	// This is used to save time counting lines in large files
-	static ifstream::pos_type last_start_pos = 0;
-	static unsigned long last_start_line = 0;
-#endif
-	BESDEBUG("besdaemon", "besdaemon: last_start_line " << last_start_line << endl);
+
 	if (num_lines == 0) {
 		// return the whole file
 		infile.seekg(0, ios::beg);
@@ -520,15 +339,16 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
 	else {
 		// How many lines in the total file? Use last count info.
 		unsigned long count = count_lines(infile, last_start_pos) + last_start_line;
-		BESDEBUG("besdaemon", "besdaemon: Log length " << count << " (started at " << last_start_line << ")" << endl);
+
 		// last_start_pos is where last_start_line is, we need to advance to
 		// the line that is num_lines back from the end of the file
 		unsigned long new_start_line = (count >= num_lines) ? count - num_lines + 1 : 0;
+
 		// Now go back to the last_start_pos
 		infile.seekg(last_start_pos, ios::beg);
 		// and count forward to the line that starts this last num_lines
 		count = move_forward_lines(infile, new_start_line - last_start_line);
-		BESDEBUG("besdaemon", "besdaemon: count forward " << count << " lines." << endl);
+
 		// Save this point for the next time
 		last_start_line = new_start_line;
 		last_start_pos = infile.tellg();
@@ -536,7 +356,6 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
 		return read_file_data(infile);
 	}
 }
-#endif
 
 /**
  *
@@ -554,13 +373,12 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 		// set the default error function to my own
 		vector<string> parseerrors;
 		xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
-#if 0
+
 		// We would like this, but older versions of libxml don't use 'const'.
 		// Older == 2.6.16. jhrg 12.13.11
+		// We now require libxml2 >= 2.7.0 jhrg 9/25/15
 		doc = xmlParseDoc((const xmlChar*) command.c_str());
-#else
-		doc = xmlParseDoc((xmlChar*) command.c_str());
-#endif
+
 		if (doc == NULL) {
 			string err = "";
 			bool isfirst = true;
@@ -857,8 +675,6 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					xmlFree(xml_char_module);
 
 					BESDEBUG("besdaemon", "DaemonCommandHandler::execute_command() - Before setting " << name << " to " << state << endl);
-					// ***
-					// cerr << "setting context  " << name << " to " << state << endl;
 
 					// Setting this here is all we have to do. This will
 					// change the debug/log settings for the daemon and
@@ -879,16 +695,10 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 				default:
 					throw BESSyntaxUserError("Command " + node_name + " unknown.", __FILE__, __LINE__);
 				}
-				// ***
-				// cerr << "Completed command: " << node_name << endl;
 			}
 
 			current_node = current_node->next;
 		}
-	}
-	catch (BESError &e) {
-		xmlFreeDoc(doc);
-		throw e;
 	}
 	catch (...) {
 		xmlFreeDoc(doc);
@@ -896,6 +706,8 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 	}
 
 	xmlFreeDoc(doc);
+	// Calling xmlCleanupparser() here throws all kinds of fits - double free errors.
+	// This might be because the
 }
 
 static void send_bes_error(BESXMLWriter &writer, BESError &e)
@@ -926,13 +738,6 @@ static void send_bes_error(BESXMLWriter &writer, BESError &e)
  */
 void DaemonCommandHandler::handle(Connection *c)
 {
-#if 0
-	// Use this for some simple white-listing of allowed clients?
-	ostringstream strm;
-	string ip = c->getSocket()->getIp();
-	strm << "ip " << ip << ", port " << c->getSocket()->getPort();
-	string from = strm.str();
-#endif
 	map<string, string> extensions;
 	ostringstream ss;
 
@@ -954,7 +759,7 @@ void DaemonCommandHandler::handle(Connection *c)
 
 		std::streambuf *holder;
 		holder = cout.rdbuf();
-		cout.rdbuf(&fds);
+		cout.rdbuf(&fds);   // cout writes to the PPTStreamBuf
 
 		BESXMLWriter writer;
 
@@ -985,22 +790,11 @@ void DaemonCommandHandler::handle(Connection *c)
 				extensions["exit"] = "true";
 				c->sendExtensions(extensions);
 				send_bes_error(writer, e);
-				// Send the BESError
-	#if 0
-				// This seemed like a good idea, but really, no error is
-				// fatal, at least not yet.
-				cout << writer.get_doc() << endl;
-				fds.finish();// we are finished, send the last chunk
-				cout.rdbuf(holder);// reset the streams buffer
-				return;// EXIT; disconnects from client
-	#endif
 				break;
 
 			case BES_SYNTAX_USER_ERROR:
-				// cerr << "syntax error" << endl;
 				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Syntax ERROR: " << e.get_message() << endl);
 				c->sendExtensions(extensions);
-				// Send the BESError
 				send_bes_error(writer, e);
 				break;
 
@@ -1008,7 +802,6 @@ void DaemonCommandHandler::handle(Connection *c)
 				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - ERROR (unknown command): " << ss.str() << endl);
 				extensions["exit"] = "true";
 				c->sendExtensions(extensions);
-				// Send the BESError
 				send_bes_error(writer, e);
 				break;
 
@@ -1024,12 +817,9 @@ void DaemonCommandHandler::handle(Connection *c)
 	// calls the the kernel's close() function. NB: The method is
 	// implemented in PPTServer.cc and that calls Socket::close() on the
 	// Socket instance held by the Connection.
-	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Closing client connection." << endl);
 	c->closeConnection();
-	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Client connection has been closed." << endl);
 
 	BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Command Processing completed. " << endl);
-	//}
 }
 
 /** @brief dumps information about this object

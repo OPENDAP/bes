@@ -91,7 +91,7 @@ public:
 	string target ;
 	try
 	{
-	    BESCache3 cache( cache_dir, "bz2_cache", 1 ) ;
+	    BESUncompressCache cache( cache_dir, "bz2_cache", 1 ) ;
 	    // get the target name and make sure the target file doesn't exist
 	    if( cache.is_cached( src_file, target ) )
 	    {

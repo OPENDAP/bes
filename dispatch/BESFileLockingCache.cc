@@ -1,5 +1,3 @@
-// BESFileLockingCache.cc
-
 // This file was originally part of bes, A C++ back-end server
 // implementation framework for the OPeNDAP Data Access Protocol.
 // Copied to libdap. This is used to cache responses built from
@@ -50,6 +48,7 @@
 
 #include "BESInternalError.h"
 
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESLog.h"
 
@@ -78,7 +77,7 @@ static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
  * size is 0, or if cache dir does not exist.
  */
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
-        d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size)
+        d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size),  d_target_size(0), d_cache_info(""), d_cache_info_fd(-1)
 {
     m_initialize_cache_info();
 }
@@ -113,18 +112,18 @@ static inline struct flock *lock(int type) {
 }
 
 inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd) {
-    BESDEBUG("cache", "DAP Cache: recording descriptor: " << file << ", " << fd << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_record_descriptor() - Recording descriptor: " << file << ", " << fd << endl);
     d_locks.insert(std::pair<string, int>(file, fd));
 }
 
 inline int BESFileLockingCache::m_get_descriptor(const string &file) {
-	BESDEBUG("cache", "BESFileLockingCache::m_get_descriptor; d_locks size: " << d_locks.size() << endl);
+	BESDEBUG("cache", "BESFileLockingCache::m_get_descriptor(): d_locks size: " << d_locks.size() << endl);
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
     if (i == d_locks.end())
     	return -1;
 
     int fd = i->second;
-    BESDEBUG("cache", "DAP Cache: getting descriptor: " << file << ", " << fd << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_get_descriptor(): Found file descriptor [" << fd << "] for file: " << file << endl);
     d_locks.erase(i);
     return fd;
 }
@@ -158,7 +157,7 @@ static void unlock(int fd)
  events. */
 static bool getSharedLock(const string &file_name, int &ref_fd)
 {
-	BESDEBUG("cache", "getSharedLock: " << file_name <<endl);
+	BESDEBUG("cache", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
@@ -179,7 +178,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
         throw BESInternalError( oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG("cache", "getSharedLock exit: " << file_name <<endl);
+    BESDEBUG("cache", "getSharedLock(): SUCCESS Read Lock Acquired For " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -209,6 +208,7 @@ bool BESFileLockingCache::getExclusiveLock(string file_name, int &ref_fd)
             return false;
 
         default:
+            BESDEBUG("cache", "BESFileLockingCache::getExclusiveLock() -  FAILED to open file. name: " << file_name << " name_length: " << file_name.length( )<<endl);
             throw BESInternalError(get_errno(), __FILE__, __LINE__);
         }
     }
@@ -293,7 +293,7 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
  events. */
 static bool createLockedFile(string file_name, int &ref_fd)
 {
-	BESDEBUG("cache", "createLockedFile: " << file_name <<endl);
+	BESDEBUG("cache", "createLockedFile() - filename: " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
@@ -325,7 +325,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 void BESFileLockingCache::m_check_ctor_params()
 {
     if (d_cache_dir.empty()) {
-        string err = "The cache directory was not specified";
+        string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory was not specified";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
@@ -335,37 +335,44 @@ void BESFileLockingCache::m_check_ctor_params()
         // Try to make the directory
         int status = mkdir(d_cache_dir.c_str(), 0775);
         if (status != 0) {
-            string err = "The cache directory " + d_cache_dir + " does not exist or could not be created.";
+            string err = "BESFileLockingCache::m_check_ctor_params() - The cache directory " + d_cache_dir + " does not exist or could not be created.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
     }
 
     if (d_prefix.empty()) {
-        string err = "The cache file prefix was not specified, must not be empty";
+        string err = "BESFileLockingCache::m_check_ctor_params() - The cache file prefix was not specified, must not be empty";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
     if (d_max_cache_size_in_bytes <= 0) {
-        string err = "The cache size was not specified, must be greater than zero";
+        string err = "BESFileLockingCache::m_check_ctor_params() - The cache size was not specified, must be greater than zero";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    BESDEBUG("cache", "DAP Cache: directory " << d_cache_dir << ", prefix " << d_prefix
+    BESDEBUG("cache", "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix
             << ", max size " << d_max_cache_size_in_bytes << endl );
 }
 
 /** Private method. */
 void BESFileLockingCache::m_initialize_cache_info()
 {
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - BEGIN" << endl);
+
     // The value set in configuration files, etc., is the size in megabytes. The private
     // variable holds the size in bytes (converted below).
     d_max_cache_size_in_bytes = min(d_max_cache_size_in_bytes, MAX_CACHE_SIZE_IN_MEGABYTES);
     d_max_cache_size_in_bytes *= BYTES_PER_MEG;
     d_target_size = d_max_cache_size_in_bytes * 0.8;
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes
+    		<< " d_target_size: "<<d_target_size<< endl);
+
 
     m_check_ctor_params(); // Throws BESInternalError on error.
 
-    d_cache_info = d_cache_dir + "/dap.cache.info";
+    d_cache_info =  BESUtil::assemblePath(d_cache_dir, d_prefix+".cache_control", true);
+
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
 
     // See if we can create it. If so, that means it doesn't exist. So make it and
     // set the cache initial size to zero.
@@ -386,17 +393,17 @@ void BESFileLockingCache::m_initialize_cache_info()
 
     // cerr << endl << "***** BESFileLockingCache::m_initialize_cache_info() completed. d_cache_info_fd: " << d_cache_info_fd << endl;
 
-    BESDEBUG("cache", "d_cache_info_fd: " << d_cache_info_fd << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
+    BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - END" << endl);
 }
 
-/** Build the name of file that will holds the uncompressed data from
- * 'src' in the cache.
+
+/** Returns the fully qualified file system path name for the dimension cache file
+ * associated with this particular cache resource..
  *
- * @note How names are mangled: 'src' is the full name of the file to be
- * cached.Tthe file name passed has an extension on the end that will be
- * stripped once the file is cached. For example, if the full path to the
- * file name is /usr/lib/data/fnoc1.nc.gz then the resulting file name
- * will be \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
+ * @note How names are mangled: ALl occurrences of the characters
+ * '<', '>', '=', ',', '/', '(', ')', '"', ''', ':', '?', and ' ' with the
+ * '#' character.
  *
  * @param src The source name to cache
  * @param mangle if True, assume the name is a file pathname and mangle it.
@@ -404,28 +411,49 @@ void BESFileLockingCache::m_initialize_cache_info()
  * string) but do turn the string into a pathname located in the cache directory
  * with the cache prefix. the 'mangle' param is true by default.
  */
+const string chars_excluded_from_filenames = "<>=,/()\"\':? []()$";
 string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 {
-    string target = src;
+	// Old way of building String, retied 10/02/2015 - ndp
+    // Return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - src:         '" << src << "' mangle: "<< mangle << endl);
+
+	string target = src;
+
+	target = BESUtil::assemblePath( getCacheFilePrefix(), src);
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target  << "'" << endl);
 
     if (mangle) {
         if (target.at(0) == '/') {
             target = src.substr(1, target.length() - 1);
         }
-        string::size_type slash = 0;
-        while ((slash = target.find('/')) != string::npos) {
-            target.replace(slash, 1, 1, BESFileLockingCache::DAP_CACHE_CHAR);
-        }
-        string::size_type last_dot = target.rfind('.');
-        if (last_dot != string::npos) {
-            target = target.substr(0, last_dot);
-        }
-    }
-    BESDEBUG("cache", "  d_cache_dir: '" << d_cache_dir << "'" << endl);
-    BESDEBUG("cache", "  d_prefix:    '" << d_prefix << "'" << endl);
-    BESDEBUG("cache", "  target:      '" << target  << "'" << endl);
 
-    return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
+        string::size_type pos = target.find_first_of(chars_excluded_from_filenames);
+        while (pos != string::npos) {
+        	target.replace(pos, 1, "#", 1);
+            pos = target.find_first_of(chars_excluded_from_filenames);
+        }
+
+
+    }
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target  << "'" << endl);
+
+    if(target.length()>254){
+    	ostringstream msg;
+    	msg << "[ERROR} OOPS! Cache filename is longer than 254 characters. The file system is going to balk at that. name.length: ";
+    	msg << target.length() << " characters. name.value: " << target;
+    	BESDEBUG("cache","BESFileLockingCache::get_cache_file_name() - " << msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+
+    }
+
+	target = BESUtil::assemblePath( getCacheDirectory(),  target, true);
+
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - d_prefix:    '" << d_prefix << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name() - target:      '" << target  << "'" << endl);
+
+    return target;
 }
 
 /** @brief Get a read-only lock on the file if it exists.
@@ -451,7 +479,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 
     bool status = getSharedLock(target, fd);
 
-    BESDEBUG("cache", "BESFileLockingCache: get_read_lock: " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+    BESDEBUG("cache2", "BESFileLockingCache::get_read_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -479,7 +507,7 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     bool status = createLockedFile(target, fd);
 
-    BESDEBUG("cache", "BESFileLockingCache: create_and_lock: " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+    BESDEBUG("cache2", "BESFileLockingCache::create_and_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status)
     	m_record_descriptor(target, fd);
@@ -527,7 +555,7 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
  */
 void BESFileLockingCache::lock_cache_write()
 {
-	BESDEBUG("cache", "lock_cache - d_cache_info_fd: " << d_cache_info_fd << endl);
+	BESDEBUG("cache", "BESFileLockingCache::lock_cache_write() - d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
         throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__, __LINE__);
@@ -539,7 +567,7 @@ void BESFileLockingCache::lock_cache_write()
  */
 void BESFileLockingCache::lock_cache_read()
 {
-	BESDEBUG("cache", "lock_cache - d_cache_info_fd: " << d_cache_info_fd << endl);
+	BESDEBUG("cache", "BESFileLockingCache::lock_cache_read() - d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_RDLCK)) == -1) {
         throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__, __LINE__);
@@ -553,7 +581,7 @@ void BESFileLockingCache::lock_cache_read()
  */
 void BESFileLockingCache::unlock_cache()
 {
-	BESDEBUG("cache", "DAP Cache: unlock: cache_info (fd: " << d_cache_info_fd << ")" << endl);
+	BESDEBUG("cache", "BESFileLockingCache::unlock_cache() - d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLK, lock(F_UNLCK)) == -1) {
         throw BESInternalError("An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__, __LINE__);
@@ -577,36 +605,16 @@ void BESFileLockingCache::unlock_cache()
  * @throws BESBESInternalErroror */
 void BESFileLockingCache::unlock_and_close(const string &file_name)
 {
-	BESDEBUG("cache", "DAP Cache: unlock file: " << file_name << endl);
+	BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() - BEGIN file: " << file_name << endl);
 
     int fd = m_get_descriptor(file_name);	// returns -1 when no more files desp. remain
     while (fd != -1) {
     	unlock(fd);
     	fd = m_get_descriptor(file_name);
     }
+	BESDEBUG("cache2", "BESFileLockingCache::unlock_and_close() -  END"<< endl);
+
 }
-
-#if 0
-// I removed this because it will unlock() the file descriptor without
-// removing it from the list of registered fds. This can lead to errors
-// when the other version is called because a given descriptor appears
-// more than once in the list of descriptors or a fd in the list is no
-// longer open. jhrg 8/13/14
-
-/** Unlock the file.
- *
- * @see unlock_and_close(const string &)
- * @param fd The descriptor of the file to unlock.
- * @throws BESBESInternalErroror */
-void BESFileLockingCache::unlock_and_close(int fd)
-{
-	BESDEBUG("cache", "DAP Cache: unlock fd: " << fd << endl);
-
-    unlock(fd);
-
-    BESDEBUG("cache", "DAP Cache: unlock " << fd << " Success" << endl);
-}
-#endif
 
 /** @brief Update the cache info file to include 'target'
  *
@@ -638,7 +646,7 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target)
 		else
 			throw BESInternalError("Could not read the size of the new file: " + target + " : " + get_errno(), __FILE__, __LINE__);
 
-		BESDEBUG("cache", "DAP Cache: cache size updated to: " << current_size << endl);
+		BESDEBUG("cache", "BESFileLockingCache::update_cache_info() - cache size updated to: " << current_size << endl);
 
 		if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
 			throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
@@ -713,7 +721,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     // start with the matching prefix
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0) {
+        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0 && dirEntry!=d_cache_info) {
             files.push_back(d_cache_dir + "/" + dirEntry);
         }
     }
@@ -774,7 +782,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
             }
         }
 #endif
-        BESDEBUG("cache", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG  << ", " << d_target_size/BYTES_PER_MEG << endl );
+        BESDEBUG("cache", "BESFileLockingCache::update_and_purge() - current and target size (in MB) " << computed_size/BYTES_PER_MEG  << ", " << d_target_size/BYTES_PER_MEG << endl );
 
         // This deletes files and updates computed_size
         if (cache_too_big(computed_size)) {
@@ -798,7 +806,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 }
                 ++i;
 
-                BESDEBUG("cache", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
+                BESDEBUG("cache", "BESFileLockingCache::update_and_purge() - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
             }
 
         }
@@ -889,7 +897,18 @@ const string BESFileLockingCache::getCacheDirectory(){
 	return d_cache_dir;
 }
 
+/**
+ * Does the directory exist?
+ *
+ * @param dir The pathname to test.
+ * @return True if the directory exists, false otherwise
+ */
+bool BESFileLockingCache::dir_exists(const string &dir)
+{
+    struct stat buf;
 
+    return (stat(dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR);
+}
 
 /** @brief dumps information about this object
  *

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,7 +35,7 @@
 #include "BESInternalError.h"
 #include "BESDataNames.h"
 
-BESRequestHandlerList *BESRequestHandlerList::_instance = 0 ;
+BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 
 /** @brief add a request handler to the list of registered handlers for this
  * server
@@ -46,16 +46,13 @@ BESRequestHandlerList *BESRequestHandlerList::_instance = 0 ;
  * @return true if successfully added, false if already exists
  * @see BESRequestHandler
  */
-bool
-BESRequestHandlerList::add_handler( const string &handler_name,
-				    BESRequestHandler *handler_object )
+bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHandler *handler_object)
 {
-    if( find_handler( handler_name ) == 0 )
-    {
-	_handler_list[handler_name] = handler_object ;
-	return true ;
+    if (find_handler(handler_name) == 0) {
+        _handler_list[handler_name] = handler_object;
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief remove and return the specified request handler
@@ -71,17 +68,16 @@ BESRequestHandlerList::add_handler( const string &handler_name,
  * @see BESRequestHandler
  */
 BESRequestHandler *
-BESRequestHandlerList::remove_handler( const string &handler_name )
+BESRequestHandlerList::remove_handler(const string &handler_name)
 {
-    BESRequestHandler *ret = 0 ;
-    BESRequestHandlerList::Handler_iter i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	ret = (*i).second;
-	_handler_list.erase( i ) ;
+    BESRequestHandler *ret = 0;
+    BESRequestHandlerList::Handler_iter i;
+    i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        ret = (*i).second;
+        _handler_list.erase(i);
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief find and return the specified request handler
@@ -91,15 +87,14 @@ BESRequestHandlerList::remove_handler( const string &handler_name )
  * @see BESRequestHandler
  */
 BESRequestHandler *
-BESRequestHandlerList::find_handler( const string &handler_name )
+BESRequestHandlerList::find_handler(const string &handler_name)
 {
-    BESRequestHandlerList::Handler_citer i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	return (*i).second;
+    BESRequestHandlerList::Handler_citer i;
+    i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        return (*i).second;
     }
-    return 0 ;
+    return 0;
 }
 
 /** @brief return an iterator pointing to the first request handler in the
@@ -109,10 +104,9 @@ BESRequestHandlerList::find_handler( const string &handler_name )
  * list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer
-BESRequestHandlerList::get_first_handler()
+BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler()
 {
-    return _handler_list.begin() ;
+    return _handler_list.begin();
 }
 
 /** @brief return a constant iterator pointing to the end of the list
@@ -120,10 +114,9 @@ BESRequestHandlerList::get_first_handler()
  * @return a constant iterator pointing to the end of the list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer
-BESRequestHandlerList::get_last_handler()
+BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_last_handler()
 {
-    return _handler_list.end() ;
+    return _handler_list.end();
 }
 
 /** @brief Returns a comma separated string of request handlers registered
@@ -133,20 +126,17 @@ BESRequestHandlerList::get_last_handler()
  * server.
  * @see BESRequestHandler
  */
-string
-BESRequestHandlerList::get_handler_names()
+string BESRequestHandlerList::get_handler_names()
 {
     string ret = "";
-    bool first_name = true ;
-    BESRequestHandlerList::Handler_citer i = _handler_list.begin() ;
-    for( ; i != _handler_list.end(); i++ )
-    {
-	if( !first_name )
-	    ret += ", " ;
-	ret += (*i).first ;
-	first_name = false ;
+    bool first_name = true;
+    BESRequestHandlerList::Handler_citer i = _handler_list.begin();
+    for (; i != _handler_list.end(); i++) {
+        if (!first_name) ret += ", ";
+        ret += (*i).first;
+        first_name = false;
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief for each container in the given data handler interface, execute the
@@ -169,14 +159,12 @@ BESRequestHandlerList::get_handler_names()
  * @see BESRequestHandler
  * @see BESResponseObject
  */
-void
-BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
+void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi)
 {
-    dhi.first_container() ;
-    while( dhi.container )
-    {
-	execute_current( dhi ) ;
-	dhi.next_container() ;
+    dhi.first_container();
+    while (dhi.container) {
+        execute_current(dhi);
+        dhi.next_container();
     }
 }
 
@@ -195,19 +183,16 @@ BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
  * @see BESRequestHandler
  * @see BESResponseObject
  */
-void
-BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
+void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
 {
-    BESRequestHandlerList::Handler_citer i = get_first_handler() ;
-    BESRequestHandlerList::Handler_citer ie = get_last_handler() ;
-    for( ; i != ie; i++ ) 
-    {
-	BESRequestHandler *rh = (*i).second ;
-	p_request_handler p = rh->find_handler( dhi.action ) ;
-	if( p )
-	{
-	    p( dhi ) ;
-	}
+    BESRequestHandlerList::Handler_citer i = get_first_handler();
+    BESRequestHandlerList::Handler_citer ie = get_last_handler();
+    for (; i != ie; i++) {
+        BESRequestHandler *rh = (*i).second;
+        p_request_handler p = rh->find_handler(dhi.action);
+        if (p) {
+            p(dhi);
+        }
     }
 }
 
@@ -229,11 +214,10 @@ BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
  * @see BESContainer
  * @see BESResponseObject
  */
-void
-BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
+void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
 {
-    dhi.first_container() ;
-    execute_current( dhi ) ;
+    dhi.first_container();
+    execute_current(dhi);
 }
 
 /** @brief Execute a single method for the current container that will fill
@@ -252,59 +236,51 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
  * @see BESContainer
  * @see BESResponseObject
  */
-void
-BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
+void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
 {
-    if( dhi.container )
-    {
-	// FIXME: This needs to happen here, but really should be done
-	// in the get_container_type method in the container class if it
-	// needs to happen. But those methods are not virtual and would
-	// require a release of all modules.
-	dhi.container->access() ;
+    if (dhi.container) {
+        // FIXME: This needs to happen here, but really should be done
+        // in the get_container_type method in the container class if it
+        // needs to happen. But those methods are not virtual and would
+        // require a release of all modules.
+        dhi.container->access();
 
-	// TODO Do not need to use .c_str(). jhrg 2/20/15
-	BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
-	if( rh )
-	{
-	    p_request_handler p = rh->find_handler( dhi.action ) ;
-	    // if we can't find the function, see if there is a catch all
-	    // function that handles or redirects the request.
-	    //
-	    // TODO NB: There are no instances of catch.all handlers.
-	    // jhrg 2/20/15
-	    if( !p )
-	    {
-		p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL ) ;
-	    }
+        // TODO Do not need to use .c_str(). jhrg 2/20/15
+        BESRequestHandler *rh = find_handler((dhi.container->get_container_type()).c_str());
+        if (rh) {
+            p_request_handler p = rh->find_handler(dhi.action);
+            // if we can't find the function, see if there is a catch all
+            // function that handles or redirects the request.
+            //
+            // TODO NB: There are no instances of catch.all handlers.
+            // jhrg 2/20/15
+            if (!p) {
+                p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL);
+            }
 
-	    if( p )
-	    {
-		p( dhi ) ;
-		if( dhi.container )
-		{
-		    // This is (likely) for reporting. May not be used... jhrg 2/20/15
-		    string c_list = dhi.data[REAL_NAME_LIST] ;
-		    if( !c_list.empty() )
-		       c_list += ", " ;
-		    c_list += dhi.container->get_real_name() ;
-		    dhi.data[REAL_NAME_LIST] = c_list ;
-		}
-	    } else {
-	        // TODO THis should not be an internal error - its really a configuration error
-	        // jhrg 2/20/15
-		string se = "Request handler \""
-			    + dhi.container->get_container_type()
-			    + "\" does not handle the response type \""
-			    + dhi.action + "\"" ;
-		throw BESInternalError( se, __FILE__, __LINE__ ) ;
-	    }
-	} else {
-	    string se = "The data handler \""
-			+ dhi.container->get_container_type()
-			+ "\" does not exist" ;
-	    throw BESInternalError( se, __FILE__, __LINE__ ) ;
-	}
+            if (p) {
+                p(dhi);
+
+                if (dhi.container) {
+                    // This is (likely) for reporting. May not be used... jhrg 2/20/15
+                    string c_list = dhi.data[REAL_NAME_LIST];
+                    if (!c_list.empty()) c_list += ", ";
+                    c_list += dhi.container->get_real_name();
+                    dhi.data[REAL_NAME_LIST] = c_list;
+                }
+            }
+            else {
+                // TODO THis should not be an internal error - its really a configuration error
+                // jhrg 2/20/15
+                string se = "Request handler \"" + dhi.container->get_container_type()
+                    + "\" does not handle the response type \"" + dhi.action + "\"";
+                throw BESInternalError(se, __FILE__, __LINE__);
+            }
+        }
+        else {
+            string se = "The data handler \"" + dhi.container->get_container_type() + "\" does not exist";
+            throw BESInternalError(se, __FILE__, __LINE__);
+        }
     }
 }
 
@@ -315,39 +291,33 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESRequestHandlerList::dump( ostream &strm ) const
+void BESRequestHandlerList::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESRequestHandlerList::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _handler_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered handlers:" << endl ;
-	BESIndent::Indent() ;
-	BESRequestHandlerList::Handler_citer i = _handler_list.begin() ;
-	BESRequestHandlerList::Handler_citer ie = _handler_list.end() ;
-	for( ; i != ie; i++ ) 
-	{
-	    BESRequestHandler *rh = (*i).second ;
-	    rh->dump( strm ) ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESRequestHandlerList::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_handler_list.size()) {
+        strm << BESIndent::LMarg << "registered handlers:" << endl;
+        BESIndent::Indent();
+        BESRequestHandlerList::Handler_citer i = _handler_list.begin();
+        BESRequestHandlerList::Handler_citer ie = _handler_list.end();
+        for (; i != ie; i++) {
+            BESRequestHandler *rh = (*i).second;
+            rh->dump(strm);
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered handlers: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "registered handlers: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
 BESRequestHandlerList *
 BESRequestHandlerList::TheList()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESRequestHandlerList ;
+    if (_instance == 0) {
+        _instance = new BESRequestHandlerList;
     }
-    return _instance ;
+    return _instance;
 }
 

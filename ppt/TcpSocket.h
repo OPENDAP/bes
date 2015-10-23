@@ -49,11 +49,16 @@ private:
 	bool _haveSendBufferSize;
 	unsigned int _sendBufferSize;
 public:
-	TcpSocket(const std::string &host, int portVal) :
-			Socket(), _host(host), _portVal(portVal), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
-					false), _sendBufferSize(0)
-	{
-	}
+	/**
+	 * Build a TcPSocket object.
+	 * @param host A DNS name or an IPV4 number
+	 * @param portVal The port to listen on
+	 */
+    TcpSocket(const std::string &host, int portVal) :
+            Socket(), _host(host), _portVal(portVal), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
+                    false), _sendBufferSize(0)
+    {
+    }
 	TcpSocket(int portVal) :
 			Socket(), _host(""), _portVal(portVal), _haveRecvBufferSize(false), _recvBufferSize(0), _haveSendBufferSize(
 					false), _sendBufferSize(0)

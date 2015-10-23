@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -44,11 +44,11 @@
 #include <unistd.h>
 #endif
 
-using std::cerr ;
-using std::endl ;
-using std::flush ;
+using std::cerr;
+using std::endl;
+using std::flush;
 
-BESLog *BESLog::_instance = 0 ;
+BESLog *BESLog::_instance = 0;
 
 /** @brief constructor that sets up logging for the application.
  *
@@ -65,46 +65,37 @@ BESLog *BESLog::_instance = 0 ;
  * problems opening or writing to the log file.
  * @see BESKeys
  */
-BESLog::BESLog()
-    : _flushed( 1 ),
-      _file_buffer( 0 ),
-      _suspended( 0 ),
-      _verbose( false )
+BESLog::BESLog() :
+    _flushed(1), _file_buffer(0), _suspended(0), _verbose(false)
 {
-    _suspended = 0 ;
-    bool found = false ;
-    try
-    {
-	TheBESKeys::TheKeys()->get_value( "BES.LogName", _file_name, found ) ;
+    _suspended = 0;
+    bool found = false;
+    try {
+        TheBESKeys::TheKeys()->get_value("BES.LogName", _file_name, found);
     }
-    catch( ... )
-    {
-	string err = (string)"BES Fatal: unable to determine log file name."
-	             + " The key BES.LogName has multiple values" ;
-	cerr << err << endl ;
-	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+    catch (...) {
+        string err = (string) "BES Fatal: unable to determine log file name."
+            + " The key BES.LogName has multiple values";
+        cerr << err << endl;
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
-    if( _file_name == "" )
-    {
-	string err = (string)"BES Fatal: unable to determine log file name."
-	             + " Please set BES.LogName in your initialization file" ;
-	cerr << err << endl ;
-	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+    if (_file_name == "") {
+        string err = (string) "BES Fatal: unable to determine log file name."
+            + " Please set BES.LogName in your initialization file";
+        cerr << err << endl;
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
-    _file_buffer = new ofstream( _file_name.c_str(), ios::out | ios::app ) ;
-    if( !(*_file_buffer) )
-    {
-	string err = (string)"BES Fatal; cannot open log file "
-		     + _file_name + "." ;
-	cerr << err << endl ;
-	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-    } 
-    found = false ;
-    string verbose ;
-    TheBESKeys::TheKeys()->get_value( "BES.LogVerbose", verbose, found ) ;
-    if( verbose == "YES" || verbose == "Yes" || verbose == "yes" )
-    {
-	_verbose = true ;
+    _file_buffer = new ofstream(_file_name.c_str(), ios::out | ios::app);
+    if (!(*_file_buffer)) {
+        string err = (string) "BES Fatal; cannot open log file " + _file_name + ".";
+        cerr << err << endl;
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+    found = false;
+    string verbose;
+    TheBESKeys::TheKeys()->get_value("BES.LogVerbose", verbose, found);
+    if (verbose == "YES" || verbose == "Yes" || verbose == "yes") {
+        _verbose = true;
     }
 }
 
@@ -112,11 +103,11 @@ BESLog::BESLog()
  *
  * Cleans up the logging mechanism by closing the log file.
  */
-BESLog:: ~BESLog()
+BESLog::~BESLog()
 {
     _file_buffer->close();
     delete _file_buffer;
-    _file_buffer = 0 ;
+    _file_buffer = 0;
 }
 
 /** @brief Protected method that dumps the date/time to the log file
@@ -125,33 +116,30 @@ BESLog:: ~BESLog()
  *
  * [MDT Thu Sep  9 11:05:16 2004 id: &lt;pid&gt;]
  */
-void
-BESLog::dump_time()
+void BESLog::dump_time()
 {
-    const time_t sctime=time(NULL);
-    const struct tm *sttime=localtime(&sctime); 
+    const time_t sctime = time(NULL);
+    const struct tm *sttime = localtime(&sctime);
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b=asctime(sttime);
-    (*_file_buffer)<<"["<<zone_name<<" ";
-    for (register int j=0; b[j]!='\n'; j++)
-	(*_file_buffer)<<b[j];
-    pid_t thepid = getpid() ;
-    (*_file_buffer)<<" id: "<<thepid<<"] ";
-    _flushed = 0 ;
+    char *b = asctime(sttime);
+    (*_file_buffer) << "[" << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        (*_file_buffer) << b[j];
+    pid_t thepid = getpid();
+    (*_file_buffer) << " id: " << thepid << "] ";
+    _flushed = 0;
 }
 
 /** @brief Overloaded inserter that writes the specified string.
  *
  * @param s string to write to the log file
  */
-BESLog& BESLog::operator<<(string &s) 
+BESLog& BESLog::operator<<(string &s)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << s;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << s;
     }
     return *this;
 }
@@ -160,13 +148,11 @@ BESLog& BESLog::operator<<(string &s)
  *
  * @param s const string to write to the log file
  */
-BESLog& BESLog::operator<<(const string &s) 
+BESLog& BESLog::operator<<(const string &s)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << s;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << s;
     }
     return *this;
 }
@@ -175,16 +161,14 @@ BESLog& BESLog::operator<<(const string &s)
  *
  * @param val char * to write to the log file
  */
-BESLog& BESLog::operator<<(char *val) 
+BESLog& BESLog::operator<<(char *val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	if( val )
-	    (*_file_buffer) << val;
-	else
-	    (*_file_buffer) << "NULL" ;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        if (val)
+            (*_file_buffer) << val;
+        else
+            (*_file_buffer) << "NULL";
     }
     return *this;
 }
@@ -193,18 +177,16 @@ BESLog& BESLog::operator<<(char *val)
  *
  * @param val const char * to write to the log file
  */
-BESLog& BESLog::operator<<(const char *val) 
+BESLog& BESLog::operator<<(const char *val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	{
-	    dump_time();
-	}
-	if( val )
-	    (*_file_buffer) << val;
-	else
-	    (*_file_buffer) << "NULL" ;
+    if (!_suspended) {
+        if (_flushed) {
+            dump_time();
+        }
+        if (val)
+            (*_file_buffer) << val;
+        else
+            (*_file_buffer) << "NULL";
     }
     return *this;
 }
@@ -213,13 +195,11 @@ BESLog& BESLog::operator<<(const char *val)
  *
  * @param val int value to write to the log file
  */
-BESLog& BESLog::operator<<(int val) 
+BESLog& BESLog::operator<<(int val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << val;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << val;
     }
     return *this;
 }
@@ -228,13 +208,11 @@ BESLog& BESLog::operator<<(int val)
  *
  * @param val char value to write to the log file
  */
-BESLog& BESLog::operator<<(char val) 
-{ 
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << val;
+BESLog& BESLog::operator<<(char val)
+{
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << val;
     }
     return *this;
 }
@@ -243,13 +221,11 @@ BESLog& BESLog::operator<<(char val)
  *
  * @param val long value to write to the log file
  */
-BESLog& BESLog::operator<<(long val) 
+BESLog& BESLog::operator<<(long val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << val;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << val;
     }
     return *this;
 }
@@ -258,13 +234,11 @@ BESLog& BESLog::operator<<(long val)
  *
  * @param val unsigned long value to write to the log file
  */
-BESLog& BESLog::operator<<(unsigned long val) 
+BESLog& BESLog::operator<<(unsigned long val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << val;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << val;
     }
     return *this;
 }
@@ -273,13 +247,11 @@ BESLog& BESLog::operator<<(unsigned long val)
  *
  * @param val double value to write to the log file
  */
-BESLog& BESLog::operator<<(double val) 
+BESLog& BESLog::operator<<(double val)
 {
-    if (!_suspended)
-    {
-	if (_flushed)
-	    dump_time();
-	(*_file_buffer) << val;
+    if (!_suspended) {
+        if (_flushed) dump_time();
+        (*_file_buffer) << val;
     }
     return *this;
 }
@@ -291,13 +263,11 @@ BESLog& BESLog::operator<<(double val)
  * the C++ standard functions for I/O endl, flush, and ends can be applied
  * to objects of the class BESLog.
  */
-BESLog& BESLog::operator<<(p_ostream_manipulator val) 
+BESLog& BESLog::operator<<(p_ostream_manipulator val)
 {
-    if (!_suspended)
-    {
-	(*_file_buffer) << val ;
-	if ((val==(p_ostream_manipulator)endl) || (val==(p_ostream_manipulator)flush))
-	    _flushed=1;
+    if (!_suspended) {
+        (*_file_buffer) << val;
+        if ((val == (p_ostream_manipulator) endl) || (val == (p_ostream_manipulator) flush)) _flushed = 1;
     }
     return *this;
 }
@@ -307,11 +277,10 @@ BESLog& BESLog::operator<<(p_ostream_manipulator val)
  * Overloaded inserter that can take the address oct, dec and hex functions.
  * This inserter is based on p_ios_manipulator, therefore the C++ standard
  * functions oct, dec and hex can be applied to objects of the class BESLog.
- */ 
-BESLog& BESLog::operator<<(p_ios_manipulator val) 
-{ 
-    if (!_suspended)
-	(*_file_buffer)<<val;
+ */
+BESLog& BESLog::operator<<(p_ios_manipulator val)
+{
+    if (!_suspended) (*_file_buffer) << val;
     return *this;
 }
 
@@ -322,34 +291,29 @@ BESLog& BESLog::operator<<(p_ios_manipulator val)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESLog::dump( ostream &strm ) const
+void BESLog::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESLog::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "log file: " << _file_name << endl ;
-    if( _file_buffer && *_file_buffer )
-    {
-	strm << BESIndent::LMarg << "log is valid" << endl ;
+    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "log file: " << _file_name << endl;
+    if (_file_buffer && *_file_buffer) {
+        strm << BESIndent::LMarg << "log is valid" << endl;
     }
-    else
-    {
-	strm << BESIndent::LMarg << "log is NOT valid" << endl ;
+    else {
+        strm << BESIndent::LMarg << "log is NOT valid" << endl;
     }
-    strm << BESIndent::LMarg << "is verbose: " << _verbose << endl ;
-    strm << BESIndent::LMarg << "is flushed: " << _flushed << endl ;
-    strm << BESIndent::LMarg << "is suspended: " << _suspended << endl ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "is verbose: " << _verbose << endl;
+    strm << BESIndent::LMarg << "is flushed: " << _flushed << endl;
+    strm << BESIndent::LMarg << "is suspended: " << _suspended << endl;
+    BESIndent::UnIndent();
 }
 
 BESLog *
 BESLog::TheLog()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESLog ;
+    if (_instance == 0) {
+        _instance = new BESLog;
     }
-    return _instance ;
+    return _instance;
 }
 

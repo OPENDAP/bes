@@ -114,8 +114,8 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
  */
 void BESContainerStorageVolatile::add_container(const string &sym_name, const string &real_name, const string &type)
 {
-    BESDEBUG( "bes", "BESContainerStorageVolatile::add_container: "
-            << "adding container with name \"" << sym_name
+    BESDEBUG( "bes", "BESContainerStorageVolatile::add_container() - "
+            << "Adding container with name \"" << sym_name
             << "\", real name \"" << real_name
             << "\", type \"" << type << "\"" << endl );
 
@@ -144,7 +144,12 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
 #endif
     // add the root directory to the real_name passed
-    string new_r_name = _root_dir + "/" + real_name;
+    string new_r_name = BESUtil::assemblePath(_root_dir,real_name, false);
+    BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
+    		<< " _root_dir: " << _root_dir
+    		<< " real_name: " << real_name
+			<< " new_r_name: " << new_r_name
+			<< endl);
 
     // Create the file container with the new information
     BESContainer *c = new BESFileContainer(sym_name, new_r_name, type);
