@@ -360,17 +360,17 @@ void BESFileLockingCache::m_check_ctor_params()
     // throw an exception.
     if (status == -1 && errno != EEXIST) {
 	string err = "The cache directory " + d_cache_dir + " could not be created: " + strerror(errno);
-	throw BESError(BES_SYNTAX_USER_ERROR, err, __FILE__, __LINE__);
+	throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     if (d_prefix.empty()) {
         string err = "The cache file prefix was not specified, must not be empty";
-        throw BESError(BES_SYNTAX_USER_ERROR, err, __FILE__, __LINE__);
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     if (d_max_cache_size_in_bytes <= 0) {
         string err = "The cache size was not specified, must be greater than zero";
-        throw BESError(BES_SYNTAX_USER_ERROR, err, __FILE__, __LINE__);
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     BESDEBUG("cache", "BESFileLockingCache::m_check_ctor_params() - directory " << d_cache_dir << ", prefix " << d_prefix
