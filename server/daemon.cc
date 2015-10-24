@@ -409,9 +409,16 @@ int start_master_beslistener()
  */
 static void cleanup_resources()
 {
+    // TOCTOU error. Since the code ignores the error code from
+    // remove(), we might as well drop the test. We could test for an
+    // error and print a warning to the log... jhrg 10/23/15
+#if 0
     if (!access(file_for_daemon_pid.c_str(), F_OK)) {
         (void) remove(file_for_daemon_pid.c_str());
     }
+#endif
+
+    (void) remove(file_for_daemon_pid.c_str());
 }
 
 // Note that SIGCHLD, SIGTERM and SIGHUP are blocked while in these three
