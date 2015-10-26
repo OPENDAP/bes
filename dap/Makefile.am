@@ -85,7 +85,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module 
-libdap_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libdap_module_la_LIBADD = $(DAP_LIBS) $(LIBS)
 
 pkginclude_HEADERS = $(BESDAP_HDRS) 
 
