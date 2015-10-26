@@ -663,17 +663,16 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
                     s_level = 3;
                     ret_flag = true; 
             }
-            
-            // else if long_name or short_name don't exist, not what we supported.
-            else if (0 == has_obpg_attr2)
-                ; // no op
-            else {
+        }
+        // else if long_name or short_name don't exist, not what we supported.
+        else if (0 == has_obpg_attr2)
+            ; // no op
+        else {
                 string msg = "Fail to determine if the HDF5 attribute  ";
                 msg += string(Obpgl3_ATTR2_NAME);
                 msg +=" exists ";
                 H5Gclose(s_root_id);
                 throw InternalErr(__FILE__, __LINE__, msg);
-            }
         }
     }
     else if (0 == has_obpg_attr1) 

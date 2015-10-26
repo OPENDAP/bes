@@ -49,7 +49,8 @@ class HDF5GMCFSpecialCVArray:public Array {
         dtype(h5_dtype),
         tnumelm(h5_tnumelm),
         varname(varfullpath),
-        product_type(h5_product_type)
+        product_type(h5_product_type),
+        cvartype(CV_UNSUPPORTED)
     {
     }
         

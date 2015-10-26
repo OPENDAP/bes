@@ -1470,6 +1470,8 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const string & full_path, BaseTyp
             d4b->attributes()->add_attribute_nocopy(d4_hlinfo);
         else if ( 2 == flag)
             d4s->attributes()->add_attribute_nocopy(d4_hlinfo);
+        else 
+            delete d4_hlinfo;
     }
 
 }

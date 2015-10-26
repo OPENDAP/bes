@@ -50,10 +50,10 @@
 #include "HE5Parser.h"
 
 
-enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL};
+enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
 enum EOS5Type {GRID,SWATH,ZA,OTHERVARS};
 enum GMPattern {GENERAL_DIMSCALE,GENERAL_LATLON2D,GENERAL_LATLON1D, OTHERGMS};
-enum EOS5AuraName {OMI,MLS,HIRDLS,TES};
+enum EOS5AuraName {OMI,MLS,HIRDLS,TES,NOTAURA};
 static string FILE_ATTR_TABLE_NAME ="HDF5_GLOBAL";
 
 
@@ -187,9 +187,9 @@ namespace HDF5CF
     {
 
         public:
-            Attribute ():dtype(H5UNSUPTYPE)
+            Attribute ():dtype(H5UNSUPTYPE),count(0),fstrsize(0)
             {
-            }
+            };
             ~Attribute ();
 
 	public:
@@ -333,7 +333,7 @@ namespace HDF5CF
     /// This class is a derived class of Var. It represents a coordinate variable.
     class CVar:public Var {
         public:
-            CVar() {}
+            CVar(): cvartype(CV_UNSUPPORTED){}
             ~CVar() { }    
             /// Get the coordinate variable type of this variable
             CVType getCVType () const
@@ -405,7 +405,19 @@ namespace HDF5CF
     /// This class is a derived class of CVar. It represents a coordinate variable for HDF-EOS5 files.
     class EOS5CVar: public CVar {
         public:
-            EOS5CVar():is_2dlatlon(false) {}
+            EOS5CVar():
+                 eos_type(OTHERVARS),
+                 is_2dlatlon(false), 
+                 point_lower(0.0),
+                 point_upper(0.0),
+                 point_left(0.0),
+                 point_right(0.0),
+                 xdimsize(0),
+                 ydimsize(0),
+                 eos5_pixelreg(HE5_HDFE_CENTER),// may change later
+                 eos5_origin(HE5_HDFE_GD_UL), // may change later
+                 eos5_projcode(HE5_GCTP_GEO)//may change later
+                {};
             EOS5CVar(Var *);
 
             ~EOS5CVar() {}
@@ -882,6 +894,15 @@ namespace HDF5CF
         public:
             EOS5CFGrid():
                  addeddimindex(0), 
+                 point_lower(0.0),
+                 point_upper(0.0),
+                 point_left(0.0),
+                 point_right(0.0),
+                 eos5_pixelreg(HE5_HDFE_CENTER),// may change later
+                 eos5_origin(HE5_HDFE_GD_UL), // may change later
+                 eos5_projcode(HE5_GCTP_GEO),//may change later
+                 xdimsize(0),
+                 ydimsize(0),
                  has_nolatlon(true),
                  has_1dlatlon(false),
                  has_2dlatlon(false),
@@ -910,7 +931,7 @@ namespace HDF5CF
             string name;
             int xdimsize;
             int ydimsize;
-            bool has_nodimnames_vars;
+            //bool has_nodimnames_vars;
             bool has_nolatlon;
             bool has_1dlatlon;
             bool has_2dlatlon;
@@ -977,7 +998,8 @@ namespace HDF5CF
                        iscoard(false),
                        grids_multi_latloncvs(false),
                        isaura(false),
-                       orig_num_grids(0)
+                       orig_num_grids(0),
+                       aura_name(NOTAURA)
                        { };
             virtual ~EOS5File(); 
         public:

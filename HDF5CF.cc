@@ -741,8 +741,12 @@ throw(Exception)
             if (attr->dtype == H5FSTRING) {
 
                 size_t sect_size = ty_size;
-                int num_sect = (total_bytes%sect_size==0)?(total_bytes/sect_size)
-                                                     :(total_bytes/sect_size+1);
+                int num_sect = 1;
+                if(sect_size > 0) 
+                    num_sect = (total_bytes%sect_size==0)?(total_bytes/sect_size):(total_bytes/sect_size+1);
+                else 
+                    throw4("The attribute datatype size is not a positive integer ",attr->name, " of object ",obj_name);
+               
                 vector<size_t>sect_newsize;
                 sect_newsize.resize(num_sect);
 
@@ -1617,28 +1621,30 @@ File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) throw(Exception) {
         case H5INT32:
         {
             num_sli = strtol(&(attr->value[0]),&pEnd,10);
-            if(num_sli <LONG_MIN || num_sli >LONG_MAX) 
-                throw5("Attribute type is 32-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
-            else {
-                attr->dtype = H5INT32; 
-                //attr->count = 1;
-                attr->value.resize(sizeof(long int));
-                memcpy(&(attr->value[0]),(void*)(&num_sli),sizeof(long int));
-            }
+            //No need to check overflow, the number will always be in the range.
+            //if(num_sli <LONG_MIN || num_sli >LONG_MAX) 
+            //    throw5("Attribute type is 32-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
+            //else {
+            attr->dtype = H5INT32; 
+            //attr->count = 1;
+            attr->value.resize(sizeof(long int));
+            memcpy(&(attr->value[0]),(void*)(&num_sli),sizeof(long int));
+            //}
 
         }
             break;
         case H5UINT32:
         {
             unsigned long int num_suli = strtoul(&(attr->value[0]),&pEnd,10);
-            if(num_suli >ULONG_MAX) 
-                throw5("Attribute type is 32-bit unsigned integer, the current attribute ",attr->name, " has the value ",num_suli, ". It is overflowed. ");
-            else {
-                attr->dtype = H5UINT32; 
+            // No need to check since num_suli will not be bigger than ULONG_MAX.
+            //if(num_suli >ULONG_MAX) 
+            //    throw5("Attribute type is 32-bit unsigned integer, the current attribute ",attr->name, " has the value ",num_suli, ". It is overflowed. ");
+            //else {
+            attr->dtype = H5UINT32; 
                 //attr->count = 1;
-                attr->value.resize(sizeof(unsigned long int));
-                memcpy(&(attr->value[0]),(void*)(&num_suli),sizeof(unsigned long int));
-            }
+            attr->value.resize(sizeof(unsigned long int));
+            memcpy(&(attr->value[0]),(void*)(&num_suli),sizeof(unsigned long int));
+            //}
         }
             break;
         case H5FLOAT32:
