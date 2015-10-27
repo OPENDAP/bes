@@ -1,3 +1,28 @@
+News for version 3.16.0
+
+Major fixes/improvements to the caching code - Hyrax uses a number of
+different caches. Now they are all correctly synchronized. Handler developers
+should use bes/dispatch/BESFileLockingCache when they need to make a 
+special-purpose cache for their own use. Contact us for details if needed. 
+Note that caching function results will be redone in the next release.
+
+The BES now supports moulti-homed hosts with a new Key that specifies the
+IP ob which the server should listen (BES.ServerIP).
+
+Fixed an issue where SIGPIPE was 'lost'. This fixes the mysterious
+'runaway' BES issue that was happening sometimes, particularly when
+a client was stopped while making a large request.
+
+UUID library issues may now be behind us for good...
+
+An obscure bug in the XML command processing code caused elements to 
+be returned out of order in some cases. Fixed.
+
+We removed the BES performance timing/testing data files and put them in
+their own github project (opendap/bes_timing). This moves a number of
+huge data files out of the bes project proper, reducing the time to run
+git clone.
+
 News for version 3.15.1
 
 Bug fixes.
