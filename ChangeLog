@@ -1,3 +1,256 @@
+2015-10-26  James Gallagher  <jgallagher@opendap.org>
+
+	More coverity model updates plus ncml commit/push
+
+	Added some notes/comments to coverity_models.cpp
+
+	distcheck works
+
+	Modified confgure_{modules,standard}.ac so it includes libuuid when needed.
+	The UUID functions are part of libc on some OSs (OSX) and not
+	others (CentOS). Used AC_SEARCH_LIBS to fix this.
+
+2015-10-24  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an error in calling BESError
+
+2015-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Coverity fixes
+
+	Coverity fixes
+
+2015-10-22  James Gallagher  <jgallagher@opendap.org>
+
+	Update to hdf5_handler
+	New basline for test 257 - just updated libdap for this.
+
+	Removed force of libdap 3.16 rebuild
+
+	started second CI build before first stopped and libdap never got cached
+
+	Remove forced rebuild of libdap
+	ci-skip
+
+	Force rebuild of libdap 3.16.0
+	...instead of having Travis pull the current 3.16 code from
+	its cache.
+
+	Borked TheBESKeys.h - Undone.
+	I'm not sure I understand why the BESKeys have this controller object,
+	but in trying to plug a leak - that's not really a leak in the
+	traditional sense but is a PITA all the same because it complicates
+	looking for other leaks - I added a virtual dtor to TheBESKeys and
+	that broke things all over the place.
+
+2015-10-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #11 from OPENDAP/keys_virtual_dtor
+	Refactor for BESKeys and TheBESKeys: Added a virtual dtor
+
+	New hdf5_handler fixes for test #257 modified:   modules/hdf5_handler
+
+	update install_bes_source_deps to use libdap 3.16.0
+
+	Modified install_bes_source_deps to rebuild cached deps
+
+2015-10-20  James Gallagher  <jgallagher@opendap.org>
+
+	Remove function result caching for now.
+	Used a compile-time switch FUNCTION_CACHING which is #undef now in
+	BESDapResponseBuilder.cc. The fix for this is to rewrite DapResponse
+	Builder.cc/h and come up with a better function result caching scheme.
+
+	Still fails unit tests in dap/unit-tests
+	The server function fails on it's initial call when the value has not been cached.
+
+	Updated gitignore
+
+	Make a local cache dir for the tests in bes/functions/tests
+
+2015-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	NCML module update
+
+	Refactor for BESKeys and TheBESKeys: Added a virtual dtor
+	I also changed how BESKeys *TheBESKeys::TheKeys() was written so
+	that the static class variable TheBESKeys::ConfigFile is set
+	when a bes.conf file is found in one of the etc dirs.
+
+	Updates to hd4 and ncml handlers
+	ncml: Fixed the evil HR-64 bug
+	hdf4: Removed an old unused file
+
+	Changes made while working on HR-64
+	I made some minor changes to the BES while trcking down HR-64.
+	The actual fix was in ncml_module, but these cahnges fixed
+	formatting and BESDEBUG output.
+
+	Fixed a glitch in volatile container store
+	When a real name is passed in and does not contain a leading
+	slash (/), don't add it. This change may not matter much in the
+	grand scheme of things, but it fixes a failed unit test (pvolT).
+
+2015-10-16  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2015-10-15  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #9 from OPENDAP/bind_using_ip
+	Bind using IP
+
+2015-10-14  James Gallagher  <jgallagher@opendap.org>
+
+	New feature: Use BES.ServerIP to specify an IP on which to listen
+	This was requested by mmceniry@itsc.uah.edu (see https://opendap.atlassian.net/browse/HR-47).
+	If not given, the server reverts to its old behavior of listening
+	on the default address. Some of the files' edits are simply reformatting.
+	In those cases where most of the file was reformatted and I also
+	made a functional change, I put my initials and the date in a comment.
+
+	I removed the calls to the SSL checks; the code does not use SSL
+
+	I moved the unused SSL files in bes/ppt to nes/ppt/old
+	I spent an hour modifying these only to realize they are never used!
+
+2015-10-14  Nathan Potter  <ndp@opendap.org>
+
+	This patch moves the static method
+	BESFileLockingCache::assemblePath() to
+	BESUtil::assemblePath(). This was done to make better use of
+	this code, for the rest of the patch, a modification to
+	BESContainerStorageVolatile::add_container() to ensure the
+	real name of the resource was a proper path with no double '/'
+	slash characters.
+
+	This patch moves the static method
+	BESFileLockingCache::assemblePath() to
+	BESUtil::assemblePath(). This was done to make better use of
+	this code, for the rest of the patch, a modification to
+	BESContainerStorageVolatile::add_container() to ensure the
+	real name of the resource was a proper path with no double '/'
+	slash characters.
+
+2015-10-07  Nathan Potter  <ndp@opendap.org>
+
+	Patched bug in new caching code.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Merged cache_control_patch_02 to master branch
+
+	Spun off the timing directory into it's own project @
+	https://github.com/opendap/bes_timing
+
+	Dropped un-needed include from BESUncompressCache.cc
+
+	Small updates to cache_control_patch_02 prior to issuing pull request
+
+	Small updates to cache_control_patch_02 prior to issuing pull request
+
+	Patched BESFileLockingCache::get_cache_file_name() to reject
+	file names longer than 254 characters. Temporary patch for a
+	lorger issue
+
+2015-10-05  Nathan Potter  <ndp@opendap.org>
+
+	Small changes - hunting function test issues.
+
+	Small chnages for clarity
+
+	Adding dispatch/BESUncompressCache class to replace BESCache3
+
+	Updated use of BESFileLockingCache in numerous places to
+	conform correctly to use pattern. Dropped BESCache3 from
+	production and replaced it with BESUncompressCache and
+	GatewayCache as appropriate.
+
+2015-10-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	Conflicts: xmlcommand/BESXMLInterface.cc
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration
+	from the other caches.
+
+2015-09-30  Nathan Potter  <ndp@opendap.org>
+
+	Initial cache control patch (version 2), in which we use the
+	cache_prefix value to form the name of the cache control file.
+
+2015-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Removed old code; still not sure why xmlCleanupParser makes
+	the daemon command processor fail. Removed it; left a comment.
+
+	Calling xmlCleanupParser() in DaemonCommadnHandler is an error
+	It results in a double free.
+
+	Added calls to xmlCleanupParser()
+	To xmlcommand/BESXMLInterface.cc when an exception is thrown and
+	server/DaemonCommandHandler.cc in both the normal and expectional
+	cases.
+
+	Fix for the obscure 'XML element order dependen on BESDEBUG'
+	The problem was a missing call to xmlCleanupParser in
+	BESXMLInterface::build_data_request_plan().
+
+	XML element order dependent on BESDEBUG use.
+	The culprit was a missing call to xmlCleanupParser() in
+	BESXMLInterface::build_data_request_plan.
+
+	Added 'virutal' to BESStopWatch dtor
+
+2015-09-24  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed version_update_modules.sh so that it does not mangle Makefile.am
+	Before it was incorrectly substituting the verion number.
+
+	Added *.Po to gitignore
+
+	Eliminate linking with .so modules
+	Some of the unit tests were linking with the .so modules, which is
+	not portable. This might be causing errors in the unit tests. At the
+	very least it was sloppy. Also modified the Makefiles so that bes.conf
+	files are removed by the clean target.
+
+	Merge pull request #6 from OPENDAP/sigpipe_fix
+	Sigpipe fix
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting in server/ServerApp.cc
+
+2015-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added/fixed message when the child listener catches sigpipe and exits.
+
+	A candidate fix for the runaway beslistener issue.
+	My fix is to catch sigpipe and exit if in a child listener.
+
+2015-09-20  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated README
+
+2015-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Modules with significant changes updated for the bes 3.15.1 release.
+
+	Version 3.15.1
+
 2015-09-19  Nathan Potter  <ndp@opendap.org>
 
 	Oops, data files huge, removing.

@@ -82,9 +82,6 @@ EOF
      
      # Get the version number and module from the Makefile.am.
 
-     #name=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\1@'`
-     #version=`grep AC_INIT configure.ac | sed 's@AC_INIT(\(.*\),.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\),.*@\2@'`
-
      name=`grep '^M_NAME.*' Makefile.am | sed 's@M_NAME=\(.*\)$@\1@'`
      version=`grep '^M_VER.*' Makefile.am | sed 's@M_VER=\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)$@\1@'`
      
