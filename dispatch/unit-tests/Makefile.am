@@ -28,7 +28,7 @@ TESTS = constraintT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT 		\
 		debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCatalogListUnitTest
+		urlT BESCatalogListUnitTest 
 
 # cacheT gzT zT uncompressT lockT containerT Temporarily removed while I sort out the cache 
 # errors 5/6/14 jhrg
