@@ -19,8 +19,17 @@ d4s->attributes()->add_attribute_nocopy(x);
 //Should be modeled as __coverity_delete__(x)
 #endif
 
-#if 0
-use __coverity_panic__
-with hdf4 handler _throw5(__FILE__, __LINE__, 1, a1, 0, 0, 0, 0)
-although I'm not sure why coverity doesn't pick this up
-#endif
+libdap::D4Attributes::add_attribute_nocopy(x)
+{
+    __coverity_delete__(x);
+}
+// I'm not sure why coverity doesn't pick this up, but make sure
+// that the _throw5 function is recognized as throwing an exception.
+// It may be that coverity does not handle template functions so
+// well...
+template < typename T, typename U, typename V, typename W, typename X > static void
+_throw5 (const char *fname, int line, int numarg,
+         const T & a1, const U & a2, const V & a3, const W & a4, const X & a5)
+{
+__coverity_panic__;
+}
