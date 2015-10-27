@@ -18,3 +18,9 @@ D4Attribute *x = new D4Attribute("HDF5_HARDLINK",attr_str_c);
 d4s->attributes()->add_attribute_nocopy(x);
 //Should be modeled as __coverity_delete__(x)
 #endif
+
+#if 0
+use __coverity_panic__
+with hdf4 handler _throw5(__FILE__, __LINE__, 1, a1, 0, 0, 0, 0)
+although I'm not sure why coverity doesn't pick this up
+#endif
