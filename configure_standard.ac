@@ -113,6 +113,10 @@ dnl Use libtool instead?
 dnl AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
+AC_SEARCH_LIBS([uuid_generate], [uuid],
+    [],
+    [AC_MSG_ERROR([I could not find a library with uuid_generate])])
+
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Checks for header files.
