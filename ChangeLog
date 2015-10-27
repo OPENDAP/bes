@@ -1,3 +1,71 @@
+2015-10-23  root  <root@localhost.localdomain>
+
+	This check-in removes some defects from the coverity scan. Most of
+	them minor issues. Some high impact issues reported by coverity
+	are false alarms to my best knowledge. For example, coverity will
+	report a memory illegal issue for codes like this: Attr *attr =
+	new Attributes(); if(API failed) { delete attr; throw an error; }
+	string attrname= attr->name; Since it thinks attr may be deleted
+	and it should not be referenced. However, it doesn't consider the
+	throw error line because that line assures that attr will never be
+	referenced if it is deleted. ----
+
+2015-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed this very old file deleted:    nph-hdf.in
+
+2015-10-07  Nathan Potter  <ndp@opendap.org>
+
+	Patched bug in new caching code.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'cache_control_patch_02'
+
+2015-10-05  Nathan Potter  <ndp@opendap.org>
+
+	Repaird bugs in BESH4MCache w.r.t. it's use of
+	BESFileLockingCacahe and it's singleton lifcycle.
+
+2015-10-01  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+ 
+2015-09-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the missing version problem.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Version 3.11.8
+
+	Version 3.11.8
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #2 from OPENDAP/hdf4_handler_local
+	Use the correct way to handle erase operation in an iterator>
+
+2015-09-18  muqun yang  <myang6@hdfgroup.org>
+
+	Use the correct way to handle erase operation in an iterator>
 2015-09-18  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #2 from OPENDAP/hdf4_handler_local
