@@ -1,3 +1,68 @@
+2015-10-26  root  <root@localhost.localdomain>
+
+	Tackling issues discovered by coverity. 1)fixed a bug (missing a
+	parentsis) inside HDF5GCFProduct.cc. 2) Removed a couple of
+	unnecessary checkings for overflow. 3) Added a few uninitialized
+	variables. 4) Fixed a case that may cause resource leaking.
+
+2015-10-22  James Gallagher  <jgallagher@opendap.org>
+
+	Bumped up the libdap requirement in .spec
+
+	Fixed test #257's baseline - requires a new libdap
+
+2015-10-21  James Gallagher  <jgallagher@opendap.org>
+
+	Updated baseline for #257
+	I fixed an error in getdap4 used by this test) and now it
+	prints the data for child groups. Had to update the baseline.
+
+2015-10-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'cache_control_patch_02'
+
+2015-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Committing changes (mostly to bes.conf.in files) in support of
+	changing ubiquitos use of BES.CacheDir, BES.CachePrefix, and
+	BES.CacheSize to specifically reference the decompression
+	cache (which is waht it actually is) so as to avoid cache
+	configuration collisions with various handlers that also were
+	utilizing teh same cache with different expectations. Now, by
+	calling these BES keys BES.UncompressCache.dir,
+	BES.UncompressCache.prefix, and BES.UncompressCache.size we
+	specifically isolate the decompression cache configuration from
+	the other caches.
+
+2015-09-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the version mistake.
+
+2015-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to Makefile.am in the autotest dirs; clean removes bes.conf
+
+2015-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+	Conflicts: NEWS
+
+	Formatted NEWS
+
+2015-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Version 2.3.0
+
+2015-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #2 from OPENDAP/hdf5_handler_local
+	Hdf5 handler local
+
+2015-09-18  muqun yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
+
+	 Use the right and platform-independent way to handle the erase operation in the iterator loop. Although the previous way passes all the tests, it may still crash Linux and MacOS according to JG's experience.
 2015-09-18  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #2 from OPENDAP/hdf5_handler_local
