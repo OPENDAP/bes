@@ -816,6 +816,20 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+
+        if(fdds->num_var()==1){
+            BaseType *bt = fdds->get_var_index(0);
+            libdap::Constructor *collection = dynamic_cast<libdap::Constructor *>(bt);
+            if(collection){
+                libdap::Collection::Vars_iter vi;
+                for(vi=collection->var_begin(); vi!=collection->var_end(); vi++){
+                    BaseType resultBT =
+                }
+            }
+        }
+
+
+
 #if FUNCTION_CACHING
         // This means: if we are not supposed to store the result, then serialize it.
         if (!store_dap2_result(data_stream, dds, eval)) {
