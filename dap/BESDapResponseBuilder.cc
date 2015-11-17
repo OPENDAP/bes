@@ -57,6 +57,7 @@
 
 #include <DAS.h>
 #include <DDS.h>
+#include <Structure.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <Ancillary.h>
@@ -816,19 +817,54 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        // Here we remove top-level Structure variables that have been added by server
+        // functions which return multiple values. This will necessarily be a hack since
+        // DAP2 was never designed to do this sort of thing - support functions that
+        // return computed values.
+        //
+        // The DDS referenced by 'fdds' may have one or more variables because there may
+        // have been one or more function calls given in the CE supplied by the CE. For
+        // example, "linear_scale(SST),linear_scale(AIRT)" would have two variables. It is
+        // possible for a CE that contains function calls to also include a 'regular'
+        // projection (i.e., "linear_scale(SST),SST[0][0:179]") but this means run the function(s)
+        // and build a new DDS and then apply the remaining constraints to that new DDS. So,
+        // this (hack) code can assume that there is one variable per function call and no
+        // other variables. Furthermore, lets adopt a simple convention that functions use
+        // a Structure named <something>_unwrap when they want the function result to be
+        // unwrapped and something else when they want this code to leave the Structure as
+        // it is.
+        //
+        // TODO: Implement the '_unwrap' part of the hack once we see this works for the
+        // ugri code.
 
-        if(fdds->num_var()==1){
-            BaseType *bt = fdds->get_var_index(0);
-            libdap::Constructor *collection = dynamic_cast<libdap::Constructor *>(bt);
-            if(collection){
-                libdap::Collection::Vars_iter vi;
-                for(vi=collection->var_begin(); vi!=collection->var_end(); vi++){
-                    BaseType resultBT =
+        // Dump pointers to the values here temporarily... If we had methods in libdap
+        // that could be used to access the underlying erase() and insert() methods, we
+        // could skip the (maybe expensive) copy operations I use below. What we would
+        // need are ways to delete a Structure/Constructor without calling delete on its
+        // fields and ways to call vector::erase() and vector::insert(). Some of this
+        // exists, but it's not quite enough.
+        //
+        // TODO Add finer grained access to the libdap objects if this works and it seems
+        // needed for performance.
+
+        DDS *temp_dds = new DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
+
+        for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
+            Structure *collection = dynamic_cast<Structure *>(*di);
+            if (collection /* && collection->name() matches *_unwrap */) {
+                // So we're going to 'flatten this structure' and return its fields
+                Structure::Vars_iter vi;
+                for (vi=collection->var_begin(); vi!=collection->var_end(); ++vi) {
+                    temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
                 }
+            }
+            else {
+                temp_dds->add_var(*di);
             }
         }
 
-
+        delete fdds;
+        fdds = temp_dds;
 
 #if FUNCTION_CACHING
         // This means: if we are not supposed to store the result, then serialize it.

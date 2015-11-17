@@ -5,11 +5,11 @@ Updated for version 3.16.
 
 See the INSTALL file for build instructions, including special
 instructions for building from a (git) cloned repo. This code can
-build one of two disticnt ways and that requires a tiny bit setup.
+build one of two distinct ways and that requires a tiny bit setup.
 
 For more information on Hyrax and the BES, please visit our documentation
 wiki at docs.opendap.org. This will include the latest install and build
-instructions, the latest configuration inforamtion, tutorials, how to
+instructions, the latest configuration information, tutorials, how to
 develop new modules for the BES, and more.
 
 This version has significant performance improvements for aggregations,
