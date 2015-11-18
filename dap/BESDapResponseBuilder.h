@@ -155,6 +155,8 @@ public:
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
+
+    virtual void promoteFunctionOutputStructure(libdap::DDS **dds);
 };
 
 #endif // _response_builder_h

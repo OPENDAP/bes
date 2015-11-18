@@ -547,6 +547,8 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+        promoteFunctionOutputStructure(&fdds);
+
         fdds->print_constrained(out);
 
         if (responseCache)
@@ -817,6 +819,10 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
+
+        promoteFunctionOutputStructure(&fdds);
+
+#if 0
         // Here we remove top-level Structure variables that have been added by server
         // functions which return multiple values. This will necessarily be a hack since
         // DAP2 was never designed to do this sort of thing - support functions that
@@ -865,6 +871,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 
         delete fdds;
         fdds = temp_dds;
+#endif
+
 
 #if FUNCTION_CACHING
         // This means: if we are not supposed to store the result, then serialize it.
@@ -909,6 +917,72 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS &dds, Const
 
 }
 
+/**
+ * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
+ * false otherwise.
+ */
+bool endsWith (std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
+void BESDapResponseBuilder::promoteFunctionOutputStructure(libdap::DDS **dds)
+{
+    // Here we remove top-level Structure variables that have been added by server
+    // functions which return multiple values. This will necessarily be a hack since
+    // DAP2 was never designed to do this sort of thing - support functions that
+    // return computed values.
+    //
+    // The DDS referenced by 'fdds' may have one or more variables because there may
+    // have been one or more function calls given in the CE supplied by the CE. For
+    // example, "linear_scale(SST),linear_scale(AIRT)" would have two variables. It is
+    // possible for a CE that contains function calls to also include a 'regular'
+    // projection (i.e., "linear_scale(SST),SST[0][0:179]") but this means run the function(s)
+    // and build a new DDS and then apply the remaining constraints to that new DDS. So,
+    // this (hack) code can assume that there is one variable per function call and no
+    // other variables. Furthermore, lets adopt a simple convention that functions use
+    // a Structure named <something>_unwrap when they want the function result to be
+    // unwrapped and something else when they want this code to leave the Structure as
+    // it is.
+    //
+    // TODO: Implement the '_unwrap' part of the hack once we see this works for the
+    // ugri code.
+
+    // Dump pointers to the values here temporarily... If we had methods in libdap
+    // that could be used to access the underlying erase() and insert() methods, we
+    // could skip the (maybe expensive) copy operations I use below. What we would
+    // need are ways to delete a Structure/Constructor without calling delete on its
+    // fields and ways to call vector::erase() and vector::insert(). Some of this
+    // exists, but it's not quite enough.
+    //
+    // TODO Add finer grained access to the libdap objects if this works and it seems
+    // needed for performance.
+
+    DDS *fdds = *dds;
+    DDS *temp_dds = new DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
+
+    for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
+        Structure *collection = dynamic_cast<Structure *>(*di);
+        if (collection && endsWith(collection->name(),"_unwrap")) {
+            // So we're going to 'flatten this structure' and return its fields
+            Structure::Vars_iter vi;
+            for (vi=collection->var_begin(); vi!=collection->var_end(); ++vi) {
+                temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
+            }
+        }
+        else {
+            temp_dds->add_var(*di);
+        }
+    }
+
+    delete fdds;
+    *dds = temp_dds;
+
+}
+
 /** Send the DDX response. The DDX never contains data, instead it holds a
  reference to a Blob response which is used to get the data values. The
  DDS and DAS objects are built using code that already exists in the
@@ -948,7 +1022,11 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         string cache_token = "";
         DDS *fdds = 0;
         ConstraintEvaluator func_eval;
-        BESDapResponseCache *responseCache = BESDapResponseCache::get_instance();
+        BESDapResponseCache *responseCache = 0;
+
+#if FUNCTION_CACHING
+        responseCache = BESDapResponseCache::get_instance();
+#endif
 
         if (responseCache) {
             fdds = responseCache->cache_dataset(dds, d_btp_func_ce, this, &func_eval, cache_token);
@@ -970,10 +1048,14 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS &dds, ConstraintEvaluator
         if (with_mime_headers)
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), dds.get_dap_version());
 
-        fdds->print_constrained(out);
+        promoteFunctionOutputStructure(&fdds);
 
+        fdds->print_xml_writer(out, true, "");
+
+#if FUNCTION_CACHING
         if (responseCache)
-        	responseCache->unlock_and_close(cache_token);
+            responseCache->unlock_and_close(cache_token);
+#endif
 
         delete fdds;
     }
