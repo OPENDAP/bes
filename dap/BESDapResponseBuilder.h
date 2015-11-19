@@ -69,9 +69,6 @@ protected:
 	 */
 	std::string d_store_result;
 
-
-	// BESDapResponseCache *d_response_cache;
-
 	void initialize();
 	bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 
@@ -124,13 +121,6 @@ public:
 
 	virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 
-#if 0
-	// I dumped this because it's pattern of use was super confiusing. Holding a pointer to a singleton cache that is responsible
-	// for destructing itself and then trying to delete the referenced object was breaking many things in a subtle and hard
-	// to discern manner.
-	virtual BESDapResponseCache *responseCache();
-#endif
-
 	virtual void send_das(std::ostream &out, libdap::DAS &das, bool with_mime_headers = true) const;
 	virtual void send_das(std::ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval, bool constrained =
 			false, bool with_mime_headers = true);
@@ -156,7 +146,7 @@ public:
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 
-    virtual void promoteFunctionOutputStructure(libdap::DDS **dds);
+    //virtual void promote_function_output_structure(libdap::DDS **dds);
 };
 
 #endif // _response_builder_h

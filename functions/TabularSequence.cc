@@ -28,7 +28,7 @@
 #include <string>
 #include <sstream>
 
-//#define DODS_DEBUG
+#define DODS_DEBUG
 
 #include <BaseType.h>
 #include <Byte.h>
@@ -120,61 +120,6 @@ void TabularSequence::load_prototypes_with_values(BaseTypeRow &btr, bool safe)
 }
 
 // Public member functions
-#if 0
-/** The Sequence constructor requires only the name of the variable
-    to be created.  The name may be omitted, which will create a
-    nameless variable.  This may be adequate for some applications.
-
-    @param n A string containing the name of the variable to be
-    created.
-
-    @brief The Sequence constructor. */
-TabularSequence::TabularSequence(const string &n) : Sequence(n)
-{
-}
-
-/** The Sequence server-side constructor requires the name of the variable
-    to be created and the dataset name from which this variable is being
-    created.
-
-    @param n A string containing the name of the variable to be
-    created.
-    @param d A string containing the name of the dataset from which this
-    variable is being created.
-
-    @brief The Sequence server-side constructor. */
-TabularSequence::TabularSequence(const string &n, const string &d)
-    : Sequence(n, d)
-{}
-
-/** @brief The Sequence copy constructor. */
-TabularSequence::TabularSequence(const TabularSequence &rhs) : Sequence(rhs)
-{
-}
-
-BaseType *
-TabularSequence::ptr_duplicate()
-{
-    return new TabularSequence(*this);
-}
-
-
-TabularSequence::~TabularSequence()
-{
-
-}
-
-TabularSequence &
-TabularSequence::operator=(const TabularSequence &rhs)
-{
-    if (this == &rhs)
-        return *this;
-
-    dynamic_cast<Sequence &>(*this) = rhs; // run Sequence=
-
-    return *this;
-}
-#endif
 
 /**
  * Specialized version of Sequence::serialize() for tables that already
@@ -197,7 +142,7 @@ TabularSequence::serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, b
 {
     DBG(cerr << "Entering TabularSequence::serialize for " << name() << endl);
 
-    SequenceValues values = value();
+    SequenceValues &values = value_ref();
     //ce_eval = true; Commented out here and changed in BESDapResponseBuilder. jhrg 3/10/15
 
     for (SequenceValues::iterator i = values.begin(), e = values.end(); i != e; ++i) {
@@ -216,6 +161,7 @@ TabularSequence::serialize(ConstraintEvaluator &eval, DDS &dds, Marshaller &m, b
             d_vars.at(j++)->val2buf(val);
         }
 #endif
+        DBG(cerr << __func__ << ": Sequence element: " << hex << *btr.begin() << dec << endl);
         // Evaluate the CE against this row; continue (skipping this row) if it fails
         if (ce_eval && !eval.eval_selection(dds, dataset()))
             continue;
@@ -249,12 +195,11 @@ void TabularSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
 {
     DBG(cerr << "Entering TabularSequence::intern_data" << endl);
 
-    // FIXME Special case when there are no selection clauses
-    // FIXME Use a destructive copy to move values from 'values' to
+    // TODO Special case when there are no selection clauses
+    // TODO Use a destructive copy to move values from 'values' to
     // result? Or pop values - find a way to not copy all the values
     // after doing some profiling to see if this code can be meaningfully
     // optimized
-#if 1
     SequenceValues result;      // These values satisfy the CE
     SequenceValues &values = value_ref();
 
@@ -268,7 +213,7 @@ void TabularSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
 #if 0
         int j = 0;
         for (BaseTypeRow::iterator vi = btr.begin(), ve = btr.end(); vi != ve; ++vi) {
-            // TODO check this for efficiency - is the switch-based version in Sequence.cc faster?
+            // TODO check this for efficiency - is the switch-based version (load_prototypes_with_values) faster?
             void *val = 0;
             (*vi)->buf2val(&val);
             d_vars.at(j++)->val2buf(val);
@@ -279,7 +224,6 @@ void TabularSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
             continue;
 
         BaseTypeRow *result_row = new BaseTypeRow();
-        // In this loop serialize will signal an error with an exception.
         for (BaseTypeRow::iterator vi = btr.begin(), ve = btr.end(); vi != ve; ++vi) {
             if ((*vi)->send_p()) {
                 result_row->push_back(*vi);
@@ -291,7 +235,6 @@ void TabularSequence::intern_data(ConstraintEvaluator &eval, DDS &dds)
 
     set_value(result);
 
-#endif
     DBG(cerr << "Leaving TabularSequence::intern_data" << endl);
 }
 
