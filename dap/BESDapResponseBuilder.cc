@@ -526,7 +526,7 @@ static DDS *promote_function_output_structure(DDS *fdds)
     // Look in the top level of the DDS for a promotable member - i.e. a member
     // variable that is a collection and whose name ends with "_unwrap"
     bool found_promotable_member = false;
-    for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
+    for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de && !found_promotable_member; ++di) {
         Structure *collection = dynamic_cast<Structure *>(*di);
         if (collection && ends_with(collection->name(), "_unwrap")) {
             found_promotable_member = true;
