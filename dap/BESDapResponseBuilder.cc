@@ -522,32 +522,50 @@ static bool ends_with (const string &full_string, const string &ending) {
  */
 static DDS *promote_function_output_structure(DDS *fdds)
 {
-    // Dump pointers to the values here temporarily... If we had methods in libdap
-    // that could be used to access the underlying erase() and insert() methods, we
-    // could skip the (maybe expensive) copy operations I use below. What we would
-    // need are ways to delete a Structure/Constructor without calling delete on its
-    // fields and ways to call vector::erase() and vector::insert(). Some of this
-    // exists, but it's not quite enough.
 
-    DDS *temp_dds = new DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
-
+    // Look in the top level of the DDS for a promotable member - i.e. a member
+    // variable that is a collection and whose name ends with "_unwrap"
+    bool found_promotable_member = false;
     for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
         Structure *collection = dynamic_cast<Structure *>(*di);
         if (collection && ends_with(collection->name(), "_unwrap")) {
-            // So we're going to 'flatten this structure' and return its fields
-            Structure::Vars_iter vi;
-            for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
-                temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
-            }
-        }
-        else {
-            temp_dds->add_var(*di);
+            found_promotable_member = true;
         }
     }
 
-    delete fdds;
+    // If we found one or more promotable member variables, promote them.
+    if(found_promotable_member){
 
-    return temp_dds;
+        // Dump pointers to the values here temporarily... If we had methods in libdap
+        // that could be used to access the underlying erase() and insert() methods, we
+        // could skip the (maybe expensive) copy operations I use below. What we would
+        // need are ways to delete a Structure/Constructor without calling delete on its
+        // fields and ways to call vector::erase() and vector::insert(). Some of this
+        // exists, but it's not quite enough.
+
+        DDS *temp_dds = new DDS(fdds->get_factory(), fdds->get_dataset_name(), fdds->get_dap_version());
+
+        for (DDS::Vars_citer di = fdds->var_begin(), de = fdds->var_end(); di != de; ++di) {
+            Structure *collection = dynamic_cast<Structure *>(*di);
+            if (collection && ends_with(collection->name(), "_unwrap")) {
+                // So we're going to 'flatten this structure' and return its fields
+                Structure::Vars_iter vi;
+                for (vi =collection->var_begin(); vi != collection->var_end(); ++vi) {
+                    temp_dds->add_var(*vi); // better to use add_var_nocopy(*vi); need to modify libdap?
+                }
+            }
+            else {
+                temp_dds->add_var(*di);
+            }
+        }
+
+        delete fdds;
+        return temp_dds;
+    }
+    else {
+        // Otherwise do nothing to alter the DDS
+        return fdds;
+    }
 }
 
 /** This function formats and prints an ASCII representation of a
