@@ -117,7 +117,7 @@ endif
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
-sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz
+sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz data/grid_1_2d.hdf
 
 install-data-local: h4.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
