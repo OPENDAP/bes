@@ -63,9 +63,29 @@ protected:
     void load_prototypes_with_values(libdap::BaseTypeRow &btr, bool safe = true);
 
 public:
+    /** The Sequence constructor requires only the name of the variable
+        to be created.  The name may be omitted, which will create a
+        nameless variable.  This may be adequate for some applications.
+
+        @param n A string containing the name of the variable to be
+        created.
+
+        @brief The Sequence constructor. */
     TabularSequence(const string &n) : Sequence(n) { }
+
+    /** The Sequence server-side constructor requires the name of the variable
+        to be created and the dataset name from which this variable is being
+        created.
+
+        @param n A string containing the name of the variable to be
+        created.
+        @param d A string containing the name of the dataset from which this
+        variable is being created.
+
+        @brief The Sequence server-side constructor. */
     TabularSequence(const string &n, const string &d) : Sequence(n, d) { }
 
+    /** @brief The Sequence copy constructor. */
     TabularSequence(const TabularSequence &rhs) : Sequence(rhs) { }
 
     virtual ~TabularSequence() { }

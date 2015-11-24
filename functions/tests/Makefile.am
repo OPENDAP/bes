@@ -55,17 +55,12 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/packag
 
 check-local: atconfig atlocal $(TESTSUITE)
 	@echo "Run tests with an empty cache"
-	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-rm -f dap_cache
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-rm -rf dap_cache/*
 	
-# When caching is working again for function results, add this back into the 
-# target's actions. jhrg 10/20/15
-# 	@echo "Run tests with a full cache"
-#	-$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f dap_cache
+	-rm -rf dap_cache/*
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
