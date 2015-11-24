@@ -1,0 +1,75 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+#This is for the CF option. The testing files are under h5.cf.ignore. It is using bes.conf
+m4_define([_AT_BESCMD_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+# Use the following AT_CHECK to generate baseline file.
+#AT_CHECK([besstandalone -c $abs_builddir/bes.ignore.conf -i $1 > $2|| true], [], [stdout], [stderr])
+
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind-cf-ignored.txt besstandalone -c $abs_builddir/bes.ignore.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind-cf-ignored.txt >> /tmp/h5.valgrind.cf.ignored.log], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([_AT_BESCMD_DAP4DATA_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+# Use the following AT_CHECK to generate baseline file.
+#AT_CHECK([besstandalone -c $abs_builddir/bes.ignore.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+
+AT_CHECK([besstandalone -c $abs_builddir/bes.ignore.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.ignore/$1.baseline])
+])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.ignore/$1.baseline])
+])
+
+##########
+# Test generic cases.
+AT_BESCMD_RESPONSE_TEST([t_int.h5.das.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([t_2d_2dll.nc4.h5.das.bescmd])
+
+
+# The current handler doesn't support scalar.
+AT_BESCMD_RESPONSE_TEST([t_int_scalar.h5.das.bescmd])
+
+# Links and named datatypes
+AT_BESCMD_RESPONSE_TEST([t_link_comment.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([ntypes.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_unsupported.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_space_zero.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_space_null.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_special_char_attr.h5.das.bescmd])
+
+
+# Test simple HDF-EOS5 cases.
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_1_3d_xyz_aug.h5.das.bescmd])
+
+#CF DAP4 test
+#AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
+

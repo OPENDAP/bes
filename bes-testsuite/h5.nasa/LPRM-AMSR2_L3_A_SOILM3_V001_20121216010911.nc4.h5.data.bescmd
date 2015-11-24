@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4" space="catalog">/data/LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5</setContainer>
+     <define name="d">
+ 	<container name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4">
+            <constraint>
+mask[0:719:1439][0:359:719],opt_depth_c2[0:719:1439][0:359:719],frequency_map[0:719:1439][0:359:719],soil_moisture_c2[0:719:1439][0:359:719],soil_moisture_c1[0:719:1439][0:359:719],soil_moisture_c2_error[0:719:1439][0:359:719],opt_depth_c1[0:719:1439][0:359:719],scantime[0:719:1439][0:359:719],opt_depth_x[0:719:1439][0:359:719],soil_moisture_c1_error[0:719:1439][0:359:719],ts[0:719:1439][0:359:719],soil_moisture_x[0:719:1439][0:359:719],soil_moisture_x_error[0:719:1439][0:359:719],Latitude[0:359:719],Longitude[0:719:1439]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>
