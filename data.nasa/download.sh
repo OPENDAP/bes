@@ -68,6 +68,7 @@ $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/ma
 
 ## GOSAT/acos
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/NASAHDF/oco2_L2StdND_03945a_150330_B6000_150331024816.h5
 
 # GSFC
 ## mabel (ICESat-2)
@@ -88,4 +89,18 @@ $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/Q20
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/Q20111722011263.L3b_SNSU_EVSCI_V1.2.main.h5
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5
 
+
+#GESDISC GPM
+# GPM files. 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5 
+ 
+# HFVHANDLER-129 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/good_imerge.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/OBPG/A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/OBPG/S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5 
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/MOP03T-20131129-L3V4.2.1.h5
 
