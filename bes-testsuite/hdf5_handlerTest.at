@@ -412,11 +412,13 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
-AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
 
-# Cannot generate correct DMR due to variable mapping. Wait for OPeNDAP to fix the issue. KY 2015-07-11
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
+# The data field names are duplicate. Comment out and wait for ticket to be fixed.
+# https://opendap.atlassian.net/browse/HR-68 
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int8.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int64.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int64.h5.dap.bescmd])
@@ -428,11 +430,14 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
+
 # Cannot generate correct DAP4 for the all data in the current DAP4 implementation. 
+# https://opendap.atlassian.net/projects/LIBDAP/issues/LIBDAP-18
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dap_ce_simple.bescmd])
 
 # Cannot generate the expression constraint for the data in the current DAP4 implementation. 
+# https://opendap.atlassian.net/projects/LIBDAP/issues/LIBDAP-18
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dap_ce.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dmr.bescmd])
