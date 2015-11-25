@@ -578,6 +578,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 }
 
                 dds.add_var(ar);
+                delete bt;
                 delete ar;
 
             }
