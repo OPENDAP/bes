@@ -821,7 +821,9 @@ namespace HDF5CF
             void Check_General_Product_Pattern() throw(Exception);
             bool Check_Dimscale_General_Product_Pattern() throw(Exception);
             bool Check_LatLon2D_General_Product_Pattern() throw(Exception);
+            bool Check_LatLon2D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
             bool Check_LatLon1D_General_Product_Pattern() throw(Exception);
+            bool Check_LatLon1D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
             void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
             void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
             void Add_Dim_Name_Dimscale_General_Product() throw(Exception);

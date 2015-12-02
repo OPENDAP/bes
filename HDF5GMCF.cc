@@ -1164,15 +1164,77 @@ void GMFile::Check_General_Product_Pattern() throw(Exception) {
 }
 
 // If having 2-D latitude/longitude,set the general product pattern.
+// In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" and "cell_lat,cell_lon"names.
+// The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
 bool GMFile::Check_LatLon2D_General_Product_Pattern() throw(Exception) {
 
-    bool ret_value = Check_LatLonName_General_Product(2);
+    // bool ret_value = Check_LatLonName_General_Product(2);
+    bool ret_value = false;
+ 
+    ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("latitude","longitude");
+    if(false == ret_value) {
+        ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("Latitude","Longitude");
+        if(false == ret_value) {
+            ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("lat","lon");
+            if(false == ret_value)
+                ret_value =  Check_LatLon2D_General_Product_Pattern_Name_Size("cell_lat","cell_lon");
+        }
+    }
+
     if(true == ret_value)
         this->gproduct_pattern = GENERAL_LATLON2D;
     return ret_value;
 
 }
 
+bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
+
+    bool ret_value = false;
+    short ll_flag = 0;
+    vector<size_t>lat_size(2.0);
+    vector<size_t>lon_size(2,0);
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+
+        if((*irv)->rank == 2) {
+            if((*irv)->name == latname) {
+                ll_flag++;
+                lat_size[0] = (*irv)->getDimensions()[0]->size; 
+                lat_size[1] = (*irv)->getDimensions()[1]->size; 
+            }
+            else if((*irv)->name == lonname) {
+                ll_flag++;
+                lon_size[0] = (*irv)->getDimensions()[0]->size; 
+                lon_size[1] = (*irv)->getDimensions()[1]->size; 
+            }
+            if(2 == ll_flag)
+                break;
+        }
+    }
+ 
+    if(2 == ll_flag) {
+
+        bool latlon_size_match = true;
+        for (int size_index = 0; size_index <lat_size.size();size_index++) {
+            if(lat_size[size_index] != lon_size[size_index]){
+                latlon_size_match = false;
+                break;
+            }
+        }
+        if (true == latlon_size_match) {
+            gp_latname = latname;
+            gp_lonname = lonname;
+            ret_value = true;
+        }
+
+    }
+ 
+    return ret_value;
+
+}
+
+#if 0
 // If having 1-D latitude/longitude,set the general product pattern.
 bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
 
@@ -1183,7 +1245,106 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
     return ret_value;
 
 }
+#endif
 
+// If having 2-D latitude/longitude,set the general product pattern.
+// In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" and "cell_lat,cell_lon"names.
+// The "cell_lat" and "cell_lon" come from SMAP. KY 2015-12-2
+bool GMFile::Check_LatLon1D_General_Product_Pattern() throw(Exception) {
+
+    // bool ret_value = Check_LatLonName_General_Product(2);
+    bool ret_value = false;
+ 
+    ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("latitude","longitude");
+    if(false == ret_value) {
+        ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("Latitude","Longitude");
+        if(false == ret_value) {
+            ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("lat","lon");
+            if(false == ret_value)
+                ret_value =  Check_LatLon1D_General_Product_Pattern_Name_Size("cell_lat","cell_lon");
+        }
+    }
+
+    if(true == ret_value)
+        this->gproduct_pattern = GENERAL_LATLON1D;
+    return ret_value;
+
+}
+
+bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & latname,const string & lonname) throw(Exception) {
+
+    bool ret_value = false;
+    short ll_flag = 0;
+    size_t lat_size = 0;
+    size_t lon_size = 0;
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+
+        if((*irv)->rank == 1) {
+            if((*irv)->name == latname) {
+                ll_flag++;
+                lat_size = (*irv)->getDimensions()[0]->size; 
+            }
+            else if((*irv)->name == lonname) {
+                ll_flag++;
+                lon_size = (*irv)->getDimensions()[0]->size; 
+            }
+            if(2 == ll_flag)
+                break;
+        }
+    }
+ 
+    if(2 == ll_flag) {
+
+
+        bool latlon_size_match_grid = true;
+        // When the size of latitude is equal to the size of longitude for a 1-D lat/lon, it is very possible
+        // that this is not a regular grid but rather a profile with the lat,lon to be recorded as the function of time.
+        // Adding the coordinate/dimension as the normal grid is wrong, so check out this case.
+        // KY 2015-12-2
+        if(lat_size == lon_size) {
+
+            // It is very unusual that lat_size = lon_size for a grid.
+            latlon_size_match_grid = false;
+
+            // For a normal grid, a >2D variable should exist to have both lat and lon size, if such a variable that has the same size exists, we 
+            // will treat it as a normal grid. 
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                if((*irv)->rank >=2) {
+                    short ll_size_flag = 0;
+                    for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
+                       ird != (*irv)->dims.end(); ++ird) {
+                        if(lat_size == (*ird)->size) {
+                            ll_size_flag++;
+                            if(2 == ll_size_flag){
+                                break;
+                            }
+                        }
+                     }
+                     if(2 == ll_size_flag) {
+                        latlon_size_match_grid = true;
+                        break;
+                     }
+                }
+            }
+        }
+
+        if (true == latlon_size_match_grid) {
+            gp_latname = latname;
+            gp_lonname = lonname;
+            ret_value = true;
+        }
+
+    }
+ 
+    return ret_value;
+
+}
+
+
+#if 0
 // In this version, we only check if we have "latitude,longitude","Latitude,Longitude","lat,lon" names.
 // This routine will check this case.
 bool GMFile::Check_LatLonName_General_Product(int ll_rank) throw(Exception) {
@@ -1304,6 +1465,7 @@ bool GMFile::Check_LatLonName_General_Product(int ll_rank) throw(Exception) {
  
     return ret_value;
 }
+#endif
 
 // Add dimension names for the case that has 2-D lat/lon.
 void GMFile::Add_Dim_Name_LatLon2D_General_Product() throw(Exception) {
