@@ -67,11 +67,11 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt $LIBS @openssl_libs@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt $LIBS"
        	;;
 
     --dap-libs)
-       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt $LIBS @openssl_libs@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_xml_command -lbes_ppt $LIBS"
 	# remove -lbes_dap jhrg 1/25/13
        	;;
 
