@@ -344,66 +344,6 @@ void TabularFunction::add_index_column(const Shape &indep_shape, const Shape &de
     dep_vars.insert(dep_vars.begin(), a);
 }
 
-#if 0
-/**
- * @brief Transform one or more arrays to a sequence.
- *
- * This function will transform one or more arrays into a sequence,
- * where each array becomes a column in the sequence. Each
- * array must have the same number of dimensions and is
- * enumerated in row-major order (the right-most dimension varies
- * fastest).
- *
- * It's assumed that for each of the arrays, elements (i0, i1, ..., in)
- * are all related. The function makes no test to ensure that, however.
- *
- * @todo Write version for differing dimensions
- *
- * @param argc Argument count
- * @param argv Argument vector - variable in the current DDS
- * @param dds The current DDS
- * @param btpp Value-result parameter for the resulting Sequence
- */
-void TabularFunction::function_dap2_tabular_2(int argc, BaseType *argv[], DDS &, BaseType **btpp)
-{
-    // unique_ptr is not available on gcc 4.2. jhrg 2/11/15
-    // unique_ptr<TabularSequence> response(new TabularSequence("table"));
-    auto_ptr<TabularSequence> response(new TabularSequence("table"));
-
-    int num_arrays = argc;              // Might pass in other stuff...
-    Shape shape;            // Holds shape info; used to test array sizes for uniformity
-    vector<Array*> the_arrays(num_arrays);
-
-    // Read each array passed to tabular(), check that its shape matches
-    // the first array's shape, store the array in a vector and read in
-    // it's values (into the Array object's internal store).
-    for (int n = 0; n < num_arrays; ++n) {
-        build_columns(n, argv[n], the_arrays, shape);
-    }
-
-    DBG(cerr << "the_arrays.size(): " << the_arrays.size() << endl);
-
-    // Now build the response Sequence so it has columns that match the
-    // Array element types
-    for (unsigned long n = 0; n < the_arrays.size(); ++n) {
-        response->add_var(the_arrays[n]->var());
-    }
-
-    unsigned long num_values = number_of_values(shape);
-    SequenceValues sv(num_values);
-    // Transfer the data from the array variables held in the vector of
-    // Arrays into the Sequence using the SequenceValues object.
-    // sv is a value-result parameter
-    build_sequence_values(the_arrays, sv);
-
-    response->set_value(sv);
-    response->set_read_p(true);
-
-    *btpp = response.release();
-    return;
-}
-#endif
-
 /**
  * @brief Transform one or more arrays to a sequence.
  *
