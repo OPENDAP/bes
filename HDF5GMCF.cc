@@ -129,8 +129,22 @@ GMFile::~GMFile()
 
 string GMFile::get_CF_string(string s) {
 
-    if ((General_Product == product_type &&  OTHERGMS == gproduct_pattern) || s[0] !='/') 
+    // HDF5 group or variable path always starts with '/'. When CF naming rule is applied,
+    // the first '/' is always changes to "_", this is not necessary. However,
+    // to keep the backward compatiablity, I use a BES key for people to go back with the original name.
+
+    if(s[0] !='/') 
         return File::get_CF_string(s);
+    else if (General_Product == product_type &&  OTHERGMS == gproduct_pattern)  { 
+
+        string check_keepleading_underscore_key = "H5.KeepVarLeadingUnderscore";
+        if(true == HDF5CFDAPUtil::check_beskeys(check_keepleading_underscore_key))
+            return File::get_CF_string(s);
+        else {
+            s.erase(0,1);
+            return  File::get_CF_string(s);
+        }
+    }
     else {
         s.erase(0,1);
         return File::get_CF_string(s);
@@ -2516,6 +2530,8 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(E
 
     // Final check, we need to check if we have 2-D {lat/latitude/Latitude, lon/longitude/Longitude}
     // in the general variable list.
+    // Here, depending on the future support, lat/lon pairs with other names(cell_lat,cell_lon etc) may be supported.
+    // KY 2015-12-03
     if(true == latlon_2d_cv_check1 && true == latlon_2d_cv_check2 && true == latlon_2d_cv_check3) {
 
         for (vector<Var *>::iterator irv = this->vars.begin();
@@ -3021,7 +3037,7 @@ void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) 
-                (*ira)->newname = get_CF_string((*ira)->newname);
+                (*ira)->newname = File::get_CF_string((*ira)->newname);
                 
         }
 
@@ -3038,7 +3054,7 @@ void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) 
-                  (*ira)->newname = get_CF_string((*ira)->newname);
+                  (*ira)->newname = File::get_CF_string((*ira)->newname);
                 
         }
     }
