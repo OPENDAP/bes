@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="t_int.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
-    <Array name="_d16_1">
+    <Array name="d16_1">
         <Attribute name="minimum" type="Int16">
             <value>-32768</value>
         </Attribute>
@@ -16,7 +16,7 @@
         <Int16/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d16_2">
+    <Array name="d16_2">
         <Attribute name="minimum" type="Int16">
             <value>-32768</value>
         </Attribute>
@@ -43,7 +43,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d32_1">
+    <Array name="d32_1">
         <Attribute name="minimum" type="Int32">
             <value>-2147483648</value>
         </Attribute>
@@ -61,7 +61,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d32_2">
+    <Array name="d32_2">
         <Attribute name="minimum" type="Int32">
             <value>-2147483648</value>
         </Attribute>

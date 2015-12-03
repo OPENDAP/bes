@@ -134,12 +134,12 @@
             <value>atc_prt_convert_v3.txt,ext_temps_constants_convert_v3.txt,scat_temps_convert_v1.txt,radiometer_constants_convert_v2.txt,cmd_gn.dat</value>
         </Attribute>
     </Attribute>
-    <Attribute name="_Aquarius_Data" type="Container"/>
-    <Attribute name="_Aquarius_Flags" type="Container"/>
-    <Attribute name="_Block_Attributes" type="Container"/>
-    <Attribute name="_Converted_Telemetry" type="Container"/>
-    <Attribute name="_Navigation" type="Container"/>
-    <Array name="_Aquarius_Data_Kpc_HH_ant">
+    <Attribute name="Aquarius_Data" type="Container"/>
+    <Attribute name="Aquarius_Flags" type="Container"/>
+    <Attribute name="Block_Attributes" type="Container"/>
+    <Attribute name="Converted_Telemetry" type="Container"/>
+    <Attribute name="Navigation" type="Container"/>
+    <Array name="Aquarius_Data_Kpc_HH_ant">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for ANT HH NRCS</value>
         </Attribute>
@@ -153,7 +153,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_HH_toa">
+    <Array name="Aquarius_Data_Kpc_HH_toa">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for TOA HH NRCS</value>
         </Attribute>
@@ -167,7 +167,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_HV_ant">
+    <Array name="Aquarius_Data_Kpc_HV_ant">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for ANT HV NRCS</value>
         </Attribute>
@@ -181,7 +181,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_HV_toa">
+    <Array name="Aquarius_Data_Kpc_HV_toa">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for TOA HV NRCS</value>
         </Attribute>
@@ -195,7 +195,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_VH_ant">
+    <Array name="Aquarius_Data_Kpc_VH_ant">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for ANT VH NRCS</value>
         </Attribute>
@@ -209,7 +209,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_VH_toa">
+    <Array name="Aquarius_Data_Kpc_VH_toa">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for TOA VH NRCS</value>
         </Attribute>
@@ -223,7 +223,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_VV_ant">
+    <Array name="Aquarius_Data_Kpc_VV_ant">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for ANT VV NRCS</value>
         </Attribute>
@@ -237,7 +237,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_VV_toa">
+    <Array name="Aquarius_Data_Kpc_VV_toa">
         <Attribute name="long_name" type="String">
             <value>Kpc statistical uncertainty for TOA VV NRCS</value>
         </Attribute>
@@ -251,7 +251,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_Kpc_total">
+    <Array name="Aquarius_Data_Kpc_total">
         <Attribute name="long_name" type="String">
             <value>Statistical uncertainty for total power NRCS</value>
         </Attribute>
@@ -265,7 +265,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_SSS">
+    <Array name="Aquarius_Data_SSS">
         <Attribute name="long_name" type="String">
             <value>Sea Surface Salinity</value>
         </Attribute>
@@ -282,7 +282,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_SSS_error">
+    <Array name="Aquarius_Data_SSS_error">
         <Attribute name="long_name" type="String">
             <value>Sea Surface Salinity error</value>
         </Attribute>
@@ -299,7 +299,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_SSS_land">
+    <Array name="Aquarius_Data_SSS_land">
         <Attribute name="long_name" type="String">
             <value>Sea Surface Salinity Land Corr</value>
         </Attribute>
@@ -316,7 +316,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_SSS">
+    <Array name="Aquarius_Data_anc_SSS">
         <Attribute name="long_name" type="String">
             <value>Sea surface salinity climatology</value>
         </Attribute>
@@ -333,7 +333,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_Tb_dw">
+    <Array name="Aquarius_Data_anc_Tb_dw">
         <Attribute name="long_name" type="String">
             <value>Downwelling atmospheric brightness temperature</value>
         </Attribute>
@@ -350,7 +350,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_Tb_up">
+    <Array name="Aquarius_Data_anc_Tb_up">
         <Attribute name="long_name" type="String">
             <value>Upwelling atmospheric brightness temperature</value>
         </Attribute>
@@ -367,7 +367,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_cwat">
+    <Array name="Aquarius_Data_anc_cwat">
         <Attribute name="long_name" type="String">
             <value>Cloud Water</value>
         </Attribute>
@@ -384,7 +384,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_surface_pressure">
+    <Array name="Aquarius_Data_anc_surface_pressure">
         <Attribute name="long_name" type="String">
             <value>Surface Pressure</value>
         </Attribute>
@@ -401,7 +401,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_surface_temp">
+    <Array name="Aquarius_Data_anc_surface_temp">
         <Attribute name="long_name" type="String">
             <value>Surface Temperature</value>
         </Attribute>
@@ -418,7 +418,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_trans">
+    <Array name="Aquarius_Data_anc_trans">
         <Attribute name="long_name" type="String">
             <value>Atmospheric Transmittance</value>
         </Attribute>
@@ -432,7 +432,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_wind_dir">
+    <Array name="Aquarius_Data_anc_wind_dir">
         <Attribute name="long_name" type="String">
             <value>Ancillary Wind Direction 10m above surface</value>
         </Attribute>
@@ -449,7 +449,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_anc_wind_speed">
+    <Array name="Aquarius_Data_anc_wind_speed">
         <Attribute name="long_name" type="String">
             <value>Ancillary Wind Speed 10m above surface</value>
         </Attribute>
@@ -466,7 +466,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_dTB_H">
+    <Array name="Aquarius_Data_dTB_H">
         <Attribute name="long_name" type="String">
             <value>delta Tb from scatterometer for H pol</value>
         </Attribute>
@@ -483,7 +483,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_dTB_H_uncertainty">
+    <Array name="Aquarius_Data_dTB_H_uncertainty">
         <Attribute name="long_name" type="String">
             <value>Uncertainty in delta Tb-H</value>
         </Attribute>
@@ -500,7 +500,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_dTB_V">
+    <Array name="Aquarius_Data_dTB_V">
         <Attribute name="long_name" type="String">
             <value>delta Tb from scatterometer for V pol</value>
         </Attribute>
@@ -517,7 +517,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_dTB_V_uncertainty">
+    <Array name="Aquarius_Data_dTB_V_uncertainty">
         <Attribute name="long_name" type="String">
             <value>Uncertainty in delta Tb-V</value>
         </Attribute>
@@ -534,7 +534,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_Ta3">
+    <Array name="Aquarius_Data_rad_Ta3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta 3rd Stokes</value>
         </Attribute>
@@ -551,7 +551,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_TaH">
+    <Array name="Aquarius_Data_rad_TaH">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta H polarization</value>
         </Attribute>
@@ -568,7 +568,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_TaV">
+    <Array name="Aquarius_Data_rad_TaV">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta V polarization</value>
         </Attribute>
@@ -585,7 +585,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_TbH">
+    <Array name="Aquarius_Data_rad_TbH">
         <Attribute name="long_name" type="String">
             <value>Earth surface Tb H polarization</value>
         </Attribute>
@@ -602,7 +602,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_TbV">
+    <Array name="Aquarius_Data_rad_TbV">
         <Attribute name="long_name" type="String">
             <value>Earth surface Tb V polarization</value>
         </Attribute>
@@ -619,7 +619,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_exp_Ta3">
+    <Array name="Aquarius_Data_rad_exp_Ta3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta 3rd Stokes (expected)</value>
         </Attribute>
@@ -636,7 +636,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_exp_TaH">
+    <Array name="Aquarius_Data_rad_exp_TaH">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta H (expected)</value>
         </Attribute>
@@ -653,7 +653,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_exp_TaV">
+    <Array name="Aquarius_Data_rad_exp_TaV">
         <Attribute name="long_name" type="String">
             <value>Radiometer Ta V (expected)</value>
         </Attribute>
@@ -670,7 +670,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_far_TaH">
+    <Array name="Aquarius_Data_rad_far_TaH">
         <Attribute name="long_name" type="String">
             <value>Radiometer Faraday Angle</value>
         </Attribute>
@@ -687,7 +687,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_dir_3">
+    <Array name="Aquarius_Data_rad_galact_Ta_dir_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Direct Corr 3rd Stokes</value>
         </Attribute>
@@ -704,7 +704,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_dir_H">
+    <Array name="Aquarius_Data_rad_galact_Ta_dir_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Direct Corr H polar</value>
         </Attribute>
@@ -721,7 +721,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_dir_V">
+    <Array name="Aquarius_Data_rad_galact_Ta_dir_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Direct Corr V polar</value>
         </Attribute>
@@ -738,7 +738,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_ref_3">
+    <Array name="Aquarius_Data_rad_galact_Ta_ref_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Reflect Corr 3rd Stokes</value>
         </Attribute>
@@ -755,7 +755,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_ref_H">
+    <Array name="Aquarius_Data_rad_galact_Ta_ref_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Reflect Corr H polar</value>
         </Attribute>
@@ -772,7 +772,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_galact_Ta_ref_V">
+    <Array name="Aquarius_Data_rad_galact_Ta_ref_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Galactic Reflect Corr V polar</value>
         </Attribute>
@@ -789,7 +789,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_ice_frac">
+    <Array name="Aquarius_Data_rad_ice_frac">
         <Attribute name="long_name" type="String">
             <value>Fraction of ice contamination (radiometer)</value>
         </Attribute>
@@ -803,7 +803,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_land_frac">
+    <Array name="Aquarius_Data_rad_land_frac">
         <Attribute name="long_name" type="String">
             <value>Fraction of land contamination (radiometer)</value>
         </Attribute>
@@ -817,7 +817,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_land_toa_H">
+    <Array name="Aquarius_Data_rad_land_toa_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOA Land Corr H polar</value>
         </Attribute>
@@ -834,7 +834,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_land_toa_V">
+    <Array name="Aquarius_Data_rad_land_toa_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOA Land Corr H polar</value>
         </Attribute>
@@ -851,7 +851,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_moon_Ta_ref_3">
+    <Array name="Aquarius_Data_rad_moon_Ta_ref_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Lunar Reflect Corr 3rd Stokes</value>
         </Attribute>
@@ -868,7 +868,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_moon_Ta_ref_H">
+    <Array name="Aquarius_Data_rad_moon_Ta_ref_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Lunar Reflect Corr H polar</value>
         </Attribute>
@@ -885,7 +885,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_moon_Ta_ref_V">
+    <Array name="Aquarius_Data_rad_moon_Ta_ref_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Lunar Reflect Corr V polar</value>
         </Attribute>
@@ -902,7 +902,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_bak_3">
+    <Array name="Aquarius_Data_rad_solar_Ta_bak_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Back Scattered 3rd Stokes</value>
         </Attribute>
@@ -919,7 +919,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_bak_H">
+    <Array name="Aquarius_Data_rad_solar_Ta_bak_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Back Scattered H polar</value>
         </Attribute>
@@ -936,7 +936,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_bak_V">
+    <Array name="Aquarius_Data_rad_solar_Ta_bak_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Back Scattered V polar</value>
         </Attribute>
@@ -953,7 +953,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_dir_3">
+    <Array name="Aquarius_Data_rad_solar_Ta_dir_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Direct Corr 3rd Stokes</value>
         </Attribute>
@@ -970,7 +970,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_dir_H">
+    <Array name="Aquarius_Data_rad_solar_Ta_dir_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Direct Corr H polar</value>
         </Attribute>
@@ -987,7 +987,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_dir_V">
+    <Array name="Aquarius_Data_rad_solar_Ta_dir_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Direct Corr V polar</value>
         </Attribute>
@@ -1004,7 +1004,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_ref_3">
+    <Array name="Aquarius_Data_rad_solar_Ta_ref_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Reflect Corr 3rd Stokes</value>
         </Attribute>
@@ -1021,7 +1021,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_ref_H">
+    <Array name="Aquarius_Data_rad_solar_Ta_ref_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Reflect Corr H polar</value>
         </Attribute>
@@ -1038,7 +1038,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_solar_Ta_ref_V">
+    <Array name="Aquarius_Data_rad_solar_Ta_ref_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer Solar Reflect Corr V polar</value>
         </Attribute>
@@ -1055,7 +1055,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_toa_H">
+    <Array name="Aquarius_Data_rad_toa_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOA Tb H polarization</value>
         </Attribute>
@@ -1072,7 +1072,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_toa_V">
+    <Array name="Aquarius_Data_rad_toa_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOA Tb V polarization</value>
         </Attribute>
@@ -1089,7 +1089,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_toi_3">
+    <Array name="Aquarius_Data_rad_toi_3">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOI Tb 3rd Stokes</value>
         </Attribute>
@@ -1106,7 +1106,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_toi_H">
+    <Array name="Aquarius_Data_rad_toi_H">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOI Tb H polarization</value>
         </Attribute>
@@ -1123,7 +1123,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_rad_toi_V">
+    <Array name="Aquarius_Data_rad_toi_V">
         <Attribute name="long_name" type="String">
             <value>Radiometer TOI Tb V polarization</value>
         </Attribute>
@@ -1140,7 +1140,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_HH_ant">
+    <Array name="Aquarius_Data_scat_HH_ant">
         <Attribute name="long_name" type="String">
             <value>TOI Scatterometer NRCS for HH polarization</value>
         </Attribute>
@@ -1157,7 +1157,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_HH_toa">
+    <Array name="Aquarius_Data_scat_HH_toa">
         <Attribute name="long_name" type="String">
             <value>TOA Scatterometer NRCS for HH polarization</value>
         </Attribute>
@@ -1174,7 +1174,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_HV_ant">
+    <Array name="Aquarius_Data_scat_HV_ant">
         <Attribute name="long_name" type="String">
             <value>TOI Scatterometer NRCS for HV polarization</value>
         </Attribute>
@@ -1191,7 +1191,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_HV_toa">
+    <Array name="Aquarius_Data_scat_HV_toa">
         <Attribute name="long_name" type="String">
             <value>TOA Scatterometer NRCS for HV polarization</value>
         </Attribute>
@@ -1208,7 +1208,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_VH_ant">
+    <Array name="Aquarius_Data_scat_VH_ant">
         <Attribute name="long_name" type="String">
             <value>TOI Scatterometer NRCS for VH polarization</value>
         </Attribute>
@@ -1225,7 +1225,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_VH_toa">
+    <Array name="Aquarius_Data_scat_VH_toa">
         <Attribute name="long_name" type="String">
             <value>TOA Scatterometer NRCS for VH polarization</value>
         </Attribute>
@@ -1242,7 +1242,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_VV_ant">
+    <Array name="Aquarius_Data_scat_VV_ant">
         <Attribute name="long_name" type="String">
             <value>TOI Scatterometer NRCS for VV polarization</value>
         </Attribute>
@@ -1259,7 +1259,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_VV_toa">
+    <Array name="Aquarius_Data_scat_VV_toa">
         <Attribute name="long_name" type="String">
             <value>TOA Scatterometer NRCS for VV polarization</value>
         </Attribute>
@@ -1276,7 +1276,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_ice_frac">
+    <Array name="Aquarius_Data_scat_ice_frac">
         <Attribute name="long_name" type="String">
             <value>Fraction of ice contamination (scatterometer)</value>
         </Attribute>
@@ -1290,7 +1290,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_land_frac">
+    <Array name="Aquarius_Data_scat_land_frac">
         <Attribute name="long_name" type="String">
             <value>Fraction of land contamination (scatterometer)</value>
         </Attribute>
@@ -1304,7 +1304,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_tot_toa">
+    <Array name="Aquarius_Data_scat_tot_toa">
         <Attribute name="long_name" type="String">
             <value>TOA Scatterometer (Total)</value>
         </Attribute>
@@ -1321,7 +1321,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_scat_wind_speed">
+    <Array name="Aquarius_Data_scat_wind_speed">
         <Attribute name="long_name" type="String">
             <value>Scatterometer Wind Speed</value>
         </Attribute>
@@ -1338,7 +1338,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Data_wind_uncertainty">
+    <Array name="Aquarius_Data_wind_uncertainty">
         <Attribute name="long_name" type="String">
             <value>Estimated wind speed error</value>
         </Attribute>
@@ -1355,7 +1355,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Aquarius_Flags_rad_rfi_flags">
+    <Array name="Aquarius_Flags_rad_rfi_flags">
         <Attribute name="long_name" type="String">
             <value>Radiometer RFI flags</value>
         </Attribute>
@@ -1371,7 +1371,7 @@
         <dimension size="4"/>
         <dimension size="12"/>
     </Array>
-    <Array name="_Aquarius_Flags_radiometer_flags">
+    <Array name="Aquarius_Flags_radiometer_flags">
         <Attribute name="long_name" type="String">
             <value>Radiometer data quality flags</value>
         </Attribute>
@@ -1422,7 +1422,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Aquarius_Flags_scat_rfi_flags">
+    <Array name="Aquarius_Flags_scat_rfi_flags">
         <Attribute name="long_name" type="String">
             <value>Scatterometer RFI flags</value>
         </Attribute>
@@ -1437,7 +1437,7 @@
         <dimension size="3"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_Aquarius_Flags_scatterometer_flags">
+    <Array name="Aquarius_Flags_scatterometer_flags">
         <Attribute name="long_name" type="String">
             <value>Scatterometer data quality flags</value>
         </Attribute>
@@ -1466,7 +1466,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Block_Attributes_rad_samples">
+    <Array name="Block_Attributes_rad_samples">
         <Attribute name="long_name" type="String">
             <value>Number of radiometer samples per average</value>
         </Attribute>
@@ -1481,7 +1481,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Block_Attributes_scat_samples">
+    <Array name="Block_Attributes_scat_samples">
         <Attribute name="long_name" type="String">
             <value>Number of scatterometer samples per average</value>
         </Attribute>
@@ -1495,7 +1495,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Block_Attributes_sec">
+    <Array name="Block_Attributes_sec">
         <Attribute name="long_name" type="String">
             <value>Block time, seconds of day</value>
         </Attribute>
@@ -1511,7 +1511,7 @@
         <Float64/>
         <dimension size="4042"/>
     </Array>
-    <Array name="_Block_Attributes_secGPS">
+    <Array name="Block_Attributes_secGPS">
         <Attribute name="long_name" type="String">
             <value>Block time, GPS time</value>
         </Attribute>
@@ -1527,7 +1527,7 @@
         <Float64/>
         <dimension size="4042"/>
     </Array>
-    <Array name="_Converted_Telemetry_rad_caltemps">
+    <Array name="Converted_Telemetry_rad_caltemps">
         <Attribute name="long_name" type="String">
             <value>Radiometer calibration temperatures</value>
         </Attribute>
@@ -1541,7 +1541,7 @@
         <dimension size="4042"/>
         <dimension size="85"/>
     </Array>
-    <Array name="_Navigation_att_ang">
+    <Array name="Navigation_att_ang">
         <Attribute name="long_name" type="String">
             <value>Spacecraft roll, pitch, yaw</value>
         </Attribute>
@@ -1559,7 +1559,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_beam_clat">
+    <Array name="Navigation_beam_clat">
         <Attribute name="long_name" type="String">
             <value>Beam Center Latitude</value>
         </Attribute>
@@ -1580,7 +1580,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_beam_clon">
+    <Array name="Navigation_beam_clon">
         <Attribute name="long_name" type="String">
             <value>Beam Center Longitude</value>
         </Attribute>
@@ -1601,7 +1601,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_cellatfoot">
+    <Array name="Navigation_cellatfoot">
         <Attribute name="long_name" type="String">
             <value>Geodectic Latitudes (3 dB)</value>
         </Attribute>
@@ -1623,7 +1623,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Navigation_cellonfoot">
+    <Array name="Navigation_cellonfoot">
         <Attribute name="long_name" type="String">
             <value>East Longitudes (3 dB)</value>
         </Attribute>
@@ -1645,7 +1645,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Navigation_celphi">
+    <Array name="Navigation_celphi">
         <Attribute name="long_name" type="String">
             <value>Boresight Earth Azimuth Angle</value>
         </Attribute>
@@ -1666,7 +1666,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_celtht">
+    <Array name="Navigation_celtht">
         <Attribute name="long_name" type="String">
             <value>Boresight Earth Incidence Angle</value>
         </Attribute>
@@ -1687,7 +1687,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_glxlat">
+    <Array name="Navigation_glxlat">
         <Attribute name="long_name" type="String">
             <value>Galaxy Declination (J2000)</value>
         </Attribute>
@@ -1708,7 +1708,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_glxlon">
+    <Array name="Navigation_glxlon">
         <Attribute name="long_name" type="String">
             <value>Galaxy Right Ascention (J2000)</value>
         </Attribute>
@@ -1729,7 +1729,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_moond">
+    <Array name="Navigation_moond">
         <Attribute name="long_name" type="String">
             <value>Earth-to-Moon unit vector (eci)</value>
         </Attribute>
@@ -1743,7 +1743,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_moonglt">
+    <Array name="Navigation_moonglt">
         <Attribute name="long_name" type="String">
             <value>Moon Glint Angle</value>
         </Attribute>
@@ -1764,7 +1764,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_orb_pos">
+    <Array name="Navigation_orb_pos">
         <Attribute name="long_name" type="String">
             <value>Orbital position vector</value>
         </Attribute>
@@ -1785,7 +1785,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_orb_vel">
+    <Array name="Navigation_orb_vel">
         <Attribute name="long_name" type="String">
             <value>Orbital velocity vector</value>
         </Attribute>
@@ -1806,7 +1806,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_scalt">
+    <Array name="Navigation_scalt">
         <Attribute name="long_name" type="String">
             <value>Spacecraft altitude</value>
         </Attribute>
@@ -1822,7 +1822,7 @@
         <Float64/>
         <dimension size="4042"/>
     </Array>
-    <Array name="_Navigation_scat_beam_clat">
+    <Array name="Navigation_scat_beam_clat">
         <Attribute name="long_name" type="String">
             <value>Scatterometer Beam Center Latitude</value>
         </Attribute>
@@ -1843,7 +1843,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_scat_beam_clon">
+    <Array name="Navigation_scat_beam_clon">
         <Attribute name="long_name" type="String">
             <value>Scatterometer Beam Center Longitude</value>
         </Attribute>
@@ -1864,7 +1864,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_scat_latfoot">
+    <Array name="Navigation_scat_latfoot">
         <Attribute name="long_name" type="String">
             <value>Scatterometer Latitude Footprint</value>
         </Attribute>
@@ -1886,7 +1886,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Navigation_scat_lonfoot">
+    <Array name="Navigation_scat_lonfoot">
         <Attribute name="long_name" type="String">
             <value>Scatterometer Longitude Footprint</value>
         </Attribute>
@@ -1908,7 +1908,7 @@
         <dimension size="3"/>
         <dimension size="4"/>
     </Array>
-    <Array name="_Navigation_sclat">
+    <Array name="Navigation_sclat">
         <Attribute name="long_name" type="String">
             <value>Spacecraft nadir point latitude</value>
         </Attribute>
@@ -1928,7 +1928,7 @@
         <Float64/>
         <dimension size="4042"/>
     </Array>
-    <Array name="_Navigation_sclon">
+    <Array name="Navigation_sclon">
         <Attribute name="long_name" type="String">
             <value>Spacecraft nadir point longitude</value>
         </Attribute>
@@ -1948,7 +1948,7 @@
         <Float64/>
         <dimension size="4042"/>
     </Array>
-    <Array name="_Navigation_sund">
+    <Array name="Navigation_sund">
         <Attribute name="long_name" type="String">
             <value>Earth-to-Sun unit vector (eci)</value>
         </Attribute>
@@ -1962,7 +1962,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_sunglt">
+    <Array name="Navigation_sunglt">
         <Attribute name="long_name" type="String">
             <value>Sun Glint Angle</value>
         </Attribute>
@@ -1983,7 +1983,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_sunphi">
+    <Array name="Navigation_sunphi">
         <Attribute name="long_name" type="String">
             <value>Sun Vector Earth Azimuth Angle</value>
         </Attribute>
@@ -2004,7 +2004,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_sunr">
+    <Array name="Navigation_sunr">
         <Attribute name="long_name" type="String">
             <value>Sun reflection unit vector (eci)</value>
         </Attribute>
@@ -2018,7 +2018,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_suntht">
+    <Array name="Navigation_suntht">
         <Attribute name="long_name" type="String">
             <value>Sun Vector Earth Incidence Angle</value>
         </Attribute>
@@ -2039,7 +2039,7 @@
         <dimension size="4042"/>
         <dimension size="3"/>
     </Array>
-    <Array name="_Navigation_zang">
+    <Array name="Navigation_zang">
         <Attribute name="long_name" type="String">
             <value>Intra-Orbit Angle</value>
         </Attribute>

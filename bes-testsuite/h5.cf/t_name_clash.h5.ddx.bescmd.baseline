@@ -40,11 +40,11 @@
             <value>0</value>
         </Attribute>
     </Attribute>
-    <Attribute name="_d1" type="Container"/>
-    <Attribute name="_g" type="Container"/>
-    <Attribute name="_g_1" type="Container"/>
-    <Attribute name="_g_1_1" type="Container"/>
-    <Array name="_d1_">
+    <Attribute name="d1" type="Container"/>
+    <Attribute name="g" type="Container"/>
+    <Attribute name="g_1" type="Container"/>
+    <Attribute name="g_1_1" type="Container"/>
+    <Array name="d1_">
         <Attribute name="attr_1" type="Int32">
             <value>1</value>
             <value>2</value>
@@ -93,7 +93,7 @@
         <dimension size="1"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_g_dset1">
+    <Array name="g_dset1">
         <Attribute name="origname" type="String">
             <value>dset1</value>
         </Attribute>
@@ -104,7 +104,7 @@
         <dimension size="1"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_g_dset1_1">
+    <Array name="g_dset1_1">
         <Attribute name="origname" type="String">
             <value>dset1_1</value>
         </Attribute>
@@ -115,7 +115,7 @@
         <dimension size="1"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_g_dset1_2">
+    <Array name="g_dset1_2">
         <Attribute name="origname" type="String">
             <value>dset1_2</value>
         </Attribute>
@@ -126,7 +126,7 @@
         <dimension size="1"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_g_dset1_3">
+    <Array name="g_dset1_3">
         <Attribute name="origname" type="String">
             <value>g_dset1</value>
         </Attribute>
@@ -137,7 +137,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_g_dset1_1_1">
+    <Array name="g_dset1_1_1">
         <Attribute name="origname" type="String">
             <value>g_dset1_1</value>
         </Attribute>
