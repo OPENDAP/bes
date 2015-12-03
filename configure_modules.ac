@@ -425,26 +425,25 @@ AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this lo
 
 AS_IF([test -z "$with_gdal_prefix" -a -n "$ac_bes_dependencies_prefix"],
 	[with_gdal_prefix=$ac_bes_dependencies_prefix])
-	
-if test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config
-then
-    AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
+ 
+AS_IF([test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config],
+    dnl then
+    [AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
     GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
     GDAL_FOUND="yes"
+    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])],
     
-    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
-elif test -n "$with_gdal_prefix"
-then
-    AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
-    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])
-else
-    AC_MSG_NOTICE([Looking for GDAL.])
+    dnl if
+    [test -n "$with_gdal_prefix"],
+    dnl then
+    [AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
+    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])],
+    
+    dnl else
+    [AC_MSG_NOTICE([Looking for GDAL.])
     AX_LIB_GDAL([1.10.0])
-    if test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"; then
-        GDAL_FOUND="yes"
-    fi
-fi
+    AS_IF([test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"], [GDAL_FOUND=yes])])
 
 AM_CONDITIONAL([BUILD_GDAL], [test x$GDAL_FOUND = xyes])
 
@@ -843,6 +842,10 @@ AM_COND_IF([DAP_MODULES],
 	modules/fileout_netcdf/unit-tests/test_config.h 
 	modules/fileout_netcdf/unit-tests/atlocal
 	
+    modules/fileout_netcdf/tests/Makefile 
+    modules/fileout_netcdf/tests/atlocal
+    modules/fileout_netcdf/data/build_test_data/Makefile 
+	
 	modules/gateway_module/Makefile 
 	modules/gateway_module/bes-testsuite/Makefile 
 	modules/gateway_module/bes-testsuite/atlocal 
@@ -923,6 +926,7 @@ AM_COND_IF([DAP_MODULES],
     
     AC_CONFIG_TESTDIR(modules/netcdf_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/unit-tests, [ncdump])
+    AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/bes-testsuite, [standalone])
