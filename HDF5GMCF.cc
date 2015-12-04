@@ -2447,6 +2447,9 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(E
       
     bool latlon_2d_cv_check1 = false;
 
+    // Some products(TOM MEaSURE) provide the true dimension scales for 2-D lat,lon. So relax this check.
+    latlon_2d_cv_check1 = true;
+#if 0
     // If having 2-D lat/lon, the corresponding dimension must be pure and the CV type must be FILLINDEX.
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
@@ -2455,10 +2458,11 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(E
             break;
         }
     }
+#endif
 
     bool latlon_2d_cv_check2 = true;
 
-    // Even finding FILLINDEX, there may still not be 2-D lat/lon. Check the units attributes and lat/lon pairs.
+    // There may still not be 2-D lat/lon. Check the units attributes and lat/lon pairs.
     if(true == latlon_2d_cv_check1) {
         BESDEBUG("h5","Coming to check if having 2d latlon coordinates for a netCDF-4 like product. "<<endl);
 
