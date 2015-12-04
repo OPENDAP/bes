@@ -35,7 +35,7 @@ echo prefix: $prefix
 #
 newClone=false
 
-if test ! -d "$HOME/hyrax-dependencies" -o ! -f "$HOME/hyrax-dependencies/Makefile"
+if test ! -f "$HOME/hyrax-dependencies/Makefile"
 then
     echo "Cloning hyrax-dependencies."
     (cd $HOME && git clone https://github.com/opendap/hyrax-dependencies)
@@ -57,7 +57,7 @@ echo pull_status: $pull_status
 
 if test "$newClone" = "true" -o ! $pull_status = "up-to-date"  -o ! -x "$HOME/deps/bin/bison" 
 then
-    echo "(Re)Building hyrax-dependencies"
+    echo "(Re)Building hyrax-dependencies (stdout > /dev/null)"
     (cd $HOME/hyrax-dependencies && make for-travis -j7) > /dev/null
     echo "Completed hyrax-dependencies build - stdout to /dev/null to save space"
 else
@@ -66,7 +66,7 @@ fi
 
 
 #------------------------------------------------------------------------------
-# Build libdap project
+# Build libdap4 project
 #
 #
 newClone=false
