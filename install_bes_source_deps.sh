@@ -64,7 +64,7 @@ else
     echo "Using cached hyrax-dependencies."
 fi
 
-ls -l $HOME/deps/lib
+# ls -l $HOME/deps/lib
 
 #------------------------------------------------------------------------------
 # Build libdap4 project
@@ -102,5 +102,5 @@ else
 fi
 
 
-ls -l $HOME/deps/lib
+ls -lR $HOME/deps
 
