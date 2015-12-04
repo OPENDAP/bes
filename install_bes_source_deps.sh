@@ -64,6 +64,7 @@ else
     echo "Using cached hyrax-dependencies."
 fi
 
+ls -l $HOME/deps/lib
 
 #------------------------------------------------------------------------------
 # Build libdap4 project
@@ -101,21 +102,5 @@ else
 fi
 
 
+ls -l $HOME/deps/lib
 
-
-exit
-
-
-
-
-# unlike hyrax-dependencies, the libdap tar needs --prefix to be the
-# complete dir name. The hyrax-deps... project is a bit of a hack...
-
-#if test ! -x "$HOME/deps/bin/dap-config" -o ! "`dap-config --version`" = "libdap 3.16.0"
-#then
-#    wget http://www.opendap.org/pub/tmp/travis/libdap-3.16.0.tar.gz
-#    tar -xzf libdap-3.16.0.tar.gz
-#    (cd libdap-3.16.0 && ./configure --prefix=$prefix/deps/ && make -j7 && make install)
-#else
-#    echo "Using cached libdap."
-#fi
