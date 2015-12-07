@@ -261,6 +261,7 @@ namespace HDF5CF
                    dimnameflag(false)
 	    {
 	    }
+            Var(Var*var);
 	    virtual ~Var ();
 
 	public:

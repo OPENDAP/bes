@@ -2164,7 +2164,7 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() throw(Exception){
                  }
 
                 if((*irv)->dims.size()!=1) 
-                    throw3("Coard coordinate variable",(*irv)->name, "is not 1D");
+                    throw3("Coard coordinate variable ",(*irv)->name, "is not 1D");
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(*irs);
@@ -2425,6 +2425,15 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
         this->cvars.push_back(GMcvar);
     }
 
+
+//Debugging
+#if 0
+for (set<string>::iterator irs = dimnamelist.begin();
+        irs != dimnamelist.end();irs++) {
+cerr<<"dimension name is "<<(*irs)<<endl;
+}
+#endif
+
 }
 
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
@@ -2630,14 +2639,42 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
 
                 // Obtain the first dimension of this variable
                 string latdim0 = (*irv)->getDimensions()[0]->name;
+//cerr<<"latdim0 is "<<latdim0 <<endl;
 
                 // Remove the CV corresponding to latdim0
-                for (vector<GMCVar *>:: iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
-                    if((*i)->cfdimname == latdim0) {
-                        delete(*i);
-                        this->cvars.erase(i);
-                        break;
+                for (vector<GMCVar *>:: iterator i= this->cvars.begin(); i!=this->cvars.end(); ) {
+                    if((*i)->cfdimname == latdim0)  {
+                        if(CV_FILLINDEX == (*i)->cvartype) {
+                            delete(*i);
+                            i = this->cvars.erase(i);
+                        }
+                        else if(CV_EXIST == (*i)->cvartype) { 
+                            // Add this var. to the var list.
+                            Var *var = new Var((*i));
+                            this->vars.push_back(var);
+                            // Remove this var. from the GMCVar list.
+                            delete(*i);
+                            i = this->cvars.erase(i);
+
+                        }
+                        else {// the latdimname should be either the CV_FILLINDEX or CV_EXIST.
+                            if(CV_LAT_MISS == (*i)->cvartype) 
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_LAT_MISS");
+                            else if(CV_LON_MISS == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_LON_MISS");
+                            else if(CV_NONLATLON_MISS == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_NONLATLON_MISS");
+                            else if(CV_MODIFY == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_MODIFY");
+                            else if(CV_SPECIAL == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_SPECIAL");
+                            else 
+                                throw3("For the 2-D lat/lon case, the latitude dimension name ",latdim0, "is a coordinate variable of type CV_UNSUPPORTED");
+ 
+                        }
                     }
+                    else 
+                        ++i;
                 }
                 // Add the 2-D latitude(latname) to the CV list.
                 GMCVar* GMcvar = new GMCVar(*irv);
@@ -2665,15 +2702,41 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
                 string londim0 = (*irv)->getDimensions()[1]->name;
 
                 // Remove the CV corresponding to londim0
-                for (vector<GMCVar *>:: iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
+                for (vector<GMCVar *>:: iterator i= this->cvars.begin(); i!=this->cvars.end(); ) {
+                    // NEED more work!!! should also remove ntime from the GMCVar list but add it to the cvar list.Same for Lon.
                     if((*i)->cfdimname == londim0) {
-                        delete(*i);
-                        this->cvars.erase(i);
-                        break;
+                        if(CV_FILLINDEX == (*i)->cvartype) {
+                            delete(*i);
+                            i= this->cvars.erase(i);
+                        }
+                        else if(CV_EXIST == (*i)->cvartype) { 
+                            // Add this var. to the var list.
+                            Var *var = new Var((*i));
+                            this->vars.push_back(var);
+                            // Remove this var. from the GMCVar list.
+                            delete(*i);
+                            i = this->cvars.erase(i);
+                        }
+                        else {// the latdimname should be either the CV_FILLINDEX or CV_EXIST.
+                            if(CV_LAT_MISS == (*i)->cvartype) 
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_LAT_MISS");
+                            else if(CV_LON_MISS == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_LON_MISS");
+                            else if(CV_NONLATLON_MISS == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_NONLATLON_MISS");
+                            else if(CV_MODIFY == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_MODIFY");
+                            else if(CV_SPECIAL == (*i)->cvartype)
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_SPECIAL");
+                            else 
+                                throw3("For the 2-D lat/lon case, the longitude dimension name ",londim0, "is a coordinate variable of type CV_UNSUPPORTED");
+                        }
                     }
+                    else
+                        ++i;
                 }
 
-                // Add the 2-D latitude(latname) to the CV list.
+                // Add the 2-D longitude(lonname) to the CV list.
                 GMCVar* GMcvar = new GMCVar(*irv);
                 GMcvar->cfdimname = londim0;
                 GMcvar->cvartype = CV_EXIST;
