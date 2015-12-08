@@ -1005,6 +1005,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Reflectivity ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>app_refl</value>
         </Attribute>
@@ -1032,6 +1035,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Reflectivity ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>n_ar_photons</value>
@@ -1061,6 +1067,9 @@
         <Attribute name="source" type="String">
             <value>Derived (elev_dem-gr_dem_range_bot_off)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_bot_window</value>
         </Attribute>
@@ -1088,6 +1097,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>DEM ANC File</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_dem</value>
@@ -1117,6 +1129,9 @@
         <Attribute name="source" type="String">
             <value>Derived (elev_dem+gr_dem_range_top_off)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_window</value>
         </Attribute>
@@ -1144,6 +1159,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude_dem</value>
@@ -1173,6 +1191,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude_dem</value>
         </Attribute>
@@ -1200,6 +1221,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived, TBD</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>surface_type</value>
@@ -1229,6 +1253,9 @@
         <Attribute name="source" type="String">
             <value>Derived (ht_ell/(speed_light/2.0))</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>transtime</value>
         </Attribute>
@@ -1257,6 +1284,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1284,6 +1314,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1314,6 +1347,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1342,6 +1378,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1369,6 +1408,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1399,6 +1441,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1427,6 +1472,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1454,6 +1502,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1484,6 +1535,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1512,6 +1566,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1539,6 +1596,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1569,6 +1629,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1597,6 +1660,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1624,6 +1690,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1654,6 +1723,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1682,6 +1754,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1706,6 +1781,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -1739,6 +1817,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1767,6 +1848,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1794,6 +1878,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1824,6 +1911,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1852,6 +1942,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1879,6 +1972,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1909,6 +2005,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -1937,6 +2036,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -1964,6 +2066,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -1994,6 +2099,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2022,6 +2130,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2040,6 +2151,9 @@
         </Attribute>
         <Attribute name="description" type="String">
             <value>altimetry histogram - count of the number of photons in each defined elevation bin.</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -2079,6 +2193,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2107,6 +2224,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2134,6 +2254,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2164,6 +2287,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2192,6 +2318,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2219,6 +2348,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2249,6 +2381,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2277,6 +2412,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2304,6 +2442,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2334,6 +2475,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2362,6 +2506,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2389,6 +2536,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2419,6 +2569,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2447,6 +2600,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2474,6 +2630,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2504,6 +2663,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2532,6 +2694,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2559,6 +2724,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2589,6 +2757,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2617,6 +2788,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2644,6 +2818,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2674,6 +2851,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2702,6 +2882,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2729,6 +2912,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2759,6 +2945,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2787,6 +2976,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2814,6 +3006,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2844,6 +3039,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2872,6 +3070,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2899,6 +3100,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -2929,6 +3133,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -2957,6 +3164,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -2984,6 +3194,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3014,6 +3227,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3042,6 +3258,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3069,6 +3288,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3099,6 +3321,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3127,6 +3352,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3154,6 +3382,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3184,6 +3415,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3211,6 +3445,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
@@ -3240,6 +3477,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
         </Attribute>
@@ -3268,6 +3508,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
@@ -3353,6 +3596,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3380,6 +3626,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3410,6 +3659,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3438,6 +3690,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3465,6 +3720,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3495,6 +3753,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3523,6 +3784,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3547,6 +3811,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -3580,6 +3847,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3608,6 +3878,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3635,6 +3908,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3665,6 +3941,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3693,6 +3972,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3720,6 +4002,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -3750,6 +4035,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3778,6 +4066,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3802,6 +4093,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -3835,6 +4129,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3863,6 +4160,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3887,6 +4187,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -3920,6 +4223,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -3948,6 +4254,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -3975,6 +4284,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4005,6 +4317,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4033,6 +4348,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4057,6 +4375,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -4090,6 +4411,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4118,6 +4442,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4136,6 +4463,9 @@
         </Attribute>
         <Attribute name="description" type="String">
             <value>atmosphere histogram - count of the number of photons in each defined elevation bin.</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -4175,6 +4505,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4203,6 +4536,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4227,6 +4563,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -4260,6 +4599,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4288,6 +4630,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4315,6 +4660,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4345,6 +4693,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4373,6 +4724,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4400,6 +4754,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4430,6 +4787,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4458,6 +4818,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4485,6 +4848,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4515,6 +4881,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4543,6 +4912,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4570,6 +4942,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4600,6 +4975,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4628,6 +5006,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4655,6 +5036,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4685,6 +5069,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4713,6 +5100,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4740,6 +5130,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4770,6 +5163,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4798,6 +5194,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4825,6 +5224,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4855,6 +5257,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4883,6 +5288,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4910,6 +5318,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -4940,6 +5351,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -4968,6 +5382,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -4992,6 +5409,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>        5000</value>
@@ -5025,6 +5445,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -5053,6 +5476,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -5080,6 +5506,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -5110,6 +5539,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -5138,6 +5570,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -5165,6 +5600,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -5195,6 +5633,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -5223,6 +5664,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
         </Attribute>
@@ -5250,6 +5694,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
@@ -5280,6 +5727,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
         </Attribute>
@@ -5307,6 +5757,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>elev_top_hist</value>
@@ -5336,6 +5789,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>histogram</value>
         </Attribute>
@@ -5364,6 +5820,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>n_hist_shots</value>
@@ -5884,6 +6343,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_sec_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="hertz" type="String">
             <value>           5</value>
         </Attribute>
@@ -5915,6 +6377,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Trop ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>range_1064_dry_trop_corr</value>
         </Attribute>
@@ -5939,6 +6404,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Trop ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value>           5</value>
@@ -5971,6 +6439,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Trop ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>range_532_dry_trop_corr</value>
         </Attribute>
@@ -5998,6 +6469,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Trop ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>range_532_wet_trop_corr</value>
@@ -6819,6 +7293,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>heading</value>
         </Attribute>
@@ -6846,6 +7323,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>heading_sd</value>
@@ -6875,6 +7355,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>pitch</value>
         </Attribute>
@@ -6902,6 +7385,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>pitch_sd</value>
@@ -6931,6 +7417,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>roll</value>
         </Attribute>
@@ -6958,6 +7447,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>roll_sd</value>
@@ -6987,6 +7479,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>quality_num</value>
         </Attribute>
@@ -7014,6 +7509,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>comb_sd</value>
@@ -7043,6 +7541,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>ht_ell</value>
         </Attribute>
@@ -7070,6 +7571,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -7099,6 +7603,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -7126,6 +7633,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>v_east</value>
@@ -7155,6 +7665,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>v_north</value>
         </Attribute>
@@ -7182,6 +7695,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>v_up</value>
@@ -7211,6 +7727,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>solar_azimuth</value>
         </Attribute>
@@ -7238,6 +7757,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>solar_elevation</value>
@@ -7267,6 +7789,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-metadata.gps_sec_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -7294,6 +7819,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>gps_sow</value>
@@ -7323,6 +7851,9 @@
         <Attribute name="source" type="String">
             <value>L1A INS Data</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>latitude longitude time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>gps_week</value>
         </Attribute>
@@ -7351,6 +7882,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -7375,6 +7909,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -7407,6 +7944,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -7434,6 +7974,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -7463,6 +8006,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -7490,6 +8036,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -7519,6 +8068,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -7547,6 +8099,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -7571,6 +8126,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -7603,6 +8161,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -7630,6 +8191,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -7659,6 +8223,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -7686,6 +8253,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -7715,6 +8285,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -7743,6 +8316,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -7767,6 +8343,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -7799,6 +8378,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -7826,6 +8408,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -7855,6 +8440,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -7882,6 +8470,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -7911,6 +8502,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -7939,6 +8533,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -7963,6 +8560,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -7995,6 +8595,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -8022,6 +8625,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -8051,6 +8657,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -8078,6 +8687,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -8107,6 +8719,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -8135,6 +8750,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -8159,6 +8777,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8191,6 +8812,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -8218,6 +8842,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -8247,6 +8874,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -8274,6 +8904,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -8303,6 +8936,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -8327,6 +8963,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8355,6 +8994,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8387,6 +9029,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -8414,6 +9059,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -8443,6 +9091,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -8470,6 +9121,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -8499,6 +9153,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -8527,6 +9184,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -8551,6 +9211,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8583,6 +9246,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -8610,6 +9276,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -8639,6 +9308,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -8666,6 +9338,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -8695,6 +9370,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -8723,6 +9401,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -8747,6 +9428,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8779,6 +9463,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -8806,6 +9493,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -8835,6 +9525,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -8862,6 +9555,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -8891,6 +9587,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -8919,6 +9618,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -8943,6 +9645,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -8975,6 +9680,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9002,6 +9710,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -9031,6 +9742,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -9058,6 +9772,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -9087,6 +9804,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -9105,6 +9825,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -9140,6 +9863,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
         </Attribute>
@@ -9171,6 +9897,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9198,6 +9927,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -9227,6 +9959,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -9254,6 +9989,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -9283,6 +10021,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -9311,6 +10052,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -9335,6 +10079,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -9367,6 +10114,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9394,6 +10144,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -9423,6 +10176,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -9450,6 +10206,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -9479,6 +10238,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -9507,6 +10269,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -9531,6 +10296,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -9563,6 +10331,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9590,6 +10361,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -9619,6 +10393,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -9646,6 +10423,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -9675,6 +10455,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -9703,6 +10486,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -9727,6 +10513,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -9759,6 +10548,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9786,6 +10578,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -9815,6 +10610,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -9842,6 +10640,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -9871,6 +10672,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -9899,6 +10703,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -9923,6 +10730,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -9955,6 +10765,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -9982,6 +10795,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10011,6 +10827,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -10038,6 +10857,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -10067,6 +10889,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -10095,6 +10920,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -10119,6 +10947,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -10151,6 +10982,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -10178,6 +11012,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10207,6 +11044,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -10234,6 +11074,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -10263,6 +11106,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -10291,6 +11137,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -10315,6 +11164,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -10347,6 +11199,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -10374,6 +11229,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10403,6 +11261,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -10430,6 +11291,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -10459,6 +11323,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -10487,6 +11354,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -10511,6 +11381,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -10543,6 +11416,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -10570,6 +11446,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10599,6 +11478,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -10626,6 +11508,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -10655,6 +11540,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -10683,6 +11571,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -10707,6 +11598,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -10739,6 +11633,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -10766,6 +11663,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10795,6 +11695,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -10822,6 +11725,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -10851,6 +11757,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -10879,6 +11788,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -10903,6 +11815,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -10935,6 +11850,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -10962,6 +11880,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -10991,6 +11912,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11018,6 +11942,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -11047,6 +11974,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -11075,6 +12005,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -11099,6 +12032,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -11131,6 +12067,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -11158,6 +12097,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -11187,6 +12129,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11214,6 +12159,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -11243,6 +12191,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -11271,6 +12222,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -11295,6 +12249,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -11327,6 +12284,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -11354,6 +12314,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -11383,6 +12346,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11410,6 +12376,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -11439,6 +12408,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -11467,6 +12439,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -11491,6 +12466,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -11523,6 +12501,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -11550,6 +12531,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -11579,6 +12563,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11606,6 +12593,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -11635,6 +12625,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -11663,6 +12656,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -11687,6 +12683,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -11719,6 +12718,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -11746,6 +12748,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -11775,6 +12780,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11802,6 +12810,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
@@ -11831,6 +12842,9 @@
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
         </Attribute>
@@ -11859,6 +12873,9 @@
         <Attribute name="source" type="String">
             <value>Derived (gps_seconds-gps_second_offset)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>delta_time</value>
         </Attribute>
@@ -11883,6 +12900,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="hertz" type="String">
             <value> per photon</value>
@@ -11915,6 +12935,9 @@
         <Attribute name="source" type="String">
             <value>Derived (TBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>flag</value>
         </Attribute>
@@ -11942,6 +12965,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>latitude</value>
@@ -11971,6 +12997,9 @@
         <Attribute name="source" type="String">
             <value>Derived (Geolocation ATBD)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>longitude</value>
         </Attribute>
@@ -11999,6 +13028,9 @@
         <Attribute name="source" type="String">
             <value>Derived</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>photon_id</value>
         </Attribute>
@@ -12026,6 +13058,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>L1A Shottag packet</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time latitude longitude</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>shot_num</value>
@@ -13708,6 +14743,9 @@
         <Attribute name="source" type="String">
             <value>Derived: (2.95d8*delta_gps_sow)/(32*delta_PPSTag)</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>osc_corr</value>
         </Attribute>
@@ -13735,6 +14773,9 @@
         </Attribute>
         <Attribute name="source" type="String">
             <value>Derived: set to 1 if 0.95 &lt; osc_corr &gt; 1.05</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>time</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>osc_flag</value>

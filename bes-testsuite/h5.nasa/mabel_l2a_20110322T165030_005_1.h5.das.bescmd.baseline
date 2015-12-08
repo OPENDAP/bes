@@ -496,6 +496,7 @@ Attributes {
         String standard_name "app_refl";
         String description "Apparent Reflectivity";
         String source "Derived (Reflectivity ATBD)";
+        String coordinates "time latitude longitude";
         String origname "app_refl";
         String fullnamepath "/altimetry/app_refl/app_refl";
     }
@@ -506,6 +507,7 @@ Attributes {
         String standard_name "n_ar_photons";
         String description "Number of photons used in the AR computation.";
         String source "Derived (Reflectivity ATBD)";
+        String coordinates "time latitude longitude";
         String origname "n_ar_photons";
         String fullnamepath "/altimetry/app_refl/n_ar_photons";
     }
@@ -516,6 +518,7 @@ Attributes {
         String standard_name "elev_bot_window";
         String description "Minimum elevation for altimeter-reported photons";
         String source "Derived (elev_dem-gr_dem_range_bot_off)";
+        String coordinates "time latitude longitude";
         String origname "elev_bot_window";
         String fullnamepath "/altimetry/dem_drm/elev_bot_window";
     }
@@ -526,6 +529,7 @@ Attributes {
         String standard_name "elev_dem";
         String description "WGS84 DEM elevation";
         String source "DEM ANC File";
+        String coordinates "time latitude longitude";
         String origname "elev_dem";
         String fullnamepath "/altimetry/dem_drm/elev_dem";
     }
@@ -536,6 +540,7 @@ Attributes {
         String standard_name "elev_top_window";
         String description "Maximum elevation for altimeter-reported photons";
         String source "Derived (elev_dem+gr_dem_range_top_off)";
+        String coordinates "time latitude longitude";
         String origname "elev_top_window";
         String fullnamepath "/altimetry/dem_drm/elev_top_window";
     }
@@ -546,6 +551,7 @@ Attributes {
         String standard_name "latitude";
         String description "GPS/INS latitude used to determine location for DEM";
         String source "L1A INS";
+        String coordinates "time latitude longitude";
         String origname "latitude_dem";
         String fullnamepath "/altimetry/dem_drm/latitude_dem";
     }
@@ -556,6 +562,7 @@ Attributes {
         String standard_name "longitude";
         String description "GPS/INS longitude used  to determine location for DEM";
         String source "L1A INS";
+        String coordinates "time latitude longitude";
         String origname "longitude_dem";
         String fullnamepath "/altimetry/dem_drm/longitude_dem";
     }
@@ -566,6 +573,7 @@ Attributes {
         String standard_name "surface_type";
         String description "Undefined Surface Type flag";
         String source "Derived, TBD";
+        String coordinates "time latitude longitude";
         String origname "surface_type";
         String fullnamepath "/altimetry/dem_drm/surface_type";
     }
@@ -576,6 +584,7 @@ Attributes {
         String standard_name "transtime";
         String description "Transit time of the laser light to photon bounce";
         String source "Derived (ht_ell/(speed_light/2.0))";
+        String coordinates "time latitude longitude";
         String origname "transtime";
         String fullnamepath "/altimetry/dem_drm/transtime";
     }
@@ -586,6 +595,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel001/elev_top_hist";
     }
@@ -596,6 +606,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel001/histogram";
     }
@@ -606,6 +617,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel001/n_hist_shots";
     }
@@ -616,6 +628,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel002/elev_top_hist";
     }
@@ -626,6 +639,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel002/histogram";
     }
@@ -636,6 +650,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel002/n_hist_shots";
     }
@@ -646,6 +661,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel003/elev_top_hist";
     }
@@ -656,6 +672,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel003/histogram";
     }
@@ -666,6 +683,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel003/n_hist_shots";
     }
@@ -676,6 +694,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel004/elev_top_hist";
     }
@@ -686,6 +705,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel004/histogram";
     }
@@ -696,6 +716,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel004/n_hist_shots";
     }
@@ -706,6 +727,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel005/elev_top_hist";
     }
@@ -716,6 +738,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel005/histogram";
     }
@@ -726,6 +749,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel005/n_hist_shots";
     }
@@ -736,6 +760,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel006/elev_top_hist";
     }
@@ -745,6 +770,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel006/histogram";
@@ -756,6 +782,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel006/n_hist_shots";
     }
@@ -766,6 +793,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel007/elev_top_hist";
     }
@@ -776,6 +804,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel007/histogram";
     }
@@ -786,6 +815,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel007/n_hist_shots";
     }
@@ -796,6 +826,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel008/elev_top_hist";
     }
@@ -806,6 +837,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel008/histogram";
     }
@@ -816,6 +848,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel008/n_hist_shots";
     }
@@ -826,6 +859,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel009/elev_top_hist";
     }
@@ -836,6 +870,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel009/histogram";
     }
@@ -846,6 +881,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel009/n_hist_shots";
     }
@@ -856,6 +892,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel010/elev_top_hist";
     }
@@ -863,6 +900,7 @@ Attributes {
         String units "count";
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
+        String coordinates "time";
         String hertz "        5000";
         String long_name "altimetry_histogram";
         String source "Derived";
@@ -876,6 +914,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel010/n_hist_shots";
     }
@@ -886,6 +925,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel011/elev_top_hist";
     }
@@ -896,6 +936,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel011/histogram";
     }
@@ -906,6 +947,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel011/n_hist_shots";
     }
@@ -916,6 +958,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel012/elev_top_hist";
     }
@@ -926,6 +969,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel012/histogram";
     }
@@ -936,6 +980,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel012/n_hist_shots";
     }
@@ -946,6 +991,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel013/elev_top_hist";
     }
@@ -956,6 +1002,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel013/histogram";
     }
@@ -966,6 +1013,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel013/n_hist_shots";
     }
@@ -976,6 +1024,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel014/elev_top_hist";
     }
@@ -986,6 +1035,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel014/histogram";
     }
@@ -996,6 +1046,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel014/n_hist_shots";
     }
@@ -1006,6 +1057,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel015/elev_top_hist";
     }
@@ -1016,6 +1068,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel015/histogram";
     }
@@ -1026,6 +1079,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel015/n_hist_shots";
     }
@@ -1036,6 +1090,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel016/elev_top_hist";
     }
@@ -1046,6 +1101,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel016/histogram";
     }
@@ -1056,6 +1112,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel016/n_hist_shots";
     }
@@ -1066,6 +1123,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel043/elev_top_hist";
     }
@@ -1076,6 +1134,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel043/histogram";
     }
@@ -1086,6 +1145,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel043/n_hist_shots";
     }
@@ -1096,6 +1156,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel044/elev_top_hist";
     }
@@ -1106,6 +1167,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel044/histogram";
     }
@@ -1116,6 +1178,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel044/n_hist_shots";
     }
@@ -1126,6 +1189,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel045/elev_top_hist";
     }
@@ -1136,6 +1200,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel045/histogram";
     }
@@ -1146,6 +1211,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel045/n_hist_shots";
     }
@@ -1156,6 +1222,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel046/elev_top_hist";
     }
@@ -1166,6 +1233,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel046/histogram";
     }
@@ -1176,6 +1244,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel046/n_hist_shots";
     }
@@ -1186,6 +1255,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel047/elev_top_hist";
     }
@@ -1196,6 +1266,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel047/histogram";
     }
@@ -1206,6 +1277,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel047/n_hist_shots";
     }
@@ -1216,6 +1288,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel048/elev_top_hist";
     }
@@ -1226,6 +1299,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel048/histogram";
     }
@@ -1236,6 +1310,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel048/n_hist_shots";
     }
@@ -1246,6 +1321,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel049/elev_top_hist";
     }
@@ -1256,6 +1332,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel049/histogram";
     }
@@ -1266,6 +1343,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel049/n_hist_shots";
     }
@@ -1276,6 +1354,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to the top bin of the altimetry histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/altimetry/histogram/channel050/elev_top_hist";
     }
@@ -1286,6 +1365,7 @@ Attributes {
         String standard_name "histogram";
         String description "altimetry histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/altimetry/histogram/channel050/histogram";
     }
@@ -1296,6 +1376,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/altimetry/histogram/channel050/n_hist_shots";
     }
@@ -1326,6 +1407,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel001/elev_top_hist";
     }
@@ -1336,6 +1418,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel001/histogram";
     }
@@ -1346,6 +1429,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel001/n_hist_shots";
     }
@@ -1356,6 +1440,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel002/elev_top_hist";
     }
@@ -1366,6 +1451,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel002/histogram";
     }
@@ -1376,6 +1462,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel002/n_hist_shots";
     }
@@ -1386,6 +1473,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel003/elev_top_hist";
     }
@@ -1395,6 +1483,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel003/histogram";
@@ -1406,6 +1495,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel003/n_hist_shots";
     }
@@ -1416,6 +1506,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel004/elev_top_hist";
     }
@@ -1426,6 +1517,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel004/histogram";
     }
@@ -1436,6 +1528,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel004/n_hist_shots";
     }
@@ -1446,6 +1539,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel005/elev_top_hist";
     }
@@ -1456,6 +1550,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel005/histogram";
     }
@@ -1466,6 +1561,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel005/n_hist_shots";
     }
@@ -1476,6 +1572,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel006/elev_top_hist";
     }
@@ -1485,6 +1582,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel006/histogram";
@@ -1496,6 +1594,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel006/n_hist_shots";
     }
@@ -1506,6 +1605,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel007/elev_top_hist";
     }
@@ -1515,6 +1615,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel007/histogram";
@@ -1526,6 +1627,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel007/n_hist_shots";
     }
@@ -1536,6 +1638,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel008/elev_top_hist";
     }
@@ -1546,6 +1649,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel008/histogram";
     }
@@ -1556,6 +1660,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel008/n_hist_shots";
     }
@@ -1566,6 +1671,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel009/elev_top_hist";
     }
@@ -1575,6 +1681,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel009/histogram";
@@ -1586,6 +1693,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel009/n_hist_shots";
     }
@@ -1596,6 +1704,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel010/elev_top_hist";
     }
@@ -1603,6 +1712,7 @@ Attributes {
         String units "count";
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
+        String coordinates "time";
         String hertz "        5000";
         String long_name "atmosphere_histogram";
         String source "Derived";
@@ -1616,6 +1726,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel010/n_hist_shots";
     }
@@ -1626,6 +1737,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel011/elev_top_hist";
     }
@@ -1635,6 +1747,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel011/histogram";
@@ -1646,6 +1759,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel011/n_hist_shots";
     }
@@ -1656,6 +1770,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel012/elev_top_hist";
     }
@@ -1666,6 +1781,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel012/histogram";
     }
@@ -1676,6 +1792,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel012/n_hist_shots";
     }
@@ -1686,6 +1803,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel013/elev_top_hist";
     }
@@ -1696,6 +1814,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel013/histogram";
     }
@@ -1706,6 +1825,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel013/n_hist_shots";
     }
@@ -1716,6 +1836,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel014/elev_top_hist";
     }
@@ -1726,6 +1847,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel014/histogram";
     }
@@ -1736,6 +1858,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel014/n_hist_shots";
     }
@@ -1746,6 +1869,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel015/elev_top_hist";
     }
@@ -1756,6 +1880,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel015/histogram";
     }
@@ -1766,6 +1891,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel015/n_hist_shots";
     }
@@ -1776,6 +1902,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel016/elev_top_hist";
     }
@@ -1786,6 +1913,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel016/histogram";
     }
@@ -1796,6 +1924,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel016/n_hist_shots";
     }
@@ -1806,6 +1935,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel043/elev_top_hist";
     }
@@ -1816,6 +1946,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel043/histogram";
     }
@@ -1826,6 +1957,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel043/n_hist_shots";
     }
@@ -1836,6 +1968,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel044/elev_top_hist";
     }
@@ -1846,6 +1979,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel044/histogram";
     }
@@ -1856,6 +1990,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel044/n_hist_shots";
     }
@@ -1866,6 +2001,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel045/elev_top_hist";
     }
@@ -1876,6 +2012,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel045/histogram";
     }
@@ -1886,6 +2023,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel045/n_hist_shots";
     }
@@ -1896,6 +2034,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel046/elev_top_hist";
     }
@@ -1905,6 +2044,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String hertz "        5000";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel046/histogram";
@@ -1916,6 +2056,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel046/n_hist_shots";
     }
@@ -1926,6 +2067,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel047/elev_top_hist";
     }
@@ -1936,6 +2078,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel047/histogram";
     }
@@ -1946,6 +2089,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel047/n_hist_shots";
     }
@@ -1956,6 +2100,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel048/elev_top_hist";
     }
@@ -1966,6 +2111,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel048/histogram";
     }
@@ -1976,6 +2122,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel048/n_hist_shots";
     }
@@ -1986,6 +2133,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel049/elev_top_hist";
     }
@@ -1996,6 +2144,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel049/histogram";
     }
@@ -2006,6 +2155,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel049/n_hist_shots";
     }
@@ -2016,6 +2166,7 @@ Attributes {
         String standard_name "height";
         String description "Elevation height to thetop bin of the atmosphere histogram";
         String source "Derived";
+        String coordinates "time";
         String origname "elev_top_hist";
         String fullnamepath "/atmosphere/histogram/channel050/elev_top_hist";
     }
@@ -2026,6 +2177,7 @@ Attributes {
         String standard_name "histogram";
         String description "atmosphere histogram - count of the number of photons in each defined elevation bin.";
         String source "Derived";
+        String coordinates "time";
         String origname "histogram";
         String fullnamepath "/atmosphere/histogram/channel050/histogram";
     }
@@ -2036,6 +2188,7 @@ Attributes {
         String standard_name "n_points";
         String description "Number of shots within the histogram interval.";
         String source "Derived";
+        String coordinates "time";
         String origname "n_hist_shots";
         String fullnamepath "/atmosphere/histogram/channel050/n_hist_shots";
     }
@@ -2235,6 +2388,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds (since first data point in granule)";
         String source "Derived (gps_seconds-gps_sec_offset)";
+        String coordinates "time latitude longitude";
         String hertz "           5";
         String origname "delta_time";
         String fullnamepath "/met_corr/delta_time";
@@ -2246,6 +2400,7 @@ Attributes {
         String standard_name "range_1064_dry_trop_corr";
         String description "Additive 1064 dry troposphere range correction";
         String source "Derived (Trop ATBD)";
+        String coordinates "time latitude longitude";
         String origname "range_1064_dry_trop_corr";
         String fullnamepath "/met_corr/range_1064_dry_trop_corr";
     }
@@ -2255,6 +2410,7 @@ Attributes {
         String standard_name "range_1064_wet_trop_corr";
         String description "Additive 1064 wet troposphere range correction";
         String source "Derived (Trop ATBD)";
+        String coordinates "time latitude longitude";
         String hertz "           5";
         String origname "range_1064_wet_trop_corr";
         String fullnamepath "/met_corr/range_1064_wet_trop_corr";
@@ -2266,6 +2422,7 @@ Attributes {
         String standard_name "range_532_dry_trop_corr";
         String description "Additive 532 dry troposphere range correction";
         String source "Derived (Trop ATBD)";
+        String coordinates "time latitude longitude";
         String origname "range_532_dry_trop_corr";
         String fullnamepath "/met_corr/range_532_dry_trop_corr";
     }
@@ -2276,6 +2433,7 @@ Attributes {
         String standard_name "range_532_wet_trop_corr";
         String description "Additive 532 wet troposphere range correction";
         String source "Derived (Trop ATBD)";
+        String coordinates "time latitude longitude";
         String origname "range_532_wet_trop_corr";
         String fullnamepath "/met_corr/range_532_wet_trop_corr";
     }
@@ -2626,6 +2784,7 @@ Attributes {
         String standard_name "heading";
         String description "Heading (yaw) angle computed by GPS/INS routines";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "heading";
         String fullnamepath "/novatel_ins/attitude/heading";
     }
@@ -2636,6 +2795,7 @@ Attributes {
         String standard_name "heading_sd";
         String description "standard deviation of heading";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "heading_sd";
         String fullnamepath "/novatel_ins/attitude/heading_sd";
     }
@@ -2646,6 +2806,7 @@ Attributes {
         String standard_name "pitch";
         String description "Pitch angle computed by GPS/INS routines";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "pitch";
         String fullnamepath "/novatel_ins/attitude/pitch";
     }
@@ -2656,6 +2817,7 @@ Attributes {
         String standard_name "pitch_sd";
         String description "standard deviation of pitch";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "pitch_sd";
         String fullnamepath "/novatel_ins/attitude/pitch_sd";
     }
@@ -2666,6 +2828,7 @@ Attributes {
         String standard_name "roll";
         String description "Roll angle computed by GPS/INS routines";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "roll";
         String fullnamepath "/novatel_ins/attitude/roll";
     }
@@ -2676,6 +2839,7 @@ Attributes {
         String standard_name "roll_sd";
         String description "standard deviation of roll";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "roll_sd";
         String fullnamepath "/novatel_ins/attitude/roll_sd";
     }
@@ -2686,6 +2850,7 @@ Attributes {
         String standard_name "status";
         String description "Quality factor (integer: 1=best; 6=worst)";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "quality_num";
         String fullnamepath "/novatel_ins/flags/quality_num";
     }
@@ -2696,6 +2861,7 @@ Attributes {
         String standard_name "deviation";
         String description "Combined N, E, and Hgt standard deviation";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "comb_sd";
         String fullnamepath "/novatel_ins/geolocation/comb_sd";
     }
@@ -2706,6 +2872,7 @@ Attributes {
         String standard_name "height";
         String description "Height above WGS84 ellipsoid";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "ht_ell";
         String fullnamepath "/novatel_ins/geolocation/ht_ell";
     }
@@ -2716,6 +2883,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "latitude";
         String fullnamepath "/novatel_ins/geolocation/latitude";
     }
@@ -2726,6 +2894,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "longitude";
         String fullnamepath "/novatel_ins/geolocation/longitude";
     }
@@ -2736,6 +2905,7 @@ Attributes {
         String standard_name "velocity";
         String description "Velocity component in the local level east axis";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "v_east";
         String fullnamepath "/novatel_ins/location/v_east";
     }
@@ -2746,6 +2916,7 @@ Attributes {
         String standard_name "velocity";
         String description "Velocity component in the local level north axis";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "v_north";
         String fullnamepath "/novatel_ins/location/v_north";
     }
@@ -2756,6 +2927,7 @@ Attributes {
         String standard_name "velocity";
         String description "Velocity component in the local level vertical axis";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "v_up";
         String fullnamepath "/novatel_ins/location/v_up";
     }
@@ -2766,6 +2938,7 @@ Attributes {
         String standard_name "solar_azimuth";
         String description "Azimuth of the sun from true north, at position and time";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "solar_azimuth";
         String fullnamepath "/novatel_ins/solar_angle/solar_azimuth";
     }
@@ -2776,6 +2949,7 @@ Attributes {
         String standard_name "solar_elevation";
         String description "elevation of sun above horizon, at position and time";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "solar_elevation";
         String fullnamepath "/novatel_ins/solar_angle/solar_elevation";
     }
@@ -2786,6 +2960,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first TOF data point in granule";
         String source "Derived (gps_seconds-metadata.gps_sec_offset)";
+        String coordinates "latitude longitude time";
         String origname "delta_time";
         String fullnamepath "/novatel_ins/time/delta_time";
     }
@@ -2796,6 +2971,7 @@ Attributes {
         String standard_name "time";
         String description "GPS seconds of week corrected for receiver clock bias";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "gps_sow";
         String fullnamepath "/novatel_ins/time/gps_sow";
     }
@@ -2806,6 +2982,7 @@ Attributes {
         String standard_name "time";
         String description "GPS week number";
         String source "L1A INS Data";
+        String coordinates "latitude longitude time";
         String origname "gps_week";
         String fullnamepath "/novatel_ins/time/gps_week";
     }
@@ -2816,6 +2993,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel001/delta_time";
     }
@@ -2825,6 +3003,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel001/elev";
@@ -2836,6 +3015,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel001/flag";
     }
@@ -2846,6 +3026,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel001/latitude";
     }
@@ -2856,6 +3037,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel001/longitude";
     }
@@ -2866,6 +3048,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel001/photon_id";
     }
@@ -2876,6 +3059,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel001/shot_num";
     }
@@ -2886,6 +3070,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel002/delta_time";
     }
@@ -2895,6 +3080,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel002/elev";
@@ -2906,6 +3092,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel002/flag";
     }
@@ -2916,6 +3103,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel002/latitude";
     }
@@ -2926,6 +3114,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel002/longitude";
     }
@@ -2936,6 +3125,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel002/photon_id";
     }
@@ -2946,6 +3136,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel002/shot_num";
     }
@@ -2956,6 +3147,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel003/delta_time";
     }
@@ -2965,6 +3157,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel003/elev";
@@ -2976,6 +3169,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel003/flag";
     }
@@ -2986,6 +3180,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel003/latitude";
     }
@@ -2996,6 +3191,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel003/longitude";
     }
@@ -3006,6 +3202,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel003/photon_id";
     }
@@ -3016,6 +3213,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel003/shot_num";
     }
@@ -3026,6 +3224,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel004/delta_time";
     }
@@ -3035,6 +3234,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel004/elev";
@@ -3046,6 +3246,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel004/flag";
     }
@@ -3056,6 +3257,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel004/latitude";
     }
@@ -3066,6 +3268,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel004/longitude";
     }
@@ -3076,6 +3279,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel004/photon_id";
     }
@@ -3086,6 +3290,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel004/shot_num";
     }
@@ -3096,6 +3301,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel005/delta_time";
     }
@@ -3105,6 +3311,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel005/elev";
@@ -3116,6 +3323,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel005/flag";
     }
@@ -3126,6 +3334,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel005/latitude";
     }
@@ -3136,6 +3345,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel005/longitude";
     }
@@ -3146,6 +3356,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel005/photon_id";
     }
@@ -3156,6 +3367,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel005/shot_num";
     }
@@ -3165,6 +3377,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "delta_time";
         String fullnamepath "/photon/channel006/delta_time";
@@ -3175,6 +3388,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel006/elev";
@@ -3186,6 +3400,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel006/flag";
     }
@@ -3196,6 +3411,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel006/latitude";
     }
@@ -3206,6 +3422,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel006/longitude";
     }
@@ -3216,6 +3433,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel006/photon_id";
     }
@@ -3226,6 +3444,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel006/shot_num";
     }
@@ -3236,6 +3455,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel007/delta_time";
     }
@@ -3245,6 +3465,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel007/elev";
@@ -3256,6 +3477,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel007/flag";
     }
@@ -3266,6 +3488,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel007/latitude";
     }
@@ -3276,6 +3499,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel007/longitude";
     }
@@ -3286,6 +3510,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel007/photon_id";
     }
@@ -3296,6 +3521,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel007/shot_num";
     }
@@ -3306,6 +3532,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel008/delta_time";
     }
@@ -3315,6 +3542,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel008/elev";
@@ -3326,6 +3554,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel008/flag";
     }
@@ -3336,6 +3565,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel008/latitude";
     }
@@ -3346,6 +3576,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel008/longitude";
     }
@@ -3356,6 +3587,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel008/photon_id";
     }
@@ -3366,6 +3598,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel008/shot_num";
     }
@@ -3376,6 +3609,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel009/delta_time";
     }
@@ -3385,6 +3619,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel009/elev";
@@ -3396,6 +3631,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel009/flag";
     }
@@ -3406,6 +3642,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel009/latitude";
     }
@@ -3416,6 +3653,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel009/longitude";
     }
@@ -3426,6 +3664,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel009/photon_id";
     }
@@ -3436,6 +3675,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel009/shot_num";
     }
@@ -3443,6 +3683,7 @@ Attributes {
         String units "seconds";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String long_name "delta_time";
         String standard_name "time";
@@ -3455,6 +3696,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel010/elev";
@@ -3466,6 +3708,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel010/flag";
     }
@@ -3476,6 +3719,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel010/latitude";
     }
@@ -3486,6 +3730,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel010/longitude";
     }
@@ -3496,6 +3741,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel010/photon_id";
     }
@@ -3506,6 +3752,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel010/shot_num";
     }
@@ -3516,6 +3763,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel011/delta_time";
     }
@@ -3525,6 +3773,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel011/elev";
@@ -3536,6 +3785,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel011/flag";
     }
@@ -3546,6 +3796,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel011/latitude";
     }
@@ -3556,6 +3807,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel011/longitude";
     }
@@ -3566,6 +3818,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel011/photon_id";
     }
@@ -3576,6 +3829,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel011/shot_num";
     }
@@ -3586,6 +3840,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel012/delta_time";
     }
@@ -3595,6 +3850,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel012/elev";
@@ -3606,6 +3862,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel012/flag";
     }
@@ -3616,6 +3873,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel012/latitude";
     }
@@ -3626,6 +3884,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel012/longitude";
     }
@@ -3636,6 +3895,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel012/photon_id";
     }
@@ -3646,6 +3906,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel012/shot_num";
     }
@@ -3656,6 +3917,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel013/delta_time";
     }
@@ -3665,6 +3927,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel013/elev";
@@ -3676,6 +3939,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel013/flag";
     }
@@ -3686,6 +3950,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel013/latitude";
     }
@@ -3696,6 +3961,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel013/longitude";
     }
@@ -3706,6 +3972,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel013/photon_id";
     }
@@ -3716,6 +3983,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel013/shot_num";
     }
@@ -3726,6 +3994,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel014/delta_time";
     }
@@ -3735,6 +4004,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel014/elev";
@@ -3746,6 +4016,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel014/flag";
     }
@@ -3756,6 +4027,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel014/latitude";
     }
@@ -3766,6 +4038,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel014/longitude";
     }
@@ -3776,6 +4049,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel014/photon_id";
     }
@@ -3786,6 +4060,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel014/shot_num";
     }
@@ -3796,6 +4071,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel015/delta_time";
     }
@@ -3805,6 +4081,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel015/elev";
@@ -3816,6 +4093,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel015/flag";
     }
@@ -3826,6 +4104,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel015/latitude";
     }
@@ -3836,6 +4115,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel015/longitude";
     }
@@ -3846,6 +4126,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel015/photon_id";
     }
@@ -3856,6 +4137,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel015/shot_num";
     }
@@ -3866,6 +4148,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel016/delta_time";
     }
@@ -3875,6 +4158,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel016/elev";
@@ -3886,6 +4170,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel016/flag";
     }
@@ -3896,6 +4181,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel016/latitude";
     }
@@ -3906,6 +4192,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel016/longitude";
     }
@@ -3916,6 +4203,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel016/photon_id";
     }
@@ -3926,6 +4214,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel016/shot_num";
     }
@@ -3936,6 +4225,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel043/delta_time";
     }
@@ -3945,6 +4235,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel043/elev";
@@ -3956,6 +4247,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel043/flag";
     }
@@ -3966,6 +4258,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel043/latitude";
     }
@@ -3976,6 +4269,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel043/longitude";
     }
@@ -3986,6 +4280,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel043/photon_id";
     }
@@ -3996,6 +4291,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel043/shot_num";
     }
@@ -4006,6 +4302,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel044/delta_time";
     }
@@ -4015,6 +4312,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel044/elev";
@@ -4026,6 +4324,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel044/flag";
     }
@@ -4036,6 +4335,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel044/latitude";
     }
@@ -4046,6 +4346,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel044/longitude";
     }
@@ -4056,6 +4357,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel044/photon_id";
     }
@@ -4066,6 +4368,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel044/shot_num";
     }
@@ -4076,6 +4379,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel045/delta_time";
     }
@@ -4085,6 +4389,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel045/elev";
@@ -4096,6 +4401,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel045/flag";
     }
@@ -4106,6 +4412,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel045/latitude";
     }
@@ -4116,6 +4423,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel045/longitude";
     }
@@ -4126,6 +4434,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel045/photon_id";
     }
@@ -4136,6 +4445,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel045/shot_num";
     }
@@ -4146,6 +4456,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel046/delta_time";
     }
@@ -4155,6 +4466,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel046/elev";
@@ -4166,6 +4478,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel046/flag";
     }
@@ -4176,6 +4489,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel046/latitude";
     }
@@ -4186,6 +4500,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel046/longitude";
     }
@@ -4196,6 +4511,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel046/photon_id";
     }
@@ -4206,6 +4522,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel046/shot_num";
     }
@@ -4216,6 +4533,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel047/delta_time";
     }
@@ -4225,6 +4543,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel047/elev";
@@ -4236,6 +4555,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel047/flag";
     }
@@ -4246,6 +4566,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel047/latitude";
     }
@@ -4256,6 +4577,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel047/longitude";
     }
@@ -4266,6 +4588,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel047/photon_id";
     }
@@ -4276,6 +4599,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel047/shot_num";
     }
@@ -4286,6 +4610,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel048/delta_time";
     }
@@ -4295,6 +4620,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel048/elev";
@@ -4306,6 +4632,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel048/flag";
     }
@@ -4316,6 +4643,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel048/latitude";
     }
@@ -4326,6 +4654,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel048/longitude";
     }
@@ -4336,6 +4665,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel048/photon_id";
     }
@@ -4346,6 +4676,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel048/shot_num";
     }
@@ -4356,6 +4687,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel049/delta_time";
     }
@@ -4365,6 +4697,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel049/elev";
@@ -4376,6 +4709,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel049/flag";
     }
@@ -4386,6 +4720,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel049/latitude";
     }
@@ -4396,6 +4731,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel049/longitude";
     }
@@ -4406,6 +4742,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel049/photon_id";
     }
@@ -4416,6 +4753,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel049/shot_num";
     }
@@ -4426,6 +4764,7 @@ Attributes {
         String standard_name "time";
         String description "Elapsed seconds since first data point in granule";
         String source "Derived (gps_seconds-gps_second_offset)";
+        String coordinates "time latitude longitude";
         String origname "delta_time";
         String fullnamepath "/photon/channel050/delta_time";
     }
@@ -4435,6 +4774,7 @@ Attributes {
         String standard_name "elevation";
         String description "Height above the WGS84 ellipsoid";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String hertz " per photon";
         String origname "elev";
         String fullnamepath "/photon/channel050/elev";
@@ -4446,6 +4786,7 @@ Attributes {
         String standard_name "flag";
         String description "Undefined 1-byte Flag";
         String source "Derived (TBD)";
+        String coordinates "time latitude longitude";
         String origname "flag";
         String fullnamepath "/photon/channel050/flag";
     }
@@ -4456,6 +4797,7 @@ Attributes {
         String standard_name "latitude";
         String description "Latitude, WGS84, North=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "latitude";
         String fullnamepath "/photon/channel050/latitude";
     }
@@ -4466,6 +4808,7 @@ Attributes {
         String standard_name "longitude";
         String description "Longitude, WGS84, East=+";
         String source "Derived (Geolocation ATBD)";
+        String coordinates "time latitude longitude";
         String origname "longitude";
         String fullnamepath "/photon/channel050/longitude";
     }
@@ -4476,6 +4819,7 @@ Attributes {
         String standard_name "photon_id";
         String description "Photon-per-shot counter.  Increments for each photon detected within a shot.  Together with shot_num, forms a unique identifier for each photon. However, be aware of shot_num rollover.";
         String source "Derived";
+        String coordinates "time latitude longitude";
         String origname "photon_id";
         String fullnamepath "/photon/channel050/photon_id";
     }
@@ -4486,6 +4830,7 @@ Attributes {
         String standard_name "counter";
         String description "Shot Number, copied from the L1A shottag packet.";
         String source "L1A Shottag packet";
+        String coordinates "time latitude longitude";
         String origname "shot_num";
         String fullnamepath "/photon/channel050/shot_num";
     }
@@ -5131,6 +5476,7 @@ Attributes {
         String standard_name "range correction";
         String description "osc_corr is a hardware-dependent frequency-based correction for range.  It is derived by computing the deltas of corresponding TOF status gps_sow and PPSTag values and using the equation provided.";
         String source "Derived: (2.95d8*delta_gps_sow)/(32*delta_PPSTag)";
+        String coordinates "time";
         String origname "osc_corr";
         String fullnamepath "/tof1/osc_corr/osc_corr";
     }
@@ -5141,6 +5487,7 @@ Attributes {
         String standard_name "flag";
         String description "The osc_corr flag is use to determine if the corresponding osc_corr is within valid bounds. A non-zero value indicates the corresponding osc_corr should not be used as a range correction";
         String source "Derived: set to 1 if 0.95 < osc_corr > 1.05";
+        String coordinates "time";
         String origname "osc_flag";
         String fullnamepath "/tof1/osc_corr/osc_flag";
     }

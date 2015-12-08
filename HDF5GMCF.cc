@@ -3944,67 +3944,94 @@ void GMFile:: Handle_Coor_Attr() {
         return;
    
 
-    // Now handle 2-D lat/lon cases.
+    // Now handle the 2-D lat/lon case(note: this only applies to the one that dim. scale doesn't apply)
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->rank == 2) {
 
-            string attr_name = "units";
-            string lat_unit_value = "degrees_north";
-            string lon_unit_value = "degrees_east";
-
+            // The following code makes sure that the replacement only happens with the general 2-D lat/lon case.
             if(gp_latname == (*ircv)->name) 
-                Replace_Var_Str_Attr((*ircv),attr_name,lat_unit_value);
+                Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
             else if(gp_lonname ==(*ircv)->name) 
-                Replace_Var_Str_Attr((*ircv),attr_name,lon_unit_value);
+                Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
         }
     }
     
-    for (vector<Var *>::iterator irv = this->vars.begin();
+    // Check the dimension names of 2-D lat/lon CVs
+    string ll2d_dimname0,ll2d_dimname1;
+    bool has_ll2d_coords = false;
+    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+        ircv != this->cvars.end(); ++ircv) {
+        if((*ircv)->rank == 2) {
+            // Note: we should still use the original dim. name to match the general variables. 
+            ll2d_dimname0 = (*ircv)->getDimensions()[0]->name;
+            ll2d_dimname1 = (*ircv)->getDimensions()[1]->name;
+            if(ll2d_dimname0 !="" && ll2d_dimname1 !="")
+                has_ll2d_coords = true;
+            break;
+        }
+    }
+    
+    if(true == has_ll2d_coords) {
+ 
+        for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
-        bool coor_attr_keep_exist = false;
 
-        for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
-            ira !=(*irv)->attrs.end();) {
-            if (((*ira)->newname == "coordinates")) {
-                if (product_type == SMAP) {
-                    coor_attr_keep_exist = true;
-                    break;
-                }
-                else {
-                    // For other cases, delete "coordinates" attribute. 
-                    // We need to keep an eye on the future CF conventions on the "coordinates" attribute.
-                    // This approach may need to be modified. KY 2015-05-18
-                    delete (*ira);
-                    ira = (*irv)->attrs.erase(ira);
-                }
-            }
-            else {
-                ++ira;
-            }
-        }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
+            bool coor_attr_keep_exist = false;
 
-        if (true == coor_attr_keep_exist) 
-            continue;
+            // May need to delete only the "coordinates" with both 2-D lat/lon dim. KY 2015-12-07
+            if(((*irv)->rank >=2)) { 
                 
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                ird != (*irv)->dims.end(); ++ ird) {
-            for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
-                if ((*ird)->name == (*ircv)->cfdimname) 
-                    co_attrvalue = (co_attrvalue.empty())
+                short ll2dim_flag = 0;
+                for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+                    ird != (*irv)->dims.end(); ++ ird) {
+                    if((*ird)->name == ll2d_dimname0)
+                        ll2dim_flag++;
+                    else if((*ird)->name == ll2d_dimname1)
+                        ll2dim_flag++;
+                }
+
+                if(ll2dim_flag != 2) 
+                    coor_attr_keep_exist = true;
+
+                // Remove the following code later since the released SMAP products are different. KY 2015-12-08
+                if(product_type == SMAP)
+                    coor_attr_keep_exist = true;
+
+                if (false == coor_attr_keep_exist) {
+                    for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
+                        ira !=(*irv)->attrs.end();) {
+                        if ((*ira)->newname == co_attrname) {
+                            delete (*ira);
+                            ira = (*irv)->attrs.erase(ira);
+                        }
+                        else {
+                            ++ira;
+                        }
+                    }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
+                
+                    // Generate the "coordinates" attribute only for variables that have both 2-D lat/lon dim. names.
+                    for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+                        ird != (*irv)->dims.end(); ++ ird) {
+                        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                            ircv != this->cvars.end(); ++ircv) {
+                            if ((*ird)->name == (*ircv)->cfdimname) 
+                                co_attrvalue = (co_attrvalue.empty())
                                     ?(*ircv)->newname:co_attrvalue + " "+(*ircv)->newname;
+                        }
+                    }
+
+                    if (false == co_attrvalue.empty()) {
+                        Attribute * attr = new Attribute();
+                        Add_Str_Attr(attr,co_attrname,co_attrvalue);
+                       (*irv)->attrs.push_back(attr);
+                    }
+
+                    co_attrvalue.clear();
+                } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
             }
         }
-
-        if (false == co_attrvalue.empty()) {
-            Attribute * attr = new Attribute();
-            Add_Str_Attr(attr,co_attrname,co_attrvalue);
-            (*irv)->attrs.push_back(attr);
-        }
-
-        co_attrvalue.clear();
-    } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+    }
 }
 
 // Handle GPM level 1 coordiantes attributes.
