@@ -68,6 +68,16 @@ H5.EnablePassFileID=false
 # The handler makes metadata to follow CF based on this attribute
 H5.DisableStructMetaAttr=true
 
+# HDF5 group or dataset(variable) path always start with a '/'. When the CF naming rule is applied,
+# the first '/' is always changes to "_". This is not necessary and may potentially confuse with
+# CF predefined attributes(_FillValue e.g.). 
+# So by keeping the following key's value be 'false', the leading underscore of a variable name
+# or a group path in DAS are removed. For example, a variable path /a/b will be changed to a_b rather than _a_b.
+# One can set this BES key be true to keep the leading underscore in the variable name.
+# Note this key only applies to general HDF5 products. 
+# The leading underscore in a variable name is always stripped off for some NASA HDF5 products and netCDF-4-like HDF5 products.
+H5.KeepVarLeadingUnderscore=false
+
 # When this key is set to true, the handler will check if
 # there are name clashings among variables and attributes. 
 # For NASA HDF5 and HDF-EOS5 products, we don't see any

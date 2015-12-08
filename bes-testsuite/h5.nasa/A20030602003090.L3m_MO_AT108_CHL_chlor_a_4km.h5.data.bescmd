@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km" space="catalog">/data/A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5</setContainer>
+     <define name="d">
+ 	<container name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km">
+            <constraint>
+geophysical_data_chlor_a[0:2159:4319][0:4319:8639],palette[0:1:2][0:127:255],columns[0:4319:8639],eightbitcolor[0:127:255],rgb[0:1:2],rows[0:2159:4319]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

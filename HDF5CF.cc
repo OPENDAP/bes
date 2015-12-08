@@ -43,6 +43,40 @@
 
 using namespace HDF5CF;
 
+Var::Var(Var *var) {
+
+    newname = var->newname;
+    name = var->name;
+    fullpath = var->fullpath;
+    rank  = var->rank;
+    dtype = var->dtype;
+    unsupported_attr_dtype = var->unsupported_attr_dtype;
+    unsupported_dspace = var->unsupported_dspace;
+    
+    for (vector<Attribute*>::iterator ira = var->attrs.begin();
+        ira!=var->attrs.end(); ++ira) {
+        Attribute* attr= new Attribute();
+        attr->name = (*ira)->name;
+        attr->newname = (*ira)->newname;
+        attr->dtype =(*ira)->dtype;
+        attr->count =(*ira)->count;
+        attr->strsize = (*ira)->strsize;
+        attr->fstrsize = (*ira)->fstrsize;
+        attr->value =(*ira)->value;
+        attrs.push_back(attr);
+    }
+
+    for (vector<Dimension*>::iterator ird = var->dims.begin();
+        ird!=var->dims.end(); ++ird) {
+        Dimension *dim = new Dimension((*ird)->size);
+//"h5","dim->name "<< (*ird)->name <<endl;
+//"h5","dim->newname "<< (*ird)->newname <<endl;
+        dim->name = (*ird)->name;
+        dim->newname = (*ird)->newname;
+        dims.push_back(dim);
+    }
+
+}
 
 File::~File ()
 {

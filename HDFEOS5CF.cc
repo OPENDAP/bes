@@ -2877,7 +2877,7 @@ void EOS5File::Flatten_Obj_Name(bool include_attr) throw(Exception){
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
-                (*ira)->newname = get_CF_string((*ira)->newname);
+                (*ira)->newname = File::get_CF_string((*ira)->newname);
             }
         }
     } // for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); ...

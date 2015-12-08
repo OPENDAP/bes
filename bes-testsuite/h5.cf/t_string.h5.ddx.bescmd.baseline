@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="t_string.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
-    <Array name="_array_1d">
+    <Array name="array_1d">
         <Attribute name="value" type="String">
             <value>Parting </value>
             <value>is so </value>
@@ -16,7 +16,7 @@
         <String/>
         <dimension size="4"/>
     </Array>
-    <Array name="_array_2d">
+    <Array name="array_2d">
         <Attribute name="value" type="String">
             <value>Parting </value>
             <value>is so </value>
@@ -33,7 +33,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_array_special_case">
+    <Array name="array_special_case">
         <Attribute name="value" type="String">
             <value>A </value>
         </Attribute>
@@ -47,7 +47,7 @@
         <dimension size="1"/>
         <dimension size="1"/>
     </Array>
-    <String name="_scalar">
+    <String name="scalar">
         <Attribute name="value" type="String">
             <value>Parting is such sweet sorrow. </value>
         </Attribute>

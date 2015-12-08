@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="t_float.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
-    <Array name="_d32_1">
+    <Array name="d32_1">
         <Attribute name="minimum" type="Float32">
             <value>-1.120000005</value>
         </Attribute>
@@ -16,7 +16,7 @@
         <Float32/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d32_2">
+    <Array name="d32_2">
         <Attribute name="minimum" type="Float32">
             <value>1.100000024</value>
         </Attribute>
@@ -33,7 +33,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d64_1">
+    <Array name="d64_1">
         <Attribute name="minimum" type="Float64">
             <value>-2.0999999046325684</value>
         </Attribute>
@@ -51,7 +51,7 @@
         <dimension size="2"/>
         <dimension size="2"/>
     </Array>
-    <Array name="_d64_2">
+    <Array name="d64_2">
         <Attribute name="minimum" type="Float64">
             <value>-10.100000381469727</value>
         </Attribute>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A" space="catalog">/data/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5</setContainer>
+     <define name="d">
+ 	<container name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A">
+            <constraint>
+fractionQuality2[0:719:1439][0:359:719],fractionQuality1[0:719:1439][0:359:719],mixedWater[0:13:27][0:719:1439][0:359:719],iceWaterPath[0:719:1439][0:359:719],surfacePrecipitation[0:719:1439][0:359:719],fractionQuality0[0:719:1439][0:359:719],npixTotal[0:719:1439][0:359:719],cloudWaterPath[0:719:1439][0:359:719],npixPrecipitation[0:719:1439][0:359:719],mixedWaterPath[0:719:1439][0:359:719],rainWater[0:13:27][0:719:1439][0:359:719],cloudWater[0:13:27][0:719:1439][0:359:719],iceWater[0:13:27][0:719:1439][0:359:719],surfaceTypeIndex[0:719:1439][0:359:719],liquidPrecipFraction[0:719:1439][0:359:719],rainWaterPath[0:719:1439][0:359:719],convectPrecipFraction[0:719:1439][0:359:719],latentHeat[0:13:27][0:719:1439][0:359:719],nlat[0:359:719],nlayer[0:13:27],nlon[0:719:1439]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

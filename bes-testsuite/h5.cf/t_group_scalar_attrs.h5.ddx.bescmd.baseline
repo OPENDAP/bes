@@ -38,7 +38,7 @@
             <value>2147483647</value>
         </Attribute>
     </Attribute>
-    <Attribute name="_g" type="Container">
+    <Attribute name="g" type="Container">
         <Attribute name="string" type="String">
             <value>Parting is such sweet sorrow. </value>
         </Attribute>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset name="t_unsupported.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
-    <Attribute name="_group1" type="Container"/>
-    <Array name="_dataset">
+    <Attribute name="group1" type="Container"/>
+    <Array name="dataset">
         <Attribute name="origname" type="String">
             <value>dataset</value>
         </Attribute>
@@ -12,7 +12,7 @@
         <dimension size="3"/>
         <dimension size="16"/>
     </Array>
-    <Array name="_group1_dataset1">
+    <Array name="group1_dataset1">
         <Attribute name="origname" type="String">
             <value>dataset1</value>
         </Attribute>
@@ -22,7 +22,7 @@
         <UInt32/>
         <dimension size="4"/>
     </Array>
-    <Array name="_group1_dataset2">
+    <Array name="group1_dataset2">
         <Attribute name="origname" type="String">
             <value>dataset2</value>
         </Attribute>
