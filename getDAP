@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #export REQUESTED_DAP_OBJ=`echo $1 | awk '{print tolower($0)}' -`
 #export RESOURCE_ID=$2
