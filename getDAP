@@ -23,7 +23,7 @@ show_usage () {
     echo ""
     echo " Retrieves a DAP object using the besstandalone application."
     echo " Because retrieving DAP objects from the BES exercises all of"
-    echo " machinery of the BES (such as caches). '$0' can easily be used "
+    echo " machinery of the BES (such as caches) '$0' can easily be used "
     echo " to pre-populate caches from a cron job or some other "
     echo " programatic activity."
     echo ""
@@ -107,13 +107,13 @@ then
         echo "Unable to locate a BES configuration file."
         echo "You may identify your BES configurstion in one of three ways: "
         echo ""
-        echo "1. Using the command line parameter '-c'"
+        echo "  1. Using the command line parameter '-c'"
         echo ""
-        echo "2. Setting the environment variable $prefix to the install"
-        echo "   location of the BES."
+        echo "  2. Setting the environment variable $prefix to the install"
+        echo "     location of the BES."
         echo ""
-        echo "3. Placing the bes.conf file in the "well known" location"
-        echo "       /etc/bes/bes.conf"
+        echo "  3. Placing the bes.conf file in the "well known" location"
+        echo "         /etc/bes/bes.conf"
         echo ""
         echo "The command line parameter is the recommended usage."        
         echo ""
@@ -151,7 +151,8 @@ cmdDoc=`cat <<EOF
 EOF
 `
 
-COMMAND_FILE=$(mktemp -t)
+
+COMMAND_FILE=$(mktemp -t getDAP_$$)
 if [ $verbose = 1 ]
 then
     echo "COMMAND_FILE: " $COMMAND_FILE
