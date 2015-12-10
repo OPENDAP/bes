@@ -2410,12 +2410,16 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
        } // for (vector<Var *>::iterator irv = this->vars.begin();
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
+/// Use a more general approach
+//#if 0
     // Will check if this file has 2-D lat/lon.If yes, update the CV.
     string latname,lonname;
     bool latlon_2d_cv = Check_2DLatLon_Dimscale(latname, lonname);
     if( true == latlon_2d_cv) {
         Update_2DLatLon_Dimscale_CV(latname,lonname);
     }
+//#endif
+
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();

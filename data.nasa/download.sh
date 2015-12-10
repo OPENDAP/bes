@@ -104,3 +104,5 @@ $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/OBPG/A2003
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/OBPG/S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5 
 $GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/MOP03T-20131129-L3V4.2.1.h5
 
+#2-D lat/lon netCDF-4 like file
+$GET ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5
