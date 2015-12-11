@@ -832,6 +832,9 @@ namespace HDF5CF
             void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
             bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
             void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
+
+            bool Check_1DLatLon_Dimscale() throw(Exception);
+            void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
             bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
 
             void Handle_CVar_GPM_L1() throw(Exception);
@@ -880,6 +883,8 @@ namespace HDF5CF
             // bool ignored_GM_SPVar_dimscale_ref_list(GMSPVar* var);
 
 
+            void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
+
         private:
             H5GCFProduct product_type;
             GMPattern gproduct_pattern;
@@ -889,6 +894,7 @@ namespace HDF5CF
             string gp_lonname; 
             //map<string,string>dimcvars_2dlatlon;
             bool iscoard;
+            bool ll2d_no_cv;
          
     };
 

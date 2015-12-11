@@ -105,7 +105,7 @@ GMSPVar::GMSPVar(Var*var) {
 
 
 GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false) 
+File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),ll2d_no_cv(false)
 {
 
 
@@ -2420,6 +2420,10 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     }
 //#endif
 
+#if 0
+    Update_M2DLatLon_Dimscale_CVs();
+
+#endif
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2437,6 +2441,59 @@ for (set<string>::iterator irs = dimnamelist.begin();
 cerr<<"dimension name is "<<(*irs)<<endl;
 }
 #endif
+
+}
+
+
+void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
+
+    // 1. Check if this goes to the most common 1-D lat/lon netCDF-4-like case, if yes, no need to update 
+    vector<GMCVar*> tempcvar_1dlat;
+    vector<GMCVar*> tempcvar_1dlon;
+    if(false == Check_1DLatLon_Dimscale()) {
+        release_standalone_GMCVar_vector(tempcvar_1dlat);
+        release_standalone_GMCVar_vector(tempcvar_1dlon);
+    }
+}
+    
+bool GMFile::Check_1DLatLon_Dimscale() throw(Exception) {
+
+    bool has_1d_lat_cv_flag = false;
+    bool has_1d_lon_cv_flag = false;
+
+    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+            ircv != this->cvars.end(); ++ircv) {
+
+        if((*ircv)->cvartype == CV_EXIST) {
+            string attr_name ="units";
+            string lat_unit_value = "degrees_north";
+            string lon_unit_value = "degrees_east";
+
+           for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                     ira != (*ircv)->attrs.end();ira++) {
+
+                // Considering the cross-section case, either is fine.
+                if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lat_unit_value)) {
+                    
+                    has_1d_lat_cv_flag = true;
+                    break;
+                }
+                else if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lon_unit_value)){ 
+                    has_1d_lon_cv_flag = true;
+                    break;
+                }
+            }
+
+            if(true == has_1d_lat_cv_flag && true == has_1d_lon_cv_flag)
+                    break;
+         }
+    }
+
+    // If having 1-D lat/lon CVs, this is a good sign for only 1-D lat/lon CVs for this file, 
+    // just need to have a couple of checks.
+    if(true == has_1d_lat_cv_flag && true == has_1d_lon_cv_flag) {           
+
+    }
 
 }
 
@@ -3944,8 +4001,10 @@ void GMFile:: Handle_Coor_Attr() {
         return;
     }
     // No need to handle products that follow COARDS.
-    else if (true == iscoard) 
+    else if (true == iscoard) {
+        // May need to check coordinates for 2-D lat/lon but cannot treat those lat/lon as CV case. KY 2015-12-10-TEMPPP
         return;
+    }
    
 
     // Now handle the 2-D lat/lon case(note: this only applies to the one that dim. scale doesn't apply)
@@ -4281,6 +4340,16 @@ GMFile::Handle_SpVar_Attr() throw(Exception) {
 
 }
 
+void 
+GMFile::release_standalone_GMCVar_vector(vector<GMCVar*>&tempgc_vars){
+
+    for (vector<GMCVar *>::iterator i = tempgc_vars.begin();
+            i != tempgc_vars.end(); ) {
+        delete(*i);
+        i = tempgc_vars.erase(i);
+    }
+
+}
 #if 0
 void 
 GMFile::add_ignored_info_attrs(bool is_grp,bool is_first){
