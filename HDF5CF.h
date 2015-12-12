@@ -833,7 +833,7 @@ namespace HDF5CF
             bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
             void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
 
-            bool Check_1DLatLon_Dimscale() throw(Exception);
+            bool Check_1DGeolocation_Dimscale() throw(Exception);
             void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
             bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
 

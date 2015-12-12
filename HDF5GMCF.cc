@@ -2450,17 +2450,25 @@ void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
     // 1. Check if this goes to the most common 1-D lat/lon netCDF-4-like case, if yes, no need to update 
     vector<GMCVar*> tempcvar_1dlat;
     vector<GMCVar*> tempcvar_1dlon;
-    if(false == Check_1DLatLon_Dimscale()) {
+    if(false == Check_1DGeolocation_Dimscale()) {
         release_standalone_GMCVar_vector(tempcvar_1dlat);
         release_standalone_GMCVar_vector(tempcvar_1dlon);
     }
 }
     
-bool GMFile::Check_1DLatLon_Dimscale() throw(Exception) {
+bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
+    bool has_only_1d_geolocation_cv = false;
     bool has_1d_lat_cv_flag = false;
     bool has_1d_lon_cv_flag = false;
 
+    string  lat_dimname;
+    hsize_t lat_size = 0;
+
+    string  lon_dimname;
+    hsize_t lon_size = 0;
+
+    // We need to consider both 1-D lat/lon and the 1-D zonal average case(1-D lat only). 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
 
@@ -2472,27 +2480,72 @@ bool GMFile::Check_1DLatLon_Dimscale() throw(Exception) {
            for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                      ira != (*ircv)->attrs.end();ira++) {
 
-                // Considering the cross-section case, either is fine.
                 if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lat_unit_value)) {
-                    
+                    lat_size = (*ircv)->getDimensions()[0]->size;
+                    lat_dimname = (*ircv)->getDimensions()[0]->name;
                     has_1d_lat_cv_flag = true;
                     break;
                 }
                 else if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lon_unit_value)){ 
+                    lon_size = (*ircv)->getDimensions()[0]->size;
+                    lon_dimname = (*ircv)->getDimensions()[0]->name;
                     has_1d_lon_cv_flag = true;
                     break;
                 }
             }
-
-            if(true == has_1d_lat_cv_flag && true == has_1d_lon_cv_flag)
-                    break;
-         }
+        }
     }
 
-    // If having 1-D lat/lon CVs, this is a good sign for only 1-D lat/lon CVs for this file, 
+    // If having 1-D lat/lon CVs, this is a good sign for only 1-D lat/lon CVs , 
     // just need to have a couple of checks.
-    if(true == has_1d_lat_cv_flag && true == has_1d_lon_cv_flag) {           
 
+    if(true == has_1d_lat_cv_flag ) {           
+
+        if(true == has_1d_lon_cv_flag) {
+
+            // Come to the possible classic netCDF-4 case,
+            if(0 == this->groups.size()) {
+
+                // Rarely happens, still want to make sure there is 2-D variable that uses both lat and lon dims.
+                if(lat_size == lon_size) { 
+                    bool var_has_latdim = false;
+                    bool var_has_londim = false;
+                    for (vector<Var *>::iterator irv = this->vars.begin();
+                        irv != this->vars.end(); ++irv) {
+                        if((*irv)->rank >= 2) {
+                            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+                                ird !=(*irv)->dims.end();++ird) {
+                                if((*ird)->name == lat_dimname)
+                                    var_has_latdim = true;
+                                else if((*ird)->name == lon_dimname)
+                                    var_has_londim = true;
+                            }
+                            if(true == var_has_latdim && true == var_has_londim) {
+                                has_only_1d_geolocation_cv = true;
+                                break;
+                            }
+                            else {
+                                var_has_latdim = false;
+                                var_has_londim = false;
+                            }
+                        }
+                    }
+                }
+                else 
+                    has_only_1d_geolocation_cv = true;
+            }
+            else {// Multiple groups, need to check 2-D lat/lon from variables.
+
+            }
+        
+        }// Indent
+        else {//Zonal average case, we should not try to find 2-D lat/lon CVs.
+            has_only_1d_geolocation_cv = true;
+        
+
+
+        }
+            
     }
 
 }
