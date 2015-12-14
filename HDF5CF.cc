@@ -1563,6 +1563,19 @@ File:: Is_Str_Attr(Attribute* attr,string varfullpath,const string &attrname, co
     return ret_value;
 }
 
+bool
+File:: has_latlon_cf_units(Attribute *attr,const string &varfullpath , bool is_lat) {
+    string attr_name = "units";
+    if(true == is_lat) {
+        string lat_unit_value = "degrees_north";
+        return Is_Str_Attr(attr,varfullpath,attr_name,lat_unit_value);
+    }
+    else {
+        string lon_unit_value = "degrees_east";
+        return Is_Str_Attr(attr,varfullpath,attr_name,lon_unit_value);
+    }
+}
+
 void
 File:: Add_One_Float_Attr(Attribute* attr,const string &attrname, float float_value) throw(Exception){
     attr->name = attrname;
@@ -1745,7 +1758,31 @@ File:: Replace_Var_Str_Attr(Var* var ,const string &attr_name, const string& str
    }
 }
 
+bool
+File::Is_geolatlon(const string & var_name , bool is_lat)  {
 
+    bool ret_value = false;
+    if(true == is_lat) {
+        string lat1 ="lat";
+        string lat2 = "latitude";
+        string lat3 = "Latitude"; 
+
+        if(var_name.compare(lat1) ==0 || var_name.compare(lat2) == 0 || var_name.compare(lat3)==0)
+            ret_value = true;
+        //else if(var_name.size()>=latsuffix2.size()) 
+        //else if(var_name.compare((var_name.size()-latsuffix3.size()),lat_suffix3.size(),latsuffix3) ==0)
+    }
+
+    else {
+        string lon1 = "lon";
+        string lon2 = "longitude";
+        string lon3 = "Longitude"; 
+        if(var_name.compare(lon1) ==0 || var_name.compare(lon2) == 0 || var_name.compare(lon3)==0)
+            ret_value = true;
+ 
+    }
+    return ret_value;
+} 
 
 void 
 File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {

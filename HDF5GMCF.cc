@@ -2420,10 +2420,10 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     }
 //#endif
 
-#if 0
+//#if 0
     Update_M2DLatLon_Dimscale_CVs();
 
-#endif
+//#endif
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2448,14 +2448,17 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
     // 1. Check if this goes to the most common 1-D lat/lon netCDF-4-like case, if yes, no need to update 
-    vector<GMCVar*> tempcvar_1dlat;
-    vector<GMCVar*> tempcvar_1dlon;
+    //vector<GMCVar*> tempcvar_1dlat;
+    //vector<GMCVar*> tempcvar_1dlon;
     if(false == Check_1DGeolocation_Dimscale()) {
-        release_standalone_GMCVar_vector(tempcvar_1dlat);
-        release_standalone_GMCVar_vector(tempcvar_1dlon);
+     //   release_standalone_GMCVar_vector(tempcvar_1dlat);
+      //  release_standalone_GMCVar_vector(tempcvar_1dlon);
+      ;
     }
 }
     
+// If Check_1DGeolocation_Dimscale() is true, no need to build 2-D lat/lon coordinate variables.
+// This function is introduced to avoid the performance penalty caused by general 2-D lat/lon handlings.
 bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
     bool has_only_1d_geolocation_cv = false;
@@ -2503,10 +2506,11 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
         if(true == has_1d_lon_cv_flag) {
 
+cerr<<"BOTH 1-D lat/lon CVs are true "<<endl;
             // Come to the possible classic netCDF-4 case,
             if(0 == this->groups.size()) {
 
-                // Rarely happens, still want to make sure there is 2-D variable that uses both lat and lon dims.
+                // Rarely happens, still want to make sure there is a 2-D variable that uses both lat and lon dims.
                 if(lat_size == lon_size) { 
                     bool var_has_latdim = false;
                     bool var_has_londim = false;
@@ -2534,19 +2538,85 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
                 else 
                     has_only_1d_geolocation_cv = true;
             }
-            else {// Multiple groups, need to check 2-D lat/lon from variables.
+            else {
+cerr<<"Coming to multi-group 2D lat/lon case"<<endl;
+                // Multiple groups, need to check if having 2-D lat/lon pairs 
+                bool has_2d_latname_flag = false;
+                bool has_2d_lonname_flag = false;
+                for (vector<Var *>::iterator irv = this->vars.begin();
+                    irv != this->vars.end(); ++irv) {
+                    if((*irv)->rank == 2) { 
+                        
+                        //the 2nd parameter is true for checking lat in function Is_geolatlon
+                        if(Is_geolatlon((*irv)->name,true))
+                            has_2d_latname_flag = true;
+
+                        //the 2nd parameter is false for checking lon in function Is_geolatlon
+                        else if(Is_geolatlon((*irv)->name,false))
+                            has_2d_lonname_flag = true;
+
+                        if((true == has_2d_latname_flag) && (true == has_2d_lonname_flag))
+                            break;
+                    }
+                }
+
+                if(has_2d_latname_flag != true || has_2d_lonname_flag != true) {
+
+                    //check if having the 2-D lat/lon by checking if having degrees_east and degrees_north CF units
+                    has_2d_latname_flag = false;
+                    has_2d_lonname_flag = false;
+                    for (vector<Var *>::iterator irv = this->vars.begin();
+                        irv != this->vars.end(); ++irv) {
+                        if((*irv)->rank == 2) {
+                            for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                                ira != (*irv)->attrs.end(); ++ira) {
+
+                                if (false == has_2d_latname_flag) {
+                                    // When the third parameter of has_latlon_cf_units is set to true, it checks latitude
+                                    has_2d_latname_flag = has_latlon_cf_units((*ira),(*irv)->fullpath,true);
+                                    if(true == has_2d_latname_flag)
+                                        break;
+                                    else if(false == has_2d_lonname_flag) {
+                                        // When the third parameter of has_latlon_cf_units is set to true, it checks longitude 
+                                        has_2d_lonname_flag = has_latlon_cf_units((*ira),(*irv)->fullpath,false);
+                                        if(true == has_2d_lonname_flag)
+                                            break;
+                                    }
+                                }
+                                else if(false == has_2d_lonname_flag) {
+
+                                    // When the third parameter of has_latlon_cf_units is set to true, it checks longitude 
+                                    has_2d_lonname_flag = has_latlon_cf_units((*ira),(*irv)->fullpath,false);
+                                    if(true == has_2d_lonname_flag)
+                                        break;
+                                }
+                            }
+                            if(true == has_2d_latname_flag && true == has_2d_lonname_flag)
+                                break;
+                        }
+                    }
+                }
+
+                // We find 2-D lat/lon pairs for the multi-group case, so this file may include 2-D lat/lon CVs
+                if(has_2d_latname_flag != true  || has_2d_lonname_flag != true)
+                    has_only_1d_geolocation_cv = true;
 
             }
         
-        }// Indent
+        }// 
         else {//Zonal average case, we should not try to find 2-D lat/lon CVs.
             has_only_1d_geolocation_cv = true;
         
-
-
         }
             
     }
+
+if(has_only_1d_geolocation_cv == true) 
+cerr <<"has only 1D lat/lon CVs. "<<endl;
+else
+cerr<<"Possibly has 2D lat/lon CVs. "<<endl;
+
+    return has_only_1d_geolocation_cv;
 
 }
 

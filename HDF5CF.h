@@ -653,6 +653,10 @@ namespace HDF5CF
             void Replace_Var_Str_Attr(Var* var, const string &attr_name, const string& strvalue); 
             void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) throw(Exception);
 
+            // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
+            bool Is_geolatlon(const string &var_name ,bool is_lat);
+            bool has_latlon_cf_units(Attribute*attr, const string &varfullpath , bool is_lat);
+
             virtual void Gen_Unsupported_Dtype_Info(bool) = 0;
             virtual void Gen_Unsupported_Dspace_Info() throw(Exception);
             void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception);
