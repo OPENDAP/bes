@@ -1,0 +1,62 @@
+netcdf group_mlls_special{
+dimensions:
+	YDIM = 2;
+	XDIM = 3;
+variables:
+	float YDIM(YDIM);
+	   YDIM:units="degrees_north";
+	float XDIM(XDIM);
+           XDIM:units="degrees_east";
+data:
+	YDIM = 2,4;
+	XDIM = -10,-5,0;
+
+group: g1 {
+ dimensions:
+       dim1 = 2;
+       dim2 = 3;
+       dim3 = 2;
+       dim4 = 2;
+ variables:
+   int dim1(dim1);
+   int dim2(dim2);
+   float fake_lat(YDIM,XDIM);
+         fake_lat:units = "degrees_north";
+   float fake_lon(YDIM,XDIM);
+         fake_lon:units = "degrees_east";
+   float Latitude(dim1,dim2);
+         Latitude:units = "degrees_north";
+   float Longitude(dim1,dim2);
+         Longitude:units = "degrees_east";
+   float pres(YDIM,XDIM);
+         pres:units = "hPa";
+   float temp(dim1,dim2);
+         temp:units = "K";
+   float redund_lat(dim3,dim4);
+         redund_lat:units="degrees_north";
+   float redund_lon(dim3,dim4);
+         redund_lon:units="degrees_east";
+data:
+       dim1 = 1,2;
+       dim2 = 1,2,3;
+       fake_lat = 2,2.5,3,
+              2.1,2.6,3.1;
+       fake_lon = -10,-8,-6,
+              -9,-7,-5;
+       Latitude = 3.5,5,6,
+              3.6,5.1,6.1;
+       Longitude = -4,3,4,
+              -3,4,5;
+
+       pres = 800,810,820,
+              801,811,821;
+
+       temp = 250,255,260,
+              261,265,270;
+
+       redund_lat = 83.5,85,
+                    87,89;
+       redund_lon = -100,-90,
+                     -80,-70;
+ }
+}
