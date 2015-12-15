@@ -2300,3 +2300,14 @@ void File::add_ignored_droplongstr_hdr( ) {
         ignored_msg +=hdr;
 
 }
+
+void 
+File::release_standalone_var_vector(vector<Var*>&vars) {
+
+   for (vector<Var *>::iterator i = vars.begin();
+            i != vars.end(); ) {
+        delete(*i);
+        i = vars.erase(i);
+   }               
+
+}

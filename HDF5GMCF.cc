@@ -74,6 +74,47 @@ GMCVar::GMCVar(Var*var) {
     product_type = General_Product;
 
 }
+#if 0
+GMCVar::GMCVar(GMCVar*cvar) {
+
+    newname = cvar->newname;
+    name = cvar->name;
+    fullpath = cvar->fullpath;
+    rank  = cvar->rank;
+    dtype = cvar->dtype;
+    unsupported_attr_dtype = cvar->unsupported_attr_dtype;
+    unsupported_dspace = cvar->unsupported_dspace;
+    
+    for (vector<Attribute*>::iterator ira = cvar->attrs.begin();
+        ira!=cvar->attrs.end(); ++ira) {
+        Attribute* attr= new Attribute();
+        attr->name = (*ira)->name;
+        attr->newname = (*ira)->newname;
+        attr->dtype =(*ira)->dtype;
+        attr->count =(*ira)->count;
+        attr->strsize = (*ira)->strsize;
+        attr->fstrsize = (*ira)->fstrsize;
+        attr->value =(*ira)->value;
+        attrs.push_back(attr);
+    }
+
+    for (vector<Dimension*>::iterator ird = cvar->dims.begin();
+        ird!=cvar->dims.end(); ++ird) {
+        Dimension *dim = new Dimension((*ird)->size);
+//"h5","dim->name "<< (*ird)->name <<endl;
+//"h5","dim->newname "<< (*ird)->newname <<endl;
+        dim->name = (*ird)->name;
+        dim->newname = (*ird)->newname;
+        dims.push_back(dim);
+    }
+
+    GMcvar->cfdimname = latdim0;
+    GMcvar->cvartype = CV_EXIST;
+                GMcvar->product_type = product_type;
+
+ 
+}
+#endif
 GMSPVar::GMSPVar(Var*var) {
 
     fullpath = var->fullpath;
@@ -2420,10 +2461,10 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     }
 //#endif
 
-//#if 0
+#if 0
     Update_M2DLatLon_Dimscale_CVs();
 
-//#endif
+#endif
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2447,13 +2488,57 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
-    // 1. Check if this goes to the most common 1-D lat/lon netCDF-4-like case, if yes, no need to update 
-    //vector<GMCVar*> tempcvar_1dlat;
-    //vector<GMCVar*> tempcvar_1dlon;
     if(false == Check_1DGeolocation_Dimscale()) {
-     //   release_standalone_GMCVar_vector(tempcvar_1dlat);
-      //  release_standalone_GMCVar_vector(tempcvar_1dlon);
-      ;
+
+cerr<<"File path is "<<this->path <<endl;
+        // 1. Define temporary vectors to store 1-D lat/lon CVs
+        vector<GMCVar*> tempcvar_1dlat;
+        vector<GMCVar*> tempcvar_1dlon;
+
+        // Obtain 1-D lat/lon CVs(only search the CF units and the reserved names)
+        Obtain_1DLatLon_CVs(tempcvar_1dlat,tempcvar_1dlon);
+
+        // 2. Define temporary vectors to store 2-D lat/lon Vars
+        vector<Var*> tempcvar_2dlat;
+        vector<Var*> tempcvar_2dlon;
+
+        // Obtain 2-D lat/lon variables(only search the CF units and the reserved names)
+        Obtain_2DLatLon_Vars(tempcvar_2dlat,tempcvar_2dlon);
+
+//#if 0
+for(vector<GMCVar *>::iterator irv = tempcvar_1dlat.begin();irv != tempcvar_1dlat.end();++irv)
+cerr<<"1-D lat variable full path is "<<(*irv)->fullpath <<endl;
+for(vector<GMCVar *>::iterator irv = tempcvar_1dlon.begin();irv != tempcvar_1dlon.end();++irv)
+cerr<<"1-D lon variable full path is "<<(*irv)->fullpath <<endl;
+
+for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv)
+cerr<<"2-D lat variable full path is "<<(*irv)->fullpath <<endl;
+for(vector<Var *>::iterator irv = tempcvar_2dlon.begin();irv != tempcvar_2dlon.end();++irv)
+cerr<<"2-D lon variable full path is "<<(*irv)->fullpath <<endl;
+//#endif
+
+        // 3. Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
+        Obtain_2DLLVars_With_Dims_not_1DLLCVars(tempcvar_2dlat,tempcvar_2dlon,tempcvar_1dlat,tempcvar_1dlon);
+
+for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv)
+cerr<<"2-D Left lat variable full path is "<<(*irv)->fullpath <<endl;
+for(vector<Var *>::iterator irv = tempcvar_2dlon.begin();irv != tempcvar_2dlon.end();++irv)
+cerr<<"2-D Left lon variable full path is "<<(*irv)->fullpath <<endl;
+
+        // 4. Assemble the final 2-D lat/lon CV candidate vectors by checking if the corresponding 2-D lon of a 2-D lat shares
+        // the same dimension and under the same group and if there is another pair of 2-D lat/lon under the same group.
+        vector<Var*>tempcvar_2dlon2;
+        Obtain_2DLLCVar_Candidate(tempcvar_2dlat,tempcvar_2dlon,tempcvar_2dlon2);
+
+
+        // 5. Create the CVs based on the final 2-D lat/lon CV candidates.
+        // ADD code
+        // 6. release the resources allocated by the temporary vectors.
+        release_standalone_GMCVar_vector(tempcvar_1dlat);
+        release_standalone_GMCVar_vector(tempcvar_1dlon);
+        release_standalone_var_vector(tempcvar_2dlat);
+        release_standalone_var_vector(tempcvar_2dlon);
+        release_standalone_var_vector(tempcvar_2dlon2);
     }
 }
     
@@ -2539,7 +2624,7 @@ cerr<<"BOTH 1-D lat/lon CVs are true "<<endl;
                     has_only_1d_geolocation_cv = true;
             }
             else {
-cerr<<"Coming to multi-group 2D lat/lon case"<<endl;
+//cerr<<"Coming to multi-group 2D lat/lon case"<<endl;
                 // Multiple groups, need to check if having 2-D lat/lon pairs 
                 bool has_2d_latname_flag = false;
                 bool has_2d_lonname_flag = false;
@@ -2547,12 +2632,12 @@ cerr<<"Coming to multi-group 2D lat/lon case"<<endl;
                     irv != this->vars.end(); ++irv) {
                     if((*irv)->rank == 2) { 
                         
-                        //the 2nd parameter is true for checking lat in function Is_geolatlon
-                        if(Is_geolatlon((*irv)->name,true))
+                        //the 2nd parameter is true for checking lat in the function Is_geolatlon
+                        if(true == Is_geolatlon((*irv)->name,true))
                             has_2d_latname_flag = true;
 
-                        //the 2nd parameter is false for checking lon in function Is_geolatlon
-                        else if(Is_geolatlon((*irv)->name,false))
+                        //the 2nd parameter is false for checking lon in the function Is_geolatlon
+                        else if(true == Is_geolatlon((*irv)->name,false))
                             has_2d_lonname_flag = true;
 
                         if((true == has_2d_latname_flag) && (true == has_2d_lonname_flag))
@@ -2620,6 +2705,164 @@ cerr<<"Possibly has 2D lat/lon CVs. "<<endl;
 
 }
 
+void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
+
+    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+            ircv != this->cvars.end(); ++ircv) {
+
+        if((*ircv)->cvartype == CV_EXIST) {
+            string attr_name ="units";
+            string lat_unit_value = "degrees_north";
+            string lon_unit_value = "degrees_east";
+
+           for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                     ira != (*ircv)->attrs.end();ira++) {
+
+                if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lat_unit_value)) {
+                    GMCVar *lat = new GMCVar((*ircv));
+                    lat->cfdimname = (*ircv)->getDimensions()[0]->name;
+                    lat->cvartype = (*ircv)->cvartype;
+                    lat->product_type = (*ircv)->product_type;
+                    cvar_1dlat.push_back(lat);
+                }
+                else if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lon_unit_value)){ 
+                    GMCVar *lon = new GMCVar((*ircv));
+                    lon->cfdimname = (*ircv)->getDimensions()[0]->name;
+                    lon->cvartype = (*ircv)->cvartype;
+                    lon->product_type = (*ircv)->product_type;
+                    cvar_1dlon.push_back(lon);
+                }
+            }
+        }
+    }
+
+
+}
+
+void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon) {
+
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != this->vars.end(); ++irv) {
+        if((*irv)->rank == 2) { 
+                        
+            //the 2nd parameter is true for checking lat in the function Is_geolatlon
+            if(true == Is_geolatlon((*irv)->name,true)) {
+                Var *lat = new Var((*irv));
+                var_2dlat.push_back(lat);
+                continue;
+            }
+            else {
+
+                bool has_2dlat = false;
+                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end(); ++ira) {
+
+                    // When the third parameter of has_latlon_cf_units is set to true, it checks latitude
+                    if(true == has_latlon_cf_units((*ira),(*irv)->fullpath,true)) {
+                        Var *lat = new Var((*irv));
+                        var_2dlat.push_back(lat);
+                        has_2dlat = true;
+                        break;
+                    }
+                }
+
+                if(true == has_2dlat)
+                    continue;
+            }
+
+            //the 2nd parameter is true for checking lon in the function Is_geolatlon
+            if(true == Is_geolatlon((*irv)->name,false)) {
+                Var *lon = new Var((*irv));
+                var_2dlon.push_back(lon);
+            }
+            else {
+                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end(); ++ira) {
+
+                    // When the third parameter of has_latlon_cf_units is set to false, it checks longitude
+                    if(true == has_latlon_cf_units((*ira),(*irv)->fullpath,false)) {
+                        Var *lon = new Var((*irv));
+                        var_2dlon.push_back(lon);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
+void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
+
+    for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
+        bool remove_2dlat = false;
+        for(vector<GMCVar *>::iterator ircv = cvar_1dlat.begin();ircv != cvar_1dlat.end();++ircv) {
+            for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+                ird!=(*irv)->dims.end(); ++ird) {
+                if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
+                   (*ird)->size == (*ircv)->getDimensions()[0]->size) {
+                    delete(*irv);
+                    irv = var_2dlat.erase(irv);
+                    remove_2dlat = true;
+                    break;
+                }
+            }
+            if(true == remove_2dlat)
+                break; 
+        }
+
+        if(false == remove_2dlat)
+            ++irv;
+    }
+
+    for(vector<Var *>::iterator irv = var_2dlon.begin();irv != var_2dlon.end();) {
+        bool remove_2dlon = false;
+        for(vector<GMCVar *>::iterator ircv = cvar_1dlon.begin();ircv != cvar_1dlon.end();++ircv) {
+            for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+                ird!=(*irv)->dims.end(); ++ird) {
+                if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
+                   (*ird)->size == (*ircv)->getDimensions()[0]->size) {
+                    delete(*irv);
+                    irv = var_2dlon.erase(irv);
+                    remove_2dlon = true;
+                    break;
+                }
+            }
+            if(true == remove_2dlon)
+                break; 
+        }
+
+        if(false == remove_2dlon)
+            ++irv;
+    }
+
+}
+
+void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2) {
+
+    
+    for(vector<Var *>::iterator irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();) {
+        bool latlon_same_dims = false;
+        for(vector<Var *>::iterator irv_2dlon = var_2dlon.begin();irv_2dlon != var_2dlon.end();++irv_2dlon) {
+            if(((*irv_2dlat)->getDimensions()[0]->name == (*irv_2dlon)->getDimensions()[0]->name) &&
+               ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
+               ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
+               ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size))
+               latlon_same_dims = true;
+               break;
+        }
+        // Doesn't find the the lon that shares the same dims,remove this lat from this vector
+        if(false == latlon_same_dims) {
+            delete(*irv_2dlat);
+            irv_2dlat = var_2dlat.erase(irv_2dlat);
+        }
+        else {//Need to check more(under the same group and create a new templon2 etc.).
+       
+            ++irv_2dlat;
+
+        }
+    }
+}
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
 
     // New code to support 2-D lat/lon, still in development.
@@ -4473,6 +4716,7 @@ GMFile::release_standalone_GMCVar_vector(vector<GMCVar*>&tempgc_vars){
     }
 
 }
+
 #if 0
 void 
 GMFile::add_ignored_info_attrs(bool is_grp,bool is_first){

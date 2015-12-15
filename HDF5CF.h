@@ -677,6 +677,8 @@ namespace HDF5CF
             void add_ignored_droplongstr_hdr();
             bool Check_VarDropLongStr(const string &varpath, const vector<Dimension *>&,H5DataType) throw(Exception);
 
+            void release_standalone_var_vector(vector<Var*>&vars);
+
 
 
         protected:
@@ -836,6 +838,10 @@ namespace HDF5CF
             void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
             bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
             void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
+            void Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
+            void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
+            void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2);
+            void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon);
 
             bool Check_1DGeolocation_Dimscale() throw(Exception);
             void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
