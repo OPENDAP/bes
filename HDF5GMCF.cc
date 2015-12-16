@@ -2452,19 +2452,19 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
 /// Use a more general approach
-//#if 0
+#if 0
     // Will check if this file has 2-D lat/lon.If yes, update the CV.
     string latname,lonname;
     bool latlon_2d_cv = Check_2DLatLon_Dimscale(latname, lonname);
     if( true == latlon_2d_cv) {
         Update_2DLatLon_Dimscale_CV(latname,lonname);
     }
-//#endif
+#endif
 
-#if 0
+//#if 0
     Update_M2DLatLon_Dimscale_CVs();
 
-#endif
+//#endif
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2841,27 +2841,54 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
 void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2) {
 
     
+    // First check 2-D lat, see if we have the corresponding 2-D lon(same dims, under the same group).
+    // If no, remove that lat from the vector.
+    vector<string> lon2d_group_paths;
+
     for(vector<Var *>::iterator irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();) {
-        bool latlon_same_dims = false;
         for(vector<Var *>::iterator irv_2dlon = var_2dlon.begin();irv_2dlon != var_2dlon.end();++irv_2dlon) {
             if(((*irv_2dlat)->getDimensions()[0]->name == (*irv_2dlon)->getDimensions()[0]->name) &&
                ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
                ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
-               ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size))
-               latlon_same_dims = true;
-               break;
+               ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size)) 
+                lon2d_group_paths.push_back((*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/")));
+                
         }
-        // Doesn't find the the lon that shares the same dims,remove this lat from this vector
-        if(false == latlon_same_dims) {
+        // Doesn't find any lons that shares the same dims,remove this lat from this vector
+        if(0 == lon2d_group_paths.size()) {
             delete(*irv_2dlat);
             irv_2dlat = var_2dlat.erase(irv_2dlat);
         }
-        else {//Need to check more(under the same group and create a new templon2 etc.).
-       
-            ++irv_2dlat;
+        else {
+            string lat2d_group_path = (*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/"));
 
+            // Check how many lon2d shares the same group with the lat2d
+            short lon2d_has_lat2d_group_path_flag = 0;
+            for(vector<string>::iterator ivs = lon2d_group_paths.begin();ivs!=lon2d_group_paths.end();++ivs) {
+                if((*ivs)==lat2d_group_path) 
+                    lon2d_has_lat2d_group_path_flag++;
+            }
+
+            // No lon2d shares the same group with the lat2d, remove this lat2d
+            if(0 == lon2d_has_lat2d_group_path_flag) {
+                delete(*irv_2dlat);
+                irv_2dlat = var_2dlat.erase(irv_2dlat);
+            }
+            // Only one lon2d, yes, keep it.
+            else if (1== lon2d_has_lat2d_group_path_flag) {
+                ++irv_2dlat;
+            }
+            // more than 1 lon2d, we will remove the lat2d, but save the group path so that we may provide 
+            // a way to change the coordinates attribute .
+            else {
+                // Save the group path for the future.
+                delete(*irv_2dlat);
+                irv_2dlat = var_2dlat.erase(irv_2dlat);
+            }
         }
     }
+
+    // Check the longitude 
 }
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
 
