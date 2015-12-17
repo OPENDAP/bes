@@ -2838,7 +2838,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
 
 }
 
-void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2) {
+void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2) throw(Exception){
 
     // First check 2-D lat, see if we have the corresponding 2-D lon(same dims, under the same group).
     // If no, remove that lat from the vector.
@@ -2941,8 +2941,51 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
         }
     }
 
+    // Final check var_2dlat and var_2dlon to remove non-qualified CVs.
+    Obtain_unique_2dCV(var_2dlat);
+    Obtain_unique_2dCV(var_2dlon);
+
+    if(var_2dlat.size() != var_2dlon.size()) {
+        throw1("Error in generating 2-D lat/lon CVs.");
+    }
+}
+
+// If two vars share the same dim. , these two vars cannot be CVs. 
+// The group they belong to is the group candidate that the CV should be checked under.
+void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll){
+
+    vector<bool> var_share_dims(var_ll.size(),false);
+    
+    for( int i = 0; i <var_ll.size();i++) {
+
+	for(int j = i+1; j<var_ll.size();j++)   {
+            if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
+              ||(var_ll[i]->getDimensions()[1]->name == var_ll[j]->getDimensions()[1]->name)){
+                var_share_dims[i] = true;      
+                var_share_dims[j] = true;
+                if(HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath) ==
+                   HDF5CFUtil::obtain_string_before_lastslash(var_ll[j]->fullpath))
+                   ;
+                   // Save the group path -- ADD later.
+                
+            }
+        }
+    }
+
+    int var_index = 0;
+    for(vector<Var*>::iterator itv = var_ll.begin(); itv!= var_ll.end();) {
+        if(true == var_share_dims[var_index]) {
+            delete(*itv);
+            itv = var_ll.erase(itv);
+        }
+        else {
+            ++itv;
+        }
+        ++var_index;
+    }
 
 }
+
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
 
     // New code to support 2-D lat/lon, still in development.

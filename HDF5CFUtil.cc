@@ -122,6 +122,16 @@ string HDF5CFUtil::obtain_string_after_lastslash(const string s) {
     return ret_str;
 }
 
+string HDF5CFUtil::obtain_string_before_lastslash(const string & s) {
+
+    string ret_str="";
+    size_t last_fslash_pos = s.find_last_of("/");
+    if (string::npos != last_fslash_pos)
+        ret_str=s.substr(0,last_fslash_pos+1);
+    return ret_str;
+
+}
+
 string HDF5CFUtil::trim_string(hid_t ty_id,const string s, int num_sect, size_t sect_size, vector<size_t>& sect_newsize) {
 
     string temp_sect_str = "";

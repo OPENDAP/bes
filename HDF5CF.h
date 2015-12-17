@@ -840,8 +840,9 @@ namespace HDF5CF
             void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
             void Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
             void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
-            void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2);
+            void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,vector<Var*> &var_2dlon2) throw(Exception);
             void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon);
+            void Obtain_unique_2dCV(vector<Var*>&);
 
             bool Check_1DGeolocation_Dimscale() throw(Exception);
             void Update_M2DLatLon_Dimscale_CVs() throw(Exception);

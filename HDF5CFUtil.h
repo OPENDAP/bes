@@ -69,6 +69,7 @@ struct HDF5CFUtil {
                static std::string trim_string(hid_t dtypeid,const std::string s, int num_sect, size_t section_size, std::vector<size_t>& sect_newsize);
 
                static std::string obtain_string_after_lastslash(const std::string s);
+               static std::string obtain_string_before_lastslash(const std::string & s);
                static bool cf_strict_support_type(H5DataType dtype); 
 
                // Obtain the unique name for the clashed names and save it to set namelist.
