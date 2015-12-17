@@ -903,6 +903,7 @@ namespace HDF5CF
             vector <GMSPVar *>spvars;
             string gp_latname;
             string gp_lonname; 
+            set<string> grp_cv_paths;
             //map<string,string>dimcvars_2dlatlon;
             bool iscoard;
             bool ll2d_no_cv;

@@ -2852,7 +2852,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
                ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
                ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
                ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size)) 
-                lon2d_group_paths.push_back((*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/")));
+                lon2d_group_paths.push_back(HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlon)->fullpath));
+                //lon2d_group_paths.push_back((*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/")));
                 
         }
         // Doesn't find any lons that shares the same dims,remove this lat from this vector
@@ -2861,7 +2862,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             irv_2dlat = var_2dlat.erase(irv_2dlat);
         }
         else {
-            string lat2d_group_path = (*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/"));
+            //string lat2d_group_path = (*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/"));
+            string lat2d_group_path = HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlat)->fullpath);
 
             // Check how many lon2d shares the same group with the lat2d
             short lon2d_has_lat2d_group_path_flag = 0;
@@ -2883,7 +2885,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             // a way to change the coordinates attribute .
             else {
                 // Save the group path for the future.
-                multi_lon2d_group_paths.push_back(lat2d_group_path);
+                grp_cv_paths.insert(lat2d_group_path);
                 delete(*irv_2dlat);
                 irv_2dlat = var_2dlat.erase(irv_2dlat);
             }
@@ -2903,8 +2905,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
                ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
                ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
                ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size)) 
-                lat2d_group_paths.push_back((*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/")));
-                
+               lat2d_group_paths.push_back(HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlat)->fullpath)); 
+                //lat2d_group_paths.push_back((*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/")));
         }
         // Doesn't find any lats that shares the same dims,remove this lat from this vector
         if(0 == lat2d_group_paths.size()) {
@@ -2912,7 +2914,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             irv_2dlon = var_2dlon.erase(irv_2dlon);
         }
         else {
-            string lon2d_group_path = (*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/"));
+            //string lon2d_group_path = (*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/"));
+            string lon2d_group_path = HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlon)->fullpath);
 
             // Check how many lat2d shares the same group with the lon2d
             short lat2d_has_lon2d_group_path_flag = 0;
@@ -2934,7 +2937,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             // a way to change the coordinates attribute .
             else {
                 // Save the group path for the future.
-                multi_lat2d_group_paths.push_back(lon2d_group_path);
+                grp_cv_paths.insert(lon2d_group_path);
                 delete(*irv_2dlon);
                 irv_2dlon = var_2dlon.erase(irv_2dlon);
             }
@@ -2965,8 +2968,8 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll){
                 var_share_dims[j] = true;
                 if(HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath) ==
                    HDF5CFUtil::obtain_string_before_lastslash(var_ll[j]->fullpath))
-                   ;
                    // Save the group path -- ADD later.
+                   grp_cv_paths.insert(HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath));
                 
             }
         }
