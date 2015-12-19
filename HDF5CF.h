@@ -839,10 +839,11 @@ namespace HDF5CF
             bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
             void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
             void Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
-            void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
-            void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon) throw(Exception);
-            void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon);
-            void Obtain_unique_2dCV(vector<Var*>&);
+            void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon,map<string,int>&latlon2d_path_to_index);
+            void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>&latlon2d_path_to_index) throw(Exception);
+            void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>&latlon2d_path_to_index);
+            void Obtain_unique_2dCV(vector<Var*>&,map<string,int>&);
+            void Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int>&) throw(Exception);
 
             bool Check_1DGeolocation_Dimscale() throw(Exception);
             void Update_M2DLatLon_Dimscale_CVs() throw(Exception);

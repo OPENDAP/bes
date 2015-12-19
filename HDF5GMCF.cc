@@ -36,6 +36,7 @@
 
 #include "HDF5CF.h"
 #include <BESDebug.h>
+#include <algorithm>
 //#include <sstream>
 using namespace HDF5CF;
 
@@ -2501,9 +2502,11 @@ cerr<<"File path is "<<this->path <<endl;
         // 2. Define temporary vectors to store 2-D lat/lon Vars
         vector<Var*> tempcvar_2dlat;
         vector<Var*> tempcvar_2dlon;
+        //vector<int>cv2d_index;
+        map<string,int> latlon2d_path_to_index;
 
         // Obtain 2-D lat/lon variables(only search the CF units and the reserved names)
-        Obtain_2DLatLon_Vars(tempcvar_2dlat,tempcvar_2dlon);
+        Obtain_2DLatLon_Vars(tempcvar_2dlat,tempcvar_2dlon,latlon2d_path_to_index);
 
 //#if 0
 for(vector<GMCVar *>::iterator irv = tempcvar_1dlat.begin();irv != tempcvar_1dlat.end();++irv)
@@ -2518,7 +2521,7 @@ cerr<<"2-D lon variable full path is "<<(*irv)->fullpath <<endl;
 //#endif
 
         // 3. Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
-        Obtain_2DLLVars_With_Dims_not_1DLLCVars(tempcvar_2dlat,tempcvar_2dlon,tempcvar_1dlat,tempcvar_1dlon);
+        Obtain_2DLLVars_With_Dims_not_1DLLCVars(tempcvar_2dlat,tempcvar_2dlon,tempcvar_1dlat,tempcvar_1dlon,latlon2d_path_to_index);
 
 for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv)
 cerr<<"2-D Left lat variable full path is "<<(*irv)->fullpath <<endl;
@@ -2527,9 +2530,15 @@ cerr<<"2-D Left lon variable full path is "<<(*irv)->fullpath <<endl;
 
         // 4. Assemble the final 2-D lat/lon CV candidate vectors by checking if the corresponding 2-D lon of a 2-D lat shares
         // the same dimension and under the same group and if there is another pair of 2-D lat/lon under the same group.
-        Obtain_2DLLCVar_Candidate(tempcvar_2dlat,tempcvar_2dlon);
+        Obtain_2DLLCVar_Candidate(tempcvar_2dlat,tempcvar_2dlon,latlon2d_path_to_index);
 
-        // 5. Create the CVs based on the final 2-D lat/lon CV candidates.
+        // 5. Remove the 2-D lat/lon variables that are to be used as CVs from the vector that stores general variables
+        vector<int> var2d_index;
+        for (map<string,int>::const_iterator it= latlon2d_path_to_index.begin();it!=latlon2d_path_to_index.end();++it)
+            var2d_index.push_back(it->second);
+        Remove_2DLLCVar_Final_Candidate_from_Vars(var2d_index);
+
+        // 6. Add the CVs based on the final 2-D lat/lon CV candidates.
  
 //Need to remove the original 2D lat var.
 for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv){
@@ -2749,10 +2758,9 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
         }
     }
 
-
 }
 
-void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon) {
+void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int> & latlon2d_path_to_index) {
 
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
@@ -2762,6 +2770,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
             if(true == Is_geolatlon((*irv)->name,true)) {
                 Var *lat = new Var((*irv));
                 var_2dlat.push_back(lat);
+                latlon2d_path_to_index[(*irv)->fullpath]= distance(this->vars.begin(),irv);
                 continue;
             }
             else {
@@ -2774,6 +2783,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                     if(true == has_latlon_cf_units((*ira),(*irv)->fullpath,true)) {
                         Var *lat = new Var((*irv));
                         var_2dlat.push_back(lat);
+                        latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                         has_2dlat = true;
                         break;
                     }
@@ -2786,6 +2796,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
             //the 2nd parameter is true for checking lon in the function Is_geolatlon
             if(true == Is_geolatlon((*irv)->name,false)) {
                 Var *lon = new Var((*irv));
+                latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                 var_2dlon.push_back(lon);
             }
             else {
@@ -2795,6 +2806,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                     // When the third parameter of has_latlon_cf_units is set to false, it checks longitude
                     if(true == has_latlon_cf_units((*ira),(*irv)->fullpath,false)) {
                         Var *lon = new Var((*irv));
+                        latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                         var_2dlon.push_back(lon);
                         break;
                     }
@@ -2805,7 +2817,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 }
 
 //  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
-void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
+void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon,map<string,int> &latlon2d_path_to_index) {
 
     for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
         bool remove_2dlat = false;
@@ -2814,6 +2826,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
                 ird!=(*irv)->dims.end(); ++ird) {
                 if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
                    (*ird)->size == (*ircv)->getDimensions()[0]->size) {
+                    latlon2d_path_to_index.erase((*irv)->fullpath);
                     delete(*irv);
                     irv = var_2dlat.erase(irv);
                     remove_2dlat = true;
@@ -2835,6 +2848,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
                 ird!=(*irv)->dims.end(); ++ird) {
                 if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
                    (*ird)->size == (*ircv)->getDimensions()[0]->size) {
+                    latlon2d_path_to_index.erase((*irv)->fullpath);
                     delete(*irv);
                     irv = var_2dlon.erase(irv);
                     remove_2dlon = true;
@@ -2851,7 +2865,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
 
 }
 
-void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon) throw(Exception){
+void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>& latlon2d_path_to_index) throw(Exception){
 
     // First check 2-D lat, see if we have the corresponding 2-D lon(same dims, under the same group).
     // If no, remove that lat from the vector.
@@ -2871,6 +2885,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
         }
         // Doesn't find any lons that shares the same dims,remove this lat from this vector
         if(0 == lon2d_group_paths.size()) {
+            latlon2d_path_to_index.erase((*irv_2dlat)->fullpath);         
             delete(*irv_2dlat);
             irv_2dlat = var_2dlat.erase(irv_2dlat);
         }
@@ -2887,6 +2902,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
 
             // No lon2d shares the same group with the lat2d, remove this lat2d
             if(0 == lon2d_has_lat2d_group_path_flag) {
+                latlon2d_path_to_index.erase((*irv_2dlat)->fullpath);
                 delete(*irv_2dlat);
                 irv_2dlat = var_2dlat.erase(irv_2dlat);
             }
@@ -2899,6 +2915,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             else {
                 // Save the group path for the future.
                 grp_cv_paths.insert(lat2d_group_path);
+                latlon2d_path_to_index.erase((*irv_2dlat)->fullpath);
                 delete(*irv_2dlat);
                 irv_2dlat = var_2dlat.erase(irv_2dlat);
             }
@@ -2921,6 +2938,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
         }
         // Doesn't find any lats that shares the same dims,remove this lon from this vector
         if(0 == lat2d_group_paths.size()) {
+            latlon2d_path_to_index.erase((*irv_2dlon)->fullpath);
             delete(*irv_2dlon);
             irv_2dlon = var_2dlon.erase(irv_2dlon);
         }
@@ -2937,6 +2955,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
 
             // No lat2d shares the same group with the lon2d, remove this lon2d
             if(0 == lat2d_has_lon2d_group_path_flag) {
+                latlon2d_path_to_index.erase((*irv_2dlon)->fullpath);
                 delete(*irv_2dlon);
                 irv_2dlon = var_2dlon.erase(irv_2dlon);
             }
@@ -2949,6 +2968,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
             else {
                 // Save the group path for the future.
                 grp_cv_paths.insert(lon2d_group_path);
+                latlon2d_path_to_index.erase((*irv_2dlon)->fullpath);
                 delete(*irv_2dlon);
                 irv_2dlon = var_2dlon.erase(irv_2dlon);
             }
@@ -2956,8 +2976,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
     }
 
     // Final check var_2dlat and var_2dlon to remove non-qualified CVs.
-    Obtain_unique_2dCV(var_2dlat);
-    Obtain_unique_2dCV(var_2dlon);
+    Obtain_unique_2dCV(var_2dlat,latlon2d_path_to_index);
+    Obtain_unique_2dCV(var_2dlon,latlon2d_path_to_index);
 #if 0
 for(vector<Var*>::iterator itv = var_2dlat.begin(); itv!= var_2dlat.end();++itv) {
 cerr<<"2-D CV latitude name is "<<(*itv)->fullpath <<endl;
@@ -2974,7 +2994,7 @@ cerr<<"2-D CV longitude name is "<<(*itv)->fullpath <<endl;
 
 // If two vars share the same dim. , these two vars cannot be CVs. 
 // The group they belong to is the group candidate that the CV should be checked under.
-void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll){
+void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_path_to_index){
 
     vector<bool> var_share_dims(var_ll.size(),false);
     
@@ -2996,6 +3016,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll){
     int var_index = 0;
     for(vector<Var*>::iterator itv = var_ll.begin(); itv!= var_ll.end();) {
         if(true == var_share_dims[var_index]) {
+            latlon2d_path_to_index.erase((*itv)->fullpath);        
             delete(*itv);
             itv = var_ll.erase(itv);
         }
@@ -3005,6 +3026,26 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll){
         ++var_index;
     }
 
+}
+
+void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index) throw(Exception) {
+
+    //sort the 2-D lat/lon var index according to the ascending order before removing the 2-D lat/lon vars
+    sort(var2d_index.begin(),var2d_index.end());
+    vector<Var *>::iterator it = this->vars.begin();
+    for (int i = 0; i <var2d_index.size();i++) {
+       if ( i == 0)
+           advance(it,var2d_index[i]);
+       else
+           advance(it,var2d_index[i]-var2d_index[i-1]-1);
+
+       if(it == this->vars.end())
+          throw1("Out of range to obtain 2D lat/lon variables");
+       else {
+          delete(*it);
+          it = this->vars.erase(it);
+       }
+    }
 }
 
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
