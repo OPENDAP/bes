@@ -3042,12 +3042,49 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                 string var_ll_j_path = HDF5CFUtil::obtain_string_before_lastslash(var_ll[j]->fullpath);
                 // STOP::: Compare var_ll_i_path and var_ll_j_path,only set the child group path be true and remember the path.
                 // obtain the string size, compare the string size, long.compare(0,shortlength,short)==0 , yes, else save two paths, set both true
-                var_share_dims[i] = true;      
-                var_share_dims[j] = true;
-                if(HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath) ==
-                   HDF5CFUtil::obtain_string_before_lastslash(var_ll[j]->fullpath))
-                   // Save the group path -- ADD later.
-                   grp_cv_paths.insert(HDF5CFUtil::obtain_string_before_lastslash(var_ll[i]->fullpath));
+                if(var_ll_i_path.size() > var_ll_j_path.size()) {
+                    // var_ll_j_path is the parent group of var_ll_path,set the shared dim. be true for the child group,remember the path.
+                    if(var_ll_i_path.compare(0,var_ll_j_path.size(),var_ll_j_path)==0) {
+                        var_share_dims[i] = true;
+                        grp_cv_paths.insert(var_ll_i_path);
+                    }
+                    else {// Save both as shared, they cannot be CVs.
+                        var_share_dims[i] = true;
+                        var_share_dims[j] = true;
+                  
+                        grp_cv_paths.insert(var_ll_i_path);
+                        grp_cv_paths.insert(var_ll_j_path);
+ 
+                    }
+
+                }
+                else if (var_ll_i_path.size() == var_ll_j_path.size()) {
+                    var_share_dims[i] = true;      
+                    var_share_dims[j] = true;
+                   if(var_ll_i_path == var_ll_j_path) 
+                      grp_cv_paths.insert(var_ll_i_path);
+                   else {
+                      grp_cv_paths.insert(var_ll_i_path);
+                      grp_cv_paths.insert(var_ll_j_path);
+
+                   }
+ 
+                }
+                else {
+                    // var_ll_i_path is the parent group of var_ll_j_path,set the shared dim. be true for the child group,remember the path.
+                    if(var_ll_j_path.compare(0,var_ll_i_path.size(),var_ll_i_path)==0) {
+                        var_share_dims[j] = true;
+                        grp_cv_paths.insert(var_ll_j_path);
+                    }
+                    else {// Save both as shared, they cannot be CVs.
+                        var_share_dims[i] = true;
+                        var_share_dims[j] = true;
+                  
+                        grp_cv_paths.insert(var_ll_i_path);
+                        grp_cv_paths.insert(var_ll_j_path);
+ 
+                    }
+                }
                 
             }
         }
