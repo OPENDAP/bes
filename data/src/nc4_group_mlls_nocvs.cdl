@@ -72,13 +72,13 @@ group: g3 {
        dim2 = 3;
  variables:
    float lat1(dim1,dim2);
-         lat1:units="degrees_east";
+         lat1:units="degrees_north";
    float lon1(dim1,dim2);
-         lon1:units="degrees_north";
+         lon1:units="degrees_east";
    float lat2(dim1,dim2);
-         lat2:units="degrees_east";
+         lat2:units="degrees_north";
    float lon2(dim1,dim2);
-         lon2:units="degrees_north";
+         lon2:units="degrees_east";
   float temp1(dim1,dim2);
          temp1:units = "K";
          temp1:coordinates="/g3/lat1 /g3/lon1";
