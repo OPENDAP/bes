@@ -849,6 +849,7 @@ namespace HDF5CF
             void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
             bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
             bool Check_Var_2D_CVars(Var*) throw(Exception);
+            bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
 
             void Handle_CVar_GPM_L1() throw(Exception);
             void Handle_CVar_GPM_L3() throw(Exception);
