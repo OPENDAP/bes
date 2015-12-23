@@ -35,8 +35,8 @@
 
 #include <new>
 
-using std::new_handler ;
-using std::bad_alloc ;
+using std::new_handler;
+using std::bad_alloc;
 
 #include "BESInterface.h"
 #include "BESDataHandlerInterface.h"
@@ -44,46 +44,45 @@ using std::bad_alloc ;
 
 /** @brief Entry point into BES using string command requests
 
-    The format of the request looks something like:
+ The format of the request looks something like:
 
-    <PRE>
-    set container in catalog values c,nc/mplot.nc;
-    define d as c;
-    get das for d;
-    </PRE>
+ <PRE>
+ set container in catalog values c,nc/mplot.nc;
+ define d as c;
+ get das for d;
+ </PRE>
 
-    In this example a DAS object response is being requested. The DAS object
-    is to be built from the definition 'd', where d is defined using the
-    data container c. The data container c is created using the real file
-    nc/mplot.nc
+ In this example a DAS object response is being requested. The DAS object
+ is to be built from the definition 'd', where d is defined using the
+ data container c. The data container c is created using the real file
+ nc/mplot.nc
 
-    BESBasicInterface uses BESParser to parse through the request string,
-    building up a plan to be used during the execute method. Most
-    implementations simply log information to the BESLog file before calling
-    the parent class method.
+ BESBasicInterface uses BESParser to parse through the request string,
+ building up a plan to be used during the execute method. Most
+ implementations simply log information to the BESLog file before calling
+ the parent class method.
 
-    @see BESInterface
-    @see BESParser
+ @see BESInterface
+ @see BESParser
  */
-class BESBasicInterface : public BESInterface
-{
+class BESBasicInterface: public BESInterface {
 protected:
-    virtual void		initialize() ;
-    virtual void		validate_data_request() ;
-    virtual void		build_data_request_plan() ;
-    virtual void		execute_data_request_plan() ;
-    virtual void		invoke_aggregation();
-    virtual void		transmit_data() ;
-    virtual void		log_status() ;
-    virtual void		clean() ;
+    virtual void initialize();
+    virtual void validate_data_request();
+    virtual void build_data_request_plan();
+    virtual void execute_data_request_plan();
+    virtual void invoke_aggregation();
+    virtual void transmit_data();
+    virtual void log_status();
+    virtual void clean();
 public:
-				BESBasicInterface( ostream *strm ) ;
-    virtual			~BESBasicInterface() ;
+    BESBasicInterface(ostream *strm);
+    virtual ~BESBasicInterface();
 
-    virtual int			execute_request( const string &from ) ;
+    virtual int execute_request(const string &from);
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream &strm) const;
+};
 
 #endif // BESBasicInterface_h_
 

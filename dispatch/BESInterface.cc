@@ -32,18 +32,16 @@
 
 #include "config.h"
 
-#include <string>
-#include <sstream>
-#include <iostream>
+#include <cstdlib>
 
+#include <signal.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-using std::string;
-using std::ostringstream;
-using std::bad_alloc;
-using std::cout;
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #include "BESInterface.h"
 
@@ -52,6 +50,7 @@ using std::cout;
 #include "BESAggFactory.h"
 #include "BESAggregationServer.h"
 #include "BESReporterList.h"
+#include "BESContextManager.h"
 
 #include "BESExceptionManager.h"
 
@@ -67,13 +66,54 @@ using std::cout;
 list<p_bes_init> BESInterface::_init_list;
 list<p_bes_end> BESInterface::_end_list;
 
+using namespace std;
+
+static volatile sig_atomic_t sigalarm = 0; // FIXME Not used
+static volatile int timeout = 0;    // non-zero is the timeout period in seconds
+
+static void catch_sig_alarm(int sig)
+{
+    if (sig == SIGALRM) {
+        sigalarm = 1;   // FIXME Hack
+
+        (*BESLog::TheLog()) << "Child listener timeout after " << timeout << " seconds, exiting." << endl;
+
+        // Try this: If we wind up here, raise SIGTERM using the default
+        // action which is to terminate the process.
+#if 1
+        signal(SIGTERM, SIG_DFL);
+        raise(SIGTERM);
+#endif
+    }
+}
+
+static void register_signal_handler()
+{
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    sigaddset(&act.sa_mask, SIGALRM);
+    act.sa_flags = 0;
+
+    // Note that we do not set SA_RESTART so an interrupted system call
+    // will return with an error and errno set to EINTR.
+
+    act.sa_handler = catch_sig_alarm;
+    if (sigaction(SIGALRM, &act, 0))
+        throw BESInternalFatalError("Could not register a handler to catch beslistener alarm/timeout handler.", __FILE__,
+        __LINE__);
+}
+
+
+
 BESInterface::BESInterface(ostream *output_stream) :
     _strm(output_stream), _dhi(0), _transmitter(0)
 {
     if (!output_stream) {
-        string err = "output stream must be set in order to output responses";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("output stream must be set in order to output responses", __FILE__, __LINE__);
     }
+
+    // Install signal handler for alram() here
+    register_signal_handler();
 }
 
 BESInterface::~BESInterface()
@@ -99,7 +139,13 @@ BESInterface::~BESInterface()
  and it is the responsibility of the calling method to call finish_with_error
  in order to transmit the error message back to the client.
 
+ @param from A string that tells where this request came from. Literally,
+ the IP and port number or the string 'standalone'.
+ See void BESServerHandler::execute(Connection *c) or
+ void StandAloneClient::executeCommand(const string & cmd, int repeat)
+
  @return status of the execution of the request, 0 if okay, !0 otherwise
+
  @see initialize()
  @see validate_data_request()
  @see build_data_request_plan()
@@ -117,6 +163,21 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 
 int BESInterface::execute_request(const string &from)
 {
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << endl);
+
+    bool found = false;
+    string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
+    BESDEBUG("bes", "Set request timeout sentinel " << found << endl);
+
+    if (found) {
+        timeout = strtol(context.c_str(), NULL, 10);
+        LOG("Set request timeout to " << timeout << " seconds." << endl);
+        BESDEBUG("bes", "Set request timeout to " << timeout << " seconds." << endl);
+        // VERBOSE_LOG timeout
+        sigalarm = 0;
+        alarm(timeout);
+    }
+
     if (!_dhi) {
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
@@ -133,9 +194,9 @@ int BESInterface::execute_request(const string &from)
     }
 
     if (!_dhi) {
-        string err = "DataHandlerInterface can not be null";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
+
     _dhi->set_output_stream(_strm);
     _dhi->data[REQUEST_FROM] = from;
 
@@ -144,7 +205,8 @@ int BESInterface::execute_request(const string &from)
     ss << thepid;
     _dhi->data[SERVER_PID] = ss.str();
 
-    int status = 0;
+    // This is never used except as an arg to finish. jhrg 12/23/15
+    //int status = 0;
 
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response
@@ -156,16 +218,24 @@ int BESInterface::execute_request(const string &from)
         *(BESLog::TheLog()) << _dhi->data[SERVER_PID] << " from " << _dhi->data[REQUEST_FROM] << " request received"
             << endl;
 
+        // This does not do anything here or in BESBasicInterface or BESXMLInterface.
+        // Remove it? jhrg 12/23/15
         validate_data_request();
+
         build_data_request_plan();
+
+        if (!_transmitter)
+            throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
+
+        // This method does two key things: Calls the request handler to make a
+        // 'response object' (the C++ object that will hold the response) and
+        // then calls the transmitter to actually send it or build and send it.
+        //
+        // It may be that for some kinds of requests/responses, the timeout alarm
+        // should be shut off deep down in code such as the dap module that actually
+        // starts sending data back to the OLFS or other front end.
         execute_data_request_plan();
-#if 0
-        // These two functions are now being called inside
-        // execute_data_request_plan as they are really a part of executing
-        // the request and not separate.
-        invoke_aggregation();
-        transmit_data();
-#endif
+
         _dhi->executed = true;
     }
     catch (BESError & ex) {
@@ -188,13 +258,24 @@ int BESInterface::execute_request(const string &from)
     delete bes_timing::elapsedTimeToTransmitStart;
     bes_timing::elapsedTimeToTransmitStart = 0;
 
-    return finish(status);
+    int status = finish(0 /* status */);
+
+    alarm(0);
+
+    return status;
 }
 
-int BESInterface::finish(int status)
+// I think this code was written when execute_request() called transmit_data()
+// (and invoke_aggregation()). I think that the code up to the log_status()
+// call is redundant. This means that so is the param 'status'. jhrg 12/23/15
+int BESInterface::finish(int /*status*/)
 {
+    BESDEBUG("bes", "Entering: " <<  __PRETTY_FUNCTION__ << " ***" << endl);
+
+#if 0
+    int status = 0;
     try {
-        // if there was an error duriing initialization, validation,
+        // if there was an error during initialization, validation,
         // execution or transmit of the response then we need to transmit
         // the error information. Once printed, delete the error
         // information since we are done with it.
@@ -217,7 +298,8 @@ int BESInterface::finish(int status)
         BESInternalError ex(serr, __FILE__, __LINE__);
         status = exception_manager(ex);
     }
-
+#endif
+#if 1
     // If there is error information then the transmit of the error failed,
     // print it to standard out. Once printed, delete the error
     // information since we are done with it.
@@ -226,7 +308,7 @@ int BESInterface::finish(int status)
         delete _dhi->error_info;
         _dhi->error_info = 0;
     }
-
+#endif
     // if there is a problem with the rest of these steps then all we will
     // do is log it to the BES log file and not handle the exception with
     // the exception manager.
@@ -260,7 +342,7 @@ int BESInterface::finish(int status)
         (*BESLog::TheLog()) << "Unknown problem ending request" << endl;
     }
 
-    return status;
+    return 0/*status*/;
 }
 
 int BESInterface::finish_with_error(int status)
@@ -313,10 +395,6 @@ void BESInterface::initialize()
  */
 void BESInterface::validate_data_request()
 {
-    //BESStopWatch sw;
-    //if (BESISDEBUG( TIMING_LOG ))
-    //		sw.start("BESInterface::validate_data_request");
-
 }
 
 /** @brief Execute the data request plan
@@ -327,6 +405,9 @@ void BESInterface::validate_data_request()
 
  If no BESResponseHandler can be found given the action then an
  exception is thrown.
+
+ @note I have modified this class so that ths method can assume that
+ the _transmitter field has been set.
 
  @see BESDataHandlerInterface
  @see BESResponseHandler
@@ -399,7 +480,9 @@ void BESInterface::transmit_data()
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESInterface::transmit_data", _dhi->data[REQUEST_ID]);
 
     BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting request: " << _dhi->data[DATA_REQUEST] << endl);
+#if 0
     if (_transmitter) {
+#endif
         if (_dhi->error_info) {
             ostringstream strm;
             _dhi->error_info->print(strm);
@@ -408,22 +491,27 @@ void BESInterface::transmit_data()
             _dhi->error_info->transmit(_transmitter, *_dhi);
         }
         else if (_dhi->response_handler) {
-            BESDEBUG("bes",
-                "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
+            BESDEBUG("bes", "  BESInterface::transmit_data() - Response handler  " << _dhi->response_handler->get_name() << endl);
             _dhi->response_handler->transmit(_transmitter, *_dhi);
         }
-    }
+#if 0
+   }
     else {
+
         if (_dhi->error_info) {
             BESDEBUG("bes", "BESInterface::transmit_data() - Transmitting error info using cout ... " << endl);
             _dhi->error_info->print(cout);
+            delete _dhi->error_info;
+            _dhi->error_info = 0;
         }
         else {
             BESDEBUG("bes", "BESInterface::transmit_data() - Unable to transmit the response ... FAILED " << endl);
-            string err = "Unable to transmit the response, no transmitter";
-            throw BESInternalError(err, __FILE__, __LINE__);
+            //string err = ;
+            throw BESInternalError("Unable to transmit the response, no transmitter", __FILE__, __LINE__);
         }
     }
+#endif
+
     BESDEBUG("bes", "BESInterface::transmit_data() - OK" << endl);
 }
 
@@ -512,7 +600,7 @@ int BESInterface::exception_manager(BESError &e)
  *
  * Displays the pointer value of this instance along with information about
  * BESDataHandlerInterface, the BESTransmitter being used, and the number of
- * initialization and termimation callbacks.
+ * initialization and termination callbacks.
  *
  * @param strm C++ i/o stream to dump the information to
  */

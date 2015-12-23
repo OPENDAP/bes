@@ -102,7 +102,7 @@ void BESXMLInterface::build_data_request_plan()
 
         // XML_PARSE_NONET
         doc = xmlReadMemory(_dhi->data["XMLDoc"].c_str(), _dhi->data["XMLDoc"].size(), "" /* base URL */,
-            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+        NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == NULL) {
             string err = "Problem parsing the request xml document:\n";
@@ -187,7 +187,7 @@ void BESXMLInterface::build_data_request_plan()
 
                     BESDataHandlerInterface &current_dhi = current_cmd->get_dhi();
 
-		    BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
+                    BESDEBUG("besxml", node_name << " parsed request, dhi = " << current_dhi << endl);
 
                     string returnAs = current_dhi.data[RETURN_CMD];
                     if (returnAs != "") {

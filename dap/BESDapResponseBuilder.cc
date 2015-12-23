@@ -284,21 +284,67 @@ int BESDapResponseBuilder::get_timeout() const
     return d_timeout;
 }
 
-/** Use values of this instance to establish a timeout alarm for the server.
- If the timeout value is zero, do nothing.
+/**
+ * Turn on the alarm. The code will timeout after d_timeout
+ * seconds unless timeout_off() is called first.
  */
-void BESDapResponseBuilder::establish_timeout(ostream &stream) const
+void
+BESDapResponseBuilder::timeout_on() const
+{
+#ifndef WIN32
+    alarm(d_timeout);
+#endif
+}
+
+/**
+ * Turn off the timeout.
+ * @see timeout_on() and register_timeout().
+ */
+void
+BESDapResponseBuilder::timeout_off()
+{
+#ifndef WIN32
+    alarm(0);
+#endif
+}
+
+/**
+ * Configure a signal handler for the SIGALRM. The signal handler
+ * will throw a DAP Error object if the alarm signal is triggered.
+ *
+ * @return void
+ */
+void BESDapResponseBuilder::register_timeout() const
+{
+#ifndef WIN32
+    SignalHandler *sh = SignalHandler::instance();
+    EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler());
+    delete old_eh;
+#endif
+}
+
+
+/** Use values of this instance to establish a timeout alarm for the server.
+ * If the timeout value is zero, do nothing.
+ *
+ * @deprecated Use register_timeout() instead.
+ */
+void BESDapResponseBuilder::establish_timeout(ostream &) const
 {
 #ifndef WIN32
     if (d_timeout > 0) {
         SignalHandler *sh = SignalHandler::instance();
-        EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler(stream));
+        EventHandler *old_eh = sh->register_handler(SIGALRM, new AlarmHandler());
         delete old_eh;
         alarm(d_timeout);
     }
 #endif
 }
 
+/**
+ * @deprecated Use timeout_off() instead for uniformity with code
+ * in libdap::DDS.
+ */
 void BESDapResponseBuilder::remove_timeout() const
 {
     alarm(0);

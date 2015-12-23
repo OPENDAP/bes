@@ -39,6 +39,28 @@ m4_define([_AT_BESCMD_TEST], [dnl
     AT_CLEANUP
 ])
 
+m4_define([_AT_BESCMD_ERROR_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [1], [stdout], [stderr])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [1], [stdout], [stderr])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
 m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
 
     AT_SETUP([BESCMD $1])
@@ -127,6 +149,10 @@ m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
     
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])])
+
+m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
+[_AT_BESCMD_ERROR_TEST([$abs_srcdir/bescmd/$1], [$abs_srcdir/bescmd/$1.baseline])
+])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])

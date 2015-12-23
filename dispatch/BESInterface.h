@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,142 +35,141 @@
 
 #include <list>
 
-using std::list ;
+using std::list;
 
 #include "BESDataHandlerInterface.h"
 
 #include "BESObj.h"
 
-class BESError ;
-class BESTransmitter ;
+class BESError;
+class BESTransmitter;
 
-typedef bool (*p_bes_init)( BESDataHandlerInterface &dhi ) ;
-typedef void (*p_bes_end)( BESDataHandlerInterface &dhi ) ;
+typedef bool (*p_bes_init)(BESDataHandlerInterface &dhi);
+typedef void (*p_bes_end)(BESDataHandlerInterface &dhi);
 
 /** @brief Entry point into BES, building responses to given requests.
 
-    BESInterface is an abstract class providing the entry point into the
-    retrieval of information using the BES framework. There are eight
-    steps to retrieving a response to a given request:
+ BESInterface is an abstract class providing the entry point into the
+ retrieval of information using the BES framework. There are eight
+ steps to retrieving a response to a given request:
 
-    <OL>
-    <LI>initialize the BES environment</LI>
-    <LI>validate the incoming information to make sure that all information
-    is available to perform the query</LI>
-    <LI>build the request plan to retrieve the information. A response can
-    be generated for multiple files using multiple server types (cedar, cdf,
-    netcdf, etc...)</LI>
-    <LI>execute the request plan and build the response object</LI>
-    <LI>transmit the response object</LI>
-    <LI>log the status of the request</LI>
-    <LI>send out report information that can be reported on by any number of
-    reporters registered with the system.</LI>
-    <LI>end the request</LI>
-    </OL>
+ <OL>
+ <LI>initialize the BES environment</LI>
+ <LI>validate the incoming information to make sure that all information
+ is available to perform the query</LI>
+ <LI>build the request plan to retrieve the information. A response can
+ be generated for multiple files using multiple server types (cedar, cdf,
+ netcdf, etc...)</LI>
+ <LI>execute the request plan and build the response object</LI>
+ <LI>transmit the response object</LI>
+ <LI>log the status of the request</LI>
+ <LI>send out report information that can be reported on by any number of
+ reporters registered with the system.</LI>
+ <LI>end the request</LI>
+ </OL>
 
-    The way in which the response is generated is as follows.
-    A BESResponseHandler is found that knows how to build the requested
-    response object. The built-in response handlers are for the
-    response objects das, dds, ddx, data, help, version. These response
-    handlers are added to a response handler list during initialization.
-    Additional response handlers can be added to this list. For example,
-    in Cedar, response handlers are registered to build flat, tab, info,
-    and stream responses.
+ The way in which the response is generated is as follows.
+ A BESResponseHandler is found that knows how to build the requested
+ response object. The built-in response handlers are for the
+ response objects das, dds, ddx, data, help, version. These response
+ handlers are added to a response handler list during initialization.
+ Additional response handlers can be added to this list. For example,
+ in Cedar, response handlers are registered to build flat, tab, info,
+ and stream responses.
 
-    To build the response objects a user can make many requests. For
-    example, a das object can be built using as many different files as is
-    requested, say for file1,file2,file3,file4. And each of these files
-    could be of a different data type. For example, file1 and file3 could
-    be cedar files, file2 could be cdf file and file4 could be a netcdf
-    file.
+ To build the response objects a user can make many requests. For
+ example, a das object can be built using as many different files as is
+ requested, say for file1,file2,file3,file4. And each of these files
+ could be of a different data type. For example, file1 and file3 could
+ be cedar files, file2 could be cdf file and file4 could be a netcdf
+ file.
 
-    The structure that holds all of the requested information is the
-    BESDataHandlerInterface. It holds on to a list of containers, each of
-    which has the data type (cedar, cdf, nph, etc...) and the file to be
-    read. The BESDataHandlerInterface is built in the build request method.
+ The structure that holds all of the requested information is the
+ BESDataHandlerInterface. It holds on to a list of containers, each of
+ which has the data type (cedar, cdf, nph, etc...) and the file to be
+ read. The BESDataHandlerInterface is built in the build request method.
 
-    The response handlers know how to build the specified response object,
-    such as DAS, DDS, help, status, version, etc...
+ The response handlers know how to build the specified response object,
+ such as DAS, DDS, help, status, version, etc...
 
-    For each container in the BESDataHandlerInterface find the
-    request handler (BESRequestHandler) for the containers data type. Each
-    request handler registers functions that know how to fill in a certain
-    type of response (DAS, DDS, etc...). Find that function and invoke it. So,
-    for example, there is a CedarRequestHandler class that registers functions
-    that knows how to fill in the different response objects from cedar files.
+ For each container in the BESDataHandlerInterface find the
+ request handler (BESRequestHandler) for the containers data type. Each
+ request handler registers functions that know how to fill in a certain
+ type of response (DAS, DDS, etc...). Find that function and invoke it. So,
+ for example, there is a CedarRequestHandler class that registers functions
+ that knows how to fill in the different response objects from cedar files.
 
-    Once the response object is filled it is transmitted using a specified
-    BESTransmitter.
+ Once the response object is filled it is transmitted using a specified
+ BESTransmitter.
 
-    The status is then logged (default is to not log any status. It is up
-    to derived classes of BESInterface to implement the log_status method.)
+ The status is then logged (default is to not log any status. It is up
+ to derived classes of BESInterface to implement the log_status method.)
 
-    The request and status are then reported. The default action is to
-    pass off the reporting to BESReporterList::TheList(), which has a list of
-    registered reporters and passes off the information to each of those
-    reporters. For example, if the Cedar project wants to report on any
-    cedar access then it can register a reporter with 
-    BESReporterList::TheList().
+ The request and status are then reported. The default action is to
+ pass off the reporting to BESReporterList::TheList(), which has a list of
+ registered reporters and passes off the information to each of those
+ reporters. For example, if the Cedar project wants to report on any
+ cedar access then it can register a reporter with
+ BESReporterList::TheList().
 
-    @see BESGlobalInit
-    @see BESKeys
-    @see BESResponseHandler 
-    @see BESRequestHandler 
-    @see BESTransmitter 
-    @see BESLog
-    @see BESReporter 
+ @see BESGlobalInit
+ @see BESKeys
+ @see BESResponseHandler
+ @see BESRequestHandler
+ @see BESTransmitter
+ @see BESLog
+ @see BESReporter
  */
-class BESInterface : public BESObj
-{
+class BESInterface: public BESObj {
 private:
-    typedef list< p_bes_init >::const_iterator init_citer ;
-    typedef list< p_bes_init >::iterator init_iter ;
-    static list< p_bes_init > _init_list ;
+    typedef list<p_bes_init>::const_iterator init_citer;
+    typedef list<p_bes_init>::iterator init_iter;
+    static list<p_bes_init> _init_list;
 
-    typedef list< p_bes_end >::const_iterator end_citer ;
-    typedef list< p_bes_end >::iterator end_iter ;
-    static list< p_bes_end > _end_list ;
+    typedef list<p_bes_end>::const_iterator end_citer;
+    typedef list<p_bes_end>::iterator end_iter;
+    static list<p_bes_end> _end_list;
 
-    ostream			*_strm ;
+    ostream *_strm;
 protected:
-    BESDataHandlerInterface	*_dhi ;
-    BESTransmitter		*_transmitter ;
+    BESDataHandlerInterface *_dhi;
+    BESTransmitter *_transmitter;
 
-    virtual int			exception_manager( BESError &e ) ;
-    virtual void		initialize() ;
-    virtual void		validate_data_request() ;
+    virtual int exception_manager(BESError &e);
+    virtual void initialize();
+    virtual void validate_data_request();
 
     /** @brief Build the data request plan.
 
-	It is the responsibility of the derived class to build the request plan.
-	In other words, the container list must be filled in and the action set
-	in the BESDataHandlerInterface structure.
+     It is the responsibility of the derived class to build the request plan.
+     In other words, the container list must be filled in and the action set
+     in the BESDataHandlerInterface structure.
 
-	@see BESDataHandlerInterface
+     @see BESDataHandlerInterface
      */
-    virtual void		build_data_request_plan() = 0 ;
+    virtual void build_data_request_plan() = 0;
 
-    virtual void		execute_data_request_plan() ;
-    virtual void		invoke_aggregation() ;
+    virtual void execute_data_request_plan();
+    virtual void invoke_aggregation();
 
-    virtual int			finish( int status ) ;
-    virtual void		transmit_data() ;
-    virtual void		log_status() ;
-    virtual void		report_request() ;
-    virtual void		end_request() ;
-    virtual void		clean() ;
+    virtual int finish(int status);
+    virtual void transmit_data();
+    virtual void log_status();
+    virtual void report_request();
+    virtual void end_request();
+    virtual void clean();
 
-    				BESInterface( ostream *strm ) ;
-    virtual			~BESInterface() ;
+    BESInterface(ostream *strm);
+    virtual ~BESInterface();
 public:
-    virtual int			execute_request( const string &from ) ;
-    virtual int			finish_with_error( int status ) ;
+    virtual int execute_request(const string &from);
+    virtual int finish_with_error(int status);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static void			add_init_callback( p_bes_init init ) ;
-    static void			add_end_callback( p_bes_end end ) ;
-} ;
+    static void add_init_callback(p_bes_init init);
+    static void add_end_callback(p_bes_end end);
+};
 
 #endif // BESInterface_h_
 

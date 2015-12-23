@@ -113,8 +113,11 @@ public:
 	virtual std::string get_dataset_name() const;
 	virtual void set_dataset_name(const std::string _dataset);
 
+	void register_timeout() const;
 	void set_timeout(int timeout = 0);
 	int get_timeout() const;
+	void timeout_on() const;
+	void timeout_off();
 
 	virtual void establish_timeout(std::ostream &stream) const;
 	virtual void remove_timeout() const;

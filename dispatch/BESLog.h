@@ -36,10 +36,11 @@
 #include <fstream>
 #include <string>
 
-using std::ofstream;
-using std::ios;
-using std::ostream;
-using std::string;
+#if 1
+#define LOG(x) do { *(BESLog::TheLog()) << "[" << BESDebug::GetPidStr() << "] " << x ; } while( 0 )
+
+#define VERBOSE_LOG(x) do { if ((BESLog::TheLog()->is_verbose())) *(BESLog::TheLog()) << "[" << BESDebug::GetPidStr() << "] " << x ; } while( 0 )
+#endif
 
 #include "BESObj.h"
 
@@ -67,7 +68,7 @@ using std::string;
  *
  * Types of data that can be logged include:
  * <UL>
- * <LI>string
+ * <LI>std::string
  * <LI>char *
  * <LI>const char *
  * <LI>int
@@ -88,8 +89,8 @@ class BESLog: public BESObj {
 private:
     static BESLog * _instance;
     int _flushed;
-    ofstream * _file_buffer;
-    string _file_name;
+    std::ofstream * _file_buffer;
+    std::string _file_name;
     // Flag to indicate the object is not routing data to its associated stream
     int _suspended;
     // Flag to indicate whether to log verbose messages
@@ -164,12 +165,12 @@ public:
     }
 
     /// Defines a data type p_ios_manipulator "pointer to function that takes ios& and returns ios&".
-    typedef ios& (*p_ios_manipulator)(ios&);
-    /// Defines a data type p_ostream_manipulator "pointer to function that takes ostream& and returns ostream&".
-    typedef ostream& (*p_ostream_manipulator)(ostream&);
+    typedef std::ios& (*p_ios_manipulator)(std::ios&);
+    /// Defines a data type p_std::ostream_manipulator "pointer to function that takes std::ostream& and returns std::ostream&".
+    typedef std::ostream& (*p_ostream_manipulator)(std::ostream&);
 
-    BESLog& operator <<(string&);
-    BESLog& operator <<(const string&);
+    BESLog& operator <<(std::string&);
+    BESLog& operator <<(const std::string&);
     BESLog& operator <<(char*);
     BESLog& operator <<(const char*);
     BESLog& operator <<(int);
@@ -181,14 +182,14 @@ public:
     BESLog& operator<<(p_ostream_manipulator);
     BESLog& operator<<(p_ios_manipulator);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESLog *TheLog();
 
     // I added this so that it's easy to route the BESDebug messages to the
     // log file. This will enable the Admin Interface to display the contents
     // of those debug messages when it displays the log file. jhrg
-    ostream *get_log_ostream()
+    std::ostream *get_log_ostream()
     {
         return _file_buffer;
     }
