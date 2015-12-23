@@ -4945,24 +4945,22 @@ void GMFile:: Handle_Coor_Attr() {
     }
     // No need to handle products that follow COARDS.
     else if (true == iscoard) {
-        // May need to check coordinates for 2-D lat/lon but cannot treat those lat/lon as CV case. KY 2015-12-10-TEMPPP
-     // If we find that there are groups that should check the coordinates of the variable and flatten them,do it here.
-    if(grp_cv_paths.size() >0) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-            irv != this->vars.end(); ++irv) {
-cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
-            if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
-                // Check the "coordinates" attribute and flatten the values. 
-                Flatten_VarPath_In_Coordinates_Attr(*irv);
+
+        // If we find that there are groups that should check the coordinates attribute of the variable. 
+        // We should flatten the path inside the coordinates..
+        if(grp_cv_paths.size() >0) {
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
+
+                    // Check the "coordinates" attribute and flatten the values. 
+                    Flatten_VarPath_In_Coordinates_Attr(*irv);
+                }
             }
         }
-
-    }
         return;
     }
    
-//cerr<<"coming to handle 2-D lat/lon CVs."<<endl;
-
     // Now handle the 2-D lat/lon case(note: this only applies to the one that dim. scale doesn't apply)
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
@@ -4976,40 +4974,40 @@ cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastsl
         }
     }
     
-    // If we find that there are groups that should check the coordinates of the variable and flatten them,do it here.
+    // If we find that there are groups that should check the coordinates attribute of the variable. 
+    // We should flatten the path inside the coordinates. Note this is for 2D-latlon CV case.
     if(grp_cv_paths.size() >0) {
         for (vector<Var *>::iterator irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
-cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+//cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
             if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
+
                 // Check the "coordinates" attribute and flatten the values. 
                 Flatten_VarPath_In_Coordinates_Attr(*irv);
             }
         }
-
     }
-    
     
     // Check if having 2-D lat/lon CVs
     bool has_ll2d_coords = false;
 
-    // Since iscoard must be true up to this point. The netCDF-4 like 2-D case must fulfill if the program comes here.
+    // Since iscoard is true up to this point. So the netCDF-4 like 2-D case must fulfill if the program comes here.
     if(General_Product == this->product_type && GENERAL_DIMSCALE == this->gproduct_pattern) 
         has_ll2d_coords = true; 
 
     else {// For other cases.
-    string ll2d_dimname0,ll2d_dimname1;
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-        ircv != this->cvars.end(); ++ircv) {
-        if((*ircv)->rank == 2) {
-            // Note: we should still use the original dim. name to match the general variables. 
-            ll2d_dimname0 = (*ircv)->getDimensions()[0]->name;
-            ll2d_dimname1 = (*ircv)->getDimensions()[1]->name;
-            if(ll2d_dimname0 !="" && ll2d_dimname1 !="")
-                has_ll2d_coords = true;
-            break;
+        string ll2d_dimname0,ll2d_dimname1;
+        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+            ircv != this->cvars.end(); ++ircv) {
+            if((*ircv)->rank == 2) {
+                // Note: we should still use the original dim. name to match the general variables. 
+                ll2d_dimname0 = (*ircv)->getDimensions()[0]->name;
+                ll2d_dimname1 = (*ircv)->getDimensions()[1]->name;
+                if(ll2d_dimname0 !="" && ll2d_dimname1 !="")
+                    has_ll2d_coords = true;
+                break;
+            }
         }
-    }
     }
     
     if(true == has_ll2d_coords) {
@@ -5019,16 +5017,13 @@ cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastsl
 
             bool coor_attr_keep_exist = false;
 
-            // May need to delete only the "coordinates" with both 2-D lat/lon dim. KY 2015-12-07
             if(((*irv)->rank >=2)) { 
-//cerr<<"general var path is "<<(*irv)->fullpath <<endl;
                
-                // Check if var is under group_cv_paths, no check if this var's dims are the same as 2 GMCVAR rank =2 dimensions 
+                // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as  GMCVAR rank =2 dims 
                 if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == grp_cv_paths.end()) 
+                    // If finding this var is associated with 2-D lat/lon CVs, will not keep the original "coordinates" attribute.
                     coor_attr_keep_exist = Check_Var_2D_CVars(*irv);
                 else {
-                    // Check the "coordinates" attribute and flatten the values. TOOOODOOOO
-                    //Flatten_VarPath_In_Coordinates_Attr(*irv);
                     coor_attr_keep_exist = true;
                 }
                 
@@ -5036,6 +5031,7 @@ cerr<<"the group of this variable is "<< HDF5CFUtil::obtain_string_before_lastsl
                 if(product_type == SMAP)
                     coor_attr_keep_exist = true;
 
+                // Need to delete the original "coordinates" and rebuild the "coordinates" if this var is assocaited with the 2-D lat/lon CVs.
                 if (false == coor_attr_keep_exist) {
                     for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
                         ira !=(*irv)->attrs.end();) {
