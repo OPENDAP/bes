@@ -2488,17 +2488,17 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
+    // If this is not a file that only includes 1-D lat/lon CVs
     if(false == Check_1DGeolocation_Dimscale()) {
 //if(iscoard == true)
 //cerr<<"COARD is true at the beginning of Update"<<endl;
-
-
 //cerr<<"File path is "<<this->path <<endl;
+
         // Define temporary vectors to store 1-D lat/lon CVs
         vector<GMCVar*> tempcvar_1dlat;
         vector<GMCVar*> tempcvar_1dlon;
 
-        // 1. Obtain 1-D lat/lon CVs(only search the CF units and the reserved names)
+        // 1. Obtain 1-D lat/lon CVs(only search the CF units and the reserved lat/lon names)
         Obtain_1DLatLon_CVs(tempcvar_1dlat,tempcvar_1dlon);
 
         //  Define temporary vectors to store 2-D lat/lon Vars
@@ -2506,6 +2506,10 @@ void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
         vector<Var*> tempcvar_2dlon;
         
         // TODO: Add descriptions
+        // This map remembers the positions of the latlon vars in the vector var. 
+        // Remembering the positions avoids the searching of these lat and lon again when
+        // deleting them for the var vector and adding them(only the CVs) to the CV vector.
+        // KY 2015-12-23 
         map<string,int> latlon2d_path_to_index;
 
         // 2. Obtain 2-D lat/lon variables(only search the CF units and the reserved names)
