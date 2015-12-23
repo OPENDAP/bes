@@ -28,7 +28,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -136,6 +136,20 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_3d_2dll_zc.nc4.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_3d_2dll_nozc.nc4.h5.data.bescmd])
+
+#The following includes netcdf-4 multi-2d latlon tests.
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_1g.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_1g.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_sdim.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_sdim.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_special.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_special.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_wrongdimorder.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_wrongdimorder.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_nocvs.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_mlls_nocvs.h5.das.bescmd])
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
