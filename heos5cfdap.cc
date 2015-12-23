@@ -1607,7 +1607,7 @@ int get_metadata_num(const string & meta_str) {
         stringstream ssnum(num_str);
         int num;
         ssnum >> num;
-        if (false == ssnum) 
+        if (ssnum.fail()) 
             throw InternalErr(__FILE__,__LINE__,"Suffix after dots is not a number.");
         return num;
     }

@@ -720,6 +720,7 @@ throw(Exception)
                 throw4("Cannot obtain the value of the attribute ",attr->name, " of object ",obj_name);
 
             char *temp_bp = NULL;
+            char *ptr_1stvlen_ptr = &temp_buf[0];
             temp_bp = &temp_buf[0];
             char* onestring = NULL;
 	    string total_vstring ="";
@@ -739,8 +740,9 @@ throw(Exception)
                 // going to the next value.
                 temp_bp +=ty_size;
             }
-            if (&temp_buf[0] != NULL) {
 
+            if (ptr_1stvlen_ptr != NULL) {
+            //if (&temp_buf[0] != NULL) {//Apple clang-602.0.53 doesn't like this.
                 aspace_id = H5Aget_space(attr_id);
                 if (aspace_id < 0) 
                     throw4("Cannot obtain space id for ",attr->name, " of object ",obj_name);
@@ -1354,8 +1356,6 @@ File::Handle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) t
         objvec[cl_to_ol[i]]->newname = clashnamelist[i];
 
 }
-
-
 
 
 void File::Handle_GeneralObj_NameClashing(bool include_attr,set<string>& objnameset ) throw(Exception) {

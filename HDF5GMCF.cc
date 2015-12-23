@@ -3289,6 +3289,8 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
     }
+
+    return true;
  
 } 
 
