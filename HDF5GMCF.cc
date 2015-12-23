@@ -2452,7 +2452,7 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
        } // for (vector<Var *>::iterator irv = this->vars.begin();
     } // for (set<string>::iterator irs = dimnamelist.begin();
 
-/// Use a more general approach
+/// Comment out the following code because we are using a more general approach
 #if 0
     // Will check if this file has 2-D lat/lon.If yes, update the CV.
     string latname,lonname;
@@ -2462,10 +2462,8 @@ void GMFile::Handle_CVar_Dimscale_General_Product() throw(Exception) {
     }
 #endif
 
-//#if 0
+    // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     Update_M2DLatLon_Dimscale_CVs();
-
-//#endif
 
     // Add other missing coordinate variables.
     for (set<string>::iterator irs = tempdimnamelist.begin();
@@ -2487,6 +2485,7 @@ cerr<<"dimension name is "<<(*irs)<<endl;
 }
 
 
+// Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
 void GMFile::Update_M2DLatLon_Dimscale_CVs() throw(Exception) {
 
     if(false == Check_1DGeolocation_Dimscale()) {
@@ -3293,6 +3292,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
  
 } 
 
+#if 0
 bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(Exception) {
 
     // New code to support 2-D lat/lon, still in development.
@@ -3480,6 +3480,7 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname) throw(E
     return latlon_2d;
 }
 
+
 // Update the coordinate variables for files that use HDF5 dimension scales and have 2-D lat/lon.
 void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lonname) throw(Exception) {
 
@@ -3606,6 +3607,7 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
         }
     }
 }
+#endif
 
 // Handle coordinate variables for general HDF5 products that have 1-D lat/lon
 void GMFile::Handle_CVar_LatLon1D_General_Product() throw(Exception) {

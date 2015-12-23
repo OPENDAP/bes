@@ -680,7 +680,6 @@ namespace HDF5CF
             void release_standalone_var_vector(vector<Var*>&vars);
 
 
-
         protected:
             File (const char *h5_path, hid_t file_id)
 		  : path (string(h5_path)),  
@@ -831,25 +830,26 @@ namespace HDF5CF
             bool Check_LatLon2D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
             bool Check_LatLon1D_General_Product_Pattern() throw(Exception);
             bool Check_LatLon1D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname) throw(Exception);
+            //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
             void Add_Dim_Name_LatLon1D_General_Product() throw(Exception);
             void Add_Dim_Name_LatLon2D_General_Product() throw(Exception);
             void Add_Dim_Name_Dimscale_General_Product() throw(Exception);
             void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) throw(Exception);
             void Add_UseDimscale_Var_Dim_Names_General_Product(Var*,Attribute*) throw(Exception);
-            bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
-            void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
+
+
+            //bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
+            //void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
+
+            // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
+            void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
+            bool Check_1DGeolocation_Dimscale() throw(Exception);
             void Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon);
+            void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>&latlon2d_path_to_index);
             void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon,map<string,int>&latlon2d_path_to_index);
             void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>&latlon2d_path_to_index) throw(Exception);
-            void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>&latlon2d_path_to_index);
             void Obtain_unique_2dCV(vector<Var*>&,map<string,int>&);
             void Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int>&) throw(Exception);
-
-            bool Check_1DGeolocation_Dimscale() throw(Exception);
-            void Update_M2DLatLon_Dimscale_CVs() throw(Exception);
-            bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
-            bool Check_Var_2D_CVars(Var*) throw(Exception);
-            bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
 
             void Handle_CVar_GPM_L1() throw(Exception);
             void Handle_CVar_GPM_L3() throw(Exception);
@@ -875,6 +875,10 @@ namespace HDF5CF
             template <typename T> void GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) throw(Exception);
  
             string get_CF_string(string s);
+
+            // The following two routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
+            bool Check_Var_2D_CVars(Var*) throw(Exception);
+            bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw(Exception);
 
             void Handle_GPM_l1_Coor_Attr() throw(Exception);
             void Add_GPM_Attrs() throw(Exception);
