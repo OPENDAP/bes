@@ -2549,9 +2549,12 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
 #endif
 
         // 5. Remove the 2-D lat/lon variables that are to be used as CVs from the vector that stores general variables
+        
+        // var2d_index remembers the index of the 2-D lat/lon CVs in the original vector of vars.
         vector<int> var2d_index;
         for (map<string,int>::const_iterator it= latlon2d_path_to_index.begin();it!=latlon2d_path_to_index.end();++it)
             var2d_index.push_back(it->second);
+
         Remove_2DLLCVar_Final_Candidate_from_Vars(var2d_index);
 
         // 6. If we have 2-D CVs, COARDS should be turned off.
@@ -2559,11 +2562,13 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
             iscoard = false;
 
         // 7. Add the CVs based on the final 2-D lat/lon CV candidates.
+        // We need to remember the dim names that the 2-D lat/lon CVs are associated with.
         set<string>dim_names_2d_cvs;
 
         for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv){
 //cerr<<"3 2-D Left lat variable full path is "<<(*irv)->fullpath <<endl;
             GMCVar *lat = new GMCVar((*irv));
+            // Latitude is always corresponding to the first dimension.
             lat->cfdimname = (*irv)->getDimensions()[0]->name;
             dim_names_2d_cvs.insert(lat->cfdimname);
             lat->cvartype = CV_EXIST;
@@ -2573,6 +2578,7 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
         for(vector<Var *>::iterator irv = tempcvar_2dlon.begin();irv != tempcvar_2dlon.end();++irv){
 //cerr<<"3 2-D Left lon variable full path is "<<(*irv)->fullpath <<endl;
             GMCVar *lon = new GMCVar((*irv));
+            // Longitude is always corresponding to the second dimension.
             lon->cfdimname = (*irv)->getDimensions()[1]->name;
             dim_names_2d_cvs.insert(lon->cfdimname);
             lon->cvartype = CV_EXIST;
@@ -2580,17 +2586,17 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
             this->cvars.push_back(lon);
         }
      
-        // 7. Move the assigned 1-D CVs that are replaced by 2-D CVs back to the general variable list. 
+        // 8. Move the originally assigned 1-D CVs that are replaced by 2-D CVs back to the general variable list. 
         //    Also remove the CV created by the pure dimensions. 
-        //    Dimension names are used to finish the job.
+        //    Dimension names are used to identify those 1-D CVs.
         for(vector<GMCVar*>::iterator ircv= this->cvars.begin();ircv !=this->cvars.end();) {
             if(1 == (*ircv)->rank) {
                 if(dim_names_2d_cvs.find((*ircv)->cfdimname)!=dim_names_2d_cvs.end()) {
-                    if(CV_FILLINDEX == (*ircv)->cvartype) {
+                    if(CV_FILLINDEX == (*ircv)->cvartype) {// This is pure dimension
                         delete(*ircv);
                         ircv = this->cvars.erase(ircv);
                     }
-                    else if(CV_EXIST == (*ircv)->cvartype) { 
+                    else if(CV_EXIST == (*ircv)->cvartype) {// This var exists already 
 
                         // Add this var. to the var list.
                         Var *var = new Var((*ircv));
@@ -2601,7 +2607,7 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
                         ircv = this->cvars.erase(ircv);
 
                     }
-                    else {// the latdimname should be either the CV_FILLINDEX or CV_EXIST.
+                    else {// the removed 1-D coordinate variable  should be either the CV_FILLINDEX or CV_EXIST.
                         if(CV_LAT_MISS == (*ircv)->cvartype) 
                             throw3("For the 2-D lat/lon case, the latitude dimension name ",(*ircv)->cfdimname, "is a coordinate variable of type CV_LAT_MISS");
                         else if(CV_LON_MISS == (*ircv)->cvartype)
@@ -2654,7 +2660,7 @@ cerr<<(*i)->fullpath <<endl;
 }
     
 // If Check_1DGeolocation_Dimscale() is true, no need to build 2-D lat/lon coordinate variables.
-// This function is introduced to avoid the performance penalty caused by general 2-D lat/lon handlings.
+// This function is introduced to avoid the performance penalty caused by handling the general 2-D lat/lon case.
 bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
 
     bool has_only_1d_geolocation_cv = false;
@@ -2706,7 +2712,8 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
             // Come to the possible classic netCDF-4 case,
             if(0 == this->groups.size()) {
 
-                // Rarely happens, however, still want to make sure there is a 2-D variable that uses both lat and lon dims.
+                // Rarely happens when lat_size is the same as the lon_size.
+                // However, still want to make sure there is a 2-D variable that uses both lat and lon dims.
                 if(lat_size == lon_size) { 
                     bool var_has_latdim = false;
                     bool var_has_londim = false;
@@ -2802,7 +2809,7 @@ bool GMFile::Check_1DGeolocation_Dimscale() throw(Exception) {
             }
         
         }// 
-        else {//Zonal average case, we should not try to find 2-D lat/lon CVs.
+        else {//Zonal average case, we do not need to find 2-D lat/lon CVs.
             has_only_1d_geolocation_cv = true;
         }
             
@@ -2819,13 +2826,15 @@ cerr<<"Possibly has 2D lat/lon CVs. "<<endl;
 
 }
 
-// This function should be used before making any 2-D lat/lon CVs.
+// Obtain the originally assigned 1-D lat/lon coordinate variables.
+// This function should be used before generating any 2-D lat/lon CVs.
 void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
 
         if((*ircv)->cvartype == CV_EXIST) {
+
             string attr_name ="units";
             string lat_unit_value = "degrees_north";
             string lon_unit_value = "degrees_east";
@@ -2855,6 +2864,9 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
 
 }
 
+// Obtain all 2-D lat/lon variables.
+// Latitude variables are saved in the vector var_2dlat. Longitude variables are saved in the vector var_2dlon.
+// We also remember the index of these lat/lon in the original var vector.
 void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int> & latlon2d_path_to_index) {
 
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -2912,7 +2924,12 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 }
 
 //  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
-void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon, vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon,map<string,int> &latlon2d_path_to_index) {
+//  The latlon2d_path_to_index map also needs to be updated.
+void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
+                                                     vector<Var*> &var_2dlon, 
+                                                     vector<GMCVar*> &cvar_1dlat,
+                                                     vector<GMCVar*> &cvar_1dlon,
+                                                     map<string,int> &latlon2d_path_to_index) {
 
     for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
         bool remove_2dlat = false;
@@ -2961,7 +2978,9 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,vec
 }
 
 //Out of the collected 2-D lat/lon variables, we will select the final qualified 2-D lat/lon as CVs.
-void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int>& latlon2d_path_to_index) throw(Exception){
+void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,
+                                       vector<Var*> &var_2dlon,
+                                       map<string,int>& latlon2d_path_to_index) throw(Exception){
 
     // First check 2-D lat, see if we have the corresponding 2-D lon(same dims, under the same group).
     // If no, remove that lat from the vector.
@@ -2977,7 +2996,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
                 //lon2d_group_paths.push_back((*irv_2dlon)->fullpath.substr(0,(*irv_2dlon)->fullpath.find_last_of("/")));
                 
         }
-        // Doesn't find any lons that shares the same dims,remove this lat from this vector
+        // Doesn't find any lons that shares the same dims,remove this lat from the 2dlat vector,
+        // also update the latlon2d_path_to_index map
         if(0 == lon2d_group_paths.size()) {
             latlon2d_path_to_index.erase((*irv_2dlat)->fullpath);         
             delete(*irv_2dlat);
@@ -3005,16 +3025,17 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,vector<Var*> &var
                 ++irv_2dlat;
             }
             // More than 1 lon2d, we will remove the lat2d, but save the group path so that we may  
-            // flatten the variable path in the coordinates attribute under this group.
+            // flatten the variable path stored in the coordinates attribute under this group.
             else {
-                // Save the group path for the future.
+                // Save the group path for the future use.
                 grp_cv_paths.insert(lat2d_group_path);
                 latlon2d_path_to_index.erase((*irv_2dlat)->fullpath);
                 delete(*irv_2dlat);
                 irv_2dlat = var_2dlat.erase(irv_2dlat);
             }
         }
-        //Should clear the vector that stores the same dim. for this lat, 
+
+        //Clear the vector that stores the same dim. since it is only applied to this lat, 
         lon2d_group_paths.clear();
     }
 
@@ -3075,6 +3096,7 @@ cerr<<"2 left 2-D lat variable full path is: "<<(*irv_2dlat)->fullpath <<endl;
                 irv_2dlon = var_2dlon.erase(irv_2dlon);
             }
         }
+        //Clear the vector that stores the same dim. since it is only applied to this lon, 
         lat2d_group_paths.clear();
     }
 #if 0
@@ -3098,12 +3120,13 @@ cerr<<"2-D CV longitude name is "<<(*itv)->fullpath <<endl;
 }
 #endif
  
+    // This is to serve as a sanity check. This can help us find bugs in the first place.
     if(var_2dlat.size() != var_2dlon.size()) {
         throw1("Error in generating 2-D lat/lon CVs.");
     }
 }
 
-// If two vars for the same 2-D lat or 2-D lon CV candidate vector share the same dim. , these two vars cannot be CVs. 
+// If two vars in the 2-D lat or 2-D lon CV candidate vector share the same dim. , these two vars cannot be CVs. 
 // The group they belong to is the group candidate that the coordinates attribute of the variable under that group may be modified..
 void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_path_to_index){
 
@@ -3124,7 +3147,8 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                 // yes, save the long path(child group path), set the long path one true. Else save two paths, set both true
                 if(var_ll_i_path.size() > var_ll_j_path.size()) {
 
-                    // If var_ll_j_path is the parent group of var_ll_path,set the shared dim. be true for the child group,remember the path.
+                    // If var_ll_j_path is the parent group of var_ll_i_path,
+                    // set the shared dim. be true for the child group only,remember the path.
                     if(var_ll_i_path.compare(0,var_ll_j_path.size(),var_ll_j_path)==0) {
                         var_share_dims[i] = true;
                         grp_cv_paths.insert(var_ll_i_path);
@@ -3152,7 +3176,8 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
  
                 }
                 else {
-                    // var_ll_i_path is the parent group of var_ll_j_path,set the shared dim. be true for the child group,remember the path.
+                    // var_ll_i_path is the parent group of var_ll_j_path,
+                    // set the shared dim. be true for the child group,remember the path.
                     if(var_ll_j_path.compare(0,var_ll_i_path.size(),var_ll_i_path)==0) {
                         var_share_dims[j] = true;
                         grp_cv_paths.insert(var_ll_j_path);
@@ -3187,7 +3212,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
 
 }
 
-// When promoting a 2-D lat or lon to a coordinate variable, we need to remove them from the general variable list.
+// When promoting a 2-D lat or lon to a coordinate variable, we need to remove them from the general variable vector.
 void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index) throw(Exception) {
 
     //Sort the 2-D lat/lon var index according to the ascending order before removing the 2-D lat/lon vars
@@ -3215,6 +3240,7 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
 }
 
 //This function is for generating the coordinates attribute for the 2-D lat/lon.
+//It will check if this var can have the "coordinates" attribute that includes the 2-D lat/lon.
 bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
 
     bool ret_value = true;
@@ -3237,7 +3263,7 @@ bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
                 }
             }
             // The 2-D CV dimensions must only appear once as the dimension of the variable
-            // It also must follow the order.
+            // It also must follow the dimension order of the 2-D lat/lon dimensions.
             if(first_dim_times == 1 &&  second_dim_times == 1) { 
                 if(first_dim_index < second_dim_index) {
                     ret_value = false;
@@ -3250,6 +3276,7 @@ bool GMFile::Check_Var_2D_CVars(Var *var) throw(Exception) {
     
 }
                 
+// This function flattens the variable path in the "coordinates" attribute.
 bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
 
     string co_attrname = "coordinates";
